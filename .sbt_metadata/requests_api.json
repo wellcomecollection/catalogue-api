@@ -1,0 +1,7 @@
+{
+  "id" : "requests_api",
+  "folder" : "stacks/requests_api",
+  "dependencyIds" : [
+    "stacks_common"
+  ]
+}

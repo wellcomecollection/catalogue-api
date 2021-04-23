@@ -1,0 +1,7 @@
+{
+  "id" : "items_api",
+  "folder" : "stacks/items_api",
+  "dependencyIds" : [
+    "stacks_common"
+  ]
+}

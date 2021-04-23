@@ -1,17 +1,12 @@
-ROOT = $(shell git rev-parse --show-toplevel)
-include $(ROOT)/makefiles/functions.Makefile
+ACCOUNT_ID = 760097843905
 
-STACK_ROOT 	= api
+include makefiles/functions.Makefile
+include makefiles/formatting.Makefile
 
-PROJECT_ID = catalogue_api
+include api.Makefile
+include stacks/Makefile
+include snapshots/Makefile
 
-SBT_APPS = api
-SBT_NO_DOCKER_APPS =
+lambda-test: snapshot_scheduler-test
 
-SBT_DOCKER_LIBRARIES    =
-SBT_NO_DOCKER_LIBRARIES =
-
-PYTHON_APPS = update_api_docs
-LAMBDAS 	=
-
-$(val $(call stack_setup))
+lambda-publish: snapshot_scheduler-publish
