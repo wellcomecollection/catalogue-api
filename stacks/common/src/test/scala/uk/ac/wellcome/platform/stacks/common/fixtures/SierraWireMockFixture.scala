@@ -13,7 +13,7 @@ trait SierraWireMockFixture {
       WireMockConfiguration
         .wireMockConfig()
         .usingFilesUnderClasspath(
-          "./api/stacks/common/src/test/resources/sierra")
+          "./stacks/common/src/test/resources/sierra")
         .dynamicPort()
     )
 
