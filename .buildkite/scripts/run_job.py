@@ -50,7 +50,7 @@ def should_run_sbt_project(repo, project_name, changed_paths):
         if path.endswith((".py", ".tf", ".md")):
             continue
 
-        if path.startswith("api/diff_tool"):
+        if path.startswith("diff_tool"):
             continue
 
         if os.path.basename(path) in {".terraform.lock.hcl", ".wellcome_project"}:

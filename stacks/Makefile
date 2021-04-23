@@ -1,7 +1,7 @@
 ROOT = $(shell git rev-parse --show-toplevel)
 include $(ROOT)/makefiles/functions.Makefile
 
-STACK_ROOT 	= api/stacks
+STACK_ROOT 	= stacks
 
 PROJECT_ID = stacks
 
