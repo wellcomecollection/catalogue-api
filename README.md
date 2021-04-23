@@ -1,12 +1,14 @@
-# catalogue\_api
+# Catalogue API
 
-The stack containing the Catalogue API
+All the services that make up the Catalogue API
 
 ## Overview
 
-Contains the Catalogue API, and attendant ECS Script Tasks.
+Contains the Catalogue APIs for search, snapshot, requesting and attendant ECS Script Tasks.
 
 ## Deployment
+
+Deploying the search API:
 
 ### Steps
 
