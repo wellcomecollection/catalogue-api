@@ -12,8 +12,7 @@ trait SierraWireMockFixture {
     val wireMockServer = new WireMockServer(
       WireMockConfiguration
         .wireMockConfig()
-        .usingFilesUnderClasspath(
-          "./stacks/common/src/test/resources/sierra")
+        .usingFilesUnderClasspath("./stacks/common/src/test/resources/sierra")
         .dynamicPort()
     )
 
