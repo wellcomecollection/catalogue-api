@@ -1,8 +1,9 @@
 package uk.ac.wellcome.platform.api.elasticsearch
 
+import akka.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.models.{DisplayError, ErrorVariant}
+import weco.http.models.DisplayError
 
 object ElasticsearchErrorHandler extends Logging {
 
@@ -56,20 +57,26 @@ object ElasticsearchErrorHandler extends Logging {
                         elasticError: ElasticError): DisplayError = {
     warn(
       s"Sending HTTP 400 from ${this.getClass.getSimpleName} ($message; $elasticError)")
-    DisplayError(ErrorVariant.http400, description = message)
+    DisplayError(
+      statusCode = StatusCodes.BadRequest,
+      description = message
+    )
   }
 
   private def notFound(message: String,
                        elasticError: ElasticError): DisplayError = {
     warn(
       s"Sending HTTP 404 from ${this.getClass.getSimpleName} ($message; $elasticError)")
-    DisplayError(ErrorVariant.http404, description = message)
+    DisplayError(
+      statusCode = StatusCodes.NotFound,
+      description = message
+    )
   }
 
   private def serverError(message: String,
                           elasticError: ElasticError): DisplayError = {
     error(
       s"Sending HTTP 500 from ${this.getClass.getSimpleName} ($message; $elasticError)")
-    DisplayError(ErrorVariant.http500)
+    DisplayError(statusCode = StatusCodes.InternalServerError)
   }
 }

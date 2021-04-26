@@ -2,11 +2,12 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.4.3"
+  val defaultVersion = "26.5.0"
 
   lazy val versions = new {
     val typesafe = defaultVersion
     val fixtures = defaultVersion
+    val http = defaultVersion
     val json = defaultVersion
     val messaging = defaultVersion
     val monitoring = defaultVersion
@@ -74,6 +75,11 @@ object WellcomeDependencies {
     version = versions.messaging
   ) ++ monitoringLibrary
 
+  val httpLibrary: Seq[ModuleID] = library(
+    name = "http",
+    version = versions.http
+  )
+
   private def library(name: String, version: String): Seq[ModuleID] = Seq(
     "uk.ac.wellcome" %% name % version,
     "uk.ac.wellcome" %% name % version % "test" classifier "tests"
@@ -89,7 +95,6 @@ object ExternalDependencies {
     val apacheCommons = "1.9"
     val circe = "0.13.0"
     val fastparse = "2.3.0"
-    val swagger = "2.0.10"
     val mockito = "1.9.5"
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
@@ -160,16 +165,6 @@ object ExternalDependencies {
     "org.scalatest" %% "scalatest" % versions.scalatest % "test"
   )
 
-  val swaggerDependencies = Seq(
-    "io.swagger.core.v3" % "swagger-core" % versions.swagger,
-    "io.swagger.core.v3" % "swagger-annotations" % versions.swagger,
-    "io.swagger.core.v3" % "swagger-models" % versions.swagger,
-    "io.swagger.core.v3" % "swagger-integration" % versions.swagger,
-    "io.swagger.core.v3" % "swagger-jaxrs2" % versions.swagger,
-    "javax.ws.rs" % "javax.ws.rs-api" % "2.0.1",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.8.8"
-  )
-
   val parseDependencies = Seq(
     "com.lihaoyi" %% "fastparse" % versions.fastparse
   )
@@ -200,8 +195,8 @@ object CatalogueDependencies {
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
-      ExternalDependencies.swaggerDependencies ++
-      ExternalDependencies.scalacheckDependencies
+      ExternalDependencies.scalacheckDependencies ++
+      WellcomeDependencies.httpLibrary
 
   val elasticsearchTypesafeDependencies: Seq[ModuleID] =
     WellcomeDependencies.typesafeLibrary

@@ -2,9 +2,44 @@ package uk.ac.wellcome.display.models
 
 import io.circe.generic.extras.semiauto._
 import io.circe.{Decoder, Encoder}
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
+import io.circe.syntax._
+import weco.http.json.DisplayJsonUtil._
 
 object Implicits {
+
+  // Circe wants to add a type discriminator, and we don't want it to!  Doing so
+  // would expose internal names like "DisplayDigitalLocationV1" in the public JSON.
+  // So instead we have to do the slightly less nice thing of encoding all the subclasses
+  // here by hand.  Annoying, it is.
+  //
+  // It is the "recommended: approach in the Circe docs:
+  // https://circe.github.io/circe/codecs/adt.html
+
+  implicit val abstractAgentEncoder: Encoder[DisplayAbstractAgent] = {
+    case agent: DisplayAgent               => agent.asJson
+    case person: DisplayPerson             => person.asJson
+    case organisation: DisplayOrganisation => organisation.asJson
+    case meeting: DisplayMeeting           => meeting.asJson
+  }
+
+  implicit val abstractConceptEncoder: Encoder[DisplayAbstractConcept] = {
+    case concept: DisplayConcept => concept.asJson
+    case place: DisplayPlace     => place.asJson
+    case period: DisplayPeriod   => period.asJson
+  }
+
+  implicit val abstractRootConceptEncoder
+    : Encoder[DisplayAbstractRootConcept] = {
+    case agent: DisplayAbstractAgent     => agent.asJson
+    case concept: DisplayAbstractConcept => concept.asJson
+  }
+
+  implicit val locationEncoder: Encoder[DisplayLocation] = {
+    case digitalLocation: DisplayDigitalLocation =>
+      digitalLocation.asJson
+    case physicalLocation: DisplayPhysicalLocation =>
+      physicalLocation.asJson
+  }
 
   // Cache these here to improve compilation times (otherwise they are
   // re-derived every time they are required).
