@@ -48,6 +48,7 @@ case class DisplayWorkAggregations(
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations")
 
 object DisplayWorkAggregations {
+  import Implicits._
 
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder

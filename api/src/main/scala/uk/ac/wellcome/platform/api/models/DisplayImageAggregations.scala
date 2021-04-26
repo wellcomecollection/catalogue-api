@@ -28,6 +28,7 @@ case class DisplayImageAggregations(
 )
 
 object DisplayImageAggregations {
+  import Implicits._
 
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder

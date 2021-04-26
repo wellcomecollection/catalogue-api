@@ -1,12 +1,11 @@
 package uk.ac.wellcome.display.models
 
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.display.json.Implicits._
 import uk.ac.wellcome.display.test.util.JsonMapperTestUtil
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work._
-import weco.http.json.DisplayJsonUtil._
+import Implicits._
 
 class DisplayGenreSerialisationTest
     extends AnyFunSpec
