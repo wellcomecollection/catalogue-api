@@ -166,6 +166,7 @@ class AkkaSierraSource(
             recordType = "i",
             recordNumber = sierraItemIdentifier.value,
             // This field is required non-empty by the Sierra API - but has no effect
+            // TODO: Is it really?
             pickupLocation = "unspecified",
             neededBy = neededBy
           )
