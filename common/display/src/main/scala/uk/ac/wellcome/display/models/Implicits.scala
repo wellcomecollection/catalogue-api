@@ -2,7 +2,8 @@ package uk.ac.wellcome.display.models
 
 import io.circe.generic.extras.semiauto._
 import io.circe.{Decoder, Encoder}
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
+import uk.ac.wellcome.display.json.Implicits._
+import weco.http.json.DisplayJsonUtil._
 
 object Implicits {
 
