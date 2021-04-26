@@ -12,7 +12,7 @@ Contains the Catalogue APIs for search, snapshot, requesting and attendant ECS S
 
 We deploy ECS catalogue services using the [weco-deploy](https://github.com/wellcomecollection/weco-deploy) tool.
 
-The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue) build deploys to staging automatically.
+The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue-api) build deploys to staging automatically.
 
 ### Deploying to production
 
