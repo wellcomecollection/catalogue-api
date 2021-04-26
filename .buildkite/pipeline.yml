@@ -2,6 +2,8 @@ steps:
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
   - wait
+  - command: .buildkite/scripts/run_job.py display
+    label: "display"
   - command: .buildkite/scripts/run_job.py api
     label: "API"
   - command: .buildkite/scripts/run_job.py items_api
