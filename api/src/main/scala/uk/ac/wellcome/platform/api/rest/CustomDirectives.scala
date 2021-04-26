@@ -56,7 +56,9 @@ trait CustomDirectives extends Directives with FailFastCirceSupport {
 
   def invalidRequest(description: String): Route =
     error(
-      DisplayError(statusCode = StatusCodes.BadRequest, description = description)
+      DisplayError(
+        statusCode = StatusCodes.BadRequest,
+        description = description)
     )
 
   def internalError(err: Throwable): Route = {

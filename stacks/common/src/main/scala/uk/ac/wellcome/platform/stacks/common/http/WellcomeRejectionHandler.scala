@@ -80,7 +80,9 @@ trait WellcomeRejectionHandler {
     complete(
       BadRequest -> ContextResponse(
         context = contextURL.toString,
-        DisplayError(statusCode = StatusCodes.BadRequest, description = message.toList.mkString("\n"))
+        DisplayError(
+          statusCode = StatusCodes.BadRequest,
+          description = message.toList.mkString("\n"))
       )
     )
   }

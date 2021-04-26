@@ -29,7 +29,7 @@ object Implicits {
   }
 
   implicit val abstractRootConceptEncoder
-  : Encoder[DisplayAbstractRootConcept] = {
+    : Encoder[DisplayAbstractRootConcept] = {
     case agent: DisplayAbstractAgent     => agent.asJson
     case concept: DisplayAbstractConcept => concept.asJson
   }
