@@ -2,11 +2,12 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.4.3"
+  val defaultVersion = "26.5.0"
 
   lazy val versions = new {
     val typesafe = defaultVersion
     val fixtures = defaultVersion
+    val http = defaultVersion
     val json = defaultVersion
     val messaging = defaultVersion
     val monitoring = defaultVersion
@@ -73,6 +74,11 @@ object WellcomeDependencies {
     name = "messaging_typesafe",
     version = versions.messaging
   ) ++ monitoringLibrary
+
+  val httpLibrary: Seq[ModuleID] = library(
+    name = "http",
+    version = versions.http
+  )
 
   private def library(name: String, version: String): Seq[ModuleID] = Seq(
     "uk.ac.wellcome" %% name % version,
@@ -201,7 +207,8 @@ object CatalogueDependencies {
       WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
       ExternalDependencies.swaggerDependencies ++
-      ExternalDependencies.scalacheckDependencies
+      ExternalDependencies.scalacheckDependencies ++
+      WellcomeDependencies.httpLibrary
 
   val elasticsearchTypesafeDependencies: Seq[ModuleID] =
     WellcomeDependencies.typesafeLibrary
