@@ -10,7 +10,7 @@ import uk.ac.wellcome.platform.stacks.common.services.StacksService
 import uk.ac.wellcome.platform.stacks.common.services.config.builders.StacksServiceBuilder
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
-import weco.http.HttpMetrics
+import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext
 
