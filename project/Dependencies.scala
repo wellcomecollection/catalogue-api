@@ -88,6 +88,9 @@ object WellcomeDependencies {
 
 object ExternalDependencies {
   lazy val versions = new {
+    val akka = "2.6.10"
+    val akkaHttp = "10.1.11"
+    val akkaHttpCirce = "1.32.0"
     val akkaStreamAlpakka = "1.1.2"
     val apacheCommons = "1.9"
     val circe = "0.13.0"
@@ -116,6 +119,13 @@ object ExternalDependencies {
   val apmDependencies = Seq(
     "co.elastic.apm" % "apm-agent-attach" % versions.apm,
     "co.elastic.apm" % "apm-agent-api" % versions.apm
+  )
+
+  val akkaHttpDependencies = Seq(
+    "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
+    "com.typesafe.akka" %% "akka-http" % versions.akkaHttp,
+    "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test",
+    "de.heikoseeberger" %% "akka-http-circe" % versions.akkaHttpCirce
   )
 
   val alpakkaS3Dependencies = Seq(
@@ -192,13 +202,15 @@ object CatalogueDependencies {
     WellcomeDependencies.typesafeLibrary
 
   val searchDependencies: Seq[ModuleID] =
-    ExternalDependencies.apmDependencies ++
+    ExternalDependencies.akkaHttpDependencies ++
+      ExternalDependencies.apmDependencies ++
       ExternalDependencies.circeOpticsDependencies ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary
 
   val stacksDependencies: Seq[ModuleID] =
-    ExternalDependencies.scalatestDependencies ++
+    ExternalDependencies.akkaHttpDependencies ++
+      ExternalDependencies.scalatestDependencies ++
       ExternalDependencies.wireMockDependencies ++
       WellcomeDependencies.jsonLibrary ++
       WellcomeDependencies.monitoringTypesafeLibrary ++
