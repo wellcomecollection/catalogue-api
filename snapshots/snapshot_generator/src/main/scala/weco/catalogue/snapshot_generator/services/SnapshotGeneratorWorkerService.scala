@@ -18,9 +18,9 @@ class SnapshotGeneratorWorkerService(
 ) extends Runnable {
 
   def run(): Future[Done] =
-    sqsStream.foreach(this.getClass.getSimpleName,
-      (msg: NotificationMessage) => Future.fromTry(processMessage(msg))
-    )
+    sqsStream.foreach(
+      this.getClass.getSimpleName,
+      (msg: NotificationMessage) => Future.fromTry(processMessage(msg)))
 
   private def processMessage(message: NotificationMessage): Try[Unit] =
     for {

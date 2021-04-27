@@ -37,7 +37,8 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
 
     for {
       visibleWorks <- Try {
-        new ElasticsearchWorksIterator()(elasticClient).scroll(config)
+        new ElasticsearchWorksIterator()(elasticClient)
+          .scroll(config)
           .map { work =>
             workCount += 1
             work

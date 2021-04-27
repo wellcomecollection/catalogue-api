@@ -9,7 +9,7 @@ import uk.ac.wellcome.models.work.generators.WorkGenerators
 import weco.catalogue.snapshot_generator.models.SnapshotGeneratorConfig
 
 class ElasticsearchWorksIteratorTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with IndexFixtures
     with WorkGenerators {
@@ -46,7 +46,9 @@ class ElasticsearchWorksIteratorTest
       insertIntoElasticsearch(index, works: _*)
 
       val config = SnapshotGeneratorConfig(index)
-      iterator.scroll(config).toList should contain theSameElementsAs visibleWorks
+      iterator
+        .scroll(config)
+        .toList should contain theSameElementsAs visibleWorks
     }
   }
 }

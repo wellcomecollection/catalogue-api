@@ -31,7 +31,8 @@ object Main extends WellcomeTypesafeApp {
       bulkSize = config.getIntOption("es.bulk-size").getOrElse(1000)
     )
 
-    implicit val elasticClient: ElasticClient = ElasticBuilder.buildElasticClient(config)
+    implicit val elasticClient: ElasticClient =
+      ElasticBuilder.buildElasticClient(config)
 
     implicit val s3Client: AmazonS3 = S3Builder.buildS3Client(config)
 

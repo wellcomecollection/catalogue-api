@@ -21,7 +21,7 @@ import weco.http.json.DisplayJsonUtil.toJson
 import java.time.Instant
 
 class SnapshotServiceTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with TryValues
     with S3GzipUtils
@@ -30,7 +30,8 @@ class SnapshotServiceTest
 
   import uk.ac.wellcome.display.models.Implicits._
 
-  def withFixtures[R](testWith: TestWith[(SnapshotService, Index, Bucket), R]): R =
+  def withFixtures[R](
+    testWith: TestWith[(SnapshotService, Index, Bucket), R]): R =
     withLocalWorksIndex { worksIndex =>
       withLocalS3Bucket { bucket =>
         withSnapshotService(worksIndex) { snapshotService =>
@@ -182,7 +183,10 @@ class SnapshotServiceTest
           requestedAt = Instant.now()
         )
 
-        brokenSnapshotService.generateSnapshot(snapshotJob).failed.get shouldBe a[JavaClientExceptionWrapper]
+        brokenSnapshotService
+          .generateSnapshot(snapshotJob)
+          .failed
+          .get shouldBe a[JavaClientExceptionWrapper]
       }
     }
   }

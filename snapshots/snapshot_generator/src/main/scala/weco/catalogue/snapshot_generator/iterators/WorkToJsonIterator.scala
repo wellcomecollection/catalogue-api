@@ -9,6 +9,10 @@ import weco.http.json.DisplayJsonUtil
 object WorkToJsonIterator {
   def apply(works: Iterator[Work.Visible[Indexed]]): Iterator[String] =
     works
-      .map { w => DisplayWork.apply(w, WorksIncludes.all) }
-      .map { dw => DisplayJsonUtil.toJson(dw) }
+      .map { w =>
+        DisplayWork.apply(w, WorksIncludes.all)
+      }
+      .map { dw =>
+        DisplayJsonUtil.toJson(dw)
+      }
 }

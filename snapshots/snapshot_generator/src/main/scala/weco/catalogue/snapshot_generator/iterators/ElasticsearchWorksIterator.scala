@@ -21,19 +21,22 @@ class ElasticsearchWorksIterator(
   def scroll(config: SnapshotGeneratorConfig): Iterator[Work.Visible[Indexed]] =
     SearchIterator
       .hits(
-        client, search(config.index)
+        client,
+        search(config.index)
           .query(termQuery("type", "Visible"))
           .scroll(timeout)
           .size(config.bulkSize)
       )
       .zipWithIndex
-      .map { case (hit, index) =>
-        if (index % 10000 == 0) {
-          info(s"Received another ${intComma(10000)} hits " +
-            s"(${intComma(index)} so far) from $index")
-        }
+      .map {
+        case (hit, index) =>
+          if (index % 10000 == 0) {
+            info(
+              s"Received another ${intComma(10000)} hits " +
+                s"(${intComma(index)} so far) from $index")
+          }
 
-        hit
+          hit
       }
       .map { searchHit: SearchHit =>
         fromJson[Work.Visible[Indexed]](searchHit.sourceAsString).get

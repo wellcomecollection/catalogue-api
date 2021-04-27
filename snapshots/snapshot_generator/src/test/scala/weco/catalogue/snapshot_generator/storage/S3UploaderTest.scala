@@ -11,7 +11,7 @@ import uk.ac.wellcome.storage.store.s3.S3StreamStore
 import uk.ac.wellcome.storage.streaming.StreamAssertions
 
 class S3UploaderTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with EitherValues
     with TryValues
@@ -28,12 +28,15 @@ class S3UploaderTest
     withLocalS3Bucket { bucket =>
       val location = createS3ObjectLocationWith(bucket)
 
-      val uploadResult = uploader.upload(location, bytes.toIterator).success.value
+      val uploadResult =
+        uploader.upload(location, bytes.toIterator).success.value
 
       uploadResult.getBucketName shouldBe location.bucket
       uploadResult.getKey shouldBe location.key
 
-      s3Client.getObjectMetadata(location.bucket, location.key).getETag shouldBe uploadResult.getETag
+      s3Client
+        .getObjectMetadata(location.bucket, location.key)
+        .getETag shouldBe uploadResult.getETag
 
       assertStreamEquals(
         s3StreamStore.get(location).right.value.identifiedT,
@@ -51,6 +54,7 @@ class S3UploaderTest
     val uploadResult = uploader.upload(location, bytes.toIterator).failed.get
 
     uploadResult shouldBe a[AmazonS3Exception]
-    uploadResult.getMessage should startWith("The specified bucket does not exist")
+    uploadResult.getMessage should startWith(
+      "The specified bucket does not exist")
   }
 }
