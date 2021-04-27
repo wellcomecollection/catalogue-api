@@ -5,7 +5,7 @@ catalogue_api:
     - id: prod
       name: Production
   image_repositories:
-    - id: api
+    - id: search
       services:
         - id: catalogue-api
     - id: snapshot_generator
