@@ -28,52 +28,56 @@ class WorksController(elasticsearchService: ElasticsearchService,
   import ContextResponse.encoder
 
   def multipleWorks(params: MultipleWorksParams): Route =
-    getWithFuture {
-      transactFuture("GET /works") {
-        val searchOptions = params.searchOptions(apiConfig)
-        val index =
-          params._index.map(Index(_)).getOrElse(worksIndex)
-        worksService
-          .listOrSearchWorks(index, searchOptions)
-          .map {
-            case Left(err) => elasticError(err)
-            case Right(resultList) =>
-              extractPublicUri { requestUri =>
-                complete(
-                  DisplayResultList(
-                    resultList = resultList,
-                    searchOptions = searchOptions,
-                    includes = params.include.getOrElse(WorksIncludes.none),
-                    requestUri = requestUri,
-                    contextUri = contextUri
+    get {
+      withFuture {
+        transactFuture("GET /works") {
+          val searchOptions = params.searchOptions(apiConfig)
+          val index =
+            params._index.map(Index(_)).getOrElse(worksIndex)
+          worksService
+            .listOrSearchWorks(index, searchOptions)
+            .map {
+              case Left(err) => elasticError(err)
+              case Right(resultList) =>
+                extractPublicUri { requestUri =>
+                  complete(
+                    DisplayResultList(
+                      resultList = resultList,
+                      searchOptions = searchOptions,
+                      includes = params.include.getOrElse(WorksIncludes.none),
+                      requestUri = requestUri,
+                      contextUri = contextUri
+                    )
                   )
-                )
-              }
-          }
+                }
+            }
+        }
       }
     }
 
   def singleWork(id: CanonicalId, params: SingleWorkParams): Route =
-    getWithFuture {
-      transactFuture("GET /works/{workId}") {
-        val index =
-          params._index.map(Index(_)).getOrElse(worksIndex)
-        val includes = params.include.getOrElse(WorksIncludes.none)
-        worksService
-          .findWorkById(id)(index)
-          .map {
-            case Right(Some(work: Work.Visible[Indexed])) =>
-              workFound(work, includes)
-            case Right(Some(work: Work.Redirected[Indexed])) =>
-              workRedirect(work)
-            case Right(Some(_: Work.Invisible[Indexed])) =>
-              gone("This work has been deleted")
-            case Right(Some(_: Work.Deleted[Indexed])) =>
-              gone("This work has been deleted")
-            case Right(None) =>
-              notFound(s"Work not found for identifier $id")
-            case Left(err) => elasticError(err)
-          }
+    get {
+      withFuture {
+        transactFuture("GET /works/{workId}") {
+          val index =
+            params._index.map(Index(_)).getOrElse(worksIndex)
+          val includes = params.include.getOrElse(WorksIncludes.none)
+          worksService
+            .findWorkById(id)(index)
+            .map {
+              case Right(Some(work: Work.Visible[Indexed])) =>
+                workFound(work, includes)
+              case Right(Some(work: Work.Redirected[Indexed])) =>
+                workRedirect(work)
+              case Right(Some(_: Work.Invisible[Indexed])) =>
+                gone("This work has been deleted")
+              case Right(Some(_: Work.Deleted[Indexed])) =>
+                gone("This work has been deleted")
+              case Right(None) =>
+                notFound(s"Work not found for identifier $id")
+              case Left(err) => elasticError(err)
+            }
+        }
       }
     }
 

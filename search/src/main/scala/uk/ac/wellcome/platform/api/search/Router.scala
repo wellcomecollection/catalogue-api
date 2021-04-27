@@ -119,14 +119,16 @@ class Router(elasticClient: ElasticClient,
     )
   }
 
-  def getClusterHealth: Route = {
-    import com.sksamuel.elastic4s.ElasticDsl._
-    getWithFuture {
-      elasticClient.execute(clusterHealth()).map { health =>
-        complete(health.status)
+  def getClusterHealth: Route =
+    get {
+      withFuture {
+        import com.sksamuel.elastic4s.ElasticDsl._
+
+        elasticClient.execute(clusterHealth()).map { health =>
+          complete(health.status)
+        }
       }
     }
-  }
 
   def getSearchTemplates: Route = get {
     val worksSearchTemplate = SearchTemplate(
