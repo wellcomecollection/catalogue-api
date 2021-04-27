@@ -34,11 +34,11 @@ lazy val display = setupProject(
   "common/display",
   externalDependencies = CatalogueDependencies.displayModelDependencies)
 
-lazy val api = setupProject(
+lazy val search = setupProject(
   project,
-  "api",
+  "search",
   localDependencies = Seq(display),
-  externalDependencies = CatalogueDependencies.apiDependencies
+  externalDependencies = CatalogueDependencies.searchDependencies
 )
 
 lazy val stacks_common = setupProject(

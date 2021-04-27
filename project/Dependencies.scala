@@ -206,7 +206,7 @@ object CatalogueDependencies {
   val elasticsearchTypesafeDependencies: Seq[ModuleID] =
     WellcomeDependencies.typesafeLibrary
 
-  val apiDependencies: Seq[ModuleID] =
+  val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.akkaHttpDependencies ++
       ExternalDependencies.apmDependencies ++
       ExternalDependencies.circeOpticsDependencies ++
