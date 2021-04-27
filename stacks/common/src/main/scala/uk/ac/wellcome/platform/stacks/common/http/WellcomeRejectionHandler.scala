@@ -12,6 +12,7 @@ import akka.http.scaladsl.server.{
 import akka.stream.scaladsl.Flow
 import akka.util.ByteString
 import io.circe.CursorOp
+import weco.http.HttpMetrics
 import weco.http.models.{ContextResponse, DisplayError}
 
 import scala.concurrent.ExecutionContext
