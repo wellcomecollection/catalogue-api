@@ -1,6 +1,6 @@
 resource "aws_acm_certificate" "catalogue_api" {
-  domain_name               = local.api_gateway_domain_name
-  validation_method         = "DNS"
+  domain_name       = local.api_gateway_domain_name
+  validation_method = "DNS"
 
   lifecycle {
     create_before_destroy = true
@@ -35,11 +35,11 @@ resource "aws_acm_certificate_validation" "catalogue_api_validation" {
 }
 
 resource "aws_apigatewayv2_domain_name" "catalogue_api" {
-  domain_name              = local.api_gateway_domain_name
+  domain_name = local.api_gateway_domain_name
 
   domain_name_configuration {
     certificate_arn = aws_acm_certificate_validation.catalogue_api_validation.certificate_arn
-    endpoint_type = "REGIONAL"
+    endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
 }
@@ -64,25 +64,6 @@ resource "aws_route53_record" "catalogue_api" {
 
 resource "aws_apigatewayv2_api_mapping" "catalogue" {
   api_id      = aws_apigatewayv2_api.catalogue.id
-  stage  = "$default"
+  stage       = "$default"
   domain_name = aws_apigatewayv2_domain_name.catalogue_api.domain_name
-  api_mapping_key = "catalogue"
-}
-
-resource "aws_apigatewayv2_deployment" "default" {
-  api_id      = aws_apigatewayv2_api.catalogue.id
-
-  triggers = {
-    redeployment = filesha1("${path.module}/api_gateway.tf")
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_apigatewayv2_stage" "default" {
-  api_id      = aws_apigatewayv2_api.catalogue.id
-  deployment_id = aws_apigatewayv2_deployment.default.id
-  name = "$default"
 }
