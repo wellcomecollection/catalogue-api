@@ -14,6 +14,14 @@ resource "aws_ecr_repository" "requests_api" {
   }
 }
 
+resource "aws_ecr_repository" "search" {
+  name = "uk.ac.wellcome/search"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_ecr_repository" "api" {
   name = "uk.ac.wellcome/api"
 
