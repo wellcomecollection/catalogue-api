@@ -9,3 +9,7 @@ output "name" {
 output "task_role_name" {
   value = module.task_definition.task_role_name
 }
+
+output "lb_listener_arn" {
+  value = aws_lb_listener.tcp.arn
+}
