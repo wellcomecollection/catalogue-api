@@ -67,7 +67,8 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                     )
                   }
               case Right(None) =>
-                Future.successful(notFound(s"Image not found for identifier $id"))
+                Future.successful(
+                  notFound(s"Image not found for identifier $id"))
               case Left(err) => Future.successful(elasticError(err))
             }
         }

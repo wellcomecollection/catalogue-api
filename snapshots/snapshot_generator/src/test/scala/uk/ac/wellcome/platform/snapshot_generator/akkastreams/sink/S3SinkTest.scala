@@ -15,14 +15,24 @@ import uk.ac.wellcome.storage.streaming.StreamAssertions
 
 import java.io.ByteArrayInputStream
 
-class S3SinkTest extends AnyFunSpec with Matchers with EitherValues with Akka with AkkaS3 with RandomGenerators with ScalaFutures with IntegrationPatience with StreamAssertions {
+class S3SinkTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with Akka
+    with AkkaS3
+    with RandomGenerators
+    with ScalaFutures
+    with IntegrationPatience
+    with StreamAssertions {
   val s3StreamStore = new S3StreamStore()
 
   it("uploads a large file (>20MB)") {
     val bytes = randomBytes(length = (20 * FileUtils.ONE_MB).toInt)
     val inputStream = new ByteArrayInputStream(bytes)
 
-    val source: Source[ByteString, Any] = StreamConverters.fromInputStream(() => inputStream)
+    val source: Source[ByteString, Any] =
+      StreamConverters.fromInputStream(() => inputStream)
 
     withActorSystem { implicit actorSystem =>
       withLocalS3Bucket { bucket =>
@@ -35,7 +45,9 @@ class S3SinkTest extends AnyFunSpec with Matchers with EitherValues with Akka wi
             uploadResult.bucket shouldBe location.bucket
             uploadResult.key shouldBe location.key
 
-            s3Client.getObjectMetadata(location.bucket, location.key).getETag shouldBe uploadResult.etag
+            s3Client
+              .getObjectMetadata(location.bucket, location.key)
+              .getETag shouldBe uploadResult.etag
 
             assertStreamEquals(
               s3StreamStore.get(location).right.value.identifiedT,
@@ -52,7 +64,8 @@ class S3SinkTest extends AnyFunSpec with Matchers with EitherValues with Akka wi
     val bytes = randomBytes(length = (20 * FileUtils.ONE_MB).toInt)
     val inputStream = new ByteArrayInputStream(bytes)
 
-    val source: Source[ByteString, Any] = StreamConverters.fromInputStream(() => inputStream)
+    val source: Source[ByteString, Any] =
+      StreamConverters.fromInputStream(() => inputStream)
 
     withActorSystem { implicit actorSystem =>
       val location = createS3ObjectLocation
