@@ -183,9 +183,6 @@ object CatalogueDependencies {
       ExternalDependencies.scalacheckDependencies ++
       WellcomeDependencies.httpLibrary
 
-  val elasticsearchTypesafeDependencies: Seq[ModuleID] =
-    WellcomeDependencies.typesafeLibrary
-
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.apmDependencies ++
       ExternalDependencies.circeOpticsDependencies ++
