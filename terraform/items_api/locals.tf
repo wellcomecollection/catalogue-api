@@ -7,7 +7,7 @@ locals {
   cluster_arn = data.terraform_remote_state.catalogue_api_shared.outputs.stacks_cluster_arn
   nlb_arn     = data.terraform_remote_state.catalogue_api_shared.outputs.nlb_arn
 
-  api_repository_url = data.terraform_remote_state.catalogue_api_shared.outputs.ecr_items_api_repository_url
+  api_repository_url = data.terraform_remote_state.catalogue_api_shared.outputs.ecr_items_repository_url
   api_container_image = {
     stage : "${local.api_repository_url}:env.stage"
     prod : "${local.api_repository_url}:env.prod"

@@ -18,8 +18,8 @@ catalogue_api:
 
 stacks:
   image_repositories:
-    - id: items_api
-    - id: requests_api
+    - id: items
+    - id: requests
   name: Stacks API
   account_id: '756629837203'
   role_arn: arn:aws:iam::756629837203:role/catalogue-ci
