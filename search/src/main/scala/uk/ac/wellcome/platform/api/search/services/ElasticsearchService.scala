@@ -4,7 +4,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import co.elastic.apm.api.Transaction
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, MultiSearchResponse, SearchRequest, SearchResponse}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  MultiSearchResponse,
+  SearchRequest,
+  SearchResponse
+}
 import com.sksamuel.elastic4s.{ElasticClient, ElasticError, Index}
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.search.Tracing
