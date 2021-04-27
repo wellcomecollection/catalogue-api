@@ -15,7 +15,6 @@ import uk.ac.wellcome.api.display.models.{
   DisplaySubject,
   WorkAggregationRequest
 }
-import uk.ac.wellcome.display.models._
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
 import weco.http.json.DisplayJsonUtil._

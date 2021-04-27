@@ -5,7 +5,6 @@ import uk.ac.wellcome.api.display.models.{
   SortingOrder,
   WorkAggregationRequest
 }
-import uk.ac.wellcome.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models.{
   SearchQuery,
   WorkFilter,

@@ -26,7 +26,6 @@ import uk.ac.wellcome.api.display.models.{
   DisplaySubject
 }
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.display.models._
 
 /** Custom swagger model converter, used for resolving Scala types into OpenAPI schemas.
   *  https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Extensions#extending-core-resolver

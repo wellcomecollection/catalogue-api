@@ -3,7 +3,6 @@ package uk.ac.wellcome.platform.api.search.rest
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{
   ApiConfig,

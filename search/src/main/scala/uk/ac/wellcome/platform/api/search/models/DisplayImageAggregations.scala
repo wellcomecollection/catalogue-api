@@ -9,7 +9,6 @@ import uk.ac.wellcome.api.display.models.{
   DisplayGenre,
   DisplayLicense
 }
-import uk.ac.wellcome.display.models._
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
 import weco.http.json.DisplayJsonUtil._

@@ -11,7 +11,6 @@ import uk.ac.wellcome.api.display.models.{
   ApiVersions,
   DisplaySerialisationTestBase
 }
-import uk.ac.wellcome.display.models.ApiVersions
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.json.JsonUtil._
@@ -48,7 +47,7 @@ class SnapshotGeneratorFeatureTest
         insertIntoElasticsearch(worksIndex, works: _*)
 
         val expectedDisplayWorkClassName =
-          "uk.ac.wellcome.display.models.DisplayWork$"
+          "uk.ac.wellcome.api.display.models.DisplayWork$"
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
         val snapshotJob = SnapshotJob(

@@ -7,7 +7,6 @@ import uk.ac.wellcome.api.display.models.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 
 case class SingleImageParams(

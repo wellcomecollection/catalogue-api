@@ -21,7 +21,6 @@ import uk.ac.wellcome.api.display.models.{
   DisplayWork
 }
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.rest.DisplayResultList
 import weco.http.models.DisplayError
 

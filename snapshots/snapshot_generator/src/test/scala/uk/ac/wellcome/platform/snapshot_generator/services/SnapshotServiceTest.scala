@@ -18,7 +18,6 @@ import uk.ac.wellcome.api.display.models.{
 }
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.display.models.DisplayWork
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.models.work.generators.WorkGenerators
 import uk.ac.wellcome.platform.snapshot_generator.fixtures.{
@@ -60,7 +59,7 @@ class SnapshotServiceTest
     }
 
   val expectedDisplayWorkClassName =
-    "uk.ac.wellcome.display.models.DisplayWork$"
+    "uk.ac.wellcome.api.display.models.DisplayWork$"
 
   it("completes a snapshot generation") {
     withFixtures {

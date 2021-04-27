@@ -12,7 +12,6 @@ import uk.ac.wellcome.api.display.models.{
   WorkAggregationRequest,
   WorksIncludes
 }
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
