@@ -1,4 +1,5 @@
-package uk.ac.wellcome.platform.api.images
+package uk.ac.wellcome.platform.api.search.images
+
 import uk.ac.wellcome.models.Implicits._
 
 class ImagesSimilarityTest extends ApiImagesTestBase {

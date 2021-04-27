@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search
 
 import io.circe.Json
-import uk.ac.wellcome.platform.api.works.ApiWorksTestBase
+import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 
 trait JsonHelpers extends ApiWorksTestBase {
   protected def getParameter(endpoint: Json, name: String): Option[Json] =

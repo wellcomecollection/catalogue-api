@@ -2,7 +2,7 @@ package uk.ac.wellcome.platform.api.search
 
 import akka.http.scaladsl.model.StatusCodes._
 import uk.ac.wellcome.display.models.ApiVersions
-import uk.ac.wellcome.platform.api.works.ApiWorksTestBase
+import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 
 import scala.io.Source
 

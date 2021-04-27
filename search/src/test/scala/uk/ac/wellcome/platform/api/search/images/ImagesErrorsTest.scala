@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.images
+package uk.ac.wellcome.platform.api.search.images
 
 import org.scalatest.Assertion
 

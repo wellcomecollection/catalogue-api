@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.fixtures
+package uk.ac.wellcome.platform.api.search.fixtures
 
 import scala.reflect.runtime.universe._
 

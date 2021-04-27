@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.works
+package uk.ac.wellcome.platform.api.search.works
 
 import org.scalatest.Assertion
 

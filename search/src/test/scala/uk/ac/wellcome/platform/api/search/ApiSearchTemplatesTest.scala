@@ -3,7 +3,7 @@ package uk.ac.wellcome.platform.api.search
 import akka.http.scaladsl.model.ContentTypes
 import io.circe.Json
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.platform.api.works.ApiWorksTestBase
+import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 
 class ApiSearchTemplatesTest
     extends ApiWorksTestBase

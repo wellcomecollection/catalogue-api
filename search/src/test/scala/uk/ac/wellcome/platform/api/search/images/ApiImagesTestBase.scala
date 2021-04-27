@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.images
+package uk.ac.wellcome.platform.api.search.images
 
 import uk.ac.wellcome.display.models.DisplaySerialisationTestBase
 import uk.ac.wellcome.platform.api.search.ApiTestBase

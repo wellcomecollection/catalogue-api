@@ -5,7 +5,7 @@ import io.circe.Json
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.ac.wellcome.display.models.{SingleImageIncludes, WorksIncludes}
-import uk.ac.wellcome.platform.api.fixtures.ReflectionHelpers
+import uk.ac.wellcome.platform.api.search.fixtures.ReflectionHelpers
 import uk.ac.wellcome.platform.api.search.models.{
   DisplayWorkAggregations,
   SearchQueryType,
@@ -17,8 +17,8 @@ import uk.ac.wellcome.platform.api.search.rest.{
   SingleImageParams,
   SingleWorkParams
 }
-import uk.ac.wellcome.platform.api.works.ApiWorksTestBase
 import uk.ac.wellcome.platform.api.search.rest._
+import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 
 class ApiSwaggerTest
     extends ApiWorksTestBase

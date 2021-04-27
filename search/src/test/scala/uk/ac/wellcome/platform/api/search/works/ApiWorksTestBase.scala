@@ -1,4 +1,5 @@
-package uk.ac.wellcome.platform.api.works
+package uk.ac.wellcome.platform.api.search.works
+
 import com.sksamuel.elastic4s.Indexable
 import uk.ac.wellcome.display.models.DisplaySerialisationTestBase
 import uk.ac.wellcome.models.Implicits._

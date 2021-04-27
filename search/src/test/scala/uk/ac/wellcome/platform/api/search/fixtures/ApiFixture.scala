@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.fixtures
+package uk.ac.wellcome.platform.api.search.fixtures
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.http.scaladsl.model.{ContentTypes, StatusCode}
