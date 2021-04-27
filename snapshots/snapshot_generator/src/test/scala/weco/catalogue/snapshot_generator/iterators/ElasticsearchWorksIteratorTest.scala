@@ -6,6 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.WorkGenerators
+import weco.catalogue.snapshot_generator.models.SnapshotGeneratorConfig
 
 class ElasticsearchWorksIteratorTest
   extends AnyFunSpec
@@ -21,7 +22,18 @@ class ElasticsearchWorksIteratorTest
       val works = indexedWorks(count = 10)
       insertIntoElasticsearch(index, works: _*)
 
-      iterator.scroll(index).toList should contain theSameElementsAs works
+      val config = SnapshotGeneratorConfig(index)
+      iterator.scroll(config).toList should contain theSameElementsAs works
+    }
+  }
+
+  it("fetches more works than the bulk size") {
+    withLocalWorksIndex { index =>
+      val works = indexedWorks(count = 10)
+      insertIntoElasticsearch(index, works: _*)
+
+      val config = SnapshotGeneratorConfig(index, bulkSize = 5)
+      iterator.scroll(config).toList should contain theSameElementsAs works
     }
   }
 
@@ -33,7 +45,8 @@ class ElasticsearchWorksIteratorTest
       val works = visibleWorks ++ invisibleWorks
       insertIntoElasticsearch(index, works: _*)
 
-      iterator.scroll(index).toList should contain theSameElementsAs visibleWorks
+      val config = SnapshotGeneratorConfig(index)
+      iterator.scroll(config).toList should contain theSameElementsAs visibleWorks
     }
   }
 }

@@ -10,7 +10,7 @@ import uk.ac.wellcome.messaging.memory.MemoryMessageSender
 import uk.ac.wellcome.messaging.sns.NotificationMessage
 import weco.catalogue.snapshot_generator.services.SnapshotGeneratorWorkerService
 
-trait WorkerServiceFixture extends NewSnapshotServiceFixture with SQS {
+trait WorkerServiceFixture extends SnapshotServiceFixture with SQS {
   this: Suite =>
   def withWorkerService[R](
     queue: Queue,

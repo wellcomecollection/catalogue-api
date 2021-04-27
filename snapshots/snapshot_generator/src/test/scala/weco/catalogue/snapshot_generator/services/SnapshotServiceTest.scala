@@ -13,7 +13,7 @@ import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
-import weco.catalogue.snapshot_generator.fixtures.NewSnapshotServiceFixture
+import weco.catalogue.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.catalogue.snapshot_generator.models.SnapshotJob
 import weco.catalogue.snapshot_generator.test.utils.S3GzipUtils
 import weco.http.json.DisplayJsonUtil.toJson
@@ -25,7 +25,7 @@ class SnapshotServiceTest
     with Matchers
     with TryValues
     with S3GzipUtils
-    with NewSnapshotServiceFixture
+    with SnapshotServiceFixture
     with WorkGenerators {
 
   import uk.ac.wellcome.display.models.Implicits._

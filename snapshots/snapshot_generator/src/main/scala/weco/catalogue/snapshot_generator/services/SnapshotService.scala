@@ -1,7 +1,7 @@
 package weco.catalogue.snapshot_generator.services
 
 import com.amazonaws.services.s3.AmazonS3
-import com.sksamuel.elastic4s.{ElasticClient, Index}
+import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.display.models.DisplayWork
 import weco.catalogue.snapshot_generator.compress.GzipCompressor
@@ -11,6 +11,7 @@ import weco.catalogue.snapshot_generator.iterators.{
 }
 import weco.catalogue.snapshot_generator.models.{
   CompletedSnapshotJob,
+  SnapshotGeneratorConfig,
   SnapshotJob,
   SnapshotResult
 }
@@ -19,7 +20,7 @@ import weco.catalogue.snapshot_generator.storage.S3Uploader
 import java.time.Instant
 import scala.util.Try
 
-class SnapshotService(index: Index)(
+class SnapshotService(config: SnapshotGeneratorConfig)(
   implicit
   elasticClient: ElasticClient,
   s3Client: AmazonS3
@@ -36,7 +37,7 @@ class SnapshotService(index: Index)(
 
     for {
       visibleWorks <- Try {
-        new ElasticsearchWorksIterator()(elasticClient).scroll(index)
+        new ElasticsearchWorksIterator()(elasticClient).scroll(config)
           .map { work =>
             workCount += 1
             work
@@ -54,7 +55,7 @@ class SnapshotService(index: Index)(
       uploadResult <- uploader.upload(snapshotJob.s3Location, compressedBytes)
 
       snapshotResult = SnapshotResult(
-        indexName = index.name,
+        indexName = config.index.name,
         documentCount = workCount,
         startedAt = startedAt,
         finishedAt = Instant.now(),

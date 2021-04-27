@@ -35,9 +35,7 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val s3Client: AmazonS3 = S3Builder.buildS3Client(config)
 
-    val snapshotService = new SnapshotService(
-      index = snapshotConfig.index
-    )
+    val snapshotService = new SnapshotService(snapshotConfig)
 
     new SnapshotGeneratorWorkerService(
       snapshotService = snapshotService,
