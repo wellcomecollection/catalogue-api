@@ -10,6 +10,7 @@ import uk.ac.wellcome.platform.api.search.services.{ElasticsearchService, Images
 import cats.implicits._
 import uk.ac.wellcome.platform.api.search.Tracing
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -21,7 +22,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
     with Tracing
     with FailFastCirceSupport {
   import DisplayResultList.encoder
-  import ResultResponse.encoder
+  import ContextResponse.encoder
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
     getWithFuture {
@@ -41,7 +42,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                 .map(_.toMap)
                 .map { similarImages =>
                   complete(
-                    ResultResponse(
+                    ContextResponse(
                       context = contextUri,
                       result = DisplayImage(
                         image = image,

@@ -2,11 +2,11 @@ package uk.ac.wellcome.display.models
 
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
 import uk.ac.wellcome.display.test.util.JsonMapperTestUtil
 import uk.ac.wellcome.models.work.generators._
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work.{Work, WorkState}
+import Implicits._
 
 class DisplayLocationsSerialisationTest
     extends AnyFunSpec

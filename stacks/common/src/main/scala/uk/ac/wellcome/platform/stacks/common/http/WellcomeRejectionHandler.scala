@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.stacks.common.http
 
 import java.net.URL
-
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.StatusCodes.BadRequest
 import akka.http.scaladsl.model._
@@ -13,10 +12,8 @@ import akka.http.scaladsl.server.{
 import akka.stream.scaladsl.Flow
 import akka.util.ByteString
 import io.circe.CursorOp
-import uk.ac.wellcome.platform.stacks.common.http.models.{
-  InternalServerErrorResponse,
-  UserErrorResponse
-}
+import weco.http.HttpMetrics
+import weco.http.models.{ContextResponse, DisplayError}
 
 import scala.concurrent.ExecutionContext
 
@@ -82,10 +79,11 @@ trait WellcomeRejectionHandler {
     }
 
     complete(
-      BadRequest -> UserErrorResponse(
+      BadRequest -> ContextResponse(
         context = contextURL,
-        statusCode = BadRequest,
-        description = message.toList.mkString("\n")
+        DisplayError(
+          statusCode = StatusCodes.BadRequest,
+          description = message.toList.mkString("\n"))
       )
     )
   }
@@ -99,16 +97,15 @@ trait WellcomeRejectionHandler {
       .mapAsync(parallelism = 1)(data => {
         val description = data.utf8String
         if (statusCode.intValue() >= 500) {
-          val response = InternalServerErrorResponse(
+          val response = ContextResponse(
             context = contextURL,
-            statusCode = statusCode
+            DisplayError(statusCode = StatusCodes.InternalServerError)
           )
           Marshal(response).to[MessageEntity]
         } else {
-          val response = UserErrorResponse(
+          val response = ContextResponse(
             context = contextURL,
-            statusCode = statusCode,
-            description = description
+            DisplayError(statusCode = statusCode, description = description)
           )
           Marshal(response).to[MessageEntity]
         }

@@ -12,7 +12,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.display.json.DisplayJsonUtil.toJson
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.display.models.{ApiVersions, DisplayWork, WorksIncludes}
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
@@ -28,6 +27,7 @@ import uk.ac.wellcome.platform.snapshot_generator.models.{
 import uk.ac.wellcome.platform.snapshot_generator.test.utils.S3GzipUtils
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
+import weco.http.json.DisplayJsonUtil.toJson
 
 class SnapshotServiceTest
     extends AnyFunSpec

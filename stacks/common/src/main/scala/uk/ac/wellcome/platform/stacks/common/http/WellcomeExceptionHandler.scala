@@ -1,11 +1,13 @@
 package uk.ac.wellcome.platform.stacks.common.http
 
-import java.net.URL
+import akka.http.scaladsl.model.StatusCodes
 
+import java.net.URL
 import akka.http.scaladsl.model.StatusCodes.InternalServerError
 import akka.http.scaladsl.server.ExceptionHandler
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.stacks.common.http.models.InternalServerErrorResponse
+import weco.http.HttpMetrics
+import weco.http.models.{ContextResponse, DisplayError}
 
 trait WellcomeExceptionHandler extends Logging {
   import akka.http.scaladsl.server.Directives._
@@ -21,11 +23,11 @@ trait WellcomeExceptionHandler extends Logging {
     ExceptionHandler {
       case err: Exception =>
         logger.error(s"Unexpected exception $err")
-        val error = InternalServerErrorResponse(
+        val error = ContextResponse(
           context = contextURL,
-          statusCode = InternalServerError
+          DisplayError(statusCode = StatusCodes.InternalServerError)
         )
-        httpMetrics.sendMetricForStatus(InternalServerError)
+        httpMetrics.sendMetric(InternalServerError)
         complete(InternalServerError -> error)
     }
 }

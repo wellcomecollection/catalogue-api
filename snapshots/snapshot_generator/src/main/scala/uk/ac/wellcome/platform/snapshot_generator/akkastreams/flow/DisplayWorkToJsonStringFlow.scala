@@ -4,8 +4,8 @@ import akka.NotUsed
 import akka.stream.scaladsl.Flow
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.display.models.DisplayWork
-import uk.ac.wellcome.display.json.DisplayJsonUtil
 import uk.ac.wellcome.display.models.Implicits._
+import weco.http.json.DisplayJsonUtil
 
 object DisplayWorkToJsonStringFlow extends Logging {
   def apply(): Flow[DisplayWork, String, NotUsed] =

@@ -5,11 +5,12 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
 import uk.ac.wellcome.platform.stacks.common.http.config.builders.HTTPServerBuilder
-import uk.ac.wellcome.platform.stacks.common.http.{HttpMetrics, WellcomeHttpApp}
+import uk.ac.wellcome.platform.stacks.common.http.WellcomeHttpApp
 import uk.ac.wellcome.platform.stacks.common.services.StacksService
 import uk.ac.wellcome.platform.stacks.common.services.config.builders.StacksServiceBuilder
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
+import weco.http.HttpMetrics
 
 import scala.concurrent.ExecutionContext
 

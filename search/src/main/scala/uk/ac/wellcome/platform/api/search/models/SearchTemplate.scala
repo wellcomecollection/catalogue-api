@@ -3,7 +3,7 @@ package uk.ac.wellcome.platform.api.search.models
 import com.sksamuel.elastic4s.requests.searches.queries.{Query, QueryBuilderFn}
 import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
 import io.circe.Encoder
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
+import weco.http.json.DisplayJsonUtil._
 
 case class SearchTemplate(id: String, index: String, query: String)
 

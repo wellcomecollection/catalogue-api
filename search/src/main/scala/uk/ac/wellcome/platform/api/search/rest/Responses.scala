@@ -3,36 +3,12 @@ package uk.ac.wellcome.platform.api.search.rest
 import akka.http.scaladsl.model.Uri
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
-import io.circe.{Encoder, Json}
+import io.circe.Encoder
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.ac.wellcome.display.models._
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
-
-case class ResultResponse[T: Encoder](
-  @JsonKey("@context") context: String,
-  result: T
-)
-
-object ResultResponse {
-
-  // Flattens the 'result' field into the rest of the object
-  implicit def encoder[T: Encoder]: Encoder[ResultResponse[T]] =
-    deriveConfiguredEncoder[ResultResponse[T]].mapJson { json =>
-      json.asObject
-        .flatMap { obj =>
-          obj.toMap
-            .get("result")
-            .flatMap(_.asObject.map(_.toList))
-            .map { fields =>
-              Json.obj(fields ++ obj.filterKeys(_ != "result").toList: _*)
-            }
-        }
-        .getOrElse(json)
-    }
-}
 
 @Schema(
   name = "ResultList",

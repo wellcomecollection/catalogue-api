@@ -1,17 +1,19 @@
 package uk.ac.wellcome.display.models
 
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.display.json.DisplayJsonUtil._
 import uk.ac.wellcome.display.test.util.JsonMapperTestUtil
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Concept, Period, Place}
+import weco.http.json.DisplayJsonUtil._
 
 class DisplayAbstractConceptSerialisationTest
     extends AnyFunSpec
     with DisplaySerialisationTestBase
     with JsonMapperTestUtil
     with IdentifiersGenerators {
+
+  import Implicits._
 
   it("serialises an unidentified DisplayConcept") {
     assertObjectMapsToJson(

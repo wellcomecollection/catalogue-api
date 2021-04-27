@@ -13,6 +13,7 @@ import uk.ac.wellcome.platform.api.search.services.{ElasticsearchService, WorksS
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.http.models.ContextResponse
 
 class WorksController(elasticsearchService: ElasticsearchService,
                       implicit val apiConfig: ApiConfig,
@@ -21,7 +22,7 @@ class WorksController(elasticsearchService: ElasticsearchService,
     with CustomDirectives
     with FailFastCirceSupport {
   import DisplayResultList.encoder
-  import ResultResponse.encoder
+  import ContextResponse.encoder
 
   def multipleWorks(params: MultipleWorksParams): Route =
     getWithFuture {
@@ -92,7 +93,7 @@ class WorksController(elasticsearchService: ElasticsearchService,
 
   def workFound(work: Work.Visible[Indexed], includes: WorksIncludes): Route =
     complete(
-      ResultResponse(
+      ContextResponse(
         context = contextUri,
         result = DisplayWork(work, includes)
       )
