@@ -107,4 +107,6 @@ class WorksController(elasticsearchService: ElasticsearchService,
     )
 
   private lazy val worksService = new WorksService(elasticsearchService)
+
+  override def context: String = contextUri.toString
 }

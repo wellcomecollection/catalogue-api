@@ -162,4 +162,6 @@ class Router(elasticClient: ElasticClient,
         notFound(s"Page not found for URL ${uri.path}")
       })
       .result
+
+  override def context: String = contextUri.toString
 }

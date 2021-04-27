@@ -120,4 +120,6 @@ class ImagesController(elasticsearchService: ElasticsearchService,
 
   private lazy val imagesService =
     new ImagesService(elasticsearchService, queryConfig)
+
+  override def context: String = contextUri.toString
 }
