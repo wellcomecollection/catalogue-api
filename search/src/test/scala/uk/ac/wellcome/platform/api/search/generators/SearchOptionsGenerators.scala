@@ -1,18 +1,26 @@
 package uk.ac.wellcome.platform.api.search.generators
 
-import uk.ac.wellcome.display.models.{SortRequest, SortingOrder, WorkAggregationRequest}
-import uk.ac.wellcome.platform.api.search.models.{SearchQuery, WorkFilter, WorkSearchOptions}
+import uk.ac.wellcome.display.models.{
+  SortRequest,
+  SortingOrder,
+  WorkAggregationRequest
+}
+import uk.ac.wellcome.platform.api.search.models.{
+  SearchQuery,
+  WorkFilter,
+  WorkSearchOptions
+}
 
 trait SearchOptionsGenerators {
   def createWorksSearchOptionsWith(
-                                    filters: List[WorkFilter] = Nil,
-                                    pageSize: Int = 10,
-                                    pageNumber: Int = 1,
-                                    aggregations: List[WorkAggregationRequest] = Nil,
-                                    sort: List[SortRequest] = Nil,
-                                    sortOrder: SortingOrder = SortingOrder.Ascending,
-                                    searchQuery: Option[SearchQuery] = None
-                                  ): WorkSearchOptions =
+    filters: List[WorkFilter] = Nil,
+    pageSize: Int = 10,
+    pageNumber: Int = 1,
+    aggregations: List[WorkAggregationRequest] = Nil,
+    sort: List[SortRequest] = Nil,
+    sortOrder: SortingOrder = SortingOrder.Ascending,
+    searchQuery: Option[SearchQuery] = None
+  ): WorkSearchOptions =
     WorkSearchOptions(
       filters = filters,
       pageSize = pageSize,

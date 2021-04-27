@@ -5,8 +5,15 @@ import com.sksamuel.elastic4s.Index
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.display.models.Implicits._
-import uk.ac.wellcome.platform.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
-import uk.ac.wellcome.platform.api.search.services.{ElasticsearchService, ImagesService}
+import uk.ac.wellcome.platform.api.search.models.{
+  ApiConfig,
+  QueryConfig,
+  SimilarityMetric
+}
+import uk.ac.wellcome.platform.api.search.services.{
+  ElasticsearchService,
+  ImagesService
+}
 import cats.implicits._
 import uk.ac.wellcome.platform.api.search.Tracing
 import weco.catalogue.internal_model.identifiers.CanonicalId
