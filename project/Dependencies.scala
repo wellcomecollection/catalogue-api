@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.7.1"
+  val defaultVersion = "26.7.3"
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -121,16 +121,29 @@ object ExternalDependencies {
     "co.elastic.apm" % "apm-agent-api" % versions.apm
   )
 
+  // Akka gets very upset if you mix your versions.  It looks like akka-streams-alpakka
+  // is bringing in akka-http 10.1.11, but elsewhere we use 10.1.10 (in particular,
+  // that's what we use in scala-libs).
+  //
+  // We need to explicitly pin it, or we get snapshot generator errors like:
+  //
+  //    The future returned an exception of type: java.lang.IllegalStateException, with message:
+  //    You are using version 10.1.11 of Akka HTTP, but it appears you (perhaps indirectly) also
+  //    depend on older versions of related artifacts. You can solve this by adding an explicit
+  //    dependency on version 10.1.11 of the [akka-http-xml] artifacts to your project.
+  //    See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed.
+  //
   val akkaHttpDependencies = Seq(
     "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
     "com.typesafe.akka" %% "akka-http" % versions.akkaHttp,
     "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test",
+    "com.typesafe.akka" %% "akka-http-xml" % versions.akkaHttp,
     "de.heikoseeberger" %% "akka-http-circe" % versions.akkaHttpCirce
   )
 
   val alpakkaS3Dependencies = Seq(
     "com.lightbend.akka" %% "akka-stream-alpakka-s3" % versions.akkaStreamAlpakka
-  )
+  ) ++ akkaHttpDependencies
 
   val apacheCommonsDependencies = Seq(
     "org.apache.commons" % "commons-text" % versions.apacheCommons
