@@ -2,7 +2,6 @@ package uk.ac.wellcome.platform.snapshot_generator.services
 
 import java.time.Instant
 
-import akka.http.scaladsl.model.Uri
 import akka.stream.alpakka.s3.S3Exception
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.ElasticClient
@@ -208,31 +207,6 @@ class SnapshotServiceTest
 
           whenReady(future.failed) { result =>
             result shouldBe a[JavaClientExceptionWrapper]
-          }
-        }
-      }
-    }
-  }
-
-  describe("buildLocation") {
-    it("creates the correct object location in tests") {
-      val location = createS3ObjectLocation
-
-      withFixtures {
-        case (snapshotService: SnapshotService, _, _) =>
-          snapshotService.buildLocation(location) shouldBe Uri(
-            s"http://localhost:33333/${location.bucket}/${location.key}")
-      }
-    }
-
-    it("creates the correct object location with the default S3 endpoint") {
-      val location = createS3ObjectLocation
-
-      withActorSystem { implicit actorSystem =>
-        withS3AkkaSettings(endpoint = "") { s3Settings =>
-          withSnapshotService(s3Settings) {
-            _.buildLocation(location) shouldBe Uri(
-              s"s3://${location.bucket}/${location.key}")
           }
         }
       }

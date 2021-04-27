@@ -1,9 +1,7 @@
 package uk.ac.wellcome.platform.snapshot_generator.services
 
 import java.time.Instant
-
 import akka.actor.ActorSystem
-import akka.http.scaladsl.model.Uri
 import akka.stream.alpakka.s3.S3Settings
 import akka.stream.scaladsl.Sink
 import com.sksamuel.elastic4s.ElasticClient
@@ -17,7 +15,6 @@ import uk.ac.wellcome.platform.snapshot_generator.models.{
   SnapshotJob,
   SnapshotResult
 }
-import uk.ac.wellcome.storage.s3.S3ObjectLocation
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,9 +26,6 @@ class SnapshotService(akkaS3Settings: S3Settings,
 ) extends Logging {
 
   val s3Endpoint: String = akkaS3Settings.endpointUrl.getOrElse("s3:/")
-
-  def buildLocation(s3Location: S3ObjectLocation): Uri =
-    Uri(s"$s3Endpoint/${s3Location.bucket}/${s3Location.key}")
 
   def generateSnapshot(
     snapshotJob: SnapshotJob): Future[CompletedSnapshotJob] = {
