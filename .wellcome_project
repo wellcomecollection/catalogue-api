@@ -19,6 +19,8 @@ catalogue_api:
 stacks:
   image_repositories:
     - id: items
+      services:
+        - id: items_api
     - id: requests
   name: Stacks API
   account_id: '756629837203'
