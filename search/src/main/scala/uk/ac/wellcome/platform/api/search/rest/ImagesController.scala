@@ -32,70 +32,75 @@ class ImagesController(elasticsearchService: ElasticsearchService,
   import ContextResponse.encoder
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
-    getWithFuture {
-      transactFuture("GET /images/{imageId}") {
-        val index =
-          params._index.map(Index(_)).getOrElse(imagesIndex)
-        imagesService
-          .findImageById(id)(index)
-          .flatMap {
-            case Right(Some(image)) =>
-              getSimilarityMetrics(params.include)
-                .traverse { metric =>
-                  imagesService
-                    .retrieveSimilarImages(index, image, metric)
-                    .map(metric -> _)
-                }
-                .map(_.toMap)
-                .map { similarImages =>
-                  complete(
-                    ContextResponse(
-                      context = contextUri,
-                      result = DisplayImage(
-                        image = image,
-                        includes =
-                          params.include.getOrElse(SingleImageIncludes.none),
-                        visuallySimilar =
-                          similarImages.get(SimilarityMetric.Blended),
-                        withSimilarColors =
-                          similarImages.get(SimilarityMetric.Colors),
-                        withSimilarFeatures =
-                          similarImages.get(SimilarityMetric.Features),
+    get {
+      withFuture {
+        transactFuture("GET /images/{imageId}") {
+          val index =
+            params._index.map(Index(_)).getOrElse(imagesIndex)
+          imagesService
+            .findImageById(id)(index)
+            .flatMap {
+              case Right(Some(image)) =>
+                getSimilarityMetrics(params.include)
+                  .traverse { metric =>
+                    imagesService
+                      .retrieveSimilarImages(index, image, metric)
+                      .map(metric -> _)
+                  }
+                  .map(_.toMap)
+                  .map { similarImages =>
+                    complete(
+                      ContextResponse(
+                        context = contextUri,
+                        result = DisplayImage(
+                          image = image,
+                          includes =
+                            params.include.getOrElse(SingleImageIncludes.none),
+                          visuallySimilar =
+                            similarImages.get(SimilarityMetric.Blended),
+                          withSimilarColors =
+                            similarImages.get(SimilarityMetric.Colors),
+                          withSimilarFeatures =
+                            similarImages.get(SimilarityMetric.Features),
+                        )
                       )
                     )
-                  )
-                }
-            case Right(None) =>
-              Future.successful(notFound(s"Image not found for identifier $id"))
-            case Left(err) => Future.successful(elasticError(err))
-          }
+                  }
+              case Right(None) =>
+                Future.successful(
+                  notFound(s"Image not found for identifier $id"))
+              case Left(err) => Future.successful(elasticError(err))
+            }
+        }
       }
     }
 
   def multipleImages(params: MultipleImagesParams): Route =
-    getWithFuture {
-      transactFuture("GET /images") {
-        val searchOptions = params.searchOptions(apiConfig)
-        val index =
-          params._index.map(Index(_)).getOrElse(imagesIndex)
-        imagesService
-          .listOrSearchImages(index, searchOptions)
-          .map {
-            case Left(err) => elasticError(err)
-            case Right(resultList) =>
-              extractPublicUri { uri =>
-                complete(
-                  DisplayResultList(
-                    resultList = resultList,
-                    searchOptions = searchOptions,
-                    includes =
-                      params.include.getOrElse(MultipleImagesIncludes.none),
-                    requestUri = uri,
-                    contextUri = contextUri
+    get {
+      withFuture {
+        transactFuture("GET /images") {
+          val searchOptions = params.searchOptions(apiConfig)
+          val index =
+            params._index.map(Index(_)).getOrElse(imagesIndex)
+          imagesService
+            .listOrSearchImages(index, searchOptions)
+            .map {
+              case Left(err) => elasticError(err)
+              case Right(resultList) =>
+                extractPublicUri { uri =>
+                  complete(
+                    DisplayResultList(
+                      resultList = resultList,
+                      searchOptions = searchOptions,
+                      includes =
+                        params.include.getOrElse(MultipleImagesIncludes.none),
+                      requestUri = uri,
+                      contextUri = contextUri
+                    )
                   )
-                )
-              }
-          }
+                }
+            }
+        }
       }
     }
 
@@ -116,4 +121,6 @@ class ImagesController(elasticsearchService: ElasticsearchService,
 
   private lazy val imagesService =
     new ImagesService(elasticsearchService, queryConfig)
+
+  override def context: String = contextUri.toString
 }

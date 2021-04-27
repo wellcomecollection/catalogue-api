@@ -12,7 +12,7 @@ import uk.ac.wellcome.platform.stacks.common.fixtures.{
 import uk.ac.wellcome.platform.stacks.common.http.WellcomeHttpApp
 import uk.ac.wellcome.platform.stacks.common.services.StacksService
 import uk.ac.wellcome.platform.stacks.requests.api.RequestsApi
-import weco.http.HttpMetrics
+import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
