@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.snapshot_generator.test.utils
+package weco.catalogue.snapshot_generator.test.utils
 
 import scala.io.Source.fromFile
 import scala.sys.process._

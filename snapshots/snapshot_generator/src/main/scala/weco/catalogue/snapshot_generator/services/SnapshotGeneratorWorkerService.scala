@@ -5,8 +5,8 @@ import uk.ac.wellcome.json.JsonUtil._
 import uk.ac.wellcome.messaging.MessageSender
 import uk.ac.wellcome.messaging.sns.NotificationMessage
 import uk.ac.wellcome.messaging.sqs.SQSStream
-import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotJob
 import uk.ac.wellcome.typesafe.Runnable
+import weco.catalogue.snapshot_generator.models.SnapshotJob
 
 import scala.concurrent.Future
 import scala.util.Try

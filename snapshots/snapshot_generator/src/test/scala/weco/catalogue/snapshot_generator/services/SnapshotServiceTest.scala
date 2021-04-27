@@ -11,11 +11,11 @@ import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.WorkGenerators
-import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotJob
-import uk.ac.wellcome.platform.snapshot_generator.test.utils.S3GzipUtils
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
 import weco.catalogue.snapshot_generator.fixtures.NewSnapshotServiceFixture
+import weco.catalogue.snapshot_generator.models.SnapshotJob
+import weco.catalogue.snapshot_generator.test.utils.S3GzipUtils
 import weco.http.json.DisplayJsonUtil.toJson
 
 import java.time.Instant

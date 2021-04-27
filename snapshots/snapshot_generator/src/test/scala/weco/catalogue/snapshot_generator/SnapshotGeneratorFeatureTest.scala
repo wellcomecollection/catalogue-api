@@ -13,14 +13,14 @@ import uk.ac.wellcome.messaging.fixtures.SQS.Queue
 import uk.ac.wellcome.messaging.memory.MemoryMessageSender
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.WorkGenerators
-import uk.ac.wellcome.platform.snapshot_generator.models.{
-  CompletedSnapshotJob,
-  SnapshotJob
-}
-import uk.ac.wellcome.platform.snapshot_generator.test.utils.S3GzipUtils
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
 import weco.catalogue.snapshot_generator.fixtures.WorkerServiceFixture
+import weco.catalogue.snapshot_generator.models.{
+  CompletedSnapshotJob,
+  SnapshotJob
+}
+import weco.catalogue.snapshot_generator.test.utils.S3GzipUtils
 
 import java.time.Instant
 
