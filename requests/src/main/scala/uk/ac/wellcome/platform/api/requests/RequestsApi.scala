@@ -14,6 +14,7 @@ import uk.ac.wellcome.platform.api.common.services.{
   HoldRejected,
   StacksService
 }
+import uk.ac.wellcome.platform.api.requests.models.Request
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
