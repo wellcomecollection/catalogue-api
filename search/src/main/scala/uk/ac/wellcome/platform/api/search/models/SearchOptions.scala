@@ -6,7 +6,6 @@ import uk.ac.wellcome.api.display.models.{
   SortingOrder,
   WorkAggregationRequest
 }
-import uk.ac.wellcome.display.models.WorkAggregationRequest
 
 sealed trait SearchOptions[DocumentFilter, AggregationRequest, MustQuery] {
   val searchQuery: Option[SearchQuery]

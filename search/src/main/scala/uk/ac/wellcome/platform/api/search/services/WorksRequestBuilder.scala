@@ -11,7 +11,6 @@ import uk.ac.wellcome.api.display.models.{
   SortingOrder,
   WorkAggregationRequest
 }
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.PaginationQuery
 import weco.catalogue.internal_model.locations.License

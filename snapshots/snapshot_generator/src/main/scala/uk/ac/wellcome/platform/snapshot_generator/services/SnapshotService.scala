@@ -9,7 +9,6 @@ import akka.stream.scaladsl.Sink
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.api.display.models.{ApiVersions, DisplayWork}
-import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.graph.UploadSnapshotGraph
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.source.S3ObjectMetadataSource
 import uk.ac.wellcome.platform.snapshot_generator.models.{
