@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.snapshot_generator.akkastreams.source
 
 import akka.NotUsed
-import akka.actor.ActorSystem
 import akka.stream.scaladsl.{Sink, Source}
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
@@ -59,8 +58,7 @@ class ElasticsearchSourceTest
   }
 
   private def withSource[R](index: Index)(
-    testWith: TestWith[Source[Work[WorkState.Indexed], NotUsed], R])(
-    implicit actorSystem: ActorSystem): R = {
+    testWith: TestWith[Source[Work[WorkState.Indexed], NotUsed], R]): R = {
     val source = ElasticsearchWorksSource(
       elasticClient = elasticClient,
       snapshotConfig = SnapshotGeneratorConfig(index = index)

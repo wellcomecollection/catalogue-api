@@ -1,6 +1,5 @@
 package uk.ac.wellcome.platform.snapshot_generator.akkastreams.graph
 
-import akka.actor.ActorSystem
 import akka.stream.ClosedShape
 import akka.stream.alpakka.s3.{MultipartUploadResult, S3Settings}
 import akka.stream.scaladsl.{Broadcast, GraphDSL, RunnableGraph}
@@ -25,7 +24,7 @@ object UploadSnapshotGraph {
     elasticClient: ElasticClient,
     snapshotConfig: SnapshotGeneratorConfig,
     s3Settings: S3Settings,
-    s3ObjectLocation: S3ObjectLocation)(implicit actorSystem: ActorSystem)
+    s3ObjectLocation: S3ObjectLocation)
     : RunnableGraph[(Future[Int], Future[MultipartUploadResult])] = {
 
     // We start with a "source" of display works

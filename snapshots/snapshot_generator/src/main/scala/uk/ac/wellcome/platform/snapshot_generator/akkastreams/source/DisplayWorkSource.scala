@@ -1,6 +1,5 @@
 package uk.ac.wellcome.platform.snapshot_generator.akkastreams.source
 
-import akka.actor.ActorSystem
 import akka.stream.scaladsl.Source
 import com.sksamuel.elastic4s.ElasticClient
 import uk.ac.wellcome.display.models.{DisplayWork, WorksIncludes}
@@ -11,7 +10,7 @@ object DisplayWorkSource {
   def apply(
     elasticClient: ElasticClient,
     snapshotConfig: SnapshotGeneratorConfig
-  )(implicit actorSystem: ActorSystem): Source[DisplayWork, Any] =
+  ): Source[DisplayWork, Any] =
     ElasticsearchWorksSource(
       elasticClient = elasticClient,
       snapshotConfig = snapshotConfig)
