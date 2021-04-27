@@ -1,4 +1,4 @@
-package weco.catalogue.snapshot_generator
+package weco.catalogue.snapshot_generator.services
 
 import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.{ElasticClient, Index}
@@ -19,7 +19,7 @@ import weco.catalogue.snapshot_generator.storage.S3Uploader
 import java.time.Instant
 import scala.util.Try
 
-class NewSnapshotService(index: Index)(
+class SnapshotService(index: Index)(
   implicit
   elasticClient: ElasticClient,
   s3Client: AmazonS3

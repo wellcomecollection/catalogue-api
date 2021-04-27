@@ -1,20 +1,22 @@
-package uk.ac.wellcome.platform.snapshot_generator
+package weco.catalogue.snapshot_generator
 
 import akka.actor.ActorSystem
+import com.amazonaws.services.s3.AmazonS3
+import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
 import uk.ac.wellcome.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.messaging.sns.NotificationMessage
 import uk.ac.wellcome.messaging.typesafe.{SNSBuilder, SQSBuilder}
-import uk.ac.wellcome.platform.snapshot_generator.config.builders.AkkaS3Builder
 import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotGeneratorConfig
-import uk.ac.wellcome.platform.snapshot_generator.services.{
-  SnapshotGeneratorWorkerService,
-  SnapshotService
-}
+import uk.ac.wellcome.storage.typesafe.S3Builder
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._
+import weco.catalogue.snapshot_generator.services.{
+  SnapshotService,
+  SnapshotGeneratorWorkerService
+}
 
 import scala.concurrent.ExecutionContext
 
@@ -29,10 +31,12 @@ object Main extends WellcomeTypesafeApp {
       bulkSize = config.getIntOption("es.bulk-size").getOrElse(1000)
     )
 
+    implicit val elasticClient: ElasticClient = ElasticBuilder.buildElasticClient(config)
+
+    implicit val s3Client: AmazonS3 = S3Builder.buildS3Client(config)
+
     val snapshotService = new SnapshotService(
-      akkaS3Settings = AkkaS3Builder.buildAkkaS3Settings(config),
-      elasticClient = ElasticBuilder.buildElasticClient(config),
-      snapshotConfig = snapshotConfig
+      index = snapshotConfig.index
     )
 
     new SnapshotGeneratorWorkerService(

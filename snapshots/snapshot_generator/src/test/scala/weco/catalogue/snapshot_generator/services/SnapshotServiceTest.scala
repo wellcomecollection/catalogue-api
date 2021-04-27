@@ -1,17 +1,15 @@
-package weco.catalogue.snapshot_generator
+package weco.catalogue.snapshot_generator.services
 
-import java.time.Instant
 import com.amazonaws.services.s3.model.AmazonS3Exception
-import com.sksamuel.elastic4s.Index
-import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.display.models.{ApiVersions, DisplayWork, WorksIncludes}
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
+import uk.ac.wellcome.fixtures.TestWith
+import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.WorkGenerators
 import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotJob
 import uk.ac.wellcome.platform.snapshot_generator.test.utils.S3GzipUtils
@@ -20,7 +18,9 @@ import uk.ac.wellcome.storage.s3.S3ObjectLocation
 import weco.catalogue.snapshot_generator.fixtures.NewSnapshotServiceFixture
 import weco.http.json.DisplayJsonUtil.toJson
 
-class NewSnapshotServiceTest
+import java.time.Instant
+
+class SnapshotServiceTest
   extends AnyFunSpec
     with Matchers
     with TryValues
@@ -30,7 +30,7 @@ class NewSnapshotServiceTest
 
   import uk.ac.wellcome.display.models.Implicits._
 
-  def withFixtures[R](testWith: TestWith[(NewSnapshotService, Index, Bucket), R]): R =
+  def withFixtures[R](testWith: TestWith[(SnapshotService, Index, Bucket), R]): R =
     withLocalWorksIndex { worksIndex =>
       withLocalS3Bucket { bucket =>
         withSnapshotService(worksIndex) { snapshotService =>
