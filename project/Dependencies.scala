@@ -91,7 +91,6 @@ object ExternalDependencies {
     val akka = "2.6.10"
     val akkaHttp = "10.1.11"
     val akkaHttpCirce = "1.32.0"
-    val akkaStreamAlpakka = "1.1.2"
     val apacheCommons = "1.9"
     val circe = "0.13.0"
     val fastparse = "2.3.0"
@@ -140,10 +139,6 @@ object ExternalDependencies {
     "com.typesafe.akka" %% "akka-http-xml" % versions.akkaHttp,
     "de.heikoseeberger" %% "akka-http-circe" % versions.akkaHttpCirce
   )
-
-  val alpakkaS3Dependencies = Seq(
-    "com.lightbend.akka" %% "akka-stream-alpakka-s3" % versions.akkaStreamAlpakka
-  ) ++ akkaHttpDependencies
 
   val apacheCommonsDependencies = Seq(
     "org.apache.commons" % "commons-text" % versions.apacheCommons
@@ -233,6 +228,5 @@ object CatalogueDependencies {
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary ++
-      ExternalDependencies.alpakkaS3Dependencies
+      WellcomeDependencies.typesafeLibrary
 }
