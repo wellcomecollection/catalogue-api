@@ -8,7 +8,7 @@ import uk.ac.wellcome.platform.api.fixtures.ApiFixture
 
 trait ApiTestBase extends ApiFixture with RandomGenerators {
   def getApiPrefix(
-                    apiVersion: ApiVersions.Value = ApiVersions.default): String =
+    apiVersion: ApiVersions.Value = ApiVersions.default): String =
     apiName + "/" + apiVersion
 
   val apiScheme = "https"

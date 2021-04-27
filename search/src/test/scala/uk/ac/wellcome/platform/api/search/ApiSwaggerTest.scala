@@ -6,7 +6,12 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.ac.wellcome.display.models.{SingleImageIncludes, WorksIncludes}
 import uk.ac.wellcome.platform.api.fixtures.ReflectionHelpers
-import uk.ac.wellcome.platform.api.search.rest.{MultipleImagesParams, MultipleWorksParams, SingleImageParams, SingleWorkParams}
+import uk.ac.wellcome.platform.api.search.rest.{
+  MultipleImagesParams,
+  MultipleWorksParams,
+  SingleImageParams,
+  SingleWorkParams
+}
 import uk.ac.wellcome.platform.api.works.ApiWorksTestBase
 import uk.ac.wellcome.platform.api.search.rest._
 
