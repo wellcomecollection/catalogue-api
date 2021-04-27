@@ -1,15 +1,10 @@
 package uk.ac.wellcome.platform.api.search.services
 
-import com.sksamuel.elastic4s.requests.searches.aggs.{
-  AbstractAggregation,
-  Aggregation,
-  FilterAggregation,
-  GlobalAggregation
-}
+import com.sksamuel.elastic4s.requests.searches.aggs.{AbstractAggregation, Aggregation, FilterAggregation, GlobalAggregation}
 import com.sksamuel.elastic4s.requests.searches.queries.{BoolQuery, Query}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.display.models.WorkAggregationRequest
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models._
 
 class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {

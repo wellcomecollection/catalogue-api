@@ -4,6 +4,7 @@ import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.ac.wellcome.api.display.models.{DisplayAbstractAgent, DisplayAvailability, DisplayFormat, DisplayGenre, DisplayLanguage, DisplayLicense, DisplayPeriod, DisplaySubject, WorkAggregationRequest}
 import uk.ac.wellcome.display.models._
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
@@ -48,7 +49,7 @@ case class DisplayWorkAggregations(
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations")
 
 object DisplayWorkAggregations {
-  import Implicits._
+  import uk.ac.wellcome.api.display.models.Implicits._
 
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder

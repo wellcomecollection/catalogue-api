@@ -1,21 +1,18 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import java.time.LocalDate
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.{
-  GenreGenerators,
-  ProductionEventGenerators,
-  SubjectGenerators,
-  WorkGenerators
-}
+import uk.ac.wellcome.models.work.generators.{GenreGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Period, Subject}

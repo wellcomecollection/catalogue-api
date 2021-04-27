@@ -2,16 +2,13 @@ package uk.ac.wellcome.platform.snapshot_generator
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
-import uk.ac.wellcome.display.ElasticConfig
+import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.messaging.sns.NotificationMessage
 import uk.ac.wellcome.messaging.typesafe.{SNSBuilder, SQSBuilder}
 import uk.ac.wellcome.platform.snapshot_generator.config.builders.AkkaS3Builder
 import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotGeneratorConfig
-import uk.ac.wellcome.platform.snapshot_generator.services.{
-  SnapshotGeneratorWorkerService,
-  SnapshotService
-}
+import uk.ac.wellcome.platform.snapshot_generator.services.{SnapshotGeneratorWorkerService, SnapshotService}
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._

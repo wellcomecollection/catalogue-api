@@ -6,12 +6,8 @@ import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.{BoolQuery, Query}
 import com.sksamuel.elastic4s.requests.searches.sort._
-import uk.ac.wellcome.display.models.ImageAggregationRequest
-import uk.ac.wellcome.platform.api.search.elasticsearch.{
-  ColorQuery,
-  ImageSimilarity,
-  ImagesMultiMatcher
-}
+import uk.ac.wellcome.api.display.models.ImageAggregationRequest
+import uk.ac.wellcome.platform.api.search.elasticsearch.{ColorQuery, ImageSimilarity, ImagesMultiMatcher}
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.PaginationQuery
 import weco.catalogue.internal_model.locations.License

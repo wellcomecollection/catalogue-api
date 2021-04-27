@@ -1,6 +1,7 @@
 package uk.ac.wellcome.platform.api.search.rest
 
 import io.circe.Decoder
+import uk.ac.wellcome.api.display.models.{ImageAggregationRequest, ImageInclude, MultipleImagesIncludes, SingleImageIncludes}
 import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 

@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.Uri
 import uk.ac.wellcome.platform.api.search.models._
 import akka.http.scaladsl.server.{Directive, Route}
 import com.sksamuel.elastic4s.ElasticError
-import uk.ac.wellcome.display.models.ApiVersions
+import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.platform.api.search.elasticsearch.ElasticsearchErrorHandler
 import weco.http.FutureDirectives
 import weco.http.models.{ContextResponse, DisplayError}

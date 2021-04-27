@@ -1,15 +1,8 @@
 package uk.ac.wellcome.platform.api.search.generators
 
-import uk.ac.wellcome.display.models.{
-  SortRequest,
-  SortingOrder,
-  WorkAggregationRequest
-}
-import uk.ac.wellcome.platform.api.search.models.{
-  SearchQuery,
-  WorkFilter,
-  WorkSearchOptions
-}
+import uk.ac.wellcome.api.display.models.{SortRequest, SortingOrder, WorkAggregationRequest}
+import uk.ac.wellcome.display.models.WorkAggregationRequest
+import uk.ac.wellcome.platform.api.search.models.{SearchQuery, WorkFilter, WorkSearchOptions}
 
 trait SearchOptionsGenerators {
   def createWorksSearchOptionsWith(

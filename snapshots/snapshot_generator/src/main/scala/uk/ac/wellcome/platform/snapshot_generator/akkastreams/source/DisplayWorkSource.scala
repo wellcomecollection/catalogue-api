@@ -3,7 +3,8 @@ package uk.ac.wellcome.platform.snapshot_generator.akkastreams.source
 import akka.actor.ActorSystem
 import akka.stream.scaladsl.Source
 import com.sksamuel.elastic4s.ElasticClient
-import uk.ac.wellcome.display.models.{DisplayWork, WorksIncludes}
+import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
+import uk.ac.wellcome.display.models.DisplayWork
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.flow.IndexedWorkToVisibleDisplayWork
 import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotGeneratorConfig
 

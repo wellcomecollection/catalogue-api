@@ -5,15 +5,9 @@ import akka.stream.ClosedShape
 import akka.stream.alpakka.s3.{MultipartUploadResult, S3Settings}
 import akka.stream.scaladsl.{Broadcast, GraphDSL, RunnableGraph}
 import com.sksamuel.elastic4s.ElasticClient
-import uk.ac.wellcome.display.models.DisplayWork
-import uk.ac.wellcome.platform.snapshot_generator.akkastreams.flow.{
-  DisplayWorkToJsonStringFlow,
-  StringToGzipFlow
-}
-import uk.ac.wellcome.platform.snapshot_generator.akkastreams.sink.{
-  CountingSink,
-  S3Sink
-}
+import uk.ac.wellcome.api.display.models.DisplayWork
+import uk.ac.wellcome.platform.snapshot_generator.akkastreams.flow.{DisplayWorkToJsonStringFlow, StringToGzipFlow}
+import uk.ac.wellcome.platform.snapshot_generator.akkastreams.sink.{CountingSink, S3Sink}
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.source.DisplayWorkSource
 import uk.ac.wellcome.platform.snapshot_generator.models.SnapshotGeneratorConfig
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
