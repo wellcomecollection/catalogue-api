@@ -7,8 +7,8 @@ steps:
   - command: .buildkite/scripts/run_job.py stacks_common
     label: "stacks_common"
   - wait
-  - command: .buildkite/scripts/run_job.py api
-    label: "API"
+  - command: .buildkite/scripts/run_job.py search
+    label: "Search API (Works & Images)"
   - command: .buildkite/scripts/run_job.py items_api
     label: "Stacks: Items API"
   - command: .buildkite/scripts/run_job.py requests_api
