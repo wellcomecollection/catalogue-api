@@ -88,10 +88,6 @@ object WellcomeDependencies {
 
 object ExternalDependencies {
   lazy val versions = new {
-    val akka = "2.6.10"
-    val akkaHttp = "10.1.11"
-    val akkaHttpCirce = "1.32.0"
-    val akkaStreamAlpakka = "1.1.2"
     val apacheCommons = "1.9"
     val circe = "0.13.0"
     val fastparse = "2.3.0"
@@ -120,30 +116,6 @@ object ExternalDependencies {
     "co.elastic.apm" % "apm-agent-attach" % versions.apm,
     "co.elastic.apm" % "apm-agent-api" % versions.apm
   )
-
-  // Akka gets very upset if you mix your versions.  It looks like akka-streams-alpakka
-  // is bringing in akka-http 10.1.11, but elsewhere we use 10.1.10 (in particular,
-  // that's what we use in scala-libs).
-  //
-  // We need to explicitly pin it, or we get snapshot generator errors like:
-  //
-  //    The future returned an exception of type: java.lang.IllegalStateException, with message:
-  //    You are using version 10.1.11 of Akka HTTP, but it appears you (perhaps indirectly) also
-  //    depend on older versions of related artifacts. You can solve this by adding an explicit
-  //    dependency on version 10.1.11 of the [akka-http-xml] artifacts to your project.
-  //    See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed.
-  //
-  val akkaHttpDependencies = Seq(
-    "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
-    "com.typesafe.akka" %% "akka-http" % versions.akkaHttp,
-    "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test",
-    "com.typesafe.akka" %% "akka-http-xml" % versions.akkaHttp,
-    "de.heikoseeberger" %% "akka-http-circe" % versions.akkaHttpCirce
-  )
-
-  val alpakkaS3Dependencies = Seq(
-    "com.lightbend.akka" %% "akka-stream-alpakka-s3" % versions.akkaStreamAlpakka
-  ) ++ akkaHttpDependencies
 
   val apacheCommonsDependencies = Seq(
     "org.apache.commons" % "commons-text" % versions.apacheCommons
@@ -215,15 +187,13 @@ object CatalogueDependencies {
     WellcomeDependencies.typesafeLibrary
 
   val searchDependencies: Seq[ModuleID] =
-    ExternalDependencies.akkaHttpDependencies ++
-      ExternalDependencies.apmDependencies ++
+    ExternalDependencies.apmDependencies ++
       ExternalDependencies.circeOpticsDependencies ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary
 
   val stacksDependencies: Seq[ModuleID] =
-    ExternalDependencies.akkaHttpDependencies ++
-      ExternalDependencies.scalatestDependencies ++
+    ExternalDependencies.scalatestDependencies ++
       ExternalDependencies.wireMockDependencies ++
       WellcomeDependencies.jsonLibrary ++
       WellcomeDependencies.monitoringTypesafeLibrary ++
@@ -232,7 +202,6 @@ object CatalogueDependencies {
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
-      WellcomeDependencies.storageLibrary ++
-      WellcomeDependencies.typesafeLibrary ++
-      ExternalDependencies.alpakkaS3Dependencies
+      WellcomeDependencies.storageTypesafeLibrary ++
+      WellcomeDependencies.typesafeLibrary
 }
