@@ -12,7 +12,12 @@ import uk.ac.wellcome.api.display.models.{ApiVersions, DisplayWork}
 import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.graph.UploadSnapshotGraph
 import uk.ac.wellcome.platform.snapshot_generator.akkastreams.source.S3ObjectMetadataSource
-import uk.ac.wellcome.platform.snapshot_generator.models.{CompletedSnapshotJob, SnapshotGeneratorConfig, SnapshotJob, SnapshotResult}
+import uk.ac.wellcome.platform.snapshot_generator.models.{
+  CompletedSnapshotJob,
+  SnapshotGeneratorConfig,
+  SnapshotJob,
+  SnapshotResult
+}
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
 
 import scala.concurrent.{ExecutionContext, Future}

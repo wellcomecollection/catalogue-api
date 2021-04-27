@@ -1,11 +1,29 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.requests.searches.aggs.{AbstractAggregation, Aggregation, FilterAggregation, GlobalAggregation}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  AbstractAggregation,
+  Aggregation,
+  FilterAggregation,
+  GlobalAggregation
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import uk.ac.wellcome.api.display.models.{ImageAggregationRequest, WorkAggregationRequest}
+import uk.ac.wellcome.api.display.models.{
+  ImageAggregationRequest,
+  WorkAggregationRequest
+}
 import uk.ac.wellcome.display.models.WorkAggregationRequest
-import uk.ac.wellcome.platform.api.search.models.{AvailabilitiesFilter, ContributorsFilter, FormatFilter, GenreFilter, ImageFilter, LanguagesFilter, LicenseFilter, SubjectFilter, WorkFilter}
+import uk.ac.wellcome.platform.api.search.models.{
+  AvailabilitiesFilter,
+  ContributorsFilter,
+  FormatFilter,
+  GenreFilter,
+  ImageFilter,
+  LanguagesFilter,
+  LicenseFilter,
+  SubjectFilter,
+  WorkFilter
+}
 
 import scala.collection.immutable._
 

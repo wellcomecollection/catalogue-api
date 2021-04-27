@@ -10,7 +10,10 @@ import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.api.display.models.WorkAggregationRequest
-import uk.ac.wellcome.models.work.generators.{ProductionEventGenerators, WorkGenerators}
+import uk.ac.wellcome.models.work.generators.{
+  ProductionEventGenerators,
+  WorkGenerators
+}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._

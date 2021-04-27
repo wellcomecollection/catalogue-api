@@ -5,7 +5,10 @@ import java.net.URL
 
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.monitoring.memory.MemoryMetrics
-import uk.ac.wellcome.platform.api.common.fixtures.{HttpFixtures, ServicesFixture}
+import uk.ac.wellcome.platform.api.common.fixtures.{
+  HttpFixtures,
+  ServicesFixture
+}
 import uk.ac.wellcome.platform.api.common.http.WellcomeHttpApp
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.requests.RequestsApi
