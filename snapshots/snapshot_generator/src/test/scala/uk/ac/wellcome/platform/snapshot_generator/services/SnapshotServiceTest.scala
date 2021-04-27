@@ -11,14 +11,24 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
-import uk.ac.wellcome.api.display.models.{ApiVersions, DisplayWork, WorksIncludes}
+import uk.ac.wellcome.api.display.models.{
+  ApiVersions,
+  DisplayWork,
+  WorksIncludes
+}
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.display.models.DisplayWork
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.models.work.generators.WorkGenerators
-import uk.ac.wellcome.platform.snapshot_generator.fixtures.{AkkaS3, SnapshotServiceFixture}
-import uk.ac.wellcome.platform.snapshot_generator.models.{CompletedSnapshotJob, SnapshotJob}
+import uk.ac.wellcome.platform.snapshot_generator.fixtures.{
+  AkkaS3,
+  SnapshotServiceFixture
+}
+import uk.ac.wellcome.platform.snapshot_generator.models.{
+  CompletedSnapshotJob,
+  SnapshotJob
+}
 import uk.ac.wellcome.platform.snapshot_generator.test.utils.S3GzipUtils
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation

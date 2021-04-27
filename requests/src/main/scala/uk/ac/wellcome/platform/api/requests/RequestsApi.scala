@@ -5,8 +5,15 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
-import uk.ac.wellcome.platform.api.common.models.{CatalogueItemIdentifier, StacksUserIdentifier}
-import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, StacksService}
+import uk.ac.wellcome.platform.api.common.models.{
+  CatalogueItemIdentifier,
+  StacksUserIdentifier
+}
+import uk.ac.wellcome.platform.api.common.services.{
+  HoldAccepted,
+  HoldRejected,
+  StacksService
+}
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -47,7 +54,7 @@ trait RequestsApi extends FailFastCirceSupport {
                 onComplete(result) {
                   case Success(HoldAccepted(_)) => complete(accepted)
                   case Success(HoldRejected(_)) => complete(conflict)
-                  case Failure(err) => failWith(err)
+                  case Failure(err)             => failWith(err)
                 }
             }
           } ~ get {
@@ -58,7 +65,7 @@ trait RequestsApi extends FailFastCirceSupport {
 
             onComplete(result) {
               case Success(value) => complete(DisplayResultsList(value))
-              case Failure(err) => failWith(err)
+              case Failure(err)   => failWith(err)
             }
           }
       }

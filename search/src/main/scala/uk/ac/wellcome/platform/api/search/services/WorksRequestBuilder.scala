@@ -6,7 +6,11 @@ import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
-import uk.ac.wellcome.api.display.models.{ProductionDateSortRequest, SortingOrder, WorkAggregationRequest}
+import uk.ac.wellcome.api.display.models.{
+  ProductionDateSortRequest,
+  SortingOrder,
+  WorkAggregationRequest
+}
 import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.PaginationQuery

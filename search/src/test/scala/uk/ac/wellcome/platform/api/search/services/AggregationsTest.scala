@@ -12,7 +12,12 @@ import uk.ac.wellcome.display.models._
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.{GenreGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
+import uk.ac.wellcome.models.work.generators.{
+  GenreGenerators,
+  ProductionEventGenerators,
+  SubjectGenerators,
+  WorkGenerators
+}
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Period, Subject}
