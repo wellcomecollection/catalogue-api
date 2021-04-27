@@ -2,7 +2,6 @@ package uk.ac.wellcome.platform.stacks.items.api
 
 import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.stacks.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.stacks.common.models.{
   StacksWork,
@@ -13,7 +12,7 @@ import uk.ac.wellcome.platform.stacks.common.services.StacksService
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait ItemsApi extends Logging with FailFastCirceSupport {
+trait ItemsApi extends FailFastCirceSupport {
 
   import akka.http.scaladsl.server.Directives._
   import io.circe.generic.auto._
