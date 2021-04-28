@@ -6,7 +6,11 @@ import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.api.display.models.{ApiVersions, DisplayWork, WorksIncludes}
+import uk.ac.wellcome.api.display.models.{
+  ApiVersions,
+  DisplayWork,
+  WorksIncludes
+}
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
