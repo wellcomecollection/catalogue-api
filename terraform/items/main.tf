@@ -1,3 +1,7 @@
+locals {
+  items_container_port = 9001
+}
+
 module "items_api_stage" {
   source = "../modules/service"
 
@@ -10,7 +14,7 @@ module "items_api_stage" {
   cluster_arn       = local.cluster_arn
   load_balancer_arn = local.nlb_arn
 
-  container_port              = 9000
+  container_port              = local.items_container_port
   load_balancer_listener_port = 6001
 
   container_image = local.api_container_image["stage"]
@@ -25,6 +29,7 @@ module "items_api_stage" {
   ]
 
   environment = {
+    app_port           = local.items_container_port
     app_base_url       = "https://api.wellcomecollection.org/stacks/v1/items"
     context_url        = "https://api.wellcomecollection.org/stacks/v1/context.json"
     catalogue_base_url = "https://api.wellcomecollection.org/catalogue/v2"
