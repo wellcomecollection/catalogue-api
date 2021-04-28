@@ -5,7 +5,6 @@ import akka.http.scaladsl.model.HttpMethods.{GET, POST}
 import akka.http.scaladsl.model.{
   ContentTypes,
   HttpEntity,
-  HttpHeader,
   HttpRequest,
   HttpResponse,
   RequestEntity
@@ -30,15 +29,10 @@ trait HttpFixtures extends Akka with ScalaFutures with Matchers {
       }
     }
 
-  def whenGetRequestReady[R](
-    path: String,
-    headers: List[HttpHeader] = Nil
-  )(testWith: TestWith[HttpResponse, R]): R = {
-
+  def whenGetRequestReady[R](path: String)(testWith: TestWith[HttpResponse, R]): R = {
     val request = HttpRequest(
       method = GET,
-      uri = s"${externalBaseURL}${path}",
-      headers = headers
+      uri = s"$externalBaseURL$path"
     )
 
     whenRequestReady(request) { response =>
@@ -54,16 +48,13 @@ trait HttpFixtures extends Akka with ScalaFutures with Matchers {
 
   def whenPostRequestReady[R](
     path: String,
-    entity: RequestEntity,
-    headers: List[HttpHeader] = Nil
+    entity: RequestEntity
   )(
     testWith: TestWith[HttpResponse, R]
   ): R = {
-
     val request = HttpRequest(
       method = POST,
-      uri = s"${externalBaseURL}${path}",
-      headers = headers,
+      uri = s"$externalBaseURL$path",
       entity = entity
     )
 
