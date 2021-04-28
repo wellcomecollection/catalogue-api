@@ -55,11 +55,11 @@ output "ecr_snapshot_generator_repository_url" {
 }
 
 output "ecr_items_repository_url" {
-  value = aws_ecr_repository.items_api.repository_url
+  value = aws_ecr_repository.items.repository_url
 }
 
 output "ecr_requests_repository_url" {
-  value = aws_ecr_repository.requests_api.repository_url
+  value = aws_ecr_repository.requests.repository_url
 }
 
 # DEPRECATED! Remove after switching requests/items service!
