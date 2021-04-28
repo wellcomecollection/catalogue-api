@@ -2,7 +2,6 @@ locals {
   ecs_security_groups = [
     aws_security_group.lb_ingress.id,
     aws_security_group.egress.id,
-    aws_security_group.interservice.id,
     var.elastic_cloud_vpce_sg_id
   ]
 

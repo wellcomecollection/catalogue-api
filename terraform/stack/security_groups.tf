@@ -35,20 +35,3 @@ resource "aws_security_group" "egress" {
     Name = "${var.environment_name}-catalogue_api-egress"
   }
 }
-
-resource "aws_security_group" "interservice" {
-  name        = "${var.environment_name}-catalogue_api-interservice"
-  description = "Allow traffic between services"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
-  }
-
-  tags = {
-    Name = "${var.environment_name}-catalogue_api-interservice"
-  }
-}
