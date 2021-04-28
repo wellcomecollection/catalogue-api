@@ -34,6 +34,13 @@ lazy val display = setupProject(
   "common/display",
   externalDependencies = CatalogueDependencies.displayModelDependencies)
 
+lazy val stacks = setupProject(
+  project,
+  "common/stacks",
+  localDependencies = Seq(display),
+  externalDependencies = CatalogueDependencies.stacksDependencies
+)
+
 lazy val search = setupProject(
   project,
   "search",
@@ -41,24 +48,17 @@ lazy val search = setupProject(
   externalDependencies = CatalogueDependencies.searchDependencies
 )
 
-lazy val stacks_common = setupProject(
+lazy val items = setupProject(
   project,
-  "stacks/common",
-  localDependencies = Seq(display),
+  "items",
+  localDependencies = Seq(stacks),
   externalDependencies = CatalogueDependencies.stacksDependencies
 )
 
-lazy val items_api = setupProject(
+lazy val requests = setupProject(
   project,
-  "stacks/items_api",
-  localDependencies = Seq(stacks_common),
-  externalDependencies = CatalogueDependencies.stacksDependencies
-)
-
-lazy val requests_api = setupProject(
-  project,
-  "stacks/requests_api",
-  localDependencies = Seq(stacks_common),
+  "requests",
+  localDependencies = Seq(stacks),
   externalDependencies = CatalogueDependencies.stacksDependencies
 )
 

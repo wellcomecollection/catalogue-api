@@ -1,0 +1,7 @@
+{
+  "id" : "items",
+  "folder" : "items",
+  "dependencyIds" : [
+    "stacks"
+  ]
+}

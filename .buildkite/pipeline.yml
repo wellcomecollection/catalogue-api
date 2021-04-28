@@ -4,14 +4,14 @@ steps:
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"
-  - command: .buildkite/scripts/run_job.py stacks_common
+  - command: .buildkite/scripts/run_job.py stacks
     label: "stacks_common"
   - wait
   - command: .buildkite/scripts/run_job.py search
     label: "Search API (Works & Images)"
-  - command: .buildkite/scripts/run_job.py items_api
+  - command: .buildkite/scripts/run_job.py items
     label: "Stacks: Items API"
-  - command: .buildkite/scripts/run_job.py requests_api
+  - command: .buildkite/scripts/run_job.py requests
     label: "Stacks: Requests API"
   - command: .buildkite/scripts/run_job.py snapshot_generator
     label: "snapshot generator"

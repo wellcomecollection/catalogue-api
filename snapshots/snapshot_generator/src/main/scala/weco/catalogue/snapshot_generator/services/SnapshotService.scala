@@ -3,7 +3,7 @@ package weco.catalogue.snapshot_generator.services
 import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.display.models.DisplayWork
+import uk.ac.wellcome.api.display.models.DisplayWork
 import weco.catalogue.snapshot_generator.compress.GzipCompressor
 import weco.catalogue.snapshot_generator.iterators.{
   ElasticsearchWorksIterator,

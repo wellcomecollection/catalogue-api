@@ -3,8 +3,7 @@ package uk.ac.wellcome.platform.api.search.rest
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import uk.ac.wellcome.display.models._
-import uk.ac.wellcome.display.models.Implicits._
+import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{
   ApiConfig,
   QueryConfig,
@@ -15,6 +14,11 @@ import uk.ac.wellcome.platform.api.search.services.{
   ImagesService
 }
 import cats.implicits._
+import uk.ac.wellcome.api.display.models.{
+  DisplayImage,
+  MultipleImagesIncludes,
+  SingleImageIncludes
+}
 import uk.ac.wellcome.platform.api.search.Tracing
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.models.ContextResponse

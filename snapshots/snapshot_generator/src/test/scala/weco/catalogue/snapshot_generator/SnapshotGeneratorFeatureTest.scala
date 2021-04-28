@@ -5,7 +5,10 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
-import uk.ac.wellcome.display.models.{ApiVersions, DisplaySerialisationTestBase}
+import uk.ac.wellcome.api.display.models.{
+  ApiVersions,
+  DisplaySerialisationTestBase
+}
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.json.JsonUtil._
 import uk.ac.wellcome.json.utils.JsonAssertions
@@ -44,7 +47,7 @@ class SnapshotGeneratorFeatureTest
         insertIntoElasticsearch(worksIndex, works: _*)
 
         val expectedDisplayWorkClassName =
-          "uk.ac.wellcome.display.models.DisplayWork$"
+          "uk.ac.wellcome.api.display.models.DisplayWork$"
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
         val snapshotJob = SnapshotJob(

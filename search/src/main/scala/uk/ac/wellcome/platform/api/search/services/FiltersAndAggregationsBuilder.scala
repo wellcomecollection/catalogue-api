@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   GlobalAggregation
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import uk.ac.wellcome.display.models.{
+import uk.ac.wellcome.api.display.models.{
   ImageAggregationRequest,
   WorkAggregationRequest
 }

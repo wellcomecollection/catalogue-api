@@ -4,11 +4,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
 import com.sksamuel.elastic4s.{ElasticError, Index}
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.display.models.WorkAggregationRequest
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.models.work.generators.{
   ProductionEventGenerators,
   WorkGenerators

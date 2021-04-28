@@ -4,7 +4,11 @@ import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.ac.wellcome.display.models._
+import uk.ac.wellcome.api.display.models.{
+  DisplayAbstractAgent,
+  DisplayGenre,
+  DisplayLicense
+}
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
 import weco.http.json.DisplayJsonUtil._
@@ -28,7 +32,7 @@ case class DisplayImageAggregations(
 )
 
 object DisplayImageAggregations {
-  import Implicits._
+  import uk.ac.wellcome.api.display.models.Implicits._
 
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder

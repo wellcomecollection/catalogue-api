@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.generators
 
-import uk.ac.wellcome.display.models.{
+import uk.ac.wellcome.api.display.models.{
   SortRequest,
   SortingOrder,
   WorkAggregationRequest

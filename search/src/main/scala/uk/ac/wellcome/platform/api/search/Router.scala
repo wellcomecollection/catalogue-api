@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.{
 }
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import uk.ac.wellcome.display.ElasticConfig
+import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ImagesMultiMatcher,
   WorksMultiMatcher

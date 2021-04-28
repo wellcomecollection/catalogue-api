@@ -6,7 +6,7 @@ import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.{BoolQuery, Query}
 import com.sksamuel.elastic4s.requests.searches.sort._
-import uk.ac.wellcome.display.models.ImageAggregationRequest
+import uk.ac.wellcome.api.display.models.ImageAggregationRequest
 import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ColorQuery,
   ImageSimilarity,
