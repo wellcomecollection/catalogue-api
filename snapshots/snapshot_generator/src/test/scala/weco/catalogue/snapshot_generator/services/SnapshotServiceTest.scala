@@ -6,7 +6,7 @@ import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.display.models.{ApiVersions, DisplayWork, WorksIncludes}
+import uk.ac.wellcome.api.display.models.{ApiVersions, DisplayWork, WorksIncludes}
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
@@ -28,7 +28,7 @@ class SnapshotServiceTest
     with SnapshotServiceFixture
     with WorkGenerators {
 
-  import uk.ac.wellcome.display.models.Implicits._
+  import uk.ac.wellcome.api.display.models.Implicits._
 
   def withFixtures[R](
     testWith: TestWith[(SnapshotService, Index, Bucket), R]): R =
@@ -41,7 +41,7 @@ class SnapshotServiceTest
     }
 
   val expectedDisplayWorkClassName =
-    "uk.ac.wellcome.display.models.DisplayWork$"
+    "uk.ac.wellcome.api.display.models.DisplayWork$"
 
   it("completes a snapshot generation") {
     withFixtures {
@@ -114,7 +114,7 @@ class SnapshotServiceTest
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
         val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
-        import uk.ac.wellcome.display.models.Implicits._
+        import uk.ac.wellcome.api.display.models.Implicits._
 
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
