@@ -8,7 +8,7 @@ import collections
 import csv
 import sys
 
-from utils import get_source_identifier_str, get_locations
+from utils import get_locations
 
 
 if __name__ == '__main__':

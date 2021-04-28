@@ -31,7 +31,7 @@ def get_works(snapshot_filename=None):
 
     """
     if snapshot_filename is None:
-        snapshot_filename = _get_latest_snapshot_filename()
+        snapshot_filename = get_latest_snapshot_filename()
 
     for line in gzip.open(snapshot_filename):
         yield json.loads(line)
