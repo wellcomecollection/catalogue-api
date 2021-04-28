@@ -5,16 +5,9 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
-import uk.ac.wellcome.platform.api.common.models.{
-  CatalogueItemIdentifier,
-  StacksUserIdentifier
-}
-import uk.ac.wellcome.platform.api.common.services.{
-  HoldAccepted,
-  HoldRejected,
-  StacksService
-}
-import uk.ac.wellcome.platform.api.requests.models.Request
+import uk.ac.wellcome.platform.api.common.models.{CatalogueItemIdentifier, StacksUserIdentifier}
+import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, StacksService}
+import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -32,43 +25,37 @@ trait RequestsApi extends FailFastCirceSupport {
     Printer.noSpaces.copy(dropNullValues = true)
 
   val routes: Route = concat(
-    pathPrefix("requests") {
-      headerValueByName("Weco-Sierra-Patron-Id") {
-        sierraPatronId =>
-          val userIdentifier = StacksUserIdentifier(sierraPatronId)
+    pathPrefix("users" / Segment / "item-requests") { userId: String =>
+      val userIdentifier = StacksUserIdentifier(userId)
 
-          post {
-            entity(as[Request]) {
-              requestItemHold: Request =>
-                val catalogueItemId =
-                  CatalogueItemIdentifier(requestItemHold.item.id)
+      post {
+        entity(as[ItemRequest]) {
+          itemRequest: ItemRequest =>
+            val catalogueItemId =
+              CatalogueItemIdentifier(itemRequest.itemId)
 
-                val result = stacksWorkService.requestHoldOnItem(
-                  userIdentifier = userIdentifier,
-                  catalogueItemId = catalogueItemId,
-                  neededBy = requestItemHold.pickupDate
-                )
-
-                val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
-                val conflict = (StatusCodes.Conflict, HttpEntity.Empty)
-
-                onComplete(result) {
-                  case Success(HoldAccepted(_)) => complete(accepted)
-                  case Success(HoldRejected(_)) => complete(conflict)
-                  case Failure(err)             => failWith(err)
-                }
-            }
-          } ~ get {
-
-            val result = stacksWorkService.getStacksUserHolds(
-              StacksUserIdentifier(sierraPatronId)
+            val result = stacksWorkService.requestHoldOnItem(
+              userIdentifier = userIdentifier,
+              catalogueItemId = catalogueItemId,
+              neededBy = None
             )
 
+            val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
+            val conflict = (StatusCodes.Conflict, HttpEntity.Empty)
+
             onComplete(result) {
-              case Success(value) => complete(DisplayResultsList(value))
-              case Failure(err)   => failWith(err)
+              case Success(HoldAccepted(_)) => complete(accepted)
+              case Success(HoldRejected(_)) => complete(conflict)
+              case Failure(err)             => failWith(err)
             }
-          }
+        }
+      } ~ get {
+        val result = stacksWorkService.getStacksUserHolds(userIdentifier)
+
+        onComplete(result) {
+          case Success(value) => complete(DisplayResultsList(value))
+          case Failure(err)   => failWith(err)
+        }
       }
     }
   )
