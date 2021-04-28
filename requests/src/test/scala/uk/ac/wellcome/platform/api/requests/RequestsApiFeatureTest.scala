@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.requests
 
-import akka.http.scaladsl.model.HttpHeader.ParsingResult
-import akka.http.scaladsl.model.{HttpHeader, StatusCodes}
+import akka.http.scaladsl.model.StatusCodes
 import com.github.tomakehurst.wiremock.client.WireMock.{
   equalToJson,
   postRequestedFor,
@@ -21,106 +20,35 @@ class RequestsApiFeatureTest
     with IntegrationPatience {
 
   describe("requests") {
-    it("responds to requests containing an Weco-Sierra-Patron-Id header") {
+    it("responds to a GET request") {
       withApp { _ =>
-        val path = "/requests"
+        val path = "/users/1234567/item-requests"
 
-        val headers = List(
-          HttpHeader
-            .parse(
-              name = "Weco-Sierra-Patron-Id",
-              value = "1234567"
-            )
-            .asInstanceOf[ParsingResult.Ok]
-            .header
-        )
-
-        whenGetRequestReady(path, headers) { response =>
-          response.status shouldBe StatusCodes.OK
+        whenGetRequestReady(path) {
+          _.status shouldBe StatusCodes.OK
         }
       }
     }
 
-    it("accepts requests to place a hold on an item with a pickupDate") {
+    it("accepts requests to place a hold on an item") {
       withApp { wireMockServer =>
-        val path = "/requests"
-
-        val headers = List(
-          HttpHeader
-            .parse(
-              name = "Weco-Sierra-Patron-Id",
-              value = "1234567"
-            )
-            .asInstanceOf[ParsingResult.Ok]
-            .header
-        )
+        val path = "/users/1234567/item-requests"
 
         val entity = createJsonHttpEntityWith(
           """
             |{
-            |  "item": {
-            |    "id": "ys3ern6x",
-            |    "type": "Item"
-            |  },
-            |  "pickupDate": "2020-01-01T00:00:00Z",
-            |  "type": "Request"
+            |  "itemId": "ys3ern6x",
+            |  "workId": "cnkv77md",
+            |  "type": "ItemRequest"
             |}
             |""".stripMargin
         )
 
-        whenPostRequestReady(path, entity, headers) { response =>
-          response.status shouldBe StatusCodes.Accepted
+        whenPostRequestReady(path, entity) { response =>
+          withStringEntity(response.entity) { actualJson =>
+            println(actualJson)
+          }
 
-          wireMockServer.verify(
-            1,
-            postRequestedFor(
-              urlEqualTo(
-                "/iii/sierra-api/v5/patrons/1234567/holds/requests"
-              )
-            ).withRequestBody(
-              equalToJson("""
-                  |{
-                  |  "recordType" : "i",
-                  |  "recordNumber" : 1601017,
-                  |  "pickupLocation" : "unspecified",
-                  |  "neededBy" : "2020-01-01"
-                  |}
-                  |""".stripMargin)
-            )
-          )
-
-          response.entity.isKnownEmpty() shouldBe true
-        }
-      }
-    }
-
-    it("accepts requests to place a hold on an item without a pickupDate") {
-      withApp { wireMockServer =>
-        val path = "/requests"
-
-        val headers = List(
-          HttpHeader
-            .parse(
-              name = "Weco-Sierra-Patron-Id",
-              value = "1234567"
-            )
-            .asInstanceOf[ParsingResult.Ok]
-            .header
-        )
-
-        val entity = createJsonHttpEntityWith(
-          """
-            |{
-            |  "item": {
-            |    "id": "ys3ern6x",
-            |    "type": "Item"
-            |  },
-            |  "type": "Request"
-            |}
-            |""".stripMargin
-        )
-
-        whenPostRequestReady(path, entity, headers) { response =>
           response.status shouldBe StatusCodes.Accepted
 
           wireMockServer.verify(
@@ -147,31 +75,19 @@ class RequestsApiFeatureTest
 
     it("responds with a 409 Conflict when a hold is rejected") {
       withApp { wireMockServer =>
-        val path = "/requests"
-
-        val headers = List(
-          HttpHeader
-            .parse(
-              name = "Weco-Sierra-Patron-Id",
-              value = "1234567"
-            )
-            .asInstanceOf[ParsingResult.Ok]
-            .header
-        )
+        val path = "/users/1234567/item-requests"
 
         val entity = createJsonHttpEntityWith(
           """
-              |{
-              |  "item": {
-              |    "id": "ys3ern6y",
-              |    "type": "Item"
-              |  },
-              |  "type": "Request"
-              |}
-              |""".stripMargin
+            |{
+            |  "itemId": "ys3ern6y",
+            |  "workId": "cnkv77md",
+            |  "type": "ItemRequest"
+            |}
+            |""".stripMargin
         )
 
-        whenPostRequestReady(path, entity, headers) { response =>
+        whenPostRequestReady(path, entity) { response =>
           response.status shouldBe StatusCodes.Conflict
 
           wireMockServer.verify(
@@ -197,17 +113,7 @@ class RequestsApiFeatureTest
 
     it("provides information about a users' holds") {
       withApp { _ =>
-        val path = "/requests"
-
-        val headers = List(
-          HttpHeader
-            .parse(
-              name = "Weco-Sierra-Patron-Id",
-              value = "1234567"
-            )
-            .asInstanceOf[ParsingResult.Ok]
-            .header
-        )
+        val path = "/users/1234567/item-requests"
 
         val expectedJson =
           s"""
@@ -236,7 +142,7 @@ class RequestsApiFeatureTest
              |  "type" : "ResultList"
              |}""".stripMargin
 
-        whenGetRequestReady(path, headers) { response =>
+        whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.OK
 
           withStringEntity(response.entity) { actualJson =>
