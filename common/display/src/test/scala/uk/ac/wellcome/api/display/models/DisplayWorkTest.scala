@@ -9,7 +9,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import uk.ac.wellcome.models.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
@@ -222,9 +226,9 @@ class DisplayWorkTest
   // tests in CI.  This generator is meant to create SourceIdentifiers that
   // don't contain whitespace.
   implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
-  Arbitrary {
-    createSourceIdentifier
-  }
+    Arbitrary {
+      createSourceIdentifier
+    }
 
   implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
     Arbitrary {
