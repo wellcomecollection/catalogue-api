@@ -5,7 +5,7 @@ locals {
   external_hostname = "api.wellcomecollection.org"
   version_path_part = "v2"
 
-  // TODO remove delta
+  // TODO remove delta after the old stage deployment is removed
   api_gateway_domain_name = var.environment_name != "stage" ? "catalogue.api-${var.environment_name}.wellcomecollection.org" : "catalogue.api-${var.environment_name}-delta.wellcomecollection.org"
 
   n_private_subnets        = length(var.private_subnets)
