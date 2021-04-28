@@ -20,7 +20,3 @@ data "terraform_remote_state" "accounts_catalogue" {
     region = "eu-west-1"
   }
 }
-
-locals {
-  catalogue_vpcs = data.terraform_remote_state.accounts_catalogue.outputs
-}

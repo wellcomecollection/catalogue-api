@@ -1,0 +1,6 @@
+resource "aws_lb" "catalogue_api" {
+  name               = "${var.environment_name}-catalogue-api"
+  internal           = true
+  load_balancer_type = "network"
+  subnets            = local.routable_private_subnets
+}
