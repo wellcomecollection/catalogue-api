@@ -8,8 +8,8 @@ locals {
 }
 
 module "search_api" {
-  source   = "../modules/service"
-  service_name = "${var.environment_name}-search-api"
+  source                  = "../modules/service"
+  service_name            = "${var.environment_name}-search-api"
   deployment_service_name = "search-api"
 
   container_port              = 8888
@@ -33,16 +33,16 @@ module "search_api" {
     apm_secret     = "catalogue/api/apm_secret"
   }
 
-  subnets                        = local.routable_private_subnets
-  cluster_arn                    = var.cluster_arn
-  vpc_id                         = var.vpc_id
-  load_balancer_arn              = aws_lb.catalogue_api.arn
-  deployment_service_env         = var.environment_name
+  subnets                = local.routable_private_subnets
+  cluster_arn            = var.cluster_arn
+  vpc_id                 = var.vpc_id
+  load_balancer_arn      = aws_lb.catalogue_api.arn
+  deployment_service_env = var.environment_name
 }
 
 module "items_api" {
-  source   = "../modules/service"
-  service_name = "${var.environment_name}-items-api"
+  source                  = "../modules/service"
+  service_name            = "${var.environment_name}-items-api"
   deployment_service_name = "items-api"
 
   container_port              = 9000
@@ -64,11 +64,11 @@ module "items_api" {
     sierra_api_secret = "stacks/prod/sierra_api_secret"
   }
 
-  subnets                        = local.routable_private_subnets
-  cluster_arn                    = var.cluster_arn
-  vpc_id                         = var.vpc_id
-  load_balancer_arn              = aws_lb.catalogue_api.arn
-  deployment_service_env         = var.environment_name
+  subnets                = local.routable_private_subnets
+  cluster_arn            = var.cluster_arn
+  vpc_id                 = var.vpc_id
+  load_balancer_arn      = aws_lb.catalogue_api.arn
+  deployment_service_env = var.environment_name
 }
 
 

@@ -3,9 +3,9 @@ data "aws_vpc" "vpc" {
 }
 
 resource "aws_security_group" "lb_ingress" {
-  name = "${var.environment_name}-catalogue_api-service_lb_ingress"
+  name        = "${var.environment_name}-catalogue_api-service_lb_ingress"
   description = "Allow traffic between services and the NLB"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 0

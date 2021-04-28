@@ -21,13 +21,13 @@ variable "elastic_cloud_vpce_sg_id" {
 variable "desired_task_counts" {
   type = object({
     search_api = number,
-    items_api = number
+    items_api  = number
   })
 }
 
 variable "container_images" {
   type = object({
     search_api = string,
-    items_api = string
+    items_api  = string
   })
 }

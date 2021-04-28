@@ -40,8 +40,8 @@ data "terraform_remote_state" "catalogue_api_shared_old" {
   config = {
     role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
 
-    bucket         = "wellcomecollection-catalogue-infra-delta"
-    key            = "terraform/catalogue/api/shared.tfstate"
-    region         = "eu-west-1"
+    bucket = "wellcomecollection-catalogue-infra-delta"
+    key    = "terraform/catalogue/api/shared.tfstate"
+    region = "eu-west-1"
   }
 }
