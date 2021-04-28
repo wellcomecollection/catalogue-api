@@ -29,7 +29,8 @@ trait HttpFixtures extends Akka with ScalaFutures with Matchers {
       }
     }
 
-  def whenGetRequestReady[R](path: String)(testWith: TestWith[HttpResponse, R]): R = {
+  def whenGetRequestReady[R](path: String)(
+    testWith: TestWith[HttpResponse, R]): R = {
     val request = HttpRequest(
       method = GET,
       uri = s"$externalBaseURL$path"

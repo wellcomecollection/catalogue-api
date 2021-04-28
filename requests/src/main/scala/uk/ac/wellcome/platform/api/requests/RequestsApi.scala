@@ -5,8 +5,15 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
-import uk.ac.wellcome.platform.api.common.models.{CatalogueItemIdentifier, StacksUserIdentifier}
-import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, StacksService}
+import uk.ac.wellcome.platform.api.common.models.{
+  CatalogueItemIdentifier,
+  StacksUserIdentifier
+}
+import uk.ac.wellcome.platform.api.common.services.{
+  HoldAccepted,
+  HoldRejected,
+  StacksService
+}
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 
 import scala.concurrent.ExecutionContext
