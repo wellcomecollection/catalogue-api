@@ -1,3 +1,3 @@
 resource "aws_ecs_cluster" "catalogue_api" {
-  name = "catalogue-api-20210426"
+  name = "catalogue-api-2021-04-26"
 }
