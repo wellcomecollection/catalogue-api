@@ -37,3 +37,30 @@ def get_works(snapshot_filename=None):
         yield json.loads(line)
 
 
+def get_items(snapshot_filename=None):
+    for work in get_works(snapshot_filename):
+        for item in work["items"]:
+            yield work["id"], item
+
+
+def get_locations(snapshot_filename=None):
+    for work_id, item in get_items(snapshot_filename):
+        for loc in item["locations"]:
+            yield work_id, item.get("id"), loc
+
+
+def get_source_identifier_str(work):
+    source_identifier = work["identifiers"][0]
+
+    return f"{source_identifier['identifierType']['id']}/{source_identifier['value']}"
+
+
+def get_source_identifier_from_id(work_id):
+    import httpx
+
+    resp = httpx.get(
+        f"https://api.wellcomecollection.org/catalogue/v2/works/{work_id}",
+        params={"include": "identifiers"}
+    )
+
+    return get_source_identifier_str(resp.json())
