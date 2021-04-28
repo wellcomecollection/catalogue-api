@@ -45,7 +45,7 @@ module "items_api" {
   service_name            = "${var.environment_name}-items-api"
   deployment_service_name = "items-api"
 
-  container_port              = 9000
+  container_port              = 9001
   container_image             = var.container_images.items_api
   desired_task_count          = var.desired_task_counts.items_api
   load_balancer_listener_port = local.items_lb_port
@@ -70,5 +70,4 @@ module "items_api" {
   load_balancer_arn      = aws_lb.catalogue_api.arn
   deployment_service_env = var.environment_name
 }
-
 
