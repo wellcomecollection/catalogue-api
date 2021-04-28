@@ -5,6 +5,11 @@ locals {
     aws_security_group.interservice.id,
     var.elastic_cloud_vpce_sg_id
   ]
+
+  container_ports = {
+    search = 8888
+    items  = 9999
+  }
 }
 
 module "search_api" {
@@ -12,13 +17,14 @@ module "search_api" {
   service_name            = "${var.environment_name}-search-api"
   deployment_service_name = "search-api"
 
-  container_port              = 8888
-  container_image             = var.container_images.search_api
-  desired_task_count          = var.desired_task_counts.search_api
+  container_port              = local.container_ports.search
+  container_image             = var.container_images.search
+  desired_task_count          = var.desired_task_counts.search
   load_balancer_listener_port = local.search_lb_port
   security_group_ids          = local.ecs_security_groups
 
   environment = {
+    app_port         = local.container_ports.search
     api_host         = local.external_hostname
     apm_service_name = "search-api"
     apm_environment  = var.environment_name
@@ -45,13 +51,14 @@ module "items_api" {
   service_name            = "${var.environment_name}-items-api"
   deployment_service_name = "items-api"
 
-  container_port              = 9001
-  container_image             = var.container_images.items_api
-  desired_task_count          = var.desired_task_counts.items_api
+  container_port              = local.container_ports.items
+  container_image             = var.container_images.items
+  desired_task_count          = var.desired_task_counts.items
   load_balancer_listener_port = local.items_lb_port
   security_group_ids          = local.ecs_security_groups
 
   environment = {
+    app_port           = local.container_ports.items
     app_base_url       = "https://${local.external_hostname}/stacks/v1/items"
     context_url        = "https://${local.external_hostname}/stacks/v1/context.json"
     catalogue_base_url = "https://${local.external_hostname}/catalogue/v2"

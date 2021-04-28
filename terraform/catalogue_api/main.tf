@@ -3,12 +3,12 @@ module "catalogue_api_prod" {
 
   environment_name = "prod"
   container_images = {
-    search_api = "${local.search_api_repository}:env.prod"
-    items_api  = "${local.items_api_repository}:env.prod"
+    search = "${local.search_repository}:env.prod"
+    items  = "${local.items_repository}:env.prod"
   }
   desired_task_counts = {
-    search_api = 3
-    items_api  = 3
+    search = 3
+    items  = 3
   }
 
   vpc_id                   = local.vpc_id
@@ -26,12 +26,12 @@ module "catalogue_api_stage" {
 
   environment_name = "stage"
   container_images = {
-    search_api = "${local.search_api_repository}:env.stage"
-    items_api  = "${local.items_api_repository}:env.stage"
+    search = "${local.search_repository}:env.stage"
+    items  = "${local.items_repository}:env.stage"
   }
   desired_task_counts = {
-    search_api = 1
-    items_api  = 1
+    search = 1
+    items  = 1
   }
 
   vpc_id                   = local.vpc_id
