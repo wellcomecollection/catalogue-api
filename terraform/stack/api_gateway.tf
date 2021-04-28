@@ -7,6 +7,11 @@ resource "aws_apigatewayv2_deployment" "default" {
   api_id = aws_apigatewayv2_api.catalogue.id
 
   triggers = {
+    // This sometimes causes a deploy to occur before resources have been updated
+    // This is mentioned in the docs but it's unclear to me how to resolve it;
+    // since we don't expect the gateway config to change often it's been left as-is
+    // with the proviso that sometimes a manual deploy from the console is necessary
+    // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_deployment#redeployment-triggers
     redeployment = filesha1("${path.module}/api_gateway.tf")
   }
 
