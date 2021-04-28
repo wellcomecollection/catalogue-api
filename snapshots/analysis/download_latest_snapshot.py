@@ -1,4 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""
+Download the latest snapshot from data.wellcomecollection.org.
+"""
 
 import datetime
 import os
