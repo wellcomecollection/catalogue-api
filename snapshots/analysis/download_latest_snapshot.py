@@ -39,8 +39,8 @@ def download_from_url(*, url, filename):
     os.rename(tmp_path, filename)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     download_from_url(
         url="https://data.wellcomecollection.org/catalogue/v2/works.json.gz",
-        filename=f"works-{datetime.date.today()}.json.gz"
+        filename=f"works-{datetime.date.today()}.json.gz",
     )

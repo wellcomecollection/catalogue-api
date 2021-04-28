@@ -11,7 +11,7 @@ import sys
 from utils import get_locations
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         filename = sys.argv[1]
     except IndexError:
@@ -28,11 +28,15 @@ if __name__ == '__main__':
         )
         writer.writeheader()
 
-        for shelfmark, ids in sorted(tally.items(), key=lambda kv: len(kv[1]), reverse=True):
-            writer.writerow({
-                "shelfmark": shelfmark,
-                "count": len(ids),
-                "example_work_id": sorted(ids)[0]
-            })
+        for shelfmark, ids in sorted(
+            tally.items(), key=lambda kv: len(kv[1]), reverse=True
+        ):
+            writer.writerow(
+                {
+                    "shelfmark": shelfmark,
+                    "count": len(ids),
+                    "example_work_id": sorted(ids)[0],
+                }
+            )
 
     print("shelfmark_tally.csv")

@@ -39,9 +39,7 @@ def trim_snapshot(*, snapshot_filename, fields):
         with gzip.open(tmp_path, "wb") as outfile:
             for work in tqdm.tqdm(get_works(snapshot_filename)):
                 trimmed_work = {
-                    key: value
-                    for key, value in work.items()
-                    if key in fields
+                    key: value for key, value in work.items() if key in fields
                 }
 
                 # Compact JSON representation
@@ -71,9 +69,12 @@ def main(filename, fields):
 
     saving = abs(1 - _size(trimmed_snapshot) / _size(original_snapshot))
 
-    print("Trimming complete; the trimmed snapshot is %.1f%% smaller" % (saving * 100), file=sys.stderr)
+    print(
+        "Trimming complete; the trimmed snapshot is %.1f%% smaller" % (saving * 100),
+        file=sys.stderr,
+    )
     print(trimmed_snapshot)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -6,11 +6,13 @@ import re
 
 def get_latest_snapshot_filename():
     try:
-        return max([
-            f
-            for f in os.listdir()
-            if re.match(r"works-\d{4}-\d{2}-\d{2}\.json\.gz", f)
-        ])
+        return max(
+            [
+                f
+                for f in os.listdir()
+                if re.match(r"works-\d{4}-\d{2}-\d{2}\.json\.gz", f)
+            ]
+        )
     except ValueError:  # max() arg is an empty sequence
         raise RuntimeError("No local snapshots found!")
 
@@ -60,7 +62,7 @@ def get_source_identifier_from_id(work_id):
 
     resp = httpx.get(
         f"https://api.wellcomecollection.org/catalogue/v2/works/{work_id}",
-        params={"include": "identifiers"}
+        params={"include": "identifiers"},
     )
 
     return get_source_identifier_str(resp.json())
