@@ -48,7 +48,7 @@ object Main extends WellcomeTypesafeApp {
           s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
         contextSuffix = config
           .getStringOption("api.context.suffix")
-          .getOrElse("context.json"),
+          .getOrElse("context.json")
       )
 
     val queryConfig =
@@ -66,7 +66,11 @@ object Main extends WellcomeTypesafeApp {
 
     () =>
       Http()
-        .bindAndHandle(router.routes, "0.0.0.0", 8888)
+        .bindAndHandle(
+          router.routes,
+          config.getStringOption("http.host").getOrElse("0.0.0.0"),
+          config.getIntOption("http.port").getOrElse(8888)
+        )
         .flatMap(_ => Promise[Done].future)
   }
 }
