@@ -9,7 +9,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import uk.ac.wellcome.models.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
@@ -20,22 +24,6 @@ class DisplayWorkTest
     with ProductionEventGenerators
     with ImageGenerators
     with ScalaCheckPropertyChecks {
-
-  // We use this for the scalacheck of the java.time.Instant type
-  // We could just import the library, but I might wait until we need more
-  // Taken from here:
-  // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
-  implicit val arbInstant: Arbitrary[Instant] =
-    Arbitrary {
-      for {
-        millis <- chooseNum(
-          Instant.MIN.getEpochSecond,
-          Instant.MAX.getEpochSecond)
-        nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
-      } yield {
-        Instant.ofEpochMilli(millis).plusNanos(nanos)
-      }
-    }
 
   it("parses a Work without any items") {
     val work = indexedWork().items(Nil)
@@ -216,6 +204,31 @@ class DisplayWorkTest
     displayWork.production.get shouldBe List(
       DisplayProductionEvent(productionEvent, includesIdentifiers = false))
   }
+
+  // We use this for the scalacheck of the java.time.Instant type
+  // We could just import the library, but I might wait until we need more
+  // Taken from here:
+  // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
+  implicit val arbInstant: Arbitrary[Instant] =
+    Arbitrary {
+      for {
+        millis <- chooseNum(
+          Instant.MIN.getEpochSecond,
+          Instant.MAX.getEpochSecond)
+        nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
+      } yield {
+        Instant.ofEpochMilli(millis).plusNanos(nanos)
+      }
+    }
+
+  // We have a rule that says SourceIdentifier isn't allowed to contain whitespace,
+  // but sometimes scalacheck will happen to generate such a string, which breaks
+  // tests in CI.  This generator is meant to create SourceIdentifiers that
+  // don't contain whitespace.
+  implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
+    Arbitrary {
+      createSourceIdentifier
+    }
 
   implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
     Arbitrary {
