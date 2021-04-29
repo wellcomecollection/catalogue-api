@@ -61,7 +61,7 @@ class AkkaCatalogueSource(
   // See https://developers.wellcomecollection.org/catalogue/v2/works/getwork
   def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
     get[WorkStub](
-      path = Path(s"works/${canonicalId}"),
+      path = Path(s"works/$canonicalId"),
       params = Map(
         ("include", "items,identifiers")
       )
