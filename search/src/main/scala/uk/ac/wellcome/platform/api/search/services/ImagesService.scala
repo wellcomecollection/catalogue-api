@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.{ElasticError, Hit, Index}
 import com.sksamuel.elastic4s.circe._
 import io.circe.Decoder
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.platform.api.search.Tracing
+import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.image.{Image, ImageState}

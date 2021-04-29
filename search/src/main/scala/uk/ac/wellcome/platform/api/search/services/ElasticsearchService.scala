@@ -12,7 +12,7 @@ import com.sksamuel.elastic4s.requests.searches.{
 }
 import com.sksamuel.elastic4s.{ElasticClient, ElasticError, Index}
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.search.Tracing
+import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
