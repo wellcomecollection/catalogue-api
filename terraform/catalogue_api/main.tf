@@ -1,7 +1,8 @@
 module "catalogue_api_prod" {
   source = "../stack"
 
-  environment_name = "prod"
+  environment_name  = "prod"
+  external_hostname = "api.wellcomecollection.org"
   container_images = {
     search = "${local.search_repository}:env.prod"
     items  = "${local.items_repository}:env.prod"
@@ -24,7 +25,8 @@ module "catalogue_api_prod" {
 module "catalogue_api_stage" {
   source = "../stack"
 
-  environment_name = "stage"
+  environment_name  = "stage"
+  external_hostname = "api-stage.wellcomecollection.org"
   container_images = {
     search = "${local.search_repository}:env.stage"
     items  = "${local.items_repository}:env.stage"

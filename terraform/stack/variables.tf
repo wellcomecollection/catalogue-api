@@ -10,6 +10,10 @@ variable "vpc_id" {
   type = string
 }
 
+variable "external_hostname" {
+  type = string
+}
+
 variable "private_subnets" {
   type = list(string)
 }
