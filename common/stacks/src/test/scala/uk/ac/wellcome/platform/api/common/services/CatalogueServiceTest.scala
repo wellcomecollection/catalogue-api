@@ -29,13 +29,11 @@ class CatalogueServiceTest
         Future.failed(new Throwable("BOOM!"))
 
       override def getSearchStub(
-                                  canonicalId: CanonicalId
-                                ): Future[SearchStub] =
+        canonicalId: CanonicalId
+      ): Future[SearchStub] =
         Future.failed(new Throwable("BOOM!"))
 
     }
-
-
 
     it("finds an item on a work") {
       val item = ItemStub(
@@ -179,8 +177,8 @@ class CatalogueServiceTest
         )
 
       override def getSearchStub(
-                                  canonicalId: CanonicalId
-                                ): Future[SearchStub] =
+        canonicalId: CanonicalId
+      ): Future[SearchStub] =
         Future.successful(
           SearchStub(totalResults = works.size, results = works.toList)
         )
@@ -334,8 +332,8 @@ class CatalogueServiceTest
         Future.failed(searchException)
 
       override def getSearchStub(
-                                  canonicalId: CanonicalId
-                                ): Future[SearchStub] =
+        canonicalId: CanonicalId
+      ): Future[SearchStub] =
         Future.failed(searchException)
     }
 

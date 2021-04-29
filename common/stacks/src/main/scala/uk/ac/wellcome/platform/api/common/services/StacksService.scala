@@ -19,9 +19,9 @@ class StacksService(
 ) extends Logging {
 
   def requestHoldOnItem(
-                         userIdentifier: StacksUserIdentifier,
-                         itemId: CanonicalId,
-                         neededBy: Option[Instant]
+    userIdentifier: StacksUserIdentifier,
+    itemId: CanonicalId,
+    neededBy: Option[Instant]
   ): Future[HoldResponse] =
     for {
       stacksItem <- catalogueService.getStacksItemFromItemId(itemId)
@@ -42,7 +42,7 @@ class StacksService(
     } yield response
 
   def getStacksWork(
-                     workId: CanonicalId
+    workId: CanonicalId
   ): Future[StacksWork] =
     for {
       stacksItemIds <- catalogueService.getAllStacksItemsFromWork(workId)

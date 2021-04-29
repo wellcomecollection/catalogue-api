@@ -6,7 +6,11 @@ import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
-import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, StacksService}
+import uk.ac.wellcome.platform.api.common.services.{
+  HoldAccepted,
+  HoldRejected,
+  StacksService
+}
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 import weco.catalogue.internal_model.identifiers.CanonicalId
 

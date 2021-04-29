@@ -2,7 +2,11 @@ package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
 
-import com.github.tomakehurst.wiremock.client.WireMock.{equalToJson, postRequestedFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{
+  equalToJson,
+  postRequestedFor,
+  urlEqualTo
+}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

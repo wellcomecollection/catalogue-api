@@ -50,7 +50,7 @@ class CatalogueService(
     }
 
   def getAllStacksItemsFromWork(
-                         workId: CanonicalId
+    workId: CanonicalId
   ): Future[List[StacksItemIdentifier]] =
     for {
       workStub <- catalogueSource.getWorkStub(workId)
@@ -88,8 +88,8 @@ class CatalogueService(
       }
 
   def getStacksItemFromItemId(
-                     itemId: CanonicalId
-                   ): Future[Option[StacksItemIdentifier]] =
+    itemId: CanonicalId
+  ): Future[Option[StacksItemIdentifier]] =
     for {
       searchStub <- catalogueSource.getSearchStub(itemId)
 
