@@ -7,6 +7,7 @@ import cats.instances.list._
 import cats.syntax.traverse._
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -19,11 +20,11 @@ class StacksService(
 
   def requestHoldOnItem(
     userIdentifier: StacksUserIdentifier,
-    catalogueItemId: CatalogueItemIdentifier,
+    itemId: CanonicalId,
     neededBy: Option[Instant]
   ): Future[HoldResponse] =
     for {
-      stacksItem <- catalogueService.getStacksItem(catalogueItemId)
+      stacksItem <- catalogueService.getStacksItemFromItemId(itemId)
 
       response <- stacksItem match {
         case Some(id) =>
@@ -34,17 +35,17 @@ class StacksService(
           )
         case None =>
           Future.failed(
-            new Exception(f"Could not locate item $catalogueItemId!")
+            new Exception(f"Could not locate item $itemId!")
           )
       }
 
     } yield response
 
   def getStacksWork(
-    workId: StacksWorkIdentifier
+    workId: CanonicalId
   ): Future[StacksWork] =
     for {
-      stacksItemIds <- catalogueService.getAllStacksItems(workId)
+      stacksItemIds <- catalogueService.getAllStacksItemsFromWork(workId)
 
       itemStatuses <- stacksItemIds
         .map(_.sierraId)

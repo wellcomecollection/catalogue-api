@@ -4,17 +4,16 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import uk.ac.wellcome.platform.api.common.http.AkkaClientGet
-import uk.ac.wellcome.platform.api.common.models.{
-  Identifier,
-  StacksWorkIdentifier
-}
+import uk.ac.wellcome.platform.api.common.models.Identifier
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.Future
 
 trait CatalogueSource {
   import CatalogueSource._
 
-  def getWorkStub(id: StacksWorkIdentifier): Future[WorkStub]
+  def getWorkStub(id: CanonicalId): Future[WorkStub]
+  def getSearchStub(canonicalId: CanonicalId): Future[SearchStub]
   def getSearchStub(identifier: Identifier[_]): Future[SearchStub]
 }
 
@@ -60,9 +59,9 @@ class AkkaCatalogueSource(
   import io.circe.generic.auto._
 
   // See https://developers.wellcomecollection.org/catalogue/v2/works/getwork
-  def getWorkStub(id: StacksWorkIdentifier): Future[WorkStub] =
+  def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
     get[WorkStub](
-      path = Path(s"works/${id.value}"),
+      path = Path(s"works/$canonicalId"),
       params = Map(
         ("include", "items,identifiers")
       )
@@ -78,6 +77,19 @@ class AkkaCatalogueSource(
       params = Map(
         ("include", "items,identifiers"),
         ("query", identifier.value.toString)
+      )
+    ) map {
+      case SuccessResponse(Some(workStub)) => workStub
+      case _                               => throw new Exception("Failed to make catalogue search!")
+    }
+
+  // See https://developers.wellcomecollection.org/catalogue/v2/works/getworks
+  def getSearchStub(canonicalId: CanonicalId): Future[SearchStub] =
+    get[SearchStub](
+      path = Path("works"),
+      params = Map(
+        ("include", "items,identifiers"),
+        ("query", canonicalId.toString)
       )
     ) map {
       case SuccessResponse(Some(workStub)) => workStub

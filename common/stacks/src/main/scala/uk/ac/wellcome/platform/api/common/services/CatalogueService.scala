@@ -2,6 +2,7 @@ package uk.ac.wellcome.platform.api.common.services
 
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
@@ -40,16 +41,16 @@ class CatalogueService(
     itemStubs collect {
       case ItemStub(Some(id), Some(identifiers)) =>
         (
-          CatalogueItemIdentifier(id),
+          CanonicalId(id),
           getSierraItemIdentifier(identifiers)
         )
     } collect {
-      case (catalogueId, Some(sierraId)) =>
-        StacksItemIdentifier(catalogueId = catalogueId, sierraId = sierraId)
+      case (canonicalId, Some(sierraId)) =>
+        StacksItemIdentifier(canonicalId, sierraId)
     }
 
-  def getAllStacksItems(
-    workId: StacksWorkIdentifier
+  def getAllStacksItemsFromWork(
+    workId: CanonicalId
   ): Future[List[StacksItemIdentifier]] =
     for {
       workStub <- catalogueSource.getWorkStub(workId)
@@ -68,8 +69,6 @@ class CatalogueService(
 
       // Ensure we are only matching items that match the passed id!
       filteredItems = identifier match {
-        case CatalogueItemIdentifier(id) =>
-          items.filter(_.catalogueId.value == id)
         case SierraItemIdentifier(id) =>
           items.filter(_.sierraId.value == id)
         case _ => items
@@ -85,6 +84,32 @@ class CatalogueService(
         case _ =>
           throw new Exception(
             s"Found multiple matching items for $identifier in: $distinctFilteredItems"
+          )
+      }
+
+  def getStacksItemFromItemId(
+    itemId: CanonicalId
+  ): Future[Option[StacksItemIdentifier]] =
+    for {
+      searchStub <- catalogueSource.getSearchStub(itemId)
+
+      items = searchStub.results
+        .map(_.items)
+        .flatMap(getStacksItems)
+
+      // Ensure we are only matching items that match the passed id!
+      filteredItems = items.filter(_.canonicalId == itemId)
+
+      // Items can appear on multiple works in a search result
+      distinctFilteredItems = filteredItems.distinct
+
+    } yield
+      distinctFilteredItems match {
+        case List(item) => Some(item)
+        case Nil        => None
+        case _ =>
+          throw new Exception(
+            s"Found multiple matching items for $itemId in: $distinctFilteredItems"
           )
       }
 }

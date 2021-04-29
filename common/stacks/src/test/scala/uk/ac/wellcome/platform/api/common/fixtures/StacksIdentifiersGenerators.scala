@@ -1,23 +1,18 @@
 package uk.ac.wellcome.platform.api.common.fixtures
 
 import uk.ac.wellcome.platform.api.common.models.{
-  CatalogueItemIdentifier,
   SierraItemIdentifier,
-  StacksItemIdentifier,
-  StacksWorkIdentifier
+  StacksItemIdentifier
 }
+
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
 
 import scala.util.Random
 
-trait IdentifierGenerators {
-  private def randomAlphanumeric: String =
-    Random.nextString(8)
+trait StacksIdentifiersGenerators extends IdentifiersGenerators {
 
   def maybe[T](t: T): Option[T] =
     if (Random.nextBoolean()) Some(t) else None
-
-  def createStacksWorkIdentifier: StacksWorkIdentifier =
-    StacksWorkIdentifier(s"work-$randomAlphanumeric")
 
   // Sierra identifiers are 7-digit numbers
   def createSierraItemIdentifier: SierraItemIdentifier =
@@ -27,7 +22,7 @@ trait IdentifierGenerators {
 
   def createStacksItemIdentifier: StacksItemIdentifier =
     StacksItemIdentifier(
-      catalogueId = CatalogueItemIdentifier(s"catalogue-$randomAlphanumeric"),
+      canonicalId = createCanonicalId,
       sierraId = createSierraItemIdentifier
     )
 }
