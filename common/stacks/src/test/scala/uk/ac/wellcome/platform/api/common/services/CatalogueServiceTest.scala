@@ -50,7 +50,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createCanonicalId)) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
         _ shouldBe List(
           StacksItemIdentifier(
             canonicalId = CanonicalId(item.id.get),
@@ -78,7 +78,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createCanonicalId)) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
         _ shouldBe List(
           StacksItemIdentifier(
             canonicalId = CanonicalId(item1.id.get),
@@ -113,7 +113,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createCanonicalId)) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
         _ shouldBe empty
       }
     }
@@ -136,7 +136,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
         err =>
           err shouldBe a[Exception]
           err.getMessage should startWith(
@@ -158,7 +158,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
         err =>
           err shouldBe a[Exception]
           err.getMessage shouldBe "Unable to convert Not a Number to Long!"
@@ -206,7 +206,7 @@ class CatalogueServiceTest
       val catalogueSource = new MockCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getStacksItem(CanonicalId(item.id.get))) {
+      whenReady(service.getStacksItemFromItemId(CanonicalId(item.id.get))) {
         _ shouldBe Some(
           StacksItemIdentifier(
             canonicalId = CanonicalId(item.id.get),
@@ -234,7 +234,7 @@ class CatalogueServiceTest
       val catalogueSource = new MockCatalogueSource(work1, work2)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getStacksItem(CanonicalId(item1.id.get))) {
+      whenReady(service.getStacksItemFromItemId(CanonicalId(item1.id.get))) {
         _ shouldBe Some(
           StacksItemIdentifier(
             canonicalId = CanonicalId(item1.id.get),
@@ -343,7 +343,7 @@ class CatalogueServiceTest
     val service = new CatalogueService(catalogueSource)
 
     it("inside getAllStacksItems") {
-      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
+      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
         _ shouldBe getException
       }
     }

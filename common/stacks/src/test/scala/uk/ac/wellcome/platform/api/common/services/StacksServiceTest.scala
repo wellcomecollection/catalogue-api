@@ -31,7 +31,7 @@ class StacksServiceTest
             whenReady(
               stacksService.requestHoldOnItem(
                 userIdentifier = stacksUserIdentifier,
-                canonicalId = canonicalId,
+                itemId = canonicalId,
                 neededBy = neededBy
               )
             ) { response =>
@@ -67,7 +67,7 @@ class StacksServiceTest
             whenReady(
               stacksService.requestHoldOnItem(
                 userIdentifier = stacksUserIdentifier,
-                canonicalId = canonicalId,
+                itemId = canonicalId,
                 neededBy = None
               )
             ) { response =>

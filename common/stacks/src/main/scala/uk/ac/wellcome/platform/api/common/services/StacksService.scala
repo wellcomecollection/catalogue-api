@@ -20,11 +20,11 @@ class StacksService(
 
   def requestHoldOnItem(
                          userIdentifier: StacksUserIdentifier,
-                         canonicalId: CanonicalId,
+                         itemId: CanonicalId,
                          neededBy: Option[Instant]
   ): Future[HoldResponse] =
     for {
-      stacksItem <- catalogueService.getStacksItem(canonicalId)
+      stacksItem <- catalogueService.getStacksItemFromItemId(itemId)
 
       response <- stacksItem match {
         case Some(id) =>
@@ -35,17 +35,17 @@ class StacksService(
           )
         case None =>
           Future.failed(
-            new Exception(f"Could not locate item $canonicalId!")
+            new Exception(f"Could not locate item $itemId!")
           )
       }
 
     } yield response
 
   def getStacksWork(
-    canonicalId: CanonicalId
+                     workId: CanonicalId
   ): Future[StacksWork] =
     for {
-      stacksItemIds <- catalogueService.getAllStacksItems(canonicalId)
+      stacksItemIds <- catalogueService.getAllStacksItemsFromWork(workId)
 
       itemStatuses <- stacksItemIds
         .map(_.sierraId)
@@ -55,7 +55,7 @@ class StacksService(
         case (itemId, status) => StacksItem(itemId, status)
       }
 
-    } yield StacksWork(canonicalId, stacksItemsWithStatuses)
+    } yield StacksWork(workId, stacksItemsWithStatuses)
 
   def getStacksUserHolds(
     userId: StacksUserIdentifier

@@ -37,7 +37,7 @@ trait RequestsApi extends FailFastCirceSupport {
 
             val result = stacksWorkService.requestHoldOnItem(
               userIdentifier = userIdentifier,
-              canonicalId = canonicalId,
+              itemId = canonicalId,
               neededBy = None
             )
 
