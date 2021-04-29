@@ -11,6 +11,7 @@ import uk.ac.wellcome.platform.api.search.models.{
   CheckModel,
   QueryConfig
 }
+import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder

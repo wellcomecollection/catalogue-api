@@ -19,7 +19,7 @@ import uk.ac.wellcome.api.display.models.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
-import uk.ac.wellcome.platform.api.search.Tracing
+import uk.ac.wellcome.Tracing
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.models.ContextResponse
 
