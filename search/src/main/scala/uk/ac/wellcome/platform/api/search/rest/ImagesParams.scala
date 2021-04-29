@@ -1,12 +1,8 @@
 package uk.ac.wellcome.platform.api.search.rest
 
 import io.circe.Decoder
-import uk.ac.wellcome.api.display.models.{
-  ImageAggregationRequest,
-  ImageInclude,
-  MultipleImagesIncludes,
-  SingleImageIncludes
-}
+import uk.ac.wellcome.api.display.models.{ImageAggregationRequest, ImageInclude, MultipleImagesIncludes, SingleImageIncludes}
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 
 case class SingleImageParams(

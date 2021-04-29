@@ -4,17 +4,16 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
-import uk.ac.wellcome.platform.api.common.models.{StacksWork}
+import uk.ac.wellcome.platform.api.common.models.StacksWork
 import uk.ac.wellcome.platform.api.common.services.StacksService
+import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
-trait ItemsApi extends FailFastCirceSupport with Tracing {
-
-  import akka.http.scaladsl.server.Directives._
-  import io.circe.generic.auto._
+trait ItemsApi extends CustomDirectives
+  with Tracing
+  with FailFastCirceSupport  {
 
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
@@ -23,15 +22,19 @@ trait ItemsApi extends FailFastCirceSupport with Tracing {
     pathPrefix("works") {
       path(Segment) { id: String =>
         get {
+          withFuture {
+            transactFuture("GET /images/{imageId}") {
+              val result: Future[StacksWork] =
+                stacksWorkService.getStacksWork(
+                  CanonicalId(id)
+                )
 
-          val result: Future[StacksWork] =
-            stacksWorkService.getStacksWork(
-              CanonicalId(id)
-            )
-
-          onComplete(result) {
-            case Success(value) => complete(DisplayStacksWork(value))
-            case Failure(err)   => failWith(err)
+              result
+                .map(value => complete(DisplayStacksWork(value)))
+                .recoverWith {
+                  case err => Future.successful(failWith(err))
+                }
+            }
           }
         }
       }

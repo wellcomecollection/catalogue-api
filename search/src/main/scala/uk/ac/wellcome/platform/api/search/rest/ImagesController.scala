@@ -30,6 +30,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
     extends CustomDirectives
     with Tracing
     with FailFastCirceSupport {
+
   import DisplayResultList.encoder
   import ContextResponse.encoder
 
