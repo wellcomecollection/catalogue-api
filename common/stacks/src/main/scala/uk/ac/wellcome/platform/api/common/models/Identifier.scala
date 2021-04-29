@@ -1,5 +1,7 @@
 package uk.ac.wellcome.platform.api.common.models
 
+import weco.catalogue.internal_model.identifiers.CanonicalId
+
 import scala.util.{Failure, Success, Try}
 
 sealed trait Identifier[T] {
@@ -8,12 +10,10 @@ sealed trait Identifier[T] {
   override def toString: String = value.toString
 }
 
-case class StacksWorkIdentifier(value: String) extends Identifier[String]
 case class StacksUserIdentifier(value: String) extends Identifier[String]
 
 sealed trait ItemIdentifier[T] extends Identifier[T]
 
-case class CatalogueItemIdentifier(value: String) extends ItemIdentifier[String]
 case class SierraItemIdentifier(value: Long) extends ItemIdentifier[Long]
 
 object SierraItemIdentifier {
@@ -30,11 +30,11 @@ object SierraItemIdentifier {
 }
 
 case class StacksItemIdentifier(
-  catalogueId: CatalogueItemIdentifier,
-  sierraId: SierraItemIdentifier
+                                 canonicalId: CanonicalId,
+                                 sierraId: SierraItemIdentifier
 ) extends ItemIdentifier[String] {
-  override val value: String = catalogueId.value
+  override val value: String = canonicalId.toString
 
   override def toString: String =
-    s"<StacksItemIdentifier catalogue=$catalogueId, sierra=$sierraId>"
+    s"<StacksItemIdentifier catalogue=$canonicalId, sierra=$sierraId>"
 }

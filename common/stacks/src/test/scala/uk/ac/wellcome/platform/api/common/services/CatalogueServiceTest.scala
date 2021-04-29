@@ -7,6 +7,7 @@ import uk.ac.wellcome.platform.api.common.fixtures.CatalogueStubGenerators
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource._
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -19,14 +20,22 @@ class CatalogueServiceTest
 
   describe("getAllStacksItems") {
     class OneWorkCatalogueSource(work: WorkStub) extends CatalogueSource {
-      override def getWorkStub(id: StacksWorkIdentifier): Future[WorkStub] =
+      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
         Future.successful(work)
 
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
         Future.failed(new Throwable("BOOM!"))
+
+      override def getSearchStub(
+                                  canonicalId: CanonicalId
+                                ): Future[SearchStub] =
+        Future.failed(new Throwable("BOOM!"))
+
     }
+
+
 
     it("finds an item on a work") {
       val item = ItemStub(
@@ -41,10 +50,10 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier)) {
+      whenReady(service.getAllStacksItems(createCanonicalId)) {
         _ shouldBe List(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item.id.get),
+            canonicalId = CanonicalId(item.id.get),
             sierraId = SierraItemIdentifier(1234567)
           )
         )
@@ -69,14 +78,14 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier)) {
+      whenReady(service.getAllStacksItems(createCanonicalId)) {
         _ shouldBe List(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item1.id.get),
+            canonicalId = CanonicalId(item1.id.get),
             sierraId = SierraItemIdentifier(1234567)
           ),
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item2.id.get),
+            canonicalId = CanonicalId(item2.id.get),
             sierraId = SierraItemIdentifier(1111111)
           )
         )
@@ -104,7 +113,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier)) {
+      whenReady(service.getAllStacksItems(createCanonicalId)) {
         _ shouldBe empty
       }
     }
@@ -127,7 +136,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier).failed) {
+      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
         err =>
           err shouldBe a[Exception]
           err.getMessage should startWith(
@@ -149,7 +158,7 @@ class CatalogueServiceTest
       val catalogueSource = new OneWorkCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier).failed) {
+      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
         err =>
           err shouldBe a[Exception]
           err.getMessage shouldBe "Unable to convert Not a Number to Long!"
@@ -159,12 +168,19 @@ class CatalogueServiceTest
 
   describe("getStacksItem") {
     class MockCatalogueSource(works: WorkStub*) extends CatalogueSource {
-      override def getWorkStub(id: StacksWorkIdentifier): Future[WorkStub] =
+      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
         Future.failed(new Throwable("BOOM!"))
 
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
+        Future.successful(
+          SearchStub(totalResults = works.size, results = works.toList)
+        )
+
+      override def getSearchStub(
+                                  canonicalId: CanonicalId
+                                ): Future[SearchStub] =
         Future.successful(
           SearchStub(totalResults = works.size, results = works.toList)
         )
@@ -190,10 +206,10 @@ class CatalogueServiceTest
       val catalogueSource = new MockCatalogueSource(work)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getStacksItem(CatalogueItemIdentifier(item.id.get))) {
+      whenReady(service.getStacksItem(CanonicalId(item.id.get))) {
         _ shouldBe Some(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item.id.get),
+            canonicalId = CanonicalId(item.id.get),
             sierraId = SierraItemIdentifier(1234567)
           )
         )
@@ -218,10 +234,10 @@ class CatalogueServiceTest
       val catalogueSource = new MockCatalogueSource(work1, work2)
       val service = new CatalogueService(catalogueSource)
 
-      whenReady(service.getStacksItem(CatalogueItemIdentifier(item1.id.get))) {
+      whenReady(service.getStacksItem(CanonicalId(item1.id.get))) {
         _ shouldBe Some(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item1.id.get),
+            canonicalId = CanonicalId(item1.id.get),
             sierraId = SierraItemIdentifier(1111111)
           )
         )
@@ -249,7 +265,7 @@ class CatalogueServiceTest
       whenReady(service.getStacksItem(SierraItemIdentifier(1111111))) {
         _ shouldBe Some(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item1.id.get),
+            canonicalId = CanonicalId(item1.id.get),
             sierraId = SierraItemIdentifier(1111111)
           )
         )
@@ -272,7 +288,7 @@ class CatalogueServiceTest
       whenReady(service.getStacksItem(SierraItemIdentifier(1111111))) {
         _ shouldBe Some(
           StacksItemIdentifier(
-            catalogueId = CatalogueItemIdentifier(item.id.get),
+            canonicalId = CanonicalId(item.id.get),
             sierraId = SierraItemIdentifier(1111111)
           )
         )
@@ -309,12 +325,17 @@ class CatalogueServiceTest
     val searchException = new Throwable("BANG!")
 
     class BrokenCatalogueSource extends CatalogueSource {
-      override def getWorkStub(id: StacksWorkIdentifier): Future[WorkStub] =
+      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
         Future.failed(getException)
 
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
+        Future.failed(searchException)
+
+      override def getSearchStub(
+                                  canonicalId: CanonicalId
+                                ): Future[SearchStub] =
         Future.failed(searchException)
     }
 
@@ -322,7 +343,7 @@ class CatalogueServiceTest
     val service = new CatalogueService(catalogueSource)
 
     it("inside getAllStacksItems") {
-      whenReady(service.getAllStacksItems(createStacksWorkIdentifier).failed) {
+      whenReady(service.getAllStacksItems(createCanonicalId).failed) {
         _ shouldBe getException
       }
     }

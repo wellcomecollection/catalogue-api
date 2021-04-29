@@ -5,16 +5,10 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
-import uk.ac.wellcome.platform.api.common.models.{
-  CatalogueItemIdentifier,
-  StacksUserIdentifier
-}
-import uk.ac.wellcome.platform.api.common.services.{
-  HoldAccepted,
-  HoldRejected,
-  StacksService
-}
+import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
+import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, StacksService}
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -38,12 +32,12 @@ trait RequestsApi extends FailFastCirceSupport {
       post {
         entity(as[ItemRequest]) {
           itemRequest: ItemRequest =>
-            val catalogueItemId =
-              CatalogueItemIdentifier(itemRequest.itemId)
+            val canonicalId =
+              CanonicalId(itemRequest.itemId)
 
             val result = stacksWorkService.requestHoldOnItem(
               userIdentifier = userIdentifier,
-              catalogueItemId = catalogueItemId,
+              canonicalId = canonicalId,
               neededBy = None
             )
 

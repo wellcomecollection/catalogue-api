@@ -4,26 +4,28 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.models.{
-  SierraItemIdentifier,
-  StacksWorkIdentifier
-}
+import uk.ac.wellcome.platform.api.common.models.{SierraItemIdentifier}
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource._
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 trait CatalogueSourceTestCases[CatalogueSourceImpl <: CatalogueSource]
     extends AnyFunSpec
     with Matchers
+    with IdentifiersGenerators
     with ScalaFutures {
   def withCatalogueSource[R](testWith: TestWith[CatalogueSourceImpl, R]): R
 
   describe("behaves as a CatalogueSource") {
     it("gets an individual work") {
       withCatalogueSource { catalogueSource =>
+        val canonicalId = CanonicalId("ayzrznsz")
+
         val future =
-          catalogueSource.getWorkStub(id = StacksWorkIdentifier("ayzrznsz"))
+          catalogueSource.getWorkStub(id = canonicalId)
 
         val expectedWork = WorkStub(
-          id = "ayzrznsz",
+          id = canonicalId.toString(),
           items = List(
             ItemStub(
               id = Some("q2knsrhh"),
@@ -56,7 +58,7 @@ trait CatalogueSourceTestCases[CatalogueSourceImpl <: CatalogueSource]
     it("handles a work without any items") {
       withCatalogueSource { catalogueSource =>
         val future =
-          catalogueSource.getWorkStub(id = StacksWorkIdentifier("a2284uhb"))
+          catalogueSource.getWorkStub(id = CanonicalId("a2284uhb"))
 
         val expectedWork = WorkStub(id = "a2284uhb", items = List.empty)
 
@@ -67,7 +69,7 @@ trait CatalogueSourceTestCases[CatalogueSourceImpl <: CatalogueSource]
     it("handles a work where an item is not identified") {
       withCatalogueSource { catalogueSource =>
         val future =
-          catalogueSource.getWorkStub(id = StacksWorkIdentifier("a227dajt"))
+          catalogueSource.getWorkStub(id = CanonicalId("a227dajt"))
 
         val expectedWork = WorkStub(
           id = "a227dajt",

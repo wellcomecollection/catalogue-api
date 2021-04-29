@@ -2,16 +2,13 @@ package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
 
-import com.github.tomakehurst.wiremock.client.WireMock.{
-  equalToJson,
-  postRequestedFor,
-  urlEqualTo
-}
+import com.github.tomakehurst.wiremock.client.WireMock.{equalToJson, postRequestedFor, urlEqualTo}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 class StacksServiceTest
     extends AnyFunSpec
@@ -26,7 +23,7 @@ class StacksServiceTest
         withStacksService {
           case (stacksService, wireMockServer) =>
             val stacksUserIdentifier = StacksUserIdentifier("1234567")
-            val catalogueItemIdentifier = CatalogueItemIdentifier("ys3ern6x")
+            val canonicalId = CanonicalId("ys3ern6x")
             val neededBy = Some(
               Instant.parse("2020-01-01T00:00:00.00Z")
             )
@@ -34,7 +31,7 @@ class StacksServiceTest
             whenReady(
               stacksService.requestHoldOnItem(
                 userIdentifier = stacksUserIdentifier,
-                catalogueItemId = catalogueItemIdentifier,
+                canonicalId = canonicalId,
                 neededBy = neededBy
               )
             ) { response =>
@@ -65,12 +62,12 @@ class StacksServiceTest
         withStacksService {
           case (stacksService, wireMockServer) =>
             val stacksUserIdentifier = StacksUserIdentifier("1234567")
-            val catalogueItemIdentifier = CatalogueItemIdentifier("ys3ern6y")
+            val canonicalId = CanonicalId("ys3ern6y")
 
             whenReady(
               stacksService.requestHoldOnItem(
                 userIdentifier = stacksUserIdentifier,
-                catalogueItemId = catalogueItemIdentifier,
+                canonicalId = canonicalId,
                 neededBy = None
               )
             ) { response =>
@@ -101,17 +98,17 @@ class StacksServiceTest
       it("gets a StacksWork") {
         withStacksService {
           case (stacksService, _) =>
-            val workId = StacksWorkIdentifier("cnkv77md")
+            val workId = CanonicalId("cnkv77md")
 
             whenReady(
               stacksService.getStacksWork(workId)
             ) { stacksWork =>
               stacksWork shouldBe StacksWork(
-                id = workId,
+                canonicalId = workId,
                 items = List(
                   StacksItem(
                     id = StacksItemIdentifier(
-                      catalogueId = CatalogueItemIdentifier("ys3ern6x"),
+                      canonicalId = CanonicalId("ys3ern6x"),
                       sierraId = SierraItemIdentifier(1601017)
                     ),
                     status = StacksItemStatus("available", "Available")
@@ -139,7 +136,7 @@ class StacksServiceTest
                 holds = List(
                   StacksHold(
                     itemId = StacksItemIdentifier(
-                      catalogueId = CatalogueItemIdentifier("n5v7b4md"),
+                      canonicalId = CanonicalId("n5v7b4md"),
                       sierraId = SierraItemIdentifier(1292185)
                     ),
                     pickup = StacksPickup(

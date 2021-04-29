@@ -7,6 +7,7 @@ import cats.instances.list._
 import cats.syntax.traverse._
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
+import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -18,12 +19,12 @@ class StacksService(
 ) extends Logging {
 
   def requestHoldOnItem(
-    userIdentifier: StacksUserIdentifier,
-    catalogueItemId: CatalogueItemIdentifier,
-    neededBy: Option[Instant]
+                         userIdentifier: StacksUserIdentifier,
+                         canonicalId: CanonicalId,
+                         neededBy: Option[Instant]
   ): Future[HoldResponse] =
     for {
-      stacksItem <- catalogueService.getStacksItem(catalogueItemId)
+      stacksItem <- catalogueService.getStacksItem(canonicalId)
 
       response <- stacksItem match {
         case Some(id) =>
@@ -34,17 +35,17 @@ class StacksService(
           )
         case None =>
           Future.failed(
-            new Exception(f"Could not locate item $catalogueItemId!")
+            new Exception(f"Could not locate item $canonicalId!")
           )
       }
 
     } yield response
 
   def getStacksWork(
-    workId: StacksWorkIdentifier
+    canonicalId: CanonicalId
   ): Future[StacksWork] =
     for {
-      stacksItemIds <- catalogueService.getAllStacksItems(workId)
+      stacksItemIds <- catalogueService.getAllStacksItems(canonicalId)
 
       itemStatuses <- stacksItemIds
         .map(_.sierraId)
@@ -54,7 +55,7 @@ class StacksService(
         case (itemId, status) => StacksItem(itemId, status)
       }
 
-    } yield StacksWork(workId, stacksItemsWithStatuses)
+    } yield StacksWork(canonicalId, stacksItemsWithStatuses)
 
   def getStacksUserHolds(
     userId: StacksUserIdentifier

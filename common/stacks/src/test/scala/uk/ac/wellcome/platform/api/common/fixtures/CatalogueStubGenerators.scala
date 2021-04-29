@@ -6,10 +6,10 @@ import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource.{
   WorkStub
 }
 
-trait CatalogueStubGenerators extends IdentifierGenerators {
+trait CatalogueStubGenerators extends StacksIdentifiersGenerators {
   def createWorkStubWith(items: List[ItemStub]): WorkStub =
     WorkStub(
-      id = createStacksWorkIdentifier.value,
+      id = createCanonicalId.toString(),
       items = items
     )
 
