@@ -4,7 +4,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.models.{SierraItemIdentifier}
+import uk.ac.wellcome.platform.api.common.models.SierraItemIdentifier
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource._
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
