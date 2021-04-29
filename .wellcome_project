@@ -7,10 +7,10 @@ catalogue_api:
   image_repositories:
     - id: search
       services:
-        - id: catalogue-api
+        - id: search-api
     - id: items
       services:
-        - id: items_api
+        - id: items-api
     - id: requests
     - id: snapshot_generator
       services:
