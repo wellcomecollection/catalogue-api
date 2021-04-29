@@ -6,7 +6,6 @@ locals {
 
   elastic_cloud_vpce_sg_id = data.terraform_remote_state.infra_critical.outputs["ec_catalogue_privatelink_sg_id"]
 
-  // TODO move this state into resources in this module once the old `shared` stack is removed
-  search_repository = data.terraform_remote_state.catalogue_api_shared_old.outputs["ecr_search_repository_url"]
-  items_repository  = data.terraform_remote_state.catalogue_api_shared_old.outputs["ecr_items_repository_url"]
+  search_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_search_repository_url"]
+  items_repository  = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
 }
