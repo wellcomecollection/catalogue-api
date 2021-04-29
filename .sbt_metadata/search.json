@@ -2,6 +2,7 @@
   "id" : "search",
   "folder" : "search",
   "dependencyIds" : [
-    "display"
+    "display",
+    "search_common"
   ]
 }

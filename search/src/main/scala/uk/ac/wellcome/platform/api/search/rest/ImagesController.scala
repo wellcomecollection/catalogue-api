@@ -4,22 +4,13 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.api.display.models.Implicits._
-import uk.ac.wellcome.platform.api.search.models.{
-  ApiConfig,
-  QueryConfig,
-  SimilarityMetric
-}
-import uk.ac.wellcome.platform.api.search.services.{
-  ElasticsearchService,
-  ImagesService
-}
+import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
+import uk.ac.wellcome.platform.api.search.services.{ElasticsearchService, ImagesService}
 import cats.implicits._
-import uk.ac.wellcome.api.display.models.{
-  DisplayImage,
-  MultipleImagesIncludes,
-  SingleImageIncludes
-}
+import uk.ac.wellcome.api.display.models.{DisplayImage, MultipleImagesIncludes, SingleImageIncludes}
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.platform.api.rest.CustomDirectives
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.models.ContextResponse
 
