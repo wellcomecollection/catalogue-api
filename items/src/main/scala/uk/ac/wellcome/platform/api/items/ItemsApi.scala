@@ -11,32 +11,31 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ItemsApi extends CustomDirectives
-  with Tracing
-  with FailFastCirceSupport  {
+trait ItemsApi extends CustomDirectives with Tracing with FailFastCirceSupport {
 
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
 
   val routes: Route = concat(
     pathPrefix("works") {
-      path(Segment) { id: String =>
-        get {
-          withFuture {
-            transactFuture("GET /images/{imageId}") {
-              val result: Future[StacksWork] =
-                stacksWorkService.getStacksWork(
-                  CanonicalId(id)
-                )
+      path(Segment) {
+        id: String =>
+          get {
+            withFuture {
+              transactFuture("GET /images/{imageId}") {
+                val result: Future[StacksWork] =
+                  stacksWorkService.getStacksWork(
+                    CanonicalId(id)
+                  )
 
-              result
-                .map(value => complete(DisplayStacksWork(value)))
-                .recoverWith {
-                  case err => Future.successful(failWith(err))
-                }
+                result
+                  .map(value => complete(DisplayStacksWork(value)))
+                  .recoverWith {
+                    case err => Future.successful(failWith(err))
+                  }
+              }
             }
           }
-        }
       }
     }
   )

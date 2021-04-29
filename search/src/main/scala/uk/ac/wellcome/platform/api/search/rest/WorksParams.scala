@@ -4,7 +4,14 @@ import java.time.LocalDate
 
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
-import uk.ac.wellcome.api.display.models.{ProductionDateSortRequest, SortRequest, SortingOrder, WorkAggregationRequest, WorkInclude, WorksIncludes}
+import uk.ac.wellcome.api.display.models.{
+  ProductionDateSortRequest,
+  SortRequest,
+  SortingOrder,
+  WorkAggregationRequest,
+  WorkInclude,
+  WorksIncludes
+}
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.locations.AccessStatus
