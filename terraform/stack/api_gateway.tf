@@ -1,10 +1,13 @@
-resource "aws_apigatewayv2_api" "catalogue" {
-  name          = "Catalogue API (${var.environment_name})"
-  protocol_type = "HTTP"
+resource "aws_api_gateway_rest_api" "catalogue" {
+  name = "Catalogue API (${var.environment_name})"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
 }
 
-resource "aws_apigatewayv2_deployment" "default" {
-  api_id = aws_apigatewayv2_api.catalogue.id
+resource "aws_api_gateway_deployment" "default" {
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
 
   triggers = {
     // This sometimes causes a deploy to occur before resources have been updated
@@ -20,85 +23,124 @@ resource "aws_apigatewayv2_deployment" "default" {
   }
 }
 
-resource "aws_apigatewayv2_stage" "default" {
-  api_id        = aws_apigatewayv2_api.catalogue.id
-  deployment_id = aws_apigatewayv2_deployment.default.id
-  name          = "$default"
+resource "aws_api_gateway_stage" "default" {
+  rest_api_id   = aws_api_gateway_rest_api.catalogue.id
+  deployment_id = aws_api_gateway_deployment.default.id
+  stage_name    = "default"
 }
 
-resource "aws_apigatewayv2_vpc_link" "catalogue" {
-  name               = "${var.environment_name}-catalogue-api"
-  security_group_ids = []
-  subnet_ids         = local.routable_private_subnets
+resource "aws_api_gateway_vpc_link" "catalogue_lb" {
+  name        = "${var.environment_name}-lb-link"
+  target_arns = [aws_lb.catalogue_api.arn]
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-resource "aws_apigatewayv2_integration" "search_integration" {
-  api_id          = aws_apigatewayv2_api.catalogue.id
-  connection_id   = aws_apigatewayv2_vpc_link.catalogue.id
-  integration_uri = module.search_api.lb_listener_arn
-  description     = "Search API"
-
-  integration_type   = "HTTP_PROXY"
-  connection_type    = "VPC_LINK"
-  integration_method = "ANY"
+// /v2
+resource "aws_api_gateway_resource" "v2" {
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
+  path_part   = "v2"
 }
 
-resource "aws_apigatewayv2_integration" "items_integration" {
-  api_id          = aws_apigatewayv2_api.catalogue.id
-  connection_id   = aws_apigatewayv2_vpc_link.catalogue.id
-  integration_uri = module.items_api.lb_listener_arn
-  description     = "Items API"
-  request_parameters = {
-    "overwrite:path" = "/works/$request.path.workId"
-  }
+// /v2/works
+module "works_route" {
+  source = "../modules/api_route"
 
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.v2.id
+  path_part   = "works"
+  http_method = "ANY"
 
-  integration_type   = "HTTP_PROXY"
-  connection_type    = "VPC_LINK"
-  integration_method = "ANY"
+  integration_path = "/catalogue/v2/works"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
 }
 
-locals {
-  search_target = "integrations/${aws_apigatewayv2_integration.search_integration.id}"
-  items_target  = "integrations/${aws_apigatewayv2_integration.items_integration.id}"
+// /v2/images
+module "images_route" {
+  source = "../modules/api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.v2.id
+  path_part   = "images"
+  http_method = "ANY"
+
+  integration_path = "/catalogue/v2/images"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
 }
 
-// /v2/works/
-resource "aws_apigatewayv2_route" "works" {
-  api_id    = aws_apigatewayv2_api.catalogue.id
-  route_key = "ANY /catalogue/v2/works"
-  target    = local.search_target
+// /v2/images/{imageId}
+module "single_image_route" {
+  source = "../modules/api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = module.images_route.resource_id
+  path_part   = "{imageId}"
+  http_method = "ANY"
+
+  path_param       = "imageId"
+  integration_path = "/catalogue/v2/images/{imageId}"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
 }
 
 // /v2/works/{workId}
-resource "aws_apigatewayv2_route" "single_work" {
-  api_id    = aws_apigatewayv2_api.catalogue.id
-  route_key = "ANY /catalogue/v2/works/{workId}"
-  target    = local.search_target
+module "single_work_route" {
+  source = "../modules/api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = module.works_route.resource_id
+  path_part   = "{workId}"
+  http_method = "ANY"
+
+  path_param       = "workId"
+  integration_path = "/catalogue/v2/works/{workId}"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
 }
 
 // /v2/works/{workId}/items
-resource "aws_apigatewayv2_route" "items" {
-  api_id    = aws_apigatewayv2_api.catalogue.id
-  route_key = "ANY /catalogue/v2/works/{workId}/items"
-  target    = local.items_target
-}
+module "items_route" {
+  source = "../modules/api_route"
 
-// /v2/images/*
-resource "aws_apigatewayv2_route" "images" {
-  api_id    = aws_apigatewayv2_api.catalogue.id
-  route_key = "ANY /catalogue/v2/images/{proxy+}"
-  target    = local.search_target
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = module.single_work_route.resource_id
+  path_part   = "items"
+  http_method = "ANY"
+
+  path_param       = "workId"
+  integration_path = "/works/{workId}"
+  lb_port          = local.items_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
 }
 
 // default
-resource "aws_apigatewayv2_route" "default" {
-  api_id    = aws_apigatewayv2_api.catalogue.id
-  route_key = "$default"
-  target    = local.search_target
-}
+module "default_route" {
+  source = "../modules/api_route"
 
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
+  path_part   = "{proxy+}"
+  http_method = "ANY"
+
+  path_param       = "proxy"
+  integration_path = "/catalogue/{proxy}"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
