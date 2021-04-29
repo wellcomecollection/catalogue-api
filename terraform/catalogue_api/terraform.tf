@@ -33,8 +33,7 @@ data "terraform_remote_state" "infra_critical" {
   }
 }
 
-// TODO remove this when the old stack is removed
-data "terraform_remote_state" "catalogue_api_shared_old" {
+data "terraform_remote_state" "catalogue_api_shared" {
   backend = "s3"
 
   config = {
