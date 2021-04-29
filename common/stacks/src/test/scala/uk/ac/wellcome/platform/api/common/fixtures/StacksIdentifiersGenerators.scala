@@ -1,6 +1,9 @@
 package uk.ac.wellcome.platform.api.common.fixtures
 
-import uk.ac.wellcome.platform.api.common.models.{SierraItemIdentifier, StacksItemIdentifier}
+import uk.ac.wellcome.platform.api.common.models.{
+  SierraItemIdentifier,
+  StacksItemIdentifier
+}
 
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 
