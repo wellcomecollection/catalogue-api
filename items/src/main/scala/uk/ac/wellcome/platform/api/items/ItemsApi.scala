@@ -4,7 +4,10 @@ import akka.http.scaladsl.server.Route
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
-import uk.ac.wellcome.platform.api.common.models.{StacksWork, StacksWorkIdentifier}
+import uk.ac.wellcome.platform.api.common.models.{
+  StacksWork,
+  StacksWorkIdentifier
+}
 import uk.ac.wellcome.platform.api.common.services.StacksService
 
 import scala.concurrent.{ExecutionContext, Future}
