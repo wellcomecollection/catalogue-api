@@ -1,10 +1,10 @@
-package uk.ac.wellcome.platform.api.common.http.config.builders
+package uk.ac.wellcome.platform.api.http.config.builders
 
 import java.net.URL
 
 import com.typesafe.config.Config
-import uk.ac.wellcome.platform.api.common.http.config.models.HTTPServerConfig
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._
+import weco.http.models.HTTPServerConfig
 
 object HTTPServerBuilder {
   def buildHTTPServerConfig(config: Config): HTTPServerConfig = {

@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.8.0"
+  val defaultVersion = "26.9.0"
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -80,6 +80,11 @@ object WellcomeDependencies {
     version = versions.http
   )
 
+  val httpTypesafeLibrary: Seq[ModuleID] = library(
+    name = "http",
+    version = versions.http
+  )
+
   private def library(name: String, version: String): Seq[ModuleID] = Seq(
     "uk.ac.wellcome" %% name % version,
     "uk.ac.wellcome" %% name % version % "test" classifier "tests"
@@ -151,7 +156,8 @@ object CatalogueDependencies {
       WellcomeDependencies.jsonLibrary ++
       WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
-      WellcomeDependencies.monitoringLibrary
+      WellcomeDependencies.monitoringLibrary ++
+      WellcomeDependencies.httpTypesafeLibrary
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++

@@ -38,7 +38,7 @@ class QueryConfigTest
       val badClient = ElasticClientBuilder.create(
         hostname = "not-a-host",
         port = 123456,
-        protocol = "http",
+        protocol = "uk/ac/wellcome/platform/api/http",
         username = "not-good",
         password = "very-bad"
       )

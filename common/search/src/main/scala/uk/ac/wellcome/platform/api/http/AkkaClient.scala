@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.common.http
+package uk.ac.wellcome.platform.api.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http

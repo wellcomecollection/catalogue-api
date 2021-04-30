@@ -2,20 +2,14 @@ package uk.ac.wellcome.platform.api.common.fixtures
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.{GET, POST}
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  RequestEntity
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, RequestEntity}
 import akka.stream.scaladsl.Sink
 import io.circe.parser._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.http.config.models.HTTPServerConfig
+import weco.http.models.HTTPServerConfig
 
 trait HttpFixtures extends Akka with ScalaFutures with Matchers {
 

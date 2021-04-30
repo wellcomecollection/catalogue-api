@@ -1,10 +1,10 @@
-package uk.ac.wellcome.platform.api.common.http
+package uk.ac.wellcome.platform.api.http
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-
 import java.time.Instant
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
