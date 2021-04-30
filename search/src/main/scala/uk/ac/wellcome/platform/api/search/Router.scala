@@ -45,63 +45,70 @@ class Router(
 )(implicit ec: ExecutionContext)
     extends CustomDirectives {
 
-  def routes: Route = handleRejections(rejectionHandler) {
-    ignoreTrailingSlash {
-      pathPrefix(apiConfig.pathPrefix) {
+  def searchRoutes: Route = concat(
+    path("works") {
+      MultipleWorksParams.parse { worksController.multipleWorks }
+    },
+    path("works" / Segment) { id: String =>
+      Try { CanonicalId(id) } match {
+        case Success(workId) =>
+          SingleWorkParams.parse {
+            worksController.singleWork(workId, _)
+          }
+
+        case _ => notFound(s"Work not found for identifier $id")
+      }
+    },
+    path("images") {
+      MultipleImagesParams.parse { imagesController.multipleImages }
+    },
+    path("images" / Segment) { id: String =>
+      Try { CanonicalId(id) } match {
+        case Success(imageId) =>
+          SingleImageParams.parse {
+            imagesController.singleImage(imageId, _)
+          }
+
+        case _ => notFound(s"Image not found for identifier $id")
+      }
+    },
+    path("context.json") {
+      getFromResource("context-v2.json")
+    },
+    path("swagger.json") {
+      swagger
+    },
+    path("search-templates.json") {
+      getSearchTemplates
+    }
+  )
+
+  def legacyRoutes: Route = pathPrefix(apiConfig.pathPrefix) {
+    concat(
+      pathPrefix("v2") {
+        searchRoutes
+      },
+      pathPrefix("management") {
         concat(
-          pathPrefix("v2") {
-            concat(
-              path("works") {
-                MultipleWorksParams.parse { worksController.multipleWorks }
-              },
-              path("works" / Segment) { id: String =>
-                Try { CanonicalId(id) } match {
-                  case Success(workId) =>
-                    SingleWorkParams.parse {
-                      worksController.singleWork(workId, _)
-                    }
-
-                  case _ => notFound(s"Work not found for identifier $id")
-                }
-              },
-              path("images") {
-                MultipleImagesParams.parse { imagesController.multipleImages }
-              },
-              path("images" / Segment) { id: String =>
-                Try { CanonicalId(id) } match {
-                  case Success(imageId) =>
-                    SingleImageParams.parse {
-                      imagesController.singleImage(imageId, _)
-                    }
-
-                  case _ => notFound(s"Image not found for identifier $id")
-                }
-              },
-              path("context.json") {
-                getFromResource("context-v2.json")
-              },
-              path("swagger.json") {
-                swagger
-              },
-              path("search-templates.json") {
-                getSearchTemplates
-              }
-            )
+          path("healthcheck") {
+            get {
+              complete("message" -> "ok")
+            }
           },
-          pathPrefix("management") {
-            concat(
-              path("healthcheck") {
-                get {
-                  complete("message" -> "ok")
-                }
-              },
-              path("clusterhealth") {
-                getClusterHealth
-              }
-            )
+          path("clusterhealth") {
+            getClusterHealth
           }
         )
       }
+    )
+  }
+
+  def routes: Route = handleRejections(rejectionHandler) {
+    ignoreTrailingSlash {
+      concat(
+        searchRoutes,
+        legacyRoutes
+      )
     }
   }
 
