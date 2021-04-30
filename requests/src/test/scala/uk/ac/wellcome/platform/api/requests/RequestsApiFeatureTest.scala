@@ -122,7 +122,9 @@ class RequestsApiFeatureTest
              |    {
              |      "item" : {
              |        "id" : "n5v7b4md",
-             |        "type" : "Item"
+             |        "locations" : [
+             |        ],
+             |        "ontologyType" : "Item"
              |      },
              |      "pickupDate" : "2019-12-03T04:00:00Z",
              |      "pickupLocation" : {

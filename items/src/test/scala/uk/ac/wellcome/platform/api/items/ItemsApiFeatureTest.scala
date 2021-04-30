@@ -26,6 +26,8 @@ class ItemsApiFeatureTest
              |  "items" : [
              |    {
              |      "id" : "ys3ern6x",
+             |      "locations" : [
+             |      ],
              |      "status" : {
              |        "id" : "available",
              |        "label" : "Available",

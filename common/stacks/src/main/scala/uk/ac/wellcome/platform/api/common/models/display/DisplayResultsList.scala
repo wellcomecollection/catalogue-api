@@ -2,6 +2,7 @@ package uk.ac.wellcome.platform.api.common.models.display
 
 import java.time.Instant
 
+import uk.ac.wellcome.api.display.models.DisplayItem
 import uk.ac.wellcome.platform.api.common.models._
 
 object DisplayResultsList {
@@ -21,11 +22,9 @@ case class DisplayResultsList(
 )
 
 object DisplayRequest {
-  def apply(request: StacksHold): DisplayRequest =
+  def apply(request: StacksHold): DisplayRequest = {
     DisplayRequest(
-      item = DisplayItem(
-        id = request.itemId.value.toString
-      ),
+      item = new DisplayItem(Some(request.itemId.value.toString)),
       pickupDate = request.pickup.pickUpBy,
       pickupLocation = DisplayLocationDescription(
         request.pickup.location
@@ -34,6 +33,7 @@ object DisplayRequest {
         request.status
       )
     )
+  }
 }
 
 case class DisplayRequest(
