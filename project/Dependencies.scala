@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.9.0"
+  val defaultVersion = "26.9.1"
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -81,7 +81,7 @@ object WellcomeDependencies {
   )
 
   val httpTypesafeLibrary: Seq[ModuleID] = library(
-    name = "http",
+    name = "http_typesafe",
     version = versions.http
   )
 
