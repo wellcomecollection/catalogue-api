@@ -67,8 +67,8 @@ module "items_api" {
     apm_service_name = "items-api"
     apm_environment  = var.environment_name
 
-    log_level          = "DEBUG"
-    metrics_namespace  = "items-api"
+    log_level         = "DEBUG"
+    metrics_namespace = "items-api"
   }
   secrets = {
     sierra_api_key    = "stacks/prod/sierra_api_key"
