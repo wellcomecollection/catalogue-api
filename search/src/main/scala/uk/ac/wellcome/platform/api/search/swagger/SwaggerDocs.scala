@@ -20,6 +20,7 @@ import uk.ac.wellcome.api.display.models.{
   DisplayImage,
   DisplayWork
 }
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.DisplayResultList
 import weco.http.models.DisplayError

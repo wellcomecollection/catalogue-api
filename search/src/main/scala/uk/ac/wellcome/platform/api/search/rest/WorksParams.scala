@@ -12,6 +12,7 @@ import uk.ac.wellcome.api.display.models.{
   WorkInclude,
   WorksIncludes
 }
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.locations.AccessStatus
 import weco.catalogue.internal_model.work.WorkType

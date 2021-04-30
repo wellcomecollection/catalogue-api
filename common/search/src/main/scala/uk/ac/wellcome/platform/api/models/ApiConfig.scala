@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.search.models
+package uk.ac.wellcome.platform.api.models
 
 case class ApiConfig(
   host: String,

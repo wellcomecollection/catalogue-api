@@ -14,8 +14,21 @@ import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ImagesMultiMatcher,
   WorksMultiMatcher
 }
-import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.platform.api.search.rest._
+import uk.ac.wellcome.platform.api.rest.CustomDirectives
+import uk.ac.wellcome.platform.api.models.ApiConfig
+import uk.ac.wellcome.platform.api.search.models.{
+  QueryConfig,
+  SearchTemplate,
+  SearchTemplateResponse
+}
+import uk.ac.wellcome.platform.api.search.rest.{
+  ImagesController,
+  MultipleImagesParams,
+  MultipleWorksParams,
+  SingleImageParams,
+  SingleWorkParams,
+  WorksController
+}
 import uk.ac.wellcome.platform.api.search.services.ElasticsearchService
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import weco.catalogue.internal_model.identifiers.CanonicalId

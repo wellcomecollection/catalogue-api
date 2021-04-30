@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.search.elasticsearch
+package uk.ac.wellcome.platform.api.elasticsearch
 
 import akka.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError

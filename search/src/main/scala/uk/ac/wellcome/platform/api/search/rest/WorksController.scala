@@ -8,7 +8,8 @@ import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
 import uk.ac.wellcome.Tracing
-import uk.ac.wellcome.platform.api.search.models.ApiConfig
+import uk.ac.wellcome.platform.api.models.ApiConfig
+import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import uk.ac.wellcome.platform.api.search.services.{
   ElasticsearchService,
   WorksService

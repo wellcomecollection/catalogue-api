@@ -6,12 +6,9 @@ import akka.http.scaladsl.Http
 import com.typesafe.config.Config
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
-import uk.ac.wellcome.platform.api.search.models.{
-  ApiConfig,
-  CheckModel,
-  QueryConfig
-}
+import uk.ac.wellcome.platform.api.search.models.{CheckModel, QueryConfig}
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
