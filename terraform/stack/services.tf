@@ -62,12 +62,20 @@ module "items_api" {
     context_url        = "https://${local.external_hostname}/stacks/v1/context.json"
     catalogue_base_url = "https://${local.external_hostname}/catalogue/v2"
     sierra_base_url    = "https://libsys.wellcomelibrary.org/iii/sierra-api"
-    log_level          = "DEBUG"
-    metrics_namespace  = "items_api"
+
+    api_host         = local.external_hostname
+    apm_service_name = "items-api"
+    apm_environment  = var.environment_name
+
+    log_level         = "DEBUG"
+    metrics_namespace = "items-api"
   }
   secrets = {
     sierra_api_key    = "stacks/prod/sierra_api_key"
     sierra_api_secret = "stacks/prod/sierra_api_secret"
+
+    apm_server_url = "catalogue/api/apm_server_url"
+    apm_secret     = "catalogue/api/apm_secret"
   }
 
   subnets                = local.routable_private_subnets
