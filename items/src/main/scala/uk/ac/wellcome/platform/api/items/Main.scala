@@ -45,12 +45,12 @@ object Main extends WellcomeTypesafeApp {
           .getOrElse("context.json")
       )
 
-    val router: ItemsApi = new ItemsApi {
+    val router = new ItemsApi {
       override implicit val ec: ExecutionContext = ecMain
       override implicit val stacksWorkService: StacksService = workService
       override implicit val apiConfig: ApiConfig = apiConf
 
-      override def context: String = contextUri.toString
+      override def context: String = contextUri
     }
 
     val appName = "ItemsApi"
@@ -62,8 +62,7 @@ object Main extends WellcomeTypesafeApp {
         metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
       ),
       httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
-      contextURL =
-        new URL("https://api.wellcomecollection.org/stacks/v1/context.json"),
+      contextURL = new URL(router.contextUri),
       appName = appName
     )
   }

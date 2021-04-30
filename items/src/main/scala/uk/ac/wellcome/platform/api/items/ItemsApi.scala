@@ -22,7 +22,7 @@ trait ItemsApi extends CustomDirectives with Tracing with FailFastCirceSupport {
         id: String =>
           get {
             withFuture {
-              transactFuture("GET /images/{imageId}") {
+              transactFuture("GET /works/{imageId}/items") {
                 val result: Future[StacksWork] =
                   stacksWorkService.getStacksWork(
                     CanonicalId(id)

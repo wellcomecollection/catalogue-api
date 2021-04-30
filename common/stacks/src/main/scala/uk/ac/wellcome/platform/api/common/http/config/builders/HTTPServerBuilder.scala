@@ -8,17 +8,9 @@ import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._
 
 object HTTPServerBuilder {
   def buildHTTPServerConfig(config: Config): HTTPServerConfig = {
-    val host = config.requireString("http.host")
-    val port = config.requireInt("http.port")
-    val externalBaseURL = config.requireString("http.externalBaseURL")
-
     HTTPServerConfig(
-      host = host,
-      port = port,
-      externalBaseURL = externalBaseURL
+      host = config.requireString("http.host"),
+      port = config.requireInt("http.port")
     )
   }
-
-  def buildContextURL(config: Config): URL =
-    new URL(config.requireString("contextURL"))
 }
