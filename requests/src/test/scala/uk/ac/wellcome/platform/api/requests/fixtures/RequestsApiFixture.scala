@@ -9,9 +9,9 @@ import uk.ac.wellcome.platform.api.common.fixtures.{
   HttpFixtures,
   ServicesFixture
 }
-import uk.ac.wellcome.platform.api.common.http.WellcomeHttpApp
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.requests.RequestsApi
+import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext

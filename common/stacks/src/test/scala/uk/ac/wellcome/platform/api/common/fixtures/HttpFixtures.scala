@@ -15,7 +15,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.http.config.models.HTTPServerConfig
+import weco.http.models.HTTPServerConfig
 
 trait HttpFixtures extends Akka with ScalaFutures with Matchers {
 

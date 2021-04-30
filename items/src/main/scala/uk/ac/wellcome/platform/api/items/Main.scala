@@ -5,9 +5,8 @@ import java.net.URL
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
-import uk.ac.wellcome.platform.api.common.http.WellcomeHttpApp
-import uk.ac.wellcome.platform.api.common.http.config.builders.HTTPServerBuilder
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.common.services.config.builders.StacksServiceBuilder
 import uk.ac.wellcome.platform.api.models.ApiConfig
@@ -15,6 +14,7 @@ import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import weco.http.monitoring.HttpMetrics
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
+import weco.http.WellcomeHttpApp
 
 import scala.concurrent.ExecutionContext
 

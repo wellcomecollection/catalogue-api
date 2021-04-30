@@ -8,11 +8,6 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
-import uk.ac.wellcome.platform.api.common.http.{
-  AkkaClientGet,
-  AkkaClientPost,
-  AkkaClientTokenExchange
-}
 import uk.ac.wellcome.platform.api.common.models.{
   SierraItemIdentifier,
   StacksUserIdentifier
@@ -22,6 +17,11 @@ import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
   SierraHoldRequestPostBody,
   SierraItemStub,
   SierraUserHoldsStub
+}
+import uk.ac.wellcome.platform.api.http.{
+  AkkaClientGet,
+  AkkaClientPost,
+  AkkaClientTokenExchange
 }
 
 import scala.concurrent.Future

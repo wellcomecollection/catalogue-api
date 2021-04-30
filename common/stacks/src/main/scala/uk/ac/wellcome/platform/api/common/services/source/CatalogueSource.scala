@@ -3,8 +3,8 @@ package uk.ac.wellcome.platform.api.common.services.source
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
-import uk.ac.wellcome.platform.api.common.http.AkkaClientGet
 import uk.ac.wellcome.platform.api.common.models.Identifier
+import uk.ac.wellcome.platform.api.http.AkkaClientGet
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.Future
