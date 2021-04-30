@@ -8,7 +8,6 @@ class ApiErrorsTest extends ApiWorksTestBase {
     withApi { routes =>
       assertJsonResponse(routes, "/catalogue/v567/works") {
         Status.NotFound -> notFound(
-          getApiPrefix(),
           "Page not found for URL /catalogue/v567/works"
         )
       }
@@ -19,7 +18,6 @@ class ApiErrorsTest extends ApiWorksTestBase {
     withApi { routes =>
       assertJsonResponse(routes, "/foo/bar") {
         Status.NotFound -> notFound(
-          getApiPrefix(),
           "Page not found for URL /foo/bar"
         )
       }

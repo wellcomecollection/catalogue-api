@@ -48,7 +48,8 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   }
 
   describe(
-    "filters aggregation buckets with any filters that are not paired to the aggregation") {
+    "filters aggregation buckets with any filters that are not paired to the aggregation"
+  ) {
     it("when those filters do not have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
@@ -56,13 +57,14 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
           assertJsonResponse(
             routes,
             // We expect to see the language buckets for only the works with workType=a
-            s"/$apiPrefix/works?workType=a&aggregations=languages") {
+            s"$rootPath/works?workType=a&aggregations=languages"
+          ) {
             Status.OK -> s"""
             {
               ${resultList(
-                              apiPrefix,
                               totalResults =
-                                works.count(_.data.format.get == Books))},
+                                works.count(_.data.format.get == Books)
+                            )},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
@@ -100,14 +102,14 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             routes,
             // We expect to see the language buckets for only the works with workType=a
             // We expect to see the workType buckets for all of the works
-            s"/$apiPrefix/works?workType=a&aggregations=languages,workType"
+            s"$rootPath/works?workType=a&aggregations=languages,workType"
           ) {
             Status.OK -> s"""
             {
               ${resultList(
-                              apiPrefix,
                               totalResults =
-                                works.count(_.data.format.get == Books))},
+                                works.count(_.data.format.get == Books)
+                            )},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
@@ -171,11 +173,11 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             // We expect to see the workType buckets for worktype i/Audio, because that
             // has the language che/Chechen, and for a/Books, because a filter for it is
             // present
-            s"/$apiPrefix/works?workType=a&languages=che&aggregations=workType"
+            s"$rootPath/works?workType=a&languages=che&aggregations=workType"
           ) {
             Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = 0, totalPages = 0)},
+              ${resultList(totalResults = 0, totalPages = 0)},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType" : {
@@ -218,14 +220,15 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?query=rats&workType=a&aggregations=workType") {
+          s"$rootPath/works?query=rats&workType=a&aggregations=workType"
+        ) {
           Status.OK -> s"""
             {
               ${resultList(
-                            apiPrefix,
                             totalResults = works
                               .filter(_.data.format.get == Books)
-                              .count(_.data.title.contains("rats")))},
+                              .count(_.data.title.contains("rats"))
+                          )},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -272,13 +275,14 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?workType=a&aggregations=workType") {
+          s"$rootPath/works?workType=a&aggregations=workType"
+        ) {
           Status.OK -> s"""
             {
               ${resultList(
-                            apiPrefix,
                             totalResults =
-                              works.count(_.data.format.get == Books))},
+                              works.count(_.data.format.get == Books)
+                          )},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {

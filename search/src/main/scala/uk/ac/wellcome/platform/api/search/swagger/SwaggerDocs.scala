@@ -15,28 +15,21 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.{Content, Schema}
 import javax.ws.rs.{GET, Path}
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.api.display.models.{
-  ApiVersions,
-  DisplayImage,
-  DisplayWork
-}
+import uk.ac.wellcome.api.display.models.{DisplayImage, DisplayWork}
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.DisplayResultList
 import weco.http.models.DisplayError
 
 class SwaggerDocs(apiConfig: ApiConfig) extends Logging {
-
-  val version = ApiVersions.v2
-
   val url =
-    s"${apiConfig.scheme}://${apiConfig.host}/${apiConfig.pathPrefix}/$version/"
+    s"${apiConfig.scheme}://${apiConfig.host}/${apiConfig.pathPrefix}/"
 
   val server = (new Server).url(url)
 
   val info = new Info()
     .description("Search our collections")
-    .version(version.toString)
+    .version("v2")
     .title("Catalogue")
 
   val apiClasses: Set[Class[_]] =
@@ -85,7 +78,8 @@ trait SingleImageSwagger {
             "withSimilarColors",
             "source.contributors",
             "source.languages",
-            "source.genres")
+            "source.genres"
+          )
         ),
         required = false
       )
@@ -165,8 +159,9 @@ trait SingleWorkSwagger {
             "precededBy",
             "partOf",
             "parts"
-          )),
-        required = false,
+          )
+        ),
+        required = false
       )
     )
   )
@@ -233,7 +228,9 @@ trait MultipleImagesSwagger {
             "cc-by-nc-nd",
             "cc-0",
             "pdm",
-            "copyright-not-cleared")),
+            "copyright-not-cleared"
+          )
+        ),
         required = false
       ),
       new Parameter(
@@ -308,7 +305,7 @@ trait MultipleImagesSwagger {
           `type` = "integer",
           defaultValue = "10"
         )
-      ),
+      )
     )
   )
   @ApiResponse(
@@ -316,7 +313,8 @@ trait MultipleImagesSwagger {
     description = "The images",
     content = Array(
       new Content(
-        schema = new Schema(implementation = classOf[DisplayImagesResultList]))
+        schema = new Schema(implementation = classOf[DisplayImagesResultList])
+      )
     )
   )
   @ApiResponse(
@@ -360,7 +358,8 @@ trait MultipleImagesSwagger {
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,
-        results = Nil)
+        results = Nil
+      )
   val _ = new DisplayImagesResultList
 }
 
@@ -392,8 +391,9 @@ trait MultipleWorksSwagger {
             "precededBy",
             "partOf",
             "parts"
-          )),
-        required = false,
+          )
+        ),
+        required = false
       ),
       new Parameter(
         name = "items.locations.locationType",
@@ -432,7 +432,8 @@ trait MultipleWorksSwagger {
             "items.locations.license",
             "languages",
             "availabilities"
-          )),
+          )
+        ),
         required = false
       ),
       new Parameter(
@@ -489,7 +490,9 @@ trait MultipleWorksSwagger {
             "closed",
             "licensed-resources",
             "unavailable",
-            "permission-required")),
+            "permission-required"
+          )
+        ),
         required = false
       ),
       new Parameter(
@@ -503,7 +506,9 @@ trait MultipleWorksSwagger {
             "cc-by-nc-nd",
             "cc-0",
             "pdm",
-            "copyright-not-cleared")),
+            "copyright-not-cleared"
+          )
+        ),
         required = false
       ),
       new Parameter(
@@ -587,7 +592,7 @@ trait MultipleWorksSwagger {
           "Which query should we use search the works? Used predominantly for internal testing of relevancy. Considered Unstable.",
         schema = new Schema(
           `type` = "enum",
-          allowableValues = Array("MultiMatcher"),
+          allowableValues = Array("MultiMatcher")
         ),
         required = false
       )
@@ -598,7 +603,8 @@ trait MultipleWorksSwagger {
     description = "The works",
     content = Array(
       new Content(
-        schema = new Schema(implementation = classOf[DisplayWorksResultList]))
+        schema = new Schema(implementation = classOf[DisplayWorksResultList])
+      )
     )
   )
   @ApiResponse(
@@ -650,7 +656,8 @@ trait MultipleWorksSwagger {
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,
-        results = Nil)
+        results = Nil
+      )
 
   val w = new DisplayWorksResultList
 
@@ -664,7 +671,8 @@ trait MultipleWorksSwagger {
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,
-        results = Nil)
+        results = Nil
+      )
 
   val i = new DisplayImagesResultList
 }

@@ -12,9 +12,9 @@ class WorksTestInvisible extends ApiWorksTestBase {
     withWorksApi {
       case (worksIndex, routes) =>
         insertIntoElasticsearch(worksIndex, invisibleWork)
-        val path = s"/$apiPrefix/works/${invisibleWork.state.canonicalId}"
+        val path = s"$rootPath/works/${invisibleWork.state.canonicalId}"
         assertJsonResponse(routes, path) {
-          Status.Gone -> deleted(apiPrefix)
+          Status.Gone -> deleted
         }
     }
   }
@@ -29,8 +29,8 @@ class WorksTestInvisible extends ApiWorksTestBase {
         val worksToIndex = Seq[Work[Indexed]](invisibleWork) ++ works
         insertIntoElasticsearch(worksIndex, worksToIndex: _*)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works") {
-          Status.OK -> worksListResponse(apiPrefix, works = works)
+        assertJsonResponse(routes, s"$rootPath/works") {
+          Status.OK -> worksListResponse(works = works)
         }
     }
   }
@@ -41,8 +41,8 @@ class WorksTestInvisible extends ApiWorksTestBase {
         val work = indexedWork().title("This shouldn't be invisible!")
         insertIntoElasticsearch(worksIndex, work, invisibleWork)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?query=invisible") {
-          Status.OK -> worksListResponse(apiPrefix, works = Seq(work))
+        assertJsonResponse(routes, s"$rootPath/works?query=invisible") {
+          Status.OK -> worksListResponse(works = Seq(work))
         }
     }
   }

@@ -44,7 +44,8 @@ class ApiSwaggerTest
       info.isEmpty shouldBe false
       getKey(info.get, "version") shouldBe Some(Json.fromString("v2"))
       getKey(info.get, "description") shouldBe Some(
-        Json.fromString("Search our collections"))
+        Json.fromString("Search our collections")
+      )
       getKey(info.get, "title") shouldBe Some(Json.fromString("Catalogue"))
     }
   }
@@ -294,12 +295,15 @@ class ApiSwaggerTest
         val schema = getKey(pageSizeParam, key = "schema").get
 
         getNumericKey(schema, key = "minimum") shouldBe Some(
-          PaginationLimits.minSize)
+          PaginationLimits.minSize
+        )
         getNumericKey(schema, key = "maximum") shouldBe Some(
-          PaginationLimits.maxSize)
+          PaginationLimits.maxSize
+        )
         getNumericKey(schema, key = "default") shouldBe Some(10)
         getKey(schema, key = "type").flatMap { _.asString } shouldBe Some(
-          "integer")
+          "integer"
+        )
       }
     }
   }
@@ -324,7 +328,8 @@ class ApiSwaggerTest
         getNumericKey(schema, key = "minimum") shouldBe Some(1)
         getNumericKey(schema, key = "default") shouldBe Some(1)
         getKey(schema, key = "type").flatMap { _.asString } shouldBe Some(
-          "integer")
+          "integer"
+        )
       }
     }
   }
@@ -377,7 +382,7 @@ class ApiSwaggerTest
 
   private def checkSwaggerJson[T](f: Json => T): T =
     withApi { routes =>
-      Get(s"/$apiPrefix/swagger.json") ~> routes ~> check {
+      Get(s"$rootPath/swagger.json") ~> routes ~> check {
         status shouldEqual Status.OK
         contentType shouldEqual ContentTypes.`application/json`
         f(parseJson(responseAs[String]))

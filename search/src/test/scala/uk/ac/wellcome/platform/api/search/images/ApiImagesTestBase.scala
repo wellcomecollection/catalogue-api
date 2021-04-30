@@ -12,7 +12,7 @@ trait ApiImagesTestBase
 
   def singleImageResult: String =
     s"""
-       |  "@context": "${contextUrl(apiPrefix)}",
+       |  "@context": "$contextUrl",
        |  "type": "Image"
      """.stripMargin
 
@@ -43,9 +43,13 @@ trait ApiImagesTestBase
     s"""
        |{
        |  ${resultList(
-         apiPrefix,
          totalResults = images.size,
-         totalPages = if (images.nonEmpty) { 1 } else { 0 })},
+         totalPages = if (images.nonEmpty) {
+           1
+         } else {
+           0
+         }
+       )},
        |  "results": [
        |    ${images.map(imageResponse).mkString(",")}
        |  ]

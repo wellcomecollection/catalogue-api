@@ -11,7 +11,7 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
         val images =
           (1 to 5).map(_ => createImageData.toIndexedImage).sortBy(_.id)
         insertImagesIntoElasticsearch(imagesIndex, images: _*)
-        assertJsonResponse(routes, s"/$apiPrefix/images") {
+        assertJsonResponse(routes, s"$rootPath/images") {
           Status.OK -> imagesListResponse(images)
         }
     }
@@ -22,7 +22,7 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
       case (imagesIndex, routes) =>
         val image = createImageData.toIndexedImage
         insertImagesIntoElasticsearch(imagesIndex, image)
-        assertJsonResponse(routes, s"/$apiPrefix/images/${image.id}") {
+        assertJsonResponse(routes, s"$rootPath/images/${image.id}") {
           Status.OK ->
             s"""
              |{
@@ -42,27 +42,31 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
         val parentWork = sierraIdentifiedWork()
         val workImages =
           (0 to 3)
-            .map(_ =>
-              createImageData.toIndexedImageWith(parentWork = parentWork))
+            .map(
+              _ => createImageData.toIndexedImageWith(parentWork = parentWork)
+            )
             .toList
         val otherImage = createImageData.toIndexedImage
         insertImagesIntoElasticsearch(imagesIndex, otherImage :: workImages: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?query=${parentWork.state.canonicalId}",
-          unordered = true) {
+          s"$rootPath/images?query=${parentWork.state.canonicalId}",
+          unordered = true
+        ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?query=${parentWork.sourceIdentifier.value}",
-          unordered = true) {
+          s"$rootPath/images?query=${parentWork.sourceIdentifier.value}",
+          unordered = true
+        ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?query=${parentWork.data.otherIdentifiers.head.value}",
-          unordered = true) {
+          s"$rootPath/images?query=${parentWork.data.otherIdentifiers.head.value}",
+          unordered = true
+        ) {
           Status.OK -> imagesListResponse(workImages)
         }
     }
@@ -71,7 +75,8 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
   val baguetteImage = createImageData.toIndexedImageWith(
     parentWork = identifiedWork()
       .title(
-        "Baguette is a French style of bread; it's a long, thin bread; other countries also make this bread")
+        "Baguette is a French style of bread; it's a long, thin bread; other countries also make this bread"
+      )
   )
   val focacciaImage = createImageData.toIndexedImageWith(
     parentWork = identifiedWork()
@@ -90,14 +95,15 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
           imagesIndex,
           baguetteImage,
           focacciaImage,
-          mantouImage)
+          mantouImage
+        )
 
-        assertJsonResponse(routes, s"/$apiPrefix/images?query=bread") {
+        assertJsonResponse(routes, s"$rootPath/images?query=bread") {
           Status.OK -> imagesListResponse(
             List(baguetteImage, focacciaImage, mantouImage)
           )
         }
-        assertJsonResponse(routes, s"/$apiPrefix/images?query=focaccia") {
+        assertJsonResponse(routes, s"$rootPath/images?query=focaccia") {
           Status.OK -> imagesListResponse(List(focacciaImage))
         }
     }
@@ -117,9 +123,10 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
           imagesIndex,
           baguetteImage,
           focacciaImage,
-          schiacciataImage)
+          schiacciataImage
+        )
 
-        assertJsonResponse(routes, s"/$apiPrefix/images?query=bread") {
+        assertJsonResponse(routes, s"$rootPath/images?query=bread") {
           Status.OK -> imagesListResponse(
             List(baguetteImage, focacciaImage, schiacciataImage)
           )
@@ -136,14 +143,15 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
           insertImagesIntoElasticsearch(defaultIndex, defaultImage)
           insertImagesIntoElasticsearch(alternativeIndex, alternativeImage)
 
-          assertJsonResponse(routes, s"/$apiPrefix/images/${defaultImage.id}") {
+          assertJsonResponse(routes, s"$rootPath/images/${defaultImage.id}") {
             Status.OK ->
               s"""
                  |{
                  |  $singleImageResult,
                  |  "id": "${defaultImage.id}",
                  |  "thumbnail": ${location(
-                   defaultImage.state.derivedData.thumbnail)},
+                   defaultImage.state.derivedData.thumbnail
+                 )},
                  |  "locations": [${locations(defaultImage.locations)}],
                  |  "source": ${imageSource(defaultImage.source)}
                  }""".stripMargin
@@ -151,14 +159,16 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images/${alternativeImage.id}?_index=${alternativeIndex.name}") {
+            s"$rootPath/images/${alternativeImage.id}?_index=${alternativeIndex.name}"
+          ) {
             Status.OK ->
               s"""
                  |{
                  |  $singleImageResult,
                  |  "id": "${alternativeImage.id}",
                  |  "thumbnail": ${location(
-                   alternativeImage.state.derivedData.thumbnail)},
+                   alternativeImage.state.derivedData.thumbnail
+                 )},
                  |  "locations": [${locations(alternativeImage.locations)}],
                  |  "source": ${imageSource(alternativeImage.source)}
                  }""".stripMargin

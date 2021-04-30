@@ -3,7 +3,6 @@ package uk.ac.wellcome.platform.api.rest
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
 import com.sksamuel.elastic4s.ElasticError
-import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.platform.api.elasticsearch.ElasticsearchErrorHandler
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.http.FutureDirectives
@@ -13,6 +12,14 @@ trait CustomDirectives extends FutureDirectives {
   import weco.http.models.ContextResponse._
 
   implicit val apiConfig: ApiConfig
+
+  // pathPrefix only accepts single segments, this directive correctly nests multiple
+  def deepPathPrefix(prefix: String): Directive[Unit] = {
+    val segments = prefix.split('/')
+    segments.tail.foldLeft(pathPrefix(segments.head)) {
+      case (directive, segment) => directive.tflatMap(_ => pathPrefix(segment))
+    }
+  }
 
   // Directive for getting public URI of the current request, using the host
   // and scheme as per the config.
@@ -30,7 +37,7 @@ trait CustomDirectives extends FutureDirectives {
   def contextUri: String =
     apiConfig match {
       case ApiConfig(host, scheme, _, pathPrefix, contextSuffix) =>
-        s"$scheme://$host/$pathPrefix/${ApiVersions.v2}/$contextSuffix"
+        s"$scheme://$host/$pathPrefix/$contextSuffix"
     }
 
   def elasticError(err: ElasticError): Route =

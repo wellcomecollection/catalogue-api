@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.search
 
 import akka.http.scaladsl.model.StatusCodes._
-import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 
 import scala.io.Source
@@ -10,7 +9,7 @@ class ApiContextTest extends ApiWorksTestBase {
 
   it("returns a context for v2") {
     withApi { routes =>
-      val path = s"/${getApiPrefix(ApiVersions.v2)}/context.json"
+      val path = s"$rootPath/context.json"
       assertJsonResponse(routes, path)(
         OK ->
           Source.fromResource("context-v2.json").getLines.mkString("\n")

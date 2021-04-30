@@ -3,33 +3,24 @@ package uk.ac.wellcome.platform.api.search
 import com.sksamuel.elastic4s.{ElasticDsl, Index}
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.scalatest.Assertion
-import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.fixtures.{fixture, Fixture, RandomGenerators}
 import uk.ac.wellcome.platform.api.search.fixtures.ApiFixture
 
 trait ApiTestBase extends ApiFixture with RandomGenerators {
-  def getApiPrefix(
-    apiVersion: ApiVersions.Value = ApiVersions.default): String =
-    apiName + "/" + apiVersion
+  val apiRoot: String = "https://api-testing.local/catalogue/v2"
+  val rootPath: String = s"/${apiConfig.pathPrefix}"
+  val contextUrl: String = s"$apiRoot/context.json"
 
-  val apiScheme = "https"
-  val apiHost = "api-testing.local"
-  val apiName = "catalogue"
-  val apiPrefix: String = getApiPrefix(ApiVersions.v2)
-
-  def contextUrl(apiPrefix: String): String =
-    s"$apiScheme://$apiHost/$apiPrefix/context.json"
-
-  def emptyJsonResult(apiPrefix: String): String =
+  def emptyJsonResult: String =
     s"""
        |{
-       |  ${resultList(apiPrefix, totalPages = 0, totalResults = 0)},
+       |  ${resultList(totalPages = 0, totalResults = 0)},
        |  "results": []
        |}""".stripMargin
 
-  def badRequest(apiPrefix: String, description: String) =
+  def badRequest(description: String) =
     s"""{
-      "@context": "${contextUrl(apiPrefix)}",
+      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 400,
@@ -37,9 +28,9 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
       "description": "$description"
     }"""
 
-  def goneRequest(apiPrefix: String, description: String) =
+  def goneRequest(description: String) =
     s"""{
-      "@context": "${contextUrl(apiPrefix)}",
+      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,
@@ -47,21 +38,22 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
       "description": "$description"
     }"""
 
-  def resultList(apiPrefix: String,
-                 pageSize: Int = 10,
-                 totalPages: Int = 1,
-                 totalResults: Int) =
+  def resultList(
+    pageSize: Int = 10,
+    totalPages: Int = 1,
+    totalResults: Int
+  ) =
     s"""
-      "@context": "${contextUrl(apiPrefix)}",
+      "@context": "$contextUrl",
       "type": "ResultList",
       "pageSize": $pageSize,
       "totalPages": $totalPages,
       "totalResults": $totalResults
     """
 
-  def notFound(apiPrefix: String, description: String) =
+  def notFound(description: String) =
     s"""{
-      "@context": "${contextUrl(apiPrefix)}",
+      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 404,
@@ -69,9 +61,9 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
       "description": "$description"
     }"""
 
-  def deleted(apiPrefix: String) =
+  def deleted =
     s"""{
-      "@context": "${contextUrl(apiPrefix)}",
+      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,
@@ -96,12 +88,9 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
   def assertIsBadRequest(path: String, description: String): Assertion =
     withWorksApi {
       case (_, routes) =>
-        assertJsonResponse(routes, s"/$apiPrefix$path")(
+        assertJsonResponse(routes, path)(
           Status.BadRequest ->
-            badRequest(
-              apiPrefix = apiPrefix,
-              description = description
-            )
+            badRequest(description = description)
         )
     }
 }

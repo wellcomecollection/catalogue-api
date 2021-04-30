@@ -23,10 +23,11 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?aggregations=locations.license") {
+          s"$rootPath/images?aggregations=locations.license"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = images.size)},
+              ${resultList(totalResults = images.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "license": {
@@ -65,22 +66,27 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
 
     val images = List(
       createImageData.toIndexedImageWith(
-        parentWork = identifiedWork().contributors(
-          List(carrots).map(Contributor(_, roles = Nil)))
+        parentWork = identifiedWork()
+          .contributors(List(carrots).map(Contributor(_, roles = Nil)))
       ),
       createImageData.toIndexedImageWith(
         parentWork = identifiedWork().contributors(
-          List(carrots, parrots).map(Contributor(_, roles = Nil))),
+          List(carrots, parrots).map(Contributor(_, roles = Nil))
+        ),
         redirectedWork = Some(
           identifiedWork().contributors(
-            List(parrots, parrotsMeeting).map(Contributor(_, roles = Nil))))
+            List(parrots, parrotsMeeting).map(Contributor(_, roles = Nil))
+          )
+        )
       ),
       createImageData.toIndexedImageWith(
         parentWork = identifiedWork().contributors(
-          List(carrots, parrotsMeeting).map(Contributor(_, roles = Nil))),
+          List(carrots, parrotsMeeting).map(Contributor(_, roles = Nil))
+        ),
         redirectedWork = Some(
-          identifiedWork().contributors(
-            List(rats).map(Contributor(_, roles = Nil))))
+          identifiedWork()
+            .contributors(List(rats).map(Contributor(_, roles = Nil)))
+        )
       )
     )
 
@@ -90,11 +96,11 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?aggregations=source.contributors.agent.label"
+          s"$rootPath/images?aggregations=source.contributors.agent.label"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = images.size)},
+              ${resultList(totalResults = images.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "source.contributors.agent.label": {
@@ -147,7 +153,8 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
     val carrotEmuFalconImage =
       createImageData.toIndexedImageWith(
         parentWork = identifiedWork().genres(
-          List(emuEntrepreneurship, falconFinances, carrotCounselling))
+          List(emuEntrepreneurship, falconFinances, carrotCounselling)
+        )
       )
 
     val images = List(
@@ -162,11 +169,11 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?aggregations=source.genres.label"
+          s"$rootPath/images?aggregations=source.genres.label"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = images.size)},
+              ${resultList(totalResults = images.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "source.genres.label": {

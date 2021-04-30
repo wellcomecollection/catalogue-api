@@ -7,7 +7,7 @@ class ImagesErrorsTest extends ApiImagesTestBase {
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
       assertIsNotFound(
-        s"/images/$id",
+        s"$rootPath/images/$id",
         description = s"Image not found for identifier $id"
       )
     }
@@ -16,10 +16,9 @@ class ImagesErrorsTest extends ApiImagesTestBase {
   def assertIsNotFound(path: String, description: String): Assertion =
     withImagesApi {
       case (_, routes) =>
-        assertJsonResponse(routes, s"/$apiPrefix$path")(
+        assertJsonResponse(routes, path)(
           Status.NotFound ->
             notFound(
-              apiPrefix = apiPrefix,
               description = description
             )
         )

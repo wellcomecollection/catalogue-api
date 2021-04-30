@@ -10,7 +10,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
   describe("returns a 400 Bad Request for errors in the ?include parameter") {
     it("a single invalid include") {
       assertIsBadRequest(
-        "/works?include=foo",
+        s"$rootPath/works?include=foo",
         description =
           s"include: 'foo' is not a valid value. Please choose one of: $includesString"
       )
@@ -18,7 +18,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("multiple invalid includes") {
       assertIsBadRequest(
-        "/works?include=foo,bar",
+        s"$rootPath/works?include=foo,bar",
         description =
           s"include: 'foo', 'bar' are not valid values. Please choose one of: $includesString"
       )
@@ -26,7 +26,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("a mixture of valid and invalid includes") {
       assertIsBadRequest(
-        "/works?include=foo,identifiers,bar",
+        s"$rootPath/works?include=foo,identifiers,bar",
         description =
           s"include: 'foo', 'bar' are not valid values. Please choose one of: $includesString"
       )
@@ -34,7 +34,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("an invalid include on an individual work") {
       assertIsBadRequest(
-        "/works/nfdn7wac?include=foo",
+        s"$rootPath/works/nfdn7wac?include=foo",
         description =
           s"include: 'foo' is not a valid value. Please choose one of: $includesString"
       )
@@ -45,10 +45,11 @@ class WorksErrorsTest extends ApiWorksTestBase {
     "['workType', 'genres.label', 'production.dates', 'subjects.label', 'languages', 'contributors.agent.label', 'items.locations.license', 'availabilities']"
 
   describe(
-    "returns a 400 Bad Request for errors in the ?aggregations parameter") {
+    "returns a 400 Bad Request for errors in the ?aggregations parameter"
+  ) {
     it("a single invalid aggregation") {
       assertIsBadRequest(
-        "/works?aggregations=foo",
+        s"$rootPath/works?aggregations=foo",
         description =
           s"aggregations: 'foo' is not a valid value. Please choose one of: $aggregationsString"
       )
@@ -56,7 +57,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("multiple invalid aggregations") {
       assertIsBadRequest(
-        "/works?aggregations=foo,bar",
+        s"$rootPath/works?aggregations=foo,bar",
         description =
           s"aggregations: 'foo', 'bar' are not valid values. Please choose one of: $aggregationsString"
       )
@@ -64,7 +65,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("a mixture of valid and invalid aggregations") {
       assertIsBadRequest(
-        "/works?aggregations=foo,workType,bar",
+        s"$rootPath/works?aggregations=foo,workType,bar",
         description =
           s"aggregations: 'foo', 'bar' are not valid values. Please choose one of: $aggregationsString"
       )
@@ -73,7 +74,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
   it("multiple invalid sorts") {
     assertIsBadRequest(
-      "/works?sort=foo,bar",
+      s"$rootPath/works?sort=foo,bar",
       description =
         "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
     )
@@ -82,7 +83,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
   describe("returns a 400 Bad Request for errors in the ?sort parameter") {
     it("a single invalid sort") {
       assertIsBadRequest(
-        "/works?sort=foo",
+        s"$rootPath/works?sort=foo",
         description =
           "sort: 'foo' is not a valid value. Please choose one of: ['production.dates']"
       )
@@ -90,7 +91,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("multiple invalid sorts") {
       assertIsBadRequest(
-        "/works?sort=foo,bar",
+        s"$rootPath/works?sort=foo,bar",
         description =
           "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
       )
@@ -98,7 +99,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
     it("a mixture of valid and invalid sort") {
       assertIsBadRequest(
-        "/works?sort=foo,production.dates,bar",
+        s"$rootPath/works?sort=foo,production.dates,bar",
         description =
           "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
       )
@@ -113,8 +114,9 @@ class WorksErrorsTest extends ApiWorksTestBase {
         case (_, routes) =>
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works?_queryType=athingwewouldneverusebutmightbecausewesaidwewouldnot") {
-            Status.OK -> emptyJsonResult(apiPrefix)
+            s"$rootPath/works?_queryType=athingwewouldneverusebutmightbecausewesaidwewouldnot"
+          ) {
+            Status.OK -> emptyJsonResult
           }
       }
     }
@@ -125,7 +127,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("not an integer") {
         val pageSize = "penguin"
         assertIsBadRequest(
-          s"/works?pageSize=$pageSize",
+          s"$rootPath/works?pageSize=$pageSize",
           description = s"pageSize: must be a valid Integer"
         )
       }
@@ -133,7 +135,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("just over the maximum") {
         val pageSize = 101
         assertIsBadRequest(
-          s"/works?pageSize=$pageSize",
+          s"$rootPath/works?pageSize=$pageSize",
           description = "pageSize: must be between 1 and 100"
         )
       }
@@ -141,7 +143,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("just below the minimum (zero)") {
         val pageSize = 0
         assertIsBadRequest(
-          s"/works?pageSize=$pageSize",
+          s"$rootPath/works?pageSize=$pageSize",
           description = "pageSize: must be between 1 and 100"
         )
       }
@@ -149,7 +151,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("a large page size") {
         val pageSize = 100000
         assertIsBadRequest(
-          s"/works?pageSize=$pageSize",
+          s"$rootPath/works?pageSize=$pageSize",
           description = "pageSize: must be between 1 and 100"
         )
       }
@@ -157,7 +159,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("a negative page size") {
         val pageSize = -50
         assertIsBadRequest(
-          s"/works?pageSize=$pageSize",
+          s"$rootPath/works?pageSize=$pageSize",
           description = "pageSize: must be between 1 and 100"
         )
       }
@@ -167,7 +169,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("page 0") {
         val page = 0
         assertIsBadRequest(
-          s"/works?page=$page",
+          s"$rootPath/works?page=$page",
           description = "page: must be greater than 1"
         )
       }
@@ -175,7 +177,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       it("a negative page") {
         val page = -50
         assertIsBadRequest(
-          s"/works?page=$page",
+          s"$rootPath/works?page=$page",
           description = "page: must be greater than 1"
         )
       }
@@ -188,7 +190,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
       it("a very large page") {
         assertIsBadRequest(
-          s"/works?page=10000",
+          s"$rootPath/works?page=10000",
           description = description
         )
       }
@@ -196,14 +198,14 @@ class WorksErrorsTest extends ApiWorksTestBase {
       // https://github.com/wellcometrust/platform/issues/3233
       it("so many pages that a naive (page * pageSize) would overflow") {
         assertIsBadRequest(
-          s"/works?page=2000000000&pageSize=100",
+          s"$rootPath/works?page=2000000000&pageSize=100",
           description = description
         )
       }
 
       it("the 101th page with 100 results per page") {
         assertIsBadRequest(
-          s"/works?page=101&pageSize=100",
+          s"$rootPath/works?page=101&pageSize=100",
           description = description
         )
       }
@@ -213,7 +215,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
       val pageSize = -60
       val page = -50
       assertIsBadRequest(
-        s"/works?pageSize=$pageSize&page=$page",
+        s"$rootPath/works?pageSize=$pageSize&page=$page",
         description =
           "page: must be greater than 1, pageSize: must be between 1 and 100"
       )
@@ -224,7 +226,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
     it("looking up a work that doesn't exist") {
       val badId = "doesnotexist"
       assertIsNotFound(
-        s"/works/$badId",
+        s"$rootPath/works/$badId",
         description = s"Work not found for identifier $badId"
       )
     }
@@ -232,7 +234,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
     it("looking up a work with a malformed identifier") {
       val badId = "zd224ncv]"
       assertIsNotFound(
-        s"/works/$badId",
+        s"$rootPath/works/$badId",
         description = s"Work not found for identifier $badId"
       )
     }
@@ -242,21 +244,21 @@ class WorksErrorsTest extends ApiWorksTestBase {
 
       it("listing") {
         assertIsNotFound(
-          s"/works?_index=$indexName",
+          s"$rootPath/works?_index=$indexName",
           description = s"There is no index $indexName"
         )
       }
 
       it("looking up a work") {
         assertIsNotFound(
-          s"/works/$createCanonicalId?_index=$indexName",
+          s"$rootPath/works/$createCanonicalId?_index=$indexName",
           description = s"There is no index $indexName"
         )
       }
 
       it("searching") {
         assertIsNotFound(
-          s"/works/$createCanonicalId?_index=$indexName&query=foobar",
+          s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
           description = s"There is no index $indexName"
         )
       }
@@ -272,12 +274,12 @@ class WorksErrorsTest extends ApiWorksTestBase {
     withWorksApi {
       case (_, routes) =>
         withEmptyIndex { index =>
-          val path = s"/${getApiPrefix()}/works?_index=${index.name}"
+          val path = s"$rootPath/works?_index=${index.name}"
           assertJsonResponse(routes, path)(
             Status.InternalServerError ->
               s"""
                  |{
-                 |  "@context": "${contextUrl(getApiPrefix())}",
+                 |  "@context": "$contextUrl",
                  |  "type": "Error",
                  |  "errorType": "http",
                  |  "httpStatus": 500,
@@ -292,10 +294,9 @@ class WorksErrorsTest extends ApiWorksTestBase {
   def assertIsNotFound(path: String, description: String): Assertion =
     withWorksApi {
       case (_, routes) =>
-        assertJsonResponse(routes, s"/$apiPrefix$path")(
+        assertJsonResponse(routes, path)(
           Status.NotFound ->
             notFound(
-              apiPrefix = apiPrefix,
               description = description
             )
         )

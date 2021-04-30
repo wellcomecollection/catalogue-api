@@ -23,10 +23,9 @@ trait ApiWorksTestBase
       toJson(work).get
   }
 
-  def singleWorkResult(apiPrefix: String,
-                       ontologyType: String = "Work"): String =
+  def singleWorkResult(ontologyType: String = "Work"): String =
     s"""
-        "@context": "${contextUrl(apiPrefix)}",
+        "@context": "$contextUrl",
         "type": "$ontologyType"
      """.stripMargin
 
@@ -42,11 +41,10 @@ trait ApiWorksTestBase
       | }
     """.stripMargin
 
-  def worksListResponse(apiPrefix: String,
-                        works: Seq[Work.Visible[Indexed]]): String =
+  def worksListResponse(works: Seq[Work.Visible[Indexed]]): String =
     s"""
        |{
-       |  ${resultList(apiPrefix, totalResults = works.size)},
+       |  ${resultList(totalResults = works.size)},
        |  "results": [
        |    ${works.map { workResponse }.mkString(",")}
        |  ]

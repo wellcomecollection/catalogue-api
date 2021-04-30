@@ -5,7 +5,8 @@ import uk.ac.wellcome.models.Implicits._
 class ImagesSimilarityTest extends ApiImagesTestBase {
 
   it(
-    "includes visually similar images on a single image if we pass ?include=visuallySimilar") {
+    "includes visually similar images on a single image if we pass ?include=visuallySimilar"
+  ) {
     withImagesApi {
       case (imagesIndex, routes) =>
         val images =
@@ -14,8 +15,9 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
         insertImagesIntoElasticsearch(imagesIndex, images: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images/${images.head.id}?include=visuallySimilar",
-          unordered = true) {
+          s"$rootPath/images/${images.head.id}?include=visuallySimilar",
+          unordered = true
+        ) {
           Status.OK ->
             s"""
                |{
@@ -33,7 +35,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
   }
 
   it(
-    "includes images with similar features on a single image if we pass ?include=withSimilarFeatures") {
+    "includes images with similar features on a single image if we pass ?include=withSimilarFeatures"
+  ) {
     withImagesApi {
       case (imagesIndex, routes) =>
         val images =
@@ -42,8 +45,9 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
         insertImagesIntoElasticsearch(imagesIndex, images: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images/${images.head.id}?include=withSimilarFeatures",
-          unordered = true) {
+          s"$rootPath/images/${images.head.id}?include=withSimilarFeatures",
+          unordered = true
+        ) {
           Status.OK ->
             s"""
                |{
@@ -61,7 +65,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
   }
 
   it(
-    "includes images with similar color palettes on a single image if we pass ?include=withSimilarColors") {
+    "includes images with similar color palettes on a single image if we pass ?include=withSimilarColors"
+  ) {
     withImagesApi {
       case (imagesIndex, routes) =>
         val images =
@@ -70,8 +75,9 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
         insertImagesIntoElasticsearch(imagesIndex, images: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images/${images.head.id}?include=withSimilarColors",
-          unordered = true) {
+          s"$rootPath/images/${images.head.id}?include=withSimilarColors",
+          unordered = true
+        ) {
           Status.OK ->
             s"""
                |{
@@ -99,10 +105,12 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?query=focaccia&include=visuallySimilar") {
+          s"$rootPath/images?query=focaccia&include=visuallySimilar"
+        ) {
           Status.BadRequest -> badRequest(
-            apiPrefix,
-            "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres']")
+            description =
+              "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres']"
+          )
         }
     }
   }

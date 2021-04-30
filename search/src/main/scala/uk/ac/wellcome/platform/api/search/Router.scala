@@ -83,11 +83,9 @@ class Router(
     }
   )
 
-  def legacyRoutes: Route = pathPrefix(apiConfig.pathPrefix) {
+  def legacyRoutes: Route = deepPathPrefix(apiConfig.pathPrefix) {
     concat(
-      pathPrefix("v2") {
-        searchRoutes
-      },
+      searchRoutes,
       pathPrefix("management") {
         concat(
           path("healthcheck") {
