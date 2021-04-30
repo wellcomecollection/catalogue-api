@@ -15,7 +15,7 @@ resource "aws_api_gateway_deployment" "default" {
     // since we don't expect the gateway config to change often it's been left as-is
     // with the proviso that sometimes a manual deploy from the console is necessary
     // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_deployment#redeployment-triggers
-    redeployment = filesha1("${path.module}/api_gateway.tf")
+    redeployment = join("", [filesha1("${path.module}/api_gateway.tf"), filesha1("${path.module}/static_responses.tf")])
   }
 
   lifecycle {

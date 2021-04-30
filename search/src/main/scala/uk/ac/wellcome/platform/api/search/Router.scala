@@ -36,11 +36,13 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
-class Router(elasticClient: ElasticClient,
-             elasticConfig: ElasticConfig,
-             queryConfig: QueryConfig,
-             swaggerDocs: SwaggerDocs,
-             implicit val apiConfig: ApiConfig)(implicit ec: ExecutionContext)
+class Router(
+  elasticClient: ElasticClient,
+  elasticConfig: ElasticConfig,
+  queryConfig: QueryConfig,
+  swaggerDocs: SwaggerDocs,
+  implicit val apiConfig: ApiConfig
+)(implicit ec: ExecutionContext)
     extends CustomDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {
@@ -86,14 +88,6 @@ class Router(elasticClient: ElasticClient,
               }
             )
           },
-          path("v1" / Remaining) { _ =>
-            gone(
-              """"
-                |This API is now decommissioned.
-                |Please use https://api.wellcomecollection.org/catalogue/v2/works.
-              """.stripMargin.replace('\n', ' ')
-            )
-          },
           pathPrefix("management") {
             concat(
               path("healthcheck") {
@@ -117,14 +111,16 @@ class Router(elasticClient: ElasticClient,
     new WorksController(
       elasticsearchService,
       apiConfig,
-      worksIndex = elasticConfig.worksIndex)
+      worksIndex = elasticConfig.worksIndex
+    )
 
   lazy val imagesController =
     new ImagesController(
       elasticsearchService,
       apiConfig,
       imagesIndex = elasticConfig.imagesIndex,
-      queryConfig)
+      queryConfig
+    )
 
   def swagger: Route = get {
     complete(
@@ -147,20 +143,21 @@ class Router(elasticClient: ElasticClient,
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       elasticConfig.worksIndex.name,
-      WorksMultiMatcher("{{query}}").filter(
-        termQuery(field = "type", value = "Visible")),
+      WorksMultiMatcher("{{query}}")
+        .filter(termQuery(field = "type", value = "Visible"))
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
       elasticConfig.imagesIndex.name,
-      ImagesMultiMatcher("{{query}}"),
+      ImagesMultiMatcher("{{query}}")
     )
 
     complete(
       SearchTemplateResponse(
         List(worksSearchTemplate, imageSearchTemplate)
-      ))
+      )
+    )
   }
 
   def rejectionHandler =
