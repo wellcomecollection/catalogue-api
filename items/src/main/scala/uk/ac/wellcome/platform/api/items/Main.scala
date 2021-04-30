@@ -4,6 +4,7 @@ import java.net.URL
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
+import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
 import uk.ac.wellcome.platform.api.common.http.WellcomeHttpApp
 import uk.ac.wellcome.platform.api.common.http.config.builders.HTTPServerBuilder
@@ -24,6 +25,8 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val ecMain: ExecutionContext =
       AkkaBuilder.buildExecutionContext()
+
+    Tracing.init(config)
 
     val workService: StacksService = StacksServiceBuilder.build(config)
 
