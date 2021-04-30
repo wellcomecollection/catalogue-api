@@ -2,7 +2,13 @@ package uk.ac.wellcome.platform.api.common.fixtures
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.{GET, POST}
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, RequestEntity}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  RequestEntity
+}
 import akka.stream.scaladsl.Sink
 import io.circe.parser._
 import org.scalatest.concurrent.ScalaFutures
