@@ -92,5 +92,32 @@ class ItemsApiFeatureTest
         }
       }
     }
+
+    // This is a test case we need, but we shouldn't enable it until we
+    // have the WorksService working -- so we can detect the absence of a work.
+    ignore("returns a 404 if it cannot find a work in the catalogue API") {
+      withApp { _ =>
+        val path = "/works/aaaaaaaa"
+
+        val expectedError =
+          s"""
+             |{
+             |  "errorType": "http",
+             |  "httpStatus": 404,
+             |  "label": "Not Found",
+             |  "description": "Work not found for identifier aaaaaaaa",
+             |  "type": "Error",
+             |  "@context": "https://api.wellcomecollection.org/catalogue/v2/context.json"
+             |}""".stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.NotFound
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedError)
+          }
+        }
+      }
+    }
   }
 }
