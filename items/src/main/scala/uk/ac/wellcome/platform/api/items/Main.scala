@@ -1,5 +1,7 @@
 package uk.ac.wellcome.platform.api.items
 
+import java.net.URL
+
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
@@ -15,7 +17,6 @@ import weco.http.monitoring.HttpMetrics
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
 
 import scala.concurrent.ExecutionContext
-import scala.sys.process.processInternal.URL
 
 object Main extends WellcomeTypesafeApp {
   runWithConfig { config: Config =>
