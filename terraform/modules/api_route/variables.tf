@@ -34,3 +34,8 @@ variable "integration_path" {
 variable "external_hostname" {
   type = string
 }
+
+variable "api_key_required" {
+  type    = bool
+  default = false
+}

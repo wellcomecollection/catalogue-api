@@ -120,6 +120,8 @@ module "items_route" {
   path_part   = "items"
   http_method = "ANY"
 
+  api_key_required = true
+
   path_param       = "workId"
   integration_path = "/works/{workId}"
   lb_port          = local.items_lb_port
