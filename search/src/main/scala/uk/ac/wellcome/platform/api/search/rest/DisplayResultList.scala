@@ -40,8 +40,7 @@ object DisplayResultList {
     resultList: ResultList[Work.Visible[WorkState.Indexed], WorkAggregations],
     searchOptions: SearchOptions[_, WorkAggregationRequest, _],
     includes: WorksIncludes,
-    requestUri: Uri)
-    : DisplayResultList[DisplayWork, DisplayWorkAggregations] =
+    requestUri: Uri): DisplayResultList[DisplayWork, DisplayWorkAggregations] =
     PaginationResponse(resultList, searchOptions, requestUri) match {
       case PaginationResponse(totalPages, prevPage, nextPage) =>
         DisplayResultList(
