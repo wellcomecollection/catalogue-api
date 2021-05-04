@@ -12,7 +12,7 @@ locals {
 }
 
 module "search_api" {
-  source                  = "../modules/service"
+  source                  = "../service"
   service_name            = "${var.environment_name}-search-api"
   deployment_service_name = "search-api"
 
@@ -46,7 +46,7 @@ module "search_api" {
 }
 
 module "items_api" {
-  source                  = "../modules/service"
+  source                  = "../service"
   service_name            = "${var.environment_name}-items-api"
   deployment_service_name = "items-api"
 
