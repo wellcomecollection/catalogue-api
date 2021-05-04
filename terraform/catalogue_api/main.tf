@@ -18,7 +18,8 @@ module "catalogue_api_prod" {
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns        = aws.dns
+    aws.experience = aws.experience
   }
 }
 
@@ -42,6 +43,7 @@ module "catalogue_api_stage" {
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns        = aws.dns
+    aws.experience = aws.experience
   }
 }

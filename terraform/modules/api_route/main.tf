@@ -22,7 +22,8 @@ resource "aws_api_gateway_method" "method" {
   http_method        = var.http_method
   request_parameters = var.path_param != null ? local.method_request_parameters : null
 
-  authorization = "NONE"
+  authorization    = "NONE"
+  api_key_required = var.api_key_required
 }
 
 resource "aws_api_gateway_integration" "integration" {
