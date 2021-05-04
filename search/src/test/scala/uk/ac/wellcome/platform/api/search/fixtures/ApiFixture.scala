@@ -150,6 +150,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
                 (key, sortedJson(unordered)(value))
             }
             .sortBy(tup => tup._1): _*
-        )
+      )
     )
 }
