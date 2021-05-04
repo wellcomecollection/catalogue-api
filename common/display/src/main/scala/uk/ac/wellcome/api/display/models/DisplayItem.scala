@@ -25,6 +25,9 @@ case class DisplayItem(
   @Schema(
     description = "List of locations that provide access to the item"
   ) locations: List[DisplayLocation] = List(),
+  @Schema(
+    description = "Item availability status"
+  ) status: Option[DisplayItemStatus] = None,
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Item"
 )
 
@@ -38,7 +41,8 @@ object DisplayItem extends GetIdentifiers {
           id = id.maybeCanonicalId.map { _.underlying },
           identifiers = getIdentifiers(id, includesIdentifiers),
           title = title,
-          locations = locations.map(DisplayLocation(_))
+          locations = locations.map(DisplayLocation(_)),
+          status = None
         )
     }
 }

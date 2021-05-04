@@ -1,5 +1,6 @@
 package uk.ac.wellcome.platform.api.common.models.display
 
+import uk.ac.wellcome.api.display.models.{DisplayItem, DisplayItemStatus}
 import uk.ac.wellcome.platform.api.common.models.StacksWork
 
 object DisplayStacksWork {
@@ -8,7 +9,7 @@ object DisplayStacksWork {
       id = stacksWork.canonicalId.toString(),
       items = stacksWork.items.map { stacksItem =>
         DisplayItem(
-          id = stacksItem.id.value,
+          id = Some(stacksItem.id.value),
           status = Some(
             DisplayItemStatus(
               id = stacksItem.status.id,
