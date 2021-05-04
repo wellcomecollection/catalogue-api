@@ -42,12 +42,14 @@ class WorksController(elasticsearchService: ElasticsearchService,
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(
-                    DisplayResultList(
-                      resultList = resultList,
-                      searchOptions = searchOptions,
-                      includes = params.include.getOrElse(WorksIncludes.none),
-                      requestUri = requestUri,
-                      contextUri = contextUri
+                    ContextResponse(
+                      context = contextUri,
+                      DisplayResultList(
+                        resultList = resultList,
+                        searchOptions = searchOptions,
+                        includes = params.include.getOrElse(WorksIncludes.none),
+                        requestUri = requestUri
+                      )
                     )
                   )
                 }

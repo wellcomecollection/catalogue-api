@@ -22,7 +22,6 @@ import weco.http.json.DisplayJsonUtil._
   description = "A paginated list of results."
 )
 case class DisplayResultList[DisplayResult, DisplayAggs](
-  @JsonKey("@context") context: String,
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "ResultList",
   pageSize: Int,
   totalPages: Int,
@@ -41,13 +40,11 @@ object DisplayResultList {
     resultList: ResultList[Work.Visible[WorkState.Indexed], WorkAggregations],
     searchOptions: SearchOptions[_, WorkAggregationRequest, _],
     includes: WorksIncludes,
-    requestUri: Uri,
-    contextUri: String)
+    requestUri: Uri)
     : DisplayResultList[DisplayWork, DisplayWorkAggregations] =
     PaginationResponse(resultList, searchOptions, requestUri) match {
       case PaginationResponse(totalPages, prevPage, nextPage) =>
         DisplayResultList(
-          context = contextUri,
           pageSize = searchOptions.pageSize,
           totalPages = totalPages,
           totalResults = resultList.totalResults,
@@ -64,13 +61,11 @@ object DisplayResultList {
     resultList: ResultList[Image[ImageState.Indexed], ImageAggregations],
     searchOptions: SearchOptions[_, _, _],
     includes: MultipleImagesIncludes,
-    requestUri: Uri,
-    contextUri: String)
+    requestUri: Uri)
     : DisplayResultList[DisplayImage, DisplayImageAggregations] =
     PaginationResponse(resultList, searchOptions, requestUri) match {
       case PaginationResponse(totalPages, prevPage, nextPage) =>
         DisplayResultList(
-          context = contextUri,
           pageSize = searchOptions.pageSize,
           totalPages = totalPages,
           totalResults = resultList.totalResults,
