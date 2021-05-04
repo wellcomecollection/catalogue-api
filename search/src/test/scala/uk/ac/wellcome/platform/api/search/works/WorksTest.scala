@@ -87,8 +87,8 @@ class WorksTest
           Status.OK -> s"""
             {
               ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$apiRoot/works?page=1&pageSize=1",
-              "nextPage": "$apiRoot/works?page=3&pageSize=1",
+              "prevPage": "$publicRootUri/works?page=1&pageSize=1",
+              "nextPage": "$publicRootUri/works?page=3&pageSize=1",
               "results": [
                 ${workResponse(works(1))}
               ]
@@ -100,7 +100,7 @@ class WorksTest
           Status.OK -> s"""
             {
               ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "nextPage": "$apiRoot/works?page=2&pageSize=1",
+              "nextPage": "$publicRootUri/works?page=2&pageSize=1",
               "results": [
                 ${workResponse(works(0))}
               ]
@@ -112,7 +112,7 @@ class WorksTest
           Status.OK -> s"""
             {
               ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$apiRoot/works?page=2&pageSize=1",
+              "prevPage": "$publicRootUri/works?page=2&pageSize=1",
               "results": [
                 ${workResponse(works(2))}
               ]

@@ -20,15 +20,15 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 
   val Status = akka.http.scaladsl.model.StatusCodes
 
-  val apiRoot: String
+  val publicRootUri: String
 
   implicit def defaultHostInfo: DefaultHostInfo = DefaultHostInfo(
-    host = Host(apiConfig.host),
-    securedConnection = if (apiConfig.scheme == "https") true else false
+    host = Host(apiConfig.publicHost),
+    securedConnection = if (apiConfig.publicScheme == "https") true else false
   )
 
   lazy val apiConfig = ApiConfig(
-    rootUri = Uri(apiRoot),
+    publicRootUri = Uri(publicRootUri),
     defaultPageSize = 10,
     contextSuffix = "context.json"
   )

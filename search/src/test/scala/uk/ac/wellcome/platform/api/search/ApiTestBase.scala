@@ -7,9 +7,13 @@ import uk.ac.wellcome.fixtures.{fixture, Fixture, RandomGenerators}
 import uk.ac.wellcome.platform.api.search.fixtures.ApiFixture
 
 trait ApiTestBase extends ApiFixture with RandomGenerators {
-  val apiRoot: String = "https://api-testing.local/catalogue/v2"
-  val rootPath: String = s"/${apiConfig.pathPrefix}"
-  val contextUrl: String = s"$apiRoot/context.json"
+  val publicRootUri = "https://api-testing.local/catalogue/v2"
+
+  // This is the path relative to which requests are made on the host,
+  // not necessarily the expected public path! When it is empty, requests
+  // are made to the root of the host API.
+  val rootPath: String = "/catalogue/v2"
+  val contextUrl: String = s"$publicRootUri/context.json"
 
   def emptyJsonResult: String =
     s"""

@@ -1,7 +1,5 @@
 package uk.ac.wellcome.platform.api.items
 
-import java.net.URL
-
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
@@ -17,6 +15,7 @@ import weco.http.monitoring.HttpMetrics
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
 
 import scala.concurrent.ExecutionContext
+import scala.sys.process.processInternal.URL
 
 object Main extends WellcomeTypesafeApp {
   runWithConfig { config: Config =>
@@ -32,18 +31,18 @@ object Main extends WellcomeTypesafeApp {
 
     val apiConf =
       ApiConfig(
-        host = config
+        publicHost = config
           .getStringOption("api.host")
           .getOrElse("localhost"),
-        scheme = config
+        publicScheme = config
           .getStringOption("api.scheme")
           .getOrElse("https"),
         defaultPageSize = config
           .getIntOption("api.pageSize")
           .getOrElse(10),
-        pathPrefix =
+        publicRootPath =
           s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
-        contextSuffix = config
+        contextPath = config
           .getStringOption("api.context.suffix")
           .getOrElse("context.json")
       )

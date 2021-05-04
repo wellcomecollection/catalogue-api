@@ -55,7 +55,7 @@ class ApiSwaggerTest
       getKey(json, "servers") shouldBe Some(
         Json.arr(
           Json.obj(
-            "url" -> Json.fromString("https://api-testing.local/catalogue/v2/")
+            "url" -> Json.fromString(publicRootUri + "/")
           )
         )
       )

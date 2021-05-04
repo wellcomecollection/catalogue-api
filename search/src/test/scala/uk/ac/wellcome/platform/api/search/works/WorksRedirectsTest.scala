@@ -19,7 +19,7 @@ class WorksRedirectsTest extends ApiWorksTestBase {
         insertIntoElasticsearch(worksIndex, redirectedWork)
         val path = s"$rootPath/works/${redirectedWork.state.canonicalId}"
         assertRedirectResponse(routes, path) {
-          Status.Found -> s"$rootPath/works/$redirectId"
+          Status.Found -> s"${apiConfig.publicRootPath}/works/$redirectId"
         }
     }
   }
@@ -31,7 +31,7 @@ class WorksRedirectsTest extends ApiWorksTestBase {
         val path =
           s"$rootPath/works/${redirectedWork.state.canonicalId}?include=identifiers"
         assertRedirectResponse(routes, path) {
-          Status.Found -> s"$rootPath/works/$redirectId?include=identifiers"
+          Status.Found -> s"${apiConfig.publicRootPath}/works/$redirectId?include=identifiers"
         }
     }
   }

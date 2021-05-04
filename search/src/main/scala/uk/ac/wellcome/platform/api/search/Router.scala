@@ -83,22 +83,24 @@ class Router(
     }
   )
 
-  def legacyRoutes: Route = deepPathPrefix(apiConfig.pathPrefix) {
-    concat(
-      searchRoutes,
-      pathPrefix("management") {
-        concat(
-          path("healthcheck") {
-            get {
-              complete("message" -> "ok")
+  def legacyRoutes: Route = pathPrefix("catalogue") {
+    pathPrefix("v2") {
+      concat(
+        searchRoutes,
+        pathPrefix("management") {
+          concat(
+            path("healthcheck") {
+              get {
+                complete("message" -> "ok")
+              }
+            },
+            path("clusterhealth") {
+              getClusterHealth
             }
-          },
-          path("clusterhealth") {
-            getClusterHealth
-          }
-        )
-      }
-    )
+          )
+        }
+      )
+    }
   }
 
   def routes: Route = handleRejections(rejectionHandler) {
