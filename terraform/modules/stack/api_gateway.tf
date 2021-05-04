@@ -47,7 +47,7 @@ resource "aws_api_gateway_resource" "v2" {
 
 // /v2/works
 module "works_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = aws_api_gateway_resource.v2.id
@@ -63,7 +63,7 @@ module "works_route" {
 
 // /v2/images
 module "images_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = aws_api_gateway_resource.v2.id
@@ -79,7 +79,7 @@ module "images_route" {
 
 // /v2/images/{imageId}
 module "single_image_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = module.images_route.resource_id
@@ -96,7 +96,7 @@ module "single_image_route" {
 
 // /v2/works/{workId}
 module "single_work_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = module.works_route.resource_id
@@ -113,7 +113,7 @@ module "single_work_route" {
 
 // /v2/works/{workId}/items
 module "items_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = module.single_work_route.resource_id
@@ -130,7 +130,7 @@ module "items_route" {
 
 // default
 module "default_route" {
-  source = "../modules/api_route"
+  source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id

@@ -11,7 +11,7 @@ locals {
 }
 
 module "v1_root_gone" {
-  source = "../modules/static_response"
+  source = "../static_response"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
@@ -23,7 +23,7 @@ module "v1_root_gone" {
 }
 
 module "v1_gone" {
-  source = "../modules/static_response"
+  source = "../static_response"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = module.v1_root_gone.resource_id

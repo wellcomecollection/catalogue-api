@@ -1,5 +1,5 @@
 module "catalogue_api_prod" {
-  source = "../stack"
+  source = "../modules/stack"
 
   environment_name  = "prod"
   external_hostname = "api.wellcomecollection.org"
@@ -23,7 +23,7 @@ module "catalogue_api_prod" {
 }
 
 module "catalogue_api_stage" {
-  source = "../stack"
+  source = "../modules/stack"
 
   environment_name  = "stage"
   external_hostname = "api-stage.wellcomecollection.org"
