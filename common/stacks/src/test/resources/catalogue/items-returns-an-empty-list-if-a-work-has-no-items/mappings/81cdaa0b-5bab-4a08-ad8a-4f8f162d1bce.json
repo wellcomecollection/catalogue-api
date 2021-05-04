@@ -1,0 +1,12 @@
+{
+  "id" : "81cdaa0b-5bab-4a08-ad8a-4f8f162d1bce",
+  "request" : {
+    "method" : "ANY"
+  },
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "https://api.wellcomecollection.org"
+  },
+  "uuid" : "81cdaa0b-5bab-4a08-ad8a-4f8f162d1bce",
+  "insertionIndex" : 0
+}

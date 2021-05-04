@@ -48,5 +48,49 @@ class ItemsApiFeatureTest
         }
       }
     }
+
+    it("returns an empty list if a work has no items") {
+      withApp { _ =>
+        val path = "/works/m7mnfut5"
+
+        val expectedJson =
+          s"""
+             |{
+             |  "id" : "m7mnfut5",
+             |  "items" : [ ],
+             |  "type": "Work"
+             |}""".stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) { actualJson =>
+            assertJsonStringsAreEqual(actualJson, expectedJson)
+          }
+        }
+      }
+    }
+
+    it("returns an empty list if a work has no identified items") {
+      withApp { _ =>
+        val path = "/works/xnb6y9qq"
+
+        val expectedJson =
+          s"""
+             |{
+             |  "id" : "xnb6y9qq",
+             |  "items" : [ ],
+             |  "type": "Work"
+             |}""".stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) { actualJson =>
+            assertJsonStringsAreEqual(actualJson, expectedJson)
+          }
+        }
+      }
+    }
   }
 }
