@@ -1,5 +1,5 @@
 resource "aws_api_gateway_usage_plan" "items_api" {
-  name        = "Items API (${var.environment_name})"
+  name = "Items API (${var.environment_name})"
 
   api_stages {
     api_id = aws_api_gateway_rest_api.catalogue.id
