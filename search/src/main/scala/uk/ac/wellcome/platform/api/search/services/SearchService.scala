@@ -1,9 +1,11 @@
 package uk.ac.wellcome.platform.api.search.services
 
+import co.elastic.apm.api.Transaction
 import com.sksamuel.elastic4s.{ElasticError, Hit, Index}
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
+import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models.{ResultList, SearchOptions}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
@@ -34,12 +36,7 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
 
   def listOrSearch(index: Index, searchOptions: S)
   : Future[Either[ElasticError, ResultList[VisibleT, Aggs]]] =
-    elasticsearchService
-      .executeSearch(
-        searchOptions = searchOptions,
-        requestBuilder = requestBuilder,
-        index = index
-      )
+    executeSearch(searchOptions, index)
       .map { _.map(createResultList) }
 
   private def createResultList(searchResponse: SearchResponse): ResultList[VisibleT, Aggs] =
@@ -59,4 +56,34 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
           s"Unable to parse JSON($e): ${hit.sourceAsString}"
         )
     }
+
+  /** Given a set of query options, build a SearchDefinition for Elasticsearch
+    * using the elastic4s query DSL, then execute the search.
+    */
+  private def executeSearch(
+    searchOptions: S,
+    index: Index): Future[Either[ElasticError, SearchResponse]] = {
+    val searchRequest = requestBuilder
+      .request(searchOptions, index)
+      .trackTotalHits(true)
+    Tracing.currentTransaction.addQueryOptionLabels(searchOptions)
+    elasticsearchService.executeSearchRequest(searchRequest)
+  }
+
+  implicit class EnhancedTransaction(transaction: Transaction) {
+    def addQueryOptionLabels(searchOptions: S): Transaction = {
+      transaction.setLabel("pageSize", searchOptions.pageSize)
+      transaction.setLabel("pageNumber", searchOptions.pageNumber)
+      transaction.setLabel("sortOrder", searchOptions.sortOrder.toString)
+      transaction.setLabel(
+        "sortBy",
+        searchOptions.sortBy.map { _.toString }.mkString(","))
+      transaction.setLabel(
+        "filters",
+        searchOptions.filters.map { _.toString }.mkString(","))
+      transaction.setLabel(
+        "aggregations",
+        searchOptions.aggregations.map { _.toString }.mkString(","))
+    }
+  }
 }
