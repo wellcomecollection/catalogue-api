@@ -1,23 +1,17 @@
 package uk.ac.wellcome.platform.api.search.fixtures
 
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.http.scaladsl.model.{ContentTypes, StatusCode, Uri}
 import akka.http.scaladsl.model.headers.Host
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import io.circe.parser.parse
-import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.Router
 import uk.ac.wellcome.platform.api.search.models.QueryConfig
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
+import weco.api.search.fixtures.ResponseFixtures
 
-trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
-
+trait ApiFixture extends AnyFunSpec with ResponseFixtures {
   val Status = akka.http.scaladsl.model.StatusCodes
 
   val publicRootUri: String
@@ -25,12 +19,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
   implicit def defaultHostInfo: DefaultHostInfo = DefaultHostInfo(
     host = Host(apiConfig.publicHost),
     securedConnection = if (apiConfig.publicScheme == "https") true else false
-  )
-
-  lazy val apiConfig = ApiConfig(
-    publicRootUri = Uri(publicRootUri),
-    defaultPageSize = 10,
-    contextSuffix = "context.json"
   )
 
   // Note: creating new instances of the SwaggerDocs class is expensive, so
@@ -88,67 +76,4 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
         testWith((imagesIndex, route))
       }
     }
-
-  def assertJsonResponse(
-    routes: Route,
-    path: String,
-    unordered: Boolean = false
-  )(expectedResponse: (StatusCode, String)) =
-    eventually {
-      expectedResponse match {
-        case (expectedStatus, expectedJson) =>
-          Get(path) ~> routes ~> check {
-            contentType shouldEqual ContentTypes.`application/json`
-            parseJson(responseAs[String], unordered) shouldEqual parseJson(
-              expectedJson,
-              unordered
-            )
-            status shouldEqual expectedStatus
-          }
-      }
-    }
-
-  def assertRedirectResponse(routes: Route, path: String)(
-    expectedResponse: (StatusCode, String)
-  ) =
-    eventually {
-      expectedResponse match {
-        case (expectedStatus, expectedLocation) =>
-          Get(path) ~> routes ~> check {
-            status shouldEqual expectedStatus
-            header("Location").map(_.value) shouldEqual Some(expectedLocation)
-          }
-      }
-    }
-
-  def parseJson(string: String, unordered: Boolean = false): Json =
-    parse(string) match {
-      case Right(json) => sortedJson(unordered)(json)
-      case Left(err) =>
-        throw new RuntimeException(
-          s"Asked to compare a string that wasn't JSON. Error: $err. JSON:\n$string"
-        )
-    }
-
-  def sortedJson(unordered: Boolean)(json: Json): Json =
-    json.arrayOrObject(
-      json,
-      array => {
-        val arr = array.map(sortedJson(unordered))
-        if (unordered) {
-          Json.arr(arr.sortBy(_.toString): _*)
-        } else {
-          Json.arr(arr: _*)
-        }
-      },
-      obj =>
-        Json.obj(
-          obj.toList
-            .map {
-              case (key, value) =>
-                (key, sortedJson(unordered)(value))
-            }
-            .sortBy(tup => tup._1): _*
-      )
-    )
 }
