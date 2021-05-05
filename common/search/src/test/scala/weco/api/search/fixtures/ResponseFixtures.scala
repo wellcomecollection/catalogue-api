@@ -83,6 +83,15 @@ trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixt
         )
     )
 
+  def serverError: String =
+    s"""{
+      "@context": "$contextUrl",
+      "type": "Error",
+      "errorType": "http",
+      "httpStatus": 500,
+      "label": "Internal Server Error"
+    }"""
+
   def badRequest(description: String) =
     s"""{
       "@context": "$contextUrl",

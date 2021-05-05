@@ -1,16 +1,20 @@
 package weco.api.search.rest
 
 import akka.http.scaladsl.model.{StatusCodes, Uri}
+import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.circe._
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import uk.ac.wellcome.elasticsearch.NoStrictMapping
+import uk.ac.wellcome.json.JsonUtil._
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.WorkGenerators
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.api.search.elasticsearch.ElasticLookup
 import weco.api.search.fixtures.ResponseFixtures
-import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 
 import scala.concurrent.ExecutionContext

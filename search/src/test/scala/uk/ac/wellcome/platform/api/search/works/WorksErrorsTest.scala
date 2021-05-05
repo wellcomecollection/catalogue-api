@@ -276,16 +276,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
         withEmptyIndex { index =>
           val path = s"$rootPath/works?_index=${index.name}"
           assertJsonResponse(routes, path)(
-            Status.InternalServerError ->
-              s"""
-                 |{
-                 |  "@context": "$contextUrl",
-                 |  "type": "Error",
-                 |  "errorType": "http",
-                 |  "httpStatus": 500,
-                 |  "label": "Internal Server Error"
-                 |}
-            """.stripMargin
+            Status.InternalServerError -> serverError
           )
         }
     }
