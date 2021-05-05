@@ -37,14 +37,14 @@ class CustomDirectivesTest
       }
     }
 
-    it("should return a URI with the configured public host") {
+    it("returns a URI with the configured public host") {
       Get("/test") ~> testRoute ~> check {
         responseAs[String] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
       }
     }
 
     it(
-      "should return a URI with the configured public root path, if the request URI doesn't already contain it"
+      "returns a URI with the configured public root path, if the request URI doesn't already contain it"
     ) {
       Get("/catalogue/v2/test") ~> testRoute ~> check {
         responseAs[String] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
