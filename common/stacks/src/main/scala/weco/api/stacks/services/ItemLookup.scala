@@ -10,13 +10,10 @@ import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WorksLookup(elasticsearchService: ElasticsearchService)(
+class ItemLookup(elasticsearchService: ElasticsearchService)(
   implicit ec: ExecutionContext
 ) {
-  def byWorkId(id: CanonicalId)(index: Index): Future[Either[ElasticError, Option[Work[Indexed]]]] =
-    elasticsearchService.findById[Work[Indexed]](id)(index)
-
-  def byItemId(itemId: CanonicalId)(index: Index): Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+  def byId(itemId: CanonicalId)(index: Index): Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -37,7 +34,7 @@ class WorksLookup(elasticsearchService: ElasticsearchService)(
               // The .asInstanceOf here will be a no-op at runtime, and is just so
               // the compiler knows this will always be an Item[IdState.Identified]
               case item@Item(IdState.Identified(id, _, _), _, _) if id == itemId
-                => item.asInstanceOf[Item[IdState.Identified]]
+              => item.asInstanceOf[Item[IdState.Identified]]
             }
         )
     }

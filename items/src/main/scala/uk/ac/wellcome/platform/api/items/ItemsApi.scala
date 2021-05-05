@@ -6,7 +6,7 @@ import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import weco.api.search.elasticsearch.{ElasticsearchService, VisibleWorkDirectives}
-import weco.api.stacks.services.WorksLookup
+import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -21,10 +21,10 @@ trait ItemsApi extends VisibleWorkDirectives with Tracing {
   val elasticsearchService: ElasticsearchService
   val index: Index
 
-  private val worksLookup = new WorksLookup(elasticsearchService)
+  private val worksLookup = new WorkLookup(elasticsearchService)
 
   private def getStacksWork(id: CanonicalId): Future[Route] =
-    worksLookup.byWorkId(id)(index)
+    worksLookup.byId(id)(index)
       .map {
         work => visibleWork(id, work) {
           w: Work.Visible[Indexed] =>
