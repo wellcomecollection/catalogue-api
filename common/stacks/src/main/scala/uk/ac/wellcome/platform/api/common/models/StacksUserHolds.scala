@@ -1,5 +1,7 @@
 package uk.ac.wellcome.platform.api.common.models
 
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+
 import java.time.Instant
 
 case class StacksUserHolds(
@@ -8,7 +10,8 @@ case class StacksUserHolds(
 )
 
 case class StacksHold(
-  itemId: ItemIdentifier[_],
+  id: Option[CanonicalId] = None,
+  itemId: SourceIdentifier,
   pickup: StacksPickup,
   status: StacksHoldStatus
 )

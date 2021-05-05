@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,6 +8,8 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraIdentifier
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -50,7 +51,11 @@ class SierraServiceTest
                 userId = "1234567",
                 holds = List(
                   StacksHold(
-                    itemId = SierraItemIdentifier(1292185),
+                    itemId = SourceIdentifier(
+                      identifierType = SierraIdentifier,
+                      value = "1292185",
+                      ontologyType = "Item"
+                    ),
                     pickup = StacksPickup(
                       location = StacksPickupLocation(
                         id = "sepbb",

@@ -48,7 +48,8 @@ class StacksServiceTest
                     "/iii/sierra-api/v5/patrons/1234567/holds/requests"
                   )
                 ).withRequestBody(
-                  equalToJson("""
+                  equalToJson(
+                    """
                       |{
                       |  "recordType" : "i",
                       |  "recordNumber" : 1601017,
@@ -84,13 +85,14 @@ class StacksServiceTest
                     "/iii/sierra-api/v5/patrons/1234567/holds/requests"
                   )
                 ).withRequestBody(
-                  equalToJson("""
-                                |{
-                                |  "recordType" : "i",
-                                |  "recordNumber" : 1601018,
-                                |  "pickupLocation" : "unspecified"
-                                |}
-                                |""".stripMargin)
+                  equalToJson(
+                    """
+                      |{
+                      |  "recordType" : "i",
+                      |  "recordNumber" : 1601018,
+                      |  "pickupLocation" : "unspecified"
+                      |}
+                      |""".stripMargin)
                 )
               )
             }
@@ -116,40 +118,6 @@ class StacksServiceTest
                       sierraId = SierraItemIdentifier(1601017)
                     ),
                     status = StacksItemStatus("available", "Available")
-                  )
-                )
-              )
-            }
-        }
-      }
-    }
-
-    describe("getStacksUserHoldsWithStacksItemIdentifier") {
-      it("gets a StacksUserHolds[StacksItemIdentifier]") {
-        withStacksService {
-          case (stacksService, _) =>
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
-
-            whenReady(
-              stacksService.getStacksUserHolds(
-                userId = stacksUserIdentifier
-              )
-            ) { stacksUserHolds =>
-              stacksUserHolds shouldBe StacksUserHolds(
-                userId = "1234567",
-                holds = List(
-                  StacksHold(
-                    itemId = StacksItemIdentifier(
-                      canonicalId = CanonicalId("n5v7b4md"),
-                      sierraId = SierraItemIdentifier(1292185)
-                    ),
-                    pickup = StacksPickup(
-                      location =
-                        StacksPickupLocation("sepbb", "Rare Materials Room"),
-                      pickUpBy = Some(Instant.parse("2019-12-03T04:00:00Z"))
-                    ),
-                    status =
-                      StacksHoldStatus("i", "item hold ready for pickup.")
                   )
                 )
               )

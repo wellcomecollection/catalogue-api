@@ -8,7 +8,7 @@ import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
-import uk.ac.wellcome.platform.api.common.services.StacksService
+import uk.ac.wellcome.platform.api.common.services.{SierraService, StacksService}
 import uk.ac.wellcome.platform.api.common.services.config.builders.StacksServiceBuilder
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
@@ -64,6 +64,7 @@ object Main extends WellcomeTypesafeApp {
 
       override implicit val itemLookup: ItemLookup = itLookup
       override val index: Index = ElasticConfig.apply().worksIndex
+      override implicit val sierraService: SierraService = workService.sierraService
     }
 
     val appName = "RequestsApi"

@@ -8,7 +8,7 @@ import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import weco.http.fixtures.HttpFixtures
-import uk.ac.wellcome.platform.api.common.services.StacksService
+import uk.ac.wellcome.platform.api.common.services.{SierraService, StacksService}
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.requests.RequestsApi
 import weco.api.search.elasticsearch.ElasticsearchService
@@ -53,6 +53,7 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures with IndexFix
 
           override implicit val itemLookup: ItemLookup = itLookup
           override val index: Index = givenIndex
+          override implicit val sierraService: SierraService = stacksService.sierraService
         }
 
         withApp(router.routes) { _ =>

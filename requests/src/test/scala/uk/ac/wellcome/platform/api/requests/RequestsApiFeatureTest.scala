@@ -179,7 +179,7 @@ class RequestsApiFeatureTest
         sourceIdentifier = SourceIdentifier(
           identifierType = SierraIdentifier,
           ontologyType = "Item",
-          value = "1601017"
+          value = "1601018"
         )
       )
 
@@ -228,19 +228,33 @@ class RequestsApiFeatureTest
 
     it("provides information about a users' holds") {
       withLocalWorksIndex { index =>
+        val item = createIdentifiedItemWith(
+          sourceIdentifier = SourceIdentifier(
+            identifierType = SierraIdentifier,
+            value = "1292185",
+            ontologyType = "Item"
+          )
+        )
+
+        val work = indexedWork().items(List(item))
+
         withRequestsApi(index) { _ =>
+          insertIntoElasticsearch(index, work)
+
           val path = "/users/1234567/item-requests"
 
+          // TODO: This output looks distinctly weird.
+          // Where's the catalogue ID, for one?
           val expectedJson =
             s"""
                |{
                |  "results" : [
                |    {
                |      "item" : {
-               |        "id" : "n5v7b4md",
+               |        "id" : "1292185",
                |        "locations" : [
                |        ],
-               |        "ontologyType" : "Item"
+               |        "type" : "Item"
                |      },
                |      "pickupDate" : "2019-12-03T04:00:00Z",
                |      "pickupLocation" : {

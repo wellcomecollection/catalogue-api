@@ -1,10 +1,11 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraIdentifier
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,8 +57,15 @@ class SierraService(
     entry: SierraUserHoldsEntryStub
   ): StacksHold = {
 
-    val itemId = SierraItemIdentifier
-      .createFromSierraId(entry.record)
+    val itemId = SourceIdentifier(
+      identifierType = SierraIdentifier,
+      ontologyType = "Item",
+      // The values from the Sierra API are of the form
+      // https://libsys.wellcomelibrary.org/iii/sierra-api/v5/items/1292185
+      //
+      // For now, just split on slashes to extract the ID.
+      value = entry.record.split("/").last
+    )
 
     val pickupLocation = StacksPickupLocation(
       id = entry.pickupLocation.code,
@@ -74,7 +82,7 @@ class SierraService(
       label = entry.status.name
     )
 
-    StacksHold(itemId, pickup, status)
+    StacksHold(id = None, itemId, pickup, status)
   }
 
   def getStacksUserHolds(

@@ -41,6 +41,8 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
   }
 
   def bySourceIdentifier(itemId: SourceIdentifier)(index: Index): Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+    // TODO: What if we get something with the right value but wrong type?
+    // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
       search(index)
         .query(

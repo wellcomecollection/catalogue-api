@@ -1,16 +1,15 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.server.Route
-import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
-import uk.ac.wellcome.platform.api.requests.responses.CreateHold
+import uk.ac.wellcome.platform.api.requests.responses.{CreateHold, LookupHolds}
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-trait RequestsApi extends CreateHold {
+trait RequestsApi extends CreateHold with LookupHolds {
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
 
@@ -21,10 +20,7 @@ trait RequestsApi extends CreateHold {
           createHold(userId, itemRequest)
         }
       } ~ get {
-        val userIdentifier = StacksUserIdentifier(userId)
-        val result = stacksWorkService.getStacksUserHolds(userIdentifier)
-
-        onComplete(result) {
+        onComplete(lookupHolds(userId)) {
           case Success(value) => complete(DisplayResultsList(value))
           case Failure(err)   => failWith(err)
         }
