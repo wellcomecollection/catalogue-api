@@ -4,13 +4,16 @@ import akka.http.scaladsl.model.StatusCodes
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.fixtures.RandomGenerators
 import uk.ac.wellcome.json.utils.JsonAssertions
+import uk.ac.wellcome.models.Implicits._
+import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraIdentifier
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
@@ -18,83 +21,112 @@ class ItemsApiFeatureTest
     with ItemsApiFixture
     with JsonAssertions
     with IntegrationPatience
-    with RandomGenerators
+    with WorkGenerators
+    with ItemsGenerators
     with HttpFixtures {
 
   describe("items") {
     it("shows a user the items on a work") {
-      withItemsApi { _ =>
-        val path = "/works/cnkv77md"
+      val item =
+        createIdentifiedItemWith(
+          sourceIdentifier = SourceIdentifier(
+            identifierType = SierraIdentifier,
+            value = "1601017",
+            ontologyType = "Item"
+          )
+        )
 
-        val expectedJson =
-          s"""
-             |{
-             |  "id" : "cnkv77md",
-             |  "items" : [
-             |    {
-             |      "id" : "ys3ern6x",
-             |      "locations" : [
-             |      ],
-             |      "status" : {
-             |        "id" : "available",
-             |        "label" : "Available",
-             |        "type": "ItemStatus"
-             |      },
-             |      "type": "Item"
-             |    }
-             |  ],
-             |  "type": "Work"
-             |}""".stripMargin
+      val work = indexedWork().items(List(item))
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
 
-          withStringEntity(response.entity) { actualJson =>
-            assertJsonStringsAreEqual(actualJson, expectedJson)
+        withItemsApi(index) { _ =>
+          val path = s"/works/${work.id}"
+
+          val expectedJson =
+            s"""
+               |{
+               |  "id" : "${work.id}",
+               |  "items" : [
+               |    {
+               |      "id" : "${item.id}",
+               |      "locations" : [
+               |      ],
+               |      "status" : {
+               |        "id" : "available",
+               |        "label" : "Available",
+               |        "type": "ItemStatus"
+               |      },
+               |      "type": "Item"
+               |    }
+               |  ],
+               |  "type": "Work"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
+
+            withStringEntity(response.entity) { actualJson =>
+              assertJsonStringsAreEqual(actualJson, expectedJson)
+            }
           }
         }
       }
     }
 
     it("returns an empty list if a work has no items") {
-      withItemsApi { _ =>
-        val path = "/works/m7mnfut5"
+      val work = indexedWork()
 
-        val expectedJson =
-          s"""
-             |{
-             |  "id" : "m7mnfut5",
-             |  "items" : [ ],
-             |  "type": "Work"
-             |}""".stripMargin
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+        withItemsApi(index) { _ =>
+          val path = s"/works/${work.id}"
 
-          withStringEntity(response.entity) { actualJson =>
-            assertJsonStringsAreEqual(actualJson, expectedJson)
+          val expectedJson =
+            s"""
+               |{
+               |  "id" : "${work.id}",
+               |  "items" : [ ],
+               |  "type": "Work"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
+
+            withStringEntity(response.entity) { actualJson =>
+              assertJsonStringsAreEqual(actualJson, expectedJson)
+            }
           }
         }
       }
     }
 
     it("returns an empty list if a work has no identified items") {
-      withItemsApi { _ =>
-        val path = "/works/xnb6y9qq"
+      val work = indexedWork()
+        .items(List(createUnidentifiableItem))
 
-        val expectedJson =
-          s"""
-             |{
-             |  "id" : "xnb6y9qq",
-             |  "items" : [ ],
-             |  "type": "Work"
-             |}""".stripMargin
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+        withItemsApi(index) { _ =>
+          val path = s"/works/${work.id}"
 
-          withStringEntity(response.entity) { actualJson =>
-            assertJsonStringsAreEqual(actualJson, expectedJson)
+          val expectedJson =
+            s"""
+               |{
+               |  "id" : "${work.id}",
+               |  "items" : [ ],
+               |  "type": "Work"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
+
+            withStringEntity(response.entity) { actualJson =>
+              assertJsonStringsAreEqual(actualJson, expectedJson)
+            }
           }
         }
       }
@@ -103,7 +135,7 @@ class ItemsApiFeatureTest
     // This is a test case we need, but we shouldn't enable it until we
     // have the WorksService working -- so we can detect the absence of a work.
     it("returns a 404 if the ID is not a canonical ID") {
-      withItemsApi { _ =>
+      withItemsApi(createIndex) { _ =>
         val id = randomAlphanumeric()
         val path = s"/works/$id"
 
@@ -128,5 +160,6 @@ class ItemsApiFeatureTest
       }
     }
   }
-  override implicit val ec: ExecutionContext = global
+
+  override implicit lazy val ec: ExecutionContext = Implicits.global
 }

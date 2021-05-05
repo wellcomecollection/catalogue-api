@@ -1,10 +1,12 @@
 package uk.ac.wellcome.platform.api.items
 
 import java.net.URL
-
 import akka.actor.ActorSystem
+import com.sksamuel.elastic4s.Index
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.api.display.ElasticConfig
+import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
 import uk.ac.wellcome.platform.api.common.services.StacksService
@@ -14,6 +16,7 @@ import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import weco.http.monitoring.HttpMetrics
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.http.WellcomeHttpApp
 
 import scala.concurrent.ExecutionContext
@@ -48,12 +51,18 @@ object Main extends WellcomeTypesafeApp {
           .getOrElse("context.json")
       )
 
+    val elasticClient = ElasticBuilder.buildElasticClient(config)
+    val esService = new ElasticsearchService(elasticClient)
+
     val router = new ItemsApi {
       override implicit val ec: ExecutionContext = ecMain
       override implicit val stacksWorkService: StacksService = workService
       override implicit val apiConfig: ApiConfig = apiConf
 
       override def context: String = contextUri
+
+      override val elasticsearchService: ElasticsearchService = esService
+      override val index: Index = ElasticConfig.apply().worksIndex
     }
 
     val appName = "ItemsApi"
