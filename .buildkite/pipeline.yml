@@ -4,7 +4,7 @@ steps:
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"
-  - command: .buildkite/scripts/run_job.py search
+  - command: .buildkite/scripts/run_job.py search_common
     label: "search_common"
   - command: .buildkite/scripts/run_job.py stacks
     label: "stacks_common"
