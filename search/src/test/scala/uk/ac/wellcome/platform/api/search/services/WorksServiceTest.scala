@@ -181,8 +181,8 @@ class WorksServiceTest
         allWorks = works,
         expectedWorks = works,
         expectedTotalResults = works.size,
-        worksSearchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery("abba")))
+        worksSearchOptions =
+          createWorksSearchOptionsWith(searchQuery = Some(SearchQuery("abba")))
       )
     }
 
@@ -229,11 +229,10 @@ class WorksServiceTest
         allWorks = works,
         expectedWorks = works.sortBy(_.state.canonicalId).slice(7, 10),
         expectedTotalResults = works.size,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            pageSize = 7,
-            pageNumber = 2
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          pageSize = 7,
+          pageNumber = 2
+        )
       )
     }
 
@@ -244,11 +243,10 @@ class WorksServiceTest
         allWorks = works,
         expectedWorks = List(),
         expectedTotalResults = works.size,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            pageSize = 1,
-            pageNumber = works.length * 2
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          pageSize = 1,
+          pageNumber = works.length * 2
+        )
       )
     }
 
@@ -261,10 +259,9 @@ class WorksServiceTest
         allWorks = List(work1, work2, workWithWrongFormat),
         expectedWorks = List(work1, work2),
         expectedTotalResults = 2,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            filters = List(FormatFilter(Seq(ManuscriptsAsian.id)))
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          filters = List(FormatFilter(Seq(ManuscriptsAsian.id)))
+        )
       )
     }
 
@@ -278,10 +275,9 @@ class WorksServiceTest
         allWorks = List(work1, work2, work3, workWithWrongFormat),
         expectedWorks = List(work1, work2, work3),
         expectedTotalResults = 3,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            filters = List(FormatFilter(List(ManuscriptsAsian.id, Books.id)))
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          filters = List(FormatFilter(List(ManuscriptsAsian.id, Books.id)))
+        )
       )
     }
 
@@ -307,11 +303,11 @@ class WorksServiceTest
         allWorks = List(work, notMatchingWork),
         expectedWorks = List(work),
         expectedTotalResults = 1,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            searchQuery = Some(SearchQuery("tangerines")),
-            filters = List(ItemLocationTypeIdFilter(Seq(LocationType.IIIFImageAPI.id)))
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery("tangerines")),
+          filters =
+            List(ItemLocationTypeIdFilter(Seq(LocationType.IIIFImageAPI.id)))
+        )
       )
     }
 
@@ -348,11 +344,12 @@ class WorksServiceTest
         allWorks = List(work, notMatchingWork, work2),
         expectedWorks = List(work, work2),
         expectedTotalResults = 2,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(
-            searchQuery = Some(SearchQuery("tangerines")),
-            filters = List(ItemLocationTypeIdFilter(Seq(LocationType.IIIFImageAPI.id, LocationType.OpenShelves.id)))
-          )
+        worksSearchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery("tangerines")),
+          filters = List(
+            ItemLocationTypeIdFilter(
+              Seq(LocationType.IIIFImageAPI.id, LocationType.OpenShelves.id)))
+        )
       )
     }
   }

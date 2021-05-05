@@ -10,12 +10,14 @@ import weco.catalogue.internal_model.image.{Image, ImageState}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesService(
-  val elasticsearchService: ElasticsearchService,
-  queryConfig: QueryConfig)(
-  implicit
-  val ec: ExecutionContext)
-    extends SearchService[Image[ImageState.Indexed], Image[ImageState.Indexed], ImageAggregations, ImageSearchOptions] {
+class ImagesService(val elasticsearchService: ElasticsearchService,
+                    queryConfig: QueryConfig)(implicit
+                                              val ec: ExecutionContext)
+    extends SearchService[
+      Image[ImageState.Indexed],
+      Image[ImageState.Indexed],
+      ImageAggregations,
+      ImageSearchOptions] {
 
   private val nVisuallySimilarImages = 5
 
@@ -24,7 +26,8 @@ class ImagesService(
   implicit val decoder: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
   implicit val decoderV: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
 
-  override protected def createAggregations(searchResponse: SearchResponse): Option[ImageAggregations] =
+  override protected def createAggregations(
+    searchResponse: SearchResponse): Option[ImageAggregations] =
     ImageAggregations(searchResponse)
 
   override protected val requestBuilder: ImagesRequestBuilder =

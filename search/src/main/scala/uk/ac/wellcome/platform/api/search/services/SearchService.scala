@@ -23,7 +23,8 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
 
   protected def createAggregations(searchResponse: SearchResponse): Option[Aggs]
 
-  def findById(id: CanonicalId)(index: Index): Future[Either[ElasticError, Option[T]]] =
+  def findById(id: CanonicalId)(
+    index: Index): Future[Either[ElasticError, Option[T]]] =
     elasticsearchService
       .executeGet(id)(index)
       .map {
@@ -36,11 +37,12 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
       }
 
   def listOrSearch(index: Index, searchOptions: S)
-  : Future[Either[ElasticError, ResultList[VisibleT, Aggs]]] =
+    : Future[Either[ElasticError, ResultList[VisibleT, Aggs]]] =
     executeSearch(searchOptions, index)
       .map { _.map(createResultList) }
 
-  private def createResultList(searchResponse: SearchResponse): ResultList[VisibleT, Aggs] =
+  private def createResultList(
+    searchResponse: SearchResponse): ResultList[VisibleT, Aggs] =
     ResultList(
       results = searchResponse.hits.hits
         .map(deserialize[VisibleT])
