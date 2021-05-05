@@ -45,48 +45,44 @@ class Router(
 )(implicit ec: ExecutionContext)
     extends CustomDirectives {
 
-  def searchRoutes: Route = concat(
-    path("works") {
-      MultipleWorksParams.parse { worksController.multipleWorks }
-    },
-    path("works" / Segment) { id: String =>
-      Try { CanonicalId(id) } match {
-        case Success(workId) =>
-          SingleWorkParams.parse {
-            worksController.singleWork(workId, _)
-          }
-
-        case _ => notFound(s"Work not found for identifier $id")
-      }
-    },
-    path("images") {
-      MultipleImagesParams.parse { imagesController.multipleImages }
-    },
-    path("images" / Segment) { id: String =>
-      Try { CanonicalId(id) } match {
-        case Success(imageId) =>
-          SingleImageParams.parse {
-            imagesController.singleImage(imageId, _)
-          }
-
-        case _ => notFound(s"Image not found for identifier $id")
-      }
-    },
-    path("context.json") {
-      getFromResource("context-v2.json")
-    },
-    path("swagger.json") {
-      swagger
-    },
-    path("search-templates.json") {
-      getSearchTemplates
-    }
-  )
-
-  def legacyRoutes: Route = pathPrefix("catalogue") {
-    pathPrefix("v2") {
+  def routes: Route = handleRejections(rejectionHandler) {
+    ignoreTrailingSlash {
       concat(
-        searchRoutes,
+        path("works") {
+          MultipleWorksParams.parse { worksController.multipleWorks }
+        },
+        path("works" / Segment) { id: String =>
+          Try { CanonicalId(id) } match {
+            case Success(workId) =>
+              SingleWorkParams.parse {
+                worksController.singleWork(workId, _)
+              }
+
+            case _ => notFound(s"Work not found for identifier $id")
+          }
+        },
+        path("images") {
+          MultipleImagesParams.parse { imagesController.multipleImages }
+        },
+        path("images" / Segment) { id: String =>
+          Try { CanonicalId(id) } match {
+            case Success(imageId) =>
+              SingleImageParams.parse {
+                imagesController.singleImage(imageId, _)
+              }
+
+            case _ => notFound(s"Image not found for identifier $id")
+          }
+        },
+        path("context.json") {
+          getFromResource("context-v2.json")
+        },
+        path("swagger.json") {
+          swagger
+        },
+        path("search-templates.json") {
+          getSearchTemplates
+        },
         pathPrefix("management") {
           concat(
             path("healthcheck") {
@@ -99,15 +95,6 @@ class Router(
             }
           )
         }
-      )
-    }
-  }
-
-  def routes: Route = handleRejections(rejectionHandler) {
-    ignoreTrailingSlash {
-      concat(
-        searchRoutes,
-        legacyRoutes
       )
     }
   }
