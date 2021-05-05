@@ -38,7 +38,7 @@ class WorksController(
           val index =
             params._index.map(Index(_)).getOrElse(worksIndex)
           worksService
-            .listOrSearchWorks(index, searchOptions)
+            .listOrSearch(index, searchOptions)
             .map {
               case Left(err) => elasticError(err)
               case Right(resultList) =>
@@ -68,7 +68,7 @@ class WorksController(
             params._index.map(Index(_)).getOrElse(worksIndex)
           val includes = params.include.getOrElse(WorksIncludes.none)
           worksService
-            .findWorkById(id)(index)
+            .findById(id)(index)
             .map {
               case Right(Some(work: Work.Visible[Indexed])) =>
                 workFound(work, includes)

@@ -30,15 +30,13 @@ class WorksServiceTest
     with WorkGenerators
     with ProductionEventGenerators {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
-
   val worksService = new WorksService(
-    searchService = elasticsearchService
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
   val defaultWorksSearchOptions = createWorksSearchOptions
 
-  describe("listOrSearchWorks") {
+  describe("listOrSearch") {
     it("gets records in Elasticsearch") {
       val works = indexedWorks(count = 2)
 
@@ -110,7 +108,7 @@ class WorksServiceTest
     }
 
     it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.listOrSearchWorks(
+      val future = worksService.listOrSearch(
         index = Index("doesnotexist"),
         searchOptions = defaultWorksSearchOptions
       )
@@ -273,15 +271,14 @@ class WorksServiceTest
     }
   }
 
-  describe("findWorkById") {
-    it("gets a DisplayWork by id") {
+  describe("findById") {
+    it("gets a Work by id") {
       withLocalWorksIndex { index =>
         val work = indexedWork()
 
         insertIntoElasticsearch(index, work)
 
-        val future =
-          worksService.findWorkById(canonicalId = work.state.canonicalId)(index)
+        val future = worksService.findById(id = work.state.canonicalId)(index)
 
         whenReady(future) {
           _ shouldBe Right(Some(work))
@@ -293,7 +290,7 @@ class WorksServiceTest
     it("returns a future of None if it cannot get a record by id") {
       withLocalWorksIndex { index =>
         val recordsFuture =
-          worksService.findWorkById(canonicalId = createCanonicalId)(index)
+          worksService.findById(id = createCanonicalId)(index)
 
         whenReady(recordsFuture) {
           _ shouldBe Right(None)
@@ -302,8 +299,8 @@ class WorksServiceTest
     }
 
     it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.findWorkById(
-        canonicalId = createCanonicalId
+      val future = worksService.findById(
+        id = createCanonicalId
       )(
         index = Index("doesnotexist")
       )
@@ -323,7 +320,7 @@ class WorksServiceTest
     worksSearchOptions: WorkSearchOptions = createWorksSearchOptions
   ): Assertion =
     assertResultIsCorrect(
-      worksService.listOrSearchWorks
+      worksService.listOrSearch
     )(
       allWorks,
       expectedWorks,
