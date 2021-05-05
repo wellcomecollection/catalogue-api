@@ -22,12 +22,8 @@ import uk.ac.wellcome.platform.api.search.rest.DisplayResultList
 import weco.http.models.DisplayError
 
 class SwaggerDocs(apiConfig: ApiConfig) extends Logging {
-  val url = apiConfig.publicRootPath match {
-    case "" =>
-      s"${apiConfig.publicScheme}://${apiConfig.publicHost}/"
-    case path =>
-      s"${apiConfig.publicScheme}://${apiConfig.publicHost}$path/"
-  }
+  val url =
+    s"${apiConfig.publicScheme}://${apiConfig.publicHost}${apiConfig.publicRootPath}/"
 
   val server = (new Server).url(url)
 
