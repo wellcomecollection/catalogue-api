@@ -1,17 +1,14 @@
 package uk.ac.wellcome.platform.api.items.fixtures
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import java.net.URL
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.monitoring.memory.MemoryMetrics
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.items.ItemsApi
 import uk.ac.wellcome.platform.api.models.ApiConfig
-import weco.http.WellcomeHttpApp
 import weco.http.fixtures.HttpFixtures
-import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,35 +30,22 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
       contextPath = "context.json"
     )
 
-  def withApp[R](testWith: TestWith[WireMockServer, R]): R =
-    withActorSystem { implicit actorSystem =>
-      val httpMetrics = new HttpMetrics(
-        name = metricsName,
-        metrics = new MemoryMetrics()
-      )
+  def withItemsApi[R](testWith: TestWith[WireMockServer, R]): R =
 
-      withStacksService {
-        case (stacksService, server) =>
-          val router: ItemsApi = new ItemsApi {
-            override implicit val ec: ExecutionContext = global
-            override implicit val stacksWorkService: StacksService =
-              stacksService
-            override implicit val apiConfig: ApiConfig = apiConf
+    withStacksService {
+      case (stacksService, server) =>
+        val router: ItemsApi = new ItemsApi {
+          override implicit val ec: ExecutionContext = global
+          override implicit val stacksWorkService: StacksService =
+            stacksService
+          override implicit val apiConfig: ApiConfig = apiConf
 
-            override def context: String = contextUri
-          }
+          override def context: String = contextUri
+        }
 
-          val app = new WellcomeHttpApp(
-            routes = router.routes,
-            httpMetrics = httpMetrics,
-            httpServerConfig = httpServerConfigTest,
-            contextURL = contextURLTest,
-            appName = metricsName
-          )
-
-          app.run()
-
+        withApp(router.routes) { _ =>
           testWith(server)
-      }
+        }
+
     }
 }
