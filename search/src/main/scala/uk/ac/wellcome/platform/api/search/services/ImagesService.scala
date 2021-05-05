@@ -1,91 +1,60 @@
 package uk.ac.wellcome.platform.api.search.services
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
-import com.sksamuel.elastic4s.{ElasticError, Hit, Index}
-import com.sksamuel.elastic4s.circe._
+import com.sksamuel.elastic4s.Index
 import io.circe.Decoder
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.models.Implicits
 import uk.ac.wellcome.platform.api.search.models._
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.image.{Image, ImageState}
 
-class ImagesService(searchService: ElasticsearchService,
-                    queryConfig: QueryConfig)(implicit ec: ExecutionContext)
-    extends Tracing {
+import scala.concurrent.{ExecutionContext, Future}
+
+class ImagesService(
+  val elasticsearchService: ElasticsearchService,
+  queryConfig: QueryConfig)(
+  implicit
+  val ec: ExecutionContext)
+    extends SearchService[Image[ImageState.Indexed], Image[ImageState.Indexed], ImageAggregations, ImageSearchOptions] {
 
   private val nVisuallySimilarImages = 5
-  private val imagesRequestBuilder = new ImagesRequestBuilder(queryConfig)
 
-  def findImageById(id: CanonicalId)(index: Index)
-    : Future[Either[ElasticError, Option[Image[ImageState.Indexed]]]] =
-    searchService
-      .executeGet(id)(index)
-      .map {
-        _.map { response =>
-          if (response.exists)
-            Some(deserialize[Image[ImageState.Indexed]](response))
-          else
-            None
-        }
-      }
+  // TODO: This isn't ideal, but it's the only way I've been able to get
+  // this to compile.  We should move towards named implicits here.
+  implicit val decoder: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
+  implicit val decoderV: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
 
-  def listOrSearchImages(index: Index, searchOptions: ImageSearchOptions)
-    : Future[Either[ElasticError,
-                    ResultList[Image[ImageState.Indexed], ImageAggregations]]] =
-    searchService
-      .executeSearch(
-        searchOptions = searchOptions,
-        requestBuilder = imagesRequestBuilder,
-        index = index
-      )
-      .map { _.map(createResultList) }
+  override protected def createAggregations(searchResponse: SearchResponse): Option[ImageAggregations] =
+    ImageAggregations(searchResponse)
+
+  override protected val requestBuilder: ImagesRequestBuilder =
+    new ImagesRequestBuilder(queryConfig)
 
   def retrieveSimilarImages(index: Index,
                             image: Image[ImageState.Indexed],
                             similarityMetric: SimilarityMetric =
                               SimilarityMetric.Blended)
-    : Future[List[Image[ImageState.Indexed]]] =
-    searchService
-      .executeSearchRequest({
-        val requestBuilder = similarityMetric match {
-          case SimilarityMetric.Blended =>
-            imagesRequestBuilder.requestWithBlendedSimilarity
-          case SimilarityMetric.Features =>
-            imagesRequestBuilder.requestWithSimilarFeatures
-          case SimilarityMetric.Colors =>
-            imagesRequestBuilder.requestWithSimilarColors
-        }
-        requestBuilder(index, image.id, nVisuallySimilarImages)
-      })
+    : Future[List[Image[ImageState.Indexed]]] = {
+    val builder = similarityMetric match {
+      case SimilarityMetric.Blended =>
+        requestBuilder.requestWithBlendedSimilarity
+      case SimilarityMetric.Features =>
+        requestBuilder.requestWithSimilarFeatures
+      case SimilarityMetric.Colors =>
+        requestBuilder.requestWithSimilarColors
+    }
+
+    val searchRequest = builder(index, image.id, nVisuallySimilarImages)
+
+    elasticsearchService
+      .executeSearchRequest(searchRequest)
       .map { result =>
         result
           .map { response =>
             response.hits.hits
-              .map(hit => deserialize[Image[ImageState.Indexed]](hit))
+              .map(hit => deserialize[Image[ImageState.Indexed]](hit)(decoder))
               .toList
           }
           .getOrElse(Nil)
       }
-
-  def createResultList(searchResponse: SearchResponse)
-    : ResultList[Image[ImageState.Indexed], ImageAggregations] =
-    ResultList(
-      results = searchResponse.hits.hits
-        .map(deserialize[Image[ImageState.Indexed]])
-        .toList,
-      totalResults = searchResponse.totalHits.toInt,
-      aggregations = ImageAggregations(searchResponse)
-    )
-
-  private def deserialize[T](hit: Hit)(implicit decoder: Decoder[T]): T =
-    hit.safeTo[T] match {
-      case Success(work) => work
-      case Failure(e) =>
-        throw new RuntimeException(
-          s"Unable to parse JSON($e): ${hit.sourceAsString}"
-        )
-    }
+  }
 }

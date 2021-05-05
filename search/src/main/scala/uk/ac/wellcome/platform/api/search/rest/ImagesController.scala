@@ -41,7 +41,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           val index =
             params._index.map(Index(_)).getOrElse(imagesIndex)
           imagesService
-            .findImageById(id)(index)
+            .findById(id)(index)
             .flatMap {
               case Right(Some(image)) =>
                 getSimilarityMetrics(params.include)
@@ -86,7 +86,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           val index =
             params._index.map(Index(_)).getOrElse(imagesIndex)
           imagesService
-            .listOrSearchImages(index, searchOptions)
+            .listOrSearch(index, searchOptions)
             .map {
               case Left(err) => elasticError(err)
               case Right(resultList) =>
