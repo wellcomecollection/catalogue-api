@@ -21,17 +21,17 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures {
   )
 
   def withRequestsApi[R](testWith: TestWith[WireMockServer, R]): R =
-      withStacksService {
-        case (stacksService, server) =>
-          val router: RequestsApi = new RequestsApi {
-            override implicit val ec: ExecutionContext = global
-            override implicit val stacksWorkService: StacksService =
-              stacksService
-          }
+    withStacksService {
+      case (stacksService, server) =>
+        val router: RequestsApi = new RequestsApi {
+          override implicit val ec: ExecutionContext = global
+          override implicit val stacksWorkService: StacksService =
+            stacksService
+        }
 
-          withApp(router.routes) { _ =>
-            testWith(server)
-          }
-      }
+        withApp(router.routes) { _ =>
+          testWith(server)
+        }
+    }
 
 }
