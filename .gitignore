@@ -24,6 +24,10 @@ id_rsa.pub
 /config
 credentials
 
+# These are files we used to keep for our Travis CI setup
+secrets
+secrets.zip
+
 ### Gatling ###
 /gatling/results/*
 
