@@ -1,0 +1,12 @@
+{
+  "id" : "6a1f4e74-f114-4378-8e42-4dda47354ddc",
+  "request" : {
+    "method" : "ANY"
+  },
+  "response" : {
+    "status" : 200,
+    "proxyBaseUrl" : "https://api.wellcomecollection.org"
+  },
+  "uuid" : "6a1f4e74-f114-4378-8e42-4dda47354ddc",
+  "insertionIndex" : 0
+}
