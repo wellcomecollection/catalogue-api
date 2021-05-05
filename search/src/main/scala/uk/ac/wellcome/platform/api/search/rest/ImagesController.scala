@@ -1,8 +1,9 @@
 package uk.ac.wellcome.platform.api.search.rest
 
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
 import uk.ac.wellcome.platform.api.search.services.{
@@ -18,15 +19,20 @@ import uk.ac.wellcome.api.display.models.{
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import uk.ac.wellcome.platform.api.models.ApiConfig
+import weco.api.search.elasticsearch.ElasticLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesController(elasticsearchService: ElasticsearchService,
-                       implicit val apiConfig: ApiConfig,
-                       imagesIndex: Index,
-                       queryConfig: QueryConfig)(implicit ec: ExecutionContext)
+class ImagesController(
+  imagesIndex: Index,
+  implicit val apiConfig: ApiConfig,
+  queryConfig: QueryConfig)(
+  implicit
+  elasticClient: ElasticClient,
+  ec: ExecutionContext)
     extends CustomDirectives
     with Tracing
     with FailFastCirceSupport {
@@ -34,14 +40,17 @@ class ImagesController(elasticsearchService: ElasticsearchService,
   import DisplayResultList.encoder
   import ContextResponse.encoder
 
+  private val elasticsearchService = new ElasticsearchService()
+  private val elasticLookup = new ElasticLookup[Image[ImageState.Indexed]]
+
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
           val index =
             params._index.map(Index(_)).getOrElse(imagesIndex)
-          imagesService
-            .findImageById(id)(index)
+          elasticLookup
+            .lookupById(id)(index)
             .flatMap {
               case Right(Some(image)) =>
                 getSimilarityMetrics(params.include)
@@ -125,5 +134,6 @@ class ImagesController(elasticsearchService: ElasticsearchService,
   private lazy val imagesService =
     new ImagesService(elasticsearchService, queryConfig)
 
+  // todo: fix
   override def context: String = contextUri.toString
 }

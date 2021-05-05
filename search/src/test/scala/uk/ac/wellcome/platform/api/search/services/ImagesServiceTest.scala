@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.sksamuel.elastic4s.{ElasticError, Index}
+import com.sksamuel.elastic4s.Index
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.{EitherValues, OptionValues}
@@ -18,7 +18,7 @@ class ImagesServiceTest
     with EitherValues
     with OptionValues {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
+  val elasticsearchService = new ElasticsearchService()
 
   val imagesService = new ImagesService(
     elasticsearchService,
@@ -27,39 +27,6 @@ class ImagesServiceTest
       paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
     )
   )
-
-  describe("findImageById") {
-    it("fetches an Image by ID") {
-      withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(index, image)
-
-        whenReady(
-          imagesService
-            .findImageById(id = image.state.canonicalId)(index)) {
-          _.right.value.value shouldBe image
-        }
-      }
-    }
-
-    it("returns a None if no image can be found") {
-      withLocalImagesIndex { index =>
-        whenReady(
-          imagesService
-            .findImageById(createCanonicalId)(index)) {
-          _.right.value shouldBe None
-        }
-      }
-    }
-
-    it("returns a Left[ElasticError] if Elasticsearch returns an error") {
-      whenReady(
-        imagesService
-          .findImageById(createCanonicalId)(Index("parsnips"))) {
-        _.left.value shouldBe a[ElasticError]
-      }
-    }
-  }
 
   describe("retrieveSimilarImages") {
     it("gets images using a blended similarity metric by default") {

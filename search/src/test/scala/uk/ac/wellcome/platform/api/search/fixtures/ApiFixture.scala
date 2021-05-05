@@ -42,7 +42,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
     val router = new Router(
-      elasticClient,
       elasticConfig,
       QueryConfig(
         paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),

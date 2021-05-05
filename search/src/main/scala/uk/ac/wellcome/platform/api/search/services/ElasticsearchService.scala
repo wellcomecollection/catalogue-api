@@ -3,24 +3,16 @@ package uk.ac.wellcome.platform.api.search.services
 import scala.concurrent.{ExecutionContext, Future}
 import co.elastic.apm.api.Transaction
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
 import com.sksamuel.elastic4s.{ElasticClient, ElasticError, Index}
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models._
-import weco.catalogue.internal_model.identifiers.CanonicalId
 
-class ElasticsearchService(elasticClient: ElasticClient)(
-  implicit ec: ExecutionContext
+class ElasticsearchService(
+  implicit elasticClient: ElasticClient, ec: ExecutionContext
 ) extends Logging
     with Tracing {
-
-  def executeGet(canonicalId: CanonicalId)(
-    index: Index): Future[Either[ElasticError, GetResponse]] =
-    withActiveTrace(elasticClient.execute {
-      get(index, canonicalId.underlying)
-    }).map { _.toEither }
 
   /** Given a set of query options, build a SearchDefinition for Elasticsearch
     * using the elastic4s query DSL, then execute the search.

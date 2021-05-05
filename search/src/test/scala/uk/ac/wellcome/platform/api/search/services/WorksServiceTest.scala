@@ -30,7 +30,7 @@ class WorksServiceTest
     with WorkGenerators
     with ProductionEventGenerators {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
+  val elasticsearchService = new ElasticsearchService()
 
   val worksService = new WorksService(
     searchService = elasticsearchService
@@ -270,53 +270,6 @@ class WorksServiceTest
           filters = DateRangeFilter(None, Some(toDate)) :: Nil
         )
       )
-    }
-  }
-
-  describe("findWorkById") {
-    it("gets a DisplayWork by id") {
-      withLocalWorksIndex { index =>
-        val work = indexedWork()
-
-        insertIntoElasticsearch(index, work)
-
-        val future =
-          worksService.findWorkById(canonicalId = work.state.canonicalId)(index)
-
-        whenReady(future) { response =>
-          response.isRight shouldBe true
-
-          val records = response.right.get
-          records.isDefined shouldBe true
-          records.get shouldBe work
-        }
-      }
-
-    }
-
-    it("returns a future of None if it cannot get a record by id") {
-      withLocalWorksIndex { index =>
-        val recordsFuture =
-          worksService.findWorkById(canonicalId = createCanonicalId)(index)
-
-        whenReady(recordsFuture) { result =>
-          result.isRight shouldBe true
-          result.right.get shouldBe None
-        }
-      }
-    }
-
-    it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.findWorkById(
-        canonicalId = createCanonicalId
-      )(
-        index = Index("doesnotexist")
-      )
-
-      whenReady(future) { result =>
-        result.isLeft shouldBe true
-        result.left.get shouldBe a[ElasticError]
-      }
     }
   }
 

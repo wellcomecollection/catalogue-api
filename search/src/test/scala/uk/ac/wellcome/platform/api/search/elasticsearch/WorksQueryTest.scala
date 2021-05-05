@@ -35,7 +35,7 @@ class WorksQueryTest
     with ImageGenerators
     with ContributorGenerators {
 
-  val searchService = new ElasticsearchService(elasticClient)
+  val searchService = new ElasticsearchService()
 
   describe("Free text query functionality") {
 

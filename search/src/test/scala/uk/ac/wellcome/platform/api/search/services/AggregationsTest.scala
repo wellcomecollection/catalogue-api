@@ -33,7 +33,7 @@ class AggregationsTest
     with WorkGenerators {
 
   val worksService = new WorksService(
-    searchService = new ElasticsearchService(elasticClient)
+    searchService = new ElasticsearchService()
   )
 
   it("returns more than 10 format aggregations") {

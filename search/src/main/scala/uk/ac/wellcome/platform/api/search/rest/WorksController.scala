@@ -3,32 +3,36 @@ package uk.ac.wellcome.platform.api.search.rest
 import scala.concurrent.ExecutionContext
 import akka.http.scaladsl.model.StatusCodes.Found
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import uk.ac.wellcome.platform.api.search.services.{
   ElasticsearchService,
   WorksService
 }
+import weco.api.search.elasticsearch.ElasticLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
 import weco.http.models.ContextResponse
 
 class WorksController(
-  elasticsearchService: ElasticsearchService,
-  implicit val apiConfig: ApiConfig,
+  val apiConfig: ApiConfig,
   worksIndex: Index
-)(implicit ec: ExecutionContext)
+)(implicit elasticClient: ElasticClient, ec: ExecutionContext)
     extends Tracing
     with CustomDirectives
     with FailFastCirceSupport {
   import DisplayResultList.encoder
   import ContextResponse.encoder
+
+  private val elasticsearchService = new ElasticsearchService()
+  private val elasticLookup = new ElasticLookup[Work[Indexed]]
 
   def multipleWorks(params: MultipleWorksParams): Route =
     get {
@@ -65,8 +69,8 @@ class WorksController(
           val index =
             params._index.map(Index(_)).getOrElse(worksIndex)
           val includes = params.include.getOrElse(WorksIncludes.none)
-          worksService
-            .findWorkById(id)(index)
+          elasticLookup
+            .lookupById(id)(index)
             .map {
               case Right(Some(work: Work.Visible[Indexed])) =>
                 workFound(work, includes)

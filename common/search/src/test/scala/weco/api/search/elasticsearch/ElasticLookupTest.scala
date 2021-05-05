@@ -23,7 +23,7 @@ class ElasticLookupTest
 
   case class Shape(id: CanonicalId, color: String, sides: Int)
 
-  val elasticLookup = new ElasticLookup[Shape](elasticClient)
+  val elasticLookup = new ElasticLookup[Shape]()
 
   it("looks up an object by ID") {
     val redSquare = Shape(id = createCanonicalId, color = "red", sides = 4)

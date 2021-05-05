@@ -26,39 +26,10 @@ class ElasticsearchServiceTest
     with ItemsGenerators
     with WorkGenerators {
 
-  val searchService = new ElasticsearchService(elasticClient)
+  val searchService = new ElasticsearchService()
 
   val defaultSearchOptions =
     createWorksSearchOptions
-
-  describe("findResultById") {
-    it("finds a result by ID") {
-      withLocalWorksIndex { index =>
-        val work = indexedWork()
-
-        insertIntoElasticsearch(index, work)
-
-        val searchResultFuture =
-          searchService.executeGet(canonicalId = work.state.canonicalId)(index)
-
-        whenReady(searchResultFuture) { result =>
-          val returnedWork =
-            jsonToWork(result.right.get.sourceAsString)
-          returnedWork shouldBe work
-        }
-      }
-    }
-
-    it("returns a Left[ElasticError] if Elasticsearch returns an error") {
-      val future = searchService
-        .executeGet(createCanonicalId)(Index("doesnotexist"))
-
-      whenReady(future) { response =>
-        response.isLeft shouldBe true
-        response.left.get shouldBe a[ElasticError]
-      }
-    }
-  }
 
   describe("executeSearch") {
     it("returns everything if we ask for a limit > result size") {

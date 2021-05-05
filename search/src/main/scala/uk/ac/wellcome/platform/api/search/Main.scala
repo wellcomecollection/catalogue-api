@@ -3,6 +3,7 @@ package uk.ac.wellcome.platform.api.search
 import akka.Done
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
@@ -24,7 +25,8 @@ object Main extends WellcomeTypesafeApp {
       AkkaBuilder.buildExecutionContext()
 
     Tracing.init(config)
-    val elasticClient = ElasticBuilder.buildElasticClient(config)
+    implicit val elasticClient: ElasticClient =
+      ElasticBuilder.buildElasticClient(config)
 
     val elasticConfig = ElasticConfig()
 
@@ -38,7 +40,6 @@ object Main extends WellcomeTypesafeApp {
     val swaggerDocs = new SwaggerDocs(apiConfig)
 
     val router = new Router(
-      elasticClient = elasticClient,
       elasticConfig = elasticConfig,
       queryConfig = queryConfig,
       swaggerDocs = swaggerDocs,

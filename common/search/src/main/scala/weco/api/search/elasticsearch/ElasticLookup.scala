@@ -12,9 +12,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class ElasticLookup[T](
-  elasticClient: ElasticClient
-)(
   implicit
+  elasticClient: ElasticClient,
   ec: ExecutionContext,
   decoder: Decoder[T]
 ) extends Tracing {

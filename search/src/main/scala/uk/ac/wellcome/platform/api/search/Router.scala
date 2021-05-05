@@ -29,7 +29,6 @@ import uk.ac.wellcome.platform.api.search.rest.{
   SingleWorkParams,
   WorksController
 }
-import uk.ac.wellcome.platform.api.search.services.ElasticsearchService
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
@@ -37,12 +36,11 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
 class Router(
-  elasticClient: ElasticClient,
   elasticConfig: ElasticConfig,
   queryConfig: QueryConfig,
   swaggerDocs: SwaggerDocs,
   implicit val apiConfig: ApiConfig
-)(implicit ec: ExecutionContext)
+)(implicit elasticClient: ElasticClient, ec: ExecutionContext)
     extends CustomDirectives {
 
   def searchRoutes: Route = concat(
@@ -112,21 +110,17 @@ class Router(
     }
   }
 
-  lazy val elasticsearchService = new ElasticsearchService(elasticClient)
-
   lazy val worksController =
     new WorksController(
-      elasticsearchService,
-      apiConfig,
-      worksIndex = elasticConfig.worksIndex
+      worksIndex = elasticConfig.worksIndex,
+      apiConfig = apiConfig
     )
 
   lazy val imagesController =
     new ImagesController(
-      elasticsearchService,
-      apiConfig,
       imagesIndex = elasticConfig.imagesIndex,
-      queryConfig
+      apiConfig = apiConfig,
+      queryConfig = queryConfig
     )
 
   def swagger: Route = get {
