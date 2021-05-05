@@ -4,13 +4,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import com.sksamuel.elastic4s.{ElasticError, Index}
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.models.work.generators.{
+  ItemsGenerators,
   ProductionEventGenerators,
   WorkGenerators
 }
@@ -18,27 +18,36 @@ import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.index.IndexFixtures
-import weco.catalogue.internal_model.work.Work
+import weco.api.search.elasticsearch.ElasticsearchService
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.locations.{
+  DigitalLocationType,
+  LocationType,
+  PhysicalLocationType
+}
+import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work.WorkState.Indexed
+
+import scala.util.Random
 
 class WorksServiceTest
     extends AnyFunSpec
     with IndexFixtures
     with Matchers
+    with EitherValues
     with SearchOptionsGenerators
+    with ItemsGenerators
     with WorkGenerators
     with ProductionEventGenerators {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
-
   val worksService = new WorksService(
-    searchService = elasticsearchService
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
-  val defaultWorksSearchOptions = createWorksSearchOptions
+  val defaultWorksSearchOptions: WorkSearchOptions = createWorksSearchOptions
 
-  describe("listOrSearchWorks") {
+  describe("listOrSearch") {
     it("gets records in Elasticsearch") {
       val works = indexedWorks(count = 2)
 
@@ -110,7 +119,7 @@ class WorksServiceTest
     }
 
     it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.listOrSearchWorks(
+      val future = worksService.listOrSearch(
         index = Index("doesnotexist"),
         searchOptions = defaultWorksSearchOptions
       )
@@ -152,6 +161,195 @@ class WorksServiceTest
         expectedTotalResults = 1,
         worksSearchOptions = createWorksSearchOptionsWith(
           searchQuery = Some(SearchQuery("emu \"")))
+      )
+    }
+
+    it("returns results in consistent sort order") {
+      val title =
+        s"ABBA ${Random.alphanumeric.filterNot(_.equals('A')) take 10 mkString}"
+
+      // We have a secondary sort on canonicalId in ElasticsearchService.
+      // Since every work has the same title, we expect them to be returned in
+      // ID order when we search for "A".
+      val works = (1 to 5)
+        .map { _ =>
+          indexedWork().title(title)
+        }
+        .sortBy(_.state.canonicalId)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = works,
+        expectedTotalResults = works.size,
+        worksSearchOptions =
+          createWorksSearchOptionsWith(searchQuery = Some(SearchQuery("abba")))
+      )
+    }
+
+    it("returns everything if we ask for a limit > result size") {
+      val works = indexedWorks(count = 10)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = works.sortBy(_.state.canonicalId),
+        expectedTotalResults = works.size,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          pageSize = works.length + 1
+        )
+      )
+    }
+
+    it("returns a page from the beginning of the result set") {
+      val works = indexedWorks(count = 10)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = works.sortBy(_.state.canonicalId).slice(0, 4),
+        expectedTotalResults = works.size,
+        worksSearchOptions = createWorksSearchOptionsWith(pageSize = 4)
+      )
+    }
+
+    it("returns a page from halfway through the result set") {
+      val works = indexedWorks(count = 10)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = works.sortBy(_.state.canonicalId).slice(4, 8),
+        expectedTotalResults = works.size,
+        worksSearchOptions =
+          createWorksSearchOptionsWith(pageSize = 4, pageNumber = 2)
+      )
+    }
+
+    it("returns a page from the end of the result set") {
+      val works = indexedWorks(count = 10)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = works.sortBy(_.state.canonicalId).slice(7, 10),
+        expectedTotalResults = works.size,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          pageSize = 7,
+          pageNumber = 2
+        )
+      )
+    }
+
+    it("returns an empty page if asked for a limit > result size") {
+      val works = indexedWorks(count = 10)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = works,
+        expectedWorks = List(),
+        expectedTotalResults = works.size,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          pageSize = 1,
+          pageNumber = works.length * 2
+        )
+      )
+    }
+
+    it("filters list results by format") {
+      val work1 = indexedWork().format(ManuscriptsAsian)
+      val work2 = indexedWork().format(ManuscriptsAsian)
+      val workWithWrongFormat = indexedWork().format(CDRoms)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = List(work1, work2, workWithWrongFormat),
+        expectedWorks = List(work1, work2),
+        expectedTotalResults = 2,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          filters = List(FormatFilter(Seq(ManuscriptsAsian.id)))
+        )
+      )
+    }
+
+    it("filters list results with multiple formats") {
+      val work1 = indexedWork().format(ManuscriptsAsian)
+      val work2 = indexedWork().format(ManuscriptsAsian)
+      val work3 = indexedWork().format(Books)
+      val workWithWrongFormat = indexedWork().format(CDRoms)
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = List(work1, work2, work3, workWithWrongFormat),
+        expectedWorks = List(work1, work2, work3),
+        expectedTotalResults = 3,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          filters = List(FormatFilter(List(ManuscriptsAsian.id, Books.id)))
+        )
+      )
+    }
+
+    it("filters results by item locationType") {
+      val work = indexedWork()
+        .title("Tumbling tangerines")
+        .items(
+          List(
+            createItemWithLocationType(LocationType.IIIFImageAPI),
+            createItemWithLocationType(LocationType.ClosedStores)
+          )
+        )
+
+      val notMatchingWork = indexedWork()
+        .title("Tumbling tangerines")
+        .items(
+          List(
+            createItemWithLocationType(LocationType.ClosedStores)
+          )
+        )
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = List(work, notMatchingWork),
+        expectedWorks = List(work),
+        expectedTotalResults = 1,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery("tangerines")),
+          filters =
+            List(ItemLocationTypeIdFilter(Seq(LocationType.IIIFImageAPI.id)))
+        )
+      )
+    }
+
+    it("filters results by multiple item locationTypes") {
+      val work =
+        indexedWork()
+          .title("Tumbling tangerines")
+          .items(
+            List(
+              createItemWithLocationType(LocationType.IIIFImageAPI),
+              createItemWithLocationType(LocationType.ClosedStores)
+            )
+          )
+
+      val notMatchingWork =
+        indexedWork()
+          .title("Tumbling tangerines")
+          .items(
+            List(
+              createItemWithLocationType(LocationType.ClosedStores)
+            )
+          )
+
+      val work2 =
+        indexedWork()
+          .title("Tumbling tangerines")
+          .items(
+            List(
+              createItemWithLocationType(LocationType.OpenShelves)
+            )
+          )
+
+      assertListOrSearchResultIsCorrect(
+        allWorks = List(work, notMatchingWork, work2),
+        expectedWorks = List(work, work2),
+        expectedTotalResults = 2,
+        worksSearchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery("tangerines")),
+          filters = List(
+            ItemLocationTypeIdFilter(
+              Seq(LocationType.IIIFImageAPI.id, LocationType.OpenShelves.id)))
+        )
       )
     }
   }
@@ -273,22 +471,17 @@ class WorksServiceTest
     }
   }
 
-  describe("findWorkById") {
-    it("gets a DisplayWork by id") {
+  describe("findById") {
+    it("gets a Work by id") {
       withLocalWorksIndex { index =>
         val work = indexedWork()
 
         insertIntoElasticsearch(index, work)
 
-        val future =
-          worksService.findWorkById(canonicalId = work.state.canonicalId)(index)
+        val future = worksService.findById(id = work.state.canonicalId)(index)
 
-        whenReady(future) { response =>
-          response.isRight shouldBe true
-
-          val records = response.right.get
-          records.isDefined shouldBe true
-          records.get shouldBe work
+        whenReady(future) {
+          _ shouldBe Right(Some(work))
         }
       }
 
@@ -297,18 +490,17 @@ class WorksServiceTest
     it("returns a future of None if it cannot get a record by id") {
       withLocalWorksIndex { index =>
         val recordsFuture =
-          worksService.findWorkById(canonicalId = createCanonicalId)(index)
+          worksService.findById(id = createCanonicalId)(index)
 
-        whenReady(recordsFuture) { result =>
-          result.isRight shouldBe true
-          result.right.get shouldBe None
+        whenReady(recordsFuture) {
+          _ shouldBe Right(None)
         }
       }
     }
 
     it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.findWorkById(
-        canonicalId = createCanonicalId
+      val future = worksService.findById(
+        id = createCanonicalId
       )(
         index = Index("doesnotexist")
       )
@@ -328,7 +520,7 @@ class WorksServiceTest
     worksSearchOptions: WorkSearchOptions = createWorksSearchOptions
   ): Assertion =
     assertResultIsCorrect(
-      worksService.listOrSearchWorks
+      worksService.listOrSearch
     )(
       allWorks,
       expectedWorks,
@@ -362,4 +554,24 @@ class WorksServiceTest
         works.aggregations shouldBe expectedAggregations
       }
     }
+
+  private def createItemWithLocationType(
+    locationType: LocationType): Item[IdState.Minted] =
+    createIdentifiedItemWith(
+      locations = List(
+        locationType match {
+          case LocationType.ClosedStores =>
+            createPhysicalLocationWith(
+              locationType = LocationType.ClosedStores,
+              label = LocationType.ClosedStores.label
+            )
+
+          case physicalLocationType: PhysicalLocationType =>
+            createPhysicalLocationWith(locationType = physicalLocationType)
+
+          case digitalLocationType: DigitalLocationType =>
+            createDigitalLocationWith(locationType = digitalLocationType)
+        }
+      )
+    )
 }
