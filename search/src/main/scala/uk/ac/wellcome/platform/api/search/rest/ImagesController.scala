@@ -2,7 +2,6 @@ package uk.ac.wellcome.platform.api.search.rest
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
 import uk.ac.wellcome.platform.api.search.services.{
@@ -28,8 +27,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                        imagesIndex: Index,
                        queryConfig: QueryConfig)(implicit ec: ExecutionContext)
     extends CustomDirectives
-    with Tracing
-    with FailFastCirceSupport {
+    with Tracing {
 
   import DisplayResultList.encoder
   import ContextResponse.encoder

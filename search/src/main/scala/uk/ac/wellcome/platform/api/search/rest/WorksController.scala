@@ -4,7 +4,6 @@ import scala.concurrent.ExecutionContext
 import akka.http.scaladsl.model.StatusCodes.Found
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
 import uk.ac.wellcome.Tracing
@@ -25,8 +24,7 @@ class WorksController(
   worksIndex: Index
 )(implicit ec: ExecutionContext)
     extends Tracing
-    with CustomDirectives
-    with FailFastCirceSupport {
+    with CustomDirectives {
   import DisplayResultList.encoder
   import ContextResponse.encoder
 
