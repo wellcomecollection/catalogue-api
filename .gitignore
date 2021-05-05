@@ -19,8 +19,6 @@ shared_infra/.releases
 .pytest_cache
 
 # Files which could contain secrets we do not want in the repo
-secrets
-secrets.zip
 id_rsa
 id_rsa.pub
 /config
