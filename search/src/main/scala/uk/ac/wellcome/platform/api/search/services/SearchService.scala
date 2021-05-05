@@ -7,6 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models.{ResultList, SearchOptions}
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}

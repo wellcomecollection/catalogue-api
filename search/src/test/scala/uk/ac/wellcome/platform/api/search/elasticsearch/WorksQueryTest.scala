@@ -6,10 +6,15 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.{ContributorGenerators, GenreGenerators, SubjectGenerators}
+import uk.ac.wellcome.models.work.generators.{
+  ContributorGenerators,
+  GenreGenerators,
+  SubjectGenerators
+}
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.platform.api.search.services.{ElasticsearchService, WorksService}
+import uk.ac.wellcome.platform.api.search.services.WorksService
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.WorkState.Indexed

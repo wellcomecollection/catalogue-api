@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.search.services
+package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.get.GetResponse

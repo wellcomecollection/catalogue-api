@@ -9,13 +9,22 @@ import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.api.display.models.WorkAggregationRequest
-import uk.ac.wellcome.models.work.generators.{ItemsGenerators, ProductionEventGenerators, WorkGenerators}
+import uk.ac.wellcome.models.work.generators.{
+  ItemsGenerators,
+  ProductionEventGenerators,
+  WorkGenerators
+}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.index.IndexFixtures
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{DigitalLocationType, LocationType, PhysicalLocationType}
+import weco.catalogue.internal_model.locations.{
+  DigitalLocationType,
+  LocationType,
+  PhysicalLocationType
+}
 import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work.WorkState.Indexed

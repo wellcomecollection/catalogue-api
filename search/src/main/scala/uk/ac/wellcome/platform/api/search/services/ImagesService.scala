@@ -5,6 +5,7 @@ import com.sksamuel.elastic4s.Index
 import io.circe.Decoder
 import uk.ac.wellcome.models.Implicits
 import uk.ac.wellcome.platform.api.search.models._
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.image.{Image, ImageState}
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import java.time.LocalDate
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -18,6 +17,7 @@ import uk.ac.wellcome.models.work.generators.{
   WorkGenerators
 }
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Period, Subject}
 

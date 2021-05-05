@@ -8,6 +8,7 @@ import org.scalatest.{EitherValues, OptionValues}
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.generators.ImageGenerators
 
 class ImagesServiceTest

@@ -10,10 +10,8 @@ import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import uk.ac.wellcome.platform.api.search.services.{
-  ElasticsearchService,
-  WorksService
-}
+import uk.ac.wellcome.platform.api.search.services.WorksService
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
