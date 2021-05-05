@@ -283,12 +283,8 @@ class WorksServiceTest
         val future =
           worksService.findWorkById(canonicalId = work.state.canonicalId)(index)
 
-        whenReady(future) { response =>
-          response.isRight shouldBe true
-
-          val records = response.right.get
-          records.isDefined shouldBe true
-          records.get shouldBe work
+        whenReady(future) {
+          _ shouldBe Right(Some(work))
         }
       }
 
@@ -299,9 +295,8 @@ class WorksServiceTest
         val recordsFuture =
           worksService.findWorkById(canonicalId = createCanonicalId)(index)
 
-        whenReady(recordsFuture) { result =>
-          result.isRight shouldBe true
-          result.right.get shouldBe None
+        whenReady(recordsFuture) {
+          _ shouldBe Right(None)
         }
       }
     }
