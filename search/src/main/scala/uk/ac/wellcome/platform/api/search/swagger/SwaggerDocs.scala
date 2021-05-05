@@ -354,7 +354,6 @@ trait MultipleImagesSwagger {
   )
   class DisplayImagesResultList
       extends DisplayResultList[DisplayImage, Unit](
-        context = "",
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,
@@ -652,7 +651,6 @@ trait MultipleWorksSwagger {
   )
   class DisplayWorksResultList
       extends DisplayResultList[DisplayWork, DisplayWorkAggregations](
-        context = "",
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,
@@ -667,7 +665,6 @@ trait MultipleWorksSwagger {
   )
   class DisplayImagesResultList
       extends DisplayResultList[DisplayImage, DisplayImageAggregations](
-        context = "",
         pageSize = 0,
         totalPages = 0,
         totalResults = 0,

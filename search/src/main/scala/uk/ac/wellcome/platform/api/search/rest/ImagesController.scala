@@ -92,13 +92,15 @@ class ImagesController(elasticsearchService: ElasticsearchService,
               case Right(resultList) =>
                 extractPublicUri { uri =>
                   complete(
-                    DisplayResultList(
-                      resultList = resultList,
-                      searchOptions = searchOptions,
-                      includes =
-                        params.include.getOrElse(MultipleImagesIncludes.none),
-                      requestUri = uri,
-                      contextUri = contextUri
+                    ContextResponse(
+                      context = contextUri,
+                      DisplayResultList(
+                        resultList = resultList,
+                        searchOptions = searchOptions,
+                        includes =
+                          params.include.getOrElse(MultipleImagesIncludes.none),
+                        requestUri = uri,
+                      )
                     )
                   )
                 }
