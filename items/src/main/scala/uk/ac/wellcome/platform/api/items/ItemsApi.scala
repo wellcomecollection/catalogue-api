@@ -21,7 +21,7 @@ trait ItemsApi extends CustomDirectives with Tracing {
         id: String =>
           get {
             withFuture {
-              transactFuture("GET /works/{imageId}/items") {
+              transactFuture("GET /works/{workId}/items") {
                 val result: Future[StacksWork] =
                   stacksWorkService.getStacksWork(
                     CanonicalId(id)
