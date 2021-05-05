@@ -29,8 +29,8 @@ import uk.ac.wellcome.platform.api.search.rest.{
   SingleWorkParams,
   WorksController
 }
-import uk.ac.wellcome.platform.api.search.services.ElasticsearchService
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext

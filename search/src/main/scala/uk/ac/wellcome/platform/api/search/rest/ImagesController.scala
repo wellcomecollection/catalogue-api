@@ -4,10 +4,7 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
-import uk.ac.wellcome.platform.api.search.services.{
-  ElasticsearchService,
-  ImagesService
-}
+import uk.ac.wellcome.platform.api.search.services.ImagesService
 import cats.implicits._
 import uk.ac.wellcome.api.display.models.{
   DisplayImage,
@@ -17,6 +14,7 @@ import uk.ac.wellcome.api.display.models.{
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import uk.ac.wellcome.platform.api.models.ApiConfig
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.models.ContextResponse
 
@@ -39,7 +37,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           val index =
             params._index.map(Index(_)).getOrElse(imagesIndex)
           imagesService
-            .findImageById(id)(index)
+            .findById(id)(index)
             .flatMap {
               case Right(Some(image)) =>
                 getSimilarityMetrics(params.include)
@@ -84,7 +82,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           val index =
             params._index.map(Index(_)).getOrElse(imagesIndex)
           imagesService
-            .listOrSearchImages(index, searchOptions)
+            .listOrSearch(index, searchOptions)
             .map {
               case Left(err) => elasticError(err)
               case Right(resultList) =>

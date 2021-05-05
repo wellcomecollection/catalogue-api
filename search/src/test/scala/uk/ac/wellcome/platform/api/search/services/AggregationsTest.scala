@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import java.time.LocalDate
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -18,6 +17,7 @@ import uk.ac.wellcome.models.work.generators.{
   WorkGenerators
 }
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Period, Subject}
 
@@ -33,7 +33,7 @@ class AggregationsTest
     with WorkGenerators {
 
   val worksService = new WorksService(
-    searchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
   it("returns more than 10 format aggregations") {
@@ -162,7 +162,7 @@ class AggregationsTest
             SubjectFilter(Seq(subjectQuery))
           )
         )
-        whenReady(worksService.listOrSearchWorks(index, searchOptions)) { res =>
+        whenReady(worksService.listOrSearch(index, searchOptions)) { res =>
           val results = res.right.get.results
           results.map(_.data.format.get) should contain only Format.Books
           results.map(_.data.subjects.head.label) should contain only subjectQuery
@@ -173,6 +173,6 @@ class AggregationsTest
 
   private def aggregationQuery(index: Index, searchOptions: WorkSearchOptions) =
     worksService
-      .listOrSearchWorks(index, searchOptions)
+      .listOrSearch(index, searchOptions)
       .map(_.right.get.aggregations.get)
 }

@@ -1,11 +1,11 @@
 package uk.ac.wellcome.platform.api.search.elasticsearch
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.sksamuel.elastic4s.{ElasticError, Index}
-import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchResponse}
-import org.scalatest.matchers.should.Matchers
+import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.json.JsonUtil.fromJson
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.{Assertion, EitherValues}
+import uk.ac.wellcome.models.Implicits._
+import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.{
   ContributorGenerators,
   GenreGenerators,
@@ -13,29 +13,25 @@ import uk.ac.wellcome.models.work.generators.{
 }
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.platform.api.search.services.{
-  ElasticsearchService,
-  WorksRequestBuilder
-}
-import org.scalatest.Assertion
-import uk.ac.wellcome.models.index.IndexFixtures
+import uk.ac.wellcome.platform.api.search.services.WorksService
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.{CollectionPath, Work}
 import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.catalogue.internal_model.work.{CollectionPath, Work}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class WorksQueryTest
     extends AnyFunSpec
     with Matchers
+    with EitherValues
     with IndexFixtures
     with SearchOptionsGenerators
     with SubjectGenerators
     with GenreGenerators
     with ImageGenerators
     with ContributorGenerators {
-
-  val searchService = new ElasticsearchService(elasticClient)
 
   describe("Free text query functionality") {
 
@@ -355,22 +351,17 @@ class WorksQueryTest
       }
     }
 
+  private val worksService = new WorksService(
+    elasticsearchService = new ElasticsearchService(elasticClient)
+  )
+
   private def searchResults(
     index: Index,
     searchOptions: WorkSearchOptions): List[Work[Indexed]] = {
-    val searchResponseFuture =
-      searchService.executeSearch(searchOptions, WorksRequestBuilder, index)
-    whenReady(searchResponseFuture) { response =>
-      searchResponseToWorks(response)
+    val future = worksService.listOrSearch(index, searchOptions)
+
+    whenReady(future) {
+      _.right.value.results
     }
   }
-
-  private def searchResponseToWorks(
-    response: Either[ElasticError, SearchResponse]): List[Work[Indexed]] =
-    response.right.get.hits.hits.map { searchHit: SearchHit =>
-      jsonToWork(searchHit.sourceAsString)
-    }.toList
-
-  private def jsonToWork(document: String): Work[Indexed] =
-    fromJson[Work[Indexed]](document).get
 }
