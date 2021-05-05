@@ -6,8 +6,12 @@ import cats.instances.list._
 import cats.syntax.traverse._
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
-import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.Work
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,6 +45,23 @@ class StacksService(
       }
 
     } yield response
+
+  def requestHoldOnItem(
+    userIdentifier: StacksUserIdentifier,
+    item: Item[IdState.Identified],
+    neededBy: Option[Instant]
+  ): Future[HoldResponse] =
+    catalogueService.getSierraItemIdentifierNew(item) match {
+      case Some(SourceIdentifier(_, _, value)) =>
+        sierraService.placeHold(
+          userIdentifier = userIdentifier,
+          sierraItemIdentifier = SierraItemIdentifier(value.toLong),
+          neededBy = neededBy
+        )
+
+      case None =>
+        Future.failed(new Exception(s"Could not find a Sierra ID on ${item.id}!"))
+    }
 
   def getStacksWork(work: Work.Visible[Indexed]): Future[StacksWork] = {
     val itemIds = catalogueService.getAllStacksItemsFromWorkNew(work)

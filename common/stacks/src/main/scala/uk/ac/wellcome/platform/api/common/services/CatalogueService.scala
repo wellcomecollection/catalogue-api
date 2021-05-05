@@ -2,7 +2,11 @@ package uk.ac.wellcome.platform.api.common.services
 
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdState.Identified
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraIdentifier
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -39,11 +43,13 @@ class CatalogueService(
         )
     }
 
-  private def getSierraItemIdentifierNew(identifiers: List[SourceIdentifier]): Option[SourceIdentifier] =
+  def getSierraItemIdentifierNew(item: Item[IdState.Identified]): Option[SourceIdentifier] = {
+    val identifiers = item.id.sourceIdentifier +: item.id.otherIdentifiers
+
     identifiers filter (_.identifierType == SierraIdentifier) match {
       case List(id) => Some(id)
 
-      case Nil      => None
+      case Nil => None
 
       // This would be very unusual and probably points to a problem in the Catalogue API.
       // We throw a distinct error here so that it's easier to debug if this ever
@@ -53,6 +59,7 @@ class CatalogueService(
           s"Multiple values for $SierraIdentifier: $multipleSierraIdentifiers"
         )
     }
+  }
 
   private def getStacksItems(
     itemStubs: List[ItemStub]
@@ -71,8 +78,8 @@ class CatalogueService(
   def getAllStacksItemsFromWorkNew(work: Work.Visible[Indexed]): List[StacksItemIdentifier] =
     work.data.items
       .collect {
-        case Item(Identified(canonicalId, sourceIdentifier, otherIdentifiers), _, _) =>
-          (canonicalId, getSierraItemIdentifierNew(sourceIdentifier +: otherIdentifiers))
+        case item @ Item(Identified(canonicalId, _, _), _, _) =>
+          (canonicalId, getSierraItemIdentifierNew(item.asInstanceOf[Item[IdState.Identified]]))
       }
       .collect {
         case (canonicalId, Some(sierraIdentifier)) =>
