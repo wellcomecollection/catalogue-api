@@ -23,7 +23,6 @@ class RequestsApiFeatureTest
     it("responds to a GET request") {
       withApp { _ =>
         val path = "/users/1234567/item-requests"
-
         whenGetRequestReady(path) {
           _.status shouldBe StatusCodes.OK
         }
