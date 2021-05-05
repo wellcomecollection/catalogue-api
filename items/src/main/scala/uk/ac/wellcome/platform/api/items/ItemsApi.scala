@@ -9,6 +9,7 @@ import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Success, Try}
 
 trait ItemsApi extends CustomDirectives with Tracing {
 
@@ -17,24 +18,26 @@ trait ItemsApi extends CustomDirectives with Tracing {
 
   val routes: Route = concat(
     pathPrefix("works") {
-      path(Segment) {
-        id: String =>
-          get {
-            withFuture {
-              transactFuture("GET /works/{workId}/items") {
-                val result: Future[StacksWork] =
-                  stacksWorkService.getStacksWork(
-                    CanonicalId(id)
-                  )
+      path(Segment) { id: String =>
+        Try { CanonicalId(id) } match {
+          case Success(workId) =>
+            get {
+              withFuture {
+                transactFuture("GET /works/{workId}/items") {
+                  val result: Future[StacksWork] =
+                    stacksWorkService.getStacksWork(workId)
 
-                result
-                  .map(value => complete(DisplayStacksWork(value)))
-                  .recoverWith {
-                    case err => Future.successful(failWith(err))
-                  }
+                  result
+                    .map(value => complete(DisplayStacksWork(value)))
+                    .recoverWith {
+                      case err => Future.successful(failWith(err))
+                    }
+                }
               }
             }
-          }
+
+          case _ => notFound(s"Work not found for identifier $id")
+        }
       }
     }
   )

@@ -4,8 +4,10 @@ import akka.http.scaladsl.model.StatusCodes
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import uk.ac.wellcome.fixtures.RandomGenerators
 import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
+import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,7 +17,9 @@ class ItemsApiFeatureTest
     with Matchers
     with ItemsApiFixture
     with JsonAssertions
-    with IntegrationPatience {
+    with IntegrationPatience
+    with RandomGenerators
+    with HttpFixtures {
 
   describe("items") {
     it("shows a user the items on a work") {
@@ -98,9 +102,10 @@ class ItemsApiFeatureTest
 
     // This is a test case we need, but we shouldn't enable it until we
     // have the WorksService working -- so we can detect the absence of a work.
-    ignore("returns a 404 if it cannot find a work in the catalogue API") {
+    it("returns a 404 if the ID is not a canonical ID") {
       withItemsApi { _ =>
-        val path = "/works/aaaaaaaa"
+        val id = randomAlphanumeric()
+        val path = s"/works/$id"
 
         val expectedError =
           s"""
@@ -108,9 +113,9 @@ class ItemsApiFeatureTest
              |  "errorType": "http",
              |  "httpStatus": 404,
              |  "label": "Not Found",
-             |  "description": "Work not found for identifier aaaaaaaa",
+             |  "description": "Work not found for identifier $id",
              |  "type": "Error",
-             |  "@context": "https://api.wellcomecollection.org/catalogue/v2/context.json"
+             |  "@context": "https://localhostcatalogue/context.json"
              |}""".stripMargin
 
         whenGetRequestReady(path) { response =>
