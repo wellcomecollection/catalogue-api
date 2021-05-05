@@ -132,11 +132,9 @@ class ItemsApiFeatureTest
       }
     }
 
-    // This is a test case we need, but we shouldn't enable it until we
-    // have the WorksService working -- so we can detect the absence of a work.
     it("returns a 404 if the ID is not a canonical ID") {
       withItemsApi(createIndex) { _ =>
-        val id = randomAlphanumeric()
+        val id = randomAlphanumeric(length = 10)
         val path = s"/works/$id"
 
         val expectedError =
@@ -155,6 +153,97 @@ class ItemsApiFeatureTest
 
           withStringEntity(response.entity) {
             assertJsonStringsAreEqual(_, expectedError)
+          }
+        }
+      }
+    }
+
+    it("returns a 404 Not Found if there is no such work") {
+      val id = createCanonicalId
+
+      withLocalWorksIndex { index =>
+        withItemsApi(index) { _ =>
+          val path = s"/works/$id"
+
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "Work not found for identifier $id",
+               |  "type": "Error",
+               |  "@context": "https://localhostcatalogue/context.json"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
+          }
+        }
+      }
+    }
+
+    it("returns a 410 Gone if the work is invisible") {
+      val work = indexedWork().invisible()
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
+
+        withItemsApi(index) { _ =>
+          val path = s"/works/${work.state.canonicalId}"
+
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 410,
+               |  "label": "Gone",
+               |  "description": "This work has been deleted",
+               |  "type": "Error",
+               |  "@context": "https://localhostcatalogue/context.json"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
+          }
+        }
+      }
+    }
+
+    it("returns a 410 Gone if the work is deleted") {
+      val work = indexedWork().deleted()
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
+
+        withItemsApi(index) { _ =>
+          val path = s"/works/${work.state.canonicalId}"
+
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 410,
+               |  "label": "Gone",
+               |  "description": "This work has been deleted",
+               |  "type": "Error",
+               |  "@context": "https://localhostcatalogue/context.json"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
           }
         }
       }
