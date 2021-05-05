@@ -46,6 +46,7 @@ class ApiDiffer:
                 else:
                     data[key] = val
             return data
+
         return _normalise({}, json)
 
     @property
