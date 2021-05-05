@@ -52,7 +52,7 @@ trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixt
       }
     }
 
-  private def parseJson(string: String, unordered: Boolean): Json =
+  def parseJson(string: String, unordered: Boolean = false): Json =
     parse(string) match {
       case Right(json) => sortedJson(unordered)(json)
       case Left(err) =>
@@ -61,7 +61,7 @@ trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixt
         )
     }
 
-  private def sortedJson(unordered: Boolean)(json: Json): Json =
+  def sortedJson(unordered: Boolean)(json: Json): Json =
     json.arrayOrObject(
       json,
       array => {
