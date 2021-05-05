@@ -65,20 +65,19 @@ class WorksLookupTest extends AnyFunSpec with Matchers with EitherValues with In
         val future1 = lookup.byItemId(item1.id.canonicalId)(index)
 
         whenReady(future1) {
-          _ shouldBe Right(Some(workA))
+          _ shouldBe Right(Some(item1))
         }
 
         val future2 = lookup.byItemId(item2.id.canonicalId)(index)
 
-        whenReady(future2) { result =>
-          val expectedResults = List(Right(Some(workA)), Right(Some(workB)))
-          expectedResults should contain(result)
+        whenReady(future2) {
+          _ shouldBe Right(Some(item2))
         }
 
         val future3 = lookup.byItemId(item3.id.canonicalId)(index)
 
         whenReady(future3) {
-          _ shouldBe Right(Some(workB))
+          _ shouldBe Right(Some(item3))
         }
       }
     }
@@ -93,7 +92,7 @@ class WorksLookupTest extends AnyFunSpec with Matchers with EitherValues with In
       }
     }
 
-    it("returns None if there is no visible work") {
+    it("returns None if there is no visible item") {
       val item = createIdentifiedItem
 
       val workInvisible = indexedWork().items(List(item)).invisible()
@@ -117,7 +116,7 @@ class WorksLookupTest extends AnyFunSpec with Matchers with EitherValues with In
         val future2 = lookup.byItemId(item.id.canonicalId)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(workVisible))
+          _ shouldBe Right(Some(item))
         }
       }
     }
