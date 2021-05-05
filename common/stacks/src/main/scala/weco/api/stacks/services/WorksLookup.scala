@@ -19,8 +19,12 @@ class WorksLookup(elasticsearchService: ElasticsearchService)(
   def byItemId(id: CanonicalId)(index: Index): Future[Either[ElasticError, Option[Work[Indexed]]]] = {
     val searchRequest =
       search(index)
-        .query(termQuery("data.items.id.canonicalId", id.underlying))
-        .query(termQuery(field = "type", value = "Visible"))
+        .query(
+          boolQuery.filter(
+            termQuery("data.items.id.canonicalId", id.underlying),
+            termQuery(field = "type", value = "Visible")
+          )
+        )
         .size(1)
 
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
