@@ -24,7 +24,7 @@ class SingleWorkLookupTest
     with WorkGenerators
     with ResponseFixtures {
   val publicRootUri = "https://example.wellcomecollection.org/api/works"
-  val exampleContextUri = "https://example.wellcomecollection.org/context.json"
+  val contextUrl = "https://example.wellcomecollection.org/context.json"
 
   val lookup = new SingleWorkLookup {
     override implicit val ec: ExecutionContext = global
@@ -38,7 +38,7 @@ class SingleWorkLookupTest
         contextSuffix = "context.json"
       )
 
-    override def context: String = exampleContextUri
+    override def context: String = contextUrl
   }
 
   it("finds a work") {
@@ -63,7 +63,6 @@ class SingleWorkLookupTest
       )
     )
     val redirectId = redirectedWork.redirectTarget.canonicalId
-    println(redirectId)
 
     withLocalWorksIndex { index =>
       insertIntoElasticsearch(index, redirectedWork)
@@ -74,6 +73,55 @@ class SingleWorkLookupTest
         val route = resp.left.value
         assertRedirectResponse(route, path = s"/works/$redirectId") {
           StatusCodes.Found -> s"${apiConfig.publicRootPath}/$redirectId"
+        }
+      }
+    }
+  }
+
+  it("returns a 410 Gone if a Work is invisible") {
+    val invisibleWork = indexedWork().invisible()
+
+    withLocalWorksIndex { index =>
+      insertIntoElasticsearch(index, invisibleWork)
+
+      val future = lookup.lookupSingleWork(invisibleWork.state.canonicalId)(index)
+
+      whenReady(future) { resp =>
+        val route = resp.left.value
+        assertJsonResponse(route, path = s"/works/${invisibleWork.id}") {
+          StatusCodes.Gone -> goneRequest("This work has been deleted")
+        }
+      }
+    }
+  }
+
+  it("returns a 410 Gone if a Work is deleted") {
+    val deletedWork = indexedWork().deleted()
+
+    withLocalWorksIndex { index =>
+      insertIntoElasticsearch(index, deletedWork)
+
+      val future = lookup.lookupSingleWork(deletedWork.state.canonicalId)(index)
+
+      whenReady(future) { resp =>
+        val route = resp.left.value
+        assertJsonResponse(route, path = s"/works/${deletedWork.id}") {
+          StatusCodes.Gone -> goneRequest("This work has been deleted")
+        }
+      }
+    }
+  }
+
+  it("returns a 404 Not Found if there is no work for this ID") {
+    val id = createCanonicalId
+
+    withLocalWorksIndex { index =>
+      val future = lookup.lookupSingleWork(id)(index)
+
+      whenReady(future) { resp =>
+        val route = resp.left.value
+        assertJsonResponse(route, path = s"/works/$id") {
+          StatusCodes.NotFound -> notFound(s"Work not found for identifier $id")
         }
       }
     }

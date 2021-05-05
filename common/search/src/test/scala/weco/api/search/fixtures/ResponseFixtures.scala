@@ -12,6 +12,7 @@ import uk.ac.wellcome.platform.api.models.ApiConfig
 
 trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
   val publicRootUri: String
+  val contextUrl: String
 
   lazy val apiConfig = ApiConfig(
     publicRootUri = Uri(publicRootUri),
@@ -81,4 +82,37 @@ trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixt
             .sortBy(tup => tup._1): _*
         )
     )
+
+  def badRequest(description: String) =
+    s"""{
+      "@context": "$contextUrl",
+      "type": "Error",
+      "errorType": "http",
+      "httpStatus": 400,
+      "label": "Bad Request",
+      "description": "$description"
+    }"""
+
+  def goneRequest(description: String) =
+    s"""{
+      "@context": "$contextUrl",
+      "type": "Error",
+      "errorType": "http",
+      "httpStatus": 410,
+      "label": "Gone",
+      "description": "$description"
+    }"""
+
+  def notFound(description: String) =
+    s"""{
+      "@context": "$contextUrl",
+      "type": "Error",
+      "errorType": "http",
+      "httpStatus": 404,
+      "label": "Not Found",
+      "description": "$description"
+    }"""
+
+  def deleted: String =
+    goneRequest("This work has been deleted")
 }

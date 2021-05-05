@@ -22,26 +22,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
        |  "results": []
        |}""".stripMargin
 
-  def badRequest(description: String) =
-    s"""{
-      "@context": "$contextUrl",
-      "type": "Error",
-      "errorType": "http",
-      "httpStatus": 400,
-      "label": "Bad Request",
-      "description": "$description"
-    }"""
-
-  def goneRequest(description: String) =
-    s"""{
-      "@context": "$contextUrl",
-      "type": "Error",
-      "errorType": "http",
-      "httpStatus": 410,
-      "label": "Gone",
-      "description": "$description"
-    }"""
-
   def resultList(
     pageSize: Int = 10,
     totalPages: Int = 1,
@@ -54,26 +34,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
       "totalPages": $totalPages,
       "totalResults": $totalResults
     """
-
-  def notFound(description: String) =
-    s"""{
-      "@context": "$contextUrl",
-      "type": "Error",
-      "errorType": "http",
-      "httpStatus": 404,
-      "label": "Not Found",
-      "description": "$description"
-    }"""
-
-  def deleted =
-    s"""{
-      "@context": "$contextUrl",
-      "type": "Error",
-      "errorType": "http",
-      "httpStatus": 410,
-      "label": "Gone",
-      "description": "This work has been deleted"
-    }"""
 
   def withEmptyIndex[R]: Fixture[Index, R] =
     fixture[Index, R](
