@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.items
 
 import akka.http.scaladsl.server.Route
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.api.common.models.StacksWork
@@ -11,7 +10,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ItemsApi extends CustomDirectives with Tracing with FailFastCirceSupport {
+trait ItemsApi extends CustomDirectives with Tracing {
 
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService

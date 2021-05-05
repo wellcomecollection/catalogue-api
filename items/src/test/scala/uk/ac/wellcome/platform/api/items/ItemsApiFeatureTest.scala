@@ -7,6 +7,9 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class ItemsApiFeatureTest
     extends AnyFunSpec
     with Matchers
@@ -16,7 +19,7 @@ class ItemsApiFeatureTest
 
   describe("items") {
     it("shows a user the items on a work") {
-      withApp { _ =>
+      withItemsApi { _ =>
         val path = "/works/cnkv77md"
 
         val expectedJson =
@@ -50,7 +53,7 @@ class ItemsApiFeatureTest
     }
 
     it("returns an empty list if a work has no items") {
-      withApp { _ =>
+      withItemsApi { _ =>
         val path = "/works/m7mnfut5"
 
         val expectedJson =
@@ -72,7 +75,7 @@ class ItemsApiFeatureTest
     }
 
     it("returns an empty list if a work has no identified items") {
-      withApp { _ =>
+      withItemsApi { _ =>
         val path = "/works/xnb6y9qq"
 
         val expectedJson =
@@ -96,7 +99,7 @@ class ItemsApiFeatureTest
     // This is a test case we need, but we shouldn't enable it until we
     // have the WorksService working -- so we can detect the absence of a work.
     ignore("returns a 404 if it cannot find a work in the catalogue API") {
-      withApp { _ =>
+      withItemsApi { _ =>
         val path = "/works/aaaaaaaa"
 
         val expectedError =
@@ -120,4 +123,5 @@ class ItemsApiFeatureTest
       }
     }
   }
+  override implicit val ec: ExecutionContext = global
 }

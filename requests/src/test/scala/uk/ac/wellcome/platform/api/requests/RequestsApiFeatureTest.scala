@@ -12,6 +12,9 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class RequestsApiFeatureTest
     extends AnyFunSpec
     with Matchers
@@ -21,9 +24,8 @@ class RequestsApiFeatureTest
 
   describe("requests") {
     it("responds to a GET request") {
-      withApp { _ =>
+      withRequestsApi { _ =>
         val path = "/users/1234567/item-requests"
-
         whenGetRequestReady(path) {
           _.status shouldBe StatusCodes.OK
         }
@@ -31,7 +33,7 @@ class RequestsApiFeatureTest
     }
 
     it("accepts requests to place a hold on an item") {
-      withApp { wireMockServer =>
+      withRequestsApi { wireMockServer =>
         val path = "/users/1234567/item-requests"
 
         val entity = createJsonHttpEntityWith(
@@ -74,7 +76,7 @@ class RequestsApiFeatureTest
     }
 
     it("responds with a 409 Conflict when a hold is rejected") {
-      withApp { wireMockServer =>
+      withRequestsApi { wireMockServer =>
         val path = "/users/1234567/item-requests"
 
         val entity = createJsonHttpEntityWith(
@@ -112,7 +114,7 @@ class RequestsApiFeatureTest
     }
 
     it("provides information about a users' holds") {
-      withApp { _ =>
+      withRequestsApi { _ =>
         val path = "/users/1234567/item-requests"
 
         val expectedJson =
@@ -154,4 +156,5 @@ class RequestsApiFeatureTest
       }
     }
   }
+  override implicit val ec: ExecutionContext = global
 }
