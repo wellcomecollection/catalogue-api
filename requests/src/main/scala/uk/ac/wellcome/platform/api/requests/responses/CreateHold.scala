@@ -32,7 +32,7 @@ trait CreateHold extends CustomDirectives {
     Try { CanonicalId(itemRequest.itemId) } match {
       case Success(itemId) =>
         withFuture {
-          itemLookup.byId(itemId)(index).map {
+          itemLookup.byCanonicalId(itemId)(index).map {
             case Right(Some(item: Item[IdState.Identified])) =>
               placeHoldOnItem(userIdentifier, item)
 
