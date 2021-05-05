@@ -20,12 +20,12 @@ class CustomDirectivesTest
   val context: String = contextUri
 
   describe("extractPublicUri") {
-    val testRoute = get {
+    val testRoute = concat(
       path("test") {
         extractPublicUri { uri =>
           complete(uri.toString())
         }
-      }
+      },
       pathPrefix("catalogue") {
         pathPrefix("v2") {
           path("test") {
@@ -35,7 +35,7 @@ class CustomDirectivesTest
           }
         }
       }
-    }
+    )
 
     it("returns a URI with the configured public host") {
       Get("/test") ~> testRoute ~> check {
