@@ -24,7 +24,7 @@ module "search_api" {
 
   environment = {
     app_port         = local.container_ports.search
-    api_host         = local.external_hostname
+    api_public_root  = "https://${local.external_hostname}/catalogue/v2"
     apm_service_name = "search-api"
     apm_environment  = var.environment_name
   }
