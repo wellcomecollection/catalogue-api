@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import collections.abc
 import concurrent.futures
 import datetime
 import difflib
@@ -29,6 +30,24 @@ class ApiDiffer:
         self.path = f"/catalogue/v2{path}"
         self.params = params or {}
 
+    @staticmethod
+    def normalise_absolute_urls(json):
+        """
+        Finds environment-dependent URLs (eg for @context and pagination) and makes
+        them take a default form
+        """
+        # From https://stackoverflow.com/a/3233356
+        def _normalise(data, remaining):
+            for key, val in remaining.items():
+                if isinstance(val, collections.abc.Mapping):
+                    data[key] = _normalise(data.get(key, {}), val)
+                elif isinstance(val, str):
+                    data[key] = val.replace("api-stage", "api")
+                else:
+                    data[key] = val
+            return data
+        return _normalise({}, json)
+
     @property
     def display_url(self):
         display_params = urllib.parse.urlencode(list(self.params.items()))
@@ -43,6 +62,8 @@ class ApiDiffer:
         """
         (prod_status, prod_json) = self.call_api(PROD_URL)
         (stage_status, stage_json) = self.call_api(STAGING_URL)
+        prod_json = ApiDiffer.normalise_absolute_urls(prod_json)
+        stage_json = ApiDiffer.normalise_absolute_urls(stage_json)
         if prod_status != stage_status:
             lines = [
                 f"* Received {prod_status} on prod and {stage_status} on stage",
