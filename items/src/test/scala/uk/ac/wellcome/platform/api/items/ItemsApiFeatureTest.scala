@@ -10,7 +10,6 @@ import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 class ItemsApiFeatureTest
     extends AnyFunSpec
     with Matchers

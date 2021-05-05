@@ -31,7 +31,6 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
     )
 
   def withItemsApi[R](testWith: TestWith[WireMockServer, R]): R =
-
     withStacksService {
       case (stacksService, server) =>
         val router: ItemsApi = new ItemsApi {
