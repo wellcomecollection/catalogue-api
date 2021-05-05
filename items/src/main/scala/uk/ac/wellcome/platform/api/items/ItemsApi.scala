@@ -17,7 +17,7 @@ import scala.util.{Success, Try}
 trait ItemsApi extends VisibleWorkDirectives with Tracing {
 
   implicit val ec: ExecutionContext
-  implicit val stacksWorkService: StacksService
+  implicit val stacksService: StacksService
   val elasticsearchService: ElasticsearchService
   val index: Index
 
@@ -28,7 +28,7 @@ trait ItemsApi extends VisibleWorkDirectives with Tracing {
       .map {
         work => visibleWork(id, work) {
           w: Work.Visible[Indexed] =>
-            stacksWorkService
+            stacksService
               .getStacksWork(w)
               .map { stacksWork => complete(DisplayStacksWork(stacksWork)) }
         }

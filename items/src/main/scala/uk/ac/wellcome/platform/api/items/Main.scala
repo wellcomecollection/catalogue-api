@@ -56,7 +56,7 @@ object Main extends WellcomeTypesafeApp {
 
     val router = new ItemsApi {
       override implicit val ec: ExecutionContext = ecMain
-      override implicit val stacksWorkService: StacksService = workService
+      override implicit val stacksService: StacksService = workService
       override implicit val apiConfig: ApiConfig = apiConf
 
       override def context: String = contextUri

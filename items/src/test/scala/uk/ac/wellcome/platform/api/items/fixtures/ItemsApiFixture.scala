@@ -42,7 +42,7 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures with IndexFixtur
 
         val router: ItemsApi = new ItemsApi {
           override implicit lazy val ec: ExecutionContext = eContext
-          override implicit val stacksWorkService: StacksService =
+          override implicit val stacksService: StacksService =
             stacksService
           override implicit val apiConfig: ApiConfig = apiConf
 
