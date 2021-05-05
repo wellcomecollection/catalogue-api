@@ -42,15 +42,15 @@ class ItemsApiFeatureTest
         insertIntoElasticsearch(index, work)
 
         withItemsApi(index) { _ =>
-          val path = s"/works/${work.id}"
+          val path = s"/works/${work.state.canonicalId}"
 
           val expectedJson =
             s"""
                |{
-               |  "id" : "${work.id}",
+               |  "id" : "${work.state.canonicalId}",
                |  "items" : [
                |    {
-               |      "id" : "${item.id}",
+               |      "id" : "${item.id.canonicalId}",
                |      "locations" : [
                |      ],
                |      "status" : {

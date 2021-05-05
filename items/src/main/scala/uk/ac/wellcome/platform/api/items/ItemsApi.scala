@@ -5,15 +5,16 @@ import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.api.common.services.StacksService
-import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchService, VisibleWorkDirectives}
 import weco.api.stacks.services.WorksLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.work.Work
+import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
-trait ItemsApi extends CustomDirectives with Tracing {
+trait ItemsApi extends VisibleWorkDirectives with Tracing {
 
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
@@ -23,14 +24,15 @@ trait ItemsApi extends CustomDirectives with Tracing {
   private val worksLookup = new WorksLookup(elasticsearchService)
 
   private def getStacksWork(id: CanonicalId): Future[Route] =
-    for {
-      work <- worksLookup.byWorkId(id)(index)
-      _ = println(s"Got work $work")
-
-      result <- stacksWorkService.getStacksWork(id)
-
-      route = complete(DisplayStacksWork(result))
-    } yield route
+    worksLookup.byWorkId(id)(index)
+      .map {
+        work => visibleWork(id, work) {
+          w: Work.Visible[Indexed] =>
+            stacksWorkService
+              .getStacksWork(w)
+              .map { stacksWork => complete(DisplayStacksWork(stacksWork)) }
+        }
+      }
 
   val routes: Route = concat(
     pathPrefix("works") {

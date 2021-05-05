@@ -1,13 +1,14 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import cats.instances.future._
 import cats.instances.list._
 import cats.syntax.traverse._
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.work.Work
+import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +41,20 @@ class StacksService(
       }
 
     } yield response
+
+  def getStacksWork(work: Work.Visible[Indexed]): Future[StacksWork] = {
+    val itemIds = catalogueService.getAllStacksItemsFromWorkNew(work)
+
+    for {
+      itemStatuses <- itemIds
+        .map(_.sierraId)
+        .traverse(sierraService.getItemStatus)
+
+      stacksItemsWithStatuses = (itemIds zip itemStatuses) map {
+        case (itemId, status) => StacksItem(itemId, status)
+      }
+    } yield StacksWork(work.state.canonicalId, stacksItemsWithStatuses)
+  }
 
   def getStacksWork(
     workId: CanonicalId

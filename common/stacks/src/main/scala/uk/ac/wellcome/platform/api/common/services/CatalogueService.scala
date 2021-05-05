@@ -2,7 +2,11 @@ package uk.ac.wellcome.platform.api.common.services
 
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.CatalogueSource
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.IdState.Identified
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraIdentifier
+import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.catalogue.internal_model.work.{Item, Work}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
@@ -35,6 +39,21 @@ class CatalogueService(
         )
     }
 
+  private def getSierraItemIdentifierNew(identifiers: List[SourceIdentifier]): Option[SourceIdentifier] =
+    identifiers filter (_.identifierType == SierraIdentifier) match {
+      case List(id) => Some(id)
+
+      case Nil      => None
+
+      // This would be very unusual and probably points to a problem in the Catalogue API.
+      // We throw a distinct error here so that it's easier to debug if this ever
+      // occurs in practice.
+      case multipleSierraIdentifiers =>
+        throw new Exception(
+          s"Multiple values for $SierraIdentifier: $multipleSierraIdentifiers"
+        )
+    }
+
   private def getStacksItems(
     itemStubs: List[ItemStub]
   ): List[StacksItemIdentifier] =
@@ -48,6 +67,20 @@ class CatalogueService(
       case (canonicalId, Some(sierraId)) =>
         StacksItemIdentifier(canonicalId, sierraId)
     }
+
+  def getAllStacksItemsFromWorkNew(work: Work.Visible[Indexed]): List[StacksItemIdentifier] =
+    work.data.items
+      .collect {
+        case Item(Identified(canonicalId, sourceIdentifier, otherIdentifiers), _, _) =>
+          (canonicalId, getSierraItemIdentifierNew(sourceIdentifier +: otherIdentifiers))
+      }
+      .collect {
+        case (canonicalId, Some(sierraIdentifier)) =>
+          StacksItemIdentifier(
+            canonicalId = canonicalId,
+            sierraId = SierraItemIdentifier(sierraIdentifier.value.toLong)
+          )
+      }
 
   def getAllStacksItemsFromWork(
     workId: CanonicalId
