@@ -60,7 +60,8 @@ class StacksService(
         )
 
       case None =>
-        Future.failed(new Exception(s"Could not find a Sierra ID on ${item.id}!"))
+        Future.failed(
+          new Exception(s"Could not find a Sierra ID on ${item.id}!"))
     }
 
   def getStacksWork(work: Work.Visible[Indexed]): Future[StacksWork] = {

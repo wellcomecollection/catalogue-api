@@ -7,7 +7,10 @@ import uk.ac.wellcome.api.display.models.Implicits._
 import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.services.WorksService
-import weco.api.search.elasticsearch.{ElasticsearchService, VisibleWorkDirectives}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  VisibleWorkDirectives
+}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -64,16 +67,15 @@ class WorksController(
           val includes = params.include.getOrElse(WorksIncludes.none)
 
           worksService.findById(id)(index).map { work =>
-            visibleWork(id, work) {
-              work: Work.Visible[Indexed] =>
-                Future.successful(
-                  complete(
-                    ContextResponse(
-                      context = contextUri,
-                      result = DisplayWork(work, includes)
-                    )
+            visibleWork(id, work) { work: Work.Visible[Indexed] =>
+              Future.successful(
+                complete(
+                  ContextResponse(
+                    context = contextUri,
+                    result = DisplayWork(work, includes)
                   )
                 )
+              )
             }
           }
         }

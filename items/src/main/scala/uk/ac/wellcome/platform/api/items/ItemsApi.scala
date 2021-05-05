@@ -5,7 +5,10 @@ import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.api.common.services.StacksService
-import weco.api.search.elasticsearch.{ElasticsearchService, VisibleWorkDirectives}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  VisibleWorkDirectives
+}
 import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
@@ -24,34 +27,37 @@ trait ItemsApi extends VisibleWorkDirectives with Tracing {
   private val worksLookup = new WorkLookup(elasticsearchService)
 
   private def getStacksWork(id: CanonicalId): Future[Route] =
-    worksLookup.byId(id)(index)
-      .map {
-        work => visibleWork(id, work) {
-          w: Work.Visible[Indexed] =>
-            stacksService
-              .getStacksWork(w)
-              .map { stacksWork => complete(DisplayStacksWork(stacksWork)) }
+    worksLookup
+      .byId(id)(index)
+      .map { work =>
+        visibleWork(id, work) { w: Work.Visible[Indexed] =>
+          stacksService
+            .getStacksWork(w)
+            .map { stacksWork =>
+              complete(DisplayStacksWork(stacksWork))
+            }
         }
       }
 
   val routes: Route = concat(
     pathPrefix("works") {
-      path(Segment) { id: String =>
-        Try { CanonicalId(id) } match {
-          case Success(workId) =>
-            get {
-              withFuture {
-                transactFuture("GET /works/{workId}/items") {
-                  getStacksWork(workId)
-                    .recoverWith {
-                      case err => Future.successful(failWith(err))
-                    }
+      path(Segment) {
+        id: String =>
+          Try { CanonicalId(id) } match {
+            case Success(workId) =>
+              get {
+                withFuture {
+                  transactFuture("GET /works/{workId}/items") {
+                    getStacksWork(workId)
+                      .recoverWith {
+                        case err => Future.successful(failWith(err))
+                      }
+                  }
                 }
               }
-            }
 
-          case _ => notFound(s"Work not found for identifier $id")
-        }
+            case _ => notFound(s"Work not found for identifier $id")
+          }
       }
     }
   )

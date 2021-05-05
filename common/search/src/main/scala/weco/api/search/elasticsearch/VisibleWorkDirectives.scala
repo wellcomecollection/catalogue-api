@@ -11,7 +11,9 @@ import weco.catalogue.internal_model.work.WorkState.Indexed
 import scala.concurrent.Future
 
 trait VisibleWorkDirectives extends CustomDirectives {
-  def visibleWork(id: CanonicalId, work: Either[ElasticError, Option[Work[Indexed]]])(f: Work.Visible[Indexed] => Future[Route]): Route =
+  def visibleWork(id: CanonicalId,
+                  work: Either[ElasticError, Option[Work[Indexed]]])(
+    f: Work.Visible[Indexed] => Future[Route]): Route =
     work match {
       case Right(Some(work: Work.Visible[Indexed])) =>
         withFuture {

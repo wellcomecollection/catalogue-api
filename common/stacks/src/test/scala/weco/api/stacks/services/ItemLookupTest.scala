@@ -11,7 +11,13 @@ import weco.api.search.elasticsearch.ElasticsearchService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ItemLookupTest extends AnyFunSpec with Matchers with EitherValues with IndexFixtures with ItemsGenerators with WorkGenerators {
+class ItemLookupTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with IndexFixtures
+    with ItemsGenerators
+    with WorkGenerators {
   val lookup = new ItemLookup(
     elasticsearchService = new ElasticsearchService(elasticClient)
   )
@@ -108,19 +114,22 @@ class ItemLookupTest extends AnyFunSpec with Matchers with EitherValues with Ind
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
-        val future1 = lookup.bySourceIdentifier(item1.id.sourceIdentifier)(index)
+        val future1 =
+          lookup.bySourceIdentifier(item1.id.sourceIdentifier)(index)
 
         whenReady(future1) {
           _ shouldBe Right(Some(item1))
         }
 
-        val future2 = lookup.bySourceIdentifier(item2.id.sourceIdentifier)(index)
+        val future2 =
+          lookup.bySourceIdentifier(item2.id.sourceIdentifier)(index)
 
         whenReady(future2) {
           _ shouldBe Right(Some(item2))
         }
 
-        val future3 = lookup.bySourceIdentifier(item3.id.sourceIdentifier)(index)
+        val future3 =
+          lookup.bySourceIdentifier(item3.id.sourceIdentifier)(index)
 
         whenReady(future3) {
           _ shouldBe Right(Some(item3))
@@ -145,19 +154,22 @@ class ItemLookupTest extends AnyFunSpec with Matchers with EitherValues with Ind
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
-        val future1 = lookup.bySourceIdentifier(item1.id.otherIdentifiers.head)(index)
+        val future1 =
+          lookup.bySourceIdentifier(item1.id.otherIdentifiers.head)(index)
 
         whenReady(future1) {
           _ shouldBe Right(Some(item1))
         }
 
-        val future2 = lookup.bySourceIdentifier(item2.id.otherIdentifiers.head)(index)
+        val future2 =
+          lookup.bySourceIdentifier(item2.id.otherIdentifiers.head)(index)
 
         whenReady(future2) {
           _ shouldBe Right(Some(item2))
         }
 
-        val future3 = lookup.bySourceIdentifier(item3.id.otherIdentifiers.head)(index)
+        val future3 =
+          lookup.bySourceIdentifier(item3.id.otherIdentifiers.head)(index)
 
         whenReady(future3) {
           _ shouldBe Right(Some(item3))
@@ -205,7 +217,8 @@ class ItemLookupTest extends AnyFunSpec with Matchers with EitherValues with Ind
     }
 
     it("returns Left[Error] if Elasticsearch has an error") {
-      val future = lookup.bySourceIdentifier(createSourceIdentifier)(createIndex)
+      val future =
+        lookup.bySourceIdentifier(createSourceIdentifier)(createIndex)
 
       whenReady(future) {
         _.left.value shouldBe a[ElasticError]

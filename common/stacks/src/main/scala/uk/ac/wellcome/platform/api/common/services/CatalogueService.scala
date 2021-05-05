@@ -43,7 +43,8 @@ class CatalogueService(
         )
     }
 
-  def getSierraItemIdentifierNew(item: Item[IdState.Identified]): Option[SourceIdentifier] = {
+  def getSierraItemIdentifierNew(
+    item: Item[IdState.Identified]): Option[SourceIdentifier] = {
     val identifiers = item.id.sourceIdentifier +: item.id.otherIdentifiers
 
     identifiers filter (_.identifierType == SierraIdentifier) match {
@@ -75,11 +76,15 @@ class CatalogueService(
         StacksItemIdentifier(canonicalId, sierraId)
     }
 
-  def getAllStacksItemsFromWorkNew(work: Work.Visible[Indexed]): List[StacksItemIdentifier] =
+  def getAllStacksItemsFromWorkNew(
+    work: Work.Visible[Indexed]): List[StacksItemIdentifier] =
     work.data.items
       .collect {
         case item @ Item(Identified(canonicalId, _, _), _, _) =>
-          (canonicalId, getSierraItemIdentifierNew(item.asInstanceOf[Item[IdState.Identified]]))
+          (
+            canonicalId,
+            getSierraItemIdentifierNew(
+              item.asInstanceOf[Item[IdState.Identified]]))
       }
       .collect {
         case (canonicalId, Some(sierraIdentifier)) =>

@@ -48,8 +48,7 @@ class StacksServiceTest
                     "/iii/sierra-api/v5/patrons/1234567/holds/requests"
                   )
                 ).withRequestBody(
-                  equalToJson(
-                    """
+                  equalToJson("""
                       |{
                       |  "recordType" : "i",
                       |  "recordNumber" : 1601017,
@@ -85,8 +84,7 @@ class StacksServiceTest
                     "/iii/sierra-api/v5/patrons/1234567/holds/requests"
                   )
                 ).withRequestBody(
-                  equalToJson(
-                    """
+                  equalToJson("""
                       |{
                       |  "recordType" : "i",
                       |  "recordNumber" : 1601018,

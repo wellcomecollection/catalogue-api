@@ -48,7 +48,8 @@ trait CreateHold extends CustomDirectives {
     }
   }
 
-  private def placeHoldOnItem(userIdentifier: StacksUserIdentifier, item: Item[IdState.Identified]): Route = {
+  private def placeHoldOnItem(userIdentifier: StacksUserIdentifier,
+                              item: Item[IdState.Identified]): Route = {
     val result = stacksWorkService.requestHoldOnItem(
       userIdentifier = userIdentifier,
       item = item,

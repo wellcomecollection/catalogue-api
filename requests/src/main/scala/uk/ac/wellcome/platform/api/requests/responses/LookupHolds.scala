@@ -3,7 +3,10 @@ package uk.ac.wellcome.platform.api.requests.responses
 import cats.syntax.traverse._
 import com.sksamuel.elastic4s.{ElasticError, Index}
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.common.models.{StacksUserHolds, StacksUserIdentifier}
+import uk.ac.wellcome.platform.api.common.models.{
+  StacksUserHolds,
+  StacksUserIdentifier
+}
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.IdState
@@ -26,7 +29,9 @@ trait LookupHolds extends Logging {
     for {
       userHolds <- sierraService.getStacksUserHolds(userIdentifier)
 
-      stacksItemIds: immutable.Seq[Either[ElasticError, Option[Item[IdState.Identified]]]] <- userHolds.holds
+      stacksItemIds: immutable.Seq[Either[
+        ElasticError,
+        Option[Item[IdState.Identified]]]] <- userHolds.holds
         .map(_.itemId)
         .traverse(id => itemLookup.bySourceIdentifier(id)(index))
 

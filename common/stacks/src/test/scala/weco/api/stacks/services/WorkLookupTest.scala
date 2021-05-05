@@ -11,7 +11,12 @@ import weco.api.search.elasticsearch.ElasticsearchService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class WorkLookupTest extends AnyFunSpec with Matchers with EitherValues with IndexFixtures with WorkGenerators {
+class WorkLookupTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with IndexFixtures
+    with WorkGenerators {
   val lookup = new WorkLookup(
     elasticsearchService = new ElasticsearchService(elasticClient)
   )

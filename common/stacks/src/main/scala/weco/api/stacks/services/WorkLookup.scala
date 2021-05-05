@@ -10,6 +10,7 @@ import weco.catalogue.internal_model.work.WorkState.Indexed
 import scala.concurrent.Future
 
 class WorkLookup(elasticsearchService: ElasticsearchService) {
-  def byId(id: CanonicalId)(index: Index): Future[Either[ElasticError, Option[Work[Indexed]]]] =
+  def byId(id: CanonicalId)(
+    index: Index): Future[Either[ElasticError, Option[Work[Indexed]]]] =
     elasticsearchService.findById[Work[Indexed]](id)(index)
 }

@@ -14,7 +14,10 @@ import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext
 
-trait ItemsApiFixture extends ServicesFixture with HttpFixtures with IndexFixtures {
+trait ItemsApiFixture
+    extends ServicesFixture
+    with HttpFixtures
+    with IndexFixtures {
 
   val metricsName = "ItemsApiFixture"
 
@@ -48,7 +51,8 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures with IndexFixtur
 
           override def context: String = contextUri
 
-          override lazy val elasticsearchService: ElasticsearchService = esService
+          override lazy val elasticsearchService: ElasticsearchService =
+            esService
 
           override val index: Index = givenIndex
         }
