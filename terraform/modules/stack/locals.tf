@@ -1,8 +1,6 @@
 locals {
-  search_lb_port = 8000
-  items_lb_port  = 8001
-
-  external_hostname = "api.wellcomecollection.org"
+  search_lb_port    = 8000
+  items_lb_port     = 8001
   version_path_part = "v2"
 
   api_gateway_domain_name = var.environment_name != "stage" ? "catalogue.api-${var.environment_name}.wellcomecollection.org" : "catalogue.api-${var.environment_name}-delta.wellcomecollection.org"

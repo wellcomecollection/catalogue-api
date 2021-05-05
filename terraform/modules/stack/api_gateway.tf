@@ -54,7 +54,7 @@ module "works_route" {
   path_part   = "works"
   http_method = "ANY"
 
-  integration_path = "/catalogue/v2/works"
+  integration_path = "/works"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
@@ -70,7 +70,7 @@ module "images_route" {
   path_part   = "images"
   http_method = "ANY"
 
-  integration_path = "/catalogue/v2/images"
+  integration_path = "/images"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
@@ -87,7 +87,7 @@ module "single_image_route" {
   http_method = "ANY"
 
   path_param       = "imageId"
-  integration_path = "/catalogue/v2/images/{imageId}"
+  integration_path = "/images/{imageId}"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
@@ -104,7 +104,7 @@ module "single_work_route" {
   http_method = "ANY"
 
   path_param       = "workId"
-  integration_path = "/catalogue/v2/works/{workId}"
+  integration_path = "/works/{workId}"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
@@ -135,12 +135,12 @@ module "default_route" {
   source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
+  parent_id   = aws_api_gateway_resource.v2.id
   path_part   = "{proxy+}"
   http_method = "ANY"
 
   path_param       = "proxy"
-  integration_path = "/catalogue/{proxy}"
+  integration_path = "/{proxy}"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id

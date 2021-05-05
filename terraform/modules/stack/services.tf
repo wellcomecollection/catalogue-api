@@ -24,7 +24,7 @@ module "search_api" {
 
   environment = {
     app_port         = local.container_ports.search
-    api_host         = local.external_hostname
+    api_public_root  = "https://${var.external_hostname}/catalogue/v2"
     apm_service_name = "search-api"
     apm_environment  = var.environment_name
   }
@@ -58,12 +58,12 @@ module "items_api" {
 
   environment = {
     app_port           = local.container_ports.items
-    app_base_url       = "https://${local.external_hostname}/stacks/v1/items"
-    context_url        = "https://${local.external_hostname}/stacks/v1/context.json"
-    catalogue_base_url = "https://${local.external_hostname}/catalogue/v2"
+    app_base_url       = "https://${var.external_hostname}/stacks/v1/items"
+    context_url        = "https://${var.external_hostname}/stacks/v1/context.json"
+    catalogue_base_url = "https://${var.external_hostname}/catalogue/v2"
     sierra_base_url    = "https://libsys.wellcomelibrary.org/iii/sierra-api"
 
-    api_host         = local.external_hostname
+    api_host         = var.external_hostname
     apm_service_name = "items-api"
     apm_environment  = var.environment_name
 
