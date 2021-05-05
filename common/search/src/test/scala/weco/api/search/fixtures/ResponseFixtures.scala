@@ -10,7 +10,10 @@ import org.scalatest.funspec.AnyFunSpec
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.platform.api.models.ApiConfig
 
-trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
+trait ResponseFixtures
+    extends AnyFunSpec
+    with ScalatestRouteTest
+    with IndexFixtures {
   val publicRootUri: String
   val contextUrl: String
 
@@ -80,7 +83,7 @@ trait ResponseFixtures extends AnyFunSpec with ScalatestRouteTest with IndexFixt
                 (key, sortedJson(unordered)(value))
             }
             .sortBy(tup => tup._1): _*
-        )
+      )
     )
 
   def serverError: String =

@@ -15,7 +15,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ElasticLookupTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with EitherValues
     with ElasticsearchFixtures
@@ -29,9 +29,11 @@ class ElasticLookupTest
     val redSquare = Shape(id = createCanonicalId, color = "red", sides = 4)
 
     withLocalElasticsearchIndex(NoStrictMapping) { index =>
-      elasticClient.execute(
-        indexInto(index).id(redSquare.id.toString).doc(redSquare)
-      ).await
+      elasticClient
+        .execute(
+          indexInto(index).id(redSquare.id.toString).doc(redSquare)
+        )
+        .await
 
       val future = elasticLookup.lookupById(redSquare.id)(index)
 
@@ -54,12 +56,15 @@ class ElasticLookupTest
   it("returns a failed future if it can't deserialise the object") {
     case class BadShape(id: CanonicalId, color: String, sides: String)
 
-    val blueTriangle = BadShape(id = createCanonicalId, color = "blue", sides = "three")
+    val blueTriangle =
+      BadShape(id = createCanonicalId, color = "blue", sides = "three")
 
     withLocalElasticsearchIndex(NoStrictMapping) { index =>
-      elasticClient.execute(
-        indexInto(index).id(blueTriangle.id.toString).doc(blueTriangle)
-      ).await
+      elasticClient
+        .execute(
+          indexInto(index).id(blueTriangle.id.toString).doc(blueTriangle)
+        )
+        .await
 
       val future = elasticLookup.lookupById(blueTriangle.id)(index)
 

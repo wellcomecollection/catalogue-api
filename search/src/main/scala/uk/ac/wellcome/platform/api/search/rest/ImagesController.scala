@@ -26,13 +26,11 @@ import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesController(
-  imagesIndex: Index,
-  implicit val apiConfig: ApiConfig,
-  queryConfig: QueryConfig)(
-  implicit
-  elasticClient: ElasticClient,
-  ec: ExecutionContext)
+class ImagesController(imagesIndex: Index,
+                       implicit val apiConfig: ApiConfig,
+                       queryConfig: QueryConfig)(implicit
+                                                 elasticClient: ElasticClient,
+                                                 ec: ExecutionContext)
     extends CustomDirectives
     with Tracing
     with FailFastCirceSupport {

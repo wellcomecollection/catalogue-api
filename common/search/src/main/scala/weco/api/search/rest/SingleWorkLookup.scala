@@ -15,7 +15,8 @@ trait SingleWorkLookup extends CustomDirectives {
   implicit val ec: ExecutionContext
   val elasticLookup: ElasticLookup[Work[Indexed]]
 
-  def lookupSingleWork(id: CanonicalId)(index: Index): Future[Either[Route, Work.Visible[Indexed]]] =
+  def lookupSingleWork(id: CanonicalId)(
+    index: Index): Future[Either[Route, Work.Visible[Indexed]]] =
     elasticLookup
       .lookupById(id)(index)
       .map {

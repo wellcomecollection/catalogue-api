@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SingleWorkLookupTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with EitherValues
     with IndexFixtures
@@ -28,7 +28,8 @@ class SingleWorkLookupTest
 
   val lookup = new SingleWorkLookup {
     override implicit val ec: ExecutionContext = global
-    override implicit val elasticLookup: ElasticLookup[Work[WorkState.Indexed]] =
+    override implicit val elasticLookup
+      : ElasticLookup[Work[WorkState.Indexed]] =
       new ElasticLookup()
 
     override implicit val apiConfig: ApiConfig =
@@ -67,7 +68,8 @@ class SingleWorkLookupTest
     withLocalWorksIndex { index =>
       insertIntoElasticsearch(index, redirectedWork)
 
-      val future = lookup.lookupSingleWork(redirectedWork.state.canonicalId)(index)
+      val future =
+        lookup.lookupSingleWork(redirectedWork.state.canonicalId)(index)
 
       whenReady(future) { resp =>
         val route = resp.left.value
@@ -84,7 +86,8 @@ class SingleWorkLookupTest
     withLocalWorksIndex { index =>
       insertIntoElasticsearch(index, invisibleWork)
 
-      val future = lookup.lookupSingleWork(invisibleWork.state.canonicalId)(index)
+      val future =
+        lookup.lookupSingleWork(invisibleWork.state.canonicalId)(index)
 
       whenReady(future) { resp =>
         val route = resp.left.value

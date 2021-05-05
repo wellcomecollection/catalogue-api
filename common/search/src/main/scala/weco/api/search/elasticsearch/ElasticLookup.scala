@@ -18,12 +18,14 @@ class ElasticLookup[T](
   decoder: Decoder[T]
 ) extends Tracing {
 
-  def lookupById(canonicalId: CanonicalId)(index: Index): Future[Either[ElasticError, Option[T]]] =
+  def lookupById(canonicalId: CanonicalId)(
+    index: Index): Future[Either[ElasticError, Option[T]]] =
     executeGet(canonicalId)(index)
       .map {
         case Left(elasticError) => Left(elasticError)
 
-        case Right(response) if response.exists => Right(Some(deserialize(response)))
+        case Right(response) if response.exists =>
+          Right(Some(deserialize(response)))
 
         case Right(_) => Right(None)
       }

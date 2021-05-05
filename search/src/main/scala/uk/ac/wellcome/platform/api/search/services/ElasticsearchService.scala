@@ -10,7 +10,8 @@ import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models._
 
 class ElasticsearchService(
-  implicit elasticClient: ElasticClient, ec: ExecutionContext
+  implicit elasticClient: ElasticClient,
+  ec: ExecutionContext
 ) extends Logging
     with Tracing {
 
