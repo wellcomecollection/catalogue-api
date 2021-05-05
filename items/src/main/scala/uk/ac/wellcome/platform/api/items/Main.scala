@@ -32,18 +32,18 @@ object Main extends WellcomeTypesafeApp {
 
     val apiConf =
       ApiConfig(
-        host = config
+        publicHost = config
           .getStringOption("api.host")
           .getOrElse("localhost"),
-        scheme = config
+        publicScheme = config
           .getStringOption("api.scheme")
           .getOrElse("https"),
         defaultPageSize = config
           .getIntOption("api.pageSize")
           .getOrElse(10),
-        pathPrefix =
+        publicRootPath =
           s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
-        contextSuffix = config
+        contextPath = config
           .getStringOption("api.context.suffix")
           .getOrElse("context.json")
       )

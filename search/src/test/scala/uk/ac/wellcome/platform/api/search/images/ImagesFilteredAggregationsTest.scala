@@ -26,10 +26,11 @@ class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/images?aggregations=locations.license&locations.license=cc-by,pdm") {
+          s"$rootPath/images?aggregations=locations.license&locations.license=cc-by,pdm"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = expectedImages.size)},
+              ${resultList(totalResults = expectedImages.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "license": {

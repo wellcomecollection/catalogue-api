@@ -3,7 +3,6 @@ package uk.ac.wellcome.platform.api.rest
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
 import com.sksamuel.elastic4s.ElasticError
-import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.platform.api.elasticsearch.ElasticsearchErrorHandler
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.http.FutureDirectives
@@ -21,16 +20,27 @@ trait CustomDirectives extends FutureDirectives {
   def extractPublicUri: Directive[Tuple1[Uri]] =
     extractUri.map { uri =>
       uri
-        .withHost(apiConfig.host)
+        .withScheme(apiConfig.publicScheme)
+        .withHost(apiConfig.publicHost)
         // akka-http uses 0 to indicate no explicit port in the URI
         .withPort(0)
-        .withScheme(apiConfig.scheme)
+        .withPath(uri.path match {
+          // This is a temporary branch to conditionally rewrite the public path
+          // only while we are serving from both `/` and `/catalogue/v2` - we will
+          // always prepend the public root path once we're serving only from `/`
+          case path if path.startsWith(Uri.Path("/catalogue")) => path
+          case nonPrefixedPath =>
+            Uri.Path(apiConfig.publicRootPath) ++ nonPrefixedPath
+        })
     }
 
   def contextUri: String =
     apiConfig match {
-      case ApiConfig(host, scheme, _, pathPrefix, contextSuffix) =>
-        s"$scheme://$host/$pathPrefix/${ApiVersions.v2}/$contextSuffix"
+      case ApiConfig(scheme, host, rootPath, contextPath, _)
+          if rootPath.isEmpty =>
+        s"$scheme://$host/$contextPath"
+      case ApiConfig(scheme, host, rootPath, contextPath, _) =>
+        s"$scheme://$host$rootPath/$contextPath"
     }
 
   def elasticError(err: ElasticError): Route =

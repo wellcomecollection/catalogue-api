@@ -16,7 +16,8 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, ccByImage, ccByNcImage)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?locations.license=cc-by") {
+            s"$rootPath/images?locations.license=cc-by"
+          ) {
             Status.OK -> imagesListResponse(
               images = Seq(ccByImage)
             )
@@ -53,7 +54,8 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"""/$apiPrefix/images?source.contributors.agent.label="Machiavelli,%20Niccolo"""") {
+            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
+          ) {
             Status.OK -> imagesListResponse(List(canonicalMachiavelliImage))
           }
       }
@@ -65,7 +67,8 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?source.contributors.agent.label=Hypatia") {
+            s"$rootPath/images?source.contributors.agent.label=Hypatia"
+          ) {
             Status.OK -> imagesListResponse(Nil)
           }
       }
@@ -77,10 +80,12 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"""/$apiPrefix/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said""",
-            unordered = true) {
+            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said""",
+            unordered = true
+          ) {
             Status.OK -> imagesListResponse(
-              List(canonicalMachiavelliImage, canonicalSaidImage))
+              List(canonicalMachiavelliImage, canonicalSaidImage)
+            )
           }
       }
     }
@@ -116,7 +121,7 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?source.genres.label=Carrot%20counselling"
+            s"$rootPath/images?source.genres.label=Carrot%20counselling"
           ) {
             Status.OK -> imagesListResponse(List(carrotCounsellingImage))
           }
@@ -129,7 +134,7 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?source.genres.label=Dodo%20divination"
+            s"$rootPath/images?source.genres.label=Dodo%20divination"
           ) {
             Status.OK -> imagesListResponse(Nil)
           }
@@ -142,13 +147,15 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, images: _*)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship",
+            s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship",
             unordered = true
           ) {
             Status.OK -> imagesListResponse(
               List(
                 carrotCounsellingImage,
-                emuEntrepreneurShipAndFalconFinancesImage))
+                emuEntrepreneurShipAndFalconFinancesImage
+              )
+            )
           }
       }
     }
@@ -167,8 +174,11 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
             "71/1",
             "268/2",
             "268/2",
-            "268/2",
-          ))))
+            "268/2"
+          )
+        )
+      )
+    )
     val blueImage = createImageData.toIndexedImageWith(
       inferredData = createInferredData.map(
         _.copy(
@@ -190,8 +200,11 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
             "187/2",
             "165/2",
             "115/2",
-            "129/2",
-          ))))
+            "129/2"
+          )
+        )
+      )
+    )
     val slightlyLessRedImage = createImageData.toIndexedImageWith(
       inferredData = createInferredData.map(
         _.copy(
@@ -199,22 +212,28 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
             "7/0",
             "71/1",
             "71/1",
-            "71/1",
-          ))))
+            "71/1"
+          )
+        )
+      )
+    )
     val evenLessRedImage = createImageData.toIndexedImageWith(
       inferredData = createInferredData.map(
         _.copy(
           palette = List(
             "7/0",
             "7/0",
-            "7/0",
-          ))))
+            "7/0"
+          )
+        )
+      )
+    )
 
     it("filters by color") {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, redImage, blueImage)
-          assertJsonResponse(routes, f"/$apiPrefix/images?color=ff0000") {
+          assertJsonResponse(routes, f"$rootPath/images?color=ff0000") {
             Status.OK -> imagesListResponse(
               images = Seq(redImage)
             )
@@ -228,8 +247,9 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
           insertImagesIntoElasticsearch(imagesIndex, redImage, blueImage)
           assertJsonResponse(
             routes,
-            f"/$apiPrefix/images?color=ff0000,0000ff",
-            unordered = true) {
+            f"$rootPath/images?color=ff0000,0000ff",
+            unordered = true
+          ) {
             Status.OK -> imagesListResponse(
               images = Seq(blueImage, redImage)
             )
@@ -247,7 +267,7 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
             evenLessRedImage,
             blueImage
           )
-          assertJsonResponse(routes, f"/$apiPrefix/images?color=ff0000") {
+          assertJsonResponse(routes, f"$rootPath/images?color=ff0000") {
             Status.OK -> imagesListResponse(
               images = Seq(redImage, slightlyLessRedImage, evenLessRedImage)
             )

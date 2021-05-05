@@ -22,7 +22,8 @@ class WorksIncludesTest
 
   describe("identifiers includes") {
     it(
-      "includes a list of identifiers on a list endpoint if we pass ?include=identifiers") {
+      "includes a list of identifiers on a list endpoint if we pass ?include=identifiers"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val otherIdentifier1 = createSourceIdentifier
@@ -34,10 +35,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=identifiers") {
+          assertJsonResponse(routes, s"$rootPath/works?include=identifiers") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -45,7 +46,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "identifiers": [
                      ${identifier(work1.sourceIdentifier)},
                      ${identifier(otherIdentifier1)}
@@ -57,7 +59,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "identifiers": [
                      ${identifier(work2.sourceIdentifier)},
                      ${identifier(otherIdentifier2)}
@@ -71,7 +74,8 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of identifiers on a single work endpoint if we pass ?include=identifiers") {
+      "includes a list of identifiers on a single work endpoint if we pass ?include=identifiers"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val otherIdentifier = createSourceIdentifier
@@ -80,10 +84,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=identifiers") {
+            s"$rootPath/works/${work.state.canonicalId}?include=identifiers"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -107,16 +112,18 @@ class WorksIncludesTest
             List(
               createIdentifiedItemWith(title = Some("item title")),
               createUnidentifiableItem
-            ))
+            )
+          )
 
         insertIntoElasticsearch(worksIndex, work)
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works/${work.state.canonicalId}?include=items") {
+          s"$rootPath/works/${work.state.canonicalId}?include=items"
+        ) {
           Status.OK -> s"""
             {
-              ${singleWorkResult(apiPrefix)},
+              ${singleWorkResult()},
               "id": "${work.state.canonicalId}",
               "title": "${work.data.title.get}",
               "alternativeTitles": [],
@@ -130,7 +137,8 @@ class WorksIncludesTest
 
   describe("subject includes") {
     it(
-      "includes a list of subjects on a list endpoint if we pass ?include=subjects") {
+      "includes a list of subjects on a list endpoint if we pass ?include=subjects"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val subjects1 = List(createSubject)
@@ -142,10 +150,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=subjects") {
+          assertJsonResponse(routes, s"$rootPath/works?include=subjects") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -153,7 +161,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "subjects": [ ${subjects(subjects1)}]
                  },
                  {
@@ -162,7 +171,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "subjects": [ ${subjects(subjects2)}]
                  }
                 ]
@@ -173,7 +183,8 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of subjects on a single work endpoint if we pass ?include=subjects") {
+      "includes a list of subjects on a single work endpoint if we pass ?include=subjects"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val work = indexedWork().subjects(List(createSubject))
@@ -182,10 +193,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=subjects") {
+            s"$rootPath/works/${work.state.canonicalId}?include=subjects"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -200,7 +212,8 @@ class WorksIncludesTest
 
   describe("genre includes") {
     it(
-      "includes a list of genres on a list endpoint if we pass ?include=genres") {
+      "includes a list of genres on a list endpoint if we pass ?include=genres"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val genres1 = List(Genre("ornithology", List(Concept("ornithology"))))
@@ -210,10 +223,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=genres") {
+          assertJsonResponse(routes, s"$rootPath/works?include=genres") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -221,7 +234,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "genres": [ ${genres(genres1)}]
                  },
                  {
@@ -230,7 +244,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "genres": [ ${genres(genres2)}]
                  }
                 ]
@@ -241,20 +256,23 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of genres on a single work endpoint if we pass ?include=genres") {
+      "includes a list of genres on a single work endpoint if we pass ?include=genres"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val work = indexedWork().genres(
-            List(Genre("ornithology", List(Concept("ornithology")))))
+            List(Genre("ornithology", List(Concept("ornithology"))))
+          )
 
           insertIntoElasticsearch(worksIndex, work)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=genres") {
+            s"$rootPath/works/${work.state.canonicalId}?include=genres"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -269,7 +287,8 @@ class WorksIncludesTest
 
   describe("contributor includes") {
     it(
-      "includes a list of contributors on a list endpoint if we pass ?include=contributors") {
+      "includes a list of contributors on a list endpoint if we pass ?include=contributors"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val contributors1 =
@@ -283,10 +302,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works/?include=contributors") {
+          assertJsonResponse(routes, s"$rootPath/works/?include=contributors") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -294,7 +313,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "contributors": [ ${contributors(contributors1)}]
                  },
                  {
@@ -303,7 +323,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "contributors": [ ${contributors(contributors2)}]
                  }
                 ]
@@ -314,21 +335,24 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of contributors on a single work endpoint if we pass ?include=contributors") {
+      "includes a list of contributors on a single work endpoint if we pass ?include=contributors"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val work = indexedWork()
             .contributors(
-              List(Contributor(Person("Ginger Rogers"), roles = Nil)))
+              List(Contributor(Person("Ginger Rogers"), roles = Nil))
+            )
 
           insertIntoElasticsearch(worksIndex, work)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=contributors") {
+            s"$rootPath/works/${work.state.canonicalId}?include=contributors"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -343,7 +367,8 @@ class WorksIncludesTest
 
   describe("production includes") {
     it(
-      "includes a list of production events on a list endpoint if we pass ?include=production") {
+      "includes a list of production events on a list endpoint if we pass ?include=production"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val productionEvents1 = createProductionEventList()
@@ -357,10 +382,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=production") {
+          assertJsonResponse(routes, s"$rootPath/works?include=production") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -368,7 +393,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "production": [ ${production(productionEvents1)}]
                  },
                  {
@@ -377,7 +403,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "production": [ ${production(productionEvents2)}]
                  }
                 ]
@@ -388,7 +415,8 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of production on a single work endpoint if we pass ?include=production") {
+      "includes a list of production on a single work endpoint if we pass ?include=production"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val work = indexedWork().production(createProductionEventList())
@@ -397,10 +425,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=production") {
+            s"$rootPath/works/${work.state.canonicalId}?include=production"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -429,10 +458,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, work1, work2)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=languages") {
+          assertJsonResponse(routes, s"$rootPath/works?include=languages") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                  {
                    "type": "Work",
@@ -440,7 +469,8 @@ class WorksIncludesTest
                    "title": "${work1.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                    "languages": [ ${languages(work1.data.languages)}]
                  },
                  {
@@ -449,7 +479,8 @@ class WorksIncludesTest
                    "title": "${work2.data.title.get}",
                    "alternativeTitles": [],
                    "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                    "languages": [ ${languages(work2.data.languages)}]
                  }
                 ]
@@ -472,10 +503,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=languages") {
+            s"$rootPath/works/${work.state.canonicalId}?include=languages"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -498,10 +530,10 @@ class WorksIncludesTest
             .notes(List(GeneralNote("GN2.1"), GeneralNote("GN2.2")))
 
           insertIntoElasticsearch(worksIndex, work1, work2)
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=notes") {
+          assertJsonResponse(routes, s"$rootPath/works?include=notes") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = 2)},
+                ${resultList(totalResults = 2)},
                 "results": [
                    {
                      "type": "Work",
@@ -509,7 +541,8 @@ class WorksIncludesTest
                      "title": "${work1.data.title.get}",
                      "alternativeTitles": [],
                      "availabilities": [${availabilities(
-              work1.state.availabilities)}],
+              work1.state.availabilities
+            )}],
                      "notes": [
                        {
                          "noteType": {
@@ -537,7 +570,8 @@ class WorksIncludesTest
                      "title": "${work2.data.title.get}",
                      "alternativeTitles": [],
                      "availabilities": [${availabilities(
-              work2.state.availabilities)}],
+              work2.state.availabilities
+            )}],
                      "notes": [
                        {
                          "noteType": {
@@ -565,10 +599,11 @@ class WorksIncludesTest
           insertIntoElasticsearch(worksIndex, work)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=notes") {
+            s"$rootPath/works/${work.state.canonicalId}?include=notes"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -593,7 +628,8 @@ class WorksIncludesTest
 
   describe("image includes") {
     it(
-      "includes a list of images on the list endpoint if we pass ?include=images") {
+      "includes a list of images on the list endpoint if we pass ?include=images"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val works = List(
@@ -601,20 +637,22 @@ class WorksIncludesTest
               .imageData(
                 (1 to 3)
                   .map(_ => createImageData.toIdentified)
-                  .toList),
+                  .toList
+              ),
             indexedWork()
               .imageData(
                 (1 to 3)
                   .map(_ => createImageData.toIdentified)
-                  .toList)
+                  .toList
+              )
           ).sortBy { _.state.canonicalId }
 
           insertIntoElasticsearch(worksIndex, works: _*)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=images") {
+          assertJsonResponse(routes, s"$rootPath/works?include=images") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = works.size)},
+                ${resultList(totalResults = works.size)},
                 "results": [
                   {
                     "type": "Work",
@@ -622,7 +660,8 @@ class WorksIncludesTest
                     "title": "${works.head.data.title.get}",
                     "alternativeTitles": [],
                     "availabilities": [${availabilities(
-              works.head.state.availabilities)}],
+              works.head.state.availabilities
+            )}],
                     "images": [${workImageIncludes(works.head.data.imageData)}]
                   },
                   {
@@ -631,7 +670,8 @@ class WorksIncludesTest
                     "title": "${works(1).data.title.get}",
                     "alternativeTitles": [],
                     "availabilities": [${availabilities(
-              works(1).state.availabilities)}],
+              works(1).state.availabilities
+            )}],
                     "images": [${workImageIncludes(works(1).data.imageData)}]
                   }
                 ]
@@ -642,7 +682,8 @@ class WorksIncludesTest
     }
 
     it(
-      "includes a list of images on a single work endpoint if we pass ?include=images") {
+      "includes a list of images on a single work endpoint if we pass ?include=images"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           val images =
@@ -653,10 +694,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=images") {
+            s"$rootPath/works/${work.state.canonicalId}?include=images"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],
@@ -670,8 +712,10 @@ class WorksIncludesTest
   }
 
   describe("relation includes") {
-    def work(path: String,
-             workType: WorkType): Work.Visible[WorkState.Indexed] =
+    def work(
+      path: String,
+      workType: WorkType
+    ): Work.Visible[WorkState.Indexed] =
       indexedWork(sourceIdentifier = createSourceIdentifierWith(value = path))
         .collectionPath(CollectionPath(path = path))
         .title(path)
@@ -689,11 +733,11 @@ class WorksIncludesTest
         relations = Relations(
           ancestors = List(
             Relation(work0, 0, 1, 5),
-            Relation(workA, 1, 3, 4),
+            Relation(workA, 1, 3, 4)
           ),
           children = List(Relation(workE, 3, 0, 0)),
           siblingsPreceding = List(Relation(workB, 2, 0, 0)),
-          siblingsSucceeding = List(Relation(workD, 2, 0, 0)),
+          siblingsSucceeding = List(Relation(workD, 2, 0, 0))
         )
       ).collectionPath(CollectionPath(path = "0/a/c"))
         .title("0/a/c")
@@ -708,10 +752,11 @@ class WorksIncludesTest
           storeWorks(worksIndex)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${workC.state.canonicalId}?include=parts") {
+            s"$rootPath/works/${workC.state.canonicalId}?include=parts"
+          ) {
             Status.OK -> s"""
             {
-              ${singleWorkResult(apiPrefix, "Series")},
+              ${singleWorkResult("Series")},
               "id": "${workC.state.canonicalId}",
               "title": "0/a/c",
               "alternativeTitles": [],
@@ -735,10 +780,11 @@ class WorksIncludesTest
           storeWorks(worksIndex)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${workC.state.canonicalId}?include=partOf") {
+            s"$rootPath/works/${workC.state.canonicalId}?include=partOf"
+          ) {
             Status.OK -> s"""
             {
-              ${singleWorkResult(apiPrefix, "Series")},
+              ${singleWorkResult("Series")},
               "id": "${workC.state.canonicalId}",
               "title": "0/a/c",
               "alternativeTitles": [],
@@ -772,10 +818,11 @@ class WorksIncludesTest
           storeWorks(worksIndex)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${workC.state.canonicalId}?include=precededBy") {
+            s"$rootPath/works/${workC.state.canonicalId}?include=precededBy"
+          ) {
             Status.OK -> s"""
             {
-              ${singleWorkResult(apiPrefix, "Series")},
+              ${singleWorkResult("Series")},
               "id": "${workC.state.canonicalId}",
               "title": "0/a/c",
               "alternativeTitles": [],
@@ -799,10 +846,11 @@ class WorksIncludesTest
           storeWorks(worksIndex)
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${workC.state.canonicalId}?include=succeededBy") {
+            s"$rootPath/works/${workC.state.canonicalId}?include=succeededBy"
+          ) {
             Status.OK -> s"""
             {
-              ${singleWorkResult(apiPrefix, "Series")},
+              ${singleWorkResult("Series")},
               "id": "${workC.state.canonicalId}",
               "title": "0/a/c",
               "alternativeTitles": [],
@@ -842,10 +890,10 @@ class WorksIncludesTest
 
           insertIntoElasticsearch(worksIndex, works: _*)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?include=holdings") {
+          assertJsonResponse(routes, s"$rootPath/works?include=holdings") {
             Status.OK -> s"""
               {
-                ${resultList(apiPrefix, totalResults = works.size)},
+                ${resultList(totalResults = works.size)},
                 "results": [
                   {
                     "type": "Work",
@@ -853,7 +901,8 @@ class WorksIncludesTest
                     "title": "${works.head.data.title.get}",
                     "alternativeTitles": [],
                     "availabilities": [${availabilities(
-              works.head.state.availabilities)}],
+              works.head.state.availabilities
+            )}],
                     "holdings": [${listOfHoldings(works.head.data.holdings)}]
                   },
                   {
@@ -862,7 +911,8 @@ class WorksIncludesTest
                     "title": "${works(1).data.title.get}",
                     "alternativeTitles": [],
                     "availabilities": [${availabilities(
-              works(1).state.availabilities)}],
+              works(1).state.availabilities
+            )}],
                     "holdings": [${listOfHoldings(works(1).data.holdings)}]
                   }
                 ]
@@ -881,10 +931,11 @@ class WorksIncludesTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}?include=holdings") {
+            s"$rootPath/works/${work.state.canonicalId}?include=holdings"
+          ) {
             Status.OK -> s"""
               {
-                ${singleWorkResult(apiPrefix)},
+                ${singleWorkResult()},
                 "id": "${work.state.canonicalId}",
                 "title": "${work.data.title.get}",
                 "alternativeTitles": [],

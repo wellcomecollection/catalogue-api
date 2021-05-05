@@ -21,8 +21,8 @@ class WorksTest
 
         insertIntoElasticsearch(worksIndex, works: _*)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works") {
-          Status.OK -> worksListResponse(apiPrefix, works = works)
+        assertJsonResponse(routes, s"$rootPath/works") {
+          Status.OK -> worksListResponse(works = works)
         }
     }
   }
@@ -34,12 +34,10 @@ class WorksTest
 
         insertIntoElasticsearch(worksIndex, work)
 
-        assertJsonResponse(
-          routes,
-          s"/$apiPrefix/works/${work.state.canonicalId}") {
+        assertJsonResponse(routes, s"$rootPath/works/${work.state.canonicalId}") {
           Status.OK -> s"""
             {
-             ${singleWorkResult(apiPrefix)},
+             ${singleWorkResult()},
              "id": "${work.state.canonicalId}",
              "title": "${work.data.title.get}",
              "alternativeTitles": [],
@@ -58,12 +56,10 @@ class WorksTest
           .edition("Special edition")
 
         insertIntoElasticsearch(worksIndex, work)
-        assertJsonResponse(
-          routes,
-          s"/$apiPrefix/works/${work.state.canonicalId}") {
+        assertJsonResponse(routes, s"$rootPath/works/${work.state.canonicalId}") {
           Status.OK -> s"""
             {
-             ${singleWorkResult(apiPrefix)},
+             ${singleWorkResult()},
              "id": "${work.state.canonicalId}",
              "title": "${work.data.title.get}",
              "alternativeTitles": [],
@@ -77,7 +73,8 @@ class WorksTest
   }
 
   it(
-    "returns the requested page of results when requested with page & pageSize") {
+    "returns the requested page of results when requested with page & pageSize"
+  ) {
     withWorksApi {
       case (worksIndex, routes) =>
         val works = indexedWorks(count = 3).sortBy {
@@ -86,16 +83,12 @@ class WorksTest
 
         insertIntoElasticsearch(worksIndex, works: _*)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?page=2&pageSize=1") {
+        assertJsonResponse(routes, s"$rootPath/works?page=2&pageSize=1") {
           Status.OK -> s"""
             {
-              ${resultList(
-            apiPrefix,
-            pageSize = 1,
-            totalPages = 3,
-            totalResults = 3)},
-              "prevPage": "$apiScheme://$apiHost/$apiPrefix/works?page=1&pageSize=1",
-              "nextPage": "$apiScheme://$apiHost/$apiPrefix/works?page=3&pageSize=1",
+              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
+              "prevPage": "$publicRootUri/works?page=1&pageSize=1",
+              "nextPage": "$publicRootUri/works?page=3&pageSize=1",
               "results": [
                 ${workResponse(works(1))}
               ]
@@ -103,15 +96,11 @@ class WorksTest
           """
         }
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?page=1&pageSize=1") {
+        assertJsonResponse(routes, s"$rootPath/works?page=1&pageSize=1") {
           Status.OK -> s"""
             {
-              ${resultList(
-            apiPrefix,
-            pageSize = 1,
-            totalPages = 3,
-            totalResults = 3)},
-              "nextPage": "$apiScheme://$apiHost/$apiPrefix/works?page=2&pageSize=1",
+              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
+              "nextPage": "$publicRootUri/works?page=2&pageSize=1",
               "results": [
                 ${workResponse(works(0))}
               ]
@@ -119,15 +108,11 @@ class WorksTest
           """
         }
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?page=3&pageSize=1") {
+        assertJsonResponse(routes, s"$rootPath/works?page=3&pageSize=1") {
           Status.OK -> s"""
             {
-              ${resultList(
-            apiPrefix,
-            pageSize = 1,
-            totalPages = 3,
-            totalResults = 3)},
-              "prevPage": "$apiScheme://$apiHost/$apiPrefix/works?page=2&pageSize=1",
+              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
+              "prevPage": "$publicRootUri/works?page=2&pageSize=1",
               "results": [
                 ${workResponse(works(2))}
               ]
@@ -140,8 +125,8 @@ class WorksTest
   it("ignores parameters that are unused when making an API request") {
     withWorksApi {
       case (_, routes) =>
-        assertJsonResponse(routes, s"/$apiPrefix/works?foo=bar") {
-          Status.OK -> emptyJsonResult(apiPrefix)
+        assertJsonResponse(routes, s"$rootPath/works?foo=bar") {
+          Status.OK -> emptyJsonResult
         }
     }
   }
@@ -153,12 +138,12 @@ class WorksTest
         val workMouse = indexedWork().title("A mezzotint of a mouse")
         insertIntoElasticsearch(worksIndex, workDodo, workMouse)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?query=cat") {
-          Status.OK -> emptyJsonResult(apiPrefix)
+        assertJsonResponse(routes, s"$rootPath/works?query=cat") {
+          Status.OK -> emptyJsonResult
         }
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?query=dodo") {
-          Status.OK -> worksListResponse(apiPrefix, works = Seq(workDodo))
+        assertJsonResponse(routes, s"$rootPath/works?query=dodo") {
+          Status.OK -> worksListResponse(works = Seq(workDodo))
         }
     }
   }
@@ -175,10 +160,11 @@ class WorksTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${work.state.canonicalId}") {
+            s"$rootPath/works/${work.state.canonicalId}"
+          ) {
             Status.OK -> s"""
               {
-               ${singleWorkResult(apiPrefix)},
+               ${singleWorkResult()},
                "id": "${work.state.canonicalId}",
                "title": "${work.data.title.get}",
                "alternativeTitles": [],
@@ -189,10 +175,11 @@ class WorksTest
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works/${altWork.state.canonicalId}?_index=${altIndex.name}") {
+            s"$rootPath/works/${altWork.state.canonicalId}?_index=${altIndex.name}"
+          ) {
             Status.OK -> s"""
               {
-               ${singleWorkResult(apiPrefix)},
+               ${singleWorkResult()},
                "id": "${altWork.state.canonicalId}",
                "title": "${altWork.data.title.get}",
                "alternativeTitles": [],
@@ -214,14 +201,15 @@ class WorksTest
           val altWork = indexedWork().title("Playing with pangolins")
           insertIntoElasticsearch(index = altIndex, altWork)
 
-          assertJsonResponse(routes, s"/$apiPrefix/works?query=pangolins") {
-            Status.OK -> worksListResponse(apiPrefix, works = Seq(work))
+          assertJsonResponse(routes, s"$rootPath/works?query=pangolins") {
+            Status.OK -> worksListResponse(works = Seq(work))
           }
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/works?query=pangolins&_index=${altIndex.name}") {
-            Status.OK -> worksListResponse(apiPrefix, works = Seq(altWork))
+            s"$rootPath/works?query=pangolins&_index=${altIndex.name}"
+          ) {
+            Status.OK -> worksListResponse(works = Seq(altWork))
           }
         }
     }
@@ -238,13 +226,14 @@ class WorksTest
         val work = indexedWork()
           .thumbnail(thumbnailLocation)
           .items(
-            List(createIdentifiedItemWith(locations = List(thumbnailLocation))))
+            List(createIdentifiedItemWith(locations = List(thumbnailLocation)))
+          )
         insertIntoElasticsearch(worksIndex, work)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works") {
+        assertJsonResponse(routes, s"$rootPath/works") {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = 1)},
+              ${resultList(totalResults = 1)},
               "results": [
                {
                  "type": "Work",
@@ -263,7 +252,8 @@ class WorksTest
 
   def createDatedWork(dateLabel: String): Work.Visible[WorkState.Indexed] =
     indexedWork().production(
-      List(createProductionEventWith(dateLabel = Some(dateLabel))))
+      List(createProductionEventWith(dateLabel = Some(dateLabel)))
+    )
 
   it("supports sorting by production date") {
     withWorksApi {
@@ -279,11 +269,11 @@ class WorksTest
           work1976,
           work1904,
           work2020,
-          work1098)
+          work1098
+        )
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?sort=production.dates") {
+        assertJsonResponse(routes, s"$rootPath/works?sort=production.dates") {
           Status.OK -> worksListResponse(
-            apiPrefix = apiPrefix,
             works = Seq(work1098, work1900, work1904, work1976, work2020)
           )
         }
@@ -300,9 +290,9 @@ class WorksTest
 
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?sort=production.dates&sortOrder=desc") {
+          s"$rootPath/works?sort=production.dates&sortOrder=desc"
+        ) {
           Status.OK -> worksListResponse(
-            apiPrefix = apiPrefix,
             works = Seq(work1976, work1904, work1900)
           )
         }

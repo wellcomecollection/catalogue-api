@@ -11,9 +11,9 @@ class WorksTestDeleted extends ApiWorksTestBase {
     withWorksApi {
       case (worksIndex, routes) =>
         insertIntoElasticsearch(worksIndex, deletedWork)
-        val path = s"/$apiPrefix/works/${deletedWork.state.canonicalId}"
+        val path = s"$rootPath/works/${deletedWork.state.canonicalId}"
         assertJsonResponse(routes, path) {
-          Status.Gone -> deleted(apiPrefix)
+          Status.Gone -> deleted
         }
     }
   }
@@ -28,8 +28,8 @@ class WorksTestDeleted extends ApiWorksTestBase {
         val worksToIndex = Seq[Work[Indexed]](deletedWork) ++ works
         insertIntoElasticsearch(worksIndex, worksToIndex: _*)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works") {
-          Status.OK -> worksListResponse(apiPrefix, works = works)
+        assertJsonResponse(routes, s"$rootPath/works") {
+          Status.OK -> worksListResponse(works = works)
         }
     }
   }

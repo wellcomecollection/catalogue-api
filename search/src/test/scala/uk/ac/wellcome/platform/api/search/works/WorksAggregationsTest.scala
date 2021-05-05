@@ -32,10 +32,10 @@ class WorksAggregationsTest
 
         insertIntoElasticsearch(worksIndex, works: _*)
 
-        assertJsonResponse(routes, s"/$apiPrefix/works?aggregations=workType") {
+        assertJsonResponse(routes, s"$rootPath/works?aggregations=workType") {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -108,12 +108,10 @@ class WorksAggregationsTest
 
         insertIntoElasticsearch(worksIndex, work)
 
-        assertJsonResponse(
-          routes,
-          s"/$apiPrefix/works?aggregations=genres.label") {
+        assertJsonResponse(routes, s"$rootPath/works?aggregations=genres.label") {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = 1)},
+              ${resultList(totalResults = 1)},
               "aggregations": {
                 "type" : "Aggregations",
                 "genres.label": {
@@ -165,17 +163,19 @@ class WorksAggregationsTest
           .map { dateLabel =>
             indexedWork()
               .production(
-                List(createProductionEventWith(dateLabel = Some(dateLabel))))
+                List(createProductionEventWith(dateLabel = Some(dateLabel)))
+              )
           }
           .sortBy { _.state.canonicalId }
 
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?aggregations=production.dates") {
+          s"$rootPath/works?aggregations=production.dates"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "production.dates": {
@@ -221,10 +221,10 @@ class WorksAggregationsTest
     withWorksApi {
       case (worksIndex, routes) =>
         insertIntoElasticsearch(worksIndex, works: _*)
-        assertJsonResponse(routes, s"/$apiPrefix/works?aggregations=languages") {
+        assertJsonResponse(routes, s"$rootPath/works?aggregations=languages") {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
@@ -278,10 +278,11 @@ class WorksAggregationsTest
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?aggregations=subjects.label") {
+          s"$rootPath/works?aggregations=subjects.label"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "subjects.label": {
@@ -295,7 +296,8 @@ class WorksAggregationsTest
                     {
                       "data" : ${subject(
             paleoNeuroBiology,
-            showConcepts = false)},
+            showConcepts = false
+          )},
                       "count" : 2,
                       "type" : "AggregationBucket"
                     }
@@ -329,10 +331,11 @@ class WorksAggregationsTest
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?aggregations=contributors.agent.label") {
+          s"$rootPath/works?aggregations=contributors.agent.label"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "contributors.agent.label": {
@@ -388,10 +391,11 @@ class WorksAggregationsTest
         insertIntoElasticsearch(worksIndex, workWithContributor)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?aggregations=contributors.agent.label") {
+          s"$rootPath/works?aggregations=contributors.agent.label"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = 1)},
+              ${resultList(totalResults = 1)},
               "aggregations": {
                 "type" : "Aggregations",
                 "contributors.agent.label": {
@@ -408,7 +412,8 @@ class WorksAggregationsTest
 
   it("supports aggregating on items.locations.license") {
     def createLicensedWork(
-      licenses: Seq[License]): Work.Visible[WorkState.Indexed] = {
+      licenses: Seq[License]
+    ): Work.Visible[WorkState.Indexed] = {
       val items =
         licenses.map { license =>
           createDigitalItemWith(license = Some(license))
@@ -432,10 +437,11 @@ class WorksAggregationsTest
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"/$apiPrefix/works?aggregations=items.locations.license") {
+          s"$rootPath/works?aggregations=items.locations.license"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "type" : "Aggregations",
                 "items.locations.license": {
@@ -473,7 +479,8 @@ class WorksAggregationsTest
       List(createDigitalItemWith(accessStatus = AccessStatus.OpenWithAdvisory)),
       List(
         createIdentifiedPhysicalItem,
-        createDigitalItemWith(accessStatus = AccessStatus.Open))
+        createDigitalItemWith(accessStatus = AccessStatus.Open)
+      )
     )
     val works = items.map(indexedWork().items(_))
 
@@ -482,11 +489,11 @@ class WorksAggregationsTest
         insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes = routes,
-          path = s"/$apiPrefix/works?aggregations=availabilities"
+          path = s"$rootPath/works?aggregations=availabilities"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(apiPrefix, totalResults = works.size)},
+              ${resultList(totalResults = works.size)},
               "aggregations": {
                 "availabilities": {
                   "buckets": [

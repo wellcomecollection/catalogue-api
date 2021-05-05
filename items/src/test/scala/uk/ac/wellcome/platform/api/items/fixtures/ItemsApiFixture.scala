@@ -28,11 +28,11 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
 
   val apiConf =
     ApiConfig(
-      host = "localhost",
-      scheme = "https",
+      publicHost = "localhost",
+      publicScheme = "https",
       defaultPageSize = 10,
-      pathPrefix = "catalogue",
-      contextSuffix = "context.json"
+      publicRootPath = "catalogue",
+      contextPath = "context.json"
     )
 
   def withApp[R](testWith: TestWith[WireMockServer, R]): R =

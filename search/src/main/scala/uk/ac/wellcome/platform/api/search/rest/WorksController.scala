@@ -19,9 +19,11 @@ import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
 import weco.http.models.ContextResponse
 
-class WorksController(elasticsearchService: ElasticsearchService,
-                      implicit val apiConfig: ApiConfig,
-                      worksIndex: Index)(implicit ec: ExecutionContext)
+class WorksController(
+  elasticsearchService: ElasticsearchService,
+  implicit val apiConfig: ApiConfig,
+  worksIndex: Index
+)(implicit ec: ExecutionContext)
     extends Tracing
     with CustomDirectives
     with FailFastCirceSupport {
@@ -83,7 +85,7 @@ class WorksController(elasticsearchService: ElasticsearchService,
     }
 
   def workRedirect(work: Work.Redirected[Indexed]): Route =
-    extractUri { uri =>
+    extractPublicUri { uri =>
       val newPath =
         (work.redirectTarget.canonicalId.underlying :: uri.path.reverse.tail).reverse
 

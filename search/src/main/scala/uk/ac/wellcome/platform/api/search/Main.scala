@@ -31,24 +31,7 @@ object Main extends WellcomeTypesafeApp {
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
     CheckModel.checkModel(elasticConfig.imagesIndex.name)(elasticClient)
 
-    val apiConfig =
-      ApiConfig(
-        host = config
-          .getStringOption("api.host")
-          .getOrElse("localhost"),
-        scheme = config
-          .getStringOption("api.scheme")
-          .getOrElse("https"),
-        defaultPageSize = config
-          .getIntOption("api.pageSize")
-          .getOrElse(10),
-        pathPrefix =
-          s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
-        contextSuffix = config
-          .getStringOption("api.context.suffix")
-          .getOrElse("context.json")
-      )
-
+    val apiConfig = ApiConfig.build(config)
     val queryConfig =
       QueryConfig.fetchFromIndex(elasticClient, elasticConfig.imagesIndex)
 

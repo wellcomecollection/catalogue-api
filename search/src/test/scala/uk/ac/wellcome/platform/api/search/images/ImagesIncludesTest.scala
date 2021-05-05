@@ -18,12 +18,14 @@ class ImagesIncludesTest
         List(
           Language(label = "English", id = "en"),
           Language(label = "Turkish", id = "tur")
-        ))
+        )
+      )
       .contributors(
         List(
           createPersonContributorWith("Adrian Aardvark"),
           createPersonContributorWith("Beatrice Buffalo")
-        ))
+        )
+      )
       .genres(
         List(
           createGenreWith("Crumbly cabbages"),
@@ -33,17 +35,19 @@ class ImagesIncludesTest
     val image = createImageData.toIndexedImageWith(parentWork = source)
 
     it(
-      "includes the source contributors on results from the list endpoint if we pass ?include=source.contributors") {
+      "includes the source contributors on results from the list endpoint if we pass ?include=source.contributors"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?include=source.contributors") {
+            s"$rootPath/images?include=source.contributors"
+          ) {
             Status.OK -> s"""
               |{
-              |  ${resultList(apiPrefix, totalResults = 1)},
+              |  ${resultList(totalResults = 1)},
               |  "results": [
               |    {
               |      "type": "Image",
@@ -65,14 +69,16 @@ class ImagesIncludesTest
     }
 
     it(
-      "includes the source contributors on a result from the single image endpoint if we pass ?include=source.contributors") {
+      "includes the source contributors on a result from the single image endpoint if we pass ?include=source.contributors"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images/${image.id}?include=source.contributors") {
+            s"$rootPath/images/${image.id}?include=source.contributors"
+          ) {
             Status.OK -> s"""
               |{
               |  $singleImageResult,
@@ -93,17 +99,19 @@ class ImagesIncludesTest
     }
 
     it(
-      "includes the source languages on results from the list endpoint if we pass ?include=source.languages") {
+      "includes the source languages on results from the list endpoint if we pass ?include=source.languages"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images?include=source.languages") {
+            s"$rootPath/images?include=source.languages"
+          ) {
             Status.OK -> s"""
               |{
-              |  ${resultList(apiPrefix, totalResults = 1)},
+              |  ${resultList(totalResults = 1)},
               |  "results": [
               |    {
               |      "type": "Image",
@@ -125,14 +133,16 @@ class ImagesIncludesTest
     }
 
     it(
-      "includes the source languages on a result from the single image endpoint if we pass ?include=source.languages") {
+      "includes the source languages on a result from the single image endpoint if we pass ?include=source.languages"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images/${image.id}?include=source.languages") {
+            s"$rootPath/images/${image.id}?include=source.languages"
+          ) {
             Status.OK -> s"""
               |{
               |  $singleImageResult,
@@ -153,17 +163,16 @@ class ImagesIncludesTest
     }
 
     it(
-      "includes the source genres on results from the list endpoint if we pass ?include=source.genres") {
+      "includes the source genres on results from the list endpoint if we pass ?include=source.genres"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
-          assertJsonResponse(
-            routes,
-            s"/$apiPrefix/images?include=source.genres") {
+          assertJsonResponse(routes, s"$rootPath/images?include=source.genres") {
             Status.OK -> s"""
               |{
-              |  ${resultList(apiPrefix, totalResults = 1)},
+              |  ${resultList(totalResults = 1)},
               |  "results": [
               |    {
               |      "type": "Image",
@@ -185,14 +194,16 @@ class ImagesIncludesTest
     }
 
     it(
-      "includes the source genres on a result from the single image endpoint if we pass ?include=source.genres") {
+      "includes the source genres on a result from the single image endpoint if we pass ?include=source.genres"
+    ) {
       withImagesApi {
         case (imagesIndex, routes) =>
           insertImagesIntoElasticsearch(imagesIndex, image)
 
           assertJsonResponse(
             routes,
-            s"/$apiPrefix/images/${image.id}?include=source.genres") {
+            s"$rootPath/images/${image.id}?include=source.genres"
+          ) {
             Status.OK -> s"""
               |{
               |  $singleImageResult,

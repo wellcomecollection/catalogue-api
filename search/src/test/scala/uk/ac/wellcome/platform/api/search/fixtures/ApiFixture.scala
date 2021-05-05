@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.fixtures
 
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.http.scaladsl.model.{ContentTypes, StatusCode}
+import akka.http.scaladsl.model.{ContentTypes, StatusCode, Uri}
 import akka.http.scaladsl.model.headers.Host
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
@@ -20,20 +20,16 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 
   val Status = akka.http.scaladsl.model.StatusCodes
 
-  val apiScheme: String
-  val apiHost: String
-  val apiName: String
+  val publicRootUri: String
 
-  implicit def defaultHostInfo = DefaultHostInfo(
-    host = Host(apiHost),
-    securedConnection = if (apiScheme == "https") true else false
+  implicit def defaultHostInfo: DefaultHostInfo = DefaultHostInfo(
+    host = Host(apiConfig.publicHost),
+    securedConnection = if (apiConfig.publicScheme == "https") true else false
   )
 
   lazy val apiConfig = ApiConfig(
-    host = apiHost,
-    scheme = apiScheme,
+    publicRootUri = Uri(publicRootUri),
     defaultPageSize = 10,
-    pathPrefix = apiName,
     contextSuffix = "context.json"
   )
 
@@ -42,14 +38,16 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
   // of times we have to create it.
   lazy val swaggerDocs = new SwaggerDocs(apiConfig)
 
-  private def withRouter[R](elasticConfig: ElasticConfig)(
-    testWith: TestWith[Route, R]): R = {
+  private def withRouter[R](
+    elasticConfig: ElasticConfig
+  )(testWith: TestWith[Route, R]): R = {
     val router = new Router(
       elasticClient,
       elasticConfig,
       QueryConfig(
         paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),
-        paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)),
+        paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
+      ),
       swaggerDocs = swaggerDocs,
       apiConfig = apiConfig
     )
@@ -95,7 +93,8 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
   def assertJsonResponse(
     routes: Route,
     path: String,
-    unordered: Boolean = false)(expectedResponse: (StatusCode, String)) =
+    unordered: Boolean = false
+  )(expectedResponse: (StatusCode, String)) =
     eventually {
       expectedResponse match {
         case (expectedStatus, expectedJson) =>
@@ -103,14 +102,16 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
             contentType shouldEqual ContentTypes.`application/json`
             parseJson(responseAs[String], unordered) shouldEqual parseJson(
               expectedJson,
-              unordered)
+              unordered
+            )
             status shouldEqual expectedStatus
           }
       }
     }
 
   def assertRedirectResponse(routes: Route, path: String)(
-    expectedResponse: (StatusCode, String)) =
+    expectedResponse: (StatusCode, String)
+  ) =
     eventually {
       expectedResponse match {
         case (expectedStatus, expectedLocation) =>
