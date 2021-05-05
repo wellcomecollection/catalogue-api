@@ -1,13 +1,24 @@
 locals {
+  context_url = "https://${var.external_hostname}/catalogue/v2/context.json"
+
   v1_deprecation_string = "This API is now decommissioned. Please use https://api.wellcomecollection.org/catalogue/v2/works."
-  v1_gone_body = jsonencode({
+  v1_gone_body = {
     errorType   = "http",
     httpStatus  = 410,
     label       = "Gone",
     description = local.v1_deprecation_string
     type        = "Error",
-    "@context"  = "https://api.wellcomecollection.org/catalogue/v2/context.json"
-  })
+    "@context"  = local.context_url
+  }
+
+  not_found_body = {
+    errorType   = "http",
+    httpStatus  = 404,
+    label       = "Not Found",
+    description = "Page not found for URL $context.path"
+    type        = "Error",
+    "@context"  = local.context_url
+  }
 }
 
 module "v1_root_gone" {
@@ -19,7 +30,7 @@ module "v1_root_gone" {
 
   http_method = "GET"
   status_code = 410
-  body        = local.v1_gone_body
+  body        = jsonencode(local.v1_gone_body)
 }
 
 module "v1_gone" {
@@ -31,7 +42,7 @@ module "v1_gone" {
 
   http_method = "GET"
   status_code = 410
-  body        = local.v1_gone_body
+  body        = jsonencode(local.v1_gone_body)
 }
 
 resource "aws_api_gateway_gateway_response" "not_found_404" {
@@ -40,13 +51,17 @@ resource "aws_api_gateway_gateway_response" "not_found_404" {
   status_code   = "404"
 
   response_templates = {
-    "application/json" = jsonencode({
-      errorType   = "http",
-      httpStatus  = 404,
-      label       = "Not Found",
-      description = "Page not found for URL $context.path"
-      type        = "Error",
-      "@context"  = "https://api.wellcomecollection.org/catalogue/v2/context.json"
-    })
+    "application/json" = jsonencode(local.not_found_body)
+  }
+}
+
+resource "aws_api_gateway_gateway_response" "no_resource" {
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  // This is confusingly named, it's used when there isn't a method/resource too
+  response_type = "MISSING_AUTHENTICATION_TOKEN"
+  status_code   = "404"
+
+  response_templates = {
+    "application/json" = jsonencode(local.not_found_body)
   }
 }
