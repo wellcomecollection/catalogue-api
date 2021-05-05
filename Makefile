@@ -12,7 +12,7 @@ PROJECT_ID = catalogue_api
 SBT_APPS = search
 SBT_NO_DOCKER_APPS = items requests
 
-SBT_DOCKER_LIBRARIES    =
+SBT_DOCKER_LIBRARIES    = search
 SBT_NO_DOCKER_LIBRARIES = display stacks
 
 PYTHON_APPS = update_api_docs
