@@ -5,14 +5,12 @@ import java.net.URL
 
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.monitoring.memory.MemoryMetrics
-import uk.ac.wellcome.platform.api.common.fixtures.{
-  HttpFixtures,
-  ServicesFixture
-}
+import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.items.ItemsApi
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.http.WellcomeHttpApp
+import weco.http.fixtures.HttpFixtures
 import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext
