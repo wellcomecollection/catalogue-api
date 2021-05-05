@@ -16,6 +16,7 @@ import uk.ac.wellcome.platform.api.search.services.{
   WorksService
 }
 import weco.api.search.elasticsearch.ElasticLookup
+import weco.api.search.rest.SingleWorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -24,15 +25,17 @@ import weco.http.models.ContextResponse
 class WorksController(
   val apiConfig: ApiConfig,
   worksIndex: Index
-)(implicit elasticClient: ElasticClient, ec: ExecutionContext)
+)(implicit elasticClient: ElasticClient, val ec: ExecutionContext)
     extends Tracing
     with CustomDirectives
-    with FailFastCirceSupport {
+    with FailFastCirceSupport
+    with SingleWorkLookup {
   import DisplayResultList.encoder
   import ContextResponse.encoder
 
   private val elasticsearchService = new ElasticsearchService()
-  private val elasticLookup = new ElasticLookup[Work[Indexed]]
+  override val elasticLookup: ElasticLookup[Work[Indexed]] =
+    new ElasticLookup[Work[Indexed]]
 
   def multipleWorks(params: MultipleWorksParams): Route =
     get {
@@ -69,21 +72,13 @@ class WorksController(
           val index =
             params._index.map(Index(_)).getOrElse(worksIndex)
           val includes = params.include.getOrElse(WorksIncludes.none)
-          elasticLookup
-            .lookupById(id)(index)
-            .map {
-              case Right(Some(work: Work.Visible[Indexed])) =>
-                workFound(work, includes)
-              case Right(Some(work: Work.Redirected[Indexed])) =>
-                workRedirect(work)
-              case Right(Some(_: Work.Invisible[Indexed])) =>
-                gone("This work has been deleted")
-              case Right(Some(_: Work.Deleted[Indexed])) =>
-                gone("This work has been deleted")
-              case Right(None) =>
-                notFound(s"Work not found for identifier $id")
-              case Left(err) => elasticError(err)
-            }
+
+          lookupSingleWork(id)(index).map {
+            case Right(work: Work.Visible[Indexed]) =>
+              workFound(work, includes)
+
+            case Left(route) => route
+          }
         }
       }
     }

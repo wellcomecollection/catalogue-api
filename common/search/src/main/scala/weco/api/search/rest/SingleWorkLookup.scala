@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait SingleWorkLookup extends CustomDirectives {
   implicit val ec: ExecutionContext
-  implicit val elasticLookup: ElasticLookup[Work[Indexed]]
+  val elasticLookup: ElasticLookup[Work[Indexed]]
 
   def lookupSingleWork(id: CanonicalId)(index: Index): Future[Either[Route, Work.Visible[Indexed]]] =
     elasticLookup
