@@ -1,9 +1,13 @@
 package weco.api.stacks.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.{ElasticError, Index}
+import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.models.Implicits._
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  ElasticsearchService
+}
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
@@ -23,7 +27,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     *
     */
   def byCanonicalId(itemId: CanonicalId)(
-    index: Index): Future[Either[ElasticError, Option[SourceIdentifier]]] = {
+    index: Index): Future[Either[ElasticsearchError, SourceIdentifier]] = {
     val searchRequest =
       search(index)
         .query(
@@ -37,7 +41,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
       case Right(works) =>
-        Right(
+        val item =
           works
             .flatMap { _.data.items }
             .collectFirst {
@@ -45,7 +49,11 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
                   if id == itemId =>
                 sourceIdentifier
             }
-        )
+
+        item match {
+          case Some(it) => Right(it)
+          case None     => Left(DocumentNotFoundError(itemId))
+        }
     }
   }
 
@@ -53,7 +61,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     *
     */
   def bySourceIdentifier(sourceIdentifier: SourceIdentifier)(
-    index: Index): Future[Either[ElasticError, Option[CanonicalId]]] = {
+    index: Index): Future[Either[ElasticsearchError, CanonicalId]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
@@ -72,7 +80,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
       case Right(works) =>
-        Right(
+        val item =
           works
             .flatMap { _.data.items }
             .collectFirst {
@@ -80,7 +88,11 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
                   if id.sourceIdentifier == sourceIdentifier =>
                 id.canonicalId
             }
-        )
+
+        item match {
+          case Some(it) => Right(it)
+          case None     => Left(DocumentNotFoundError(sourceIdentifier))
+        }
     }
   }
 }

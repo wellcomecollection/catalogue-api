@@ -4,13 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
-import com.sksamuel.elastic4s.{
-  ElasticClient,
-  ElasticError,
-  Hit,
-  Index,
-  Response
-}
+import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
@@ -25,7 +19,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     with Tracing {
 
   def findById[T](id: CanonicalId)(index: Index)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticError, Option[T]]] =
+    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
         get(index, id.underlying)
@@ -33,16 +27,16 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
       result = response.toEither match {
         case Right(getResponse) if getResponse.exists =>
-          Right(Some(deserialize[T](getResponse)))
+          Right(deserialize[T](getResponse))
 
-        case Right(_) => Right(None)
+        case Right(_) => Left(DocumentNotFoundError(id))
 
-        case Left(err) => Left(err)
+        case Left(err) => Left(ElasticsearchError(err))
       }
     } yield result
 
   def findBySearch[T](request: SearchRequest)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticError, List[T]]] =
+    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, List[T]]] =
     for {
       response <- executeSearchRequest(request)
 
@@ -53,8 +47,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
-  def executeSearchRequest(
-    request: SearchRequest): Future[Either[ElasticError, SearchResponse]] =
+  def executeSearchRequest(request: SearchRequest)
+    : Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",
       spanType = "request",
@@ -65,11 +59,13 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       val transaction = Tracing.currentTransaction
       withActiveTrace(elasticClient.execute(request))
         .map(_.toEither)
-        .map { responseOrError =>
-          responseOrError.map { res =>
-            transaction.setLabel("elasticTook", res.took)
-            res
-          }
+        .map {
+          case Right(response) =>
+            transaction.setLabel("elasticTook", response.took)
+            Right(response)
+
+          case Left(err) =>
+            Left(ElasticsearchError(err))
         }
     }
 

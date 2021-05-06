@@ -3,6 +3,13 @@ package uk.ac.wellcome.platform.api.elasticsearch
 import akka.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError
 import grizzled.slf4j.Logging
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  IndexNotFoundError,
+  SearchPhaseExecutionError,
+  UnknownError
+}
 import weco.http.models.DisplayError
 
 object ElasticsearchErrorHandler extends Logging {
@@ -19,38 +26,40 @@ object ElasticsearchErrorHandler extends Logging {
   private val resultSizePattern =
     """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
-  def buildDisplayError(elasticError: ElasticError): DisplayError =
-    elasticError.`type` match {
-      // This occurs if the user requests a non-existent index as ?_index=foo.
-      // We return this as a 404 error to the user.
-      case "index_not_found_exception" =>
-        val index = elasticError.index.get
-        notFound(s"There is no index $index", elasticError)
+  def buildDisplayError(documentType: String,
+                        e: ElasticsearchError): DisplayError =
+    e match {
+      case DocumentNotFoundError(id) =>
+        DisplayError(
+          statusCode = StatusCodes.NotFound,
+          description = s"$documentType not found for identifier $id"
+        )
 
-      // This may occur if the user requests an overly large page of results.
-      // We return this as a 400 error to the user.
-      case "search_phase_execution_exception" =>
-        val reason = elasticError.rootCause.mkString("; ")
+      case e: IndexNotFoundError =>
+        notFound(s"There is no index ${e.index}", e.elasticError)
 
-        resultSizePattern.findFirstMatchIn(reason) match {
+      case e: SearchPhaseExecutionError =>
+        // This may occur if the user requests an overly large page of results.
+        // We return this as a 400 error to the user.
+        resultSizePattern.findFirstMatchIn(e.reason) match {
           case Some(s) =>
             val size = s.group(1)
             userError(
               s"Only the first $size works are available in the API. " +
                 "If you want more works, you can download a snapshot of the complete catalogue: " +
                 "https://developers.wellcomecollection.org/datasets",
-              elasticError
+              e.elasticError
             )
           case _ =>
             serverError(
-              s"Unknown error in search phase execution: $reason",
-              elasticError)
+              s"Unknown error in search phase execution: ${e.reason}",
+              e.elasticError)
         }
 
       // Anything else should bubble up as a 500, as it's at least somewhat
       // unexpected and worthy of further investigation.
-      case _ =>
-        serverError("Unknown error", elasticError)
+      case UnknownError(e) =>
+        serverError("Unknown error", e)
     }
 
   private def userError(message: String,

@@ -1,16 +1,19 @@
 package weco.api.stacks.services
 
-import com.sksamuel.elastic4s.ElasticError
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
-import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,
   SierraSystemNumber
+}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
 }
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,32 +41,24 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
-        val future1 = lookup.byCanonicalId(item1.id.canonicalId)(index)
+        Seq(item1, item2, item3).foreach { it =>
+          val future =
+            lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
 
-        whenReady(future1) {
-          _ shouldBe Right(Some(item1.id.sourceIdentifier))
-        }
-
-        val future2 = lookup.byCanonicalId(item2.id.canonicalId)(index)
-
-        whenReady(future2) {
-          _ shouldBe Right(Some(item2.id.sourceIdentifier))
-        }
-
-        val future3 = lookup.byCanonicalId(item3.id.canonicalId)(index)
-
-        whenReady(future3) {
-          _ shouldBe Right(Some(item3.id.sourceIdentifier))
+          whenReady(future) {
+            _ shouldBe Right(it.id.canonicalId)
+          }
         }
       }
     }
 
-    it("returns None if there is no such work") {
+    it("returns a DocumentNotFoundError if there is no such work") {
       withLocalWorksIndex { index =>
-        val future = lookup.byCanonicalId(createCanonicalId)(index)
+        val id = createCanonicalId
+        val future = lookup.byCanonicalId(id)(index)
 
         whenReady(future) {
-          _ shouldBe Right(None)
+          _ shouldBe Left(DocumentNotFoundError(id))
         }
       }
     }
@@ -82,7 +77,7 @@ class ItemLookupTest
         val future1 = lookup.byCanonicalId(item.id.canonicalId)(index)
 
         whenReady(future1) {
-          _ shouldBe Right(None)
+          _ shouldBe Left(DocumentNotFoundError(item.id.canonicalId))
         }
 
         // Then we index both works and run the same query, so we know the
@@ -92,7 +87,7 @@ class ItemLookupTest
         val future2 = lookup.byCanonicalId(item.id.canonicalId)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item.id.sourceIdentifier))
+          _ shouldBe Right(item.id.sourceIdentifier)
         }
       }
     }
@@ -101,7 +96,7 @@ class ItemLookupTest
       val future = lookup.byCanonicalId(createCanonicalId)(createIndex)
 
       whenReady(future) {
-        _.left.value shouldBe a[ElasticError]
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }
@@ -118,25 +113,13 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
-        val future1 =
-          lookup.bySourceIdentifier(item1.id.sourceIdentifier)(index)
+        Seq(item1, item2, item3).foreach { it =>
+          val future =
+            lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
 
-        whenReady(future1) {
-          _ shouldBe Right(Some(item1.id.canonicalId))
-        }
-
-        val future2 =
-          lookup.bySourceIdentifier(item2.id.sourceIdentifier)(index)
-
-        whenReady(future2) {
-          _ shouldBe Right(Some(item2.id.canonicalId))
-        }
-
-        val future3 =
-          lookup.bySourceIdentifier(item3.id.sourceIdentifier)(index)
-
-        whenReady(future3) {
-          _ shouldBe Right(Some(item3.id.canonicalId))
+          whenReady(future) {
+            _ shouldBe Right(it.id.canonicalId)
+          }
         }
       }
     }
@@ -167,7 +150,7 @@ class ItemLookupTest
           val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
 
           whenReady(future) {
-            _ shouldBe Right(Some(it.id.canonicalId))
+            _ shouldBe Right(it.id.canonicalId)
           }
         }
       }
@@ -192,28 +175,30 @@ class ItemLookupTest
 
         List(item1, item2, item3).foreach { it =>
           whenReady(lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)) {
-            _ shouldBe Right(Some(it.id.canonicalId))
+            _ shouldBe Right(it.id.canonicalId)
           }
 
           whenReady(
             lookup.bySourceIdentifier(it.id.otherIdentifiers.head)(index)) {
-            _ shouldBe Right(None)
+            _.left.value shouldBe a[DocumentNotFoundError[_]]
           }
         }
       }
     }
 
-    it("returns None if there is no such item") {
+    it("returns a DocumentNotFoundError if there is no such item") {
       withLocalWorksIndex { index =>
-        val future = lookup.bySourceIdentifier(createSourceIdentifier)(index)
+        val id = createSourceIdentifier
+        val future = lookup.bySourceIdentifier(id)(index)
 
         whenReady(future) {
-          _ shouldBe Right(None)
+          _ shouldBe Left(DocumentNotFoundError(id))
         }
       }
     }
 
-    it("returns None if there is no visible work with this item") {
+    it(
+      "returns a DocumentNotFoundError if there is no visible work with this item") {
       val item = createIdentifiedItem
 
       val workInvisible = indexedWork().items(List(item)).invisible()
@@ -227,7 +212,7 @@ class ItemLookupTest
         val future1 = lookup.bySourceIdentifier(item.id.sourceIdentifier)(index)
 
         whenReady(future1) {
-          _ shouldBe Right(None)
+          _ shouldBe Left(DocumentNotFoundError(item.id.sourceIdentifier))
         }
 
         // Then we index both works and run the same query, so we know the
@@ -237,7 +222,7 @@ class ItemLookupTest
         val future2 = lookup.bySourceIdentifier(item.id.sourceIdentifier)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item.id.canonicalId))
+          _ shouldBe Right(item.id.canonicalId)
         }
       }
     }
@@ -247,7 +232,7 @@ class ItemLookupTest
         lookup.bySourceIdentifier(createSourceIdentifier)(createIndex)
 
       whenReady(future) {
-        _.left.value shouldBe a[ElasticError]
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }

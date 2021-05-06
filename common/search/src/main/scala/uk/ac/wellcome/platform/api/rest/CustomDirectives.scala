@@ -2,9 +2,9 @@ package uk.ac.wellcome.platform.api.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
-import com.sksamuel.elastic4s.ElasticError
 import uk.ac.wellcome.platform.api.elasticsearch.ElasticsearchErrorHandler
 import uk.ac.wellcome.platform.api.models.ApiConfig
+import weco.api.search.elasticsearch.ElasticsearchError
 import weco.http.FutureDirectives
 import weco.http.models.{ContextResponse, DisplayError}
 
@@ -43,9 +43,9 @@ trait CustomDirectives extends FutureDirectives {
         s"$scheme://$host$rootPath/$contextPath"
     }
 
-  def elasticError(err: ElasticError): Route =
+  def elasticError(documentType: String, err: ElasticsearchError): Route =
     error(
-      ElasticsearchErrorHandler.buildDisplayError(err)
+      ElasticsearchErrorHandler.buildDisplayError(documentType, err)
     )
 
   private def error(err: DisplayError): Route = {

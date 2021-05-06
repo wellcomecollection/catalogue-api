@@ -1,13 +1,13 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import co.elastic.apm.api.Transaction
-import com.sksamuel.elastic4s.{ElasticError, Hit, Index}
+import com.sksamuel.elastic4s.{Hit, Index}
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models.{ResultList, SearchOptions}
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,11 +24,11 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
   protected def createAggregations(searchResponse: SearchResponse): Option[Aggs]
 
   def findById(id: CanonicalId)(
-    index: Index): Future[Either[ElasticError, Option[T]]] =
+    index: Index): Future[Either[ElasticsearchError, T]] =
     elasticsearchService.findById[T](id)(index)
 
   def listOrSearch(index: Index, searchOptions: S)
-    : Future[Either[ElasticError, ResultList[VisibleT, Aggs]]] =
+    : Future[Either[ElasticsearchError, ResultList[VisibleT, Aggs]]] =
     executeSearch(searchOptions, index)
       .map { _.map(createResultList) }
 
@@ -56,7 +56,7 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
     */
   private def executeSearch(
     searchOptions: S,
-    index: Index): Future[Either[ElasticError, SearchResponse]] = {
+    index: Index): Future[Either[ElasticsearchError, SearchResponse]] = {
     val searchRequest = requestBuilder
       .request(searchOptions, index)
       .trackTotalHits(true)

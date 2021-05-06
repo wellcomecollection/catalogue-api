@@ -36,7 +36,7 @@ class WorksController(
           worksService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError(err)
+              case Left(err) => elasticError("Image", err)
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(
@@ -66,17 +66,15 @@ class WorksController(
           worksService
             .findById(id)(index)
             .map {
-              case Right(Some(work: Work.Visible[Indexed])) =>
+              case Right(work: Work.Visible[Indexed]) =>
                 workFound(work, includes)
-              case Right(Some(work: Work.Redirected[Indexed])) =>
+              case Right(work: Work.Redirected[Indexed]) =>
                 workRedirect(work)
-              case Right(Some(_: Work.Invisible[Indexed])) =>
+              case Right(_: Work.Invisible[Indexed]) =>
                 gone("This work has been deleted")
-              case Right(Some(_: Work.Deleted[Indexed])) =>
+              case Right(_: Work.Deleted[Indexed]) =>
                 gone("This work has been deleted")
-              case Right(None) =>
-                notFound(s"Work not found for identifier $id")
-              case Left(err) => elasticError(err)
+              case Left(err) => elasticError("Work", err)
             }
         }
       }

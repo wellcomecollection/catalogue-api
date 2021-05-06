@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import com.sksamuel.elastic4s.{ElasticError, Index}
+import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -18,7 +18,11 @@ import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.index.IndexFixtures
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.{
   DigitalLocationType,
@@ -119,14 +123,18 @@ class WorksServiceTest
     }
 
     it("returns a Left[ElasticError] if there's an Elasticsearch error") {
+      val index = createIndex
+
       val future = worksService.listOrSearch(
-        index = Index("doesnotexist"),
+        index = index,
         searchOptions = defaultWorksSearchOptions
       )
 
-      whenReady(future) { result =>
-        result.isLeft shouldBe true
-        result.left.get shouldBe a[ElasticError]
+      whenReady(future) { err =>
+        err.left.value shouldBe a[IndexNotFoundError]
+        err.left.value
+          .asInstanceOf[IndexNotFoundError]
+          .index shouldBe index.name
       }
     }
 
@@ -481,33 +489,32 @@ class WorksServiceTest
         val future = worksService.findById(id = work.state.canonicalId)(index)
 
         whenReady(future) {
-          _ shouldBe Right(Some(work))
+          _ shouldBe Right(work)
         }
       }
 
     }
 
-    it("returns a future of None if it cannot get a record by id") {
+    it("returns a DocumentNotFoundError if there is no work") {
       withLocalWorksIndex { index =>
-        val recordsFuture =
-          worksService.findById(id = createCanonicalId)(index)
+        val id = createCanonicalId
+        val future = worksService.findById(id = id)(index)
 
-        whenReady(recordsFuture) {
-          _ shouldBe Right(None)
+        whenReady(future) {
+          _ shouldBe Left(DocumentNotFoundError(id))
         }
       }
     }
 
-    it("returns a Left[ElasticError] if there's an Elasticsearch error") {
-      val future = worksService.findById(
-        id = createCanonicalId
-      )(
-        index = Index("doesnotexist")
-      )
+    it("returns an ElasticsearchError if there's an Elasticsearch error") {
+      val index = createIndex
+      val future = worksService.findById(id = createCanonicalId)(index)
 
-      whenReady(future) { result =>
-        result.isLeft shouldBe true
-        result.left.get shouldBe a[ElasticError]
+      whenReady(future) { err =>
+        err.left.value shouldBe a[IndexNotFoundError]
+        err.left.value
+          .asInstanceOf[IndexNotFoundError]
+          .index shouldBe index.name
       }
     }
   }
@@ -530,7 +537,7 @@ class WorksServiceTest
 
   private def assertResultIsCorrect(
     partialSearchFunction: (Index, WorkSearchOptions) => Future[
-      Either[ElasticError, ResultList[Work.Visible[Indexed], WorkAggregations]]]
+      Either[_, ResultList[Work.Visible[Indexed], WorkAggregations]]]
   )(
     allWorks: Seq[Work[Indexed]],
     expectedWorks: Seq[Work[Indexed]],

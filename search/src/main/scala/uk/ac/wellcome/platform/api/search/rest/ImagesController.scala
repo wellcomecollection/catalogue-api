@@ -39,7 +39,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           imagesService
             .findById(id)(index)
             .flatMap {
-              case Right(Some(image)) =>
+              case Right(image) =>
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
@@ -65,10 +65,8 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                       )
                     )
                   }
-              case Right(None) =>
-                Future.successful(
-                  notFound(s"Image not found for identifier $id"))
-              case Left(err) => Future.successful(elasticError(err))
+
+              case Left(err) => Future.successful(elasticError("Image", err))
             }
         }
       }
@@ -84,7 +82,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           imagesService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError(err)
+              case Left(err) => elasticError("Image", err)
               case Right(resultList) =>
                 extractPublicUri { uri =>
                   complete(
