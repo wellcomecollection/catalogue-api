@@ -5,6 +5,7 @@ import akka.http.scaladsl.server.{Directive, Route}
 import com.sksamuel.elastic4s.ElasticError
 import uk.ac.wellcome.platform.api.elasticsearch.ElasticsearchErrorHandler
 import uk.ac.wellcome.platform.api.models.ApiConfig
+import weco.api.search.elasticsearch.ElasticsearchError
 import weco.http.FutureDirectives
 import weco.http.models.{ContextResponse, DisplayError}
 
@@ -46,6 +47,11 @@ trait CustomDirectives extends FutureDirectives {
   def elasticError(err: ElasticError): Route =
     error(
       ElasticsearchErrorHandler.buildDisplayError(err)
+    )
+
+  def elasticError(documentType: String, err: ElasticsearchError): Route =
+    error(
+      ElasticsearchErrorHandler.buildDisplayError(documentType, err)
     )
 
   private def error(err: DisplayError): Route = {

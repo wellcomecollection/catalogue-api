@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.models.{ResultList, SearchOptions}
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,7 +24,7 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
   protected def createAggregations(searchResponse: SearchResponse): Option[Aggs]
 
   def findById(id: CanonicalId)(
-    index: Index): Future[Either[ElasticError, Option[T]]] =
+    index: Index): Future[Either[ElasticsearchError, T]] =
     elasticsearchService.findById[T](id)(index)
 
   def listOrSearch(index: Index, searchOptions: S)
