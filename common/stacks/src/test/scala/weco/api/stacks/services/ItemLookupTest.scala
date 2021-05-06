@@ -150,7 +150,7 @@ class ItemLookupTest
           val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
 
           whenReady(future) {
-            _ shouldBe Right(Some(it.id.canonicalId))
+            _ shouldBe Right(it.id.canonicalId)
           }
         }
       }
