@@ -41,7 +41,7 @@ class WorksController(
                 extractPublicUri { requestUri =>
                   complete(
                     ContextResponse(
-                      context = contextUri,
+                      contextUrl = contextUrl,
                       DisplayResultList(
                         resultList = resultList,
                         searchOptions = searchOptions,
@@ -100,12 +100,10 @@ class WorksController(
   def workFound(work: Work.Visible[Indexed], includes: WorksIncludes): Route =
     complete(
       ContextResponse(
-        context = contextUri,
+        contextUrl = contextUrl,
         result = DisplayWork(work, includes)
       )
     )
 
   private lazy val worksService = new WorksService(elasticsearchService)
-
-  override def context: String = contextUri.toString
 }

@@ -50,7 +50,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                   .map { similarImages =>
                     complete(
                       ContextResponse(
-                        context = contextUri,
+                        contextUrl = contextUrl,
                         result = DisplayImage(
                           image = image,
                           includes =
@@ -87,7 +87,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                 extractPublicUri { uri =>
                   complete(
                     ContextResponse(
-                      context = contextUri,
+                      contextUrl = contextUrl,
                       DisplayResultList(
                         resultList = resultList,
                         searchOptions = searchOptions,
@@ -120,6 +120,4 @@ class ImagesController(elasticsearchService: ElasticsearchService,
 
   private lazy val imagesService =
     new ImagesService(elasticsearchService, queryConfig)
-
-  override def context: String = contextUri.toString
 }
