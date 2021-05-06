@@ -17,16 +17,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class ItemLookup(elasticsearchService: ElasticsearchService)(
   implicit ec: ExecutionContext
 ) {
-
-  /** Returns an Item that corresponds to this canonical ID.
-    *
-    * Note: the output from this function may not be consistent, even against
-    * a fixed API index.  Because of merging logic, some item IDs have varying
-    * representations on different works.
+  /** Returns the SourceIdentifier of the item that corresponds to this
+    * canonical ID.
     *
     */
   def byCanonicalId(itemId: CanonicalId)(index: Index)
-    : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+    : Future[Either[ElasticError, Option[SourceIdentifier]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -44,25 +40,19 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
           works
             .flatMap { _.data.items }
             .collectFirst {
-              // The .asInstanceOf here will be a no-op at runtime, and is just so
-              // the compiler knows this will always be an Item[IdState.Identified]
-              case item @ Item(IdState.Identified(id, _, _), _, _)
+              case Item(IdState.Identified(id, sourceIdentifier, _), _, _)
                   if id == itemId =>
-                item.asInstanceOf[Item[IdState.Identified]]
+                sourceIdentifier
             }
         )
     }
   }
 
-  /** Returns an Item that corresponds to this source identifier.
-    *
-    * Note: the output from this function may not be consistent, even against
-    * a fixed API index.  Because of merging logic, some item IDs have varying
-    * representations on different works.
+  /** Returns the canonical ID of the item with this source identifier.
     *
     */
-  def bySourceIdentifier(itemId: SourceIdentifier)(index: Index)
-    : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)(index: Index)
+    : Future[Either[ElasticError, Option[CanonicalId]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
@@ -71,8 +61,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
           boolQuery
             .must(termQuery(field = "type", value = "Visible"))
             .should(
-              termQuery("data.items.id.sourceIdentifier.value", itemId.value),
-              termQuery("data.items.id.otherIdentifiers.value", itemId.value),
+              termQuery("data.items.id.sourceIdentifier.value", sourceIdentifier.value),
             )
         )
         .size(1)
@@ -84,21 +73,9 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
           works
             .flatMap { _.data.items }
             .collectFirst {
-              // The .asInstanceOf here will be a no-op at runtime, and is just so
-              // the compiler knows this will always be an Item[IdState.Identified]
-              //
-              // You might think you can do something like
-              //
-              //     case item: Item[IdState.Identified] =>
-              //
-              // but trying to do so gets an error at compile time.:
-              //
-              //     non-variable type argument IdState.Identified in type pattern Item[Identified]
-              //     is unchecked since it is eliminated by erasure
-              //
-              case item @ Item(IdState.Identified(_, _, _), _, _)
-                  if item.id.allSourceIdentifiers.contains(itemId) =>
-                item.asInstanceOf[Item[IdState.Identified]]
+              case Item(id @ IdState.Identified(_, _, _), _, _)
+                  if id.sourceIdentifier == sourceIdentifier =>
+                id.canonicalId
             }
         )
     }

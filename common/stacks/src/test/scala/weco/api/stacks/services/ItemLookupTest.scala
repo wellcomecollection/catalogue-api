@@ -37,19 +37,19 @@ class ItemLookupTest
         val future1 = lookup.byCanonicalId(item1.id.canonicalId)(index)
 
         whenReady(future1) {
-          _ shouldBe Right(Some(item1))
+          _ shouldBe Right(Some(item1.id.sourceIdentifier))
         }
 
         val future2 = lookup.byCanonicalId(item2.id.canonicalId)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item2))
+          _ shouldBe Right(Some(item2.id.sourceIdentifier))
         }
 
         val future3 = lookup.byCanonicalId(item3.id.canonicalId)(index)
 
         whenReady(future3) {
-          _ shouldBe Right(Some(item3))
+          _ shouldBe Right(Some(item3.id.sourceIdentifier))
         }
       }
     }
@@ -88,7 +88,7 @@ class ItemLookupTest
         val future2 = lookup.byCanonicalId(item.id.canonicalId)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item))
+          _ shouldBe Right(Some(item.id.sourceIdentifier))
         }
       }
     }
@@ -118,26 +118,26 @@ class ItemLookupTest
           lookup.bySourceIdentifier(item1.id.sourceIdentifier)(index)
 
         whenReady(future1) {
-          _ shouldBe Right(Some(item1))
+          _ shouldBe Right(Some(item1.id.canonicalId))
         }
 
         val future2 =
           lookup.bySourceIdentifier(item2.id.sourceIdentifier)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item2))
+          _ shouldBe Right(Some(item2.id.canonicalId))
         }
 
         val future3 =
           lookup.bySourceIdentifier(item3.id.sourceIdentifier)(index)
 
         whenReady(future3) {
-          _ shouldBe Right(Some(item3))
+          _ shouldBe Right(Some(item3.id.canonicalId))
         }
       }
     }
 
-    it("finds an item with the same item ID in the otherIdentifiers field") {
+    it("does not match on identifiers in the otherIdentifiers field") {
       val item1 = createIdentifiedItemWith(
         otherIdentifiers = List(createSourceIdentifier)
       )
@@ -154,25 +154,14 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
-        val future1 =
-          lookup.bySourceIdentifier(item1.id.otherIdentifiers.head)(index)
+        List(item1, item2, item3).foreach { it =>
+          whenReady(lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)) {
+            _ shouldBe Right(Some(it.id.canonicalId))
+          }
 
-        whenReady(future1) {
-          _ shouldBe Right(Some(item1))
-        }
-
-        val future2 =
-          lookup.bySourceIdentifier(item2.id.otherIdentifiers.head)(index)
-
-        whenReady(future2) {
-          _ shouldBe Right(Some(item2))
-        }
-
-        val future3 =
-          lookup.bySourceIdentifier(item3.id.otherIdentifiers.head)(index)
-
-        whenReady(future3) {
-          _ shouldBe Right(Some(item3))
+          whenReady(lookup.bySourceIdentifier(it.id.otherIdentifiers.head)(index)) {
+            _ shouldBe Right(None)
+          }
         }
       }
     }
@@ -211,7 +200,7 @@ class ItemLookupTest
         val future2 = lookup.bySourceIdentifier(item.id.sourceIdentifier)(index)
 
         whenReady(future2) {
-          _ shouldBe Right(Some(item))
+          _ shouldBe Right(Some(item.id.canonicalId))
         }
       }
     }
