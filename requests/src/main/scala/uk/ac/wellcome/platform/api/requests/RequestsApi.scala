@@ -22,6 +22,9 @@ trait RequestsApi extends CreateHold {
       post {
         entity(as[ItemRequest]) {
           itemRequest: ItemRequest =>
+            // TODO: We get the work ID as part of the item request, although right now
+            // it's only for future-proofing, in case it's useful later.
+            // Should we query based on the work ID?
             Try { CanonicalId(itemRequest.itemId) } match {
               case Success(itemId) =>
                 withFuture {
