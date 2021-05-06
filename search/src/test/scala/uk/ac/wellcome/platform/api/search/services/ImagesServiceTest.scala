@@ -1,14 +1,18 @@
 package uk.ac.wellcome.platform.api.search.services
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.sksamuel.elastic4s.{ElasticError, Index}
+import com.sksamuel.elastic4s.Index
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.{EitherValues, OptionValues}
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.catalogue.internal_model.generators.ImageGenerators
 
 class ImagesServiceTest
@@ -38,26 +42,29 @@ class ImagesServiceTest
         whenReady(
           imagesService
             .findById(id = image.state.canonicalId)(index)) {
-          _.right.value.value shouldBe image
+          _.right.value shouldBe image
         }
       }
     }
 
     it("returns a None if no image can be found") {
       withLocalImagesIndex { index =>
-        whenReady(
-          imagesService
-            .findById(createCanonicalId)(index)) {
-          _.right.value shouldBe None
+        val id = createCanonicalId
+        val future = imagesService.findById(id)(index)
+
+        whenReady(future) {
+          _ shouldBe Left(DocumentNotFoundError(id))
         }
       }
     }
 
     it("returns a Left[ElasticError] if Elasticsearch returns an error") {
-      whenReady(
-        imagesService
-          .findById(createCanonicalId)(Index("parsnips"))) {
-        _.left.value shouldBe a[ElasticError]
+      val index = createIndex
+      val future = imagesService.findById(createCanonicalId)(index)
+
+      whenReady(future) { err =>
+        err.left.value shouldBe a[IndexNotFoundError]
+        err.left.value.asInstanceOf[IndexNotFoundError].index shouldBe index.name
       }
     }
   }

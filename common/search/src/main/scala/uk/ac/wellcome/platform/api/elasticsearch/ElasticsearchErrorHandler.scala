@@ -3,6 +3,13 @@ package uk.ac.wellcome.platform.api.elasticsearch
 import akka.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError
 import grizzled.slf4j.Logging
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  IndexNotFoundError,
+  SearchPhaseExecutionError,
+  UnknownError
+}
 import weco.http.models.DisplayError
 
 object ElasticsearchErrorHandler extends Logging {
@@ -18,6 +25,39 @@ object ElasticsearchErrorHandler extends Logging {
   // about internal Elasticsearch concepts.
   private val resultSizePattern =
     """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
+
+  def buildDisplayError(documentType: String, e: ElasticsearchError): DisplayError =
+    e match {
+      case DocumentNotFoundError(id) =>
+        DisplayError(
+          statusCode = StatusCodes.NotFound,
+          description = s"$documentType not found for identifier $id"
+        )
+
+      case IndexNotFoundError(e) =>
+        notFound(s"There is no index ${e.index}", e)
+
+      case SearchPhaseExecutionError(e) =>
+        // This may occur if the user requests an overly large page of results.
+        // We return this as a 400 error to the user.
+        resultSizePattern.findFirstMatchIn(e.reason) match {
+          case Some(s) =>
+            val size = s.group(1)
+            userError(
+              s"Only the first $size works are available in the API. " +
+                "If you want more works, you can download a snapshot of the complete catalogue: " +
+                "https://developers.wellcomecollection.org/datasets",
+              e
+            )
+          case _ =>
+            serverError(s"Unknown error in search phase execution: ${e.reason}", e)
+        }
+
+      // Anything else should bubble up as a 500, as it's at least somewhat
+      // unexpected and worthy of further investigation.
+      case UnknownError(e) =>
+        serverError("Unknown error", e)
+    }
 
   def buildDisplayError(elasticError: ElasticError): DisplayError =
     elasticError.`type` match {

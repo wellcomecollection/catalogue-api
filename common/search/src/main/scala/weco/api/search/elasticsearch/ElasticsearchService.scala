@@ -25,7 +25,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     with Tracing {
 
   def findById[T](id: CanonicalId)(index: Index)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticError, Option[T]]] =
+    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, Option[T]]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
         get(index, id.underlying)
@@ -33,11 +33,11 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
       result = response.toEither match {
         case Right(getResponse) if getResponse.exists =>
-          Right(Some(deserialize[T](getResponse)))
+          Right(deserialize[T](getResponse))
 
-        case Right(_) => Right(None)
+        case Right(_) => Left(DocumentNotFoundError(id))
 
-        case Left(err) => Left(err)
+        case Left(err) => Left(ElasticsearchError(err))
       }
     } yield result
 
