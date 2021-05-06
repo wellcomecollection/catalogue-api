@@ -20,6 +20,11 @@ class SierraRecordNumberTest extends AnyFunSpec with Matchers {
     }
   }
 
+  it("can create a Sierra item number from an ID with a check digit") {
+    val s = SierraItemNumber("i12345678")
+    s.withoutCheckDigit shouldBe "1234567"
+  }
+
   it("throws an error if passed a Sierra ID which is non-numeric") {
     assertStringFailsValidation("abcdefg")
   }
