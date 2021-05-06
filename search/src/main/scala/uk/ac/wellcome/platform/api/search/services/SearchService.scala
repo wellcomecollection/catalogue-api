@@ -25,16 +25,7 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
 
   def findById(id: CanonicalId)(
     index: Index): Future[Either[ElasticError, Option[T]]] =
-    elasticsearchService
-      .executeGet(id)(index)
-      .map {
-        _.map { response =>
-          if (response.exists)
-            Some(deserialize[T](response))
-          else
-            None
-        }
-      }
+    elasticsearchService.findById[T](id)(index)
 
   def listOrSearch(index: Index, searchOptions: S)
     : Future[Either[ElasticError, ResultList[VisibleT, Aggs]]] =
