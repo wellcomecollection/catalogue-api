@@ -5,13 +5,13 @@ import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
-import weco.api.requests.responses.CreateHold
+import weco.api.requests.responses.CreateRequest
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
-trait RequestsApi extends CreateHold {
+trait RequestsApi extends CreateRequest {
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
 
@@ -28,7 +28,7 @@ trait RequestsApi extends CreateHold {
             Try { CanonicalId(itemRequest.itemId) } match {
               case Success(itemId) =>
                 withFuture {
-                  createHold(itemId = itemId, userIdentifier = userIdentifier)
+                  createRequest(itemId = itemId, userIdentifier = userIdentifier)
                 }
 
               case _ => notFound(s"Item not found for identifier ${itemRequest.itemId}")

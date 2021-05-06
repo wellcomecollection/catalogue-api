@@ -14,14 +14,14 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumb
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait CreateHold extends CustomDirectives with Logging {
+trait CreateRequest extends CustomDirectives with Logging {
   implicit val ec: ExecutionContext
 
   val sierraService: SierraService
   val itemLookup: ItemLookup
   val index: Index
 
-  def createHold(itemId: CanonicalId, userIdentifier: StacksUserIdentifier): Future[Route] =
+  def createRequest(itemId: CanonicalId, userIdentifier: StacksUserIdentifier): Future[Route] =
     itemLookup.byCanonicalId(itemId)(index).map {
       case Right(sourceIdentifier) if sourceIdentifier.identifierType == SierraSystemNumber =>
         val result = sierraService.placeHold(
