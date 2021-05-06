@@ -8,7 +8,10 @@ import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{
+  MiroImageNumber,
+  SierraSystemNumber
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -192,7 +195,8 @@ class ItemLookupTest
             _ shouldBe Right(Some(it.id.canonicalId))
           }
 
-          whenReady(lookup.bySourceIdentifier(it.id.otherIdentifiers.head)(index)) {
+          whenReady(
+            lookup.bySourceIdentifier(it.id.otherIdentifiers.head)(index)) {
             _ shouldBe Right(None)
           }
         }

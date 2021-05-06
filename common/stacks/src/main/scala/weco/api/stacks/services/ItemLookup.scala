@@ -17,12 +17,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class ItemLookup(elasticsearchService: ElasticsearchService)(
   implicit ec: ExecutionContext
 ) {
+
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
     *
     */
-  def byCanonicalId(itemId: CanonicalId)(index: Index)
-    : Future[Either[ElasticError, Option[SourceIdentifier]]] = {
+  def byCanonicalId(itemId: CanonicalId)(
+    index: Index): Future[Either[ElasticError, Option[SourceIdentifier]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -51,8 +52,8 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
   /** Returns the canonical ID of the item with this source identifier.
     *
     */
-  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)(index: Index)
-    : Future[Either[ElasticError, Option[CanonicalId]]] = {
+  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)(
+    index: Index): Future[Either[ElasticError, Option[CanonicalId]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
@@ -61,7 +62,9 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
           boolQuery
             .must(termQuery(field = "type", value = "Visible"))
             .should(
-              termQuery("data.items.id.sourceIdentifier.value", sourceIdentifier.value),
+              termQuery(
+                "data.items.id.sourceIdentifier.value",
+                sourceIdentifier.value),
             )
         )
         .size(10)
