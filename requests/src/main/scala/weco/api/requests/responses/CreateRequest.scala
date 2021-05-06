@@ -5,7 +5,11 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
-import uk.ac.wellcome.platform.api.common.services.{HoldAccepted, HoldRejected, SierraService}
+import uk.ac.wellcome.platform.api.common.services.{
+  HoldAccepted,
+  HoldRejected,
+  SierraService
+}
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
@@ -21,9 +25,11 @@ trait CreateRequest extends CustomDirectives with Logging {
   val itemLookup: ItemLookup
   val index: Index
 
-  def createRequest(itemId: CanonicalId, userIdentifier: StacksUserIdentifier): Future[Route] =
+  def createRequest(itemId: CanonicalId,
+                    userIdentifier: StacksUserIdentifier): Future[Route] =
     itemLookup.byCanonicalId(itemId)(index).map {
-      case Right(sourceIdentifier) if sourceIdentifier.identifierType == SierraSystemNumber =>
+      case Right(sourceIdentifier)
+          if sourceIdentifier.identifierType == SierraSystemNumber =>
         val result = sierraService.placeHold(
           userIdentifier = userIdentifier,
           sourceIdentifier = sourceIdentifier
@@ -39,7 +45,8 @@ trait CreateRequest extends CustomDirectives with Logging {
         }
 
       case Right(sourceIdentifier) =>
-        warn(s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier")
+        warn(
+          s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier")
         invalidRequest("You cannot request " + itemId)
 
       case Left(err) => elasticError("Item", err)

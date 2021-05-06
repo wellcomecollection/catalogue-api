@@ -31,7 +31,8 @@ class SierraService(
     (sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber) &&
       (sourceIdentifier.ontologyType == "Item")
 
-  def getItemStatus(sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
+  def getItemStatus(
+    sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
     require(isSierraItemId(sourceIdentifier))
 
     val itemNumber = SierraItemNumber(sourceIdentifier.value)

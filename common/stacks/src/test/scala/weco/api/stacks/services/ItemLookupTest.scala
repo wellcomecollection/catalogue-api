@@ -10,10 +10,7 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,
   SierraSystemNumber
 }
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

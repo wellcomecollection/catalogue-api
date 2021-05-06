@@ -7,8 +7,14 @@ import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
-import uk.ac.wellcome.platform.api.common.services.{SierraService, StacksService}
-import uk.ac.wellcome.platform.api.common.services.config.builders.{SierraServiceBuilder, StacksServiceBuilder}
+import uk.ac.wellcome.platform.api.common.services.{
+  SierraService,
+  StacksService
+}
+import uk.ac.wellcome.platform.api.common.services.config.builders.{
+  SierraServiceBuilder,
+  StacksServiceBuilder
+}
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
@@ -43,7 +49,8 @@ object Main extends WellcomeTypesafeApp {
     val elasticClient = ElasticBuilder.buildElasticClient(config)
 
     val router: RequestsApi = new RequestsApi {
-      override implicit val ec: ExecutionContext = AkkaBuilder.buildExecutionContext()
+      override implicit val ec: ExecutionContext =
+        AkkaBuilder.buildExecutionContext()
       override implicit val stacksWorkService: StacksService =
         StacksServiceBuilder.build(config)
       override implicit val apiConfig: ApiConfig = apiConf

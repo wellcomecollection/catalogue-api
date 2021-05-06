@@ -1,7 +1,11 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.model.StatusCodes
-import com.github.tomakehurst.wiremock.client.WireMock.{equalToJson, postRequestedFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{
+  equalToJson,
+  postRequestedFor,
+  urlEqualTo
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,7 +13,10 @@ import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{
+  MiroImageNumber,
+  SierraSystemNumber
+}
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 
 import scala.util.{Failure, Try}
@@ -49,42 +56,42 @@ class RequestsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withRequestsApi(index) { case (_, wireMockServer) =>
-          val path = "/users/1234567/item-requests"
+        withRequestsApi(index) {
+          case (_, wireMockServer) =>
+            val path = "/users/1234567/item-requests"
 
-          val entity = createJsonHttpEntityWith(
-            s"""
+            val entity = createJsonHttpEntityWith(
+              s"""
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "${work.state.canonicalId}",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
-          )
+            )
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.Accepted
+            whenPostRequestReady(path, entity) { response =>
+              response.status shouldBe StatusCodes.Accepted
 
-            wireMockServer.verify(
-              1,
-              postRequestedFor(
-                urlEqualTo(
-                  "/iii/sierra-api/v5/patrons/1234567/holds/requests"
-                )
-              ).withRequestBody(
-                equalToJson(
-                  """
+              wireMockServer.verify(
+                1,
+                postRequestedFor(
+                  urlEqualTo(
+                    "/iii/sierra-api/v5/patrons/1234567/holds/requests"
+                  )
+                ).withRequestBody(
+                  equalToJson("""
                     |{
                     |  "recordType" : "i",
                     |  "recordNumber" : 1601017,
                     |  "pickupLocation" : "unspecified"
                     |}
                     |""".stripMargin)
+                )
               )
-            )
 
-            response.entity.isKnownEmpty() shouldBe true
-          }
+              response.entity.isKnownEmpty() shouldBe true
+            }
         }
       }
     }
@@ -103,40 +110,40 @@ class RequestsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withRequestsApi(index) { case (_, wireMockServer) =>
-          val path = "/users/1234567/item-requests"
+        withRequestsApi(index) {
+          case (_, wireMockServer) =>
+            val path = "/users/1234567/item-requests"
 
-          val entity = createJsonHttpEntityWith(
-            s"""
+            val entity = createJsonHttpEntityWith(
+              s"""
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "${work.state.canonicalId}",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
-          )
+            )
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.Conflict
+            whenPostRequestReady(path, entity) { response =>
+              response.status shouldBe StatusCodes.Conflict
 
-            wireMockServer.verify(
-              1,
-              postRequestedFor(
-                urlEqualTo(
-                  "/iii/sierra-api/v5/patrons/1234567/holds/requests"
-                )
-              ).withRequestBody(
-                equalToJson(
-                  """
+              wireMockServer.verify(
+                1,
+                postRequestedFor(
+                  urlEqualTo(
+                    "/iii/sierra-api/v5/patrons/1234567/holds/requests"
+                  )
+                ).withRequestBody(
+                  equalToJson("""
                     |{
                     |  "recordType" : "i",
                     |  "recordNumber" : 1601018,
                     |  "pickupLocation" : "unspecified"
                     |}
                     |""".stripMargin)
+                )
               )
-            )
-          }
+            }
         }
       }
     }
@@ -190,27 +197,28 @@ class RequestsApiFeatureTest
   describe("placing a hold") {
     it("returns a 404 if the item ID isn't a canonical ID") {
       withLocalWorksIndex { index =>
-        withRequestsApi(index) { case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
+        withRequestsApi(index) {
+          case (contextUrl, _) =>
+            val path = "/users/1234567/item-requests"
 
-          val itemId = randomAlphanumeric(length = 10)
-          Try { CanonicalId(itemId) } shouldBe a[Failure[_]]
+            val itemId = randomAlphanumeric(length = 10)
+            Try { CanonicalId(itemId) } shouldBe a[Failure[_]]
 
-          val entity = createJsonHttpEntityWith(
-            s"""
+            val entity = createJsonHttpEntityWith(
+              s"""
                |{
                |  "itemId": "$itemId",
                |  "workId": "$createCanonicalId",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
-          )
+            )
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.NotFound
+            whenPostRequestReady(path, entity) { response =>
+              response.status shouldBe StatusCodes.NotFound
 
-            val expectedError =
-              s"""
+              val expectedError =
+                s"""
                  |{
                  |  "errorType": "http",
                  |  "httpStatus": 404,
@@ -220,36 +228,37 @@ class RequestsApiFeatureTest
                  |  "@context": "$contextUrl"
                  |}""".stripMargin
 
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
+              withStringEntity(response.entity) {
+                assertJsonStringsAreEqual(_, expectedError)
+              }
             }
-          }
         }
       }
     }
 
     it("returns a 404 if there is no item with this ID") {
       withLocalWorksIndex { index =>
-        withRequestsApi(index) { case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
+        withRequestsApi(index) {
+          case (contextUrl, _) =>
+            val path = "/users/1234567/item-requests"
 
-          val itemId = createCanonicalId
+            val itemId = createCanonicalId
 
-          val entity = createJsonHttpEntityWith(
-            s"""
+            val entity = createJsonHttpEntityWith(
+              s"""
                |{
                |  "itemId": "$itemId",
                |  "workId": "$createCanonicalId",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
-          )
+            )
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.NotFound
+            whenPostRequestReady(path, entity) { response =>
+              response.status shouldBe StatusCodes.NotFound
 
-            val expectedError =
-              s"""
+              val expectedError =
+                s"""
                  |{
                  |  "errorType": "http",
                  |  "httpStatus": 404,
@@ -259,10 +268,10 @@ class RequestsApiFeatureTest
                  |  "@context": "$contextUrl"
                  |}""".stripMargin
 
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
+              withStringEntity(response.entity) {
+                assertJsonStringsAreEqual(_, expectedError)
+              }
             }
-          }
         }
       }
     }
@@ -281,24 +290,25 @@ class RequestsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withRequestsApi(index) { case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
+        withRequestsApi(index) {
+          case (contextUrl, _) =>
+            val path = "/users/1234567/item-requests"
 
-          val entity = createJsonHttpEntityWith(
-            s"""
+            val entity = createJsonHttpEntityWith(
+              s"""
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "${work.state.canonicalId}",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
-          )
+            )
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.BadRequest
+            whenPostRequestReady(path, entity) { response =>
+              response.status shouldBe StatusCodes.BadRequest
 
-            val expectedError =
-              s"""
+              val expectedError =
+                s"""
                  |{
                  |  "errorType": "http",
                  |  "httpStatus": 400,
@@ -308,10 +318,10 @@ class RequestsApiFeatureTest
                  |  "@context": "$contextUrl"
                  |}""".stripMargin
 
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
+              withStringEntity(response.entity) {
+                assertJsonStringsAreEqual(_, expectedError)
+              }
             }
-          }
         }
       }
     }

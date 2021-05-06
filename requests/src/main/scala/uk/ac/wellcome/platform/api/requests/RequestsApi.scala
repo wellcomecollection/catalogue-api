@@ -28,10 +28,13 @@ trait RequestsApi extends CreateRequest {
             Try { CanonicalId(itemRequest.itemId) } match {
               case Success(itemId) =>
                 withFuture {
-                  createRequest(itemId = itemId, userIdentifier = userIdentifier)
+                  createRequest(
+                    itemId = itemId,
+                    userIdentifier = userIdentifier)
                 }
 
-              case _ => notFound(s"Item not found for identifier ${itemRequest.itemId}")
+              case _ =>
+                notFound(s"Item not found for identifier ${itemRequest.itemId}")
             }
         }
       } ~ get {

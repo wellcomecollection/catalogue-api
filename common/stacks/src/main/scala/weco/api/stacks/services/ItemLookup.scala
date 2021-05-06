@@ -3,8 +3,16 @@ package weco.api.stacks.services
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.{ElasticClient, Index}
 import uk.ac.wellcome.models.Implicits._
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  ElasticsearchService
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
