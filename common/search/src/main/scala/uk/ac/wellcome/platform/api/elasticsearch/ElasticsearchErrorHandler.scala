@@ -59,40 +59,6 @@ object ElasticsearchErrorHandler extends Logging {
         serverError("Unknown error", e)
     }
 
-  def buildDisplayError(elasticError: ElasticError): DisplayError =
-    elasticError.`type` match {
-      // This occurs if the user requests a non-existent index as ?_index=foo.
-      // We return this as a 404 error to the user.
-      case "index_not_found_exception" =>
-        val index = elasticError.index.get
-        notFound(s"There is no index $index", elasticError)
-
-      // This may occur if the user requests an overly large page of results.
-      // We return this as a 400 error to the user.
-      case "search_phase_execution_exception" =>
-        val reason = elasticError.rootCause.mkString("; ")
-
-        resultSizePattern.findFirstMatchIn(reason) match {
-          case Some(s) =>
-            val size = s.group(1)
-            userError(
-              s"Only the first $size works are available in the API. " +
-                "If you want more works, you can download a snapshot of the complete catalogue: " +
-                "https://developers.wellcomecollection.org/datasets",
-              elasticError
-            )
-          case _ =>
-            serverError(
-              s"Unknown error in search phase execution: $reason",
-              elasticError)
-        }
-
-      // Anything else should bubble up as a 500, as it's at least somewhat
-      // unexpected and worthy of further investigation.
-      case _ =>
-        serverError("Unknown error", elasticError)
-    }
-
   private def userError(message: String,
                         elasticError: ElasticError): DisplayError = {
     warn(

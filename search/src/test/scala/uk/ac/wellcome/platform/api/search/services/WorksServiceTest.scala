@@ -493,7 +493,7 @@ class WorksServiceTest
 
     }
 
-    it("returns a future of None if it cannot get a record by id") {
+    it("returns a DocumentNotFoundError if there is no work") {
       withLocalWorksIndex { index =>
         val id = createCanonicalId
         val future = worksService.findById(id = id)(index)
@@ -504,7 +504,7 @@ class WorksServiceTest
       }
     }
 
-    it("returns a Left[ElasticError] if there's an Elasticsearch error") {
+    it("returns an ElasticsearchError if there's an Elasticsearch error") {
       val index = createIndex
       val future = worksService.findById(id = createCanonicalId)(index)
 

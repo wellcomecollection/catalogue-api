@@ -24,7 +24,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     with Tracing {
 
   def findById[T](id: CanonicalId)(index: Index)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, Option[T]]] =
+    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
         get(index, id.underlying)
