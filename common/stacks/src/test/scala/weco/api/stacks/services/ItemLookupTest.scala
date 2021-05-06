@@ -197,7 +197,8 @@ class ItemLookupTest
       }
     }
 
-    it("returns a DocumentNotFoundError if there is no visible work with this item") {
+    it(
+      "returns a DocumentNotFoundError if there is no visible work with this item") {
       val item = createIdentifiedItem
 
       val workInvisible = indexedWork().items(List(item)).invisible()

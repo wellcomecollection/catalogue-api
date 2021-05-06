@@ -52,7 +52,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
 
         item match {
           case Some(it) => Right(it)
-          case None => Left(DocumentNotFoundError(itemId))
+          case None     => Left(DocumentNotFoundError(itemId))
         }
     }
   }
@@ -91,7 +91,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
 
         item match {
           case Some(it) => Right(it)
-          case None => Left(DocumentNotFoundError(sourceIdentifier))
+          case None     => Left(DocumentNotFoundError(sourceIdentifier))
         }
     }
   }

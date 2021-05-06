@@ -132,7 +132,9 @@ class WorksServiceTest
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]
-        err.left.value.asInstanceOf[IndexNotFoundError].index shouldBe index.name
+        err.left.value
+          .asInstanceOf[IndexNotFoundError]
+          .index shouldBe index.name
       }
     }
 
@@ -510,7 +512,9 @@ class WorksServiceTest
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]
-        err.left.value.asInstanceOf[IndexNotFoundError].index shouldBe index.name
+        err.left.value
+          .asInstanceOf[IndexNotFoundError]
+          .index shouldBe index.name
       }
     }
   }

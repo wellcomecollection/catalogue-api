@@ -17,11 +17,13 @@ case object ElasticsearchError {
 
 case class DocumentNotFoundError[Id](id: Id) extends ElasticsearchError
 
-case class IndexNotFoundError(elasticError: ElasticError) extends ElasticsearchError {
+case class IndexNotFoundError(elasticError: ElasticError)
+    extends ElasticsearchError {
   def index: String = elasticError.index.get
 }
 
-case class SearchPhaseExecutionError(elasticError: ElasticError) extends ElasticsearchError {
+case class SearchPhaseExecutionError(elasticError: ElasticError)
+    extends ElasticsearchError {
   def reason: String = elasticError.rootCause.mkString("; ")
 }
 
