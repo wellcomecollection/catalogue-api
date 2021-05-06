@@ -1,20 +1,14 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.server.Route
-import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
-import uk.ac.wellcome.platform.api.common.services.StacksService
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
-import weco.api.requests.responses.CreateRequest
+import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
-import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
-trait RequestsApi extends CreateRequest {
-  implicit val ec: ExecutionContext
-  implicit val stacksWorkService: StacksService
-
+trait RequestsApi extends CreateRequest with LookupPendingRequests {
   val routes: Route = concat(
     pathPrefix("users" / Segment / "item-requests") { userId: String =>
       val userIdentifier = StacksUserIdentifier(userId)
@@ -38,12 +32,7 @@ trait RequestsApi extends CreateRequest {
             }
         }
       } ~ get {
-        val result = stacksWorkService.getStacksUserHolds(userIdentifier)
-
-        onComplete(result) {
-          case Success(value) => complete(DisplayResultsList(value))
-          case Failure(err)   => failWith(err)
-        }
+        lookupRequests(userIdentifier)
       }
     }
   )

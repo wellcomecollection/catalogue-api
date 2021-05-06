@@ -1,6 +1,8 @@
 package uk.ac.wellcome.platform.api.common.models
 
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.api.stacks.models.SierraItemNumber
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 
 import scala.util.{Failure, Success, Try}
 
@@ -17,13 +19,18 @@ sealed trait ItemIdentifier[T] extends Identifier[T]
 case class SierraItemIdentifier(value: Long) extends ItemIdentifier[Long]
 
 object SierraItemIdentifier {
-  def createFromSierraId(id: String): SierraItemIdentifier =
+  def createFromSierraId(id: String): SourceIdentifier =
     Try {
       // This value looks like a URI when provided by Sierra
       // https://libsys.wellcomelibrary.org/iii/sierra-api/v5/patrons/holds/145730
-      id.split("/").last.toLong
+      id.split("/").last
     } match {
-      case Success(v) => SierraItemIdentifier(v)
+      case Success(v) =>
+        SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          ontologyType = "Item",
+          value = SierraItemNumber(v).withCheckDigit
+        )
       case Failure(e) =>
         throw new Exception("Failed to create SierraItemIdentifier", e)
     }

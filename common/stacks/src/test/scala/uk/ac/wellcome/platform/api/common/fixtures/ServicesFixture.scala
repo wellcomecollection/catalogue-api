@@ -7,8 +7,7 @@ import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.platform.api.common.services.source.AkkaSierraSource
 import uk.ac.wellcome.platform.api.common.services.{
   CatalogueService,
-  SierraService,
-  StacksService
+  SierraService
 }
 
 import scala.concurrent.ExecutionContextExecutor
@@ -47,26 +46,6 @@ trait ServicesFixture
             )
           }
         }
-    }
-  }
-
-  def withStacksService[R](
-    testWith: TestWith[(StacksService, SierraService, WireMockServer), R]
-  ): R = {
-    withCatalogueService { catalogueService =>
-      withSierraService {
-        case (sierraService, sierraWiremockServer) =>
-          withActorSystem { implicit as =>
-            implicit val ec: ExecutionContextExecutor = as.dispatcher
-
-            val stacksService =
-              new StacksService(catalogueService, sierraService)
-
-            testWith(
-              (stacksService, sierraService, sierraWiremockServer)
-            )
-          }
-      }
     }
   }
 }

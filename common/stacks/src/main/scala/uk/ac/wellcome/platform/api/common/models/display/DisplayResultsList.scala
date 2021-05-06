@@ -1,8 +1,7 @@
 package uk.ac.wellcome.platform.api.common.models.display
 
 import java.time.Instant
-
-import uk.ac.wellcome.api.display.models.DisplayItem
+import uk.ac.wellcome.api.display.models.{DisplayIdentifier, DisplayItem}
 import uk.ac.wellcome.platform.api.common.models._
 
 object DisplayResultsList {
@@ -22,15 +21,18 @@ case class DisplayResultsList(
 )
 
 object DisplayRequest {
-  def apply(request: StacksHold): DisplayRequest = {
+  def apply(hold: StacksHold): DisplayRequest = {
     DisplayRequest(
-      item = new DisplayItem(Some(request.itemId.value.toString)),
-      pickupDate = request.pickup.pickUpBy,
+      item = new DisplayItem(
+        id = hold.canonicalId.map { _.underlying },
+        identifiers = Some(List(DisplayIdentifier(hold.sourceIdentifier)))
+      ),
+      pickupDate = hold.pickup.pickUpBy,
       pickupLocation = DisplayLocationDescription(
-        request.pickup.location
+        hold.pickup.location
       ),
       status = DisplayRequestStatus(
-        request.status
+        hold.status
       )
     )
   }

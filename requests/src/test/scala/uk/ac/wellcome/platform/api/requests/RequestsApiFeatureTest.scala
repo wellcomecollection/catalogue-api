@@ -149,7 +149,19 @@ class RequestsApiFeatureTest
     }
 
     it("provides information about a users' holds") {
+      val item = createIdentifiedItemWith(
+        sourceIdentifier = SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          value = "i12921853",
+          ontologyType = "Item"
+        )
+      )
+
+      val work = indexedWork().items(List(item))
+
       withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
+
         withRequestsApi(index) { _ =>
           val path = "/users/1234567/item-requests"
 
@@ -159,7 +171,18 @@ class RequestsApiFeatureTest
                |  "results" : [
                |    {
                |      "item" : {
-               |        "id" : "n5v7b4md",
+               |        "id" : "${item.id.canonicalId}",
+               |        "identifiers" : [
+               |          {
+               |            "identifierType" : {
+               |              "id" : "sierra-system-number",
+               |              "label" : "Sierra system number",
+               |              "type" : "IdentifierType"
+               |            },
+               |            "value" : "i12921853",
+               |            "type" : "Identifier"
+               |          }
+               |        ],
                |        "locations" : [
                |        ],
                |        "type" : "Item"

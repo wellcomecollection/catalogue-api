@@ -52,7 +52,11 @@ class SierraServiceTest
                 userId = "1234567",
                 holds = List(
                   StacksHold(
-                    itemId = SierraItemIdentifier(1292185),
+                    sourceIdentifier = SourceIdentifier(
+                      ontologyType = "Item",
+                      identifierType = SierraSystemNumber,
+                      value = "i12921853"
+                    ),
                     pickup = StacksPickup(
                       location = StacksPickupLocation(
                         id = "sepbb",

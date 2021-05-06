@@ -67,7 +67,7 @@ class SierraService(
     entry: SierraUserHoldsEntryStub
   ): StacksHold = {
 
-    val itemId = SierraItemIdentifier
+    val sourceIdentifier = SierraItemIdentifier
       .createFromSierraId(entry.record)
 
     val pickupLocation = StacksPickupLocation(
@@ -85,7 +85,7 @@ class SierraService(
       label = entry.status.name
     )
 
-    StacksHold(itemId, pickup, status)
+    StacksHold(sourceIdentifier, pickup, status)
   }
 
   def getStacksUserHolds(
