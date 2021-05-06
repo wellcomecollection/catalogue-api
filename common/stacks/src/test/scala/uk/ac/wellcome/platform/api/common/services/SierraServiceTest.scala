@@ -8,6 +8,7 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
+import weco.api.stacks.models.{HoldRejected, StacksUserIdentifier}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 
@@ -52,7 +53,11 @@ class SierraServiceTest
                 userId = "1234567",
                 holds = List(
                   StacksHold(
-                    itemId = SierraItemIdentifier(1292185),
+                    sourceIdentifier = SourceIdentifier(
+                      ontologyType = "Item",
+                      identifierType = SierraSystemNumber,
+                      value = "i12921853"
+                    ),
                     pickup = StacksPickup(
                       location = StacksPickupLocation(
                         id = "sepbb",

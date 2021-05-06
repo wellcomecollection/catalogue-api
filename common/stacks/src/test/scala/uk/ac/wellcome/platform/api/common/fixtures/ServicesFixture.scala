@@ -3,70 +3,32 @@ package uk.ac.wellcome.platform.api.common.fixtures
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import com.github.tomakehurst.wiremock.WireMockServer
+import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.platform.api.common.services.source.AkkaSierraSource
-import uk.ac.wellcome.platform.api.common.services.{
-  CatalogueService,
-  SierraService,
-  StacksService
-}
+import uk.ac.wellcome.platform.api.common.services.SierraService
 
-import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ServicesFixture
-    extends AkkaCatalogueSourceFixture
-    with SierraWireMockFixture {
-
-  def withCatalogueService[R](
-    testWith: TestWith[CatalogueService, R]
-  ): R =
-    withAkkaCatalogueSource { catalogueSource =>
-      testWith(new CatalogueService(catalogueSource))
-    }
-
+trait ServicesFixture extends SierraWireMockFixture with Akka {
   def withSierraService[R](
     testWith: TestWith[(SierraService, WireMockServer), R]
   ): R = {
     withMockSierraServer {
       case (sierraApiUrl, wireMockServer) =>
         withActorSystem { implicit as =>
-          implicit val ec: ExecutionContextExecutor = as.dispatcher
-
-          withMaterializer { _ =>
-            testWith(
-              (
-                new SierraService(
-                  new AkkaSierraSource(
-                    baseUri = Uri(f"$sierraApiUrl/iii/sierra-api"),
-                    credentials = BasicHttpCredentials("username", "password")
-                  )
-                ),
-                wireMockServer
-              )
+          testWith(
+            (
+              new SierraService(
+                new AkkaSierraSource(
+                  baseUri = Uri(f"$sierraApiUrl/iii/sierra-api"),
+                  credentials = BasicHttpCredentials("username", "password")
+                )
+              ),
+              wireMockServer
             )
-          }
+          )
         }
-    }
-  }
-
-  def withStacksService[R](
-    testWith: TestWith[(StacksService, SierraService, WireMockServer), R]
-  ): R = {
-    withCatalogueService { catalogueService =>
-      withSierraService {
-        case (sierraService, sierraWiremockServer) =>
-          withActorSystem { implicit as =>
-            implicit val ec: ExecutionContextExecutor = as.dispatcher
-
-            val stacksService =
-              new StacksService(catalogueService, sierraService)
-
-            testWith(
-              (stacksService, sierraService, sierraWiremockServer)
-            )
-          }
-      }
     }
   }
 }
