@@ -1,10 +1,14 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
+import weco.api.stacks.models.SierraItemNumber
+import weco.catalogue.internal_model.identifiers.{
+  IdentifierType,
+  SourceIdentifier
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -23,24 +27,30 @@ class SierraService(
 
   import SierraSource._
 
+  private def isSierraItemId(sourceIdentifier: SourceIdentifier): Boolean =
+    (sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber) &&
+      (sourceIdentifier.ontologyType == "Item")
+
   def getItemStatus(
-    sierraId: SierraItemIdentifier
-  ): Future[StacksItemStatus] =
+    sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
+    require(isSierraItemId(sourceIdentifier))
+
+    val itemNumber = SierraItemNumber(sourceIdentifier.value)
+
     sierraSource
-      .getSierraItemStub(sierraId)
+      .getSierraItemStub(itemNumber)
       .map(item => StacksItemStatus(item.status.code))
+  }
 
   def placeHold(
     userIdentifier: StacksUserIdentifier,
-    sierraItemIdentifier: SierraItemIdentifier,
-    neededBy: Option[Instant]
-  ): Future[HoldResponse] =
-    sierraSource
-      .postHold(
-        userIdentifier,
-        sierraItemIdentifier,
-        neededBy
-      ) map {
+    sourceIdentifier: SourceIdentifier
+  ): Future[HoldResponse] = {
+    require(isSierraItemId(sourceIdentifier))
+
+    val itemNumber = SierraItemNumber(sourceIdentifier.value)
+
+    sierraSource.postHold(userIdentifier, itemNumber) map {
       // This is an "XCirc/Record not available" error
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
@@ -51,6 +61,7 @@ class SierraService(
 
       case Right(_) => HoldAccepted()
     }
+  }
 
   protected def buildStacksHold(
     entry: SierraUserHoldsEntryStub

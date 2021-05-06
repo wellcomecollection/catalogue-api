@@ -49,14 +49,6 @@ class CatalogueService(
         StacksItemIdentifier(canonicalId, sierraId)
     }
 
-  def getAllStacksItemsFromWork(
-    workId: CanonicalId
-  ): Future[List[StacksItemIdentifier]] =
-    for {
-      workStub <- catalogueSource.getWorkStub(workId)
-      items = getStacksItems(workStub.items)
-    } yield items
-
   def getStacksItem(
     identifier: ItemIdentifier[_]
   ): Future[Option[StacksItemIdentifier]] =
@@ -84,32 +76,6 @@ class CatalogueService(
         case _ =>
           throw new Exception(
             s"Found multiple matching items for $identifier in: $distinctFilteredItems"
-          )
-      }
-
-  def getStacksItemFromItemId(
-    itemId: CanonicalId
-  ): Future[Option[StacksItemIdentifier]] =
-    for {
-      searchStub <- catalogueSource.getSearchStub(itemId)
-
-      items = searchStub.results
-        .map(_.items)
-        .flatMap(getStacksItems)
-
-      // Ensure we are only matching items that match the passed id!
-      filteredItems = items.filter(_.canonicalId == itemId)
-
-      // Items can appear on multiple works in a search result
-      distinctFilteredItems = filteredItems.distinct
-
-    } yield
-      distinctFilteredItems match {
-        case List(item) => Some(item)
-        case Nil        => None
-        case _ =>
-          throw new Exception(
-            s"Found multiple matching items for $itemId in: $distinctFilteredItems"
           )
       }
 }

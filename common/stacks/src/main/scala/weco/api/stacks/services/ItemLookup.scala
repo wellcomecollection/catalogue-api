@@ -1,7 +1,7 @@
 package weco.api.stacks.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import uk.ac.wellcome.models.Implicits._
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
@@ -95,4 +95,12 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
         }
     }
   }
+}
+
+object ItemLookup {
+  def apply(elasticClient: ElasticClient)(
+    implicit ec: ExecutionContext): ItemLookup =
+    new ItemLookup(
+      elasticsearchService = new ElasticsearchService(elasticClient)
+    )
 }

@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,6 +8,8 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -23,15 +24,16 @@ class SierraServiceTest
       it("gets a StacksItemStatus") {
         withSierraService {
           case (sierraService, _) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601017)
+            val identifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              value = "i16010176",
+              ontologyType = "Item"
+            )
 
-            whenReady(
-              sierraService.getItemStatus(sierraItemIdentifier)
-            ) { stacksItemStatus =>
-              stacksItemStatus shouldBe StacksItemStatus(
-                "available",
-                "Available"
-              )
+            val future = sierraService.getItemStatus(identifier)
+
+            whenReady(future) {
+              _ shouldBe StacksItemStatus("available", "Available")
             }
         }
       }
@@ -74,17 +76,17 @@ class SierraServiceTest
       it("requests a hold from the Sierra API") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601017)
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
-            val neededBy = Some(
-              Instant.parse("2020-01-01T00:00:00.00Z")
+            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val sourceIdentifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = "i16010176"
             )
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = stacksUserIdentifier,
-                sierraItemIdentifier = sierraItemIdentifier,
-                neededBy = neededBy
+                userIdentifier = userIdentifier,
+                sourceIdentifier = sourceIdentifier
               )
             ) { _ =>
               wireMockServer.verify(
@@ -98,8 +100,7 @@ class SierraServiceTest
                 |{
                 |  "recordType" : "i",
                 |  "recordNumber" : 1601017,
-                |  "pickupLocation" : "unspecified",
-                |  "neededBy" : "2020-01-01"
+                |  "pickupLocation" : "unspecified"
                 |}
                 |""".stripMargin)
                 )
@@ -111,14 +112,17 @@ class SierraServiceTest
       it("rejects a hold when the Sierra API errors indicating such") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601018)
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
+            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val sourceIdentifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = "i16010188"
+            )
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = stacksUserIdentifier,
-                sierraItemIdentifier = sierraItemIdentifier,
-                neededBy = None
+                userIdentifier = userIdentifier,
+                sourceIdentifier = sourceIdentifier,
               )
             ) { response =>
               wireMockServer.verify(
