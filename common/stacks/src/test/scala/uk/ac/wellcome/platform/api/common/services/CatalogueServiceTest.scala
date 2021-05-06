@@ -17,158 +17,8 @@ class CatalogueServiceTest
     with ScalaFutures
     with Matchers
     with CatalogueStubGenerators {
-
-  describe("getAllStacksItems") {
-    class OneWorkCatalogueSource(work: WorkStub) extends CatalogueSource {
-      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
-        Future.successful(work)
-
-      override def getSearchStub(
-        identifier: Identifier[_]
-      ): Future[SearchStub] =
-        Future.failed(new Throwable("BOOM!"))
-
-      override def getSearchStub(
-        canonicalId: CanonicalId
-      ): Future[SearchStub] =
-        Future.failed(new Throwable("BOOM!"))
-
-    }
-
-    it("finds an item on a work") {
-      val item = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("1234567")))
-      )
-
-      val work = createWorkStubWith(
-        items = List(item)
-      )
-
-      val catalogueSource = new OneWorkCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
-        _ shouldBe List(
-          StacksItemIdentifier(
-            canonicalId = CanonicalId(item.id.get),
-            sierraId = SierraItemIdentifier(1234567)
-          )
-        )
-      }
-    }
-
-    it("finds multiple matching items on a work") {
-      val item1 = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("1234567")))
-      )
-
-      val item2 = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("1111111")))
-      )
-
-      val work = createWorkStubWith(
-        items = List(item1, item2)
-      )
-
-      val catalogueSource = new OneWorkCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
-        _ shouldBe List(
-          StacksItemIdentifier(
-            canonicalId = CanonicalId(item1.id.get),
-            sierraId = SierraItemIdentifier(1234567)
-          ),
-          StacksItemIdentifier(
-            canonicalId = CanonicalId(item2.id.get),
-            sierraId = SierraItemIdentifier(1111111)
-          )
-        )
-      }
-    }
-
-    it("ignores items that don't have a sierra-identifier") {
-      val item = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(
-          List(
-            IdentifiersStub(
-              identifierType =
-                TypeStub(id = "miro-image-number", label = "Miro image number"),
-              value = "A0001234"
-            )
-          )
-        )
-      )
-
-      val work = createWorkStubWith(
-        items = List(item)
-      )
-
-      val catalogueSource = new OneWorkCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId)) {
-        _ shouldBe empty
-      }
-    }
-
-    it("throws an error if an item has multiple sierra-identifier values") {
-      val item = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(
-          List(
-            createSierraIdentifier("1234567"),
-            createSierraIdentifier("1111111")
-          )
-        )
-      )
-
-      val work = createWorkStubWith(
-        items = List(item)
-      )
-
-      val catalogueSource = new OneWorkCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
-        err =>
-          err shouldBe a[Exception]
-          err.getMessage should startWith(
-            "Multiple values for sierra-identifier"
-          )
-      }
-    }
-
-    it("throws an error if it cannot parse the Sierra identifier as a Long") {
-      val item = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("Not a Number")))
-      )
-
-      val work = createWorkStubWith(
-        items = List(item)
-      )
-
-      val catalogueSource = new OneWorkCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
-        err =>
-          err shouldBe a[Exception]
-          err.getMessage shouldBe "Unable to convert Not a Number to Long!"
-      }
-    }
-  }
-
   describe("getStacksItem") {
     class MockCatalogueSource(works: WorkStub*) extends CatalogueSource {
-      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
-        Future.failed(new Throwable("BOOM!"))
-
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
@@ -319,13 +169,9 @@ class CatalogueServiceTest
   }
 
   describe("handling errors from CatalogueSource") {
-    val getException = new Throwable("BOOM!")
     val searchException = new Throwable("BANG!")
 
     class BrokenCatalogueSource extends CatalogueSource {
-      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
-        Future.failed(getException)
-
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
@@ -339,12 +185,6 @@ class CatalogueServiceTest
 
     val catalogueSource = new BrokenCatalogueSource()
     val service = new CatalogueService(catalogueSource)
-
-    it("inside getAllStacksItems") {
-      whenReady(service.getAllStacksItemsFromWork(createCanonicalId).failed) {
-        _ shouldBe getException
-      }
-    }
 
     it("inside getStacksItem") {
       whenReady(service.getStacksItem(createStacksItemIdentifier).failed) {

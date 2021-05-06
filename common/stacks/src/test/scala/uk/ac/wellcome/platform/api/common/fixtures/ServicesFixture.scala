@@ -55,7 +55,7 @@ trait ServicesFixture
   ): R = {
     withCatalogueService { catalogueService =>
       withSierraService {
-        case (sierraService, sierraWireMockSerever) =>
+        case (sierraService, sierraWiremockServer) =>
           withActorSystem { implicit as =>
             implicit val ec: ExecutionContextExecutor = as.dispatcher
 
@@ -63,7 +63,7 @@ trait ServicesFixture
               new StacksService(catalogueService, sierraService)
 
             testWith(
-              (stacksService, sierraWireMockSerever)
+              (stacksService, sierraWiremockServer)
             )
           }
       }

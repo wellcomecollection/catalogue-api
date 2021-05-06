@@ -6,11 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.WorkGenerators
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -20,9 +16,7 @@ class WorkLookupTest
     with EitherValues
     with IndexFixtures
     with WorkGenerators {
-  val lookup = new WorkLookup(
-    elasticsearchService = new ElasticsearchService(elasticClient)
-  )
+  val lookup: WorkLookup = WorkLookup(elasticClient)
 
   it("returns a work with matching ID") {
     withLocalWorksIndex { index =>
