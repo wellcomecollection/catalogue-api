@@ -15,6 +15,6 @@ class WorkLookup(elasticsearchService: ElasticsearchService) {
     *
     */
   def byCanonicalId(id: CanonicalId)(
-    index: Index): Future[Either[ElasticsearchError, Option[Work[Indexed]]]] =
+    index: Index): Future[Either[ElasticsearchError, Work[Indexed]]] =
     elasticsearchService.findById[Work[Indexed]](id)(index)
 }

@@ -47,7 +47,7 @@ class ImagesServiceTest
       }
     }
 
-    it("returns a None if no image can be found") {
+    it("returns a DocumentNotFoundError if no image can be found") {
       withLocalImagesIndex { index =>
         val id = createCanonicalId
         val future = imagesService.findById(id)(index)
@@ -58,7 +58,7 @@ class ImagesServiceTest
       }
     }
 
-    it("returns a Left[ElasticError] if Elasticsearch returns an error") {
+    it("returns an ElasticsearchError if Elasticsearch returns an error") {
       val index = createIndex
       val future = imagesService.findById(createCanonicalId)(index)
 
