@@ -27,7 +27,7 @@ trait ItemsApiFixture
       publicHost = "localhost",
       publicScheme = "https",
       defaultPageSize = 10,
-      publicRootPath = "catalogue",
+      publicRootPath = "/catalogue",
       contextPath = "context.json"
     )
 

@@ -12,7 +12,11 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,
   SierraSystemNumber
 }
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 
 import scala.util.{Failure, Try}
 
@@ -170,7 +174,9 @@ class ItemsApiFeatureTest
 
     it("returns a 404 if the ID is not a valid canonical ID") {
       val id = randomAlphanumeric(length = 10)
-      Try { CanonicalId(id) } shouldBe a[Failure[_]]
+      Try {
+        CanonicalId(id)
+      } shouldBe a[Failure[_]]
 
       withLocalWorksIndex { index =>
         withItemsApi(index) { case (contextUrl, _) =>
@@ -193,6 +199,39 @@ class ItemsApiFeatureTest
             withStringEntity(response.entity) {
               assertJsonStringsAreEqual(_, expectedError)
             }
+          }
+        }
+      }
+    }
+
+    it("follows redirects in the works index") {
+      val item = createIdentifiedItemWith(
+        sourceIdentifier = SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          value = "i16010176",
+          ontologyType = "Item"
+        )
+      )
+
+      val targetWork = indexedWork().items(List(item))
+      val redirectedWork = indexedWork()
+        .redirected(
+          IdState.Identified(
+            canonicalId = targetWork.state.canonicalId,
+            sourceIdentifier = targetWork.state.sourceIdentifier
+          )
+        )
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, targetWork, redirectedWork)
+
+        withItemsApi(index) { _ =>
+          val path = s"/works/${redirectedWork.state.canonicalId}"
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Found
+
+            response.headers.filter { h => h.name() == "Location" }.head.value() shouldBe s"/catalogue/works/${targetWork.state.canonicalId}"
           }
         }
       }
@@ -272,6 +311,7 @@ class ItemsApiFeatureTest
               assertJsonStringsAreEqual(_, expectedError)
             }
           }
+        }
       }
     }
   }
