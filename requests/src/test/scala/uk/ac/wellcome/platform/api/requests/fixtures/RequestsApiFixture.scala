@@ -1,5 +1,8 @@
 package uk.ac.wellcome.platform.api.requests.fixtures
 
+import java.net.URL
+
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.fixtures.TestWith
@@ -24,6 +27,9 @@ trait RequestsApiFixture
     with IndexFixtures {
 
   val metricsName = "RequestsApiFixture"
+
+  override def contextUrl =
+    new URL("https://localhost/catalogue/v2/context.json")
 
   val apiConf =
     ApiConfig(
