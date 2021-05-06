@@ -12,9 +12,6 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class RequestsApiFeatureTest
     extends AnyFunSpec
     with Matchers
@@ -126,7 +123,7 @@ class RequestsApiFeatureTest
              |        "id" : "n5v7b4md",
              |        "locations" : [
              |        ],
-             |        "ontologyType" : "Item"
+             |        "type" : "Item"
              |      },
              |      "pickupDate" : "2019-12-03T04:00:00Z",
              |      "pickupLocation" : {
@@ -156,5 +153,4 @@ class RequestsApiFeatureTest
       }
     }
   }
-  override implicit val ec: ExecutionContext = global
 }

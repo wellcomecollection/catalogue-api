@@ -8,6 +8,8 @@ import weco.api.search.elasticsearch.ElasticsearchError
 import weco.http.FutureDirectives
 import weco.http.models.{ContextResponse, DisplayError}
 
+import java.net.URL
+
 trait CustomDirectives extends FutureDirectives {
   import weco.http.models.ContextResponse._
 
@@ -34,13 +36,13 @@ trait CustomDirectives extends FutureDirectives {
         })
     }
 
-  def contextUri: String =
+  def contextUrl: URL =
     apiConfig match {
       case ApiConfig(scheme, host, rootPath, contextPath, _)
           if rootPath.isEmpty =>
-        s"$scheme://$host/$contextPath"
+        new URL(s"$scheme://$host/$contextPath")
       case ApiConfig(scheme, host, rootPath, contextPath, _) =>
-        s"$scheme://$host$rootPath/$contextPath"
+        new URL(s"$scheme://$host$rootPath/$contextPath")
     }
 
   def elasticError(documentType: String, err: ElasticsearchError): Route =
@@ -51,7 +53,7 @@ trait CustomDirectives extends FutureDirectives {
   private def error(err: DisplayError): Route = {
     val status = err.httpStatus
     complete(
-      status -> ContextResponse(context = contextUri, result = err)
+      status -> ContextResponse(contextUrl = contextUrl, result = err)
     )
   }
 }

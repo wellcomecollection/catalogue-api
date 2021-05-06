@@ -1,7 +1,5 @@
 package uk.ac.wellcome.platform.api.items
 
-import java.net.URL
-
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
@@ -52,8 +50,6 @@ object Main extends WellcomeTypesafeApp {
       override implicit val ec: ExecutionContext = ecMain
       override implicit val stacksWorkService: StacksService = workService
       override implicit val apiConfig: ApiConfig = apiConf
-
-      override def context: String = contextUri
     }
 
     val appName = "ItemsApi"
@@ -65,7 +61,7 @@ object Main extends WellcomeTypesafeApp {
         metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
       ),
       httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
-      contextURL = new URL(router.contextUri),
+      contextUrl = router.contextUrl,
       appName = appName
     )
   }
