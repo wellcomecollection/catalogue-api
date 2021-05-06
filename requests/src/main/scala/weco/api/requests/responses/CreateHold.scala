@@ -39,8 +39,8 @@ trait CreateHold extends CustomDirectives with Logging {
         }
 
       case Right(sourceIdentifier) =>
-        warn(s"Somebody tried to place a hold on $itemId / $sourceIdentifier")
-        invalidRequest("You cannot place a hold on " + itemId)
+        warn(s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier")
+        invalidRequest("You cannot request " + itemId)
 
       case Left(err) => elasticError("Item", err)
     }

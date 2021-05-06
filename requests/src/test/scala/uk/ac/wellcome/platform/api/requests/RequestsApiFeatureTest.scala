@@ -9,8 +9,10 @@ import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
-import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+
+import scala.util.{Failure, Try}
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
@@ -47,7 +49,7 @@ class RequestsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withRequestsApi(index) { wireMockServer =>
+        withRequestsApi(index) { case (_, wireMockServer) =>
           val path = "/users/1234567/item-requests"
 
           val entity = createJsonHttpEntityWith(
@@ -101,7 +103,7 @@ class RequestsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withRequestsApi(index) { wireMockServer =>
+        withRequestsApi(index) { case (_, wireMockServer) =>
           val path = "/users/1234567/item-requests"
 
           val entity = createJsonHttpEntityWith(
@@ -178,6 +180,136 @@ class RequestsApiFeatureTest
 
             withStringEntity(response.entity) {
               assertJsonStringsAreEqual(_, expectedJson)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  describe("placing a hold") {
+    it("returns a 404 if the item ID isn't a canonical ID") {
+      withLocalWorksIndex { index =>
+        withRequestsApi(index) { case (contextUrl, _) =>
+          val path = "/users/1234567/item-requests"
+
+          val itemId = randomAlphanumeric(length = 10)
+          Try { CanonicalId(itemId) } shouldBe a[Failure[_]]
+
+          val entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "$itemId",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
+
+          whenPostRequestReady(path, entity) { response =>
+            response.status shouldBe StatusCodes.NotFound
+
+            val expectedError =
+              s"""
+                 |{
+                 |  "errorType": "http",
+                 |  "httpStatus": 404,
+                 |  "label": "Not Found",
+                 |  "description": "Item not found for identifier $itemId",
+                 |  "type": "Error",
+                 |  "@context": "$contextUrl"
+                 |}""".stripMargin
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
+          }
+        }
+      }
+    }
+
+    it("returns a 404 if there is no item with this ID") {
+      withLocalWorksIndex { index =>
+        withRequestsApi(index) { case (contextUrl, _) =>
+          val path = "/users/1234567/item-requests"
+
+          val itemId = createCanonicalId
+
+          val entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "$itemId",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
+
+          whenPostRequestReady(path, entity) { response =>
+            response.status shouldBe StatusCodes.NotFound
+
+            val expectedError =
+              s"""
+                 |{
+                 |  "errorType": "http",
+                 |  "httpStatus": 404,
+                 |  "label": "Not Found",
+                 |  "description": "Item not found for identifier $itemId",
+                 |  "type": "Error",
+                 |  "@context": "$contextUrl"
+                 |}""".stripMargin
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
+          }
+        }
+      }
+    }
+
+    it("returns a 400 if the item isn't a Sierra item") {
+      val item = createIdentifiedItemWith(
+        sourceIdentifier = SourceIdentifier(
+          identifierType = MiroImageNumber,
+          value = "V0012345",
+          ontologyType = "Item"
+        )
+      )
+
+      val work = indexedWork().items(List(item))
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
+
+        withRequestsApi(index) { case (contextUrl, _) =>
+          val path = "/users/1234567/item-requests"
+
+          val entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "${work.state.canonicalId}",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
+
+          whenPostRequestReady(path, entity) { response =>
+            response.status shouldBe StatusCodes.BadRequest
+
+            val expectedError =
+              s"""
+                 |{
+                 |  "errorType": "http",
+                 |  "httpStatus": 400,
+                 |  "label": "Bad Request",
+                 |  "description": "You cannot request ${item.id.canonicalId}",
+                 |  "type": "Error",
+                 |  "@context": "$contextUrl"
+                 |}""".stripMargin
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
           }
         }

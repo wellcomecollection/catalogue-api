@@ -11,6 +11,7 @@ import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.requests.RequestsApi
 import weco.api.stacks.services.ItemLookup
 
+import java.net.URL
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,7 +28,7 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures with IndexFix
       contextPath = "context.json"
     )
 
-  def withRequestsApi[R](index: Index)(testWith: TestWith[WireMockServer, R]): R =
+  def withRequestsApi[R](index: Index)(testWith: TestWith[(URL, WireMockServer), R]): R =
     withStacksService {
       case (stacksService, sierraServiceTest, server) =>
         val indexTest = index
@@ -43,7 +44,7 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures with IndexFix
         }
 
         withApp(router.routes) { _ =>
-          testWith(server)
+          testWith((router.contextUrl, server))
         }
     }
 }
