@@ -87,10 +87,16 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
               // The .asInstanceOf here will be a no-op at runtime, and is just so
               // the compiler knows this will always be an Item[IdState.Identified]
               //
-              // When I tried, I couldn't pattern match `item: Item[IdState.Identified]`
-              // because the type got erased at compile time.
-              case item: Item[IdState.Identified]
-//              case item @ Item(IdState.Identified(_, _, _), _, _)
+              // You might think you can do something like
+              //
+              //     case item: Item[IdState.Identified] =>
+              //
+              // but trying to do so gets an error at compile time.:
+              //
+              //     non-variable type argument IdState.Identified in type pattern Item[Identified]
+              //     is unchecked since it is eliminated by erasure
+              //
+              case item @ Item(IdState.Identified(_, _, _), _, _)
                 if item.id.allSourceIdentifiers.contains(itemId) =>
                 item.asInstanceOf[Item[IdState.Identified]]
             }

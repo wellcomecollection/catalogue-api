@@ -7,11 +7,9 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class WorkLookup(elasticsearchService: ElasticsearchService)(
-  implicit ec: ExecutionContext
-) {
+class WorkLookup(elasticsearchService: ElasticsearchService) {
   /** Returns the Work that corresponds to this canonical ID.
     *
     */
