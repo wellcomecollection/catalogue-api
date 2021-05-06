@@ -67,15 +67,15 @@ class WorksController(
 
           worksService
             .findById(id)(index)
-            .mapVisible {
-              work: Work.Visible[Indexed] =>
-                Future.successful(workFound(work, includes))
+            .mapVisible { work: Work.Visible[Indexed] =>
+              Future.successful(workFound(work, includes))
             }
         }
       }
     }
 
-  private def workFound(work: Work.Visible[Indexed], includes: WorksIncludes): Route =
+  private def workFound(work: Work.Visible[Indexed],
+                        includes: WorksIncludes): Route =
     complete(
       ContextResponse(
         contextUrl = contextUrl,

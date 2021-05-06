@@ -15,7 +15,10 @@ import weco.http.fixtures.HttpFixtures
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends ServicesFixture with HttpFixtures with IndexFixtures {
+trait ItemsApiFixture
+    extends ServicesFixture
+    with HttpFixtures
+    with IndexFixtures {
 
   val metricsName = "ItemsApiFixture"
 
@@ -28,20 +31,23 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures with IndexFixtur
       contextPath = "context.json"
     )
 
-  def withItemsApi[R](index: Index)(testWith: TestWith[(URL, WireMockServer), R]): R =
-    withSierraService { case (sierraServiceTest, sierraWiremockServer) =>
-      val indexTest = index
+  def withItemsApi[R](index: Index)(
+    testWith: TestWith[(URL, WireMockServer), R]): R =
+    withSierraService {
+      case (sierraServiceTest, sierraWiremockServer) =>
+        val indexTest = index
 
-      val router: ItemsApi = new ItemsApi {
-        override implicit val ec: ExecutionContext = global
-        override implicit val apiConfig: ApiConfig = apiConf
-        override val workLookup: WorkLookup = WorkLookup(elasticClient)(global)
-        override val sierraService: SierraService = sierraServiceTest
-        override val index: Index = indexTest
-      }
+        val router: ItemsApi = new ItemsApi {
+          override implicit val ec: ExecutionContext = global
+          override implicit val apiConfig: ApiConfig = apiConf
+          override val workLookup: WorkLookup =
+            WorkLookup(elasticClient)(global)
+          override val sierraService: SierraService = sierraServiceTest
+          override val index: Index = indexTest
+        }
 
-      withApp(router.routes) { _ =>
-        testWith((router.contextUrl, sierraWiremockServer))
-      }
+        withApp(router.routes) { _ =>
+          testWith((router.contextUrl, sierraWiremockServer))
+        }
     }
 }

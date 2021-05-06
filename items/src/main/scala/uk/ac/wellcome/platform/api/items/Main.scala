@@ -53,7 +53,8 @@ object Main extends WellcomeTypesafeApp {
       override implicit val apiConfig: ApiConfig = apiConf
 
       override val index: Index = ElasticConfig.apply().worksIndex
-      override val sierraService: SierraService = SierraServiceBuilder.build(config)
+      override val sierraService: SierraService =
+        SierraServiceBuilder.build(config)
       override val workLookup: WorkLookup = WorkLookup(elasticClient)
     }
 

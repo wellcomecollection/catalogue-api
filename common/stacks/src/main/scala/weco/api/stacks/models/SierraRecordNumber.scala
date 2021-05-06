@@ -98,7 +98,7 @@ sealed trait TypedSierraRecordNumber extends SierraRecordNumber {
 // classes will force us to supply our special decoder.
 
 class SierraItemNumber(val recordNumber: String)
-  extends TypedSierraRecordNumber {
+    extends TypedSierraRecordNumber {
   val recordType: SierraRecordTypes.Value = SierraRecordTypes.items
 }
 

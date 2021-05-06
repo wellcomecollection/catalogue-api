@@ -11,8 +11,10 @@ import scala.concurrent.{ExecutionContext, Future}
 trait SingleWorkDirectives extends CustomDirectives {
   implicit val ec: ExecutionContext
 
-  implicit class RouteOps(work: Future[Either[ElasticsearchError, Work[WorkState.Indexed]]]) {
-    def mapVisible(f: Work.Visible[WorkState.Indexed] => Future[Route]): Future[Route] =
+  implicit class RouteOps(
+    work: Future[Either[ElasticsearchError, Work[WorkState.Indexed]]]) {
+    def mapVisible(
+      f: Work.Visible[WorkState.Indexed] => Future[Route]): Future[Route] =
       work.map {
         case Right(work: Work.Visible[Indexed]) =>
           withFuture(f(work))

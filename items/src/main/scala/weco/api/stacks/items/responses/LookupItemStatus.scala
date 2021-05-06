@@ -7,7 +7,11 @@ import uk.ac.wellcome.platform.api.common.models.{StacksItem, StacksWork}
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.SingleWorkDirectives
 import weco.api.stacks.services.WorkLookup
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  IdentifierType
+}
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.Future
@@ -18,21 +22,29 @@ trait LookupItemStatus extends SingleWorkDirectives {
   val index: Index
 
   def lookupStatus(workId: CanonicalId): Future[Route] =
-    workLookup.byCanonicalId(workId)(index)
+    workLookup
+      .byCanonicalId(workId)(index)
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
         val items =
           work.data.items
             .collect {
-              case Item(IdState.Identified(canonicalId, sourceIdentifier, _), _, _)
-                if sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber =>
-                  (canonicalId, sourceIdentifier)
+              case Item(
+                  IdState.Identified(canonicalId, sourceIdentifier, _),
+                  _,
+                  _)
+                  if sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber =>
+                (canonicalId, sourceIdentifier)
             }
 
         for {
           stacksItems <- Future.sequence(
-            items.map { case (canonicalId, sourceIdentifier) =>
-              sierraService.getItemStatus(sourceIdentifier)
-                .map { result => StacksItem(canonicalId, sourceIdentifier, result) }
+            items.map {
+              case (canonicalId, sourceIdentifier) =>
+                sierraService
+                  .getItemStatus(sourceIdentifier)
+                  .map { result =>
+                    StacksItem(canonicalId, sourceIdentifier, result)
+                  }
             }
           )
 

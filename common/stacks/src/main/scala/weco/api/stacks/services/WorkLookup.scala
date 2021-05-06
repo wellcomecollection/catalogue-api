@@ -20,7 +20,8 @@ class WorkLookup(elasticsearchService: ElasticsearchService) {
 }
 
 object WorkLookup {
-  def apply(elasticClient: ElasticClient)(implicit ec: ExecutionContext): WorkLookup =
+  def apply(elasticClient: ElasticClient)(
+    implicit ec: ExecutionContext): WorkLookup =
     new WorkLookup(
       elasticsearchService = new ElasticsearchService(elasticClient)
     )
