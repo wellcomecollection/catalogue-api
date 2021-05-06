@@ -17,8 +17,9 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures {
 
   val metricsName = "RequestsApiFixture"
 
-  override def contextUrl = new URL("https://localhost/catalogue/v2/context.json")
-  
+  override def contextUrl =
+    new URL("https://localhost/catalogue/v2/context.json")
+
   val apiConf =
     ApiConfig(
       publicHost = "localhost",
