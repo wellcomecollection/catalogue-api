@@ -4,13 +4,9 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.common.services.{
-  HoldAccepted,
-  HoldRejected,
-  SierraService
-}
+import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.StacksUserIdentifier
+import weco.api.stacks.models.{HoldAccepted, HoldRejected, StacksUserIdentifier}
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber

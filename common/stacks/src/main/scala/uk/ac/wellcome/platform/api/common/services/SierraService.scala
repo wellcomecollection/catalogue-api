@@ -1,28 +1,12 @@
 package uk.ac.wellcome.platform.api.common.services
 
-import java.time.Instant
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
-import weco.api.stacks.models.{
-  SierraItemIdentifier,
-  SierraItemNumber,
-  StacksUserIdentifier
-}
-import weco.catalogue.internal_model.identifiers.{
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.api.stacks.models.{HoldAccepted, HoldRejected, HoldResponse, SierraItemIdentifier, SierraItemNumber, StacksUserIdentifier}
+import weco.catalogue.internal_model.identifiers.{IdentifierType, SourceIdentifier}
 
 import scala.concurrent.{ExecutionContext, Future}
-
-sealed trait HoldResponse {
-  val lastModified: Instant
-}
-case class HoldAccepted(lastModified: Instant = Instant.now())
-    extends HoldResponse
-case class HoldRejected(lastModified: Instant = Instant.now())
-    extends HoldResponse
 
 class SierraService(
   sierraSource: SierraSource
