@@ -6,7 +6,6 @@ import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
 import com.sksamuel.elastic4s.{
   ElasticClient,
-  ElasticError,
   Hit,
   Index,
   Response
@@ -42,7 +41,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     } yield result
 
   def findBySearch[T](request: SearchRequest)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticError, List[T]]] =
+    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, List[T]]] =
     for {
       response <- executeSearchRequest(request)
 
@@ -54,7 +53,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     } yield results
 
   def executeSearchRequest(
-    request: SearchRequest): Future[Either[ElasticError, SearchResponse]] =
+    request: SearchRequest): Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",
       spanType = "request",
@@ -65,11 +64,13 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       val transaction = Tracing.currentTransaction
       withActiveTrace(elasticClient.execute(request))
         .map(_.toEither)
-        .map { responseOrError =>
-          responseOrError.map { res =>
-            transaction.setLabel("elasticTook", res.took)
-            res
-          }
+        .map {
+          case Right(response) =>
+            transaction.setLabel("elasticTook", response.took)
+            Right(response)
+
+          case Left(err) =>
+            Left(ElasticsearchError(err))
         }
     }
 

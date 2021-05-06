@@ -36,7 +36,7 @@ class WorksController(
           worksService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError(err)
+              case Left(err) => elasticError("Image", err)
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(

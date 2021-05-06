@@ -82,7 +82,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           imagesService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError(err)
+              case Left(err) => elasticError("Image", err)
               case Right(resultList) =>
                 extractPublicUri { uri =>
                   complete(
