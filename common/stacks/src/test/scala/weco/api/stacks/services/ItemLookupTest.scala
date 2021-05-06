@@ -8,6 +8,7 @@ import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -133,6 +134,38 @@ class ItemLookupTest
 
         whenReady(future3) {
           _ shouldBe Right(Some(item3.id.canonicalId))
+        }
+      }
+    }
+
+    it("matches on all parts of the item ID") {
+      val sourceIdentifier1 = createSourceIdentifierWith(
+        identifierType = SierraSystemNumber,
+        ontologyType = "Item"
+      )
+      val sourceIdentifier2 = sourceIdentifier1.copy(
+        ontologyType = "Work"
+      )
+      val sourceIdentifier3 = sourceIdentifier1.copy(
+        identifierType = MiroImageNumber
+      )
+
+      val item1 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier1)
+      val item2 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier2)
+      val item3 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier3)
+
+      val workA = indexedWork().items(List(item1, item2))
+      val workB = indexedWork().items(List(item2, item3))
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, workA, workB)
+
+        Seq(item1, item2, item3).foreach { it =>
+          val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
+
+          whenReady(future) {
+            _ shouldBe Right(Some(it.id.canonicalId))
+          }
         }
       }
     }

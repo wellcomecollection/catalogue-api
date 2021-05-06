@@ -64,7 +64,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
               termQuery("data.items.id.sourceIdentifier.value", sourceIdentifier.value),
             )
         )
-        .size(1)
+        .size(10)
 
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
