@@ -34,10 +34,10 @@ object ElasticsearchErrorHandler extends Logging {
           description = s"$documentType not found for identifier $id"
         )
 
-      case IndexNotFoundError(e) =>
-        notFound(s"There is no index ${e.index}", e)
+      case e: IndexNotFoundError =>
+        notFound(s"There is no index ${e.index}", e.elasticError)
 
-      case SearchPhaseExecutionError(e) =>
+      case e: SearchPhaseExecutionError =>
         // This may occur if the user requests an overly large page of results.
         // We return this as a 400 error to the user.
         resultSizePattern.findFirstMatchIn(e.reason) match {
@@ -47,10 +47,10 @@ object ElasticsearchErrorHandler extends Logging {
               s"Only the first $size works are available in the API. " +
                 "If you want more works, you can download a snapshot of the complete catalogue: " +
                 "https://developers.wellcomecollection.org/datasets",
-              e
+              e.elasticError
             )
           case _ =>
-            serverError(s"Unknown error in search phase execution: ${e.reason}", e)
+            serverError(s"Unknown error in search phase execution: ${e.reason}", e.elasticError)
         }
 
       // Anything else should bubble up as a 500, as it's at least somewhat
