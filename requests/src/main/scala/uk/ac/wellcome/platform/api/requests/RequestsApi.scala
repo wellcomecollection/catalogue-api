@@ -2,8 +2,6 @@ package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
-import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import io.circe.Printer
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.common.services.{
@@ -12,22 +10,15 @@ import uk.ac.wellcome.platform.api.common.services.{
   StacksService
 }
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
+import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-trait RequestsApi extends FailFastCirceSupport {
-
-  import akka.http.scaladsl.server.Directives._
-  import io.circe.generic.auto._
-
+trait RequestsApi extends CustomDirectives {
   implicit val ec: ExecutionContext
   implicit val stacksWorkService: StacksService
-
-  // Omit optional fields in response to clients
-  implicit val printer: Printer =
-    Printer.noSpaces.copy(dropNullValues = true)
 
   val routes: Route = concat(
     pathPrefix("users" / Segment / "item-requests") { userId: String =>
