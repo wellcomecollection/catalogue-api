@@ -9,6 +9,5 @@
     <appender-ref ref="STDOUT" />
   </root>
 
-  <logger name="com.sksamuel" level="INFO"/>
   <logger name="org.eclipse.jetty" level="INFO"/>
 </configuration>

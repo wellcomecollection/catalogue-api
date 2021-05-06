@@ -50,10 +50,15 @@ class ImagesService(val elasticsearchService: ElasticsearchService,
     val searchRequest = builder(index, image.id, nVisuallySimilarImages)
 
     elasticsearchService
-      .findBySearch(searchRequest)(decoder)
-      .map {
-        case Left(_)       => Nil
-        case Right(images) => images
+      .executeSearchRequest(searchRequest)
+      .map { result =>
+        result
+          .map { response =>
+            response.hits.hits
+              .map(hit => deserialize[Image[ImageState.Indexed]](hit)(decoder))
+              .toList
+          }
+          .getOrElse(Nil)
       }
   }
 }
