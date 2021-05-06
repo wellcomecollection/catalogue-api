@@ -50,7 +50,7 @@ object QueryConfig {
               response.hits.hits.headOption
                 .flatMap {
                   _.to[Image[ImageState.Indexed]].state.inferredData.flatMap {
-                    case InferredData(_, _, _, _, binSizes, binMinima)
+                    case InferredData(_, _, _, _, binSizes, binMinima, _)
                         if binSizes.size == 3 &&
                           binSizes.forall(_.size == 3) &&
                           binMinima.size == 3 =>
