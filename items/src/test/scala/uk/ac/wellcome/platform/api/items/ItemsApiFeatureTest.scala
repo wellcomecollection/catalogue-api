@@ -7,9 +7,6 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class ItemsApiFeatureTest
     extends AnyFunSpec
     with Matchers
@@ -99,7 +96,7 @@ class ItemsApiFeatureTest
     // This is a test case we need, but we shouldn't enable it until we
     // have the WorksService working -- so we can detect the absence of a work.
     ignore("returns a 404 if it cannot find a work in the catalogue API") {
-      withItemsApi { _ =>
+      withItemsApi { case (contextUrl, _) =>
         val path = "/works/aaaaaaaa"
 
         val expectedError =
@@ -110,7 +107,7 @@ class ItemsApiFeatureTest
              |  "label": "Not Found",
              |  "description": "Work not found for identifier aaaaaaaa",
              |  "type": "Error",
-             |  "@context": "https://api.wellcomecollection.org/catalogue/v2/context.json"
+             |  "@context": "$contextUrl"
              |}""".stripMargin
 
         whenGetRequestReady(path) { response =>
@@ -123,5 +120,4 @@ class ItemsApiFeatureTest
       }
     }
   }
-  override implicit val ec: ExecutionContext = global
 }

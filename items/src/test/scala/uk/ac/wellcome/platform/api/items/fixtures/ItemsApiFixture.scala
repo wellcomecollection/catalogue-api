@@ -17,10 +17,6 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
 
   val metricsName = "ItemsApiFixture"
 
-  val contextURLTest = new URL(
-    "http://api.wellcomecollection.org/stacks/v1/context.json"
-  )
-
   val apiConf =
     ApiConfig(
       publicHost = "localhost",
@@ -30,7 +26,7 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
       contextPath = "context.json"
     )
 
-  def withItemsApi[R](testWith: TestWith[WireMockServer, R]): R =
+  def withItemsApi[R](testWith: TestWith[(URL, WireMockServer), R]): R =
     withStacksService {
       case (stacksService, server) =>
         val router: ItemsApi = new ItemsApi {
@@ -38,12 +34,10 @@ trait ItemsApiFixture extends ServicesFixture with HttpFixtures {
           override implicit val stacksWorkService: StacksService =
             stacksService
           override implicit val apiConfig: ApiConfig = apiConf
-
-          override def context: String = contextUri
         }
 
         withApp(router.routes) { _ =>
-          testWith(server)
+          testWith((router.contextUrl, server))
         }
 
     }
