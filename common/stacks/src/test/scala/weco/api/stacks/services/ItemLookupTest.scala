@@ -10,11 +10,7 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,
   SierraSystemNumber
 }
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -25,9 +21,7 @@ class ItemLookupTest
     with IndexFixtures
     with ItemsGenerators
     with WorkGenerators {
-  val lookup = new ItemLookup(
-    elasticsearchService = new ElasticsearchService(elasticClient)
-  )
+  val lookup: ItemLookup = ItemLookup(elasticClient)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {

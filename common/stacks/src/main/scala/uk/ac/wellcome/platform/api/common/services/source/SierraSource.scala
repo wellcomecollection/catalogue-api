@@ -7,16 +7,7 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
-import uk.ac.wellcome.platform.api.common.models.{
-  SierraItemIdentifier,
-  StacksUserIdentifier
-}
-import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
-  SierraErrorCode,
-  SierraHoldRequestPostBody,
-  SierraItemStub,
-  SierraUserHoldsStub
-}
+import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.http.{
   AkkaClientGet,
   AkkaClientPost,
@@ -36,8 +27,7 @@ trait SierraSource {
   ): Future[SierraUserHoldsStub]
   def postHold(
     userIdentifier: StacksUserIdentifier,
-    sierraItemIdentifier: SierraItemIdentifier,
-    neededBy: Option[Instant]
+    itemNumber: SierraItemNumber
   ): Future[PostHoldResult]
 }
 
@@ -81,8 +71,7 @@ object SierraSource {
   case class SierraHoldRequestPostBody(
     recordType: String,
     recordNumber: Long,
-    pickupLocation: String,
-    neededBy: Option[Instant]
+    pickupLocation: String
   )
 }
 
@@ -152,8 +141,7 @@ class AkkaSierraSource(
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/patrons
   def postHold(
     userIdentifier: StacksUserIdentifier,
-    sierraItemIdentifier: SierraItemIdentifier,
-    neededBy: Option[Instant]
+    itemNumber: SierraItemNumber
   ): Future[PostHoldResult] =
     for {
       token <- getToken(credentials)
@@ -162,11 +150,10 @@ class AkkaSierraSource(
         body = Some(
           SierraHoldRequestPostBody(
             recordType = "i",
-            recordNumber = sierraItemIdentifier.value,
+            recordNumber = itemNumber.withoutCheckDigit.toLong,
             // This field is required non-empty by the Sierra API - but has no effect
             // TODO: Is it really?
-            pickupLocation = "unspecified",
-            neededBy = neededBy
+            pickupLocation = "unspecified"
           )
         ),
         headers = List(Authorization(token))

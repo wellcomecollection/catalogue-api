@@ -2,7 +2,7 @@ package uk.ac.wellcome.platform.api.items
 
 import akka.http.scaladsl.server.Route
 import uk.ac.wellcome.Tracing
-import weco.api.stacks.items.responses.LookupItemStatus
+import weco.api.items.responses.LookupItemStatus
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.util.{Success, Try}

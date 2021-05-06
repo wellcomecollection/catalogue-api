@@ -25,13 +25,6 @@ class CatalogueServiceTest
         Future.successful(
           SearchStub(totalResults = works.size, results = works.toList)
         )
-
-      override def getSearchStub(
-        canonicalId: CanonicalId
-      ): Future[SearchStub] =
-        Future.successful(
-          SearchStub(totalResults = works.size, results = works.toList)
-        )
     }
 
     it("returns an empty list if there are no matching works") {
@@ -40,55 +33,6 @@ class CatalogueServiceTest
 
       whenReady(service.getStacksItem(createStacksItemIdentifier)) {
         _ shouldBe None
-      }
-    }
-
-    it("gets an item from a work") {
-      val item = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("1234567")))
-      )
-
-      val work = createWorkStubWith(items = List(item))
-
-      val catalogueSource = new MockCatalogueSource(work)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getStacksItemFromItemId(CanonicalId(item.id.get))) {
-        _ shouldBe Some(
-          StacksItemIdentifier(
-            canonicalId = CanonicalId(item.id.get),
-            sierraId = SierraItemIdentifier(1234567)
-          )
-        )
-      }
-    }
-
-    it("filters results by catalogue item identifier") {
-      val item1 = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("1111111")))
-      )
-
-      val work1 = createWorkStubWith(items = List(item1))
-
-      val item2 = ItemStub(
-        id = Some(createStacksItemIdentifier.value),
-        identifiers = Some(List(createSierraIdentifier("2222222")))
-      )
-
-      val work2 = createWorkStubWith(items = List(item2))
-
-      val catalogueSource = new MockCatalogueSource(work1, work2)
-      val service = new CatalogueService(catalogueSource)
-
-      whenReady(service.getStacksItemFromItemId(CanonicalId(item1.id.get))) {
-        _ shouldBe Some(
-          StacksItemIdentifier(
-            canonicalId = CanonicalId(item1.id.get),
-            sierraId = SierraItemIdentifier(1111111)
-          )
-        )
       }
     }
 
@@ -174,11 +118,6 @@ class CatalogueServiceTest
     class BrokenCatalogueSource extends CatalogueSource {
       override def getSearchStub(
         identifier: Identifier[_]
-      ): Future[SearchStub] =
-        Future.failed(searchException)
-
-      override def getSearchStub(
-        canonicalId: CanonicalId
       ): Future[SearchStub] =
         Future.failed(searchException)
     }

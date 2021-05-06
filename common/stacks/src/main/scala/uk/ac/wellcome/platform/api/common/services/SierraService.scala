@@ -27,10 +27,15 @@ class SierraService(
 
   import SierraSource._
 
-  def getItemStatus(sierraId: SourceIdentifier): Future[StacksItemStatus] = {
-    require(sierraId.identifierType == IdentifierType.SierraSystemNumber)
+  private def isSierraItemId(sourceIdentifier: SourceIdentifier): Boolean =
+    (sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber) &&
+      (sourceIdentifier.ontologyType == "Item")
 
-    val itemNumber = SierraItemNumber(sierraId.value)
+  def getItemStatus(
+    sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
+    require(isSierraItemId(sourceIdentifier))
+
+    val itemNumber = SierraItemNumber(sourceIdentifier.value)
 
     sierraSource
       .getSierraItemStub(itemNumber)
@@ -39,15 +44,13 @@ class SierraService(
 
   def placeHold(
     userIdentifier: StacksUserIdentifier,
-    sierraItemIdentifier: SierraItemIdentifier,
-    neededBy: Option[Instant]
-  ): Future[HoldResponse] =
-    sierraSource
-      .postHold(
-        userIdentifier,
-        sierraItemIdentifier,
-        neededBy
-      ) map {
+    sourceIdentifier: SourceIdentifier
+  ): Future[HoldResponse] = {
+    require(isSierraItemId(sourceIdentifier))
+
+    val itemNumber = SierraItemNumber(sourceIdentifier.value)
+
+    sierraSource.postHold(userIdentifier, itemNumber) map {
       // This is an "XCirc/Record not available" error
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
@@ -58,6 +61,7 @@ class SierraService(
 
       case Right(_) => HoldAccepted()
     }
+  }
 
   protected def buildStacksHold(
     entry: SierraUserHoldsEntryStub

@@ -9,8 +9,8 @@ STACK_ROOT 	= .
 
 PROJECT_ID = catalogue_api
 
-SBT_APPS = search items
-SBT_NO_DOCKER_APPS = requests
+SBT_APPS = search items requests
+SBT_NO_DOCKER_APPS =
 
 SBT_DOCKER_LIBRARIES    = stacks
 SBT_NO_DOCKER_LIBRARIES = display  search_common

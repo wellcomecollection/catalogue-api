@@ -51,7 +51,7 @@ trait ServicesFixture
   }
 
   def withStacksService[R](
-    testWith: TestWith[(StacksService, WireMockServer), R]
+    testWith: TestWith[(StacksService, SierraService, WireMockServer), R]
   ): R = {
     withCatalogueService { catalogueService =>
       withSierraService {
@@ -63,7 +63,7 @@ trait ServicesFixture
               new StacksService(catalogueService, sierraService)
 
             testWith(
-              (stacksService, sierraWiremockServer)
+              (stacksService, sierraService, sierraWiremockServer)
             )
           }
       }
