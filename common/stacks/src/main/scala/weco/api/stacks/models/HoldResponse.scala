@@ -6,6 +6,6 @@ sealed trait HoldResponse {
   val lastModified: Instant
 }
 case class HoldAccepted(lastModified: Instant = Instant.now())
-  extends HoldResponse
+    extends HoldResponse
 case class HoldRejected(lastModified: Instant = Instant.now())
-  extends HoldResponse
+    extends HoldResponse

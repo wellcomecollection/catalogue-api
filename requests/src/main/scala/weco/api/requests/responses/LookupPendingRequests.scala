@@ -23,20 +23,20 @@ trait LookupPendingRequests extends CustomDirectives {
       for {
         userHolds <- sierraService.getStacksUserHolds(userIdentifier)
 
-        holdsWithCatalogueIds <-
-          Future.sequence(
-            userHolds.holds.map { hold =>
-              itemLookup.bySourceIdentifier(hold.sourceIdentifier)(index)
-                .map {
-                  case Left(elasticError) =>
-                    warn(s"Unable to look up $hold in Elasticsearch")
-                    hold
+        holdsWithCatalogueIds <- Future.sequence(
+          userHolds.holds.map { hold =>
+            itemLookup
+              .bySourceIdentifier(hold.sourceIdentifier)(index)
+              .map {
+                case Left(elasticError) =>
+                  warn(s"Unable to look up $hold in Elasticsearch")
+                  hold
 
-                  case Right(canonicalId) =>
-                    hold.copy(canonicalId = Some(canonicalId))
-                }
-            }
-          )
+                case Right(canonicalId) =>
+                  hold.copy(canonicalId = Some(canonicalId))
+              }
+          }
+        )
 
         updatedHolds = userHolds.copy(holds = holdsWithCatalogueIds)
       } yield updatedHolds

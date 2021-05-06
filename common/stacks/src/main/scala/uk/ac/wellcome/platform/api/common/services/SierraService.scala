@@ -3,8 +3,18 @@ package uk.ac.wellcome.platform.api.common.services
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
-import weco.api.stacks.models.{HoldAccepted, HoldRejected, HoldResponse, SierraItemIdentifier, SierraItemNumber, StacksUserIdentifier}
-import weco.catalogue.internal_model.identifiers.{IdentifierType, SourceIdentifier}
+import weco.api.stacks.models.{
+  HoldAccepted,
+  HoldRejected,
+  HoldResponse,
+  SierraItemIdentifier,
+  SierraItemNumber,
+  StacksUserIdentifier
+}
+import weco.catalogue.internal_model.identifiers.{
+  IdentifierType,
+  SourceIdentifier
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 
