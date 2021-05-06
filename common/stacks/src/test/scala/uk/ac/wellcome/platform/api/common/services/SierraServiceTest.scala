@@ -8,6 +8,7 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
+import weco.api.stacks.models.StacksUserIdentifier
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 

@@ -7,13 +7,12 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
-import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.http.{
   AkkaClientGet,
   AkkaClientPost,
   AkkaClientTokenExchange
 }
-import weco.api.stacks.models.SierraItemNumber
+import weco.api.stacks.models.{SierraItemNumber, StacksUserIdentifier}
 
 import scala.concurrent.Future
 

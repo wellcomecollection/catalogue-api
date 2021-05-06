@@ -1,9 +1,9 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.server.Route
-import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
+import weco.api.stacks.models.StacksUserIdentifier
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.util.{Success, Try}

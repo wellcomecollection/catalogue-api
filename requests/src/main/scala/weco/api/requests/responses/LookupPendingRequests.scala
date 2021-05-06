@@ -2,10 +2,10 @@ package weco.api.requests.responses
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import uk.ac.wellcome.platform.api.common.models.StacksUserIdentifier
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
+import weco.api.stacks.models.StacksUserIdentifier
 import weco.api.stacks.services.ItemLookup
 
 import scala.concurrent.{ExecutionContext, Future}

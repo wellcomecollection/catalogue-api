@@ -4,7 +4,11 @@ import java.time.Instant
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
-import weco.api.stacks.models.SierraItemNumber
+import weco.api.stacks.models.{
+  SierraItemIdentifier,
+  SierraItemNumber,
+  StacksUserIdentifier
+}
 import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
