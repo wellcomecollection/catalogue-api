@@ -53,7 +53,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
-  def executeSearchRequest(
+  private def executeSearchRequest(
     request: SearchRequest): Future[Either[ElasticError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",
