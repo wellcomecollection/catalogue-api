@@ -4,7 +4,13 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
-import com.sksamuel.elastic4s.{ElasticClient, ElasticError, Hit, Index, Response}
+import com.sksamuel.elastic4s.{
+  ElasticClient,
+  ElasticError,
+  Hit,
+  Index,
+  Response
+}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
@@ -18,8 +24,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 ) extends Logging
     with Tracing {
 
-  def findById[T](id: CanonicalId)(index: Index)(implicit decoder: Decoder[T])
-    : Future[Either[ElasticError, Option[T]]] =
+  def findById[T](id: CanonicalId)(index: Index)(
+    implicit decoder: Decoder[T]): Future[Either[ElasticError, Option[T]]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
         get(index, id.underlying)
@@ -35,8 +41,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield result
 
-  def findBySearch[T](request: SearchRequest)(implicit decoder: Decoder[T])
-    : Future[Either[ElasticError, List[T]]] =
+  def findBySearch[T](request: SearchRequest)(
+    implicit decoder: Decoder[T]): Future[Either[ElasticError, List[T]]] =
     for {
       response <- executeSearchRequest(request)
 

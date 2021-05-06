@@ -12,7 +12,7 @@ import weco.api.search.elasticsearch.ElasticsearchService
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class WorkLookupTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with EitherValues
     with IndexFixtures

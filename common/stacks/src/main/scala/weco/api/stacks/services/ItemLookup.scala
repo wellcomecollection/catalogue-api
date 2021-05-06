@@ -26,7 +26,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     *
     */
   def byCanonicalId(itemId: CanonicalId)(index: Index)
-  : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+    : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -47,7 +47,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
               // The .asInstanceOf here will be a no-op at runtime, and is just so
               // the compiler knows this will always be an Item[IdState.Identified]
               case item @ Item(IdState.Identified(id, _, _), _, _)
-                if id == itemId =>
+                  if id == itemId =>
                 item.asInstanceOf[Item[IdState.Identified]]
             }
         )
@@ -62,20 +62,20 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     *
     */
   def bySourceIdentifier(itemId: SourceIdentifier)(index: Index)
-  : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
+    : Future[Either[ElasticError, Option[Item[IdState.Identified]]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
-    search(index)
-      .query(
-        boolQuery
-          .must(termQuery(field = "type", value = "Visible"))
-          .should(
-            termQuery("data.items.id.sourceIdentifier.value", itemId.value),
-            termQuery("data.items.id.otherIdentifiers.value", itemId.value),
-          )
-      )
-      .size(1)
+      search(index)
+        .query(
+          boolQuery
+            .must(termQuery(field = "type", value = "Visible"))
+            .should(
+              termQuery("data.items.id.sourceIdentifier.value", itemId.value),
+              termQuery("data.items.id.otherIdentifiers.value", itemId.value),
+            )
+        )
+        .size(1)
 
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
@@ -97,7 +97,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
               //     is unchecked since it is eliminated by erasure
               //
               case item @ Item(IdState.Identified(_, _, _), _, _)
-                if item.id.allSourceIdentifiers.contains(itemId) =>
+                  if item.id.allSourceIdentifiers.contains(itemId) =>
                 item.asInstanceOf[Item[IdState.Identified]]
             }
         )
