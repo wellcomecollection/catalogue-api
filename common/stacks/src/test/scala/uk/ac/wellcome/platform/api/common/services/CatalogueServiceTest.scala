@@ -19,9 +19,6 @@ class CatalogueServiceTest
     with CatalogueStubGenerators {
   describe("getStacksItem") {
     class MockCatalogueSource(works: WorkStub*) extends CatalogueSource {
-      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
-        Future.failed(new Throwable("BOOM!"))
-
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
@@ -172,13 +169,9 @@ class CatalogueServiceTest
   }
 
   describe("handling errors from CatalogueSource") {
-    val getException = new Throwable("BOOM!")
     val searchException = new Throwable("BANG!")
 
     class BrokenCatalogueSource extends CatalogueSource {
-      override def getWorkStub(canonicalId: CanonicalId): Future[WorkStub] =
-        Future.failed(getException)
-
       override def getSearchStub(
         identifier: Identifier[_]
       ): Future[SearchStub] =
