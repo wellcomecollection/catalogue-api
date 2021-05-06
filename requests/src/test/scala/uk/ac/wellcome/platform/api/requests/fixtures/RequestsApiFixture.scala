@@ -2,6 +2,7 @@ package uk.ac.wellcome.platform.api.requests.fixtures
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.sksamuel.elastic4s.Index
+import org.scalatest.Suite
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
@@ -18,7 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait RequestsApiFixture
     extends ServicesFixture
     with HttpFixtures
-    with IndexFixtures {
+    with IndexFixtures { this: Suite =>
 
   val metricsName = "RequestsApiFixture"
 
