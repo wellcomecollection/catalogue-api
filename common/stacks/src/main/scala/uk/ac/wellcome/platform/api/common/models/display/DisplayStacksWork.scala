@@ -9,7 +9,7 @@ object DisplayStacksWork {
       id = stacksWork.canonicalId.toString(),
       items = stacksWork.items.map { stacksItem =>
         DisplayItem(
-          id = Some(stacksItem.id.value),
+          id = Some(stacksItem.id.underlying),
           status = Some(
             DisplayItemStatus(
               id = stacksItem.status.id,

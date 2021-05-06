@@ -20,7 +20,7 @@ class SierraRecordNumberTest extends AnyFunSpec with Matchers {
     }
   }
 
-  it("can create a Sierra item number from an ID with a check digit") {
+  it("can create a Sierra item number from an ID with a prefix and check digit") {
     val s = SierraItemNumber("i12345678")
     s.withoutCheckDigit shouldBe "1234567"
   }

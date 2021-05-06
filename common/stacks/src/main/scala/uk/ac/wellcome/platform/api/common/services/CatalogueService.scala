@@ -49,14 +49,6 @@ class CatalogueService(
         StacksItemIdentifier(canonicalId, sierraId)
     }
 
-  def getAllStacksItemsFromWork(
-    workId: CanonicalId
-  ): Future[List[StacksItemIdentifier]] =
-    for {
-      workStub <- catalogueSource.getWorkStub(workId)
-      items = getStacksItems(workStub.items)
-    } yield items
-
   def getStacksItem(
     identifier: ItemIdentifier[_]
   ): Future[Option[StacksItemIdentifier]] =

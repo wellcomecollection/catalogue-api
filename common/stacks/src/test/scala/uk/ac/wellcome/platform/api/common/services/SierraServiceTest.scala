@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -9,6 +8,8 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -23,15 +24,16 @@ class SierraServiceTest
       it("gets a StacksItemStatus") {
         withSierraService {
           case (sierraService, _) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601017)
+            val identifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              value = "i16010176",
+              ontologyType = "Item"
+            )
 
-            whenReady(
-              sierraService.getItemStatus(sierraItemIdentifier)
-            ) { stacksItemStatus =>
-              stacksItemStatus shouldBe StacksItemStatus(
-                "available",
-                "Available"
-              )
+            val future = sierraService.getItemStatus(identifier)
+
+            whenReady(future) {
+              _ shouldBe StacksItemStatus("available", "Available")
             }
         }
       }

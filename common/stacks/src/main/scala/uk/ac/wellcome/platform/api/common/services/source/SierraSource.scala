@@ -2,7 +2,6 @@ package uk.ac.wellcome.platform.api.common.services.source
 
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
@@ -23,6 +22,7 @@ import uk.ac.wellcome.platform.api.http.{
   AkkaClientPost,
   AkkaClientTokenExchange
 }
+import weco.api.stacks.models.SierraItemNumber
 
 import scala.concurrent.Future
 
@@ -30,7 +30,7 @@ trait SierraSource {
 
   import SierraSource._
 
-  def getSierraItemStub(sierraId: SierraItemIdentifier): Future[SierraItemStub]
+  def getSierraItemStub(id: SierraItemNumber): Future[SierraItemStub]
   def getSierraUserHoldsStub(
     userId: StacksUserIdentifier
   ): Future[SierraUserHoldsStub]
@@ -109,13 +109,11 @@ class AkkaSierraSource(
   override val tokenPath = Path("v5/token")
 
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/items
-  def getSierraItemStub(
-    sierraId: SierraItemIdentifier
-  ): Future[SierraItemStub] =
+  def getSierraItemStub(itemNumber: SierraItemNumber): Future[SierraItemStub] =
     for {
       token <- getToken(credentials)
       item <- get[SierraItemStub](
-        path = Path(s"v5/items/${sierraId.value}"),
+        path = Path(s"v5/items/${itemNumber.withoutCheckDigit}"),
         headers = List(Authorization(token))
       )
     } yield

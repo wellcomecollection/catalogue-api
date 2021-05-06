@@ -98,32 +98,6 @@ class StacksServiceTest
       }
     }
 
-    describe("getStacksWork") {
-      it("gets a StacksWork") {
-        withStacksService {
-          case (stacksService, _) =>
-            val workId = CanonicalId("cnkv77md")
-
-            whenReady(
-              stacksService.getStacksWork(workId)
-            ) { stacksWork =>
-              stacksWork shouldBe StacksWork(
-                canonicalId = workId,
-                items = List(
-                  StacksItem(
-                    id = StacksItemIdentifier(
-                      canonicalId = CanonicalId("ys3ern6x"),
-                      sierraId = SierraItemIdentifier(1601017)
-                    ),
-                    status = StacksItemStatus("available", "Available")
-                  )
-                )
-              )
-            }
-        }
-      }
-    }
-
     describe("getStacksUserHoldsWithStacksItemIdentifier") {
       it("gets a StacksUserHolds[StacksItemIdentifier]") {
         withStacksService {

@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import cats.instances.future._
 import cats.instances.list._
 import cats.syntax.traverse._
@@ -40,22 +39,6 @@ class StacksService(
       }
 
     } yield response
-
-  def getStacksWork(
-    workId: CanonicalId
-  ): Future[StacksWork] =
-    for {
-      stacksItemIds <- catalogueService.getAllStacksItemsFromWork(workId)
-
-      itemStatuses <- stacksItemIds
-        .map(_.sierraId)
-        .traverse(sierraService.getItemStatus)
-
-      stacksItemsWithStatuses = (stacksItemIds zip itemStatuses) map {
-        case (itemId, status) => StacksItem(itemId, status)
-      }
-
-    } yield StacksWork(workId, stacksItemsWithStatuses)
 
   def getStacksUserHolds(
     userId: StacksUserIdentifier

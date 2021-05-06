@@ -1,10 +1,14 @@
 package uk.ac.wellcome.platform.api.common.services
 
 import java.time.Instant
-
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource
+import weco.api.stacks.models.SierraItemNumber
+import weco.catalogue.internal_model.identifiers.{
+  IdentifierType,
+  SourceIdentifier
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -23,12 +27,15 @@ class SierraService(
 
   import SierraSource._
 
-  def getItemStatus(
-    sierraId: SierraItemIdentifier
-  ): Future[StacksItemStatus] =
+  def getItemStatus(sierraId: SourceIdentifier): Future[StacksItemStatus] = {
+    require(sierraId.identifierType == IdentifierType.SierraSystemNumber)
+
+    val itemNumber = SierraItemNumber(sierraId.value)
+
     sierraSource
-      .getSierraItemStub(sierraId)
+      .getSierraItemStub(itemNumber)
       .map(item => StacksItemStatus(item.status.code))
+  }
 
   def placeHold(
     userIdentifier: StacksUserIdentifier,
