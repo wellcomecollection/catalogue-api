@@ -41,25 +41,27 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
         )
         .size(1)
 
-    elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
-      case Left(err) => Left(err)
-      case Right(works) =>
-        val item =
-          works
-            .flatMap { _.data.items }
-            .collectFirst {
-              // The .asInstanceOf here will be a no-op at runtime, and is just so
-              // the compiler knows this will always be an Item[IdState.Identified]
-              case item @ Item(IdState.Identified(id, _, _), _, _)
-                  if id == itemId =>
-                item.asInstanceOf[Item[IdState.Identified]]
+    elasticsearchService
+      .findBySearch[Work[Indexed]](searchRequest)
+      .map {
+        case Left(err) => Left(err)
+        case Right(works) =>
+          val item =
+            works
+              .flatMap { _.data.items }
+              .collectFirst {
+                // The .asInstanceOf here will be a no-op at runtime, and is just so
+                // the compiler knows this will always be an Item[IdState.Identified]
+                case item @ Item(IdState.Identified(id, _, _), _, _)
+                    if id == itemId =>
+                  item.asInstanceOf[Item[IdState.Identified]]
             }
 
         item match {
           case Some(it) => Right(it)
-          case None => Left(DocumentNotFoundError(itemId))
+          case None     => Left(DocumentNotFoundError(itemId))
         }
-    }\
+    } \
   }
 
   /** Returns an Item that corresponds to this source identifier.
@@ -70,7 +72,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
     *
     */
   def bySourceIdentifier(itemId: SourceIdentifier)(index: Index)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]]= {
+    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
@@ -111,7 +113,7 @@ class ItemLookup(elasticsearchService: ElasticsearchService)(
 
         item match {
           case Some(it) => Right(it)
-          case None => Left(DocumentNotFoundError(itemId))
+          case None     => Left(DocumentNotFoundError(itemId))
         }
     }
   }

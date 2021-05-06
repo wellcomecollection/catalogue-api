@@ -21,7 +21,8 @@ case class IndexNotFoundError(e: ElasticError) extends ElasticsearchError {
   def index: String = e.index.get
 }
 
-case class SearchPhaseExecutionError(e: ElasticError) extends ElasticsearchError {
+case class SearchPhaseExecutionError(e: ElasticError)
+    extends ElasticsearchError {
   def reason: String = e.rootCause.mkString("; ")
 }
 

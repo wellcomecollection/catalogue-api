@@ -4,12 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
-import com.sksamuel.elastic4s.{
-  ElasticClient,
-  Hit,
-  Index,
-  Response
-}
+import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import uk.ac.wellcome.Tracing
@@ -52,8 +47,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
-  def executeSearchRequest(
-    request: SearchRequest): Future[Either[ElasticsearchError, SearchResponse]] =
+  def executeSearchRequest(request: SearchRequest)
+    : Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",
       spanType = "request",

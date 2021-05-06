@@ -26,7 +26,8 @@ object ElasticsearchErrorHandler extends Logging {
   private val resultSizePattern =
     """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
-  def buildDisplayError(documentType: String, e: ElasticsearchError): DisplayError =
+  def buildDisplayError(documentType: String,
+                        e: ElasticsearchError): DisplayError =
     e match {
       case DocumentNotFoundError(id) =>
         DisplayError(
@@ -50,7 +51,9 @@ object ElasticsearchErrorHandler extends Logging {
               e
             )
           case _ =>
-            serverError(s"Unknown error in search phase execution: ${e.reason}", e)
+            serverError(
+              s"Unknown error in search phase execution: ${e.reason}",
+              e)
         }
 
       // Anything else should bubble up as a 500, as it's at least somewhat
