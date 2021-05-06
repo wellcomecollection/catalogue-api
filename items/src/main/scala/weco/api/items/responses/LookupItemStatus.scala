@@ -1,4 +1,4 @@
-package weco.api.stacks.items.responses
+package weco.api.items.responses
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index

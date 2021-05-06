@@ -12,7 +12,6 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.{
 }
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
-  ElasticsearchService,
   IndexNotFoundError
 }
 
@@ -25,9 +24,7 @@ class ItemLookupTest
     with IndexFixtures
     with ItemsGenerators
     with WorkGenerators {
-  val lookup = new ItemLookup(
-    elasticsearchService = new ElasticsearchService(elasticClient)
-  )
+  val lookup: ItemLookup = ItemLookup(elasticClient)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {

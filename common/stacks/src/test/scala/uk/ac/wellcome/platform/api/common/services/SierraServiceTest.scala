@@ -76,17 +76,17 @@ class SierraServiceTest
       it("requests a hold from the Sierra API") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601017)
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
-            val neededBy = Some(
-              Instant.parse("2020-01-01T00:00:00.00Z")
+            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val sourceIdentifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = "i16010176"
             )
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = stacksUserIdentifier,
-                sierraItemIdentifier = sierraItemIdentifier,
-                neededBy = neededBy
+                userIdentifier = userIdentifier,
+                sourceIdentifier = sourceIdentifier
               )
             ) { _ =>
               wireMockServer.verify(
@@ -100,8 +100,7 @@ class SierraServiceTest
                 |{
                 |  "recordType" : "i",
                 |  "recordNumber" : 1601017,
-                |  "pickupLocation" : "unspecified",
-                |  "neededBy" : "2020-01-01"
+                |  "pickupLocation" : "unspecified"
                 |}
                 |""".stripMargin)
                 )
@@ -113,14 +112,17 @@ class SierraServiceTest
       it("rejects a hold when the Sierra API errors indicating such") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val sierraItemIdentifier = SierraItemIdentifier(1601018)
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
+            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val sourceIdentifier = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = "i16010188"
+            )
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = stacksUserIdentifier,
-                sierraItemIdentifier = sierraItemIdentifier,
-                neededBy = None
+                userIdentifier = userIdentifier,
+                sourceIdentifier = sourceIdentifier,
               )
             ) { response =>
               wireMockServer.verify(
