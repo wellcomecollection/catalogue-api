@@ -1,7 +1,8 @@
 package uk.ac.wellcome.platform.api.requests.fixtures
 
-import com.github.tomakehurst.wiremock.WireMockServer
+import java.net.URL
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import weco.http.fixtures.HttpFixtures
@@ -16,6 +17,8 @@ trait RequestsApiFixture extends ServicesFixture with HttpFixtures {
 
   val metricsName = "RequestsApiFixture"
 
+  override def contextUrl = new URL("https://localhost/catalogue/v2/context.json")
+  
   val apiConf =
     ApiConfig(
       publicHost = "localhost",
