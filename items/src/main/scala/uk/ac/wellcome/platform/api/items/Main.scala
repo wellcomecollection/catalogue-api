@@ -14,7 +14,6 @@ import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import weco.http.monitoring.HttpMetrics
-import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
 import weco.api.stacks.services.WorkLookup
 import weco.http.WellcomeHttpApp
 
@@ -27,23 +26,7 @@ object Main extends WellcomeTypesafeApp {
 
     Tracing.init(config)
 
-    val apiConf =
-      ApiConfig(
-        publicHost = config
-          .getStringOption("api.host")
-          .getOrElse("localhost"),
-        publicScheme = config
-          .getStringOption("api.scheme")
-          .getOrElse("https"),
-        defaultPageSize = config
-          .getIntOption("api.pageSize")
-          .getOrElse(10),
-        publicRootPath =
-          s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
-        contextPath = config
-          .getStringOption("api.context.suffix")
-          .getOrElse("context.json")
-      )
+    val apiConf = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
 
