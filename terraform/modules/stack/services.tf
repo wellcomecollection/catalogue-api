@@ -67,7 +67,7 @@ module "items_api" {
     apm_service_name = "items-api"
     apm_environment  = var.environment_name
 
-    log_level         = "DEBUG"
+    log_level         = "INFO"
     metrics_namespace = "items-api"
   }
   secrets = {
