@@ -6,8 +6,17 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import uk.ac.wellcome.api.display.models.{SingleImageIncludes, WorksIncludes}
 import uk.ac.wellcome.platform.api.search.fixtures.ReflectionHelpers
-import uk.ac.wellcome.platform.api.search.models.{DisplayWorkAggregations, SearchQueryType, WorkAggregations}
-import uk.ac.wellcome.platform.api.search.rest.{MultipleImagesParams, MultipleWorksParams, SingleImageParams, SingleWorkParams}
+import uk.ac.wellcome.platform.api.search.models.{
+  DisplayWorkAggregations,
+  SearchQueryType,
+  WorkAggregations
+}
+import uk.ac.wellcome.platform.api.search.rest.{
+  MultipleImagesParams,
+  MultipleWorksParams,
+  SingleImageParams,
+  SingleWorkParams
+}
 import uk.ac.wellcome.platform.api.search.rest._
 import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
 import weco.catalogue.internal_model.locations.{AccessStatus, License}
@@ -364,7 +373,9 @@ class ApiSwaggerTest
       // require an internal_model change.  I'll leave this test here for the
       // next person who works on AccessStatus, but I'm not going to fix it now.
       ignore("items.locations.accessConditions.status") {
-        val actualValues = getParameterEnumValues(multipleWorksEndpoint, name = "items.locations.accessConditions.status")
+        val actualValues = getParameterEnumValues(
+          multipleWorksEndpoint,
+          name = "items.locations.accessConditions.status")
         val expectedValues = AccessStatus.values.map { _.id }
 
         actualValues should contain theSameElementsAs expectedValues
