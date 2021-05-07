@@ -12,7 +12,6 @@ import uk.ac.wellcome.platform.api.common.services.config.builders.SierraService
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
-import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._
 import weco.api.stacks.services.ItemLookup
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
