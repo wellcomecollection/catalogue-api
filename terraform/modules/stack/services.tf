@@ -76,6 +76,12 @@ module "items_api" {
 
     apm_server_url = "catalogue/api/apm_server_url"
     apm_secret     = "catalogue/api/apm_secret"
+
+    es_host        = "elasticsearch/catalogue/private_host"
+    es_port        = "catalogue/api/es_port"
+    es_protocol    = "catalogue/api/es_protocol"
+    es_username    = "catalogue/api/es_username"
+    es_password    = "catalogue/api/es_password"
   }
 
   subnets                = local.routable_private_subnets
