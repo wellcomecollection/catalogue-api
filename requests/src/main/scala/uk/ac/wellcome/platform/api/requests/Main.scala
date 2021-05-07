@@ -24,21 +24,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val asMain: ActorSystem =
       AkkaBuilder.buildActorSystem()
 
-    val apiConf =
-      ApiConfig(
-        publicHost = config
-          .getStringOption("api.host")
-          .getOrElse("localhost"),
-        publicScheme = config
-          .getStringOption("api.scheme")
-          .getOrElse("https"),
-        defaultPageSize = 10,
-        publicRootPath =
-          s"${config.getStringOption("api.apiName").getOrElse("catalogue")}",
-        contextPath = config
-          .getStringOption("api.context.suffix")
-          .getOrElse("context.json")
-      )
+    val apiConf = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
 

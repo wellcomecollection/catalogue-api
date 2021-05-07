@@ -42,7 +42,7 @@ trait CustomDirectives extends FutureDirectives {
           if rootPath.isEmpty =>
         new URL(s"$scheme://$host/$contextPath")
       case ApiConfig(scheme, host, rootPath, contextPath, _) =>
-        new URL(s"$scheme://$host/$rootPath/$contextPath")
+        new URL(s"$scheme://$host$rootPath/$contextPath")
     }
 
   def elasticError(documentType: String, err: ElasticsearchError): Route =
