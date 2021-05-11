@@ -59,7 +59,7 @@ You can do some of these in Elasticsearch; I prefer using snapshots because I ca
 
 *   How many instances do we have of each digcode?
 
-    ```
+    ```python
     import collections
 
     from utils import get_works
