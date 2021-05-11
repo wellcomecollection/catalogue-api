@@ -5,12 +5,16 @@ steps:
           role: "arn:aws:iam::130871440101:role/experience-ci"
       - docker-compose#v3.5.0:
           run: smoke_test_catalogue_api_stage
-          command: [ "yarn", "run", "smoke_test_catalogue_api_stage" ]
+          command: [ "yarn", "run", "smokeTestCatalogueApiStage" ]
           env:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
 
-  - label: "E2E Tests: wellcomecollection.org (prod)"
-    trigger: "experience-e2e-prod"
+  - label: "E2E Tests: wellcomecollection.org (stage)"
+    trigger: "experience-e2e-stage"
+    build:
+      env:
+        - PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
+        - USE_STAGE_APIS=true

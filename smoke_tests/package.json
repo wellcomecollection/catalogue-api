@@ -7,7 +7,7 @@
     "client-oauth2": "^4.3.3"
   },
   "scripts": {
-    "smoke_test_catalogue_api_stage": "artillery run -e stage catalogueApi.yaml",
-    "smoke_test_catalogue_api_prod": "artillery run -e stage catalogueApi.yaml"
+    "smokeTestCatalogueApiStage": "artillery run -e stage catalogueApi.yaml",
+    "smokeTestCatalogueApiProd": "artillery run -e prod catalogueApi.yaml"
   }
 }
