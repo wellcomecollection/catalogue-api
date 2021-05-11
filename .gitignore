@@ -289,6 +289,12 @@ tags
 .bsp
 # vs code
 .vscode
+
+# NPM / Yarn
+yarn-error.log*
+npm-debug.log
+node_modules/
+
 # End of https://www.gitignore.io/api/osx,vim,java,linux,scala,python,textmate,intellij
 drain_ecs_container_instance/src/boto3/
 drain_ecs_container_instance/src/botocore/

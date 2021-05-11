@@ -37,7 +37,7 @@ steps:
               "--description", $BUILDKITE_BUILD_URL,
               "--confirmation-wait-for", 3600]
   - wait
-  - label: "Integration pipeline"
-    trigger: "integration"
+  - label: smoke tests (stage)
+    trigger: "catalogue-api-smoke-stage"
     async: true
 
