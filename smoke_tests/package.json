@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "artillery": "1.6",
+    "artillery-plugin-expect": "^1.3.0",
+    "artillery-plugin-metrics-by-endpoint": "^0.1.1",
+    "aws-sdk": "^2.903.0",
+    "client-oauth2": "^4.3.3"
+  },
+  "scripts": {
+    "smoke_test_catalogue_api_stage": "artillery run -e stage catalogueApi.yaml",
+    "smoke_test_catalogue_api_prod": "artillery run -e stage catalogueApi.yaml"
+  }
+}

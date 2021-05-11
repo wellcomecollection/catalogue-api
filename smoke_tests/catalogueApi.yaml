@@ -1,0 +1,43 @@
+config:
+  target: https://api-stage.wellcomecollection.org/catalogue/v2
+  phases:
+    - duration: 10
+      arrivalRate: 2
+  environments:
+    prod:
+      target: https://api.wellcomecollection.org/catalogue/v2
+      phases:
+        - duration: 10
+          arrivalRate: 2
+    stage:
+      target: https://api-stage.wellcomecollection.org/catalogue/v2
+      phases:
+        - duration: 10
+          arrivalRate: 2
+  ensure:
+    p95: 700
+    maxErrorRate: 0
+  processor: "./processorFunctions.js"
+  plugins:
+    expect: { }
+    metrics-by-endpoint: { }
+scenarios:
+  - name: "/works"
+    flow:
+      - get:
+          url: "/works"
+  - name: "/images"
+    flow:
+      - get:
+          url: "/images"
+  - name: "/works/awa6c6gm"
+    flow:
+      - get:
+          url: "/works/awa6c6gm"
+  - name: "/works/awa6c6gm/items"
+    flow:
+      - get:
+          url: "/works/awa6c6gm/items"
+          beforeRequest: addApiKey
+          expect:
+            statusCode: 200
