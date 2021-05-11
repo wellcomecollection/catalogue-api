@@ -18,3 +18,8 @@ steps:
       env:
         - PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
         - USE_STAGE_APIS=true
+  - wait
+  -
+  - label: deploy prod
+    branches: "main"
+    trigger: "catalogue-api-deploy-prod"

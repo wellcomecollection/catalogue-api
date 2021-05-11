@@ -1,0 +1,40 @@
+steps:
+  - block: ":rocket: deploy to prod"
+    prompt: "Have you checked staging?"
+
+  - label: release to prod
+    branches: "main"
+    plugins:
+      - docker#v3.5.0:
+          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.6
+          workdir: /repo
+          mount-ssh-agent: true
+          command: [
+              "--project-id", "catalogue_api",
+              "--confirm",
+              "release-deploy",
+              "--from-label", "latest",
+              "--environment-id", "prod",
+              "--description", $BUILDKITE_BUILD_URL,
+              "--confirmation-wait-for", 3600 ]
+
+  - wait
+
+  - label: "Smoke Tests: Catalogue API (prod)"
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::130871440101:role/experience-ci"
+      - docker-compose#v3.5.0:
+          run: smoke_test_catalogue_api_stage
+          command: [ "yarn", "run", "smokeTestCatalogueApiProd" ]
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION=eu-west-1
+
+  - label: "E2E Tests: wellcomecollection.org (prod)"
+    trigger: "experience-e2e-prod"
+    build:
+      env:
+        - PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
