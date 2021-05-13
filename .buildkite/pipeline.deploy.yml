@@ -13,7 +13,7 @@ steps:
               "--project-id", "catalogue_api",
               "--confirm",
               "release-deploy",
-              "--from-label", "latest",
+              "--from-label", "ref.$BUILDKITE_COMMIT",
               "--environment-id", "prod",
               "--description", $BUILDKITE_BUILD_URL,
               "--confirmation-wait-for", 3600 ]
@@ -21,6 +21,7 @@ steps:
   - wait
 
   - label: "Smoke Tests: Catalogue API (prod)"
+    #branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::130871440101:role/experience-ci"
@@ -33,8 +34,9 @@ steps:
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
 
-  - label: "E2E Tests: wellcomecollection.org (prod)"
-    trigger: "experience-e2e-prod"
+  - label: "E2E Tests: PROD Front-end / PROD Catalogue API"
+    #branches: "main"
+    trigger: "experience-e2e-catalogue-api"
     build:
       env:
         - PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
