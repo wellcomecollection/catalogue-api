@@ -6,16 +6,30 @@ resource "aws_api_gateway_rest_api" "catalogue" {
   }
 }
 
+// This is quite tricky, context for the way it's configured can be found here:
+// https://github.com/hashicorp/terraform-provider-aws/issues/11344#issuecomment-765138213
+// If you're seeing issues with changes not appearing (or even disappearing), then
+// manually deploying resources via the AWS Console can often help.
 resource "aws_api_gateway_deployment" "default" {
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
 
   triggers = {
-    // This sometimes causes a deploy to occur before resources have been updated
-    // This is mentioned in the docs but it's unclear to me how to resolve it;
-    // since we don't expect the gateway config to change often it's been left as-is
-    // with the proviso that sometimes a manual deploy from the console is necessary
-    // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/apigatewayv2_deployment#redeployment-triggers
-    redeployment = join("", [filesha1("${path.module}/api_gateway.tf"), filesha1("${path.module}/static_responses.tf")])
+    // IMPORTANT: New resources need to be added here manually (see above)
+    redeployment = sha1(jsonencode(concat(
+      [
+        aws_api_gateway_resource.v2.id,
+        aws_api_gateway_gateway_response.no_resource.id,
+        aws_api_gateway_gateway_response.not_found_404.id,
+      ],
+      module.works_route.all_ids,
+      module.images_route.all_ids,
+      module.single_image_route.all_ids,
+      module.single_work_route.all_ids,
+      module.items_route.all_ids,
+      module.default_route.all_ids,
+      module.v1_root_gone.all_ids,
+      module.v1_gone.all_ids
+    )))
   }
 
   lifecycle {
