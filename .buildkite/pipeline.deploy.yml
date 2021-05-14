@@ -39,4 +39,4 @@ steps:
     trigger: "experience-e2e-catalogue-api"
     build:
       env:
-        - PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
+        PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
