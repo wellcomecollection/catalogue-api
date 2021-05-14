@@ -18,8 +18,8 @@ steps:
     trigger: "experience-e2e-catalogue-api"
     build:
       env:
-        PLAYWRIGHT_BASE_URL=https://wellcomecollection.org
-        USE_STAGE_APIS=true
+        PLAYWRIGHT_BASE_URL: https://wellcomecollection.org
+        USE_STAGE_APIS: true
 
   - wait
 
