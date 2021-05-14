@@ -1,6 +1,6 @@
 steps:
   - block: ":rocket: deploy to prod"
-    prompt: "Have you checked staging?"
+    prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging?"
 
   - label: release to prod
     branches: "main"
@@ -21,7 +21,7 @@ steps:
   - wait
 
   - label: "Smoke Tests: Catalogue API (prod)"
-    #branches: "main"
+    branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::130871440101:role/experience-ci"
@@ -35,7 +35,7 @@ steps:
             - AWS_REGION=eu-west-1
 
   - label: "E2E Tests: PROD Front-end / PROD Catalogue API"
-    #branches: "main"
+    branches: "main"
     trigger: "experience-e2e-catalogue-api"
     build:
       env:

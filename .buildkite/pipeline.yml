@@ -38,7 +38,7 @@ steps:
             "--confirmation-wait-for", 3600]
   - wait
   - label: smoke tests (stage)
-    #branches: "main"
+    branches: "main"
     trigger: "catalogue-api-smoke-stage"
     build:
       message: "${BUILDKITE_MESSAGE}"

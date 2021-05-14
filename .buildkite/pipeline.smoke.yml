@@ -14,7 +14,7 @@ steps:
             - AWS_REGION=eu-west-1
 
   - label: "E2E Tests: PROD Front-end / STAGE Catalogue API"
-    #branches: "main"
+    branches: "main"
     trigger: "experience-e2e-catalogue-api"
     build:
       env:
@@ -24,7 +24,7 @@ steps:
   - wait
 
   - label: deploy prod
-    #branches: "main"
+    branches: "main"
     trigger: "catalogue-api-deploy-prod"
     build:
       message: "${BUILDKITE_MESSAGE}"
