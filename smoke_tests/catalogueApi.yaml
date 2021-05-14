@@ -15,7 +15,7 @@ config:
         - duration: 10
           arrivalRate: 2
   ensure:
-    p95: 700
+    p95: 1000
     maxErrorRate: 0
   processor: "./processorFunctions.js"
   plugins:
