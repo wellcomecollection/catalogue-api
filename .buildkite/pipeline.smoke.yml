@@ -1,16 +1,36 @@
 steps:
   - label: "Smoke Tests: Catalogue API (stage)"
+    branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::130871440101:role/experience-ci"
       - docker-compose#v3.5.0:
           run: smoke_test_catalogue_api_stage
-          command: [ "yarn", "run", "smoke_test_catalogue_api_stage" ]
+          command: [ "yarn", "run", "smokeTestCatalogueApiStage" ]
           env:
             - AWS_ACCESS_KEY_ID
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
 
-  - label: "E2E Tests: wellcomecollection.org (prod)"
-    trigger: "experience-e2e-prod"
+  - label: "E2E Tests: PROD Front-end / STAGE Catalogue API"
+    branches: "main"
+    trigger: "experience-e2e-catalogue-api"
+    build:
+      env:
+        PLAYWRIGHT_BASE_URL: https://wellcomecollection.org
+        USE_STAGE_APIS: true
+
+  - wait
+
+  - label: deploy prod
+    branches: "main"
+    trigger: "catalogue-api-deploy-prod"
+    build:
+      message: "${BUILDKITE_MESSAGE}"
+      commit: "${BUILDKITE_COMMIT}"
+      branch: "${BUILDKITE_BRANCH}"
+      env:
+        BUILDKITE_PULL_REQUEST: "${BUILDKITE_PULL_REQUEST}"
+        BUILDKITE_PULL_REQUEST_BASE_BRANCH: "${BUILDKITE_PULL_REQUEST_BASE_BRANCH}"
+        BUILDKITE_PULL_REQUEST_REPO: "${BUILDKITE_PULL_REQUEST_REPO}"
