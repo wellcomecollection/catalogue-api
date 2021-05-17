@@ -132,7 +132,7 @@ object DisplayWork {
       id = work.state.canonicalId.underlying,
       title = work.data.title,
       alternativeTitles = work.data.alternativeTitles,
-      referenceNumber = work.data.collectionPath.flatMap(_.label),
+      referenceNumber = work.data.referenceNumber.map { _.underlying },
       description = work.data.description,
       physicalDescription = work.data.physicalDescription,
       lettering = work.data.lettering,
