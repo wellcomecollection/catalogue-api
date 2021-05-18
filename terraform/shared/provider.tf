@@ -17,6 +17,16 @@ provider "aws" {
 }
 
 provider "aws" {
+  alias = "identity"
+
+  region = var.aws_region
+
+  assume_role {
+    role_arn = "arn:aws:iam::770700576653:role/identity-developer"
+  }
+}
+
+provider "aws" {
   alias = "dns"
 
   region = var.aws_region
