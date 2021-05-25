@@ -6,7 +6,6 @@ import datetime
 import difflib
 import json
 import os
-import pprint
 import tempfile
 import urllib.parse
 
@@ -17,7 +16,6 @@ from tabulate import tabulate
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 import api_stats
-
 
 PROD_URL = "api.wellcomecollection.org"
 STAGING_URL = "api-stage.wellcomecollection.org"
@@ -38,6 +36,7 @@ class ApiDiffer:
         Finds environment-dependent URLs (eg for @context and pagination) and makes
         them take a default form
         """
+
         # From https://stackoverflow.com/a/3233356
         def _normalise(data, remaining):
             for key, val in remaining.items():
@@ -63,6 +62,7 @@ class ApiDiffer:
         """
         Fetches a URL from the prod/staging API, and returns a (status, HTML diff).
         """
+
         (prod_status, prod_json) = self.call_api(PROD_URL)
         (stage_status, stage_json) = self.call_api(STAGING_URL)
         prod_json = ApiDiffer.normalise_absolute_urls(prod_json)
@@ -101,6 +101,7 @@ class ApiDiffer:
         response = httpx.get(url, params=self.params)
         return (response.status_code, response.json())
 
+
 def _display_in_console(stats, diffs):
     time_now = datetime.datetime.now().strftime("%A %-d %B %Y @ %H:%M:%S")
     click.echo()
@@ -132,6 +133,7 @@ def _display_in_console(stats, diffs):
             click.echo(click.style(f"✖ {display_diff_line}", fg="red"))
 
     click.echo()
+
 
 @click.command()
 @click.option(
