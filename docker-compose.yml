@@ -4,3 +4,7 @@ services:
     image: smoke_test_catalogue_api_stage
     build:
       context: ./smoke_tests
+  diff_tool:
+    image: diff_tool
+    build:
+      context: ./diff_tool
