@@ -42,8 +42,7 @@ steps:
   - wait
 
   - label: trigger prod deploy
-    #TODO: Remove before merge
-    #branches: "main"
+    branches: "main"
     trigger: "catalogue-api-deploy-prod"
     build:
       message: "${BUILDKITE_MESSAGE}"

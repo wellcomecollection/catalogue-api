@@ -24,8 +24,7 @@ steps:
   - wait
 
   - label: trigger stage deploy
-    #TODO: Remove before merge
-    #branches: "main"
+    branches: "main"
     trigger: "catalogue-api-deploy-stage"
     build:
       message: "${BUILDKITE_MESSAGE}"
