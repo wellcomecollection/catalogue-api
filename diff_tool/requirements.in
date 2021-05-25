@@ -1,6 +1,7 @@
 boto3
 click
 elasticsearch
+tabulate
 httpx
 humanize
 jinja2

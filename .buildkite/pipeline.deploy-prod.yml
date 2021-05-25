@@ -1,6 +1,22 @@
 steps:
+  - label: "Diff tool: Compare stage & prod"
+    #TODO: Remove before merge
+    #branches: "main"
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::130871440101:role/experience-ci"
+      - docker-compose#v3.5.0:
+          run: diff_tool
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION=eu-west-1
+
+  - wait
+
   - block: ":rocket: Deploy to prod?"
-    prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging?"
+    prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
 
   - label: "Deploy (prod)"
     branches: "main"
