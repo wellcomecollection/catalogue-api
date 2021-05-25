@@ -16,7 +16,7 @@ def get_session_with_role(role_arn, region_name="eu-west-1"):
         aws_access_key_id=credentials["AccessKeyId"],
         aws_secret_access_key=credentials["SecretAccessKey"],
         aws_session_token=credentials["SessionToken"],
-        region_name=region_name
+        region_name=region_name,
     )
 
 
