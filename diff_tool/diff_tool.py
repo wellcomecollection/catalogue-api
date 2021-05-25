@@ -101,37 +101,43 @@ class ApiDiffer:
         response = httpx.get(url, params=self.params)
         return (response.status_code, response.json())
 
+
 def _display_in_console(stats, diffs):
     time_now = datetime.datetime.now().strftime("%A %-d %B %Y @ %H:%M:%S")
     click.echo()
-    click.echo(click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True))
+    click.echo(
+        click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True)
+    )
     click.echo()
     click.echo(click.style("Index statistics", underline=True))
     click.echo()
-    click.echo(tabulate(
-        [
-            ["Production"] + list(stats['prod']['work_types'].values()),
-            ["Staging"] + list(stats['staging']['work_types'].values())
-        ],
-        headers=stats['prod']['work_types'].keys()
-    ))
+    click.echo(
+        tabulate(
+            [
+                ["Production"] + list(stats["prod"]["work_types"].values()),
+                ["Staging"] + list(stats["staging"]["work_types"].values()),
+            ],
+            headers=stats["prod"]["work_types"].keys(),
+        )
+    )
 
     click.echo()
     click.echo(click.style("Index tests", underline=True))
     click.echo()
 
     for diff_line in diffs:
-        if 'comment' in diff_line['route']:
-            display_diff_line = diff_line['route']['comment']
+        if "comment" in diff_line["route"]:
+            display_diff_line = diff_line["route"]["comment"]
         else:
-            display_diff_line = diff_line['display_url']
+            display_diff_line = diff_line["display_url"]
 
-        if diff_line['status'] == 'match':
+        if diff_line["status"] == "match":
             click.echo(click.style(f"✓ {display_diff_line}", fg="green"))
         else:
             click.echo(click.style(f"✖ {display_diff_line}", fg="red"))
 
     click.echo()
+
 
 @click.command()
 @click.option(
@@ -139,7 +145,7 @@ def _display_in_console(stats, diffs):
     default="routes.json",
     help="What routes file to use (default=routes.json)",
 )
-@click.option('--console', is_flag=True, help="Print results in console")
+@click.option("--console", is_flag=True, help="Print results in console")
 def main(routes_file, console):
     session = api_stats.get_session_with_role(
         role_arn="arn:aws:iam::760097843905:role/platform-developer"
