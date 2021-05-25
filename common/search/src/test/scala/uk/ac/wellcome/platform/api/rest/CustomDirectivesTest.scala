@@ -31,28 +31,11 @@ class CustomDirectivesTest
         extractPublicUri { uri =>
           complete(uri.toString())
         }
-      },
-      pathPrefix("catalogue") {
-        pathPrefix("v2") {
-          path("test") {
-            extractPublicUri { uri =>
-              complete(uri.toString())
-            }
-          }
-        }
       }
     )
 
-    it("returns a URI with the configured public host") {
+    it("returns a URI with the configured public host and path") {
       Get("/test") ~> testRoute ~> check {
-        responseAs[String] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
-      }
-    }
-
-    it(
-      "returns a URI with the configured public root path, if the request URI doesn't already contain it"
-    ) {
-      Get("/catalogue/v2/test") ~> testRoute ~> check {
         responseAs[String] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
       }
     }

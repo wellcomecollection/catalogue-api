@@ -12,7 +12,7 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
   // This is the path relative to which requests are made on the host,
   // not necessarily the expected public path! When it is empty, requests
   // are made to the root of the host API.
-  val rootPath: String = "/catalogue/v2"
+  val rootPath: String = ""
   val contextUrl: String = s"$publicRootUri/context.json"
 
   def emptyJsonResult: String =

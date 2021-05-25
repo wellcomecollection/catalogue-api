@@ -26,14 +26,9 @@ trait CustomDirectives extends FutureDirectives {
         .withHost(apiConfig.publicHost)
         // akka-http uses 0 to indicate no explicit port in the URI
         .withPort(0)
-        .withPath(uri.path match {
-          // This is a temporary branch to conditionally rewrite the public path
-          // only while we are serving from both `/` and `/catalogue/v2` - we will
-          // always prepend the public root path once we're serving only from `/`
-          case path if path.startsWith(Uri.Path("/catalogue")) => path
-          case nonPrefixedPath =>
-            Uri.Path(apiConfig.publicRootPath) ++ nonPrefixedPath
-        })
+        .withPath(
+          Uri.Path(apiConfig.publicRootPath) ++ uri.path
+        )
     }
 
   def contextUrl: URL =
