@@ -2,7 +2,7 @@ import boto3
 import httpx
 
 
-def get_session_with_role(role_arn):
+def get_session_with_role(role_arn, region_name="eu-west-1"):
     """
     Returns a boto3.Session that uses the given role ARN.
     """
@@ -16,6 +16,7 @@ def get_session_with_role(role_arn):
         aws_access_key_id=credentials["AccessKeyId"],
         aws_secret_access_key=credentials["SecretAccessKey"],
         aws_session_token=credentials["SessionToken"],
+        region_name=region_name
     )
 
 
