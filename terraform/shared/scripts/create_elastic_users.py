@@ -9,8 +9,8 @@ import secrets
 
 import boto3
 import click
-from elasticsearch import Elasticsearch
 
+from elasticsearch import Elasticsearch
 
 WORK_INDEX_PATTERN = "works-{index}*"
 IMAGE_INDEX_PATTERN = "images-{index}*"
@@ -21,7 +21,7 @@ ROLES = {
             {
                 "names": [WORK_INDEX_PATTERN, IMAGE_INDEX_PATTERN],
                 "privileges": ["read", "view_index_metadata"]
-             }
+            }
         ]
     },
     "catalogue_manage_ccr": {
@@ -40,6 +40,7 @@ SERVICES = {
     "diff_tool": ["catalogue_read"],
     "replication_manager": ["catalogue_read", "catalogue_manage_ccr"]
 }
+
 
 @functools.lru_cache()
 def get_aws_client(resource, *, role_arn):
