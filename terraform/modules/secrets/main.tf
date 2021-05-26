@@ -1,7 +1,7 @@
 resource "aws_secretsmanager_secret" "secret" {
-  for_each = var.key_value_map
+  for_each    = var.key_value_map
   description = var.description
-  tags = var.tags
+  tags        = var.tags
 
   name = each.key
 }
