@@ -4,8 +4,8 @@ data "terraform_remote_state" "catalogue_infra_critical" {
 
   config = {
     role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
-    bucket = "wellcomecollection-platform-infra"
-    key    = "terraform/catalogue/infrastructure/critical.tfstate"
-    region = "eu-west-1"
+    bucket   = "wellcomecollection-platform-infra"
+    key      = "terraform/catalogue/infrastructure/critical.tfstate"
+    region   = "eu-west-1"
   }
 }
