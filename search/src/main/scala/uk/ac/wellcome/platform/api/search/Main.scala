@@ -24,6 +24,9 @@ object Main extends WellcomeTypesafeApp {
       AkkaBuilder.buildExecutionContext()
 
     Tracing.init(config)
+
+
+    
     val elasticClient = ElasticBuilder.buildElasticClient(config)
 
     val elasticConfig = ElasticConfig()
