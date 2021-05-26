@@ -108,3 +108,26 @@ resource "aws_secretsmanager_secret" "service-replication_manager-password" {
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 }
+
+# Create users
+
+resource "null_resource" "elasticsearch_users" {
+  triggers = {
+    pipeline_storage_elastic_id = ec_deployment.catalogue_api.elasticsearch[0].resource_id
+  }
+
+  depends_on = [
+    ec_deployment.catalogue_api,
+    module.catalogue_api_secrets,
+    aws_secretsmanager_secret.service-catalogue_api-username,
+    aws_secretsmanager_secret.service-catalogue_api-password,
+    aws_secretsmanager_secret.service-diff_tool-username,
+    aws_secretsmanager_secret.service-diff_tool-password,
+    aws_secretsmanager_secret.service-replication_manager-username,
+    aws_secretsmanager_secret.service-replication_manager-password,
+  ]
+
+  provisioner "local-exec" {
+    command = "python3 scripts/create_elastic_users.py"
+  }
+}
