@@ -1,5 +1,6 @@
-// eslint-disable-next-line camelcase
-import { standard_with_slashes_analyzer } from './analyzers'
+/* eslint-disable camelcase */
+
+import { analyzer, char_filter, filter } from './analysis'
 import { asciifoldedFields, multilingualFields, shinglesFields } from './common'
 
 export default {
@@ -14,11 +15,13 @@ export default {
       search: {
         dynamic: 'false',
         properties: {
-          textWithSlashes: {
+          relations: {
+            store: true,
             type: 'text',
-            analyzer: 'standard_with_slashes_analyzer',
+            analyzer: 'with_slashes_text_analyzer',
           },
           titlesAndContributors: {
+            store: true,
             type: 'text',
             fields: {
               ...asciifoldedFields,
@@ -32,7 +35,7 @@ export default {
         dynamic: 'false',
         properties: {
           alternativeTitles: {
-            copy_to: 'search.titlesAndContributors',
+            copy_to: ['search.titlesAndContributors', 'search.relations'],
             type: 'text',
             fields: {
               arabic: {
@@ -81,16 +84,7 @@ export default {
               },
               label: {
                 type: 'text',
-                fields: {
-                  keyword: {
-                    type: 'keyword',
-                  },
-                  lowercaseKeyword: {
-                    type: 'keyword',
-                    normalizer: 'lowercase_normalizer',
-                  },
-                },
-                analyzer: 'asciifolding_analyzer',
+                copy_to: ['search.relations'],
               },
               path: {
                 type: 'text',
@@ -99,7 +93,7 @@ export default {
                     type: 'keyword',
                   },
                 },
-                copy_to: ['data.collectionPath.depth'],
+                copy_to: ['data.collectionPath.depth', 'search.relations'],
                 analyzer: 'path_hierarchy_analyzer',
               },
             },
@@ -109,7 +103,7 @@ export default {
               agent: {
                 properties: {
                   label: {
-                    copy_to: 'search.titlesAndContributors',
+                    copy_to: ['search.titlesAndContributors'],
                     type: 'text',
                     fields: {
                       keyword: {
@@ -481,7 +475,7 @@ export default {
             },
           },
           title: {
-            copy_to: 'search.titlesAndContributors',
+            copy_to: ['search.titlesAndContributors', 'search.relations'],
             type: 'text',
             fields: {
               arabic: {
@@ -591,16 +585,7 @@ export default {
                       },
                       label: {
                         type: 'text',
-                        fields: {
-                          keyword: {
-                            type: 'keyword',
-                          },
-                          lowercaseKeyword: {
-                            type: 'keyword',
-                            normalizer: 'lowercase_normalizer',
-                          },
-                        },
-                        analyzer: 'asciifolding_analyzer',
+                        copy_to: ['search.relations'],
                       },
                       path: {
                         type: 'text',
@@ -610,6 +595,7 @@ export default {
                           },
                         },
                         analyzer: 'path_hierarchy_analyzer',
+                        copy_to: ['search.relations'],
                       },
                     },
                   },
@@ -628,6 +614,7 @@ export default {
                   },
                   title: {
                     type: 'text',
+                    copy_to: ['search.relations'],
                     fields: {
                       arabic: {
                         type: 'text',
@@ -696,7 +683,9 @@ export default {
   settings: {
     index: {
       analysis: {
+        char_filter,
         filter: {
+          ...filter,
           arabic_token_filter: {
             name: 'arabic',
             type: 'stemmer',
@@ -734,10 +723,6 @@ export default {
             name: 'bengali',
             type: 'stemmer',
           },
-          asciifolding_token_filter: {
-            type: 'asciifolding',
-            preserve_original: 'true',
-          },
         },
         normalizer: {
           lowercase_normalizer: {
@@ -746,7 +731,7 @@ export default {
           },
         },
         analyzer: {
-          standard_with_slashes_analyzer,
+          ...analyzer,
           hindi_analyzer: {
             filter: ['lowercase', 'hindi_token_filter'],
             type: 'custom',
