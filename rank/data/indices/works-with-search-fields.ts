@@ -4,13 +4,8 @@ import { analyzer, char_filter, filter } from './analysis'
 import { asciifoldedFields, multilingualFields, shinglesFields } from './common'
 
 export default {
-  aliases: {},
   mappings: {
     dynamic: 'strict',
-    _meta: {
-      'model.versions.3916': '283e91b6e21fdbabbe3250a9a819a545239fb12d',
-      'model.versions.3901': '38491d332dea9a960759a428659838395bc94a5b',
-    },
     properties: {
       search: {
         dynamic: 'false',
