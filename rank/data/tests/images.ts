@@ -83,7 +83,7 @@ const tests: Test[] = [
     },
   },
   {
-    label: 'Languages',
+    label: 'Alternative spellings',
     description: 'TBD',
     pass: equalTo1,
     cases: [
