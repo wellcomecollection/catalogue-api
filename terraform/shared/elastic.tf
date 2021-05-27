@@ -1,3 +1,7 @@
+data "ec_deployment" "logging" {
+  id = "f4c9aca09347dad4c05f35cfbec04cdb"
+}
+
 resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
@@ -19,6 +23,8 @@ resource "ec_deployment" "catalogue_api" {
       alias         = local.catalogue_ec_cluster_name
       ref_id        = local.catalogue_ec_cluster_ref_id
     }
+
+
   }
 
   kibana {
@@ -26,6 +32,10 @@ resource "ec_deployment" "catalogue_api" {
       zone_count = 1
       size       = "1g"
     }
+  }
+
+  observability {
+    deployment_id = data.ec_deployment.logging.id
   }
 }
 
