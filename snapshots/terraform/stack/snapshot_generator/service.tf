@@ -1,5 +1,5 @@
 module "snapshot_generator" {
-  source = "../../../../infrastructure/modules/worker"
+  source = "../../modules/worker"
 
   name  = "snapshot_generator-${var.deployment_service_env}"
   image = "${var.snapshot_generator_image}:env.${var.deployment_service_env}"
