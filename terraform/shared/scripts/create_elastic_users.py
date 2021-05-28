@@ -36,7 +36,8 @@ ROLES = {
 }
 
 SERVICES = {
-    "catalogue_api": ["catalogue_read"],
+    "search": ["catalogue_read"],
+    "items": ["catalogue_read"],
     "diff_tool": ["catalogue_read"],
     "replication_manager": ["catalogue_read", "catalogue_manage_ccr"]
 }

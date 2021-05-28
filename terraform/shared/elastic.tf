@@ -71,17 +71,33 @@ module "catalogue_api_secrets" {
   tags        = local.default_tags
 }
 
-# Catalogue API service credentials
+# Search service credentials
 
-resource "aws_secretsmanager_secret" "service-catalogue_api-username" {
-  name = "elasticsearch/catalogue_api/catalogue_api/username"
+resource "aws_secretsmanager_secret" "service-search-username" {
+  name = "elasticsearch/catalogue_api/search/username"
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 }
 
-resource "aws_secretsmanager_secret" "service-catalogue_api-password" {
-  name = "elasticsearch/catalogue_api/catalogue_api/password"
+resource "aws_secretsmanager_secret" "service-search-password" {
+  name = "elasticsearch/catalogue_api/search/password"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}
+
+# Items service credentials
+
+resource "aws_secretsmanager_secret" "service-items-username" {
+  name = "elasticsearch/catalogue_api/items/username"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}
+
+resource "aws_secretsmanager_secret" "service-items-password" {
+  name = "elasticsearch/catalogue_api/items/password"
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
@@ -129,8 +145,10 @@ resource "null_resource" "elasticsearch_users" {
   depends_on = [
     ec_deployment.catalogue_api,
     module.catalogue_api_secrets,
-    aws_secretsmanager_secret.service-catalogue_api-username,
-    aws_secretsmanager_secret.service-catalogue_api-password,
+    aws_secretsmanager_secret.service-search-username,
+    aws_secretsmanager_secret.service-search-password,
+    aws_secretsmanager_secret.service-items-username,
+    aws_secretsmanager_secret.service-items-password,
     aws_secretsmanager_secret.service-diff_tool-username,
     aws_secretsmanager_secret.service-diff_tool-password,
     aws_secretsmanager_secret.service-replication_manager-username,
