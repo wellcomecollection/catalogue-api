@@ -7,7 +7,9 @@
     "client-oauth2": "^4.3.3"
   },
   "scripts": {
-    "smokeTestCatalogueApiStage": "artillery run -e stage catalogueApi.yaml",
-    "smokeTestCatalogueApiProd": "artillery run -e prod catalogueApi.yaml"
+    "smokeTestCatalogueApiStage": "artillery run -e stage smokeTests.yml",
+    "smokeTestCatalogueApiProd": "artillery run -e prod smokeTests.yml",
+    "stressTestCatalogueApiStage": "artillery run -e stage stressTests.yml",
+    "stressTestCatalogueApiProd": "artillery run -e prod stressTests.yml"
   }
 }
