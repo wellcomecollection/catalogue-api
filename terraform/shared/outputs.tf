@@ -18,6 +18,14 @@ output "ecr_requests_repository_url" {
   value = aws_ecr_repository.requests.repository_url
 }
 
+output "es_items_secret_config" {
+  value = local.es_items_secret_config
+}
+
+output "es_search_secret_config" {
+  value = local.es_search_secret_config
+}
+
 # DEPRECATED! Remove after switching requests/items service!
 
 output "ecr_items_api_repository_url" {
