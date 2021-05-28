@@ -37,7 +37,7 @@ variable "container_images" {
 }
 
 variable "es_items_secret_config" {
-  type=object({
+  type = object({
     es_host     = string
     es_port     = string
     es_protocol = string
@@ -47,7 +47,7 @@ variable "es_items_secret_config" {
 }
 
 variable "es_search_secret_config" {
-  type=object({
+  type = object({
     es_host     = string
     es_port     = string
     es_protocol = string
@@ -57,14 +57,14 @@ variable "es_search_secret_config" {
 }
 
 variable "apm_secret_config" {
-  type=object({
+  type = object({
     apm_server_url = string
     apm_secret     = string
   })
 }
 
 variable "sierra_secret_config" {
-  type=object({
+  type = object({
     sierra_api_key    = string
     sierra_api_secret = string
   })

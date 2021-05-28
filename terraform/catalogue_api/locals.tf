@@ -15,16 +15,16 @@ locals {
   }
 
   es_items_secret_config = {
-    es_host = "elasticsearch/catalogue/private_host"
-    es_port = "catalogue/items/es_port"
+    es_host     = "elasticsearch/catalogue/private_host"
+    es_port     = "catalogue/items/es_port"
     es_protocol = "catalogue/items/es_protocol"
     es_username = "catalogue/items/es_username"
     es_password = "catalogue/items/es_password"
   }
 
   es_search_secret_config = {
-    es_host = "elasticsearch/catalogue/private_host"
-    es_port = "catalogue/search/es_port"
+    es_host     = "elasticsearch/catalogue/private_host"
+    es_port     = "catalogue/search/es_port"
     es_protocol = "catalogue/search/es_protocol"
     es_username = "catalogue/search/es_username"
     es_password = "catalogue/search/es_password"
