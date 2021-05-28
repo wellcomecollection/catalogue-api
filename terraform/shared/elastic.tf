@@ -1,5 +1,5 @@
 data "ec_deployment" "logging" {
-  id = "f4c9aca09347dad4c05f35cfbec04cdb"
+  id = local.logging_cluster_id
 }
 
 resource "ec_deployment" "catalogue_api" {
