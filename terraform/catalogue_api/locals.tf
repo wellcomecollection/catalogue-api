@@ -8,4 +8,30 @@ locals {
 
   search_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_search_repository_url"]
   items_repository  = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
+
+  apm_secret_config = {
+    apm_server_url = "catalogue/api/apm_server_url"
+    apm_secret     = "catalogue/api/apm_secret"
+  }
+
+  es_items_secret_config = {
+    es_host = "elasticsearch/catalogue/private_host"
+    es_port = "catalogue/items/es_port"
+    es_protocol = "catalogue/items/es_protocol"
+    es_username = "catalogue/items/es_username"
+    es_password = "catalogue/items/es_password"
+  }
+
+  es_search_secret_config = {
+    es_host = "elasticsearch/catalogue/private_host"
+    es_port = "catalogue/search/es_port"
+    es_protocol = "catalogue/search/es_protocol"
+    es_username = "catalogue/search/es_username"
+    es_password = "catalogue/search/es_password"
+  }
+
+  sierra_secret_config = {
+    sierra_api_key    = "stacks/prod/sierra_api_key"
+    sierra_api_secret = "stacks/prod/sierra_api_secret"
+  }
 }
