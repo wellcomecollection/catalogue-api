@@ -28,7 +28,7 @@ def get_latest_internal_model_version(session):
     list_resp = s3.list_objects_v2(
         Bucket="releases.mvn-repo.wellcomecollection.org",
         Prefix="uk/ac/wellcome/internal_model_2.12/",
-        Delimiter="/"
+        Delimiter="/",
     )
 
     # e.g. uk/ac/wellcome/internal_model_2.12/4210.8666eda05db68cc4c8a3f3a9/
@@ -48,10 +48,8 @@ def set_internal_model_version(latest_version):
                 out_file.write(line)
 
 
-if __name__ == '__main__':
-    session = get_session(
-        role_arn="arn:aws:iam::760097843905:role/platform-read_only"
-    )
+if __name__ == "__main__":
+    session = get_session(role_arn="arn:aws:iam::760097843905:role/platform-read_only")
 
     latest_version = get_latest_internal_model_version(session)
     set_internal_model_version(latest_version)
