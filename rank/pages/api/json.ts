@@ -16,8 +16,8 @@ export default async (
     notFound(res, req)
   } else {
     const [index, query] = await Promise.all([
-      await import(`../../data/indices/${namespace}`),
-      await import(`../../data/queries/${namespace}`),
+      await import(`../../data/indices/${namespace}`).then((m) => m.default),
+      await import(`../../data/queries/${namespace}`).then((m) => m.default),
     ])
 
     ok(res, { index, query })
