@@ -1,15 +1,18 @@
 /* eslint-disable camelcase */
 
 import { analyzer, char_filter, filter } from './analysis'
-import { asciifoldedFields, multilingualFields, shinglesFields } from './common'
+import { multilingualFields, shinglesFields } from './common'
 
 export default {
   mappings: {
     dynamic: 'strict',
+    type: "object",
     properties: {
       search: {
         dynamic: 'false',
+        type: "object",
         properties: {
+
           relations: {
             store: true,
             type: 'text',
@@ -19,7 +22,6 @@ export default {
             store: true,
             type: 'text',
             fields: {
-              ...asciifoldedFields,
               ...multilingualFields,
               ...shinglesFields,
             },
@@ -28,9 +30,10 @@ export default {
       },
       data: {
         dynamic: 'false',
+        type: "object",
         properties: {
           alternativeTitles: {
-            copy_to: ['search.titlesAndContributors', 'search.relations'],
+            copy_to: ['search.relations', 'search.titlesAndContributors'],
             type: 'text',
             fields: {
               arabic: {
@@ -72,6 +75,7 @@ export default {
             },
           },
           collectionPath: {
+            type: "object",
             properties: {
               depth: {
                 type: 'token_count',
@@ -94,9 +98,12 @@ export default {
             },
           },
           contributors: {
+            type: "object",
             properties: {
               agent: {
+                type: "object",
                 properties: {
+
                   label: {
                     copy_to: ['search.titlesAndContributors'],
                     type: 'text',
@@ -131,6 +138,7 @@ export default {
             type: 'text',
           },
           format: {
+            type: "object",
             properties: {
               id: {
                 type: 'keyword',
@@ -138,8 +146,10 @@ export default {
             },
           },
           genres: {
+            type: "object",
             properties: {
               concepts: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -172,8 +182,10 @@ export default {
             },
           },
           imageData: {
+            type: "object",
             properties: {
               id: {
+                type: "object",
                 properties: {
                   canonicalId: {
                     type: 'keyword',
@@ -181,6 +193,7 @@ export default {
                   },
                   sourceIdentifier: {
                     dynamic: 'false',
+                    type: "object",
                     properties: {
                       value: {
                         type: 'keyword',
@@ -193,14 +206,17 @@ export default {
             },
           },
           items: {
+            type: "object",
             properties: {
               id: {
+                type: "object",
                 properties: {
                   canonicalId: {
                     type: 'keyword',
                     normalizer: 'lowercase_normalizer',
                   },
                   otherIdentifiers: {
+                    type: "object",
                     properties: {
                       value: {
                         type: 'keyword',
@@ -210,6 +226,7 @@ export default {
                   },
                   sourceIdentifier: {
                     dynamic: 'false',
+                    type: "object",
                     properties: {
                       value: {
                         type: 'keyword',
@@ -220,10 +237,13 @@ export default {
                 },
               },
               locations: {
+                type: "object",
                 properties: {
                   accessConditions: {
+                    type: "object",
                     properties: {
                       status: {
+                        type: "object",
                         properties: {
                           type: {
                             type: 'keyword',
@@ -233,6 +253,7 @@ export default {
                     },
                   },
                   license: {
+                    type: "object",
                     properties: {
                       id: {
                         type: 'keyword',
@@ -240,6 +261,7 @@ export default {
                     },
                   },
                   locationType: {
+                    type: "object",
                     properties: {
                       id: {
                         type: 'keyword',
@@ -254,6 +276,7 @@ export default {
             },
           },
           languages: {
+            type: "object",
             properties: {
               id: {
                 type: 'keyword',
@@ -311,6 +334,7 @@ export default {
             },
           },
           notes: {
+            type: "object",
             properties: {
               content: {
                 type: 'text',
@@ -324,6 +348,7 @@ export default {
             },
           },
           otherIdentifiers: {
+            type: "object",
             properties: {
               value: {
                 type: 'keyword',
@@ -344,8 +369,10 @@ export default {
             },
           },
           production: {
+            type: "object",
             properties: {
               agents: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -363,6 +390,7 @@ export default {
                 },
               },
               dates: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -378,6 +406,7 @@ export default {
                     analyzer: 'asciifolding_analyzer',
                   },
                   range: {
+                    type: "object",
                     properties: {
                       from: {
                         type: 'date',
@@ -387,6 +416,7 @@ export default {
                 },
               },
               function: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -417,6 +447,7 @@ export default {
                 analyzer: 'asciifolding_analyzer',
               },
               places: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -436,8 +467,10 @@ export default {
             },
           },
           subjects: {
+            type: "object",
             properties: {
               concepts: {
+                type: "object",
                 properties: {
                   label: {
                     type: 'text',
@@ -470,7 +503,7 @@ export default {
             },
           },
           title: {
-            copy_to: ['search.titlesAndContributors', 'search.relations'],
+            copy_to: ['search.relations', 'search.titlesAndContributors'],
             type: 'text',
             fields: {
               arabic: {
@@ -518,6 +551,7 @@ export default {
       },
       deletedReason: {
         dynamic: 'false',
+        type: "object",
         properties: {
           type: {
             type: 'keyword',
@@ -526,6 +560,7 @@ export default {
       },
       invisibilityReasons: {
         dynamic: 'false',
+        type: "object",
         properties: {
           type: {
             type: 'keyword',
@@ -541,9 +576,12 @@ export default {
         dynamic: 'false',
       },
       state: {
+        type: "object",
         properties: {
           availabilities: {
+            type: "object",
             properties: {
+
               id: {
                 type: 'keyword',
               },
@@ -555,6 +593,7 @@ export default {
           },
           derivedData: {
             dynamic: 'false',
+            type: "object",
             properties: {
               contributorAgents: {
                 type: 'keyword',
@@ -569,10 +608,13 @@ export default {
           },
           relations: {
             dynamic: 'false',
+            type: "object",
             properties: {
               ancestors: {
+                type: "object",
                 properties: {
                   collectionPath: {
+                    type: "object",
                     properties: {
                       depth: {
                         type: 'token_count',
@@ -655,6 +697,7 @@ export default {
           },
           sourceIdentifier: {
             dynamic: 'false',
+            type: "object",
             properties: {
               value: {
                 type: 'keyword',
