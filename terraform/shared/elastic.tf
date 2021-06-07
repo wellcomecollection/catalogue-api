@@ -6,7 +6,7 @@ resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
   region                 = "eu-west-1"
-  version                = "7.13.0"
+  version                = "7.13.1"
   deployment_template_id = "aws-io-optimized-v2"
 
   traffic_filter = local.catalogue_ec_traffic_filter
@@ -23,8 +23,6 @@ resource "ec_deployment" "catalogue_api" {
       alias         = local.catalogue_ec_cluster_name
       ref_id        = local.catalogue_ec_cluster_ref_id
     }
-
-
   }
 
   kibana {
