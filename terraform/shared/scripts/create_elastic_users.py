@@ -146,21 +146,21 @@ if __name__ == '__main__':
     ccr_client.put_auto_follow_pattern(
         name="works",
         body={
-            "remote_cluster" : "catalogue",
-            "leader_index_patterns" :
-                [
-                    "works-*"
-                ]
+            "remote_cluster": "catalogue",
+            "leader_index_patterns": [
+                "works-*"
+            ],
+            "follow_index_pattern": "{{leader_index}}"
         }
     )
 
     ccr_client.put_auto_follow_pattern(
-        name="works",
+        name="images",
         body={
-            "remote_cluster" : "catalogue",
-            "leader_index_patterns" :
-                [
-                    "images-*"
-                ]
+            "remote_cluster": "catalogue",
+            "leader_index_patterns": [
+                "images-*"
+            ],
+            "follow_index_pattern": "{{leader_index}}"
         }
     )
