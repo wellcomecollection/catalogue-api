@@ -10,6 +10,7 @@ import secrets
 import boto3
 import click
 
+import elasticsearch
 from elasticsearch import Elasticsearch
 
 WORK_INDEX_PATTERN = "works-{index}*"
@@ -138,3 +139,28 @@ if __name__ == '__main__':
             secret_value=service_password,
             role_arn=role_arn
         )
+
+    # Configure auto-follow
+    ccr_client = elasticsearch.client.ccr.CcrClient(es)
+
+    ccr_client.put_auto_follow_pattern(
+        name="works",
+        body={
+            "remote_cluster": "catalogue",
+            "leader_index_patterns": [
+                "works-*"
+            ],
+            "follow_index_pattern": "{{leader_index}}"
+        }
+    )
+
+    ccr_client.put_auto_follow_pattern(
+        name="images",
+        body={
+            "remote_cluster": "catalogue",
+            "leader_index_patterns": [
+                "images-*"
+            ],
+            "follow_index_pattern": "{{leader_index}}"
+        }
+    )

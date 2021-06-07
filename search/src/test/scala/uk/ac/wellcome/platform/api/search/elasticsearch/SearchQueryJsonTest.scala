@@ -7,11 +7,8 @@ import org.scalatest.matchers.should.Matchers
 import scala.io.Source
 import uk.ac.wellcome.json.utils.JsonAssertions
 
-class WorksMultiMatcherQueryTest
-    extends AnyFunSpec
-    with Matchers
-    with JsonAssertions {
-  it("matches the JSON version of the query") {
+class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
+  it("matches the works JSON") {
     val fileJson =
       Source
         .fromResource("WorksMultiMatcherQuery.json")
@@ -19,6 +16,17 @@ class WorksMultiMatcherQueryTest
         .mkString
 
     val queryJson = QueryBuilderFn(WorksMultiMatcher("{{query}}")).string()
+    assertJsonStringsAreEqual(fileJson, queryJson)
+  }
+
+  it("matches the images JSON") {
+    val fileJson =
+      Source
+        .fromResource("ImagesMultiMatcherQuery.json")
+        .getLines
+        .mkString
+
+    val queryJson = QueryBuilderFn(ImagesMultiMatcher("{{query}}")).string()
     assertJsonStringsAreEqual(fileJson, queryJson)
   }
 }
