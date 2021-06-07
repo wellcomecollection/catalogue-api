@@ -28,15 +28,8 @@ module "search_api" {
     apm_service_name = "search-api"
     apm_environment  = var.environment_name
   }
-  secrets = {
-    es_host        = "elasticsearch/catalogue/private_host"
-    es_port        = "catalogue/search/es_port"
-    es_protocol    = "catalogue/search/es_protocol"
-    es_username    = "catalogue/search/es_username"
-    es_password    = "catalogue/search/es_password"
-    apm_server_url = "catalogue/api/apm_server_url"
-    apm_secret     = "catalogue/api/apm_secret"
-  }
+
+  secrets = merge(var.es_search_secret_config, var.apm_secret_config)
 
   subnets                = local.routable_private_subnets
   cluster_arn            = var.cluster_arn
@@ -70,19 +63,8 @@ module "items_api" {
     log_level         = "INFO"
     metrics_namespace = "items-api"
   }
-  secrets = {
-    sierra_api_key    = "stacks/prod/sierra_api_key"
-    sierra_api_secret = "stacks/prod/sierra_api_secret"
 
-    apm_server_url = "catalogue/api/apm_server_url"
-    apm_secret     = "catalogue/api/apm_secret"
-
-    es_host     = "elasticsearch/catalogue/private_host"
-    es_port     = "catalogue/items/es_port"
-    es_protocol = "catalogue/items/es_protocol"
-    es_username = "catalogue/items/es_username"
-    es_password = "catalogue/items/es_password"
-  }
+  secrets = merge(var.es_items_secret_config, var.apm_secret_config, var.sierra_secret_config)
 
   subnets                = local.routable_private_subnets
   cluster_arn            = var.cluster_arn

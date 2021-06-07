@@ -1,10 +1,3 @@
-const asciifoldedFields = {
-  asciifolded: {
-    type: 'text',
-    analyzer: 'shingle_asciifolding_analyzer',
-  },
-}
-
 const shinglesFields = {
   shingles: {
     type: 'text',
@@ -47,4 +40,4 @@ const multilingualFields = {
   },
 }
 
-export { multilingualFields, shinglesFields, asciifoldedFields }
+export { multilingualFields, shinglesFields }
