@@ -7,13 +7,9 @@ import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
   HoldResponse,
-  SierraItemIdentifier,
-  SierraItemNumber
+  SierraItemIdentifier
 }
-import weco.catalogue.internal_model.identifiers.{
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,15 +21,9 @@ class SierraService(
 
   import SierraSource._
 
-  private def isSierraItemId(sourceIdentifier: SourceIdentifier): Boolean =
-    (sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber) &&
-      (sourceIdentifier.ontologyType == "Item")
-
   def getItemStatus(
     sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
-    require(isSierraItemId(sourceIdentifier))
-
-    val itemNumber = SierraItemNumber(sourceIdentifier.value)
+    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource
       .getSierraItemStub(itemNumber)
@@ -44,9 +34,7 @@ class SierraService(
     patronNumber: SierraPatronNumber,
     sourceIdentifier: SourceIdentifier
   ): Future[HoldResponse] = {
-    require(isSierraItemId(sourceIdentifier))
-
-    val itemNumber = SierraItemNumber(sourceIdentifier.value)
+    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.postHold(patronNumber, itemNumber) map {
       // This is an "XCirc/Record not available" error
@@ -65,8 +53,8 @@ class SierraService(
     entry: SierraUserHoldsEntryStub
   ): StacksHold = {
 
-    val sourceIdentifier = SierraItemIdentifier
-      .createFromSierraId(entry.record)
+    val itemNumber = SierraItemIdentifier.fromUrl(entry.record)
+    val sourceIdentifier = SierraItemIdentifier.toSourceIdentifier(itemNumber)
 
     val pickupLocation = StacksPickupLocation(
       id = entry.pickupLocation.code,
