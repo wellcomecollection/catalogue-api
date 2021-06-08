@@ -17,6 +17,7 @@ import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
+import weco.catalogue.source_model.sierra.source.SierraSourceLocation
 
 import java.net.URI
 import scala.concurrent.Future
@@ -45,10 +46,6 @@ object SierraSource {
     name: String,
     description: Option[String]
   )
-  case class SierraUserHoldsPickupLocationStub(
-    code: String,
-    name: String
-  )
   case class SierraUserHoldsStatusStub(
     code: String,
     name: String
@@ -56,7 +53,7 @@ object SierraSource {
   case class SierraUserHoldsEntryStub(
     id: URI,
     record: URI,
-    pickupLocation: SierraUserHoldsPickupLocationStub,
+    pickupLocation: SierraSourceLocation,
     pickupByDate: Option[Instant],
     status: SierraUserHoldsStatusStub
   )
