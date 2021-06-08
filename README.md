@@ -12,13 +12,19 @@ Contains the Catalogue APIs for search, snapshot, requesting and attendant ECS S
 
 We deploy ECS catalogue services using the [weco-deploy](https://github.com/wellcomecollection/weco-deploy) tool.
 
-The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue-api) build deploys to staging automatically.
+### Continuous integration
 
-### Deploying to production
+The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue-api) build [deploys to staging automatically](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage). 
 
-After automated deployment to the staging environment, we run [integration tests](https://buildkite.com/wellcomecollection/integration) against the staging API and front-end.
+After a deployment to stage environment, we run [smoke tests](smoke_tests/README.md) against the stage API and then [e2e tests](https://github.com/wellcomecollection/wellcomecollection.org/blob/main/playwright/README.md) on the front-end pointing the production wellcomecollection.org at the stage catalogue API.
 
-**When deploying a release from staging to production you should check these tests pass.**
+After a successful stage deployment we run the [diff_tool](diff_tool/README.md) and wait for a user to review and [deploy to production](https://buildkite.com/wellcomecollection/catalogue-api-deploy-prod).
+
+We then run the same smoke & e2e tests pointed at production to confirm a successful deployment.
+
+The CI flow looks as follows:
+
+![Buildkite pipelines](buildkite_flow.png)
 
 ## Dependencies
 
