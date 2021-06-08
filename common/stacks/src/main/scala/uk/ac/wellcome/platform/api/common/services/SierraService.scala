@@ -8,13 +8,13 @@ import weco.api.stacks.models.{
   HoldRejected,
   HoldResponse,
   SierraItemIdentifier,
-  SierraItemNumber,
-  StacksUserIdentifier
+  SierraItemNumber
 }
 import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
 }
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,14 +41,14 @@ class SierraService(
   }
 
   def placeHold(
-    userIdentifier: StacksUserIdentifier,
+    patronNumber: SierraPatronNumber,
     sourceIdentifier: SourceIdentifier
   ): Future[HoldResponse] = {
     require(isSierraItemId(sourceIdentifier))
 
     val itemNumber = SierraItemNumber(sourceIdentifier.value)
 
-    sierraSource.postHold(userIdentifier, itemNumber) map {
+    sierraSource.postHold(patronNumber, itemNumber) map {
       // This is an "XCirc/Record not available" error
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
@@ -87,13 +87,13 @@ class SierraService(
   }
 
   def getStacksUserHolds(
-    userId: StacksUserIdentifier
+    patronNumber: SierraPatronNumber
   ): Future[StacksUserHolds] = {
     sierraSource
-      .getSierraUserHoldsStub(userId)
+      .getSierraUserHoldsStub(patronNumber)
       .map { hold =>
         StacksUserHolds(
-          userId = userId.value,
+          userId = patronNumber.withoutCheckDigit,
           holds = hold.entries.map(buildStacksHold)
         )
       }

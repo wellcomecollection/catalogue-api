@@ -3,15 +3,15 @@ package uk.ac.wellcome.platform.api.requests
 import akka.http.scaladsl.server.Route
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
-import weco.api.stacks.models.StacksUserIdentifier
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.util.{Success, Try}
 
 trait RequestsApi extends CreateRequest with LookupPendingRequests {
   val routes: Route = concat(
     pathPrefix("users" / Segment / "item-requests") { userId: String =>
-      val userIdentifier = StacksUserIdentifier(userId)
+      val userIdentifier = SierraPatronNumber(userId)
 
       post {
         entity(as[ItemRequest]) {
@@ -24,7 +24,7 @@ trait RequestsApi extends CreateRequest with LookupPendingRequests {
                 withFuture {
                   createRequest(
                     itemId = itemId,
-                    userIdentifier = userIdentifier)
+                    patronNumber = userIdentifier)
                 }
 
               case _ =>

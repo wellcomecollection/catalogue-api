@@ -6,10 +6,11 @@ import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.{HoldAccepted, HoldRejected, StacksUserIdentifier}
+import weco.api.stacks.models.{HoldAccepted, HoldRejected}
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -22,12 +23,12 @@ trait CreateRequest extends CustomDirectives with Logging {
   val index: Index
 
   def createRequest(itemId: CanonicalId,
-                    userIdentifier: StacksUserIdentifier): Future[Route] =
+                    patronNumber: SierraPatronNumber): Future[Route] =
     itemLookup.byCanonicalId(itemId)(index).map {
       case Right(sourceIdentifier)
           if sourceIdentifier.identifierType == SierraSystemNumber =>
         val result = sierraService.placeHold(
-          userIdentifier = userIdentifier,
+          patronNumber = patronNumber,
           sourceIdentifier = sourceIdentifier
         )
 

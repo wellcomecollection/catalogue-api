@@ -5,8 +5,8 @@ import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.StacksUserIdentifier
 import weco.api.stacks.services.ItemLookup
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -18,10 +18,10 @@ trait LookupPendingRequests extends CustomDirectives {
 
   implicit val ec: ExecutionContext
 
-  def lookupRequests(userIdentifier: StacksUserIdentifier): Route = {
+  def lookupRequests(patronNumber: SierraPatronNumber): Route = {
     val userHolds =
       for {
-        userHolds <- sierraService.getStacksUserHolds(userIdentifier)
+        userHolds <- sierraService.getStacksUserHolds(patronNumber)
 
         holdsWithCatalogueIds <- Future.sequence(
           userHolds.holds.map { hold =>
