@@ -29,7 +29,7 @@ yarn smokeTestCatalogueApiProd
 
 **Important:** Ensure that you are not going to put undue load on the production services (or dependent Elastic clusters)! Lack of due care could break the catalogue API!
 
-To stop a running test you can simply Ctrl-C t interrupt execution.
+To stop a running test you can Ctrl-C to interrupt execution.
 
 ```
 # Run stress tests against stage
