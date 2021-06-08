@@ -9,6 +9,9 @@ ADD yarn.lock yarn.lock
 RUN yarn install
 
 ADD processorFunctions.js processorFunctions.js
-ADD catalogueApi.yaml catalogueApi.yaml
+ADD smokeTests.yml smokeTests.yml
+ADD stressTests.yml stressTests.yml
+ADD ids.csv ids.csv
+ADD queries.csv queries.csv
 
 CMD ["true"]
