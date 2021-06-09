@@ -15,7 +15,7 @@ resource "ec_deployment" "catalogue_api" {
     topology {
       id         = "hot_content"
       size       = "4g"
-      zone_count = 1
+      zone_count = 3
     }
 
     remote_cluster {
