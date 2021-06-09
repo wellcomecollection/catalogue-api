@@ -368,15 +368,15 @@ class ApiSwaggerTest
     }
 
     describe("works endpoint") {
-      // TODO: I'm not sure why, but AccessStatus.values is returning
-      // an empty list.  The current list is correct and fixing it would
-      // require an internal_model change.  I'll leave this test here for the
-      // next person who works on AccessStatus, but I'm not going to fix it now.
-      ignore("items.locations.accessConditions.status") {
+      it("items.locations.accessConditions.status") {
         val actualValues = getParameterEnumValues(
           multipleWorksEndpoint,
-          name = "items.locations.accessConditions.status")
-        val expectedValues = AccessStatus.values.map { _.id }
+          name = "items.locations.accessConditions.status"
+        ).map { id =>
+          // e.g. "open-with-advisory" => "OpenWithAdvisory"
+          id.split("-").map { _.capitalize }.mkString("")
+        }
+        val expectedValues = AccessStatus.values.map { _.name }
 
         actualValues should contain theSameElementsAs expectedValues
       }
