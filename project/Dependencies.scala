@@ -13,13 +13,19 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "4238.7e195a63dd80ae99e2e4c37154cf0e3b7509107f"
+    val internalModel = "4270.2b57b5b220945d293f0918e546f21a9201796bfa"
   }
 
   val internalModel: Seq[ModuleID] = library(
     name = "internal_model",
     version = versions.internalModel
   )
+
+  val sourceModel: Seq[ModuleID] = library(
+    name = "source_model",
+    version = versions.internalModel
+  )
+
   val jsonLibrary: Seq[ModuleID] = library(
     name = "json",
     version = versions.json
@@ -157,7 +163,8 @@ object CatalogueDependencies {
       WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
-      WellcomeDependencies.httpTypesafeLibrary
+      WellcomeDependencies.httpTypesafeLibrary ++
+      WellcomeDependencies.sourceModel
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++

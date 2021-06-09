@@ -7,13 +7,19 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
+import uk.ac.wellcome.json.JsonUtil._
 import uk.ac.wellcome.platform.api.http.{
   AkkaClientGet,
   AkkaClientPost,
   AkkaClientTokenExchange
 }
-import weco.api.stacks.models.{SierraItemNumber, StacksUserIdentifier}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
+import weco.catalogue.source_model.sierra.source.SierraSourceLocation
 
+import java.net.URI
 import scala.concurrent.Future
 
 trait SierraSource {
@@ -22,10 +28,10 @@ trait SierraSource {
 
   def getSierraItemStub(id: SierraItemNumber): Future[SierraItemStub]
   def getSierraUserHoldsStub(
-    userId: StacksUserIdentifier
+    patronNumber: SierraPatronNumber
   ): Future[SierraUserHoldsStub]
   def postHold(
-    userIdentifier: StacksUserIdentifier,
+    patronNumber: SierraPatronNumber,
     itemNumber: SierraItemNumber
   ): Future[PostHoldResult]
 }
@@ -40,18 +46,14 @@ object SierraSource {
     name: String,
     description: Option[String]
   )
-  case class SierraUserHoldsPickupLocationStub(
-    code: String,
-    name: String
-  )
   case class SierraUserHoldsStatusStub(
     code: String,
     name: String
   )
   case class SierraUserHoldsEntryStub(
-    id: String,
-    record: String,
-    pickupLocation: SierraUserHoldsPickupLocationStub,
+    id: URI,
+    record: URI,
+    pickupLocation: SierraSourceLocation,
     pickupByDate: Option[Instant],
     status: SierraUserHoldsStatusStub
   )
@@ -112,12 +114,12 @@ class AkkaSierraSource(
 
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/patrons
   def getSierraUserHoldsStub(
-    userId: StacksUserIdentifier
+    patronNumber: SierraPatronNumber
   ): Future[SierraUserHoldsStub] =
     for {
       token <- getToken(credentials)
       response <- get[SierraUserHoldsStub](
-        path = Path(s"v5/patrons/${userId.value}/holds"),
+        path = Path(s"v5/patrons/${patronNumber.withoutCheckDigit}/holds"),
         params = Map(
           ("limit", "100"),
           ("offset", "0")
@@ -139,13 +141,14 @@ class AkkaSierraSource(
 
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/patrons
   def postHold(
-    userIdentifier: StacksUserIdentifier,
+    patronNumber: SierraPatronNumber,
     itemNumber: SierraItemNumber
   ): Future[PostHoldResult] =
     for {
       token <- getToken(credentials)
       response <- post[SierraHoldRequestPostBody, SierraErrorCode](
-        path = Path(s"v5/patrons/${userIdentifier.value}/holds/requests"),
+        path =
+          Path(s"v5/patrons/${patronNumber.withoutCheckDigit}/holds/requests"),
         body = Some(
           SierraHoldRequestPostBody(
             recordType = "i",
