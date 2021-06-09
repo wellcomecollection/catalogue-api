@@ -8,9 +8,10 @@ import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
 import com.github.tomakehurst.wiremock.client.WireMock._
-import weco.api.stacks.models.{HoldRejected, StacksUserIdentifier}
+import weco.api.stacks.models.HoldRejected
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -44,10 +45,10 @@ class SierraServiceTest
       it("gets a StacksUserHolds") {
         withSierraService {
           case (sierraService, _) =>
-            val stacksUserIdentifier = StacksUserIdentifier("1234567")
+            val patronNumber = SierraPatronNumber("1234567")
 
             whenReady(
-              sierraService.getStacksUserHolds(stacksUserIdentifier)
+              sierraService.getStacksUserHolds(patronNumber)
             ) { stacksUserHolds =>
               stacksUserHolds shouldBe StacksUserHolds(
                 userId = "1234567",
@@ -81,7 +82,7 @@ class SierraServiceTest
       it("requests a hold from the Sierra API") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val patronNumber = SierraPatronNumber("1234567")
             val sourceIdentifier = SourceIdentifier(
               identifierType = SierraSystemNumber,
               ontologyType = "Item",
@@ -90,7 +91,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = userIdentifier,
+                patronNumber = patronNumber,
                 sourceIdentifier = sourceIdentifier
               )
             ) { _ =>
@@ -117,7 +118,7 @@ class SierraServiceTest
       it("rejects a hold when the Sierra API errors indicating such") {
         withSierraService {
           case (sierraService, wireMockServer) =>
-            val userIdentifier = StacksUserIdentifier(value = "1234567")
+            val patronNumber = SierraPatronNumber("1234567")
             val sourceIdentifier = SourceIdentifier(
               identifierType = SierraSystemNumber,
               ontologyType = "Item",
@@ -126,7 +127,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                userIdentifier = userIdentifier,
+                patronNumber = patronNumber,
                 sourceIdentifier = sourceIdentifier,
               )
             ) { response =>

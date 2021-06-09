@@ -494,6 +494,8 @@ trait MultipleWorksSwagger {
             "closed",
             "licensed-resources",
             "unavailable",
+            "temporarily-unavailable",
+            "by-appointment",
             "permission-required"
           )
         ),
