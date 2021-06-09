@@ -1,7 +1,8 @@
 package weco.api.stacks.http.impl
 
+import akka.http.scaladsl.model.{StatusCodes, Uri}
+import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
-import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes, Uri}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -21,15 +22,12 @@ class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with
       case (sierraApiUrl, _) =>
         withActorSystem { implicit actorSystem =>
           val client = new AkkaHttpClient(
-            tokenUri = Uri(f"$sierraApiUrl/iii/sierra-api/v5/token"),
+            baseUri = Uri(s"$sierraApiUrl/iii/sierra-api"),
             credentials = BasicHttpCredentials("username", "password")
           )
 
-          val future = client.makeRequest(
-            HttpRequest(
-              method = HttpMethods.GET,
-              uri = Uri(f"$sierraApiUrl/iii/sierra-api/v5/items/1601017")
-            )
+          val future = client.get(
+            path = Path(f"v5/items/1601017")
           )
 
           whenReady(future) { resp =>
