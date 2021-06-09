@@ -22,9 +22,7 @@ trait RequestsApi extends CreateRequest with LookupPendingRequests {
             Try { CanonicalId(itemRequest.itemId) } match {
               case Success(itemId) =>
                 withFuture {
-                  createRequest(
-                    itemId = itemId,
-                    patronNumber = userIdentifier)
+                  createRequest(itemId = itemId, patronNumber = userIdentifier)
                 }
 
               case _ =>

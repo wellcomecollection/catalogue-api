@@ -147,7 +147,8 @@ class AkkaSierraSource(
     for {
       token <- getToken(credentials)
       response <- post[SierraHoldRequestPostBody, SierraErrorCode](
-        path = Path(s"v5/patrons/${patronNumber.withoutCheckDigit}/holds/requests"),
+        path =
+          Path(s"v5/patrons/${patronNumber.withoutCheckDigit}/holds/requests"),
         body = Some(
           SierraHoldRequestPostBody(
             recordType = "i",

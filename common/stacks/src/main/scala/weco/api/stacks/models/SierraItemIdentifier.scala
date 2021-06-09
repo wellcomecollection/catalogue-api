@@ -17,7 +17,8 @@ object SierraItemIdentifier {
       url.getPath.split("/").last
     } match {
       case Success(id) => SierraItemNumber(id)
-      case Failure(e)  => throw new Exception("Failed to create SierraItemNumber", e)
+      case Failure(e) =>
+        throw new Exception("Failed to create SierraItemNumber", e)
     }
 
   def toSourceIdentifier(itemNumber: SierraItemNumber): SourceIdentifier =
@@ -27,8 +28,10 @@ object SierraItemIdentifier {
       ontologyType = "Item"
     )
 
-  def fromSourceIdentifier(sourceIdentifier: SourceIdentifier): SierraItemNumber = {
-    require(sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber)
+  def fromSourceIdentifier(
+    sourceIdentifier: SourceIdentifier): SierraItemNumber = {
+    require(
+      sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber)
     require(sourceIdentifier.ontologyType == "Item")
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix
