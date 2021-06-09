@@ -1,6 +1,7 @@
 package weco.api.stacks.http
 
 import akka.http.scaladsl.model._
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -12,7 +13,7 @@ import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SierraSourceTest extends AnyFunSpec with Matchers with Akka with ScalaFutures with IntegrationPatience {
+class SierraSourceTest extends AnyFunSpec with Matchers with EitherValues with Akka with ScalaFutures with IntegrationPatience {
   def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
       val client = new MemoryHttpClient(responses = responses)
@@ -55,7 +56,6 @@ class SierraSourceTest extends AnyFunSpec with Matchers with Akka with ScalaFutu
                 |  "barcode": "22500271327",
                 |  "callNumber": "K33043"
                 |}
-                |
                 |""".stripMargin
             )
           )
@@ -75,6 +75,74 @@ class SierraSourceTest extends AnyFunSpec with Matchers with Akka with ScalaFutu
               )
             )
           )
+        }
+      }
+    }
+
+    it("looks up a non-existent item") {
+      val itemNumber = SierraItemNumber("1000000")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri("http://sierra:1234/v5/items/1000000")
+          ),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItem(itemNumber)
+
+        whenReady(future) {
+          _ shouldBe Left(SierraItemLookupError.ItemNotFound)
+        }
+      }
+    }
+
+    it("looks up a deleted item") {
+      val itemNumber = SierraItemNumber("1000001")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri("http://sierra:1234/v5/items/1000001")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "id": "1000001",
+                |  "deletedDate": "2004-04-14",
+                |  "deleted": true,
+                |  "bibIds": [],
+                |  "volumes": []
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItem(itemNumber)
+
+        whenReady(future) {
+          _.left.value shouldBe a[SierraItemLookupError.ItemHasNoStatus]
         }
       }
     }
