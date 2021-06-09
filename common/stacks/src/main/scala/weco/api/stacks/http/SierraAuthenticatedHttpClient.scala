@@ -5,8 +5,8 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{HttpMethods, HttpRequest, HttpResponse, Uri}
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OAuth2BearerToken}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
-import io.circe.generic.extras.JsonKey
 import uk.ac.wellcome.platform.api.http.TokenExchange
+import weco.api.stacks.models.SierraAccessToken
 
 import java.time.Instant
 import scala.concurrent.Future
@@ -19,9 +19,9 @@ trait SierraAuthenticatedHttpClient
   val credentials: BasicHttpCredentials
 
   implicit val system: ActorSystem
-  implicit val unmarshal: Unmarshaller[HttpResponse, AccessToken]
+  implicit val unmarshaller: Unmarshaller[HttpResponse, SierraAccessToken]
 
-  protected def makeRequest(request: HttpRequest, token: OAuth2BearerToken): Future[HttpResponse]
+  protected def makeSingleRequest(request: HttpRequest): Future[HttpResponse]
 
   // This implements the Client Credentials flow, as described in the Sierra docs:
   // https://techdocs.iii.com/sierraapi/Content/zReference/authClient.htm
@@ -30,14 +30,9 @@ trait SierraAuthenticatedHttpClient
   // lasts an hour, and use that for future requests.  When the hour is up, we have
   // to fetch a new token.
   //
-  private case class AccessToken(
-    @JsonKey("access_token") accessToken: String,
-    @JsonKey("expires_in") expiresIn: Int
-  )
-
   override protected def getNewToken(
-                                      credentials: BasicHttpCredentials
-                                    ): Future[(OAuth2BearerToken, Instant)] = {
+    credentials: BasicHttpCredentials
+  ): Future[(OAuth2BearerToken, Instant)] = {
     val postRequest = HttpRequest(
       method = HttpMethods.POST,
       uri = tokenUri,
@@ -47,19 +42,35 @@ trait SierraAuthenticatedHttpClient
     for {
       tokenResponse <- Http().singleRequest(postRequest)
 
-      accessToken <- Unmarshal(tokenResponse).to[AccessToken]
+      accessToken <- Unmarshal(tokenResponse).to[SierraAccessToken]
 
       result = (
-        OAuth2BearerToken(accessToken.accessToken),
-        Instant.now().plusSeconds(accessToken.expiresIn)
+        OAuth2BearerToken(accessToken.access_token),
+        Instant.now().plusSeconds(accessToken.expires_in)
       )
     } yield result
   }
 
-  override protected def makeRequest(request: HttpRequest): Future[HttpResponse] =
+  override def makeRequest(request: HttpRequest): Future[HttpResponse] =
     for {
       token <- getToken(credentials)
 
-      response <- makeRequest(request, token)
+      authenticatedRequest = {
+        // We're going to set our own Authorization header on this request
+        // using the token, so there shouldn't be one already.
+        //
+        // Are multiple Authorization headers allowed by HTTP?  It doesn't matter,
+        // it's not something we should be doing.
+        val existingAuthHeaders = request.headers.collect {
+          case auth: Authorization => auth
+        }
+        require(existingAuthHeaders.isEmpty, s"HTTP request already has auth headers: $request")
+
+        request.copy(
+          headers = request.headers :+ Authorization(token)
+        )
+      }
+
+      response <- makeSingleRequest(authenticatedRequest)
     } yield response
 }
