@@ -22,15 +22,10 @@ trait HttpClient {
       .withPath(baseUri.path ++ Slash(path))
       .withQuery(Query(params))
 
-  def get(
-    path: Path,
-    params: Map[String, String] = Map.empty,
-    headers: List[HttpHeader] = Nil): Future[HttpResponse] = {
-
+  def get(path: Path, params: Map[String, String] = Map.empty): Future[HttpResponse] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
-      uri = buildUri(path, params),
-      headers = headers
+      uri = buildUri(path, params)
     )
 
     makeRequest(request)

@@ -6,11 +6,12 @@ import weco.api.stacks.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemoryHttpClient(
-  val baseUri: Uri,
   responses: Seq[(HttpRequest, HttpResponse)]
 )(
   implicit val ec: ExecutionContext
 ) extends HttpClient {
+
+  val baseUri: Uri = Uri("http://sierra:1234")
 
   private val iterator = responses.toIterator
 

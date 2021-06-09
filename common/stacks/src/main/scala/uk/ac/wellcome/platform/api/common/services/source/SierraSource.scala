@@ -66,7 +66,7 @@ object SierraSource {
     display: String
   )
   case class SierraItemStub(
-    id: String,
+    id: SierraItemNumber,
     status: SierraItemStatusStub
   )
   case class SierraHoldRequestPostBody(
