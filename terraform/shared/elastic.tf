@@ -14,7 +14,7 @@ resource "ec_deployment" "catalogue_api" {
   elasticsearch {
     topology {
       id         = "hot_content"
-      size       = "4g"
+      size       = "8g"
       zone_count = 3
     }
 
