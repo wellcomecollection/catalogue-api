@@ -15,9 +15,6 @@ import java.net.URL
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with IntegrationPatience with Akka with SierraWireMockFixture with HttpFixtures {
-  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
-  import io.circe.generic.auto._
-
   it("requests an item, fetching a token first") {
     withMockSierraServer {
       case (sierraApiUrl, _) =>

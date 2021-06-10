@@ -1,13 +1,14 @@
 package weco.api.stacks.http
 
-import akka.http.scaladsl.marshalling.{Marshal, Marshaller}
+import akka.http.scaladsl.marshalling.{Marshal, ToEntityMarshaller}
 import akka.http.scaladsl.model.Uri.Path.Slash
 import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model._
+import io.circe.Encoder
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HttpClient {
+trait HttpClient extends CirceMarshalling {
   val baseUri: Uri
 
   implicit val ec: ExecutionContext
@@ -36,8 +37,10 @@ trait HttpClient {
     body: Option[In] = None,
     params: Map[String, String] = Map.empty,
     headers: List[HttpHeader] = Nil)(
-    implicit m: Marshaller[In, RequestEntity]
-  ): Future[HttpResponse] =
+    implicit encoder: Encoder[In]
+  ): Future[HttpResponse] = {
+    implicit val um: ToEntityMarshaller[In] = createMarshaller[In]
+
     for {
       entity <- body match {
         case Some(body) => Marshal(body).to[RequestEntity]
@@ -53,4 +56,5 @@ trait HttpClient {
 
       response <- makeRequest(request)
     } yield response
+  }
 }

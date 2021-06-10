@@ -2,13 +2,13 @@ package weco.api.stacks.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Path
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{
   Authorization,
   BasicHttpCredentials,
   OAuth2BearerToken
 }
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
-import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
+import akka.http.scaladsl.unmarshalling.{FromEntityUnmarshaller, Unmarshal}
 import uk.ac.wellcome.platform.api.http.TokenExchange
 import weco.api.stacks.models.SierraAccessToken
 
@@ -22,15 +22,16 @@ class SierraAuthenticatedHttpClient(
 )(
   implicit
   val system: ActorSystem,
-  val ec: ExecutionContext,
-  val um: Unmarshaller[HttpResponse, SierraAccessToken]
+  val ec: ExecutionContext
 )
   extends HttpClient
     with TokenExchange[BasicHttpCredentials, OAuth2BearerToken] {
 
   override val baseUri: Uri = underlying.baseUri
 
-  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
+  import uk.ac.wellcome.json.JsonUtil._
+
+  implicit val um: FromEntityUnmarshaller[SierraAccessToken] = createUnmarshaller[SierraAccessToken]
 
   // This implements the Client Credentials flow, as described in the Sierra docs:
   // https://techdocs.iii.com/sierraapi/Content/zReference/authClient.htm
@@ -51,8 +52,8 @@ class SierraAuthenticatedHttpClient(
       accessToken <- Unmarshal(tokenResponse).to[SierraAccessToken]
 
       result = (
-        OAuth2BearerToken(accessToken.access_token),
-        Instant.now().plusSeconds(accessToken.expires_in)
+        OAuth2BearerToken(accessToken.accessToken),
+        Instant.now().plusSeconds(accessToken.expiresIn)
       )
     } yield result
 
