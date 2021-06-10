@@ -15,7 +15,7 @@ class MemoryHttpClient(
 
   private val iterator = responses.toIterator
 
-  override def makeRequest(request: HttpRequest): Future[HttpResponse] = Future {
+  override def singleRequest(request: HttpRequest): Future[HttpResponse] = Future {
     val (nextReq, nextResp) = iterator.next()
 
     if (nextReq != request) {

@@ -31,7 +31,7 @@ class SierraAuthenticatedHttpClient(
 
   import uk.ac.wellcome.json.JsonUtil._
 
-  implicit val um: FromEntityUnmarshaller[SierraAccessToken] = createUnmarshaller[SierraAccessToken]
+  implicit val um: FromEntityUnmarshaller[SierraAccessToken] = CirceMarshalling.fromDecoder[SierraAccessToken]
 
   // This implements the Client Credentials flow, as described in the Sierra docs:
   // https://techdocs.iii.com/sierraapi/Content/zReference/authClient.htm
@@ -57,7 +57,7 @@ class SierraAuthenticatedHttpClient(
       )
     } yield result
 
-  override def makeRequest(request: HttpRequest): Future[HttpResponse] =
+  override def singleRequest(request: HttpRequest): Future[HttpResponse] =
     for {
       token <- getToken(credentials)
 
@@ -77,6 +77,6 @@ class SierraAuthenticatedHttpClient(
         )
       }
 
-      response <- underlying.makeRequest(authenticatedRequest)
+      response <- underlying.singleRequest(authenticatedRequest)
     } yield response
 }

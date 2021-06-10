@@ -8,12 +8,12 @@ import io.circe.Encoder
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HttpClient extends CirceMarshalling {
+trait HttpClient {
   val baseUri: Uri
 
   implicit val ec: ExecutionContext
 
-  def makeRequest(request: HttpRequest): Future[HttpResponse]
+  def singleRequest(request: HttpRequest): Future[HttpResponse]
 
   private def buildUri(
     path: Path,
@@ -29,7 +29,7 @@ trait HttpClient extends CirceMarshalling {
       uri = buildUri(path, params)
     )
 
-    makeRequest(request)
+    singleRequest(request)
   }
 
   def post[In](
@@ -39,7 +39,7 @@ trait HttpClient extends CirceMarshalling {
     headers: List[HttpHeader] = Nil)(
     implicit encoder: Encoder[In]
   ): Future[HttpResponse] = {
-    implicit val um: ToEntityMarshaller[In] = createMarshaller[In]
+    implicit val um: ToEntityMarshaller[In] = CirceMarshalling.fromEncoder[In]
 
     for {
       entity <- body match {
@@ -54,7 +54,7 @@ trait HttpClient extends CirceMarshalling {
         entity = entity
       )
 
-      response <- makeRequest(request)
+      response <- singleRequest(request)
     } yield response
   }
 }
