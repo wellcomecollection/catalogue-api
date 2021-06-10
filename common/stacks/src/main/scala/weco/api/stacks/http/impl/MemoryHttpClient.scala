@@ -15,13 +15,15 @@ class MemoryHttpClient(
 
   private val iterator = responses.toIterator
 
-  override def singleRequest(request: HttpRequest): Future[HttpResponse] = Future {
-    val (nextReq, nextResp) = iterator.next()
+  override def singleRequest(request: HttpRequest): Future[HttpResponse] =
+    Future {
+      val (nextReq, nextResp) = iterator.next()
 
-    if (nextReq != request) {
-      throw new RuntimeException(s"Expected request $nextReq, but got $request")
+      if (nextReq != request) {
+        throw new RuntimeException(
+          s"Expected request $nextReq, but got $request")
+      }
+
+      nextResp
     }
-
-    nextResp
-  }
 }

@@ -23,15 +23,15 @@ class SierraAuthenticatedHttpClient(
   implicit
   val system: ActorSystem,
   val ec: ExecutionContext
-)
-  extends HttpClient
+) extends HttpClient
     with TokenExchange[BasicHttpCredentials, OAuth2BearerToken] {
 
   override val baseUri: Uri = underlying.baseUri
 
   import uk.ac.wellcome.json.JsonUtil._
 
-  implicit val um: FromEntityUnmarshaller[SierraAccessToken] = CirceMarshalling.fromDecoder[SierraAccessToken]
+  implicit val um: FromEntityUnmarshaller[SierraAccessToken] =
+    CirceMarshalling.fromDecoder[SierraAccessToken]
 
   // This implements the Client Credentials flow, as described in the Sierra docs:
   // https://techdocs.iii.com/sierraapi/Content/zReference/authClient.htm
@@ -70,7 +70,9 @@ class SierraAuthenticatedHttpClient(
         val existingAuthHeaders = request.headers.collect {
           case auth: Authorization => auth
         }
-        require(existingAuthHeaders.isEmpty, s"HTTP request already has auth headers: $request")
+        require(
+          existingAuthHeaders.isEmpty,
+          s"HTTP request already has auth headers: $request")
 
         request.copy(
           headers = request.headers :+ Authorization(token)

@@ -14,7 +14,14 @@ import weco.http.fixtures.HttpFixtures
 import java.net.URL
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with IntegrationPatience with Akka with SierraWireMockFixture with HttpFixtures {
+class AkkaHttpClientTest
+    extends AnyFunSpec
+    with Matchers
+    with ScalaFutures
+    with IntegrationPatience
+    with Akka
+    with SierraWireMockFixture
+    with HttpFixtures {
   it("requests an item, fetching a token first") {
     withMockSierraServer {
       case (sierraApiUrl, _) =>
@@ -35,7 +42,8 @@ class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with
             resp.status shouldBe StatusCodes.OK
 
             withStringEntity(resp.entity) {
-              assertJsonStringsAreEqual(_,
+              assertJsonStringsAreEqual(
+                _,
                 s"""
                    |{
                    |  "id": "1601017",
@@ -56,7 +64,8 @@ class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with
                    |  "barcode": "D59.14 (Germany file)",
                    |  "callNumber": "665618i"
                    |}
-                   |""".stripMargin)
+                   |""".stripMargin
+              )
             }
           }
         }

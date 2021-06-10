@@ -23,7 +23,8 @@ trait HttpClient {
       .withPath(baseUri.path ++ Slash(path))
       .withQuery(Query(params))
 
-  def get(path: Path, params: Map[String, String] = Map.empty): Future[HttpResponse] = {
+  def get(path: Path,
+          params: Map[String, String] = Map.empty): Future[HttpResponse] = {
     val request = HttpRequest(
       method = HttpMethods.GET,
       uri = buildUri(path, params)
@@ -32,11 +33,10 @@ trait HttpClient {
     singleRequest(request)
   }
 
-  def post[In](
-    path: Path,
-    body: Option[In] = None,
-    params: Map[String, String] = Map.empty,
-    headers: List[HttpHeader] = Nil)(
+  def post[In](path: Path,
+               body: Option[In] = None,
+               params: Map[String, String] = Map.empty,
+               headers: List[HttpHeader] = Nil)(
     implicit encoder: Encoder[In]
   ): Future[HttpResponse] = {
     implicit val um: ToEntityMarshaller[In] = CirceMarshalling.fromEncoder[In]

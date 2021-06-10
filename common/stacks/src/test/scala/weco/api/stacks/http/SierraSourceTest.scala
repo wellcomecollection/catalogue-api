@@ -7,14 +7,24 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{SierraItemStatusStub, SierraItemStub}
+import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
+  SierraItemStatusStub,
+  SierraItemStub
+}
 import weco.api.stacks.http.impl.MemoryHttpClient
 import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SierraSourceTest extends AnyFunSpec with Matchers with EitherValues with Akka with ScalaFutures with IntegrationPatience {
-  def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(testWith: TestWith[SierraSource, R]): R =
+class SierraSourceTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with Akka
+    with ScalaFutures
+    with IntegrationPatience {
+  def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(
+    testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
       val client = new MemoryHttpClient(responses = responses)
 
