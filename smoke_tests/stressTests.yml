@@ -43,7 +43,7 @@ scenarios:
   - name: "Normal usage"
     flow:
       - get:
-          url: "/catalogue/v2/works?query={{ query }}"
+          url: "/catalogue/v2/works?query={{ query }}&includes=identifiers,production,contributors,subjects,partOf&aggregations=workType,availabilities,genres.label,languages,subjects.label,contributors.agent.label"
       - think: 0.5
       - get:
           url: "/catalogue/v2/works/{{ id }}"
