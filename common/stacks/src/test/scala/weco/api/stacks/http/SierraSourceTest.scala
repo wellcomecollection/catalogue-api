@@ -7,17 +7,9 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
-  SierraErrorCode,
-  SierraItemStatusStub,
-  SierraItemStub
-}
 import weco.api.stacks.http.impl.MemoryHttpClient
-import weco.api.stacks.models.{SierraHold, SierraHoldStatus, SierraHoldsList}
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.api.stacks.models.{SierraErrorCode, SierraHold, SierraHoldStatus, SierraHoldsList, SierraItem, SierraItemStatus}
+import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.catalogue.source_model.sierra.source.SierraSourceLocation
 
 import java.net.URI
@@ -84,9 +76,9 @@ class SierraSourceTest
 
         whenReady(future) {
           _ shouldBe Right(
-            SierraItemStub(
+            SierraItem(
               id = itemNumber,
-              status = SierraItemStatusStub(
+              status = SierraItemStatus(
                 code = "t",
                 display = "In quarantine"
               )

@@ -5,16 +5,9 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.Materializer
 import io.circe.Encoder
-import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
-  SierraErrorCode,
-  SierraItemStub
-}
 import uk.ac.wellcome.json.JsonUtil._
-import weco.api.stacks.models.{SierraHoldRequest, SierraHoldsList}
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.api.stacks.models.{SierraErrorCode, SierraHoldRequest, SierraHoldsList, SierraItem}
+import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
 
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
@@ -33,14 +26,14 @@ object SierraItemLookupError {
 
 class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
                                        mat: Materializer) {
-  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItemStub] =
-    CirceMarshalling.fromDecoder[SierraItemStub]
+  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItem] =
+    CirceMarshalling.fromDecoder[SierraItem]
 
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
   def lookupItem(item: SierraItemNumber)
-    : Future[Either[SierraItemLookupError, SierraItemStub]] =
+    : Future[Either[SierraItemLookupError, SierraItem]] =
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}")
@@ -49,7 +42,7 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
       result <- resp.status match {
         case StatusCodes.OK =>
           Unmarshal(resp)
-            .to[SierraItemStub]
+            .to[SierraItem]
             .map(Right(_))
             .recover {
               case t: Throwable =>

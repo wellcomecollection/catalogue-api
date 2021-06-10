@@ -35,7 +35,7 @@ class SierraServiceTest
             val future = sierraService.getItemStatus(identifier)
 
             whenReady(future) {
-              _ shouldBe StacksItemStatus("available", "Available")
+              _.value shouldBe StacksItemStatus("available", "Available")
             }
         }
       }
@@ -91,7 +91,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                patronNumber = patronNumber,
+                patron = patronNumber,
                 sourceIdentifier = sourceIdentifier
               )
             ) { _ =>
@@ -127,7 +127,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                patronNumber = patronNumber,
+                patron = patronNumber,
                 sourceIdentifier = sourceIdentifier,
               )
             ) { response =>
