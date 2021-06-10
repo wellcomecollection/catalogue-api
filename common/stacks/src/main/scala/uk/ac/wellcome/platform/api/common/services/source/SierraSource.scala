@@ -8,7 +8,7 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
 import uk.ac.wellcome.json.JsonUtil._
-import uk.ac.wellcome.platform.api.http.{
+import weco.api.stacks.http.{
   AkkaClientGet,
   AkkaClientPost,
   AkkaClientTokenExchange
@@ -89,7 +89,6 @@ class AkkaSierraSource(
     with AkkaClientPost
     with AkkaClientTokenExchange {
 
-  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
   import SierraSource._
 
