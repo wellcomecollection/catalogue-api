@@ -7,7 +7,6 @@ import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials}
 import io.circe.{Encoder, Printer}
-import uk.ac.wellcome.json.JsonUtil._
 import weco.api.stacks.http.{
   AkkaClientGet,
   AkkaClientPost,
@@ -15,6 +14,7 @@ import weco.api.stacks.http.{
 }
 import weco.api.stacks.http.SierraOauthHttpClient
 import weco.api.stacks.http.impl.AkkaHttpClient
+import weco.api.stacks.models.SierraHoldsList
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
@@ -31,7 +31,7 @@ trait SierraSource {
   def getSierraItemStub(id: SierraItemNumber): Future[SierraItemStub]
   def getSierraUserHoldsStub(
     patronNumber: SierraPatronNumber
-  ): Future[SierraUserHoldsStub]
+  ): Future[Either[SierraErrorCode, SierraHoldsList]]
   def postHold(
     patronNumber: SierraPatronNumber,
     itemNumber: SierraItemNumber
@@ -58,10 +58,6 @@ object SierraSource {
     pickupLocation: SierraSourceLocation,
     pickupByDate: Option[Instant],
     status: SierraUserHoldsStatusStub
-  )
-  case class SierraUserHoldsStub(
-    total: Long,
-    entries: List[SierraUserHoldsEntryStub]
   )
   case class SierraItemStatusStub(
     code: String,
@@ -117,22 +113,8 @@ class AkkaSierraSource(
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/patrons
   def getSierraUserHoldsStub(
     patronNumber: SierraPatronNumber
-  ): Future[SierraUserHoldsStub] =
-    for {
-      token <- getToken(credentials)
-      response <- get[SierraUserHoldsStub](
-        path = Path(s"v5/patrons/${patronNumber.withoutCheckDigit}/holds"),
-        params = Map(
-          ("limit", "100"),
-          ("offset", "0")
-        ),
-        headers = List(Authorization(token))
-      )
-    } yield
-      response match {
-        case SuccessResponse(Some(holds)) => holds
-        case _                            => throw new Exception(s"Failed to get user holds!")
-      }
+  ): Future[Either[SierraErrorCode, SierraHoldsList]] =
+    underlying.listHolds(patronNumber)
 
   private val dateTimeFormatter = DateTimeFormatter
     .ofPattern("yyyy-MM-dd")

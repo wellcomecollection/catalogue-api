@@ -47,10 +47,10 @@ class SierraServiceTest
           case (sierraService, _) =>
             val patronNumber = SierraPatronNumber("1234567")
 
-            whenReady(
-              sierraService.getStacksUserHolds(patronNumber)
-            ) { stacksUserHolds =>
-              stacksUserHolds shouldBe StacksUserHolds(
+            val future = sierraService.getStacksUserHolds(patronNumber)
+
+            whenReady(future) { stacksUserHolds =>
+              stacksUserHolds.value shouldBe StacksUserHolds(
                 userId = "1234567",
                 holds = List(
                   StacksHold(

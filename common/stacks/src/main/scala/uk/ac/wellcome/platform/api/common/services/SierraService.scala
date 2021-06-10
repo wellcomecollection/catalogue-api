@@ -7,6 +7,7 @@ import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
   HoldResponse,
+  SierraHold,
   SierraItemIdentifier
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
@@ -49,10 +50,7 @@ class SierraService(
     }
   }
 
-  protected def buildStacksHold(
-    entry: SierraUserHoldsEntryStub
-  ): StacksHold = {
-
+  protected def buildStacksHold(entry: SierraHold): StacksHold = {
     val itemNumber = SierraItemIdentifier.fromUrl(entry.record)
     val sourceIdentifier = SierraItemIdentifier.toSourceIdentifier(itemNumber)
 
@@ -76,14 +74,19 @@ class SierraService(
 
   def getStacksUserHolds(
     patronNumber: SierraPatronNumber
-  ): Future[StacksUserHolds] = {
+  ): Future[Either[SierraErrorCode, StacksUserHolds]] = {
     sierraSource
       .getSierraUserHoldsStub(patronNumber)
-      .map { hold =>
-        StacksUserHolds(
-          userId = patronNumber.withoutCheckDigit,
-          holds = hold.entries.map(buildStacksHold)
-        )
+      .map {
+        case Right(holds) =>
+          Right(
+            StacksUserHolds(
+              userId = patronNumber.withoutCheckDigit,
+              holds = holds.entries.map(buildStacksHold)
+            )
+          )
+
+        case Left(err) => Left(err)
       }
   }
 }
