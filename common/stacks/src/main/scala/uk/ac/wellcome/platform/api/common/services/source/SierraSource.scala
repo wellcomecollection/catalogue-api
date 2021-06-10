@@ -13,6 +13,8 @@ import weco.api.stacks.http.{
   AkkaClientPost,
   AkkaClientTokenExchange
 }
+import weco.api.stacks.http.SierraAuthenticatedHttpClient
+import weco.api.stacks.http.impl.AkkaHttpClient
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
@@ -66,7 +68,7 @@ object SierraSource {
     display: String
   )
   case class SierraItemStub(
-    id: String,
+    id: SierraItemNumber,
     status: SierraItemStatusStub
   )
   case class SierraHoldRequestPostBody(
@@ -97,19 +99,20 @@ class AkkaSierraSource(
 
   override val tokenPath = Path("v5/token")
 
+  import weco.api.stacks.http
+
+  private val httpClient = new AkkaHttpClient(baseUri = baseUri)
+
+  private val underlying = new http.SierraSource(
+    client = new SierraAuthenticatedHttpClient(
+      underlying = httpClient,
+      credentials = credentials
+    )
+  )
+
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/items
   def getSierraItemStub(itemNumber: SierraItemNumber): Future[SierraItemStub] =
-    for {
-      token <- getToken(credentials)
-      item <- get[SierraItemStub](
-        path = Path(s"v5/items/${itemNumber.withoutCheckDigit}"),
-        headers = List(Authorization(token))
-      )
-    } yield
-      item match {
-        case SuccessResponse(Some(holds)) => holds
-        case _                            => throw new Exception(s"Failed to get item!")
-      }
+    underlying.lookupItem(itemNumber).map(_.right.get)
 
   // See https://sandbox.iii.com/iii/sierra-api/swagger/index.html#!/patrons
   def getSierraUserHoldsStub(
