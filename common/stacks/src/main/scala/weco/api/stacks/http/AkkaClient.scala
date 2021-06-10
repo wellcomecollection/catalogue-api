@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.http
+package weco.api.stacks.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -11,6 +11,7 @@ import akka.http.scaladsl.model.headers.{
   OAuth2BearerToken
 }
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
+import uk.ac.wellcome.platform.api.http.TokenExchange
 
 import java.time.Instant
 import scala.concurrent.{ExecutionContextExecutor, Future}
