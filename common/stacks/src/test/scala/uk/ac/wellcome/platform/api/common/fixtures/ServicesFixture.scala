@@ -23,7 +23,8 @@ trait ServicesFixture extends SierraWireMockFixture with Akka {
           )
 
           val authenticatedClient = new SierraOauthHttpClient(
-            client, credentials = BasicHttpCredentials("username", "password")
+            client,
+            credentials = BasicHttpCredentials("username", "password")
           )
 
           testWith(

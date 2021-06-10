@@ -24,7 +24,8 @@ object SierraServiceBuilder {
     val client = new AkkaHttpClient(baseUri = Uri(baseUrl))
 
     val authenticatedClient = new SierraOauthHttpClient(
-      client, credentials = BasicHttpCredentials(
+      client,
+      credentials = BasicHttpCredentials(
         username = username,
         password = password
       )

@@ -6,8 +6,16 @@ import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.Materializer
 import io.circe.Encoder
 import uk.ac.wellcome.json.JsonUtil._
-import weco.api.stacks.models.{SierraErrorCode, SierraHoldRequest, SierraHoldsList, SierraItem}
-import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.api.stacks.models.{
+  SierraErrorCode,
+  SierraHoldRequest,
+  SierraHoldsList,
+  SierraItem
+}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
@@ -32,8 +40,8 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(item: SierraItemNumber)
-    : Future[Either[SierraItemLookupError, SierraItem]] =
+  def lookupItem(
+    item: SierraItemNumber): Future[Either[SierraItemLookupError, SierraItem]] =
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}")
@@ -62,7 +70,8 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
   private implicit val umHoldsList: Unmarshaller[HttpEntity, SierraHoldsList] =
     CirceMarshalling.fromDecoder[SierraHoldsList]
 
-  def listHolds(patron: SierraPatronNumber): Future[Either[SierraErrorCode, SierraHoldsList]] =
+  def listHolds(patron: SierraPatronNumber)
+    : Future[Either[SierraErrorCode, SierraHoldsList]] =
     for {
       resp <- client.get(
         path = Path(s"v5/patrons/${patron.withoutCheckDigit}/holds"),
@@ -71,7 +80,7 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
 
       result <- resp.status match {
         case StatusCodes.OK => Unmarshal(resp).to[SierraHoldsList].map(Right(_))
-        case _ => Unmarshal(resp).to[SierraErrorCode].map(Left(_))
+        case _              => Unmarshal(resp).to[SierraErrorCode].map(Left(_))
       }
     } yield result
 
@@ -82,7 +91,9 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
   implicit val encodeInstant: Encoder[Instant] =
     Encoder.encodeString.contramap[Instant](dateTimeFormatter.format)
 
-  def createHold(patron: SierraPatronNumber, item: SierraItemNumber): Future[Either[SierraErrorCode, Unit]] =
+  def createHold(
+    patron: SierraPatronNumber,
+    item: SierraItemNumber): Future[Either[SierraErrorCode, Unit]] =
     for {
       resp <- client.post(
         path = Path(s"v5/patrons/${patron.withoutCheckDigit}/holds/requests"),

@@ -8,8 +8,18 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
 import weco.api.stacks.http.impl.MemoryHttpClient
-import weco.api.stacks.models.{SierraErrorCode, SierraHold, SierraHoldStatus, SierraHoldsList, SierraItem, SierraItemStatus}
-import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.api.stacks.models.{
+  SierraErrorCode,
+  SierraHold,
+  SierraHoldStatus,
+  SierraHoldsList,
+  SierraItem,
+  SierraItemStatus
+}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.catalogue.source_model.sierra.source.SierraSourceLocation
 
 import java.net.URI
@@ -164,7 +174,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+            uri = Uri(
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -228,18 +239,28 @@ class SierraSourceTest
               total = 2,
               entries = List(
                 SierraHold(
-                  id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
-                  record = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"),
-                  pickupLocation = SierraSourceLocation(code = "sotop", name = "Rare Materials Room"),
+                  id = new URI(
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
+                  record = new URI(
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"),
+                  pickupLocation = SierraSourceLocation(
+                    code = "sotop",
+                    name = "Rare Materials Room"),
                   pickupByDate = None,
                   status = SierraHoldStatus(code = "0", name = "on hold.")
                 ),
                 SierraHold(
-                  id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
-                  record = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"),
-                  pickupLocation = SierraSourceLocation(code = "hgser", name = "Library Enquiry Desk"),
+                  id = new URI(
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
+                  record = new URI(
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"),
+                  pickupLocation = SierraSourceLocation(
+                    code = "hgser",
+                    name = "Library Enquiry Desk"),
                   pickupByDate = None,
-                  status = SierraHoldStatus(code = "i", name = "item hold ready for pickup.")
+                  status = SierraHoldStatus(
+                    code = "i",
+                    name = "item hold ready for pickup.")
                 )
               )
             )
@@ -253,7 +274,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+            uri = Uri(
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -290,7 +312,8 @@ class SierraSourceTest
         (
           HttpRequest(
             method = HttpMethods.POST,
-            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+            uri = Uri(
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""
@@ -320,7 +343,8 @@ class SierraSourceTest
         (
           HttpRequest(
             method = HttpMethods.POST,
-            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+            uri = Uri(
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""
