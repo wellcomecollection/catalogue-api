@@ -12,8 +12,14 @@ import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
   SierraItemStub
 }
 import weco.api.stacks.http.impl.MemoryHttpClient
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
+import weco.api.stacks.models.{SierraHold, SierraHoldStatus, SierraHoldsList}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
+import weco.catalogue.source_model.sierra.source.SierraSourceLocation
 
+import java.net.URI
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraSourceTest
@@ -153,6 +159,130 @@ class SierraSourceTest
 
         whenReady(future) {
           _.left.value shouldBe a[SierraItemLookupError.ItemHasNoStatus]
+        }
+      }
+    }
+  }
+
+  describe("listHolds") {
+    it("looks up the holds for a user") {
+      val patron = SierraPatronNumber("1234567")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                |{
+                |  "total": 2,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111",
+                |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                |      "frozen": false,
+                |      "placed": "2021-05-07",
+                |      "notWantedBeforeDate": "2021-05-07",
+                |      "pickupLocation": {
+                |        "code": "sotop",
+                |        "name": "Rare Materials Room"
+                |      },
+                |      "status": {
+                |        "code": "0",
+                |        "name": "on hold."
+                |      },
+                |      "recordType": "i",
+                |      "priority": 1
+                |    },
+                |    {
+                |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
+                |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222",
+                |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                |      "frozen": false,
+                |      "placed": "2021-05-11",
+                |      "notWantedBeforeDate": "2021-05-11",
+                |      "pickupLocation": {
+                |        "code": "hgser",
+                |        "name": "Library Enquiry Desk"
+                |      },
+                |      "status": {
+                |        "code": "i",
+                |        "name": "item hold ready for pickup."
+                |      },
+                |      "recordType": "i",
+                |      "priority": 1
+                |    }
+                |  ]
+                |}
+                |
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.listHolds(patron)
+
+        whenReady(future) {
+          _.value shouldBe
+            SierraHoldsList(
+              total = 2,
+              entries = List(
+                SierraHold(
+                  id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
+                  record = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"),
+                  pickupLocation = SierraSourceLocation(code = "sotop", name = "Rare Materials Room"),
+                  pickupByDate = None,
+                  status = SierraHoldStatus(code = "0", name = "on hold.")
+                ),
+                SierraHold(
+                  id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
+                  record = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"),
+                  pickupLocation = SierraSourceLocation(code = "hgser", name = "Library Enquiry Desk"),
+                  pickupByDate = None,
+                  status = SierraHoldStatus(code = "i", name = "item hold ready for pickup.")
+                )
+              )
+            )
+        }
+      }
+    }
+
+    it("looks up an empty list of holds") {
+      val patron = SierraPatronNumber("1234567")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 0,
+                 |  "start": 0,
+                 |  "entries": []
+                 |}
+                 |
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.listHolds(patron)
+
+        whenReady(future) {
+          _.value shouldBe SierraHoldsList(total = 0, entries = List())
         }
       }
     }
