@@ -8,6 +8,7 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
+  SierraErrorCode,
   SierraItemStatusStub,
   SierraItemStub
 }
@@ -283,6 +284,85 @@ class SierraSourceTest
 
         whenReady(future) {
           _.value shouldBe SierraHoldsList(total = 0, entries = List())
+        }
+      }
+    }
+  }
+
+  describe("createHold") {
+    it("creates a hold") {
+      val patron = SierraPatronNumber("1234567")
+      val item = SierraItemNumber("1111111")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""
+            )
+          ),
+          HttpResponse(
+            status = StatusCodes.NoContent,
+            entity = HttpEntity.Empty
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.createHold(patron, item)
+
+        whenReady(future) {
+          _.value shouldBe (())
+        }
+      }
+    }
+
+    it("returns an error if the hold can't be placed") {
+      val patron = SierraPatronNumber("1234567")
+      val item = SierraItemNumber("1111111")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri = Uri(s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""
+            )
+          ),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 2,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : This record is not available"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.createHold(patron, item)
+
+        whenReady(future) {
+          _.left.value shouldBe SierraErrorCode(
+            code = 132,
+            specificCode = 2,
+            httpStatus = 500,
+            name = "XCirc error",
+            description = Some("XCirc error : This record is not available")
+          )
         }
       }
     }

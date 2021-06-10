@@ -4,17 +4,20 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.Materializer
+import io.circe.Encoder
 import uk.ac.wellcome.platform.api.common.services.source.SierraSource.{
   SierraErrorCode,
   SierraItemStub
 }
 import uk.ac.wellcome.json.JsonUtil._
-import weco.api.stacks.models.SierraHoldsList
+import weco.api.stacks.models.{SierraHoldRequest, SierraHoldsList}
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
 
+import java.time.{Instant, ZoneId}
+import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait SierraItemLookupError
@@ -76,6 +79,26 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
       result <- resp.status match {
         case StatusCodes.OK => Unmarshal(resp).to[SierraHoldsList].map(Right(_))
         case _ => Unmarshal(resp).to[SierraErrorCode].map(Left(_))
+      }
+    } yield result
+
+  private val dateTimeFormatter = DateTimeFormatter
+    .ofPattern("yyyy-MM-dd")
+    .withZone(ZoneId.systemDefault())
+
+  implicit val encodeInstant: Encoder[Instant] =
+    Encoder.encodeString.contramap[Instant](dateTimeFormatter.format)
+
+  def createHold(patron: SierraPatronNumber, item: SierraItemNumber): Future[Either[SierraErrorCode, Unit]] =
+    for {
+      resp <- client.post(
+        path = Path(s"v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+        body = Some(SierraHoldRequest(item)),
+      )
+
+      result <- resp.status match {
+        case StatusCodes.NoContent => Future.successful(Right(()))
+        case _                     => Unmarshal(resp).to[SierraErrorCode].map(Left(_))
       }
     } yield result
 }
