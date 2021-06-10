@@ -89,7 +89,6 @@ class AkkaSierraSource(
     with AkkaClientPost
     with AkkaClientTokenExchange {
 
-  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
   import SierraSource._
 

@@ -11,6 +11,7 @@ import akka.http.scaladsl.model.headers.{
   OAuth2BearerToken
 }
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
+import io.circe.{Decoder, Encoder}
 import uk.ac.wellcome.platform.api.http.TokenExchange
 
 import java.time.Instant
@@ -47,8 +48,11 @@ trait AkkaClientGet extends AkkaClient {
     params: Map[String, String] = Map.empty,
     headers: List[HttpHeader] = Nil
   )(
-    implicit um: Unmarshaller[HttpResponse, Out]
-  ): Future[Response[Out]] =
+    implicit decoder: Decoder[Out]
+  ): Future[Response[Out]] = {
+    implicit val um: Unmarshaller[HttpEntity, Out] =
+      CirceMarshalling.fromDecoder[Out]
+
     for {
       response <- Http().singleRequest(
         HttpRequest(
@@ -67,6 +71,7 @@ trait AkkaClientGet extends AkkaClient {
         case r if r.isSuccess() => SuccessResponse(result)
         case _                  => FailureResponse(result)
       }
+  }
 }
 
 trait AkkaClientPost extends AkkaClient {
@@ -77,9 +82,15 @@ trait AkkaClientPost extends AkkaClient {
     headers: List[HttpHeader] = Nil
   )(
     implicit
-    um: Unmarshaller[HttpResponse, Out],
-    m: Marshaller[In, RequestEntity]
-  ): Future[Response[Out]] =
+    encoder: Encoder[In],
+    decoder: Decoder[Out]
+  ): Future[Response[Out]] = {
+    implicit val m: Marshaller[In, RequestEntity] =
+      CirceMarshalling.fromEncoder[In]
+
+    implicit val um: Unmarshaller[HttpEntity, Out] =
+      CirceMarshalling.fromDecoder[Out]
+
     for {
       entity <- body match {
         case Some(body) => Marshal(body).to[RequestEntity]
@@ -105,13 +116,13 @@ trait AkkaClientPost extends AkkaClient {
         case r if r.isSuccess() => SuccessResponse(result)
         case _                  => FailureResponse(result)
       }
+  }
 }
 
 trait AkkaClientTokenExchange
     extends AkkaClientPost
     with TokenExchange[BasicHttpCredentials, OAuth2BearerToken] {
 
-  import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
   import io.circe.generic.auto._
 
   case class AccessToken(access_token: String, expires_in: Int)
