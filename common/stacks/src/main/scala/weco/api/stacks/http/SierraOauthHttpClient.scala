@@ -15,7 +15,7 @@ import weco.api.stacks.models.SierraAccessToken
 import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
-class SierraAuthenticatedHttpClient(
+class SierraOauthHttpClient(
   underlying: HttpClient,
   val tokenPath: Path = Path("v5/token"),
   val credentials: BasicHttpCredentials

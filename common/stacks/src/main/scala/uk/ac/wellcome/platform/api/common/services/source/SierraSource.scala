@@ -13,7 +13,7 @@ import weco.api.stacks.http.{
   AkkaClientPost,
   AkkaClientTokenExchange
 }
-import weco.api.stacks.http.SierraAuthenticatedHttpClient
+import weco.api.stacks.http.SierraOauthHttpClient
 import weco.api.stacks.http.impl.AkkaHttpClient
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
@@ -104,7 +104,7 @@ class AkkaSierraSource(
   private val httpClient = new AkkaHttpClient(baseUri = baseUri)
 
   private val underlying = new http.SierraSource(
-    client = new SierraAuthenticatedHttpClient(
+    client = new SierraOauthHttpClient(
       underlying = httpClient,
       credentials = credentials
     )
