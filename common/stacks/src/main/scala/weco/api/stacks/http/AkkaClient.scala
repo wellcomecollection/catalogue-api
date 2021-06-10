@@ -11,7 +11,9 @@ import akka.http.scaladsl.model.headers.{
   OAuth2BearerToken
 }
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
+import io.circe.generic.extras.JsonKey
 import io.circe.{Decoder, Encoder}
+import uk.ac.wellcome.json.JsonUtil._
 import uk.ac.wellcome.platform.api.http.TokenExchange
 
 import java.time.Instant
@@ -123,9 +125,10 @@ trait AkkaClientTokenExchange
     extends AkkaClientPost
     with TokenExchange[BasicHttpCredentials, OAuth2BearerToken] {
 
-  import io.circe.generic.auto._
-
-  case class AccessToken(access_token: String, expires_in: Int)
+  case class AccessToken(
+    @JsonKey("access_token") accessToken: String,
+    @JsonKey("expires_in") expiresIn: Int
+  )
 
   val tokenPath: Path
 
