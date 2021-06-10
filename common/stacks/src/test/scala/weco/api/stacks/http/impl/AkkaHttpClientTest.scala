@@ -8,6 +8,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.platform.api.common.fixtures.SierraWireMockFixture
+import weco.api.stacks.http.SierraAuthenticatedHttpClient
 import weco.http.fixtures.HttpFixtures
 
 import java.net.URL
@@ -21,8 +22,11 @@ class AkkaHttpClientTest extends AnyFunSpec with Matchers with ScalaFutures with
     withMockSierraServer {
       case (sierraApiUrl, _) =>
         withActorSystem { implicit actorSystem =>
-          val client = new AkkaHttpClient(
-            baseUri = Uri(s"$sierraApiUrl/iii/sierra-api"),
+          val httpClient = new AkkaHttpClient(
+            baseUri = Uri(s"$sierraApiUrl/iii/sierra-api")
+          )
+          val client = new SierraAuthenticatedHttpClient(
+            underlying = httpClient,
             credentials = BasicHttpCredentials("username", "password")
           )
 

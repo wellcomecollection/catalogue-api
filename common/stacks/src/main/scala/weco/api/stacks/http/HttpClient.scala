@@ -12,7 +12,7 @@ trait HttpClient {
 
   implicit val ec: ExecutionContext
 
-  protected def makeRequest(request: HttpRequest): Future[HttpResponse]
+  def makeRequest(request: HttpRequest): Future[HttpResponse]
 
   private def buildUri(
     path: Path,

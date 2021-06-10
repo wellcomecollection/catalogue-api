@@ -2,8 +2,12 @@ package weco.api.stacks.http
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Path
-import akka.http.scaladsl.model.headers.{Authorization, BasicHttpCredentials, OAuth2BearerToken}
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.headers.{
+  Authorization,
+  BasicHttpCredentials,
+  OAuth2BearerToken
+}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import uk.ac.wellcome.platform.api.http.TokenExchange
 import weco.api.stacks.models.SierraAccessToken
@@ -11,18 +15,20 @@ import weco.api.stacks.models.SierraAccessToken
 import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
-trait SierraAuthenticatedHttpClient
+class SierraAuthenticatedHttpClient(
+  underlying: HttpClient,
+  val tokenPath: Path = Path("v5/token"),
+  val credentials: BasicHttpCredentials
+)(
+  implicit
+  val system: ActorSystem,
+  val ec: ExecutionContext,
+  val um: Unmarshaller[HttpResponse, SierraAccessToken]
+)
   extends HttpClient
     with TokenExchange[BasicHttpCredentials, OAuth2BearerToken] {
 
-  val tokenPath: Path
-  val credentials: BasicHttpCredentials
-
-  implicit val system: ActorSystem
-  implicit val um: Unmarshaller[HttpResponse, SierraAccessToken]
-  implicit val ec: ExecutionContext
-
-  protected def makeSingleRequest(request: HttpRequest): Future[HttpResponse]
+  override val baseUri: Uri = underlying.baseUri
 
   import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport._
 
@@ -37,7 +43,7 @@ trait SierraAuthenticatedHttpClient
     credentials: BasicHttpCredentials
   ): Future[(OAuth2BearerToken, Instant)] =
     for {
-      tokenResponse <- post[Unit](
+      tokenResponse <- underlying.post[Unit](
         path = tokenPath,
         headers = List(Authorization(credentials))
       )
@@ -50,7 +56,7 @@ trait SierraAuthenticatedHttpClient
       )
     } yield result
 
-  private def fetchTokenAndMakeRequest(request: HttpRequest): Future[HttpResponse] =
+  override def makeRequest(request: HttpRequest): Future[HttpResponse] =
     for {
       token <- getToken(credentials)
 
@@ -70,14 +76,6 @@ trait SierraAuthenticatedHttpClient
         )
       }
 
-      response <- makeSingleRequest(authenticatedRequest)
+      response <- underlying.makeRequest(authenticatedRequest)
     } yield response
-
-  override protected def makeRequest(request: HttpRequest): Future[HttpResponse] =
-    // The method for fetching a token will call this method, so if
-    // there's already authentication skip fetching it again.
-    request.headers.collectFirst { case auth: Authorization => auth } match {
-      case Some(_) => makeSingleRequest(request)
-      case None    => fetchTokenAndMakeRequest(request)
-    }
 }
