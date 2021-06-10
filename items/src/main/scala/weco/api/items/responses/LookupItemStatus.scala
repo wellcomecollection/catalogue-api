@@ -43,7 +43,7 @@ trait LookupItemStatus extends SingleWorkDirectives {
                 sierraService
                   .getItemStatus(sourceIdentifier)
                   .map { result =>
-                    StacksItem(canonicalId, sourceIdentifier, result)
+                    StacksItem(canonicalId, sourceIdentifier, result.right.get)
                   }
             }
           )

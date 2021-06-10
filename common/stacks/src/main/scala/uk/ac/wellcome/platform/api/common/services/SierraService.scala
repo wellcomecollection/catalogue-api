@@ -1,12 +1,15 @@
 package uk.ac.wellcome.platform.api.common.services
 
+import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
-import uk.ac.wellcome.platform.api.common.services.source.SierraSource
+import weco.api.stacks.http.{HttpClient, SierraItemLookupError, SierraSource}
 import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
   HoldResponse,
+  SierraErrorCode,
+  SierraHold,
   SierraItemIdentifier
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
@@ -19,24 +22,23 @@ class SierraService(
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  import SierraSource._
+  def getItemStatus(sourceIdentifier: SourceIdentifier)
+    : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
+    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-  def getItemStatus(
-    sourceIdentifier: SourceIdentifier): Future[StacksItemStatus] = {
-    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
-
-    sierraSource
-      .getSierraItemStub(itemNumber)
-      .map(item => StacksItemStatus(item.status.code))
+    sierraSource.lookupItem(item).map {
+      case Right(item) => Right(StacksItemStatus(item.status.code))
+      case Left(err)   => Left(err)
+    }
   }
 
   def placeHold(
-    patronNumber: SierraPatronNumber,
+    patron: SierraPatronNumber,
     sourceIdentifier: SourceIdentifier
   ): Future[HoldResponse] = {
-    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
+    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.postHold(patronNumber, itemNumber) map {
+    sierraSource.createHold(patron, item).map {
       // This is an "XCirc/Record not available" error
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
@@ -49,10 +51,7 @@ class SierraService(
     }
   }
 
-  protected def buildStacksHold(
-    entry: SierraUserHoldsEntryStub
-  ): StacksHold = {
-
+  protected def buildStacksHold(entry: SierraHold): StacksHold = {
     val itemNumber = SierraItemIdentifier.fromUrl(entry.record)
     val sourceIdentifier = SierraItemIdentifier.toSourceIdentifier(itemNumber)
 
@@ -76,14 +75,27 @@ class SierraService(
 
   def getStacksUserHolds(
     patronNumber: SierraPatronNumber
-  ): Future[StacksUserHolds] = {
+  ): Future[Either[SierraErrorCode, StacksUserHolds]] = {
     sierraSource
-      .getSierraUserHoldsStub(patronNumber)
-      .map { hold =>
-        StacksUserHolds(
-          userId = patronNumber.withoutCheckDigit,
-          holds = hold.entries.map(buildStacksHold)
-        )
+      .listHolds(patronNumber)
+      .map {
+        case Right(holds) =>
+          Right(
+            StacksUserHolds(
+              userId = patronNumber.withoutCheckDigit,
+              holds = holds.entries.map(buildStacksHold)
+            )
+          )
+
+        case Left(err) => Left(err)
       }
   }
+}
+
+object SierraService {
+  def apply(client: HttpClient)(implicit ec: ExecutionContext,
+                                mat: Materializer): SierraService =
+    new SierraService(
+      new SierraSource(client)
+    )
 }

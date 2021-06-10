@@ -28,7 +28,7 @@ trait CreateRequest extends CustomDirectives with Logging {
       case Right(sourceIdentifier)
           if sourceIdentifier.identifierType == SierraSystemNumber =>
         val result = sierraService.placeHold(
-          patronNumber = patronNumber,
+          patron = patronNumber,
           sourceIdentifier = sourceIdentifier
         )
 

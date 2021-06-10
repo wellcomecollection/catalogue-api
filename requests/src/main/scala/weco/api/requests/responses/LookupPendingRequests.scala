@@ -24,7 +24,7 @@ trait LookupPendingRequests extends CustomDirectives {
         userHolds <- sierraService.getStacksUserHolds(patronNumber)
 
         holdsWithCatalogueIds <- Future.sequence(
-          userHolds.holds.map { hold =>
+          userHolds.right.get.holds.map { hold =>
             itemLookup
               .bySourceIdentifier(hold.sourceIdentifier)(index)
               .map {
@@ -38,7 +38,7 @@ trait LookupPendingRequests extends CustomDirectives {
           }
         )
 
-        updatedHolds = userHolds.copy(holds = holdsWithCatalogueIds)
+        updatedHolds = userHolds.right.get.copy(holds = holdsWithCatalogueIds)
       } yield updatedHolds
 
     onComplete(userHolds) {

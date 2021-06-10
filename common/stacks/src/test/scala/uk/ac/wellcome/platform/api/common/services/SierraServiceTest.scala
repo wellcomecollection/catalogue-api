@@ -35,7 +35,7 @@ class SierraServiceTest
             val future = sierraService.getItemStatus(identifier)
 
             whenReady(future) {
-              _ shouldBe StacksItemStatus("available", "Available")
+              _.value shouldBe StacksItemStatus("available", "Available")
             }
         }
       }
@@ -47,10 +47,10 @@ class SierraServiceTest
           case (sierraService, _) =>
             val patronNumber = SierraPatronNumber("1234567")
 
-            whenReady(
-              sierraService.getStacksUserHolds(patronNumber)
-            ) { stacksUserHolds =>
-              stacksUserHolds shouldBe StacksUserHolds(
+            val future = sierraService.getStacksUserHolds(patronNumber)
+
+            whenReady(future) { stacksUserHolds =>
+              stacksUserHolds.value shouldBe StacksUserHolds(
                 userId = "1234567",
                 holds = List(
                   StacksHold(
@@ -91,7 +91,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                patronNumber = patronNumber,
+                patron = patronNumber,
                 sourceIdentifier = sourceIdentifier
               )
             ) { _ =>
@@ -127,7 +127,7 @@ class SierraServiceTest
 
             whenReady(
               sierraService.placeHold(
-                patronNumber = patronNumber,
+                patron = patronNumber,
                 sourceIdentifier = sourceIdentifier,
               )
             ) { response =>
