@@ -13,8 +13,8 @@ import click
 import elasticsearch
 from elasticsearch import Elasticsearch
 
-WORK_INDEX_PATTERN = "works-{index}*"
-IMAGE_INDEX_PATTERN = "images-{index}*"
+WORK_INDEX_PATTERN = "works-*"
+IMAGE_INDEX_PATTERN = "images-*"
 
 ROLES = {
     "catalogue_read": {

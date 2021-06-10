@@ -14,8 +14,8 @@ resource "ec_deployment" "catalogue_api" {
   elasticsearch {
     topology {
       id         = "hot_content"
-      size       = "4g"
-      zone_count = 1
+      size       = "8g"
+      zone_count = 3
     }
 
     remote_cluster {
@@ -55,6 +55,24 @@ locals {
     "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
     "elasticsearch/catalogue_api/protocol" = "https"
     "elasticsearch/catalogue_api/port"     = 9243
+  }
+
+  # This config will be consumed by the items service in the catalogue_api stack
+  es_items_secret_config = {
+    es_host     = "elasticsearch/catalogue_api/public_host"
+    es_port     = "elasticsearch/catalogue_api/port"
+    es_protocol = "elasticsearch/catalogue_api/protocol"
+    es_username = aws_secretsmanager_secret.service-items-username.name
+    es_password = aws_secretsmanager_secret.service-items-password.name
+  }
+
+  # This config will be consumed by the search service in the catalogue_api stack
+  es_search_secret_config = {
+    es_host     = "elasticsearch/catalogue_api/public_host"
+    es_port     = "elasticsearch/catalogue_api/port"
+    es_protocol = "elasticsearch/catalogue_api/protocol"
+    es_username = aws_secretsmanager_secret.service-search-username.name
+    es_password = aws_secretsmanager_secret.service-search-password.name
   }
 }
 
