@@ -103,6 +103,11 @@ object ExternalDependencies {
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.6"
+
+    // This should match the version used in scala-libs
+    // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
+    val akka = "2.6.14"
+    val akkaHttp = "10.1.11"
   }
 
   val circeOpticsDependencies = Seq(
@@ -121,6 +126,11 @@ object ExternalDependencies {
   val scalatestDependencies = Seq(
     "org.scalatest" %% "scalatest" % versions.scalatest % "test"
   )
+
+  val akkaHttpDependencies = Seq(
+    "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
+    "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
+  )
 }
 
 object CatalogueDependencies {
@@ -136,7 +146,8 @@ object CatalogueDependencies {
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary
+      WellcomeDependencies.typesafeLibrary ++
+      ExternalDependencies.akkaHttpDependencies
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
