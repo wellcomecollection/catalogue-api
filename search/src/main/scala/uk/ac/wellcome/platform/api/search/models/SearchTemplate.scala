@@ -11,7 +11,10 @@ case class SearchTemplate(id: String, index: String, query: String)
 
 object SearchTemplate {
   def apply(id: String, index: String, query: Query): SearchTemplate =
-    SearchTemplate(id, index, JacksonBuilder.writeAsString(QueryBuilderFn(query).value))
+    SearchTemplate(
+      id,
+      index,
+      JacksonBuilder.writeAsString(QueryBuilderFn(query).value))
 
   implicit val encoder: Encoder[SearchTemplate] =
     deriveConfiguredEncoder
