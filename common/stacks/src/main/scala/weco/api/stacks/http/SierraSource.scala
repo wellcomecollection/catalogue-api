@@ -16,6 +16,8 @@ import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
+import weco.http.client.{HttpClient, HttpGet, HttpPost}
+import weco.http.json.CirceMarshalling
 
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
@@ -32,8 +34,11 @@ object SierraItemLookupError {
       extends SierraItemLookupError
 }
 
-class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
-                                       mat: Materializer) {
+class SierraSource(
+  client: HttpClient with HttpGet with HttpPost)(
+  implicit
+  ec: ExecutionContext,
+  mat: Materializer) {
   private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItem] =
     CirceMarshalling.fromDecoder[SierraItem]
 

@@ -6,8 +6,8 @@ import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import com.typesafe.config.Config
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.typesafe.config.builders.EnrichConfig._
-import weco.api.stacks.http.SierraOauthHttpClient
-import weco.api.stacks.http.impl.AkkaHttpClient
+import weco.http.client.{AkkaHttpClient, HttpGet, HttpPost}
+import weco.http.client.sierra.SierraOauthHttpClient
 
 import scala.concurrent.ExecutionContext
 
@@ -19,9 +19,12 @@ object SierraServiceBuilder {
   ): SierraService = {
     val username = config.requireString("sierra.api.key")
     val password = config.requireString(("sierra.api.secret"))
-    val baseUrl = config.requireString("sierra.api.baseUrl")
 
-    val client = new AkkaHttpClient(baseUri = Uri(baseUrl))
+    val client = new AkkaHttpClient() with HttpGet with HttpPost {
+      override val baseUri: Uri = Uri(
+        config.requireString("sierra.api.baseUrl")
+      )
+    }
 
     val authenticatedClient = new SierraOauthHttpClient(
       client,
