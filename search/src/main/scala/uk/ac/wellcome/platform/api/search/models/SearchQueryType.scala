@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.models
 
-import com.sksamuel.elastic4s.requests.searches.queries.BoolQuery
+import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import uk.ac.wellcome.platform.api.search.elasticsearch.WorksMultiMatcher
 
 sealed trait SearchQueryType {
