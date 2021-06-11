@@ -76,7 +76,7 @@ class SierraService(
 
   def getStacksUserHolds(
     patronNumber: SierraPatronNumber
-  ): Future[Either[SierraErrorCode, StacksUserHolds]] = {
+  ): Future[Either[SierraErrorCode, StacksUserHolds]] =
     sierraSource
       .listHolds(patronNumber)
       .map {
@@ -90,7 +90,6 @@ class SierraService(
 
         case Left(err) => Left(err)
       }
-  }
 }
 
 object SierraService {
