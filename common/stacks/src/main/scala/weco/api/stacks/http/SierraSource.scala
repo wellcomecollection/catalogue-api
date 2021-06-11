@@ -34,8 +34,7 @@ object SierraItemLookupError {
       extends SierraItemLookupError
 }
 
-class SierraSource(
-  client: HttpClient with HttpGet with HttpPost)(
+class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   implicit
   ec: ExecutionContext,
   mat: Materializer) {

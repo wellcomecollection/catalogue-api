@@ -93,8 +93,7 @@ class SierraService(
 }
 
 object SierraService {
-  def apply(
-    client: HttpClient with HttpGet with HttpPost)(
+  def apply(client: HttpClient with HttpGet with HttpPost)(
     implicit
     ec: ExecutionContext,
     mat: Materializer): SierraService =

@@ -36,8 +36,7 @@ class SierraSourceTest
     testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
       val client =
-        new MemoryHttpClient(responses = responses)
-            with HttpGet with HttpPost {
+        new MemoryHttpClient(responses = responses) with HttpGet with HttpPost {
           override val baseUri: Uri = Uri("http://sierra:1234")
         }
 
