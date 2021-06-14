@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.requests
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{HttpResponse, RequestEntity, StatusCodes}
 import org.scalatest.GivenWhenThen
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
@@ -41,29 +41,32 @@ class RequestingScenarioTest
              |""".stripMargin
         )
 
-        whenPostRequestReady(path, entity) { response =>
-          Then("the hold is rejected")
-          response.status shouldBe StatusCodes.BadRequest
+        val response = waitForPostRequest(path, entity)
 
-          And("the error explains why the hold is rejected")
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_,
-              s"""
-                 |{
-                 |  "@context": "$contextUrl",
-                 |  "type": "Error",
-                 |  "errorType": "http",
-                   |  "httpStatus": 400,
-                   |  "label": "Bad Request",
-                   |  "description": "You cannot request ${item.id.canonicalId}"
-                   |}
-                   |""".stripMargin
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.BadRequest
+
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(_,
+            s"""
+              |{
+              |  "@context": "$contextUrl",
+              |  "type": "Error",
+              |  "errorType": "http",
+              |  "httpStatus": 400,
+              |  "label": "Bad Request",
+              |  "description": "You cannot request ${item.id.canonicalId}"
+              |}
+              |""".stripMargin
             )
           }
         }
-      }
     }
   }
+
+  def waitForPostRequest(path: String, entity: RequestEntity): HttpResponse =
+    whenPostRequestReady(path, entity) { _ }
 
   def createIdentifiedCalmItem: Item[IdState.Identified] =
     createIdentifiedItemWith(
