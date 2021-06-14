@@ -95,6 +95,16 @@
         }
       },
       {
+        "match" : {
+          "search.relations" : {
+            "query" : "{{query}}",
+            "_name" : "relations",
+            "boost" : 1000.0,
+            "operator" : "AND"
+          }
+        }
+      },
+      {
         "multi_match" : {
           "query" : "{{query}}",
           "fields" : [
@@ -107,8 +117,6 @@
             "data.language.label",
             "data.edition",
             "data.notes.content",
-            "data.collectionPath.path",
-            "data.collectionPath.label",
             "data.lettering"
           ],
           "type" : "cross_fields",

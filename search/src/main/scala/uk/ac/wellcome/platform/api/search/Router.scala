@@ -12,7 +12,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ImagesMultiMatcher,
-  WorksMultiMatcher
+  WorksMultiMatcherQuery
 }
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
 import uk.ac.wellcome.platform.api.models.ApiConfig
@@ -137,7 +137,7 @@ class Router(
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       elasticConfig.worksIndex.name,
-      WorksMultiMatcher("{{query}}")
+      WorksMultiMatcherQuery("{{query}}")
         .filter(termQuery(field = "type", value = "Visible"))
     )
 

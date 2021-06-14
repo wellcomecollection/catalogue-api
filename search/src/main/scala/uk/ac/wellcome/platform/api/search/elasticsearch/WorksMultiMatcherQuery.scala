@@ -9,23 +9,17 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryB
 }
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
-  MatchQuery,
   MultiMatchQuery
 }
 import uk.ac.wellcome.models.index.WorksAnalysis.{languages, whitespaceAnalyzer}
 
-case object WorksMultiMatcher {
+case object WorksMultiMatcherQuery extends SearchQuery with SearchQueryHelpers {
   val titleFields = Seq(
-    "search.titlesAndContributors",
-    "search.titlesAndContributors.english",
-    "search.titlesAndContributors.shingles"
+    "data.title",
+    "data.title.english",
+    "data.title.shingles",
+    "data.alternativeTitles"
   )
-
-  def fieldsWithBoost(
-    boost: Int,
-    fields: Seq[String]
-  ): Seq[FieldWithOptionalBoost] =
-    fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
 
   def apply(q: String): BoolQuery = {
     boolQuery()
@@ -69,41 +63,30 @@ case object WorksMultiMatcher {
             ),
             MultiMatchQuery(
               q,
-              queryName = Some("title and contributor exact spellings"),
+              queryName = Some("title exact spellings"),
               fields = fieldsWithBoost(boost = 100, fields = titleFields),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             ),
             MultiMatchQuery(
               q,
-              queryName = Some("title and contributor alternative spellings"),
+              queryName = Some("title alternative spellings"),
               fields = fieldsWithBoost(boost = 80, fields = titleFields),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND),
-              fuzziness = Some("AUTO"),
-              prefixLength = Some(2)
+              fuzziness = Some("AUTO")
             ),
             MultiMatchQuery(
               q,
-              queryName = Some("non-english titles and contributors"),
+              queryName = Some("non-english titles"),
               fields = languages.map(
                 language =>
-                  FieldWithOptionalBoost(
-                    s"search.titlesAndContributors.${language}",
-                    None
-                )
+                  FieldWithOptionalBoost(s"data.title.${language}", None)
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             )
           )
-        ),
-        MatchQuery(
-          queryName = Some("relations"),
-          field = "search.relations",
-          value = q,
-          operator = Some(AND),
-          boost = Some(1000)
         ),
         MultiMatchQuery(
           q,
@@ -120,6 +103,8 @@ case object WorksMultiMatcher {
             (None, "data.language.label"),
             (None, "data.edition"),
             (None, "data.notes.content"),
+            (None, "data.collectionPath.path"),
+            (None, "data.collectionPath.label"),
             (None, "data.lettering")
           ).map(f => FieldWithOptionalBoost(f._2, f._1.map(_.toDouble)))
         )

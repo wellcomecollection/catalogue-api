@@ -10,15 +10,26 @@ import scala.io.Source
 
 class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
   it("matches the works JSON") {
-    val fileJson =
-      Source
-        .fromResource("WorksMultiMatcherQuery.json")
-        .getLines
-        .mkString
+    val queries = Map(
+      "WorksMultiMatcherQuery.json" -> WorksMultiMatcherQuery,
+      "WorksWithRelationsQuery.json" -> WorksWithRelationsQuery
+    )
 
-    val queryJson = JacksonBuilder.writeAsString(
-      QueryBuilderFn(WorksMultiMatcher("{{query}}")).value)
-    assertJsonStringsAreEqual(fileJson, queryJson)
+    queries.foreach {
+      case (filePath, query) => {
+        val fileJson =
+          Source
+            .fromResource(filePath)
+            .getLines
+            .mkString
+
+        val queryJson = JacksonBuilder.writeAsString(
+          QueryBuilderFn(query("{{query}}")).value
+        )
+        assertJsonStringsAreEqual(fileJson, queryJson)
+      }
+    }
+
   }
 
   it("matches the images JSON") {
@@ -29,7 +40,8 @@ class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
         .mkString
 
     val queryJson = JacksonBuilder.writeAsString(
-      QueryBuilderFn(ImagesMultiMatcher("{{query}}")).value)
+      QueryBuilderFn(ImagesMultiMatcher("{{query}}")).value
+    )
     assertJsonStringsAreEqual(fileJson, queryJson)
   }
 }

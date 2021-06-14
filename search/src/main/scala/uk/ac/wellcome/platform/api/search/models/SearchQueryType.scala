@@ -1,7 +1,10 @@
 package uk.ac.wellcome.platform.api.search.models
 
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import uk.ac.wellcome.platform.api.search.elasticsearch.WorksMultiMatcher
+import uk.ac.wellcome.platform.api.search.elasticsearch.{
+  WorksMultiMatcherQuery,
+  WorksWithRelationsQuery
+}
 
 sealed trait SearchQueryType {
   import uk.ac.wellcome.platform.api.search.models.SearchQueryType._
@@ -12,7 +15,8 @@ sealed trait SearchQueryType {
   final val name = this.getClass.getSimpleName.split("\\$").last
 
   def toEsQuery(q: String): BoolQuery = this match {
-    case MultiMatcher => WorksMultiMatcher(q)
+    case MultiMatcher       => WorksMultiMatcherQuery(q)
+    case WorksWithRelations => WorksWithRelationsQuery(q)
   }
 }
 object SearchQueryType {
@@ -20,7 +24,8 @@ object SearchQueryType {
   // These are the queries that we are surfacing to the frontend to be able to select which one they want to run.
   // You'll need to change the `allowableValues` in `uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs`
   // when changing these as they can't be read there as they need to be constant.
-  val allowed = List(MultiMatcher)
+  val allowed = List(MultiMatcher, WorksWithRelations)
 
   final case object MultiMatcher extends SearchQueryType
+  final case object WorksWithRelations extends SearchQueryType
 }
