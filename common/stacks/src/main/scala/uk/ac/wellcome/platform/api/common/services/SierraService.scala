@@ -3,7 +3,7 @@ package uk.ac.wellcome.platform.api.common.services
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
-import weco.api.stacks.http.{HttpClient, SierraItemLookupError, SierraSource}
+import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
@@ -14,6 +14,7 @@ import weco.api.stacks.models.{
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -75,7 +76,7 @@ class SierraService(
 
   def getStacksUserHolds(
     patronNumber: SierraPatronNumber
-  ): Future[Either[SierraErrorCode, StacksUserHolds]] = {
+  ): Future[Either[SierraErrorCode, StacksUserHolds]] =
     sierraSource
       .listHolds(patronNumber)
       .map {
@@ -89,12 +90,13 @@ class SierraService(
 
         case Left(err) => Left(err)
       }
-  }
 }
 
 object SierraService {
-  def apply(client: HttpClient)(implicit ec: ExecutionContext,
-                                mat: Materializer): SierraService =
+  def apply(client: HttpClient with HttpGet with HttpPost)(
+    implicit
+    ec: ExecutionContext,
+    mat: Materializer): SierraService =
     new SierraService(
       new SierraSource(client)
     )

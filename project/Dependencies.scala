@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.14.0"
+  val defaultVersion = "26.17.3"
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "4270.2b57b5b220945d293f0918e546f21a9201796bfa"
+    val internalModel = "4307.1402c7563448041182b081834fe9ed862bafea56"
   }
 
   val internalModel: Seq[ModuleID] = library(
@@ -103,18 +103,12 @@ object ExternalDependencies {
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.6"
-    val apm = "1.22.0"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val akka = "2.6.10"
+    val akka = "2.6.14"
     val akkaHttp = "10.1.11"
   }
-
-  val apmDependencies = Seq(
-    "co.elastic.apm" % "apm-agent-attach" % versions.apm,
-    "co.elastic.apm" % "apm-agent-api" % versions.apm
-  )
 
   val circeOpticsDependencies = Seq(
     "io.circe" %% "circe-optics" % versions.circe
@@ -150,8 +144,7 @@ object CatalogueDependencies {
       WellcomeDependencies.httpLibrary
 
   val searchDependencies: Seq[ModuleID] =
-    ExternalDependencies.apmDependencies ++
-      ExternalDependencies.circeOpticsDependencies ++
+    ExternalDependencies.circeOpticsDependencies ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       ExternalDependencies.akkaHttpDependencies

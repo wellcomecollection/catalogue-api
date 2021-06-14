@@ -7,7 +7,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import weco.api.stacks.http.impl.MemoryHttpClient
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,
@@ -21,6 +20,7 @@ import weco.catalogue.source_model.sierra.identifiers.{
   SierraPatronNumber
 }
 import weco.catalogue.source_model.sierra.source.SierraSourceLocation
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import java.net.URI
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +35,10 @@ class SierraSourceTest
   def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(
     testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
-      val client = new MemoryHttpClient(responses = responses)
+      val client =
+        new MemoryHttpClient(responses = responses) with HttpGet with HttpPost {
+          override val baseUri: Uri = Uri("http://sierra:1234")
+        }
 
       val source = new SierraSource(client)
 
