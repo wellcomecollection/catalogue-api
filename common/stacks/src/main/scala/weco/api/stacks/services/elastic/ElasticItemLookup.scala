@@ -19,16 +19,17 @@ import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ElasticItemLookup(
-  elasticsearchService: ElasticsearchService,
-  index: Index)(
+class ElasticItemLookup(elasticsearchService: ElasticsearchService,
+                        index: Index)(
   implicit ec: ExecutionContext
 ) extends ItemLookup {
+
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
     *
     */
-  def byCanonicalId(itemId: CanonicalId): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
+  def byCanonicalId(itemId: CanonicalId)
+    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -47,7 +48,7 @@ class ElasticItemLookup(
             .flatMap { _.data.items }
             .collectFirst {
               case item @ Item(IdState.Identified(id, _, _), _, _)
-                if id == itemId =>
+                  if id == itemId =>
                 // This .asInstanceOf[] is a no-op to help the compiler see what
                 // we can see by reading the code.
                 item.asInstanceOf[Item[IdState.Identified]]
@@ -60,21 +61,22 @@ class ElasticItemLookup(
     }
   }
 
-  def bySourceIdentifier(sourceIdentifier: SourceIdentifier): Future[Either[ElasticsearchError, Item[IdState.Identified]]]  = {
+  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)
+    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
-    search(index)
-      .query(
-        boolQuery
-          .must(termQuery(field = "type", value = "Visible"))
-          .should(
-            termQuery(
-              "data.items.id.sourceIdentifier.value",
-              sourceIdentifier.value),
-          )
-      )
-      .size(10)
+      search(index)
+        .query(
+          boolQuery
+            .must(termQuery(field = "type", value = "Visible"))
+            .should(
+              termQuery(
+                "data.items.id.sourceIdentifier.value",
+                sourceIdentifier.value),
+            )
+        )
+        .size(10)
 
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
@@ -84,7 +86,7 @@ class ElasticItemLookup(
             .flatMap { _.data.items }
             .collectFirst {
               case item @ Item(id @ IdState.Identified(_, _, _), _, _)
-                if id.sourceIdentifier == sourceIdentifier =>
+                  if id.sourceIdentifier == sourceIdentifier =>
                 // This .asInstanceOf[] is a no-op to help the compiler see what
                 // we can see by reading the code.
                 item.asInstanceOf[Item[IdState.Identified]]
@@ -99,7 +101,8 @@ class ElasticItemLookup(
 }
 
 object ElasticItemLookup {
-  def apply(elasticClient: ElasticClient, index: Index)(implicit ec: ExecutionContext): ElasticItemLookup =
+  def apply(elasticClient: ElasticClient, index: Index)(
+    implicit ec: ExecutionContext): ElasticItemLookup =
     new ElasticItemLookup(
       elasticsearchService = new ElasticsearchService(elasticClient),
       index = index

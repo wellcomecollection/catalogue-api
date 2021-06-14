@@ -12,7 +12,7 @@ import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
 
 class RequestingScenarioTest
-  extends AnyFeatureSpec
+    extends AnyFeatureSpec
     with GivenWhenThen
     with Matchers
     with ItemsGenerators
@@ -48,7 +48,8 @@ class RequestingScenarioTest
 
         And("the error explains why the hold is rejected")
         withStringEntity(response.entity) {
-          assertJsonStringsAreEqual(_,
+          assertJsonStringsAreEqual(
+            _,
             s"""
               |{
               |  "@context": "$contextUrl",
@@ -59,9 +60,9 @@ class RequestingScenarioTest
               |  "description": "You cannot request ${item.id.canonicalId}"
               |}
               |""".stripMargin
-            )
-          }
+          )
         }
+      }
     }
   }
 

@@ -24,7 +24,8 @@ class ItemLookupTest
     with IndexFixtures
     with ItemsGenerators
     with WorkGenerators {
-  def createLookup(index: Index): ItemLookup = ElasticItemLookup(elasticClient, index = index)
+  def createLookup(index: Index): ItemLookup =
+    ElasticItemLookup(elasticClient, index = index)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
@@ -188,8 +189,7 @@ class ItemLookupTest
             _ shouldBe Right(it)
           }
 
-          whenReady(
-            lookup.bySourceIdentifier(it.id.otherIdentifiers.head)) {
+          whenReady(lookup.bySourceIdentifier(it.id.otherIdentifiers.head)) {
             _.left.value shouldBe a[DocumentNotFoundError[_]]
           }
         }

@@ -13,9 +13,7 @@ import java.net.URL
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait RequestsApiFixture
-    extends ServicesFixture
-    with HttpFixtures {
+trait RequestsApiFixture extends ServicesFixture with HttpFixtures {
 
   val metricsName = "RequestsApiFixture"
 
