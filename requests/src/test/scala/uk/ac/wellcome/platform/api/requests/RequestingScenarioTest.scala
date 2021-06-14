@@ -219,6 +219,79 @@ class RequestingScenarioTest
       And("an empty body")
       response.entity shouldBe HttpEntity.Empty
     }
+
+    Scenario("When the user is at their hold limit") {
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("a user who has as many items as they're allowed to request")
+      val holdLimit = 10
+
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 2,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : There is a problem with your library record.  Please see a librarian."
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = (1 to holdLimit).map { _ => createSierraItemNumber })
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses, holdLimit = holdLimit)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Forbidden
+      response.status.intValue shouldBe 403
+
+      And("the body explains the error")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 403,
+             |  "label": "Forbidden",
+             |  "description": "You are at your account limit and you cannot request more items"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(
@@ -258,13 +331,14 @@ class RequestingScenarioTest
 
   def createRoute(
     itemLookup: ItemLookup,
-    responses: Seq[(HttpRequest, HttpResponse)] = Seq()): Route = {
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    holdLimit: Int = 10): Route = {
     val client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
     val api: RequestsApi = new RequestsApi(
-      sierraService = SierraService(client),
+      sierraService = SierraService(client, holdLimit = holdLimit),
       itemLookup = itemLookup
     )
 

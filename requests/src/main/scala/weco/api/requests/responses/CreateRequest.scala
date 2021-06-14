@@ -5,16 +5,18 @@ import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.{HoldAccepted, HoldRejected}
+import weco.api.stacks.models.{HoldAccepted, HoldRejected, UserAtHoldLimit}
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.http.ErrorDirectives
+import weco.http.models.{ContextResponse, DisplayError}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait CreateRequest extends CustomDirectives with Logging {
+trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
   implicit val ec: ExecutionContext
 
   val sierraService: SierraService
@@ -36,6 +38,17 @@ trait CreateRequest extends CustomDirectives with Logging {
         onComplete(result) {
           case Success(HoldAccepted(_)) => complete(accepted)
           case Success(HoldRejected(_)) => complete(conflict)
+          case Success(UserAtHoldLimit(_)) =>
+            complete(
+              StatusCodes.Forbidden ->
+                ContextResponse(
+                  contextUrl = contextUrl,
+                  DisplayError(
+                    statusCode = StatusCodes.Forbidden,
+                    description = "You are at your account limit and you cannot request more items"
+                  )
+                )
+            )
           case Failure(err)             => failWith(err)
         }
 

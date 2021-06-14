@@ -10,7 +10,8 @@ import weco.api.stacks.models.{
   HoldResponse,
   SierraErrorCode,
   SierraHold,
-  SierraItemIdentifier
+  SierraItemIdentifier,
+  UserAtHoldLimit
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
@@ -18,8 +19,13 @@ import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/** @param holdLimit What's the most items a single user can have on hold at once?
+  *                  TODO: Make this a configurable parameter.
+  *
+  */
 class SierraService(
-  sierraSource: SierraSource
+  sierraSource: SierraSource,
+  holdLimit: Int = 10
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -49,6 +55,9 @@ class SierraService(
         getStacksUserHolds(patron).map {
           case Right(holds) if holds.holds.map(_.sourceIdentifier).contains(sourceIdentifier) =>
             HoldAccepted()
+
+          case Right(holds) if holds.holds.size >= holdLimit =>
+            UserAtHoldLimit()
 
           case _ => HoldRejected()
         }
@@ -100,11 +109,12 @@ class SierraService(
 }
 
 object SierraService {
-  def apply(client: HttpClient with HttpGet with HttpPost)(
+  def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int = 10)(
     implicit
     ec: ExecutionContext,
     mat: Materializer): SierraService =
     new SierraService(
-      new SierraSource(client)
+      new SierraSource(client),
+      holdLimit = holdLimit
     )
 }
