@@ -1,7 +1,6 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.actor.ActorSystem
-import com.sksamuel.elastic4s.Index
 import com.typesafe.config.Config
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
@@ -13,6 +12,7 @@ import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
 import weco.api.stacks.services.ItemLookup
+import weco.api.stacks.services.elastic.ElasticItemLookup
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 
@@ -33,8 +33,10 @@ object Main extends WellcomeTypesafeApp {
       override implicit val apiConfig: ApiConfig = apiConf
       override val sierraService: SierraService =
         SierraServiceBuilder.build(config)
-      override val itemLookup: ItemLookup = ItemLookup(elasticClient)
-      override val index: Index = ElasticConfig.apply().worksIndex
+      override val itemLookup: ItemLookup = ElasticItemLookup(
+        elasticClient,
+        index = ElasticConfig.apply().worksIndex
+      )
     }
 
     implicit val ec: ExecutionContext = router.ec
