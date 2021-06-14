@@ -39,16 +39,23 @@ class SierraService(
   ): Future[HoldResponse] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.createHold(patron, item).map {
-      // This is an "XCirc/Record not available" error
+    sierraSource.createHold(patron, item).flatMap {
+      case Right(_) => Future.successful(HoldAccepted())
+
+      // This is an "XCirc/Record not available" error.  This can mean
+      // that the item is already on hold -- possibly by this user.
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
-      case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
+      case Left(SierraErrorCode(132, 2, 500, _, _)) =>
+        getStacksUserHolds(patron).map {
+          case Right(holds) if holds.holds.map(_.sourceIdentifier).contains(sourceIdentifier) =>
+            HoldAccepted()
+
+          case _ => HoldRejected()
+        }
 
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
-        HoldRejected()
-
-      case Right(_) => HoldAccepted()
+        Future.successful(HoldRejected())
     }
   }
 

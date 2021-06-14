@@ -31,8 +31,6 @@ import weco.catalogue.source_model.sierra.identifiers.{
 }
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
-import scala.concurrent.Future
-
 class RequestingScenarioTest
     extends AnyFeatureSpec
     with GivenWhenThen
@@ -137,21 +135,64 @@ class RequestingScenarioTest
 
       val responses = Seq(
         (
-          HttpRequest(
-            method = HttpMethods.POST,
-            uri = s"http://sierra:1234/v5/patrons/$patronNumber/holds/requests",
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(status = StatusCodes.NoContent)
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
+
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
+    }
+
+    Scenario("An item that this user has already requested") {
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
-              s"""
-                 |{
-                 |  "recordType": "i",
-                 |  "recordNumber": ${itemNumber.withoutCheckDigit},
-                 |  "pickupLocation": "unspecified"
-                 |}
-                 |""".stripMargin
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 2,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : This record is not available"
+                |}
+                |""".stripMargin
             )
-          ),
-          HttpResponse(status = StatusCodes.NoContent)
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq(itemNumber))
         )
       )
 
@@ -229,4 +270,56 @@ class RequestingScenarioTest
 
     api.routes
   }
+
+  def createListHoldsRequest(patron: SierraPatronNumber): HttpRequest =
+    HttpRequest(
+      method = HttpMethods.GET,
+      uri = s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+    )
+
+  def createListHoldsResponse(patron: SierraPatronNumber, items: Seq[SierraItemNumber]): HttpResponse =
+    HttpResponse(
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        s"""
+           |{
+           |  "total": ${items.size},
+           |  "start": 0,
+           |  "entries": [
+           |    ${items.map(it => createListHoldEntry(patron, it)).mkString(",")}
+           |  ]
+           |}
+           |""".stripMargin
+      )
+    )
+
+  private def createListHoldEntry(patron: SierraPatronNumber, item: SierraItemNumber): String =
+    s"""
+       |{
+       |  "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/${randomInt(from = 0, to = 10000)}",
+       |  "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}",
+       |  "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+       |  "frozen": false,
+       |  "placed": "2021-05-07",
+       |  "notWantedBeforeDate": "2021-05-07",
+       |  "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
+       |  "status": {"code": "0", "name": "on hold."}
+       |}
+       |""".stripMargin
+
+  def createHoldRequest(patron: SierraPatronNumber, item: SierraItemNumber): HttpRequest =
+    HttpRequest(
+      method = HttpMethods.POST,
+      uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        s"""
+           |{
+           |  "recordType": "i",
+           |  "recordNumber": ${item.withoutCheckDigit},
+           |  "pickupLocation": "unspecified"
+           |}
+           |""".stripMargin
+      )
+    )
 }
