@@ -67,7 +67,7 @@ class RequestingScenarioTest
   }
 
   def waitForPostRequest(path: String, entity: RequestEntity): HttpResponse =
-    whenPostRequestReady(path, entity) { _ }
+    whenPostRequestReady(path, entity) { resp => resp }
 
   def createIdentifiedCalmItem: Item[IdState.Identified] =
     createIdentifiedItemWith(
