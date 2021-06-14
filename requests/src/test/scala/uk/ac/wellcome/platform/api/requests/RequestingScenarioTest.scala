@@ -64,6 +64,51 @@ class RequestingScenarioTest
         }
       }
     }
+
+    Scenario("An item which does not exist") {
+      val lookup = new MemoryItemLookup(items = Seq.empty)
+
+      Given("an item ID that doesn't exist")
+      val itemId = createCanonicalId
+
+      withRequestsApi(lookup) { _ =>
+        When("the user requests a non-existent item")
+
+        val path = "/users/1234567/item-requests"
+
+        val entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "$itemId",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+
+        val response = waitForPostRequest(path, entity)
+
+        Then("the API returns a 404 error")
+        response.status shouldBe StatusCodes.NotFound
+
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "@context": "$contextUrl",
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "Item not found for identifier $itemId"
+               |}
+               |""".stripMargin
+          )
+        }
+      }
+    }
   }
 
   def waitForPostRequest(path: String, entity: RequestEntity): HttpResponse =
