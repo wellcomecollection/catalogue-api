@@ -1,13 +1,14 @@
-#name: Manage CCR everyday at 8am
-#on:
-#  schedule:
-#    - cron: '0 8 * * *'
-#jobs:
-#  hit-ccr-endpoint:
-#    name: Hit CCR endpoint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Manage CCR
+name: Manage CCR everyday at 8am
+on:
+  schedule:
+    - cron: '0 8 * * *'
+jobs:
+  hit-ccr-endpoint:
+    name: Hit CCR endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Manage CCR
+        run: echo "skipping"
 #        run: |
 #          curl --request POST \
 #          --url 'https://rank.wellcomecollection.org/api/ccr' \
