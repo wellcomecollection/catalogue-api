@@ -27,11 +27,11 @@ trait RequestsApiFixture
   val metricsName = "RequestsApiFixture"
 
   override def contextUrl =
-    new URL("https://localhost/catalogue/v2/context.json")
+    new URL("https://localhost/catalogue/context.json")
 
   val apiConf =
     ApiConfig(
-      publicHost = "localhost",
+      publicHost = "localhost/",
       publicScheme = "https",
       defaultPageSize = 10,
       publicRootPath = "catalogue",
