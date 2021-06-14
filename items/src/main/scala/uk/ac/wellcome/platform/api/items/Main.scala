@@ -1,21 +1,19 @@
 package uk.ac.wellcome.platform.api.items
 
 import akka.actor.ActorSystem
-import com.sksamuel.elastic4s.Index
 import com.typesafe.config.Config
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
-import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.common.services.config.builders.SierraServiceBuilder
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
 import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
-import weco.http.monitoring.HttpMetrics
 import weco.api.stacks.services.WorkLookup
 import weco.http.WellcomeHttpApp
+import weco.http.monitoring.HttpMetrics
 
 import scala.concurrent.ExecutionContext
 
@@ -23,27 +21,22 @@ object Main extends WellcomeTypesafeApp {
   runWithConfig { config: Config =>
     implicit val asMain: ActorSystem =
       AkkaBuilder.buildActorSystem()
+    implicit val ec: ExecutionContext =
+      AkkaBuilder.buildExecutionContext()
 
     Tracing.init(config)
 
-    val apiConf = ApiConfig.build(config)
+    implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
 
-    val router = new ItemsApi {
-      override implicit val ec: ExecutionContext =
-        AkkaBuilder.buildExecutionContext()
-      override implicit val apiConfig: ApiConfig = apiConf
-
-      override val index: Index = ElasticConfig.apply().worksIndex
-      override val sierraService: SierraService =
-        SierraServiceBuilder.build(config)
-      override val workLookup: WorkLookup = WorkLookup(elasticClient)
-    }
+    val router = new ItemsApi(
+      sierraService = SierraServiceBuilder.build(config),
+      workLookup = WorkLookup(elasticClient),
+      index = ElasticConfig.apply().worksIndex
+    )
 
     val appName = "ItemsApi"
-
-    implicit val ec: ExecutionContext = router.ec
 
     new WellcomeHttpApp(
       routes = router.routes,

@@ -23,17 +23,6 @@ import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait SierraItemLookupError
-
-object SierraItemLookupError {
-  case class ItemHasNoStatus(t: Throwable) extends SierraItemLookupError
-
-  case object ItemNotFound extends SierraItemLookupError
-
-  case class UnknownError(errorCode: SierraErrorCode)
-      extends SierraItemLookupError
-}
-
 class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   implicit
   ec: ExecutionContext,
