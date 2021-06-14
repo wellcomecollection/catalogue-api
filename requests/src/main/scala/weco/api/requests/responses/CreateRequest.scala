@@ -2,7 +2,6 @@ package weco.api.requests.responses
 
 import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
@@ -20,16 +19,15 @@ trait CreateRequest extends CustomDirectives with Logging {
 
   val sierraService: SierraService
   val itemLookup: ItemLookup
-  val index: Index
 
   def createRequest(itemId: CanonicalId,
                     patronNumber: SierraPatronNumber): Future[Route] =
-    itemLookup.byCanonicalId(itemId)(index).map {
-      case Right(sourceIdentifier)
-          if sourceIdentifier.identifierType == SierraSystemNumber =>
+    itemLookup.byCanonicalId(itemId).map {
+      case Right(item)
+          if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
         val result = sierraService.placeHold(
           patron = patronNumber,
-          sourceIdentifier = sourceIdentifier
+          sourceIdentifier = item.id.sourceIdentifier
         )
 
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)

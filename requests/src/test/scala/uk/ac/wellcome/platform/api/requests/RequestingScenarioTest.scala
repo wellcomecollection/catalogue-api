@@ -2,11 +2,12 @@ package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.model.StatusCodes
 import org.scalatest.GivenWhenThen
+import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.json.JsonUtil._
-import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
+import uk.ac.wellcome.models.work.generators.ItemsGenerators
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
+import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.IdentifierType
 
 class RequestingScenarioTest
@@ -14,8 +15,8 @@ class RequestingScenarioTest
     with GivenWhenThen
     with Matchers
     with ItemsGenerators
-    with WorkGenerators
-    with RequestsApiFixture {
+    with RequestsApiFixture
+    with IntegrationPatience {
 
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
@@ -29,43 +30,39 @@ class RequestingScenarioTest
           locations = List(createPhysicalLocation)
         )
 
-      val work = indexedWork().items(List(item))
+      val lookup = new MemoryItemLookup(items = Seq(item))
 
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
+      withRequestsApi(lookup) { _ =>
+        When("the user requests the item")
 
-        withRequestsApi(index) { _ =>
-          When("the user requests the item")
+        val path = "/users/1234567/item-requests"
 
-          val path = "/users/1234567/item-requests"
+        val entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
 
-          val entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "${work.state.canonicalId}",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
+        whenPostRequestReady(path, entity) { response =>
+          response.status shouldBe StatusCodes.BadRequest
 
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.BadRequest
-
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_,
-                s"""
-                  |{
-                  |  "@context": "$contextUrl",
-                  |  "type": "Error",
-                  |  "errorType": "http",
-                  |  "httpStatus": 400,
-                  |  "label": "Bad Request",
-                  |  "description": "You cannot request ${item.id.canonicalId}"
-                  |}
-                  |""".stripMargin
-              )
-            }
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_,
+              s"""
+                 |{
+                 |  "@context": "$contextUrl",
+                 |  "type": "Error",
+                 |  "errorType": "http",
+                   |  "httpStatus": 400,
+                   |  "label": "Bad Request",
+                   |  "description": "You cannot request ${item.id.canonicalId}"
+                   |}
+                   |""".stripMargin
+            )
           }
         }
       }
