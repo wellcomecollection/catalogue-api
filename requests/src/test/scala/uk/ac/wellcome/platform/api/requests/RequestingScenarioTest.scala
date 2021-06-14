@@ -8,7 +8,8 @@ import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.models.work.generators.ItemsGenerators
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.memory.MemoryItemLookup
-import weco.catalogue.internal_model.identifiers.IdentifierType
+import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
+import weco.catalogue.internal_model.work.Item
 
 class RequestingScenarioTest
   extends AnyFeatureSpec
@@ -21,14 +22,7 @@ class RequestingScenarioTest
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
       Given("a physical item which is not from Sierra")
-      val item =
-        createIdentifiedItemWith(
-          sourceIdentifier = createSourceIdentifierWith(
-            identifierType = IdentifierType.CalmRecordIdentifier,
-            ontologyType = "Item"
-          ),
-          locations = List(createPhysicalLocation)
-        )
+      val item = createIdentifiedCalmItem
 
       val lookup = new MemoryItemLookup(items = Seq(item))
 
@@ -48,8 +42,10 @@ class RequestingScenarioTest
         )
 
         whenPostRequestReady(path, entity) { response =>
+          Then("the hold is rejected")
           response.status shouldBe StatusCodes.BadRequest
 
+          And("the error explains why the hold is rejected")
           withStringEntity(response.entity) {
             assertJsonStringsAreEqual(_,
               s"""
@@ -68,4 +64,13 @@ class RequestingScenarioTest
       }
     }
   }
+
+  def createIdentifiedCalmItem: Item[IdState.Identified] =
+    createIdentifiedItemWith(
+      sourceIdentifier = createSourceIdentifierWith(
+        identifierType = IdentifierType.CalmRecordIdentifier,
+        ontologyType = "Item"
+      ),
+      locations = List(createPhysicalLocation)
+    )
 }
