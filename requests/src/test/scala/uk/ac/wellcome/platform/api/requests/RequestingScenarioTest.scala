@@ -2,6 +2,9 @@ package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
 import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
   HttpRequest,
   HttpResponse,
   RequestEntity,
@@ -21,7 +24,14 @@ import weco.api.stacks.services.ItemLookup
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
+import weco.catalogue.source_model.generators.SierraGenerators
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+
+import scala.concurrent.Future
 
 class RequestingScenarioTest
     extends AnyFeatureSpec
@@ -30,7 +40,8 @@ class RequestingScenarioTest
     with ItemsGenerators
     with RequestsApiFixture
     with IntegrationPatience
-    with ScalatestRouteTest {
+    with ScalatestRouteTest
+    with SierraGenerators {
 
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
@@ -116,6 +127,57 @@ class RequestingScenarioTest
         )
       }
     }
+
+    Scenario("An item that exists and can be ordered") {
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri = s"http://sierra:1234/v5/patrons/$patronNumber/holds/requests",
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "recordType": "i",
+                 |  "recordNumber": ${itemNumber.withoutCheckDigit},
+                 |  "pickupLocation": "unspecified"
+                 |}
+                 |""".stripMargin
+            )
+          ),
+          HttpResponse(status = StatusCodes.NoContent)
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
+
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
+    }
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(
@@ -140,11 +202,24 @@ class RequestingScenarioTest
       locations = List(createPhysicalLocation)
     )
 
+  def createIdentifiedSierraItemWith(itemNumber: SierraItemNumber): Item[IdState.Identified] =
+    createIdentifiedItemWith(
+      sourceIdentifier = createSourceIdentifierWith(
+        identifierType = IdentifierType.SierraSystemNumber,
+        value = itemNumber.withCheckDigit,
+        ontologyType = "Item"
+      ),
+      locations = List(createPhysicalLocation)
+    )
+
+  def createSierraPatronNumber: SierraPatronNumber =
+    SierraPatronNumber(createSierraRecordNumberString)
+
   def createRoute(
     itemLookup: ItemLookup,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()): Route = {
     val client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
-      override val baseUri: Uri = Uri("http://localhost:1234")
+      override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
     val api: RequestsApi = new RequestsApi(
