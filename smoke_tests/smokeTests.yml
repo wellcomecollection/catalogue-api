@@ -25,14 +25,20 @@ scenarios:
     flow:
       - get:
           url: "/works"
+          expect:
+            statusCode: 200
   - name: "/images"
     flow:
       - get:
           url: "/images"
+          expect:
+            statusCode: 200
   - name: "/works/awa6c6gm"
     flow:
       - get:
           url: "/works/awa6c6gm"
+          expect:
+            statusCode: 200
   - name: "/works/awa6c6gm/items"
     flow:
       - get:
