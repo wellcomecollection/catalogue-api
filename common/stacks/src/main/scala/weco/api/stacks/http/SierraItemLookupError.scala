@@ -10,5 +10,5 @@ object SierraItemLookupError {
   case object ItemNotFound extends SierraItemLookupError
 
   case class UnknownError(errorCode: SierraErrorCode)
-    extends SierraItemLookupError
+      extends SierraItemLookupError
 }

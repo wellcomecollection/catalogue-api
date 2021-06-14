@@ -118,7 +118,8 @@ class RequestingScenarioTest
     }
   }
 
-  def makePostRequest(path: String, entity: RequestEntity)(implicit route: Route): HttpResponse = {
+  def makePostRequest(path: String, entity: RequestEntity)(
+    implicit route: Route): HttpResponse = {
     val request = HttpRequest(
       method = POST,
       uri = s"https://localhost$path",

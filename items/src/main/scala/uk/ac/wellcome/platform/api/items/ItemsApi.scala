@@ -20,7 +20,8 @@ class ItemsApi(
   implicit
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
-) extends LookupItemStatus with Tracing {
+) extends LookupItemStatus
+    with Tracing {
   val routes: Route = concat(
     pathPrefix("works") {
       path(Segment) { id: String =>

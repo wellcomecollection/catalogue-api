@@ -19,7 +19,8 @@ class RequestsApi(
   implicit
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
-) extends CreateRequest with LookupPendingRequests {
+) extends CreateRequest
+    with LookupPendingRequests {
   val routes: Route = concat(
     pathPrefix("users" / Segment / "item-requests") { userId: String =>
       val userIdentifier = SierraPatronNumber(userId)
