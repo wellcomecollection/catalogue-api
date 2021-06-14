@@ -45,11 +45,12 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                   contextUrl = contextUrl,
                   DisplayError(
                     statusCode = StatusCodes.Forbidden,
-                    description = "You are at your account limit and you cannot request more items"
+                    description =
+                      "You are at your account limit and you cannot request more items"
                   )
                 )
             )
-          case Failure(err)             => failWith(err)
+          case Failure(err) => failWith(err)
         }
 
       case Right(sourceIdentifier) =>

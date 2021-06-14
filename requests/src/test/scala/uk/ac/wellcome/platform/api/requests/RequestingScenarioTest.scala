@@ -251,11 +251,15 @@ class RequestingScenarioTest
         ),
         (
           createListHoldsRequest(patronNumber),
-          createListHoldsResponse(patronNumber, items = (1 to holdLimit).map { _ => createSierraItemNumber })
+          createListHoldsResponse(patronNumber, items = (1 to holdLimit).map {
+            _ =>
+              createSierraItemNumber
+          })
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses, holdLimit = holdLimit)
+      implicit val route: Route =
+        createRoute(lookup, responses, holdLimit = holdLimit)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -316,7 +320,8 @@ class RequestingScenarioTest
       locations = List(createPhysicalLocation)
     )
 
-  def createIdentifiedSierraItemWith(itemNumber: SierraItemNumber): Item[IdState.Identified] =
+  def createIdentifiedSierraItemWith(
+    itemNumber: SierraItemNumber): Item[IdState.Identified] =
     createIdentifiedItemWith(
       sourceIdentifier = createSourceIdentifierWith(
         identifierType = IdentifierType.SierraSystemNumber,
@@ -329,10 +334,9 @@ class RequestingScenarioTest
   def createSierraPatronNumber: SierraPatronNumber =
     SierraPatronNumber(createSierraRecordNumberString)
 
-  def createRoute(
-    itemLookup: ItemLookup,
-    responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    holdLimit: Int = 10): Route = {
+  def createRoute(itemLookup: ItemLookup,
+                  responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+                  holdLimit: Int = 10): Route = {
     val client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
@@ -351,7 +355,8 @@ class RequestingScenarioTest
       uri = s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
     )
 
-  def createListHoldsResponse(patron: SierraPatronNumber, items: Seq[SierraItemNumber]): HttpResponse =
+  def createListHoldsResponse(patron: SierraPatronNumber,
+                              items: Seq[SierraItemNumber]): HttpResponse =
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
@@ -360,17 +365,22 @@ class RequestingScenarioTest
            |  "total": ${items.size},
            |  "start": 0,
            |  "entries": [
-           |    ${items.map(it => createListHoldEntry(patron, it)).mkString(",")}
+           |    ${items
+             .map(it => createListHoldEntry(patron, it))
+             .mkString(",")}
            |  ]
            |}
            |""".stripMargin
       )
     )
 
-  private def createListHoldEntry(patron: SierraPatronNumber, item: SierraItemNumber): String =
+  private def createListHoldEntry(patron: SierraPatronNumber,
+                                  item: SierraItemNumber): String =
     s"""
        |{
-       |  "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/${randomInt(from = 0, to = 10000)}",
+       |  "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/${randomInt(
+         from = 0,
+         to = 10000)}",
        |  "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}",
        |  "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
        |  "frozen": false,
@@ -381,7 +391,8 @@ class RequestingScenarioTest
        |}
        |""".stripMargin
 
-  def createHoldRequest(patron: SierraPatronNumber, item: SierraItemNumber): HttpRequest =
+  def createHoldRequest(patron: SierraPatronNumber,
+                        item: SierraItemNumber): HttpRequest =
     HttpRequest(
       method = HttpMethods.POST,
       uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",

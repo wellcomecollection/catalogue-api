@@ -53,7 +53,10 @@ class SierraService(
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) =>
         getStacksUserHolds(patron).map {
-          case Right(holds) if holds.holds.map(_.sourceIdentifier).contains(sourceIdentifier) =>
+          case Right(holds)
+              if holds.holds
+                .map(_.sourceIdentifier)
+                .contains(sourceIdentifier) =>
             HoldAccepted()
 
           case Right(holds) if holds.holds.size >= holdLimit =>
