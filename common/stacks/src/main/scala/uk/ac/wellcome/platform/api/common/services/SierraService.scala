@@ -4,24 +4,9 @@ import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
-import weco.api.stacks.models.{
-  CannotBeRequested,
-  HoldAccepted,
-  HoldRejected,
-  HoldResponse,
-  NoSuchUser,
-  OnHoldForAnotherUser,
-  SierraErrorCode,
-  SierraHold,
-  SierraItemIdentifier,
-  UnknownError,
-  UserAtHoldLimit
-}
+import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,11 +34,11 @@ class SierraService(
   def placeHold(
     patron: SierraPatronNumber,
     sourceIdentifier: SourceIdentifier
-  ): Future[HoldResponse] = {
+  ): Future[Either[HoldRejected, HoldAccepted]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.createHold(patron, item).flatMap {
-      case Right(_) => Future.successful(HoldAccepted)
+      case Right(_) => Future.successful(Right(HoldAccepted.HoldCreated))
 
       // API error code "132" means "Request denied by XCirc".  This is listed in
       // the Sierra documentation:
@@ -95,10 +80,10 @@ class SierraService(
               if holds.holds
                 .map(_.sourceIdentifier)
                 .contains(sourceIdentifier) =>
-            Future.successful(HoldAccepted)
+            Future.successful(Right(HoldAccepted.HoldAlreadyExists))
 
           case Right(holds) if holds.holds.size >= holdLimit =>
-            Future.successful(UserAtHoldLimit)
+            Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
 
           case _ => checkIfItemCanBeRequested(patron, item)
         }
@@ -121,16 +106,16 @@ class SierraService(
       // if the item record doesn't exist, we instead get the 433 error handled in the
       // previous case.
       case Left(SierraErrorCode(107, 0, 404, "Record not found", None)) =>
-        Future.successful(NoSuchUser(patron))
+        Future.successful(Left(HoldRejected.UserDoesNotExist(patron)))
 
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
-        Future.successful(HoldRejected)
+        Future.successful(Left(HoldRejected.UnknownReason))
     }
   }
 
   def checkIfItemCanBeRequested(patron: SierraPatronNumber,
-                                item: SierraItemNumber): Future[HoldResponse] =
+                                item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -142,7 +127,7 @@ class SierraService(
       case Right(item) if item.deleted || item.suppressed =>
         warn(
           s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
-        CannotBeRequested
+        Left(HoldRejected.ItemCannotBeRequested)
 
       // If the holdCount is non-zero, that means another user has a hold on this item,
       // and only a single user can have an item requested at a time.
@@ -150,7 +135,7 @@ class SierraService(
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
       case Right(item) if item.holdCount > 0 =>
-        OnHoldForAnotherUser
+        Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
       // This would be extremely unusual in practice -- when items are deleted
       // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
@@ -162,9 +147,9 @@ class SierraService(
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(
           s"User tried to place a hold on item $item, which does not exist in Sierra")
-        UnknownError
+        Left(HoldRejected.UnknownReason)
 
-      case _ => HoldRejected
+      case _ => Left(HoldRejected.UnknownReason)
     }
 
   protected def buildStacksHold(entry: SierraHold): StacksHold = {

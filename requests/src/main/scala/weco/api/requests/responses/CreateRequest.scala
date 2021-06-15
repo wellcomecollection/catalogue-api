@@ -1,19 +1,11 @@
 package weco.api.requests.responses
 
-import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
+import akka.http.scaladsl.model.{HttpEntity, StatusCode, StatusCodes}
 import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.{
-  CannotBeRequested,
-  HoldAccepted,
-  HoldRejected,
-  NoSuchUser,
-  OnHoldForAnotherUser,
-  UnknownError,
-  UserAtHoldLimit
-}
+import weco.api.stacks.models.HoldRejected
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -41,43 +33,24 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         )
 
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
-        val conflict = (StatusCodes.Conflict, HttpEntity.Empty)
 
         onComplete(result) {
-          case Success(HoldAccepted) => complete(accepted)
-          case Success(HoldRejected) => complete(conflict)
-          case Success(UserAtHoldLimit) =>
+          case Success(Right(_)) => complete(accepted)
+
+          case Success(Left(holdRejected)) =>
+            val (status, description) = handleError(holdRejected, itemId = itemId)
             complete(
-              StatusCodes.Forbidden ->
+              status ->
                 ContextResponse(
                   contextUrl = contextUrl,
                   DisplayError(
-                    statusCode = StatusCodes.Forbidden,
-                    description =
-                      "You are at your account limit and you cannot request more items"
+                    errorType = "http",
+                    httpStatus = status.intValue,
+                    label = status.reason(),
+                    description = description
                   )
                 )
             )
-          case Success(CannotBeRequested) =>
-            invalidRequest("You cannot request " + itemId)
-          case Success(UnknownError) =>
-            internalError(
-              new Throwable(s"Unknown error when requesting $itemId"))
-
-          case Success(OnHoldForAnotherUser) =>
-            complete(
-              StatusCodes.Conflict ->
-                ContextResponse(
-                  contextUrl = contextUrl,
-                  DisplayError(
-                    statusCode = StatusCodes.Conflict,
-                    description = s"Item $itemId is on hold for another reader"
-                  )
-                )
-            )
-
-          case Success(NoSuchUser(patron)) =>
-            notFound(s"There is no such user $patron")
 
           case Failure(err) => failWith(err)
         }
@@ -89,5 +62,23 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         invalidRequest("You cannot request " + itemId)
 
       case Left(err) => elasticError("Item", err)
+    }
+
+  private def handleError(reason: HoldRejected, itemId: CanonicalId): (StatusCode, Option[String]) =
+    reason match {
+      case HoldRejected.ItemCannotBeRequested =>
+        (StatusCodes.BadRequest, Some(s"You cannot request $itemId"))
+
+      case HoldRejected.ItemIsOnHoldForAnotherUser =>
+        (StatusCodes.Conflict, Some(s"Item $itemId is on hold for another reader"))
+
+      case HoldRejected.UserDoesNotExist(patron) =>
+        (StatusCodes.NotFound, Some(s"There is no such user $patron"))
+
+      case HoldRejected.UserIsAtHoldLimit =>
+        (StatusCodes.Forbidden, Some("You are at your account limit and you cannot request more items"))
+
+      case HoldRejected.UnknownReason =>
+        (StatusCodes.InternalServerError, None)
     }
 }
