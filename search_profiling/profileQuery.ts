@@ -1,6 +1,7 @@
 import yargs = require("yargs");
 import crypto from "crypto";
 import { SingleBar, Presets } from "cli-progress";
+import { compressToEncodedURIComponent } from "lz-string";
 import fs from "fs";
 import path from "path";
 import percentile from "percentile";
@@ -34,12 +35,12 @@ const main = async () => {
     "utf8"
   );
 
-  const queryHash = crypto.createHash("md5").update(query).digest("hex");
-
   const progressBar = new SingleBar({}, Presets.shades_classic);
   progressBar.start(nSamples, 0);
+
   const results = [];
   let lastQueryTime = 0;
+
   for (let _ of Array.from({ length: nSamples })) {
     try {
       const took = await measureQueryTime({
@@ -67,7 +68,7 @@ const main = async () => {
 
   const stats = {
     index,
-    queryHash,
+    query: compressToEncodedURIComponent(query),
     mean: mean(results),
     median: percentile(50, results),
     p95: percentile(95, results),
