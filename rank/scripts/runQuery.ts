@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch'
 import { aggs, sort } from '../data/queries/common'
+import lzString from 'lz-string'
 
 const { ES_CLOUD_ID, ES_PASSWORD, ES_USER } = process.env
 
@@ -29,17 +30,27 @@ async function go() {
       aggs,
       sort,
     }
+    const requestBody = {
+      source: fullQuery,
+      profile: true,
+      params: { query: 'botany' },
+    }
     const { body } = await catalogueClient
       .searchTemplate({
         index,
-        body: { source: fullQuery },
+        body: requestBody,
       })
       .catch((err) => {
         console.info(err.meta.body)
         return { body: err }
       })
 
-    console.info(body.took)
+    console.info(
+      body.took,
+      index,
+      lzString.compressToEncodedURIComponent(JSON.stringify(requestBody))
+    )
+    // console.info(JSON.stringify(body.profile))
   })
 }
 

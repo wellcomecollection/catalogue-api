@@ -37,7 +37,7 @@ const ranks: Rank[] = [
     label: 'Works (search fields)',
     searchTemplate: async () => {
       const query = await import(
-        './data/queries/works-with-search-fields'
+        './data/queries/works-2021-06-08'
       ).then((m) => m.default)
 
       const template = {

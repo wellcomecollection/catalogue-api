@@ -1,9 +1,13 @@
-const query = {
+import languages from '../languages'
+
+export default {
   bool: {
+    minimum_should_match: '1',
     should: [
       {
         multi_match: {
-          query: '{{query}}',
+          _name: 'identifiers',
+          analyzer: 'whitespace_analyzer',
           fields: [
             'state.canonicalId^1000.0',
             'state.sourceIdentifier.value^1000.0',
@@ -15,10 +19,9 @@ const query = {
             'data.imageData.id.sourceIdentifier.value^1000.0',
             'data.imageData.id.otherIdentifiers.value^1000.0',
           ],
-          type: 'best_fields',
-          analyzer: 'whitespace_analyzer',
           operator: 'Or',
-          _name: 'identifiers',
+          query: '{{query}}',
+          type: 'best_fields',
         },
       },
       {
@@ -26,14 +29,16 @@ const query = {
           queries: [
             // {
             //   bool: {
+            //     _name: 'title prefix',
+            //     boost: 1000.0,
             //     must: [
-            //       // {
-            //       //   prefix: {
-            //       //     'data.title.keyword': {
-            //       //       value: '{{query}}',
-            //       //     },
-            //       //   },
-            //       // },
+            //       {
+            //         prefix: {
+            //           'data.title.keyword': {
+            //             value: '{{query}}',
+            //           },
+            //         },
+            //       },
             //       {
             //         match_phrase: {
             //           'data.title': {
@@ -42,78 +47,77 @@ const query = {
             //         },
             //       },
             //     ],
-            //     boost: 1000,
-            //     _name: 'title prefix',
             //   },
             // },
             {
               multi_match: {
-                query: '{{query}}',
+                _name: 'title and contributor exact spellings',
                 fields: [
-                  'data.title^100.0',
-                  'data.title.english^100.0',
-                  'data.title.shingles^100.0',
-                  'data.alternativeTitles^100.0',
+                  'search.titlesAndContributors.^100.0',
+                  'search.titlesAndContributors.english^100.0',
+                  'search.titlesAndContributors.shingles^100.0',
                 ],
-                type: 'best_fields',
                 operator: 'And',
-                _name: 'title exact spellings',
+                query: '{{query}}',
+                type: 'best_fields',
               },
             },
             {
               multi_match: {
-                query: '{{query}}',
+                _name: 'title and contributor alternative spellings',
                 fields: [
-                  'data.title^80.0',
-                  'data.title.english^80.0',
-                  'data.title.shingles^80.0',
-                  'data.alternativeTitles^80.0',
+                  'search.titlesAndContributors^80.0',
+                  'search.titlesAndContributors.shingles^80.0',
                 ],
-                type: 'best_fields',
                 fuzziness: 'AUTO',
                 operator: 'And',
-                _name: 'title alternative spellings',
+                query: '{{query}}',
+                type: 'best_fields',
+                prefix_length: '2',
               },
             },
             {
               multi_match: {
+                _name: 'non-english titles and contributors',
+                fields: languages.map(
+                  (language) => `search.titlesAndContributors.${language}`
+                ),
                 query: '{{query}}',
-                fields: [
-                  'data.title.arabic',
-                  'data.title.bengali',
-                  'data.title.french',
-                  'data.title.german',
-                  'data.title.hindi',
-                  'data.title.italian',
-                ],
-                type: 'best_fields',
                 operator: 'And',
-                _name: 'non-english titles',
+                type: 'best_fields',
               },
             },
           ],
         },
       },
       {
+        match: {
+          'search.relations': {
+            _name: 'relations',
+            query: '{{query}}',
+            operator: 'And',
+            boost: 1000.0,
+          },
+        },
+      },
+      {
         multi_match: {
-          query: '{{query}}',
+          _name: 'data',
           fields: [
             'data.contributors.agent.label^1000.0',
-            'data.subjects.concepts.label^10.0',
-            'data.genres.concepts.label^10.0',
-            'data.production.*.label^10.0',
             'data.description',
-            'data.physicalDescription',
-            'data.language.label',
             'data.edition',
-            'data.notes.content',
-            'data.collectionPath.path',
-            'data.collectionPath.label',
+            'data.genres.concepts.label^10.0',
+            'data.language.label',
             'data.lettering',
+            'data.notes.content',
+            'data.physicalDescription',
+            'data.production.*.label^10.0',
+            'data.subjects.concepts.label^10.0',
           ],
-          type: 'cross_fields',
           operator: 'And',
-          _name: 'data',
+          query: '{{query}}',
+          type: 'cross_fields',
         },
       },
     ],
@@ -126,8 +130,5 @@ const query = {
         },
       },
     ],
-    minimum_should_match: '1',
   },
 }
-
-export default query
