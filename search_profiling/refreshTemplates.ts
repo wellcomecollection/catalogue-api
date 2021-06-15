@@ -8,29 +8,31 @@ type SearchTemplate = {
   query: string;
 };
 
-const getSearchTemplate = async (
+const getSearchTemplates = async (
   env: "prod" | "stage"
-): Promise<SearchTemplate | undefined> => {
+): Promise<SearchTemplate[] | undefined> => {
   const prefix = env === "prod" ? "api" : "api-stage";
   const url = `https://${prefix}.wellcomecollection.org/catalogue/v2/search-templates.json`;
   const { data } = await axios.get(url);
-  return (data.templates as SearchTemplate[]).find(
-    ({ id }) => id === "multi_matcher_search_query"
-  );
+
+  return data.templates as SearchTemplate[];
 };
 
 const main = async () => {
   const templateDir = path.resolve(__dirname, "query-templates");
   for (const env of ["prod", "stage"] as const) {
-    const template = await getSearchTemplate(env);
-    if (template) {
-      const filename = `${template.index}.json`;
-      const prettyTemplate = JSON.stringify(
-        JSON.parse(template.query),
-        null,
-        2
-      );
-      await fs.writeFile(path.resolve(templateDir, filename), prettyTemplate);
+    const templates = await getSearchTemplates(env);
+
+    if (templates) {
+      for (const template of templates) {
+        const filename = `${template.index}.json`;
+        const prettyTemplate = JSON.stringify(
+          JSON.parse(template.query),
+          null,
+          2
+        );
+        await fs.writeFile(path.resolve(templateDir, filename), prettyTemplate);
+      }
     }
   }
 };
