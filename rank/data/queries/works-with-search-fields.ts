@@ -28,28 +28,6 @@ export default {
         dis_max: {
           queries: [
             {
-              bool: {
-                _name: 'title prefix',
-                boost: 1000.0,
-                must: [
-                  {
-                    prefix: {
-                      'data.title.keyword': {
-                        value: '{{query}}',
-                      },
-                    },
-                  },
-                  {
-                    match_phrase: {
-                      'data.title': {
-                        query: '{{query}}',
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
               multi_match: {
                 _name: 'title and contributor exact spellings',
                 fields: [

@@ -42,7 +42,7 @@ const ranks: Rank[] = [
 
       const template = {
         id: 'works-with-search-fields',
-        index: 'works-with-search-fields',
+        index: 'works-2021-06-08',
         namespace: 'works' as Namespace,
         source: { query },
       }
