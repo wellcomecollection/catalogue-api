@@ -85,13 +85,24 @@ class SierraService(
     patron: SierraPatronNumber,
     item: SierraItemNumber): Future[HoldResponse] =
     sierraSource.lookupItem(item).map {
+
+      // This could occur if the item has been deleted/suppressed in Sierra,
+      // but that update hasn't propagated to the catalogue API yet, and we're
+      // still displaying the item.
+      //
+      // A 404 here would be wrong -- from the perspective of the catalogue API,
+      // this does exist -- so instead, we return a generic "CannotBeRequested" error.
       case Right(item) if item.deleted || item.suppressed =>
         warn(s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
         CannotBeRequested()
 
-      // Although we get a 404 from Sierra, we map this to a 400 Bad Request
-      // in the requests API -- we can only get to this point if the item
-      // exists in the Catalogue API.
+      // This would be extremely unusual in practice -- when items are deleted
+      // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
+      //
+      // If the catalogue API points to an item that doesn't exist in Sierra,
+      // it suggests something has gone badly wrong in the catalogue pipeline.
+      //
+      // We bubble up a 500 error, so we can be alerted and investigate further.
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(s"User tried to place a hold on item $item, which does not exist in Sierra")
         UnknownError()
