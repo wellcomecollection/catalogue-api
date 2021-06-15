@@ -218,7 +218,7 @@ class SierraServiceTest
             sourceIdentifier = sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe a[HoldAccepted]
+            _ shouldBe HoldAccepted
           }
         }
       }
@@ -313,7 +313,7 @@ class SierraServiceTest
             sourceIdentifier = sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe a[CannotBeRequested]
+            _ shouldBe CannotBeRequested
           }
         }
       }

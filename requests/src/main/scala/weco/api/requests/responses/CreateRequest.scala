@@ -44,9 +44,9 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         val conflict = (StatusCodes.Conflict, HttpEntity.Empty)
 
         onComplete(result) {
-          case Success(HoldAccepted(_)) => complete(accepted)
-          case Success(HoldRejected(_)) => complete(conflict)
-          case Success(UserAtHoldLimit(_)) =>
+          case Success(HoldAccepted) => complete(accepted)
+          case Success(HoldRejected) => complete(conflict)
+          case Success(UserAtHoldLimit) =>
             complete(
               StatusCodes.Forbidden ->
                 ContextResponse(
@@ -58,13 +58,13 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                   )
                 )
             )
-          case Success(CannotBeRequested(_)) =>
+          case Success(CannotBeRequested) =>
             invalidRequest("You cannot request " + itemId)
-          case Success(UnknownError(_)) =>
+          case Success(UnknownError) =>
             internalError(
               new Throwable(s"Unknown error when requesting $itemId"))
 
-          case Success(OnHoldForAnotherUser(_)) =>
+          case Success(OnHoldForAnotherUser) =>
             complete(
               StatusCodes.Conflict ->
                 ContextResponse(
@@ -76,7 +76,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                 )
             )
 
-          case Success(NoSuchUser(patron, _)) =>
+          case Success(NoSuchUser(patron)) =>
             notFound(s"There is no such user $patron")
 
           case Failure(err) => failWith(err)

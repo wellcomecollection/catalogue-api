@@ -53,7 +53,7 @@ class SierraService(
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.createHold(patron, item).flatMap {
-      case Right(_) => Future.successful(HoldAccepted())
+      case Right(_) => Future.successful(HoldAccepted)
 
       // API error code "132" means "Request denied by XCirc".  This is listed in
       // the Sierra documentation:
@@ -95,10 +95,10 @@ class SierraService(
               if holds.holds
                 .map(_.sourceIdentifier)
                 .contains(sourceIdentifier) =>
-            Future.successful(HoldAccepted())
+            Future.successful(HoldAccepted)
 
           case Right(holds) if holds.holds.size >= holdLimit =>
-            Future.successful(UserAtHoldLimit())
+            Future.successful(UserAtHoldLimit)
 
           case _ => checkIfItemCanBeRequested(patron, item)
         }
@@ -125,7 +125,7 @@ class SierraService(
 
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
-        Future.successful(HoldRejected())
+        Future.successful(HoldRejected)
     }
   }
 
@@ -142,7 +142,7 @@ class SierraService(
       case Right(item) if item.deleted || item.suppressed =>
         warn(
           s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
-        CannotBeRequested()
+        CannotBeRequested
 
       // If the holdCount is non-zero, that means another user has a hold on this item,
       // and only a single user can have an item requested at a time.
@@ -150,7 +150,7 @@ class SierraService(
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
       case Right(item) if item.holdCount > 0 =>
-        OnHoldForAnotherUser()
+        OnHoldForAnotherUser
 
       // This would be extremely unusual in practice -- when items are deleted
       // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
@@ -162,9 +162,9 @@ class SierraService(
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(
           s"User tried to place a hold on item $item, which does not exist in Sierra")
-        UnknownError()
+        UnknownError
 
-      case _ => HoldRejected()
+      case _ => HoldRejected
     }
 
   protected def buildStacksHold(entry: SierraHold): StacksHold = {
