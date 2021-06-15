@@ -220,7 +220,7 @@ class RequestingScenarioTest
       response.entity shouldBe HttpEntity.Empty
     }
 
-    Scenario("When the user is at their hold limit") {
+    Scenario("A user at their hold limit") {
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
@@ -291,6 +291,99 @@ class RequestingScenarioTest
              |  "httpStatus": 403,
              |  "label": "Forbidden",
              |  "description": "You are at your account limit and you cannot request more items"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
+
+    Scenario("An item that has been deleted in Sierra") {
+      // This scenario is relatively unlikely in practice -- once an item gets deleted
+      // in Sierra, it should be removed from the catalogue API within a few minutes.
+      //
+      // However, there could be a longer delay if there's a problem in the pipeline
+      // which prevents updates from being processed.
+      //
+      // We return a 400 Bad Request instead of a 404 Not Found because from the
+      // perspective of wc.org/works, this item does exist -- it just can't be requested.
+
+      Given("a physical item from Sierra in the catalogue API")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which is not in Sierra")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 433,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : Bib record cannot be loaded"
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber"),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the hold is rejected")
+      response.status shouldBe StatusCodes.BadRequest
+      response.status.intValue shouldBe 400
+
+      And("the error explains why the hold is rejected")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 400,
+             |  "label": "Bad Request",
+             |  "description": "You cannot request ${item.id.canonicalId}"
              |}
              |""".stripMargin
         )

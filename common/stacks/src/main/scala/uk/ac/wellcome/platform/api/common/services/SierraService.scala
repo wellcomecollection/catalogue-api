@@ -5,6 +5,7 @@ import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models.{
+  CannotBeRequested,
   HoldAccepted,
   HoldRejected,
   HoldResponse,
@@ -14,7 +15,10 @@ import weco.api.stacks.models.{
   UserAtHoldLimit
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -65,11 +69,30 @@ class SierraService(
           case _ => HoldRejected()
         }
 
+      // This is an "XCirc/Bib record cannot be loaded" error.  We see this
+      // error when you try to request an item that doesn't exist in Sierra.
+      case Left(SierraErrorCode(132, 433, 500, _, _)) =>
+        checkIfItemCanBeRequested(patron, item)
+
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
         Future.successful(HoldRejected())
     }
   }
+
+  def checkIfItemCanBeRequested(
+    patron: SierraPatronNumber,
+    item: SierraItemNumber): Future[HoldResponse] =
+    sierraSource.lookupItem(item).map {
+      // Although we get a 404 from Sierra, we map this to a 400 Bad Request
+      // in the requests API -- we can only get to this point if the item
+      // exists in the Catalogue API.
+      case Left(SierraItemLookupError.ItemNotFound) =>
+        warn(s"User tried to place a hold on item $item, which does not exist in Sierra")
+        CannotBeRequested()
+
+      case _ => HoldRejected()
+    }
 
   protected def buildStacksHold(entry: SierraHold): StacksHold = {
     val itemNumber = SierraItemIdentifier.fromUrl(entry.record)

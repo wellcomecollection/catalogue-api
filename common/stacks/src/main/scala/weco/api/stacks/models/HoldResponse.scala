@@ -11,3 +11,5 @@ case class HoldRejected(lastModified: Instant = Instant.now())
     extends HoldResponse
 case class UserAtHoldLimit(lastModified: Instant = Instant.now())
     extends HoldResponse
+case class CannotBeRequested(lastModified: Instant = Instant.now())
+    extends HoldResponse

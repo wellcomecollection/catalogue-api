@@ -5,7 +5,12 @@ import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.{HoldAccepted, HoldRejected, UserAtHoldLimit}
+import weco.api.stacks.models.{
+  CannotBeRequested,
+  HoldAccepted,
+  HoldRejected,
+  UserAtHoldLimit
+}
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -50,6 +55,8 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                   )
                 )
             )
+          case Success(CannotBeRequested(_)) =>
+            invalidRequest("You cannot request " + itemId)
           case Failure(err) => failWith(err)
         }
 
