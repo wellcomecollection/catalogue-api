@@ -5,7 +5,13 @@ import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import weco.api.stacks.models.{HoldAccepted, HoldRejected, UserAtHoldLimit}
+import weco.api.stacks.models.{
+  CannotBeRequested,
+  HoldAccepted,
+  HoldRejected,
+  UnknownError,
+  UserAtHoldLimit
+}
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -50,10 +56,16 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                   )
                 )
             )
+          case Success(CannotBeRequested(_)) =>
+            invalidRequest("You cannot request " + itemId)
+          case Success(UnknownError(_)) =>
+            internalError(
+              new Throwable(s"Unknown error when requesting $itemId"))
           case Failure(err) => failWith(err)
         }
 
       case Right(sourceIdentifier) =>
+        // TODO: This looks wrong
         warn(
           s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier")
         invalidRequest("You cannot request " + itemId)

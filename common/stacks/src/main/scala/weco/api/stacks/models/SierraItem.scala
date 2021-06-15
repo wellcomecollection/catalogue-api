@@ -9,5 +9,7 @@ case class SierraItemStatus(
 
 case class SierraItem(
   id: SierraItemNumber,
-  status: SierraItemStatus
+  deleted: Boolean,
+  suppressed: Boolean = false,
+  status: Option[SierraItemStatus]
 )
