@@ -62,20 +62,20 @@ export default {
                 type: 'best_fields',
               },
             },
-            {
-              multi_match: {
-                _name: 'title and contributor alternative spellings',
-                fields: [
-                  'search.titlesAndContributors^80.0',
-                  'search.titlesAndContributors.shingles^80.0',
-                ],
-                fuzziness: 'AUTO',
-                operator: 'And',
-                query: '{{query}}',
-                type: 'best_fields',
-                prefix_length: '2',
-              },
-            },
+            // {
+            //   multi_match: {
+            //     _name: 'title and contributor alternative spellings',
+            //     fields: [
+            //       'search.titlesAndContributors^80.0',
+            //       'search.titlesAndContributors.shingles^80.0',
+            //     ],
+            //     fuzziness: 'AUTO',
+            //     operator: 'And',
+            //     query: '{{query}}',
+            //     type: 'best_fields',
+            //     prefix_length: '2',
+            //   },
+            // },
             {
               multi_match: {
                 _name: 'non-english titles and contributors',
@@ -90,36 +90,36 @@ export default {
           ],
         },
       },
-      {
-        match: {
-          'search.relations': {
-            _name: 'relations',
-            query: '{{query}}',
-            operator: 'And',
-            boost: 1000.0,
-          },
-        },
-      },
-      {
-        multi_match: {
-          _name: 'data',
-          fields: [
-            'data.contributors.agent.label^1000.0',
-            'data.description',
-            'data.edition',
-            'data.genres.concepts.label^10.0',
-            'data.language.label',
-            'data.lettering',
-            'data.notes.content',
-            'data.physicalDescription',
-            'data.production.*.label^10.0',
-            'data.subjects.concepts.label^10.0',
-          ],
-          operator: 'And',
-          query: '{{query}}',
-          type: 'cross_fields',
-        },
-      },
+      // {
+      //   match: {
+      //     'search.relations': {
+      //       _name: 'relations',
+      //       query: '{{query}}',
+      //       operator: 'And',
+      //       boost: 1000.0,
+      //     },
+      //   },
+      // },
+      // {
+      //   multi_match: {
+      //     _name: 'data',
+      //     fields: [
+      //       'data.contributors.agent.label^1000.0',
+      //       'data.description',
+      //       'data.edition',
+      //       'data.genres.concepts.label^10.0',
+      //       'data.language.label',
+      //       'data.lettering',
+      //       'data.notes.content',
+      //       'data.physicalDescription',
+      //       'data.production.*.label^10.0',
+      //       'data.subjects.concepts.label^10.0',
+      //     ],
+      //     operator: 'And',
+      //     query: '{{query}}',
+      //     type: 'cross_fields',
+      //   },
+      // },
     ],
     filter: [
       {
