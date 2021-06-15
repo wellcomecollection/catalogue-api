@@ -10,7 +10,8 @@ import weco.api.stacks.models.{
   HoldResponse,
   SierraErrorCode,
   SierraHold,
-  SierraItemIdentifier
+  SierraItemIdentifier,
+  UserAtHoldLimit
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
@@ -18,8 +19,13 @@ import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/** @param holdLimit What's the most items a single user can have on hold at once?
+  *                  TODO: Make this a configurable parameter.
+  *
+  */
 class SierraService(
-  sierraSource: SierraSource
+  sierraSource: SierraSource,
+  holdLimit: Int = 10
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -39,16 +45,29 @@ class SierraService(
   ): Future[HoldResponse] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.createHold(patron, item).map {
-      // This is an "XCirc/Record not available" error
+    sierraSource.createHold(patron, item).flatMap {
+      case Right(_) => Future.successful(HoldAccepted())
+
+      // This is an "XCirc/Record not available" error.  This can mean
+      // that the item is already on hold -- possibly by this user.
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
-      case Left(SierraErrorCode(132, 2, 500, _, _)) => HoldRejected()
+      case Left(SierraErrorCode(132, 2, 500, _, _)) =>
+        getStacksUserHolds(patron).map {
+          case Right(holds)
+              if holds.holds
+                .map(_.sourceIdentifier)
+                .contains(sourceIdentifier) =>
+            HoldAccepted()
+
+          case Right(holds) if holds.holds.size >= holdLimit =>
+            UserAtHoldLimit()
+
+          case _ => HoldRejected()
+        }
 
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
-        HoldRejected()
-
-      case Right(_) => HoldAccepted()
+        Future.successful(HoldRejected())
     }
   }
 
@@ -93,11 +112,12 @@ class SierraService(
 }
 
 object SierraService {
-  def apply(client: HttpClient with HttpGet with HttpPost)(
+  def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int = 10)(
     implicit
     ec: ExecutionContext,
     mat: Materializer): SierraService =
     new SierraService(
-      new SierraSource(client)
+      new SierraSource(client),
+      holdLimit = holdLimit
     )
 }

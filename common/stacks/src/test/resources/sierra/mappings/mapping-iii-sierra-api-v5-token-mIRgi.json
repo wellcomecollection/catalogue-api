@@ -1,7 +1,7 @@
 {
   "id" : "49eea99a-bb25-3dec-a95b-4bcda5517729",
   "request" : {
-    "url" : "/iii/sierra-api/v5/token",
+    "url" : "/iii/sierra-api/token",
     "method" : "POST",
     "headers" : {
       "Authorization" : {
