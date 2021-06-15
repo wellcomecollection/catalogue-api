@@ -707,6 +707,76 @@ class RequestingScenarioTest
         response,
         statusCode = StatusCodes.InternalServerError)
     }
+
+    Scenario("A user that doesn't exist in Sierra") {
+      // This should never happen -- when an item gets deleted in Sierra, the record
+      // still hangs around with "deleted: true".  If this happens, something has
+      // gone very wrong.
+
+      Given("a physical item from Sierra in the catalogue API")
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("and a user that doesn't exist in Sierra")
+      val patronNumber = createSierraPatronNumber
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("we return a Not Found response")
+      response.status shouldBe StatusCodes.NotFound
+      response.status.intValue shouldBe 404
+
+      And("the error explains the problem")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 404,
+             |  "label": "Not Found",
+             |  "description": "There is no such user $patronNumber"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(

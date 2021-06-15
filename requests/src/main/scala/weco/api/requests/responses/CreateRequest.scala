@@ -9,6 +9,7 @@ import weco.api.stacks.models.{
   CannotBeRequested,
   HoldAccepted,
   HoldRejected,
+  NoSuchUser,
   OnHoldForAnotherUser,
   UnknownError,
   UserAtHoldLimit
@@ -74,6 +75,9 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
                   )
                 )
             )
+
+          case Success(NoSuchUser(patron, _)) =>
+            notFound(s"There is no such user $patron")
 
           case Failure(err) => failWith(err)
         }

@@ -1,5 +1,7 @@
 package weco.api.stacks.models
 
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+
 import java.time.Instant
 
 sealed trait HoldResponse {
@@ -17,3 +19,5 @@ case class UnknownError(lastModified: Instant = Instant.now())
     extends HoldResponse
 case class OnHoldForAnotherUser(lastModified: Instant = Instant.now())
   extends HoldResponse
+case class NoSuchUser(patron: SierraPatronNumber, lastModified: Instant = Instant.now())
+    extends HoldResponse

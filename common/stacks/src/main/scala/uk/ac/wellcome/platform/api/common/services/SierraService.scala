@@ -9,6 +9,7 @@ import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
   HoldResponse,
+  NoSuchUser,
   OnHoldForAnotherUser,
   SierraErrorCode,
   SierraHold,
@@ -113,6 +114,14 @@ class SierraService(
       //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
         checkIfItemCanBeRequested(patron, item)
+
+      // A 404 response from the Sierra API means the patron record doesn't exist.
+      //
+      // As far as I can tell, we only get this error if the patron record doesn't exist --
+      // if the item record doesn't exist, we instead get the 433 error handled in the
+      // previous case.
+      case Left(SierraErrorCode(107, 0, 404, "Record not found", None)) =>
+        Future.successful(NoSuchUser(patron))
 
       case Left(result) =>
         warn(s"Unrecognised hold error: $result")
