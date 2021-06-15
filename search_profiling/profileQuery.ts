@@ -7,12 +7,15 @@ import path from "path";
 import percentile from "percentile";
 import { measureQueryTime } from "./queryExecution";
 
-const argv = yargs(process.argv.slice(2)).options({
-  index: { type: "string", demandOption: true },
-  nSamples: { type: "number", default: 200, alias: "n" },
-  withAggs: { type: "boolean", default: true },
-  maxPerSecond: { type: "number", default: 5 },
-}).argv;
+const argv = yargs(process.argv.slice(2))
+  .options({
+    index: { type: "string", demandOption: true },
+    query: { type: "string" },
+    nSamples: { type: "number", default: 200, alias: "n" },
+    withAggs: { type: "boolean", default: true },
+    maxPerSecond: { type: "number", default: 5 },
+  })
+  .parseSync();
 
 const mean = (arr: number[]): number =>
   arr.reduce((a, b) => a + b) / arr.length;
@@ -24,10 +27,10 @@ const randomCommonWord = () =>
   commonWords[Math.floor(Math.random() * commonWords.length)];
 
 const main = async () => {
-  const { nSamples, index, withAggs, maxPerSecond } = await argv;
+  const { nSamples, index, query: queryFile, withAggs, maxPerSecond } = argv;
   const minDelay = 1000.0 / maxPerSecond;
   const query = await fs.promises.readFile(
-    path.resolve(__dirname, "query-templates", `${index}.json`),
+    path.resolve(__dirname, "query-templates", queryFile ?? `${index}.json`),
     "utf8"
   );
   const aggs = await fs.promises.readFile(
