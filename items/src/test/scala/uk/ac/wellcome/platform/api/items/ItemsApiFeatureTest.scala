@@ -1,6 +1,13 @@
 package uk.ac.wellcome.platform.api.items
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes,
+  Uri
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -41,10 +48,31 @@ class ItemsApiFeatureTest
 
       val work = indexedWork().items(List(item))
 
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri("http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "id": "1601017",
+                |  "deleted": false,
+                |  "suppressed": false,
+                |  "status": {"code": "-", "display": "Available"}
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withItemsApi(index) { _ =>
+        withItemsApi(index, responses) { _ =>
           val path = s"/works/${work.state.canonicalId}"
 
           val expectedJson =

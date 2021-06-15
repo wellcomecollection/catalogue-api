@@ -1,5 +1,13 @@
 package uk.ac.wellcome.platform.api.common.services
 
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  Uri
+}
+
 import java.time.Instant
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
@@ -12,6 +20,9 @@ import weco.api.stacks.models.HoldRejected
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -24,19 +35,43 @@ class SierraServiceTest
   describe("SierraService") {
     describe("getItemStatus") {
       it("gets a StacksItemStatus") {
-        withSierraService {
-          case (sierraService, _) =>
-            val identifier = SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              value = "i16010176",
-              ontologyType = "Item"
+        val responses = Seq(
+          (
+            HttpRequest(uri = "http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed"),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                   |{
+                   |  "id": "1601017",
+                   |  "deleted": false,
+                   |  "suppressed": false,
+                   |  "status": {"code": "-", "display": "Available"}
+                   |}
+                   |""".stripMargin
+              )
             )
+          )
+        )
 
-            val future = sierraService.getItemStatus(identifier)
-
-            whenReady(future) {
-              _.value shouldBe StacksItemStatus("available", "Available")
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
             }
+          )
+
+          val identifier = SourceIdentifier(
+            identifierType = SierraSystemNumber,
+            value = "i16010176",
+            ontologyType = "Item"
+          )
+
+          val future = service.getItemStatus(identifier)
+
+          whenReady(future) {
+            _.value shouldBe StacksItemStatus("available", "Available")
+          }
         }
       }
     }
