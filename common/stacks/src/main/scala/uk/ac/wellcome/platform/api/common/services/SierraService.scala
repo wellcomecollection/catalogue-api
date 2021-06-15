@@ -57,17 +57,17 @@ class SierraService(
       // that the item is already on hold -- possibly by this user.
       // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
       case Left(SierraErrorCode(132, 2, 500, _, _)) =>
-        getStacksUserHolds(patron).map {
+        getStacksUserHolds(patron).flatMap {
           case Right(holds)
               if holds.holds
                 .map(_.sourceIdentifier)
                 .contains(sourceIdentifier) =>
-            HoldAccepted()
+            Future.successful(HoldAccepted())
 
           case Right(holds) if holds.holds.size >= holdLimit =>
-            UserAtHoldLimit()
+            Future.successful(UserAtHoldLimit())
 
-          case _ => HoldRejected()
+          case _ => checkIfItemCanBeRequested(patron, item)
         }
 
       // This is an "XCirc/Bib record cannot be loaded" error.  We see this

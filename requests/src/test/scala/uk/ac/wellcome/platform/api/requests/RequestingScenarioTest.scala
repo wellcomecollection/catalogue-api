@@ -411,14 +411,18 @@ class RequestingScenarioTest
               """
                 |{
                 |  "code": 132,
-                |  "specificCode": 433,
+                |  "specificCode": 2,
                 |  "httpStatus": 500,
                 |  "name": "XCirc error",
-                |  "description": "XCirc error : Bib record cannot be loaded"
+                |  "description": "XCirc error : This record is not available"
                 |}
                 |""".stripMargin
             )
           )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
           HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
