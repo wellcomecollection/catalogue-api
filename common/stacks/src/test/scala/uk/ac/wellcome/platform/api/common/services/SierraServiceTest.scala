@@ -211,7 +211,9 @@ class SierraServiceTest
             }
           )
 
-          val future = service.placeHold(patron = patron, sourceIdentifier = sourceIdentifier)
+          val future = service.placeHold(
+            patron = patron,
+            sourceIdentifier = sourceIdentifier)
 
           whenReady(future) {
             _ shouldBe a[HoldAccepted]

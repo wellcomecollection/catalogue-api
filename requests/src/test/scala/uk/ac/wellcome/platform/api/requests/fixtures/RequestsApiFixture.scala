@@ -28,7 +28,8 @@ trait RequestsApiFixture extends HttpFixtures {
       contextPath = "context.json"
     )
 
-  def withRequestsApi[R](itemLookup: ItemLookup, responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
+  def withRequestsApi[R](itemLookup: ItemLookup,
+                         responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
     testWith: TestWith[URL, R]): R = {
     withMaterializer { implicit mat =>
       val sierraService = SierraService(

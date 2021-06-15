@@ -15,9 +15,7 @@ import weco.http.fixtures.HttpFixtures
 import java.net.URL
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture
-    extends HttpFixtures
-    with IndexFixtures { this: Suite =>
+trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
 
   val metricsName = "ItemsApiFixture"
 
