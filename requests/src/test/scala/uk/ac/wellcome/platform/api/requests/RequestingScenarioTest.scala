@@ -313,7 +313,7 @@ class RequestingScenarioTest
       val item = createIdentifiedSierraItemWith(itemNumber)
       val lookup = new MemoryItemLookup(items = Seq(item))
 
-      And("which is not in Sierra")
+      And("which is deleted in Sierra")
       val responses = Seq(
         (
           createHoldRequest(patronNumber, itemNumber),
@@ -334,7 +334,7 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber"),
+          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -388,6 +388,167 @@ class RequestingScenarioTest
              |""".stripMargin
         )
       }
+    }
+
+    Scenario("An item that has been suppressed in Sierra") {
+      // Like the previous scenario, this should be unlikely in practice, but we include
+      // the test for completeness.
+
+      Given("a physical item from Sierra in the catalogue API")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which is suppressed in Sierra")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 433,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : Bib record cannot be loaded"
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "id": "$itemNumber",
+                 |  "deletedDate": "2001-01-01",
+                 |  "deleted": false,
+                 |  "suppressed": true,
+                 |  "status": {"code": "-", "display": "Available"}
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the hold is rejected")
+      response.status shouldBe StatusCodes.BadRequest
+      response.status.intValue shouldBe 400
+
+      And("the error explains why the hold is rejected")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 400,
+             |  "label": "Bad Request",
+             |  "description": "You cannot request ${item.id.canonicalId}"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
+
+    Scenario("An item that doesn't exist in Sierra") {
+      // This should never happen -- when an item gets deleted in Sierra, the record
+      // still hangs around with "deleted: true".  If this happens, something has
+      // gone very wrong.
+
+      Given("a physical item from Sierra in the catalogue API")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which doesn't exist in Sierra")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 433,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : Bib record cannot be loaded"
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "code": 107,
+                 |  "specificCode": 0,
+                 |  "httpStatus": 404,
+                 |  "name": "Record not found"
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("we throw an internal server error")
+      response.status shouldBe StatusCodes.InternalServerError
+      response.status.intValue shouldBe 500
+
+      And("we display a generic response")
+      assertIsDisplayError(response, statusCode = StatusCodes.InternalServerError)
     }
   }
 

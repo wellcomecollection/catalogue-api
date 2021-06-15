@@ -37,7 +37,8 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     item: SierraItemNumber): Future[Either[SierraItemLookupError, SierraItem]] =
     for {
       resp <- client.get(
-        path = Path(s"v5/items/${item.withoutCheckDigit}")
+        path = Path(s"v5/items/${item.withoutCheckDigit}"),
+        params = Map("fields" -> "deleted,status,suppressed")
       )
 
       result <- resp.status match {

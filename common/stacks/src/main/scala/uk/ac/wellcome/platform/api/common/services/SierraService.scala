@@ -12,6 +12,7 @@ import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,
   SierraItemIdentifier,
+  UnknownError,
   UserAtHoldLimit
 }
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
@@ -84,8 +85,8 @@ class SierraService(
     patron: SierraPatronNumber,
     item: SierraItemNumber): Future[HoldResponse] =
     sierraSource.lookupItem(item).map {
-      case Right(item) if item.deleted =>
-        warn(s"User tried to place a hold on item $item, which has been deleted in Sierra")
+      case Right(item) if item.deleted || item.suppressed =>
+        warn(s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
         CannotBeRequested()
 
       // Although we get a 404 from Sierra, we map this to a 400 Bad Request
@@ -93,7 +94,7 @@ class SierraService(
       // exists in the Catalogue API.
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(s"User tried to place a hold on item $item, which does not exist in Sierra")
-        CannotBeRequested()
+        UnknownError()
 
       case _ => HoldRejected()
     }
