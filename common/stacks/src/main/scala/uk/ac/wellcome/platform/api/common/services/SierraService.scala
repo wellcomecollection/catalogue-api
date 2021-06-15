@@ -38,7 +38,7 @@ class SierraService(
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.lookupItem(item).map {
-      case Right(item) => Right(StacksItemStatus(item.status.code))
+      case Right(item) => Right(StacksItemStatus(item.status.get.code))
       case Left(err)   => Left(err)
     }
   }
@@ -84,6 +84,10 @@ class SierraService(
     patron: SierraPatronNumber,
     item: SierraItemNumber): Future[HoldResponse] =
     sierraSource.lookupItem(item).map {
+      case Right(item) if item.deleted =>
+        warn(s"User tried to place a hold on item $item, which has been deleted in Sierra")
+        CannotBeRequested()
+
       // Although we get a 404 from Sierra, we map this to a 400 Bad Request
       // in the requests API -- we can only get to this point if the item
       // exists in the Catalogue API.

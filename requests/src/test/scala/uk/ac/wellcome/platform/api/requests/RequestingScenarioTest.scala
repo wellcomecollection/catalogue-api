@@ -336,15 +336,15 @@ class RequestingScenarioTest
         (
           HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber"),
           HttpResponse(
-            status = StatusCodes.NotFound,
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
-              """
+              s"""
                 |{
-                |  "code": 107,
-                |  "specificCode": 0,
-                |  "httpStatus": 404,
-                |  "name": "Record not found"
+                |  "id": "$itemNumber",
+                |  "deletedDate": "2001-01-01",
+                |  "deleted": true,
+                |  "bibIds": [],
+                |  "volumes": []
                 |}
                 |""".stripMargin
             )

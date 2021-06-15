@@ -91,10 +91,11 @@ class SierraSourceTest
           _ shouldBe Right(
             SierraItem(
               id = itemNumber,
-              status = SierraItemStatus(
+              deleted = false,
+              status = Some(SierraItemStatus(
                 code = "t",
                 display = "In quarantine"
-              )
+              ))
             )
           )
         }
@@ -164,7 +165,11 @@ class SierraSourceTest
         val future = source.lookupItem(itemNumber)
 
         whenReady(future) {
-          _.left.value shouldBe a[SierraItemLookupError.ItemHasNoStatus]
+          _.value shouldBe SierraItem(
+            id = SierraItemNumber("1000001"),
+            deleted = true,
+            status = None
+          )
         }
       }
     }
