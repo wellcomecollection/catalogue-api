@@ -1,27 +1,21 @@
 package uk.ac.wellcome.platform.api.common.services
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  Uri
-}
-
-import java.time.Instant
+import akka.http.scaladsl.model._
+import com.github.tomakehurst.wiremock.client.WireMock._
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.EitherValues
 import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.models._
-import com.github.tomakehurst.wiremock.client.WireMock._
-import weco.api.stacks.models.HoldRejected
+import weco.api.stacks.models.CannotBeRequested
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.source_model.generators.SierraGenerators
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraServiceTest
@@ -30,7 +24,8 @@ class SierraServiceTest
     with ScalaFutures
     with IntegrationPatience
     with EitherValues
-    with Matchers {
+    with Matchers
+    with SierraGenerators {
 
   describe("SierraService") {
     describe("getItemStatus") {
@@ -153,40 +148,94 @@ class SierraServiceTest
       }
 
       it("rejects a hold when the Sierra API errors indicating such") {
-        withSierraService {
-          case (sierraService, wireMockServer) =>
-            val patronNumber = SierraPatronNumber("1234567")
-            val sourceIdentifier = SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              ontologyType = "Item",
-              value = "i16010188"
+        val patron = SierraPatronNumber("1234567")
+        val item = createSierraItemNumber
+        val sourceIdentifier = SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          ontologyType = "Item",
+          value = item.withCheckDigit
+        )
+
+        val responses = Seq(
+          (
+            HttpRequest(
+              method = HttpMethods.POST,
+              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "recordType": "i",
+                   |  "recordNumber": ${item.withoutCheckDigit},
+                   |  "pickupLocation": "unspecified"
+                   |}
+                   |""".stripMargin
+              )
+            ),
+            HttpResponse(
+              status = StatusCodes.InternalServerError,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 132,
+                  |  "specificCode": 2,
+                  |  "httpStatus": 500,
+                  |  "name": "XCirc error",
+                  |  "description": "XCirc error : This record is not available"
+                  |}
+                  |""".stripMargin
+              )
             )
-
-            whenReady(
-              sierraService.placeHold(
-                patron = patronNumber,
-                sourceIdentifier = sourceIdentifier,
+          ),
+          (
+            HttpRequest(uri =
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "total": 0,
+                   |  "start": 0,
+                   |  "entries": []
+                   |}
+                   |""".stripMargin
               )
-            ) { response =>
-              wireMockServer.verify(
-                1,
-                postRequestedFor(
-                  urlEqualTo(
-                    "/iii/sierra-api/v5/patrons/1234567/holds/requests"
-                  )
-                ).withRequestBody(
-                  equalToJson("""
-                                |{
-                                |  "recordType" : "i",
-                                |  "recordNumber" : 1601018,
-                                |  "pickupLocation" : "unspecified"
-                                |}
-                                |""".stripMargin)
-                )
+            )
+          ),
+          (
+            HttpRequest(uri =
+              s"http://sierra:1234/v5/items/$item?fields=deleted,status,suppressed"),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "id": "$item",
+                   |  "deletedDate": "2001-01-01",
+                   |  "deleted": false,
+                   |  "suppressed": true,
+                   |  "status": {"code": "-", "display": "Available"}
+                   |}
+                   |""".stripMargin
               )
+            )
+          )
+        )
 
-              response shouldBe a[HoldRejected]
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            new MemoryHttpClient(responses) with HttpGet with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
             }
+          )
+
+          val future = service.placeHold(patron = patron, sourceIdentifier = sourceIdentifier)
+
+          whenReady(future) {
+            _ shouldBe a[CannotBeRequested]
+          }
         }
       }
     }
