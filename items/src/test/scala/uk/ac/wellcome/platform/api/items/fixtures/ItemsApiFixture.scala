@@ -1,12 +1,10 @@
 package uk.ac.wellcome.platform.api.items.fixtures
 
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
-import com.github.tomakehurst.wiremock.WireMockServer
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.platform.api.common.fixtures.ServicesFixture
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.items.ItemsApi
 import uk.ac.wellcome.platform.api.models.ApiConfig
@@ -18,8 +16,7 @@ import java.net.URL
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ItemsApiFixture
-    extends ServicesFixture
-    with HttpFixtures
+    extends HttpFixtures
     with IndexFixtures { this: Suite =>
 
   val metricsName = "ItemsApiFixture"
@@ -38,26 +35,23 @@ trait ItemsApiFixture
 
   def withItemsApi[R](index: Index,
                       responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
-    testWith: TestWith[(URL, WireMockServer), R]): R = {
+    testWith: TestWith[URL, R]): R = {
 
     val httpClient = new MemoryHttpClient(responses) with HttpGet
     with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
-    withSierraService {
-      case (_, sierraWiremockServer) =>
-        withMaterializer { implicit mat =>
-          val api: ItemsApi = new ItemsApi(
-            sierraService = SierraService(httpClient),
-            workLookup = WorkLookup(elasticClient),
-            index = index
-          )
+    withMaterializer { implicit mat =>
+      val api: ItemsApi = new ItemsApi(
+        sierraService = SierraService(httpClient),
+        workLookup = WorkLookup(elasticClient),
+        index = index
+      )
 
-          withApp(api.routes) { _ =>
-            testWith((api.contextUrl, sierraWiremockServer))
-          }
-        }
+      withApp(api.routes) { _ =>
+        testWith(api.contextUrl)
+      }
     }
   }
 }
