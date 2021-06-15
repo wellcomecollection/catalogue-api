@@ -52,7 +52,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1146055?fields=deleted,status,suppressed")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1146055?fields=deleted,status,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -92,10 +93,11 @@ class SierraSourceTest
             SierraItem(
               id = itemNumber,
               deleted = false,
-              status = Some(SierraItemStatus(
-                code = "t",
-                display = "In quarantine"
-              ))
+              status = Some(
+                SierraItemStatus(
+                  code = "t",
+                  display = "In quarantine"
+                ))
             )
           )
         }
@@ -108,7 +110,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1000000?fields=deleted,status,suppressed")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1000000?fields=deleted,status,suppressed")
           ),
           HttpResponse(
             status = StatusCodes.NotFound,
@@ -142,7 +145,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1000001?fields=deleted,status,suppressed")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1000001?fields=deleted,status,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(

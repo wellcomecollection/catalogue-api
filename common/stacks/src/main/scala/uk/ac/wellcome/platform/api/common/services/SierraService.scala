@@ -81,9 +81,8 @@ class SierraService(
     }
   }
 
-  def checkIfItemCanBeRequested(
-    patron: SierraPatronNumber,
-    item: SierraItemNumber): Future[HoldResponse] =
+  def checkIfItemCanBeRequested(patron: SierraPatronNumber,
+                                item: SierraItemNumber): Future[HoldResponse] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -93,7 +92,8 @@ class SierraService(
       // A 404 here would be wrong -- from the perspective of the catalogue API,
       // this does exist -- so instead, we return a generic "CannotBeRequested" error.
       case Right(item) if item.deleted || item.suppressed =>
-        warn(s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
+        warn(
+          s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
         CannotBeRequested()
 
       // This would be extremely unusual in practice -- when items are deleted
@@ -104,7 +104,8 @@ class SierraService(
       //
       // We bubble up a 500 error, so we can be alerted and investigate further.
       case Left(SierraItemLookupError.ItemNotFound) =>
-        warn(s"User tried to place a hold on item $item, which does not exist in Sierra")
+        warn(
+          s"User tried to place a hold on item $item, which does not exist in Sierra")
         UnknownError()
 
       case _ => HoldRejected()

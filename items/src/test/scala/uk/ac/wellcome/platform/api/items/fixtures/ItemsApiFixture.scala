@@ -36,10 +36,12 @@ trait ItemsApiFixture
       contextPath = "context.json"
     )
 
-  def withItemsApi[R](index: Index, responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
+  def withItemsApi[R](index: Index,
+                      responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
     testWith: TestWith[(URL, WireMockServer), R]): R = {
 
-    val httpClient = new MemoryHttpClient(responses) with HttpGet with HttpPost {
+    val httpClient = new MemoryHttpClient(responses) with HttpGet
+    with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 

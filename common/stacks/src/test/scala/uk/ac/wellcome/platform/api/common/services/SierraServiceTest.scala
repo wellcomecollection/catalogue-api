@@ -37,7 +37,8 @@ class SierraServiceTest
       it("gets a StacksItemStatus") {
         val responses = Seq(
           (
-            HttpRequest(uri = "http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed"),
+            HttpRequest(uri =
+              "http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed"),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -56,7 +57,8 @@ class SierraServiceTest
 
         withMaterializer { implicit mat =>
           val service = SierraService(
-            client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
+            client = new MemoryHttpClient(responses) with HttpGet
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )

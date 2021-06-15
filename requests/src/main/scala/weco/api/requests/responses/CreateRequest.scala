@@ -59,7 +59,8 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
           case Success(CannotBeRequested(_)) =>
             invalidRequest("You cannot request " + itemId)
           case Success(UnknownError(_)) =>
-            internalError(new Throwable(s"Unknown error when requesting $itemId"))
+            internalError(
+              new Throwable(s"Unknown error when requesting $itemId"))
           case Failure(err) => failWith(err)
         }
 

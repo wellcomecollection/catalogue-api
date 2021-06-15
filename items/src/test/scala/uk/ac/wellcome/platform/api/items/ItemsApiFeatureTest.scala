@@ -51,7 +51,8 @@ class ItemsApiFeatureTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(

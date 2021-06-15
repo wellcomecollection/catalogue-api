@@ -334,7 +334,8 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+          HttpRequest(uri =
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -425,7 +426,8 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+          HttpRequest(uri =
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -513,7 +515,8 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(uri = s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+          HttpRequest(uri =
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -552,7 +555,9 @@ class RequestingScenarioTest
       response.status.intValue shouldBe 500
 
       And("we display a generic response")
-      assertIsDisplayError(response, statusCode = StatusCodes.InternalServerError)
+      assertIsDisplayError(
+        response,
+        statusCode = StatusCodes.InternalServerError)
     }
   }
 
