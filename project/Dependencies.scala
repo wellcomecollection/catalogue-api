@@ -114,10 +114,6 @@ object ExternalDependencies {
     "io.circe" %% "circe-optics" % versions.circe
   )
 
-  val wireMockDependencies = Seq(
-    "com.github.tomakehurst" % "wiremock" % "2.25.1" % Test
-  )
-
   val scalacheckDependencies = Seq(
     "org.scalatestplus" %% "scalacheck-1-14" % versions.scalatestplus % "test",
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.13" % versions.scalacheckShapeless % "test"
@@ -151,7 +147,6 @@ object CatalogueDependencies {
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
-      ExternalDependencies.wireMockDependencies ++
       WellcomeDependencies.jsonLibrary ++
       WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
