@@ -1,5 +1,4 @@
 import yargs = require("yargs");
-import crypto from "crypto";
 import { SingleBar, Presets } from "cli-progress";
 import { compressToEncodedURIComponent } from "lz-string";
 import fs from "fs";
@@ -30,7 +29,7 @@ const main = async () => {
   const { nSamples, index, query: queryFile, withAggs, maxPerSecond } = argv;
   const minDelay = 1000.0 / maxPerSecond;
   const query = await fs.promises.readFile(
-    path.resolve(__dirname, "query-templates", queryFile ?? `${index}.json`),
+    path.resolve(__dirname, "query-templates", queryFile || `${index}.json`),
     "utf8"
   );
   const aggs = await fs.promises.readFile(
@@ -71,7 +70,7 @@ const main = async () => {
 
   const stats = {
     index,
-    query: compressToEncodedURIComponent(query),
+    queryHash: compressToEncodedURIComponent(query),
     mean: mean(results),
     median: percentile(50, results),
     p95: percentile(95, results),
