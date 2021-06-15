@@ -1,6 +1,13 @@
 package uk.ac.wellcome.platform.api.requests
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -8,13 +15,10 @@ import uk.ac.wellcome.json.utils.JsonAssertions
 import uk.ac.wellcome.models.work.generators.ItemsGenerators
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.memory.MemoryItemLookup
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
-
-import scala.util.{Failure, Try}
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.source_model.generators.SierraGenerators
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
@@ -22,22 +26,58 @@ class RequestsApiFeatureTest
     with RequestsApiFixture
     with JsonAssertions
     with IntegrationPatience
-    with ItemsGenerators {
+    with ItemsGenerators
+    with SierraGenerators {
 
   describe("requests") {
     it("provides information about a users' holds") {
+      val patron = SierraPatronNumber("1234567")
+      val itemNumber = createSierraItemNumber
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.GET,
+            uri = s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 1,
+                 |  "start": 0,
+                 |  "entries": [
+                 |    {
+                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber.withoutCheckDigit}",
+                 |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                 |      "frozen": false,
+                 |      "placed": "2021-05-07",
+                 |      "notWantedBeforeDate": "2021-05-07",
+                 |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
+                 |      "status": {"code": "0", "name": "on hold."}
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
       val item = createIdentifiedItemWith(
         sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
-          value = "i12921853",
+          value = itemNumber.withCheckDigit,
           ontologyType = "Item"
         )
       )
 
       val lookup = new MemoryItemLookup(items = Seq(item))
 
-      withRequestsApi(lookup) { _ =>
-        val path = "/users/1234567/item-requests"
+      withRequestsApi(lookup, responses) { _ =>
+        val path = s"/users/$patron/item-requests"
 
         val expectedJson =
           s"""
@@ -53,7 +93,7 @@ class RequestsApiFeatureTest
              |              "label" : "Sierra system number",
              |              "type" : "IdentifierType"
              |            },
-             |            "value" : "i12921853",
+             |            "value" : "${itemNumber.withCheckDigit}",
              |            "type" : "Identifier"
              |          }
              |        ],
@@ -61,15 +101,14 @@ class RequestsApiFeatureTest
              |        ],
              |        "type" : "Item"
              |      },
-             |      "pickupDate" : "2019-12-03T04:00:00Z",
              |      "pickupLocation" : {
-             |        "id" : "sepbb",
+             |        "id" : "sotop",
              |        "label" : "Rare Materials Room",
              |        "type" : "LocationDescription"
              |      },
              |      "status" : {
-             |        "id" : "i",
-             |        "label" : "item hold ready for pickup.",
+             |        "id" : "0",
+             |        "label" : "on hold.",
              |        "type" : "RequestStatus"
              |      },
              |      "type" : "Request"
@@ -86,137 +125,6 @@ class RequestsApiFeatureTest
             assertJsonStringsAreEqual(_, expectedJson)
           }
         }
-      }
-    }
-  }
-
-  describe("placing a hold") {
-    it("returns a 404 if the item ID isn't a canonical ID") {
-      val lookup = new MemoryItemLookup(items = Seq.empty)
-
-      withRequestsApi(lookup) {
-        case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
-
-          val itemId = randomAlphanumeric(length = 10)
-          Try {
-            CanonicalId(itemId)
-          } shouldBe a[Failure[_]]
-
-          val entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "$itemId",
-               |  "workId": "$createCanonicalId",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
-
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.NotFound
-
-            val expectedError =
-              s"""
-                 |{
-                 |  "errorType": "http",
-                 |  "httpStatus": 404,
-                 |  "label": "Not Found",
-                 |  "description": "Item not found for identifier $itemId",
-                 |  "type": "Error",
-                 |  "@context": "$contextUrl"
-                 |}""".stripMargin
-
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
-            }
-          }
-      }
-    }
-
-    it("returns a 404 if there is no item with this ID") {
-      val lookup = new MemoryItemLookup(items = Seq.empty)
-
-      withRequestsApi(lookup) {
-        case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
-
-          val itemId = createCanonicalId
-
-          val entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "$itemId",
-               |  "workId": "$createCanonicalId",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
-
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.NotFound
-
-            val expectedError =
-              s"""
-                 |{
-                 |  "errorType": "http",
-                 |  "httpStatus": 404,
-                 |  "label": "Not Found",
-                 |  "description": "Item not found for identifier $itemId",
-                 |  "type": "Error",
-                 |  "@context": "$contextUrl"
-                 |}""".stripMargin
-
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
-            }
-          }
-      }
-    }
-
-    it("returns a 400 if the item isn't a Sierra item") {
-      val item = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = MiroImageNumber,
-          value = "V0012345",
-          ontologyType = "Item"
-        )
-      )
-
-      val lookup = new MemoryItemLookup(items = Seq(item))
-
-      withRequestsApi(lookup) {
-        case (contextUrl, _) =>
-          val path = "/users/1234567/item-requests"
-
-          val entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "$createCanonicalId",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
-
-          whenPostRequestReady(path, entity) { response =>
-            response.status shouldBe StatusCodes.BadRequest
-
-            val expectedError =
-              s"""
-                 |{
-                 |  "errorType": "http",
-                 |  "httpStatus": 400,
-                 |  "label": "Bad Request",
-                 |  "description": "You cannot request ${item.id.canonicalId}",
-                 |  "type": "Error",
-                 |  "@context": "$contextUrl"
-                 |}""".stripMargin
-
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedError)
-            }
-          }
       }
     }
   }
