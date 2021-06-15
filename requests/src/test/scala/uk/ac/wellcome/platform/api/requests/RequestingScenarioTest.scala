@@ -220,6 +220,66 @@ class RequestingScenarioTest
       response.entity shouldBe HttpEntity.Empty
     }
 
+    Scenario("An item that is ordered twice in quick succession") {
+      // I discovered this scenario by accident, when experimenting with the
+      // Sierra API -- if you send the same `POST /patrons/{userId}/requests`
+      // in quick succession, you get this 500 error with a 929 code.
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which has just been requested in Sierra")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "code": 132,
+                 |  "specificCode": 929,
+                 |  "httpStatus": 500,
+                 |  "name": "XCirc error",
+                 |  "description": "XCirc error : Your request has already been sent."
+                 |}
+                 |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq(itemNumber))
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
+
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
+    }
+
     Scenario("A user at their hold limit") {
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber

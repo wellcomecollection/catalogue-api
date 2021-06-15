@@ -53,10 +53,41 @@ class SierraService(
     sierraSource.createHold(patron, item).flatMap {
       case Right(_) => Future.successful(HoldAccepted())
 
-      // This is an "XCirc/Record not available" error.  This can mean
-      // that the item is already on hold -- possibly by this user.
-      // See https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
-      case Left(SierraErrorCode(132, 2, 500, _, _)) =>
+      // API error code "132" means "Request denied by XCirc".  This is listed in
+      // the Sierra documentation:
+      // https://techdocs.iii.com/sierraapi/Content/zReference/errorHandling.htm
+      //
+      // Unfortunately I don't know all the specific XCirc error codes, and I can't
+      // find any documentation describing them.  Here are the ones we know:
+      //
+      //    2 = "Record not available"
+      //        This can mean the item is already on hold, possibly by this user.
+      //        It may also mean you're not allowed to request this item.
+      //
+      //    433 = "Bib record cannot be loaded"
+      //        This can mean you tried to request an item that doesn't exist in
+      //        Sierra.
+      //
+      //    929 = "Your request has already been sent"
+      //        This appears when you send the same hold request multiple times in
+      //        quick succession.
+      //
+      // For examples of error responses taken from real Sierra requests, see the
+      // test cases in RequestingScenarioTest.
+
+      // If the hold fails or there's a suggestion that we might have already placed
+      // a hold on this item, look up what holds this user already has.
+      //
+      // We might find:
+      //
+      //    - They already have a hold on this item, in which case we report the
+      //      hold as successful, even if it was really a no-op.
+      //    - They're at their hold limit, so they can't request new items (regardless
+      //      of whether this particular item can be requested)
+      //    - They're not at their hold limit and they don't have a hold on this item --
+      //      so we look to see if this item can be requested.
+      //
+      case Left(SierraErrorCode(132, specificCode, 500, _, _)) if specificCode == 2 || specificCode == 929 =>
         getStacksUserHolds(patron).flatMap {
           case Right(holds)
               if holds.holds
@@ -70,8 +101,15 @@ class SierraService(
           case _ => checkIfItemCanBeRequested(patron, item)
         }
 
-      // This is an "XCirc/Bib record cannot be loaded" error.  We see this
-      // error when you try to request an item that doesn't exist in Sierra.
+      // If the hold fails because the bib record couldn't be loaded, that's a strong
+      // suggestion that the item doesn't exist.
+      //
+      // We could bail out immediately, but because the Sierra error codes aren't documented
+      // and it should be quite unusual to hit this error path, we go ahead and check if the
+      // item can be requested, just to be sure.
+      //
+      // If the item really doesn't exist, we'll find out pretty quickly.
+      //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
         checkIfItemCanBeRequested(patron, item)
 
