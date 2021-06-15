@@ -176,12 +176,11 @@ class ItemsApiFeatureTest
       val id = createCanonicalId
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/$id"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/$id"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 404,
@@ -191,13 +190,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -209,12 +208,11 @@ class ItemsApiFeatureTest
       } shouldBe a[Failure[_]]
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/$id"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/$id"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 404,
@@ -224,13 +222,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -287,12 +285,11 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, invisibleWork)
 
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/${invisibleWork.state.canonicalId}"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/${invisibleWork.state.canonicalId}"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 410,
@@ -302,13 +299,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.Gone
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -327,12 +324,11 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, deletedWork)
 
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/${deletedWork.state.canonicalId}"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/${deletedWork.state.canonicalId}"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 410,
@@ -342,13 +338,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.Gone
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
