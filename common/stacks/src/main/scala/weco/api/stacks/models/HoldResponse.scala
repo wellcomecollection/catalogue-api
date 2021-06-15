@@ -15,3 +15,5 @@ case class CannotBeRequested(lastModified: Instant = Instant.now())
     extends HoldResponse
 case class UnknownError(lastModified: Instant = Instant.now())
     extends HoldResponse
+case class OnHoldForAnotherUser(lastModified: Instant = Instant.now())
+  extends HoldResponse

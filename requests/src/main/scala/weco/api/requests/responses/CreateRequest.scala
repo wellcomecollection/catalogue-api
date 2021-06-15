@@ -9,6 +9,7 @@ import weco.api.stacks.models.{
   CannotBeRequested,
   HoldAccepted,
   HoldRejected,
+  OnHoldForAnotherUser,
   UnknownError,
   UserAtHoldLimit
 }
@@ -61,6 +62,19 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
           case Success(UnknownError(_)) =>
             internalError(
               new Throwable(s"Unknown error when requesting $itemId"))
+
+          case Success(OnHoldForAnotherUser(_)) =>
+            complete(
+              StatusCodes.Conflict ->
+                ContextResponse(
+                  contextUrl = contextUrl,
+                  DisplayError(
+                    statusCode = StatusCodes.Conflict,
+                    description = s"Item $itemId is on hold for another reader"
+                  )
+                )
+            )
+
           case Failure(err) => failWith(err)
         }
 

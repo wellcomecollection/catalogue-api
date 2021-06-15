@@ -9,6 +9,7 @@ import weco.api.stacks.models.{
   HoldAccepted,
   HoldRejected,
   HoldResponse,
+  OnHoldForAnotherUser,
   SierraErrorCode,
   SierraHold,
   SierraItemIdentifier,
@@ -133,6 +134,14 @@ class SierraService(
         warn(
           s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
         CannotBeRequested()
+
+      // If the holdCount is non-zero, that means another user has a hold on this item,
+      // and only a single user can have an item requested at a time.
+      //
+      // By this point, we've already checked the list of holds for this user -- since they
+      // don't have it, this item must be on hold for another user.
+      case Right(item) if item.holdCount > 0 =>
+        OnHoldForAnotherUser()
 
       // This would be extremely unusual in practice -- when items are deleted
       // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
