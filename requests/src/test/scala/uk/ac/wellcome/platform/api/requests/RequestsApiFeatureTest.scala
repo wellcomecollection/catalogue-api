@@ -1,11 +1,6 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.model.StatusCodes
-import com.github.tomakehurst.wiremock.client.WireMock.{
-  equalToJson,
-  postRequestedFor,
-  urlEqualTo
-}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
