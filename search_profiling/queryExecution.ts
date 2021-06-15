@@ -18,7 +18,7 @@ const constructQueryBody = (
   searchTerm: string,
   aggs?: string
 ): Record<string, any> => ({
-  query: JSON.parse(query.replace("{{query}}", searchTerm)),
+  query: JSON.parse(query.replace(/{{query}}/g, searchTerm)),
   aggs: aggs ? JSON.parse(aggs) : undefined,
   from: 0,
   size: 10,

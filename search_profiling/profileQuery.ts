@@ -10,6 +10,7 @@ const argv = yargs(process.argv.slice(2)).options({
   index: { type: "string", demandOption: true },
   nSamples: { type: "number", default: 200, alias: "n" },
   withAggs: { type: "boolean", default: true },
+  maxPerSecond: { type: "number", default: 5 },
 }).argv;
 
 const mean = (arr: number[]): number =>
@@ -22,7 +23,8 @@ const randomCommonWord = () =>
   commonWords[Math.floor(Math.random() * commonWords.length)];
 
 const main = async () => {
-  const { nSamples, index, withAggs } = await argv;
+  const { nSamples, index, withAggs, maxPerSecond } = await argv;
+  const minDelay = 1000.0 / maxPerSecond;
   const query = await fs.promises.readFile(
     path.resolve(__dirname, "query-templates", `${index}.json`),
     "utf8"
@@ -37,6 +39,7 @@ const main = async () => {
   const progressBar = new SingleBar({}, Presets.shades_classic);
   progressBar.start(nSamples, 0);
   const results = [];
+  let lastQueryTime = 0;
   for (let _ of Array.from({ length: nSamples })) {
     try {
       const took = await measureQueryTime({
@@ -49,6 +52,14 @@ const main = async () => {
     } catch (e) {
       console.warn(e);
     } finally {
+      const thisQueryTime = Date.now();
+      const thisDelay = thisQueryTime - lastQueryTime;
+      if (thisDelay < minDelay) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, minDelay - thisDelay)
+        );
+      }
+      lastQueryTime = thisQueryTime;
       progressBar.increment();
     }
   }
@@ -66,4 +77,4 @@ const main = async () => {
   console.log(stats);
 };
 
-main();
+main().catch(console.error);
