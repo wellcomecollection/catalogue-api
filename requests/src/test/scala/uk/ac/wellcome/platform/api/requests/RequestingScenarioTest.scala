@@ -196,7 +196,8 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(
-            uri = Uri(s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed")
+            uri = Uri(
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(

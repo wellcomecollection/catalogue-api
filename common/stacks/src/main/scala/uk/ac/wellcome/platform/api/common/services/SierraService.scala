@@ -128,7 +128,8 @@ class SierraService(
     }
   }
 
-  private def checkIfItemCanBeRequested(item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
+  private def checkIfItemCanBeRequested(
+    item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -147,7 +148,8 @@ class SierraService(
       //
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
-      case Right(SierraItemData(_, _, Some(holdCount), _, _, _)) if holdCount > 0 =>
+      case Right(SierraItemData(_, _, Some(holdCount), _, _, _))
+          if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
       // This would be extremely unusual in practice -- when items are deleted
@@ -189,7 +191,8 @@ class SierraService(
   implicit class ItemDataOps(itemData: SierraItemData) {
     def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
       val location: Option[PhysicalLocationType] =
-        itemData.fixedFields.get("79")
+        itemData.fixedFields
+          .get("79")
           .flatMap(_.display)
           .flatMap(name => SierraPhysicalLocationType.fromName(id, name))
 
@@ -204,8 +207,9 @@ class SierraService(
       )
 
       (ac, itemStatus) match {
-        case (Some(ac), _) if ac.method.contains(AccessMethod.OnlineRequest) => true
-        case _                                                               => false
+        case (Some(ac), _) if ac.method.contains(AccessMethod.OnlineRequest) =>
+          true
+        case _ => false
       }
     }
   }

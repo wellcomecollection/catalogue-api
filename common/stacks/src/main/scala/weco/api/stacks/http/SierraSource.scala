@@ -33,8 +33,8 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(
-    item: SierraItemNumber): Future[Either[SierraItemLookupError, SierraItemData]] =
+  def lookupItem(item: SierraItemNumber)
+    : Future[Either[SierraItemLookupError, SierraItemData]] =
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}"),

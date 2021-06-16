@@ -92,7 +92,9 @@ class SierraSourceTest
             SierraItemData(
               deleted = false,
               location = Some(
-                SierraSourceLocation(code = "sgmed", name = "Closed stores Med.")
+                SierraSourceLocation(
+                  code = "sgmed",
+                  name = "Closed stores Med.")
               )
             )
           )
