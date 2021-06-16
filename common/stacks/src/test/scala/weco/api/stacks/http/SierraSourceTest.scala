@@ -11,10 +11,9 @@ import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,
   SierraHoldStatus,
-  SierraHoldsList,
-  SierraItem,
-  SierraItemStatus
+  SierraHoldsList
 }
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
@@ -90,14 +89,11 @@ class SierraSourceTest
 
         whenReady(future) {
           _ shouldBe Right(
-            SierraItem(
-              id = itemNumber,
+            SierraItemData(
               deleted = false,
-              status = Some(
-                SierraItemStatus(
-                  code = "t",
-                  display = "In quarantine"
-                ))
+              location = Some(
+                SierraSourceLocation(code = "sgmed", name = "Closed stores Med.")
+              )
             )
           )
         }
@@ -169,11 +165,7 @@ class SierraSourceTest
         val future = source.lookupItem(itemNumber)
 
         whenReady(future) {
-          _.value shouldBe SierraItem(
-            id = SierraItemNumber("1000001"),
-            deleted = true,
-            status = None
-          )
+          _.value shouldBe SierraItemData(deleted = true)
         }
       }
     }

@@ -164,6 +164,124 @@ class RequestingScenarioTest
       response.entity shouldBe HttpEntity.Empty
     }
 
+    Scenario("An item that exists and cannot be ordered") {
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "code": 132,
+                 |  "specificCode": 2,
+                 |  "httpStatus": 500,
+                 |  "name": "XCirc error",
+                 |  "description": "XCirc error : This record is not available"
+                 |}
+                 |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq())
+        ),
+        (
+          HttpRequest(
+            uri = Uri(s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,fixedFields,suppressed")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "id": "$itemNumber",
+                 |  "deleted": false,
+                 |  "suppressed": false,
+                 |  "status": {
+                 |    "code": "-",
+                 |    "display": "Available"
+                 |  },
+                 |  "holdCount": 0,
+                 |  "fixedFields": {
+                 |    "61": {
+                 |      "label": "I TYPE",
+                 |      "value": "4",
+                 |      "display": "serial"
+                 |    },
+                 |    "79": {
+                 |      "label": "LOCATION",
+                 |      "value": "sgser",
+                 |      "display": "Closed stores journals"
+                 |    },
+                 |    "88": {
+                 |      "label": "STATUS",
+                 |      "value": "-",
+                 |      "display": "Available"
+                 |    },
+                 |    "97": {
+                 |      "label": "IMESSAGE",
+                 |      "value": " "
+                 |    },
+                 |    "108": {
+                 |      "label": "OPACMSG",
+                 |      "value": "n",
+                 |      "display": "Manual request"
+                 |    }
+                 |  }
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the hold is rejected")
+      response.status shouldBe StatusCodes.BadRequest
+      response.status.intValue shouldBe 400
+
+      And("the error explains why the hold is rejected")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 400,
+             |  "label": "Bad Request",
+             |  "description": "You cannot request ${item.id.canonicalId}"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
+
     Scenario("An item that this user has already requested") {
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
