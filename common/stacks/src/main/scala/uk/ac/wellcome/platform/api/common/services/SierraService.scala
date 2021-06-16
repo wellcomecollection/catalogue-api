@@ -89,7 +89,7 @@ class SierraService(
           case Right(holds) if holds.holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
 
-          case _ => checkIfItemCanBeRequested(patron, item)
+          case _ => checkIfItemCanBeRequested(item)
         }
 
       // If the hold fails because the bib record couldn't be loaded, that's a strong
@@ -102,7 +102,7 @@ class SierraService(
       // If the item really doesn't exist, we'll find out pretty quickly.
       //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-        checkIfItemCanBeRequested(patron, item)
+        checkIfItemCanBeRequested(item)
 
       // A 404 response from the Sierra API means the patron record doesn't exist.
       //
@@ -117,10 +117,8 @@ class SierraService(
         Future.successful(Left(HoldRejected.UnknownReason))
     }
   }
-
-  def checkIfItemCanBeRequested(
-    patron: SierraPatronNumber,
-    item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
+  
+  private def checkIfItemCanBeRequested(item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
