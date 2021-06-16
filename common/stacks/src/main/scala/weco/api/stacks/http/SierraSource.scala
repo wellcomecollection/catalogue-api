@@ -38,7 +38,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}"),
-        params = Map("fields" -> "deleted,holdCount,fixedFields,suppressed")
+        params = Map("fields" -> "deleted,fixedFields,holdCount,suppressed")
       )
 
       result <- resp.status match {

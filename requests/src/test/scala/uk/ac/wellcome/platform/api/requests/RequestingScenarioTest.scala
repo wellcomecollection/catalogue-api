@@ -196,7 +196,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(
-            uri = Uri(s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,fixedFields,suppressed")
+            uri = Uri(s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -431,7 +431,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -440,7 +440,7 @@ class RequestingScenarioTest
                  |  "id": "$itemNumber",
                  |  "deleted": false,
                  |  "suppressed": false,
-                 |  "status": {"code": "-", "display": "Available"},
+                 |  "fixedFields": { },
                  |  "holdCount": 1
                  |}
                  |""".stripMargin
@@ -602,7 +602,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -692,7 +692,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -703,7 +703,7 @@ class RequestingScenarioTest
                  |  "deleted": false,
                  |  "suppressed": true,
                  |  "holdCount": 0,
-                 |  "status": {"code": "-", "display": "Available"}
+                 |  "fixedFields": { }
                  |}
                  |""".stripMargin
             )
@@ -782,7 +782,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
