@@ -53,20 +53,11 @@ case object WorksMultiMatcher {
         ),
         /**
           * This is the different ways we can match on the title fields
-          * - title prefix: An exact match, in order
           * - title exact spellings: Exact spellings as they have been catalogued
           * - title alternative spellings: Alternative spellings which people might search for e.g. in transliterations
           */
         dismax(
           queries = Seq(
-            BoolQuery(
-              queryName = Some("title prefix"),
-              boost = Some(1000),
-              must = List(
-                prefixQuery("data.title.keyword", q),
-                matchPhraseQuery("data.title", q)
-              )
-            ),
             MultiMatchQuery(
               q,
               queryName = Some("title and contributor exact spellings"),
