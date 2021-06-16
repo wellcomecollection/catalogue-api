@@ -1,17 +1,23 @@
 package weco.api.stacks.models
 
-import java.time.Instant
+import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
-sealed trait HoldResponse {
-  val lastModified: Instant
+sealed trait HoldResponse
+
+sealed trait HoldAccepted extends HoldResponse
+
+object HoldAccepted {
+  case object HoldCreated extends HoldAccepted
+  case object HoldAlreadyExists extends HoldAccepted
 }
-case class HoldAccepted(lastModified: Instant = Instant.now())
-    extends HoldResponse
-case class HoldRejected(lastModified: Instant = Instant.now())
-    extends HoldResponse
-case class UserAtHoldLimit(lastModified: Instant = Instant.now())
-    extends HoldResponse
-case class CannotBeRequested(lastModified: Instant = Instant.now())
-    extends HoldResponse
-case class UnknownError(lastModified: Instant = Instant.now())
-    extends HoldResponse
+
+sealed trait HoldRejected extends HoldResponse
+
+object HoldRejected {
+  case object ItemCannotBeRequested extends HoldRejected
+  case object ItemIsOnHoldForAnotherUser extends HoldRejected
+  case object ItemMissingFromSourceSystem extends HoldRejected
+  case object UserIsAtHoldLimit extends HoldRejected
+  case class UserDoesNotExist(patron: SierraPatronNumber) extends HoldRejected
+  case object UnknownReason extends HoldRejected
+}

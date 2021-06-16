@@ -53,7 +53,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1146055?fields=deleted,status,suppressed")
+              "http://sierra:1234/v5/items/1146055?fields=deleted,holdCount,status,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -111,7 +111,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000000?fields=deleted,status,suppressed")
+              "http://sierra:1234/v5/items/1000000?fields=deleted,holdCount,status,suppressed")
           ),
           HttpResponse(
             status = StatusCodes.NotFound,
@@ -146,7 +146,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000001?fields=deleted,status,suppressed")
+              "http://sierra:1234/v5/items/1000001?fields=deleted,holdCount,status,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(

@@ -220,6 +220,155 @@ class RequestingScenarioTest
       response.entity shouldBe HttpEntity.Empty
     }
 
+    Scenario("An item that is ordered twice in quick succession") {
+      // I discovered this scenario by accident, when experimenting with the
+      // Sierra API -- if you send the same `POST /patrons/{userId}/requests`
+      // in quick succession, you get this 500 error with a 929 code.
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which has just been requested in Sierra")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "code": 132,
+                 |  "specificCode": 929,
+                 |  "httpStatus": 500,
+                 |  "name": "XCirc error",
+                 |  "description": "XCirc error : Your request has already been sent."
+                 |}
+                 |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq(itemNumber))
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
+
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
+    }
+
+    Scenario("An item that is on hold for another user") {
+      Given("a physical item from Sierra")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("which is on hold for another user")
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "code": 132,
+                 |  "specificCode": 2,
+                 |  "httpStatus": 500,
+                 |  "name": "XCirc error",
+                 |  "description": "XCirc error : This record is not available"
+                 |}
+                 |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq())
+        ),
+        (
+          HttpRequest(uri =
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "id": "$itemNumber",
+                 |  "deleted": false,
+                 |  "suppressed": false,
+                 |  "status": {"code": "-", "display": "Available"},
+                 |  "holdCount": 1
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the API returns a Conflict response")
+      response.status shouldBe StatusCodes.Conflict
+      response.status.intValue shouldBe 409
+
+      And("the error explains why the hold is rejected")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 409,
+             |  "label": "Conflict",
+             |  "description": "Item ${item.id.canonicalId} is on hold for another reader"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
+
     Scenario("A user at their hold limit") {
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
@@ -335,7 +484,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -343,9 +492,7 @@ class RequestingScenarioTest
                 |{
                 |  "id": "$itemNumber",
                 |  "deletedDate": "2001-01-01",
-                |  "deleted": true,
-                |  "bibIds": [],
-                |  "volumes": []
+                |  "deleted": true
                 |}
                 |""".stripMargin
             )
@@ -427,7 +574,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -437,6 +584,7 @@ class RequestingScenarioTest
                  |  "deletedDate": "2001-01-01",
                  |  "deleted": false,
                  |  "suppressed": true,
+                 |  "holdCount": 0,
                  |  "status": {"code": "-", "display": "Available"}
                  |}
                  |""".stripMargin
@@ -516,7 +664,7 @@ class RequestingScenarioTest
         ),
         (
           HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,status,suppressed"),
+            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,holdCount,status,suppressed"),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -558,6 +706,76 @@ class RequestingScenarioTest
       assertIsDisplayError(
         response,
         statusCode = StatusCodes.InternalServerError)
+    }
+
+    Scenario("A user that doesn't exist in Sierra") {
+      // This should never happen -- when an item gets deleted in Sierra, the record
+      // still hangs around with "deleted: true".  If this happens, something has
+      // gone very wrong.
+
+      Given("a physical item from Sierra in the catalogue API")
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("and a user that doesn't exist in Sierra")
+      val patronNumber = createSierraPatronNumber
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("we return a Not Found response")
+      response.status shouldBe StatusCodes.NotFound
+      response.status.intValue shouldBe 404
+
+      And("the error explains the problem")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "@context": "$contextUrl",
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 404,
+             |  "label": "Not Found",
+             |  "description": "There is no such user $patronNumber"
+             |}
+             |""".stripMargin
+        )
+      }
     }
   }
 

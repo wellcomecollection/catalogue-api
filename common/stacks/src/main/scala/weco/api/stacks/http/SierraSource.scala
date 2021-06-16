@@ -38,7 +38,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}"),
-        params = Map("fields" -> "deleted,status,suppressed")
+        params = Map("fields" -> "deleted,holdCount,status,suppressed")
       )
 
       result <- resp.status match {
@@ -64,6 +64,13 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   private implicit val umHoldsList: Unmarshaller[HttpEntity, SierraHoldsList] =
     CirceMarshalling.fromDecoder[SierraHoldsList]
 
+  /** Returns a list of holds for this user.
+    *
+    * Note: do not rely on this method to prove the existence of a user.
+    * In particular, the Sierra API will return an empty list of holds if you
+    * query this API for a patron ID that doesn't exist.
+    *
+    */
   def listHolds(patron: SierraPatronNumber)
     : Future[Either[SierraErrorCode, SierraHoldsList]] =
     for {

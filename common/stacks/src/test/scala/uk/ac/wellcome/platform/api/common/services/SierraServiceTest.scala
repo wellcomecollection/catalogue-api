@@ -7,7 +7,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.platform.api.common.models._
-import weco.api.stacks.models.{CannotBeRequested, HoldAccepted}
+import weco.api.stacks.models.{HoldAccepted, HoldRejected}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.source_model.generators.SierraGenerators
@@ -31,7 +31,7 @@ class SierraServiceTest
         val responses = Seq(
           (
             HttpRequest(uri =
-              "http://sierra:1234/v5/items/1601017?fields=deleted,status,suppressed"),
+              "http://sierra:1234/v5/items/1601017?fields=deleted,holdCount,status,suppressed"),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -40,7 +40,8 @@ class SierraServiceTest
                    |  "id": "1601017",
                    |  "deleted": false,
                    |  "suppressed": false,
-                   |  "status": {"code": "-", "display": "Available"}
+                   |  "status": {"code": "-", "display": "Available"},
+                   |  "holdCount": 0
                    |}
                    |""".stripMargin
               )
@@ -217,7 +218,7 @@ class SierraServiceTest
             sourceIdentifier = sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe a[HoldAccepted]
+            _.value shouldBe HoldAccepted.HoldCreated
           }
         }
       }
@@ -281,7 +282,7 @@ class SierraServiceTest
           ),
           (
             HttpRequest(uri =
-              s"http://sierra:1234/v5/items/$item?fields=deleted,status,suppressed"),
+              s"http://sierra:1234/v5/items/$item?fields=deleted,holdCount,status,suppressed"),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -291,7 +292,8 @@ class SierraServiceTest
                    |  "deletedDate": "2001-01-01",
                    |  "deleted": false,
                    |  "suppressed": true,
-                   |  "status": {"code": "-", "display": "Available"}
+                   |  "status": {"code": "-", "display": "Available"},
+                   |  "holdCount": 0
                    |}
                    |""".stripMargin
               )
@@ -311,7 +313,7 @@ class SierraServiceTest
             sourceIdentifier = sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe a[CannotBeRequested]
+            _.left.value shouldBe HoldRejected.ItemCannotBeRequested
           }
         }
       }
