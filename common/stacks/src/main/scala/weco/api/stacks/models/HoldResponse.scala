@@ -16,6 +16,7 @@ sealed trait HoldRejected extends HoldResponse
 object HoldRejected {
   case object ItemCannotBeRequested extends HoldRejected
   case object ItemIsOnHoldForAnotherUser extends HoldRejected
+  case object ItemMissingFromSourceSystem extends HoldRejected
   case object UserIsAtHoldLimit extends HoldRejected
   case class UserDoesNotExist(patron: SierraPatronNumber) extends HoldRejected
   case object UnknownReason extends HoldRejected

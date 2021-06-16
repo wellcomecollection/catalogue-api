@@ -78,7 +78,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
       case HoldRejected.UserIsAtHoldLimit =>
         (StatusCodes.Forbidden, Some("You are at your account limit and you cannot request more items"))
 
-      case HoldRejected.UnknownReason =>
+      case _ =>
         (StatusCodes.InternalServerError, None)
     }
 }

@@ -147,7 +147,7 @@ class SierraService(
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(
           s"User tried to place a hold on item $item, which does not exist in Sierra")
-        Left(HoldRejected.UnknownReason)
+        Left(HoldRejected.ItemMissingFromSourceSystem)
 
       case _ => Left(HoldRejected.UnknownReason)
     }
