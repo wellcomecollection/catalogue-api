@@ -11,10 +11,9 @@ import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,
   SierraHoldStatus,
-  SierraHoldsList,
-  SierraItem,
-  SierraItemStatus
+  SierraHoldsList
 }
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
@@ -53,7 +52,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1146055?fields=deleted,holdCount,status,suppressed")
+              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -90,14 +89,13 @@ class SierraSourceTest
 
         whenReady(future) {
           _ shouldBe Right(
-            SierraItem(
-              id = itemNumber,
+            SierraItemData(
               deleted = false,
-              status = Some(
-                SierraItemStatus(
-                  code = "t",
-                  display = "In quarantine"
-                ))
+              location = Some(
+                SierraSourceLocation(
+                  code = "sgmed",
+                  name = "Closed stores Med.")
+              )
             )
           )
         }
@@ -111,7 +109,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000000?fields=deleted,holdCount,status,suppressed")
+              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             status = StatusCodes.NotFound,
@@ -146,7 +144,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000001?fields=deleted,holdCount,status,suppressed")
+              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -169,11 +167,7 @@ class SierraSourceTest
         val future = source.lookupItem(itemNumber)
 
         whenReady(future) {
-          _.value shouldBe SierraItem(
-            id = SierraItemNumber("1000001"),
-            deleted = true,
-            status = None
-          )
+          _.value shouldBe SierraItemData(deleted = true)
         }
       }
     }

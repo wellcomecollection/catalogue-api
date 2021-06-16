@@ -9,9 +9,9 @@ import uk.ac.wellcome.json.JsonUtil._
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHoldRequest,
-  SierraHoldsList,
-  SierraItem
+  SierraHoldsList
 }
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
@@ -27,24 +27,24 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   implicit
   ec: ExecutionContext,
   mat: Materializer) {
-  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItem] =
-    CirceMarshalling.fromDecoder[SierraItem]
+  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItemData] =
+    CirceMarshalling.fromDecoder[SierraItemData]
 
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(
-    item: SierraItemNumber): Future[Either[SierraItemLookupError, SierraItem]] =
+  def lookupItem(item: SierraItemNumber)
+    : Future[Either[SierraItemLookupError, SierraItemData]] =
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}"),
-        params = Map("fields" -> "deleted,holdCount,status,suppressed")
+        params = Map("fields" -> "deleted,fixedFields,holdCount,suppressed")
       )
 
       result <- resp.status match {
         case StatusCodes.OK =>
           Unmarshal(resp)
-            .to[SierraItem]
+            .to[SierraItemData]
             .map(Right(_))
             .recover {
               case t: Throwable =>

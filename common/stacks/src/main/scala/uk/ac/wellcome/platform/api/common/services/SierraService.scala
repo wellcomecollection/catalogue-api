@@ -6,9 +6,19 @@ import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.locations.{
+  AccessMethod,
+  PhysicalLocationType
+}
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
+  SierraBibNumber,
   SierraItemNumber,
   SierraPatronNumber
+}
+import weco.catalogue.source_model.sierra.rules.{
+  SierraItemAccess,
+  SierraPhysicalLocationType
 }
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
@@ -29,7 +39,7 @@ class SierraService(
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.lookupItem(item).map {
-      case Right(item) => Right(StacksItemStatus(item.status.get.code))
+      case Right(item) => Right(StacksItemStatus(item.fixedFields("88").value))
       case Left(err)   => Left(err)
     }
   }
@@ -89,7 +99,7 @@ class SierraService(
           case Right(holds) if holds.holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
 
-          case _ => checkIfItemCanBeRequested(patron, item)
+          case _ => checkIfItemCanBeRequested(item)
         }
 
       // If the hold fails because the bib record couldn't be loaded, that's a strong
@@ -102,7 +112,7 @@ class SierraService(
       // If the item really doesn't exist, we'll find out pretty quickly.
       //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-        checkIfItemCanBeRequested(patron, item)
+        checkIfItemCanBeRequested(item)
 
       // A 404 response from the Sierra API means the patron record doesn't exist.
       //
@@ -118,8 +128,7 @@ class SierraService(
     }
   }
 
-  def checkIfItemCanBeRequested(
-    patron: SierraPatronNumber,
+  private def checkIfItemCanBeRequested(
     item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
@@ -139,7 +148,8 @@ class SierraService(
       //
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
-      case Right(item) if item.holdCount > 0 =>
+      case Right(SierraItemData(_, _, Some(holdCount), _, _, _))
+          if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
       // This would be extremely unusual in practice -- when items are deleted
@@ -154,8 +164,55 @@ class SierraService(
           s"User tried to place a hold on item $item, which does not exist in Sierra")
         Left(HoldRejected.ItemMissingFromSourceSystem)
 
-      case _ => Left(HoldRejected.UnknownReason)
+      // If the rules for requesting prevent an item from being requested, we can
+      // explain this to the user.
+      //
+      // Usually we won't display the "Online request" button for an item that doesn't
+      // pass the rules for requesting.  We could hit this branch if the data has been
+      // updated in Sierra to prevent requesting, but this hasn't updated in the API yet.
+      case Right(itemData) if !itemData.allowsOnlineRequesting(item) =>
+        warn(
+          s"User tried to place a hold on item $item, which is blocked by rules for requesting"
+        )
+        Left(HoldRejected.ItemCannotBeRequested)
+
+      // At this point, we've run out of reasons why Sierra didn't let us place a hold on
+      // this item.
+      //
+      // We log a warning so we have a bit of useful debugging information to go on, and
+      // then we bubble up the failure.
+      case _ =>
+        warn(
+          s"User tried to place a hold on item $item, which failed for an unknown reason"
+        )
+        Left(HoldRejected.UnknownReason)
     }
+
+  implicit class ItemDataOps(itemData: SierraItemData) {
+    def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
+      val location: Option[PhysicalLocationType] =
+        itemData.fixedFields
+          .get("79")
+          .flatMap(_.display)
+          .flatMap(name => SierraPhysicalLocationType.fromName(id, name))
+
+      // The bib ID is used for debugging purposes; the bib status is only used
+      // for consistency checking.  We can use placeholder data here.
+      val (ac, itemStatus) = SierraItemAccess(
+        bibId = SierraBibNumber("0000000"),
+        itemId = id,
+        bibStatus = None,
+        location = location,
+        itemData = itemData
+      )
+
+      (ac, itemStatus) match {
+        case (Some(ac), _) if ac.method.contains(AccessMethod.OnlineRequest) =>
+          true
+        case _ => false
+      }
+    }
+  }
 
   protected def buildStacksHold(entry: SierraHold): StacksHold = {
     val itemNumber = SierraItemIdentifier.fromUrl(entry.record)

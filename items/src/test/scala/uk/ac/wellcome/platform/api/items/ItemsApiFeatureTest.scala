@@ -52,7 +52,7 @@ class ItemsApiFeatureTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1601017?fields=deleted,holdCount,status,suppressed")
+              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -62,7 +62,9 @@ class ItemsApiFeatureTest
                 |  "id": "1601017",
                 |  "deleted": false,
                 |  "suppressed": false,
-                |  "status": {"code": "-", "display": "Available"},
+                |  "fixedFields": {
+                |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                |  },
                 |  "holdCount": 0
                 |}
                 |""".stripMargin
