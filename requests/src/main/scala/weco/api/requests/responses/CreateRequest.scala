@@ -38,7 +38,8 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
           case Success(Right(_)) => complete(accepted)
 
           case Success(Left(holdRejected)) =>
-            val (status, description) = handleError(holdRejected, itemId = itemId)
+            val (status, description) =
+              handleError(holdRejected, itemId = itemId)
             complete(
               status ->
                 ContextResponse(
@@ -64,19 +65,25 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
       case Left(err) => elasticError("Item", err)
     }
 
-  private def handleError(reason: HoldRejected, itemId: CanonicalId): (StatusCode, Option[String]) =
+  private def handleError(reason: HoldRejected,
+                          itemId: CanonicalId): (StatusCode, Option[String]) =
     reason match {
       case HoldRejected.ItemCannotBeRequested =>
         (StatusCodes.BadRequest, Some(s"You cannot request $itemId"))
 
       case HoldRejected.ItemIsOnHoldForAnotherUser =>
-        (StatusCodes.Conflict, Some(s"Item $itemId is on hold for another reader"))
+        (
+          StatusCodes.Conflict,
+          Some(s"Item $itemId is on hold for another reader"))
 
       case HoldRejected.UserDoesNotExist(patron) =>
         (StatusCodes.NotFound, Some(s"There is no such user $patron"))
 
       case HoldRejected.UserIsAtHoldLimit =>
-        (StatusCodes.Forbidden, Some("You are at your account limit and you cannot request more items"))
+        (
+          StatusCodes.Forbidden,
+          Some(
+            "You are at your account limit and you cannot request more items"))
 
       case _ =>
         (StatusCodes.InternalServerError, None)

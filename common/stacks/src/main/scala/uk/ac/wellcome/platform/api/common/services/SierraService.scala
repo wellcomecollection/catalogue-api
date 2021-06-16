@@ -6,7 +6,10 @@ import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,7 +77,8 @@ class SierraService(
       //    - They're not at their hold limit and they don't have a hold on this item --
       //      so we look to see if this item can be requested.
       //
-      case Left(SierraErrorCode(132, specificCode, 500, _, _)) if specificCode == 2 || specificCode == 929 =>
+      case Left(SierraErrorCode(132, specificCode, 500, _, _))
+          if specificCode == 2 || specificCode == 929 =>
         getStacksUserHolds(patron).flatMap {
           case Right(holds)
               if holds.holds
@@ -114,8 +118,9 @@ class SierraService(
     }
   }
 
-  def checkIfItemCanBeRequested(patron: SierraPatronNumber,
-                                item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
+  def checkIfItemCanBeRequested(
+    patron: SierraPatronNumber,
+    item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
