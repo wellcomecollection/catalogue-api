@@ -1,7 +1,7 @@
 # Query releases
 
 ## Less fuzz, more archives
-### 17 June 2021
+### 17 June 2021
 
 **Less fuzz**
 
@@ -26,7 +26,7 @@ While developing this query we hit quite a major performance snag. While we're s
 ---
 
 ## Images query
-### 23 April 2021
+### 23 April 2021
 
 Brings the images query inline with the learning around languages etc 
 from the works query.
@@ -34,7 +34,7 @@ from the works query.
 [PR](https://github.com/wellcomecollection/rank/pull/35)
 
 ## Language analyzers
-### 7 April
+### 7 April
 
 Adds [language analyzers](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-lang-analyzer.html)
 to be able to handle conjugation, compounding etc.
