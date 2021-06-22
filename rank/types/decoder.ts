@@ -1,12 +1,12 @@
-import { NextApiRequest } from 'next'
+import { ParsedUrlQuery } from 'querystring'
 
-type Q = NextApiRequest['query']
-type QueryValue = Q[keyof Q] | undefined
-type Decoder<Props> = (q: Q) => Props
+type QueryValue = ParsedUrlQuery[keyof ParsedUrlQuery]
+type Decoder<Props> = (q: ParsedUrlQuery) => Props
 
-function decodeString(q: Q, key: string): string {
-  if (!q[key]) throw Error(`Missing value for ${key}`)
-  return q[key].toString()
+function decodeString(q: ParsedUrlQuery, key: string): string {
+  const val = q[key]
+  if (!val) throw Error(`Missing value for ${key}`)
+  return val.toString()
 }
 
 export { decodeString }

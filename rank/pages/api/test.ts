@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { ParsedUrlQuery } from 'querystring'
 import { badRequest, ok } from '../../responses'
 import service, { Props } from '../../services/test'
 import { getNamespace } from '../../types'
 import { Decoder, decodeString } from '../../types/decoder'
 
-const decoder: Decoder<Props> = (q: NextApiRequest['query']) => ({
+export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   index: decodeString(q, 'index'),
   testId: decodeString(q, 'testId'),
   queryId: decodeString(q, 'queryId'),
