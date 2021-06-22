@@ -1,17 +1,19 @@
 import { Metric } from './services/elasticsearch'
 import { PassFn } from './data/tests/pass'
 import { SearchTemplateSource } from './services/search-templates'
+import { QueryValue } from './types/decoder'
 
-export type QueryType = 'works' | 'images'
-export type Env = 'prod' | 'stage'
+type QueryType = 'works' | 'images'
+type Env = 'prod' | 'stage'
 
-export type TestCase = {
+type TestCase = {
   query: string
   ratings: string[]
   description?: string
 }
 
-export type Test = {
+type Test = {
+  id: string
   label: string
   description: string
   pass: PassFn
@@ -24,10 +26,18 @@ export type Test = {
 }
 
 const namespaces = ['images', 'works'] as const
-export type Namespace = typeof namespaces[number]
-export function isNamespace(v: any): v is Namespace {
-  return namespaces.includes(v)
+type Namespace = typeof namespaces[number]
+
+function isNamespace(v: QueryValue): v is Namespace {
+  return v
+    ? (namespaces as ReadonlyArray<string>).includes(v?.toString())
+    : false
 }
-export function getNamespace(v: any): Namespace {
-  return isNamespace(v) ? v : undefined
+
+function getNamespace(v: QueryValue): Namespace {
+  if (!isNamespace(v)) throw Error(`${v} is not a valid namespace`)
+  return v
 }
+
+export { isNamespace, getNamespace }
+export type { Namespace, QueryType, Env, TestCase, Test }

@@ -5,6 +5,7 @@ import { filterCaseRatings } from './queryAugmentation'
 
 const tests: Test[] = [
   {
+    id: 'precision',
     label: 'Precision',
     description: 'TBD',
     pass: equalTo1,
@@ -47,6 +48,7 @@ const tests: Test[] = [
     },
   },
   {
+    id: 'recall',
     label: 'Recall',
     description: 'TBD',
     pass: equalTo1,
