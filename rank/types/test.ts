@@ -1,9 +1,6 @@
 import { PassFn } from '../data/tests/pass'
 import { Metric } from '../services/elasticsearch'
-import {
-  SearchTemplate,
-  SearchTemplateSource,
-} from '../services/search-templates'
+import { SearchTemplateSource } from '../services/search-templates'
 
 export type TestCase = {
   query: string
@@ -33,7 +30,7 @@ function asRankEvalRequestBody(
   const { cases, metric, searchTemplateAugmentation } = test
 
   const searchTemplate = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, query)
+    ? searchTemplateAugmentation(test, { query })
     : query
 
   const requests = cases.map((testCase: TestCase) => {
