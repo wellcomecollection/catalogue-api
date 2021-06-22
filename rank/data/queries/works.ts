@@ -31,7 +31,7 @@ export default {
               multi_match: {
                 _name: 'title and contributor exact spellings',
                 fields: [
-                  'search.titlesAndContributors.^100.0',
+                  'search.titlesAndContributors^100.0',
                   'search.titlesAndContributors.english^100.0',
                   'search.titlesAndContributors.shingles^100.0',
                 ],
@@ -45,6 +45,7 @@ export default {
                 _name: 'title and contributor alternative spellings',
                 fields: [
                   'search.titlesAndContributors^80.0',
+                  'search.titlesAndContributors.english^80.0',
                   'search.titlesAndContributors.shingles^80.0',
                 ],
                 fuzziness: 'AUTO',
@@ -73,8 +74,8 @@ export default {
           'search.relations': {
             _name: 'relations',
             query: '{{query}}',
-            operator: 'And',
-            boost: 1000.0,
+            operator: 'AND',
+            boost: 1000,
           },
         },
       },
@@ -83,28 +84,19 @@ export default {
           _name: 'data',
           fields: [
             'data.contributors.agent.label^1000.0',
-            'data.description',
-            'data.edition',
-            'data.genres.concepts.label^10.0',
-            'data.language.label',
-            'data.lettering',
-            'data.notes.content',
-            'data.physicalDescription',
-            'data.production.*.label^10.0',
             'data.subjects.concepts.label^10.0',
+            'data.genres.concepts.label^10.0',
+            'data.production.*.label^10.0',
+            'data.description',
+            'data.physicalDescription',
+            'data.language.label',
+            'data.edition',
+            'data.notes.content',
+            'data.lettering',
           ],
           operator: 'And',
           query: '{{query}}',
           type: 'cross_fields',
-        },
-      },
-    ],
-    filter: [
-      {
-        term: {
-          type: {
-            value: 'Visible',
-          },
         },
       },
     ],
