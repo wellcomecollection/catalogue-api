@@ -5,6 +5,7 @@ import { filterCaseRatings } from './queryAugmentation'
 
 const tests: Test[] = [
   {
+    id: 'precision',
     label: 'Precision',
     description: 'TBD',
     pass: equalTo1,
@@ -22,6 +23,7 @@ const tests: Test[] = [
     },
   },
   {
+    id: 'recall',
     label: 'Recall',
     description: 'TBD',
     pass: equalTo1,
@@ -83,6 +85,7 @@ const tests: Test[] = [
     },
   },
   {
+    id: 'alternative-spellings',
     label: 'Alternative spellings',
     description: 'TBD',
     pass: equalTo1,
@@ -99,6 +102,7 @@ const tests: Test[] = [
     },
   },
   {
+    id: 'false-positives',
     label: 'False positives',
     description:
       "Due to fuzzy matching on alternative spellings, we need to ensure we aren't too fuzzy.",
