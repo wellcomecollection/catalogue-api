@@ -69,12 +69,25 @@ export default {
         },
       },
       {
-        match: {
-          'search.relations': {
-            _name: 'relations',
-            query: '{{query}}',
-            operator: 'And',
-            boost: 1000.0,
+        bool: {
+          must: {
+            match: {
+              'data.collectionPath.path': {
+                _name: 'collectionPath',
+                query: '{{query}}',
+                operator: 'OR',
+              },
+            },
+          },
+          should: {
+            match: {
+              'search.relations': {
+                _name: 'relations',
+                query: '{{query}}',
+                operator: 'And',
+                boost: 1000.0,
+              },
+            },
           },
         },
       },
