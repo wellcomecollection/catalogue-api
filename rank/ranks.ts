@@ -1,5 +1,6 @@
-import { getSearchTemplates, SearchTemplate } from './services/search-templates'
 import { Namespace, Test } from './types'
+import { SearchTemplate, getSearchTemplates } from './services/search-templates'
+
 import tests from './data/tests'
 
 type Rank = {
@@ -33,15 +34,15 @@ const ranks: Rank[] = [
     },
   },
   {
-    id: 'works-with-search-fields',
+    id: 'works-with-archive-descriptions',
     label: 'Works (search fields)',
     searchTemplate: async () => {
       const query = await import(
-        './data/queries/works-with-search-fields'
+        './data/queries/works-with-archive-descriptions'
       ).then((m) => m.default)
 
       const template = {
-        id: 'works-with-search-fields',
+        id: 'works-with-archive-descriptions',
         index: 'works-2021-06-08',
         namespace: 'works' as Namespace,
         source: { query },
