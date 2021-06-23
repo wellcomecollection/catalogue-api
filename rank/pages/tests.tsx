@@ -2,7 +2,6 @@ import { GetServerSideProps, NextPage } from 'next'
 import absoluteUrl from 'next-absolute-url'
 import { useState } from 'react'
 import tests from '../data/tests'
-import { api } from '../services/test'
 import { TestResult } from './api/eval'
 
 type TestValidationProps = {
