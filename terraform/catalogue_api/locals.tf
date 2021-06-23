@@ -30,12 +30,8 @@ locals {
     es_password = "catalogue/search/es_password"
   }
 
-  // TODO: Uncomment this block and comment the one beneath in order to use the catalogue-api cluster (CCR setup)
-  // es_search_secret_config_stage = data.terraform_remote_state.catalogue_api_shared.outputs.es_search_secret_config
-  // es_items_secret_config_stage  = data.terraform_remote_state.catalogue_api_shared.outputs.es_items_secret_config
-
-  es_search_secret_config_stage = local.es_search_secret_config_prod
-  es_items_secret_config_stage  = local.es_items_secret_config_prod
+   es_search_secret_config_stage = data.terraform_remote_state.catalogue_api_shared.outputs.es_search_secret_config
+   es_items_secret_config_stage  = data.terraform_remote_state.catalogue_api_shared.outputs.es_items_secret_config
 
   // TODO: Requests & Items APIs have different security profile
   // TODO: Requests will access PII - and must have a different set of credentials!
