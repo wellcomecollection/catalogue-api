@@ -1,16 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ParsedUrlQuery } from 'querystring'
 import { badRequest, ok } from '../../responses'
-import service, { Props } from '../../services/test'
-import { getNamespace } from '../../types'
-import { Decoder, decodeString } from '../../types/decoder'
-
-export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  index: decodeString(q, 'index'),
-  testId: decodeString(q, 'testId'),
-  queryId: decodeString(q, 'queryId'),
-  namespace: getNamespace(q.namespace),
-})
+import service, { decoder } from '../../services/test'
+import { Decoder } from '../../types/decoder'
 
 async function apiRes<Props>(
   req: NextApiRequest,

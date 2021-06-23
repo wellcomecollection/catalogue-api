@@ -1,9 +1,13 @@
 import tests from '../data/tests'
 import queries from '../data/queries'
-import { Namespace } from '../types'
-import { rankClient, RankEvalResponse } from './elasticsearch'
+import { getNamespace, Namespace } from '../types'
+import { RankEvalResponse } from './elasticsearch'
 import { asRankEvalRequestBody } from '../types/test'
 import { TestResult } from '../pages/api/eval'
+import { ParsedUrlQuery } from 'querystring'
+import { Decoder, decodeString } from '../types/decoder'
+import { getRankClient } from './elasticsearch-clients'
+import absoluteUrl from 'next-absolute-url'
 
 type Props = {
   index: string
@@ -25,10 +29,11 @@ async function service({
   const query = queries[queryId]
   const reqBody = asRankEvalRequestBody(test, queryId, query, index)
 
-  const { body: rankEvalRes } = await rankClient.rankEval<RankEvalResponse>({
-    index,
-    body: reqBody,
-  })
+  const { body: rankEvalRes } =
+    await getRankClient().rankEval<RankEvalResponse>({
+      index,
+      body: reqBody,
+    })
 
   const results = Object.entries(rankEvalRes.details).map(([query, detail]) => {
     return {
@@ -44,6 +49,21 @@ async function service({
     namespace: 'works',
     pass: results.every((result) => result.result.pass),
     results,
+  }
+}
+
+export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
+  index: decodeString(q, 'index'),
+  testId: decodeString(q, 'testId'),
+  queryId: decodeString(q, 'queryId'),
+  namespace: getNamespace(q.namespace),
+})
+
+function decode(query: ParsedUrlQuery): Props | undefined {
+  try {
+    return decoder(query)
+  } catch (err) {
+    return undefined
   }
 }
 
