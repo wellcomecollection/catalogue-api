@@ -6,6 +6,7 @@
     "link": "vercel link",
     "lint": "next lint --fix",
     "devInit": "ts-node -r dotenv/config ./scripts/init",
+    "devPublish": "ts-node -r dotenv/config ./scripts/publish",
     "createTestIndex": "ts-node -r dotenv/config ./scripts/createTestIndex",
     "deleteTestIndex": "ts-node -r dotenv/config ./scripts/deleteTestIndex",
     "updateTestIndex": "ts-node -r dotenv/config ./scripts/updateTestIndex"
