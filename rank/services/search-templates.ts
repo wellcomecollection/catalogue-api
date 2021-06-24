@@ -6,6 +6,7 @@ export type SearchTemplate = {
   id: string
   index: string
   namespace: Namespace
+  env: Env
   source: SearchTemplateSource
 }
 
@@ -38,38 +39,36 @@ async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
     id: template.id,
     index: `ccr--${template.index}`,
     namespace: getNamespace(template),
+    env,
     source: {
       query: JSON.parse(template.query),
     },
   }))
 }
 
-async function getLocalTemplates(
-  ids: string[]
-): Promise<SearchTemplate[]> {
+async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
   const queriesReq = ids.map((id) =>
-    import(`../data/queries/${id}.json`)
-      .then((m) => m.default)
-      .catch(() => {})
+    import(`../data/queries/${id}.json`).then((m) => m.default).catch(() => {})
   )
 
   const queries = await Promise.all(queriesReq)
 
-  return ids.filter((id, i) => queries[i]).map((id, i) => {
-    return {
-      id: id,
-      index: id,
-      namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
-      env: 'local',
-      source: queries[i],
-    }
-  })
+  return ids
+    .filter((id, i) => queries[i])
+    .map((id, i) => {
+      return {
+        id: id,
+        index: id,
+        namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
+        env: 'local',
+        source: queries[i],
+      }
+    })
 }
-
 
 /**
  * This service merges remote and local search templates.
- * 
+ *
  * A local search template is available when there is an existing index
  * with a correspondiny query in `./data/queries/{index}.json`.
  */

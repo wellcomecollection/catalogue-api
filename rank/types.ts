@@ -4,7 +4,7 @@ import { SearchTemplateSource } from './services/search-templates'
 import { QueryValue } from './types/decoder'
 
 type QueryType = 'works' | 'images'
-type Env = 'prod' | 'stage'
+type Env = 'prod' | 'stage' | 'local'
 
 type TestCase = {
   query: string
