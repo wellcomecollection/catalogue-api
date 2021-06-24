@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { notFound, ok } from '../../responses'
-import { getNamespace } from '../../types'
+import { decodeNamespace } from '../../types/decoder'
 
 const decoder = (q: NextApiRequest['query']) => ({
-  namespace: getNamespace(q.namespace),
+  namespace: decodeNamespace(q.namespace),
 })
 
 export default async (

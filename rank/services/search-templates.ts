@@ -1,4 +1,5 @@
-import { Env, Namespace } from '../types'
+import { Env } from '../types/env'
+import { Namespace } from '../types/namespace'
 import listIndicesService from './list-indices'
 
 export type SearchTemplateSource = { query: unknown }
@@ -54,7 +55,7 @@ async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
   const queries = await Promise.all(queriesReq)
 
   return ids
-    .filter((id, i) => queries[i])
+    .filter((_, i) => queries[i])
     .map((id, i) => {
       return {
         id: id,

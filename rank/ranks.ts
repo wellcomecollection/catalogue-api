@@ -1,6 +1,6 @@
 import { getSearchTemplates, SearchTemplate } from './services/search-templates'
-import { Test } from './types'
 import tests from './data/tests'
+import { Test } from './types/test'
 
 type Rank = {
   id: string
