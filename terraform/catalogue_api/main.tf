@@ -20,8 +20,8 @@ module "catalogue_api_prod" {
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
   apm_secret_config       = local.apm_secret_config
-  es_items_secret_config  = local.es_items_secret_config_prod
-  es_search_secret_config = local.es_search_secret_config_prod
+  es_items_secret_config  = local.es_items_secret_config
+  es_search_secret_config = local.es_search_secret_config
   sierra_secret_config    = local.sierra_secret_config
 
   providers = {
@@ -52,8 +52,8 @@ module "catalogue_api_stage" {
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
   apm_secret_config       = local.apm_secret_config
-  es_items_secret_config  = local.es_items_secret_config_stage
-  es_search_secret_config = local.es_search_secret_config_stage
+  es_items_secret_config  = local.es_items_secret_config
+  es_search_secret_config = local.es_search_secret_config
   sierra_secret_config    = local.sierra_secret_config
 
   providers = {
