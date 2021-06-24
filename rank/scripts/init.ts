@@ -43,7 +43,7 @@ async function go() {
       },
     })
     const query = pretty(
-      templates.find((template) => template.index === index).source
+      templates.find((template) => template.index === index).source.query
     )
     info(`writing index config to /data/indices/ for ${indices}`)
     fs.writeFileSync(p([`../data/indices/${index}.json`]), indexConfig)
