@@ -6,7 +6,6 @@ import { multilingualFields, shinglesFields } from './common'
 export default {
   mappings: {
     dynamic: 'strict',
-    type: "object",
     properties: {
       search: {
         dynamic: 'false',
@@ -123,6 +122,7 @@ export default {
             },
           },
           description: {
+            copy_to: ['search.relations'],
             type: 'text',
             fields: {
               english: {
