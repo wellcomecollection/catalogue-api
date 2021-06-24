@@ -30,8 +30,8 @@ function asRankEvalRequestBody(
   const { cases, metric, searchTemplateAugmentation } = test
 
   const searchTemplate = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, query)
-    : query
+    ? searchTemplateAugmentation(test, { ...query })
+    : { ...query }
 
   const requests = cases.map((testCase: TestCase) => {
     return {

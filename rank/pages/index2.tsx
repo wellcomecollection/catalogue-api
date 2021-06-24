@@ -1,13 +1,11 @@
 import { GetServerSideProps, NextPage } from 'next'
 import absoluteUrl from 'next-absolute-url'
-import { Result } from 'postcss'
 import { FC, useEffect, useState } from 'react'
 import tests from '../data/tests'
 import service, { SearchTemplate } from '../services/search-templates'
 import { Env } from '../types/env'
 import { Namespace } from '../types/namespace'
 import { TestResult } from './api/eval'
-import test from './api/test'
 
 type Props = {
   searchTemplates: SearchTemplate[]
