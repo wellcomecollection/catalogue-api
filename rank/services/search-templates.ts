@@ -1,4 +1,5 @@
 import { Env, Namespace } from '../types'
+import listIndicesService from './list-indices'
 
 export type SearchTemplateSource = { query: unknown }
 export type SearchTemplate = {
@@ -43,4 +44,42 @@ async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
   }))
 }
 
+async function getLocalTemplates(
+  ids: string[]
+): Promise<SearchTemplate[]> {
+  const queriesReq = ids.map((id) =>
+    import(`../data/queries/${id}.json`)
+      .then((m) => m.default)
+      .catch(() => {})
+  )
+
+  const queries = await Promise.all(queriesReq)
+
+  return ids.filter((id, i) => queries[i]).map((id, i) => {
+    return {
+      id: id,
+      index: id,
+      namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
+      env: 'local',
+      source: queries[i],
+    }
+  })
+}
+
+
+/**
+ * This service merges remote and local search templates.
+ * 
+ * A local search template is available when there is an existing index
+ * with a correspondiny query in `./data/queries/{index}.json`.
+ */
+async function service(): Promise<SearchTemplate[]> {
+  const remoteTemplates = await getSearchTemplates('prod')
+  const indices = await listIndicesService()
+  const localTemplates = await getLocalTemplates(indices)
+
+  return localTemplates.concat(remoteTemplates)
+}
+
+export default service
 export { getSearchTemplates }
