@@ -1,14 +1,15 @@
+import { error } from 'console'
 import { rankClient } from '../services/elasticsearch'
 
 async function go() {
   const [indexName] = process.argv.slice(2)
   if (!indexName) {
-    throw new Error(
-      'Please specifiy an `indexName` e.g. yarn updateTestIndex works-with-secret-sauce'
+    error(
+      'Please specifiy an `indexName` e.g. yarn updateIndex works-with-secret-sauce'
     )
   }
 
-  const indexConfig = await import(`../data/indices/${indexName}`).then(
+  const indexConfig = await import(`../data/indices/${indexName}.json`).then(
     (mod) => mod.default
   )
 

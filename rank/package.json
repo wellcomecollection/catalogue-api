@@ -6,9 +6,10 @@
     "link": "vercel link",
     "lint": "next lint --fix",
     "devInit": "ts-node -r dotenv/config ./scripts/init",
-    "createTestIndex": "ts-node -r dotenv/config ./scripts/createTestIndex",
-    "deleteTestIndex": "ts-node -r dotenv/config ./scripts/deleteTestIndex",
-    "updateTestIndex": "ts-node -r dotenv/config ./scripts/updateTestIndex"
+    "devPublish": "ts-node -r dotenv/config ./scripts/publish",
+    "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
+    "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
+    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",

@@ -1,14 +1,9 @@
 import { getRankClient } from '../services/elasticsearch-clients'
 import { getSearchTemplates } from '../services/search-templates'
 import fs from 'fs'
-import { p, pretty } from './utils'
-import chalk from 'chalk'
+import { info, p, pretty } from './utils'
 
 global.fetch = require('node-fetch')
-
-const info = (message: string) => {
-  console.log(chalk.blue(message))
-}
 
 async function go() {
   info('fetching search templates')

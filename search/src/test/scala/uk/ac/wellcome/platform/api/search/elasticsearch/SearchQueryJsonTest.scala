@@ -5,6 +5,7 @@ import com.sksamuel.elastic4s.json.JacksonBuilder
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.json.utils.JsonAssertions
+import com.sksamuel.elastic4s.ElasticDsl._
 
 import scala.io.Source
 
@@ -17,7 +18,9 @@ class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
         .mkString
 
     val queryJson = JacksonBuilder.writeAsString(
-      QueryBuilderFn(WorksMultiMatcher("{{query}}")).value)
+      QueryBuilderFn(WorksMultiMatcher("{{query}}").filter(
+        termQuery(field = "type", value = "Visible"))).value)
+
     assertJsonStringsAreEqual(fileJson, queryJson)
   }
 
