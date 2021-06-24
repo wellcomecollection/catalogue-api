@@ -1,13 +1,12 @@
 import tests from '../data/tests'
 import queries from '../data/queries'
-import { getNamespace, Namespace } from '../types'
+import { Namespace } from '../types/namespace'
 import { RankEvalResponse } from './elasticsearch'
 import { asRankEvalRequestBody } from '../types/test'
 import { TestResult } from '../pages/api/eval'
 import { ParsedUrlQuery } from 'querystring'
-import { Decoder, decodeString } from '../types/decoder'
+import { decodeNamespace, Decoder, decodeString } from '../types/decoder'
 import { getRankClient } from './elasticsearch-clients'
-import absoluteUrl from 'next-absolute-url'
 
 type Props = {
   index: string
@@ -56,7 +55,7 @@ export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   index: decodeString(q, 'index'),
   testId: decodeString(q, 'testId'),
   queryId: decodeString(q, 'queryId'),
-  namespace: getNamespace(q.namespace),
+  namespace: decodeNamespace(q.namespace),
 })
 
 function decode(query: ParsedUrlQuery): Props | undefined {

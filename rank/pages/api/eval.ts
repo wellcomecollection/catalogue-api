@@ -1,4 +1,3 @@
-import { Env, Test, TestCase } from '../../types'
 import { NextApiRequest, NextApiResponse } from 'next'
 import {
   RankEvalRequestRequest,
@@ -9,9 +8,10 @@ import {
   SearchTemplate,
   getSearchTemplates,
 } from '../../services/search-templates'
-
 import { Pass } from '../../data/tests/pass'
 import tests from '../../data/tests'
+import { Env } from '../../types/env'
+import { Test, TestCase } from '../../types/test'
 
 function casesToRankEvalRequest(
   cases: TestCase[],
