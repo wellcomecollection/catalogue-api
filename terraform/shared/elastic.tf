@@ -6,7 +6,7 @@ resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
   region                 = "eu-west-1"
-  version                = "7.13.1"
+  version                = "7.13.2"
   deployment_template_id = "aws-io-optimized-v2"
 
   traffic_filter = local.catalogue_ec_traffic_filter
@@ -14,8 +14,8 @@ resource "ec_deployment" "catalogue_api" {
   elasticsearch {
     topology {
       id         = "hot_content"
-      size       = "4g"
-      zone_count = 1
+      size       = "8g"
+      zone_count = 3
     }
 
     remote_cluster {

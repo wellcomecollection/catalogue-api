@@ -140,6 +140,17 @@ if __name__ == '__main__':
             role_arn=role_arn
         )
 
+    # Configure cluster settings
+    cluster_client = elasticsearch.client.ClusterClient(es)
+
+    cluster_client.put_settings(
+        body={
+            "persistent": {
+                "search.aggs.rewrite_to_filter_by_filter": False
+            }
+        }
+    )
+
     # Configure auto-follow
     ccr_client = elasticsearch.client.ccr.CcrClient(es)
 

@@ -1,5 +1,5 @@
 import { SearchTemplateSource } from '../../services/search-templates'
-import { Test } from '../../types'
+import { Test } from '../../types/test'
 
 const filterCaseRatings = (
   test: Test,
