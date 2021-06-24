@@ -66,6 +66,7 @@ const Hit: FunctionComponent<HitProps> = ({ hit }) => {
   return (
     <>
       <h2 className="mt-5 text-xl border-t-4">{title}</h2>
+      <p className="text-sm">{hit._id}</p>
       <div onClick={() => setShowExplanation(!showExplanation)}>
         Score: {hit._score}
       </div>
