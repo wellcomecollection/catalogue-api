@@ -1,8 +1,11 @@
 package weco.api.stacks.services
 
+import com.sksamuel.elastic4s.Index
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import uk.ac.wellcome.models.index.IndexFixtures
+import weco.api.stacks.services.elastic.ElasticItemLookup
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
@@ -21,7 +24,8 @@ class ItemLookupTest
     with IndexFixtures
     with ItemsGenerators
     with WorkGenerators {
-  val lookup: ItemLookup = ItemLookup(elasticClient)
+  def createLookup(index: Index): ItemLookup =
+    ElasticItemLookup(elasticClient, index = index)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
@@ -35,12 +39,14 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
+        val lookup = createLookup(index)
+
         Seq(item1, item2, item3).foreach { it =>
           val future =
-            lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
+            lookup.bySourceIdentifier(it.id.sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe Right(it.id.canonicalId)
+            _ shouldBe Right(it)
           }
         }
       }
@@ -49,7 +55,9 @@ class ItemLookupTest
     it("returns a DocumentNotFoundError if there is no such work") {
       withLocalWorksIndex { index =>
         val id = createCanonicalId
-        val future = lookup.byCanonicalId(id)(index)
+
+        val lookup = createLookup(index)
+        val future = lookup.byCanonicalId(id)
 
         whenReady(future) {
           _ shouldBe Left(DocumentNotFoundError(id))
@@ -68,7 +76,9 @@ class ItemLookupTest
         // get any results.
         insertIntoElasticsearch(index, workInvisible)
 
-        val future1 = lookup.byCanonicalId(item.id.canonicalId)(index)
+        val lookup = createLookup(index)
+
+        val future1 = lookup.byCanonicalId(item.id.canonicalId)
 
         whenReady(future1) {
           _ shouldBe Left(DocumentNotFoundError(item.id.canonicalId))
@@ -78,16 +88,17 @@ class ItemLookupTest
         // invisibility of the first work was the reason it was hidden.
         insertIntoElasticsearch(index, workInvisible, workVisible)
 
-        val future2 = lookup.byCanonicalId(item.id.canonicalId)(index)
+        val future2 = lookup.byCanonicalId(item.id.canonicalId)
 
         whenReady(future2) {
-          _ shouldBe Right(item.id.sourceIdentifier)
+          _ shouldBe Right(item)
         }
       }
     }
 
     it("returns Left[Error] if Elasticsearch has an error") {
-      val future = lookup.byCanonicalId(createCanonicalId)(createIndex)
+      val lookup = createLookup(index = createIndex)
+      val future = lookup.byCanonicalId(createCanonicalId)
 
       whenReady(future) {
         _.left.value shouldBe a[IndexNotFoundError]
@@ -107,12 +118,14 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
+        val lookup = createLookup(index)
+
         Seq(item1, item2, item3).foreach { it =>
           val future =
-            lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
+            lookup.bySourceIdentifier(it.id.sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe Right(it.id.canonicalId)
+            _ shouldBe Right(it)
           }
         }
       }
@@ -140,11 +153,13 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
+        val lookup = createLookup(index)
+
         Seq(item1, item2, item3).foreach { it =>
-          val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)
+          val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)
 
           whenReady(future) {
-            _ shouldBe Right(it.id.canonicalId)
+            _ shouldBe Right(it)
           }
         }
       }
@@ -167,13 +182,14 @@ class ItemLookupTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
+        val lookup = createLookup(index)
+
         List(item1, item2, item3).foreach { it =>
-          whenReady(lookup.bySourceIdentifier(it.id.sourceIdentifier)(index)) {
-            _ shouldBe Right(it.id.canonicalId)
+          whenReady(lookup.bySourceIdentifier(it.id.sourceIdentifier)) {
+            _ shouldBe Right(it)
           }
 
-          whenReady(
-            lookup.bySourceIdentifier(it.id.otherIdentifiers.head)(index)) {
+          whenReady(lookup.bySourceIdentifier(it.id.otherIdentifiers.head)) {
             _.left.value shouldBe a[DocumentNotFoundError[_]]
           }
         }
@@ -183,7 +199,9 @@ class ItemLookupTest
     it("returns a DocumentNotFoundError if there is no such item") {
       withLocalWorksIndex { index =>
         val id = createSourceIdentifier
-        val future = lookup.bySourceIdentifier(id)(index)
+
+        val lookup = createLookup(index)
+        val future = lookup.bySourceIdentifier(id)
 
         whenReady(future) {
           _ shouldBe Left(DocumentNotFoundError(id))
@@ -203,7 +221,9 @@ class ItemLookupTest
         // get any results.
         insertIntoElasticsearch(index, workInvisible)
 
-        val future1 = lookup.bySourceIdentifier(item.id.sourceIdentifier)(index)
+        val lookup = createLookup(index)
+
+        val future1 = lookup.bySourceIdentifier(item.id.sourceIdentifier)
 
         whenReady(future1) {
           _ shouldBe Left(DocumentNotFoundError(item.id.sourceIdentifier))
@@ -213,17 +233,18 @@ class ItemLookupTest
         // invisibility of the first work was the reason it was hidden.
         insertIntoElasticsearch(index, workInvisible, workVisible)
 
-        val future2 = lookup.bySourceIdentifier(item.id.sourceIdentifier)(index)
+        val future2 = lookup.bySourceIdentifier(item.id.sourceIdentifier)
 
         whenReady(future2) {
-          _ shouldBe Right(item.id.canonicalId)
+          _ shouldBe Right(item)
         }
       }
     }
 
     it("returns Left[Error] if Elasticsearch has an error") {
+      val lookup = createLookup(index = createIndex)
       val future =
-        lookup.bySourceIdentifier(createSourceIdentifier)(createIndex)
+        lookup.bySourceIdentifier(createSourceIdentifier)
 
       whenReady(future) {
         _.left.value shouldBe a[IndexNotFoundError]

@@ -6,7 +6,8 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   FilterAggregation,
   GlobalAggregation
 }
-import com.sksamuel.elastic4s.requests.searches.queries.{BoolQuery, Query}
+import com.sksamuel.elastic4s.requests.searches.queries.Query
+import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.api.display.models.WorkAggregationRequest

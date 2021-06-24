@@ -1,6 +1,13 @@
 package uk.ac.wellcome.platform.api.items
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes,
+  Uri
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -41,10 +48,35 @@ class ItemsApiFeatureTest
 
       val work = indexedWork().items(List(item))
 
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed")
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "id": "1601017",
+                |  "deleted": false,
+                |  "suppressed": false,
+                |  "fixedFields": {
+                |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                |  },
+                |  "holdCount": 0
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withItemsApi(index) { _ =>
+        withItemsApi(index, responses) { _ =>
           val path = s"/works/${work.state.canonicalId}"
 
           val expectedJson =
@@ -147,12 +179,11 @@ class ItemsApiFeatureTest
       val id = createCanonicalId
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/$id"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/$id"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 404,
@@ -162,13 +193,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -180,12 +211,11 @@ class ItemsApiFeatureTest
       } shouldBe a[Failure[_]]
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/$id"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/$id"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 404,
@@ -195,13 +225,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -258,12 +288,11 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, invisibleWork)
 
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/${invisibleWork.state.canonicalId}"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/${invisibleWork.state.canonicalId}"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 410,
@@ -273,13 +302,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.Gone
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }
@@ -298,12 +327,11 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, deletedWork)
 
-        withItemsApi(index) {
-          case (contextUrl, _) =>
-            val path = s"/works/${deletedWork.state.canonicalId}"
+        withItemsApi(index) { contextUrl =>
+          val path = s"/works/${deletedWork.state.canonicalId}"
 
-            val expectedError =
-              s"""
+          val expectedError =
+            s"""
                |{
                |  "errorType": "http",
                |  "httpStatus": 410,
@@ -313,13 +341,13 @@ class ItemsApiFeatureTest
                |  "@context": "$contextUrl"
                |}""".stripMargin
 
-            whenGetRequestReady(path) { response =>
-              response.status shouldBe StatusCodes.Gone
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
 
-              withStringEntity(response.entity) {
-                assertJsonStringsAreEqual(_, expectedError)
-              }
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
             }
+          }
         }
       }
     }

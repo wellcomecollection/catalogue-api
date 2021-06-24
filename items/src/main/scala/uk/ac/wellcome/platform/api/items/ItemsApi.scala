@@ -1,13 +1,27 @@
 package uk.ac.wellcome.platform.api.items
 
 import akka.http.scaladsl.server.Route
+import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.Tracing
+import uk.ac.wellcome.platform.api.common.services.SierraService
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.api.items.responses.LookupItemStatus
+import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
-trait ItemsApi extends LookupItemStatus with Tracing {
+class ItemsApi(
+  val sierraService: SierraService,
+  val workLookup: WorkLookup,
+  val index: Index
+)(
+  implicit
+  val ec: ExecutionContext,
+  val apiConfig: ApiConfig
+) extends LookupItemStatus
+    with Tracing {
   val routes: Route = concat(
     pathPrefix("works") {
       path(Segment) { id: String =>

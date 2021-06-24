@@ -3,10 +3,10 @@ package weco.api.stacks.services
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
 import uk.ac.wellcome.models.work.generators.WorkGenerators
-import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

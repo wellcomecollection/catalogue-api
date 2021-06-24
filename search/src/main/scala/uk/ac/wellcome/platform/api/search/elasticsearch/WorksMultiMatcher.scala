@@ -2,7 +2,7 @@ package uk.ac.wellcome.platform.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.requests.common.Operator.{AND, OR}
-import com.sksamuel.elastic4s.requests.searches.queries.BoolQuery
+import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryBuilderType.{
   BEST_FIELDS,
   CROSS_FIELDS
@@ -53,20 +53,11 @@ case object WorksMultiMatcher {
         ),
         /**
           * This is the different ways we can match on the title fields
-          * - title prefix: An exact match, in order
           * - title exact spellings: Exact spellings as they have been catalogued
           * - title alternative spellings: Alternative spellings which people might search for e.g. in transliterations
           */
         dismax(
           queries = Seq(
-            BoolQuery(
-              queryName = Some("title prefix"),
-              boost = Some(1000),
-              must = List(
-                prefixQuery("data.title.keyword", q),
-                matchPhraseQuery("data.title", q)
-              )
-            ),
             MultiMatchQuery(
               q,
               queryName = Some("title and contributor exact spellings"),

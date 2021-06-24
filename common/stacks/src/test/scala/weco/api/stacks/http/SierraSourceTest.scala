@@ -7,20 +7,19 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
 import uk.ac.wellcome.fixtures.TestWith
-import weco.api.stacks.http.impl.MemoryHttpClient
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,
   SierraHoldStatus,
-  SierraHoldsList,
-  SierraItem,
-  SierraItemStatus
+  SierraHoldsList
 }
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
 import weco.catalogue.source_model.sierra.source.SierraSourceLocation
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import java.net.URI
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,7 +34,10 @@ class SierraSourceTest
   def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(
     testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
-      val client = new MemoryHttpClient(responses = responses)
+      val client =
+        new MemoryHttpClient(responses = responses) with HttpGet with HttpPost {
+          override val baseUri: Uri = Uri("http://sierra:1234")
+        }
 
       val source = new SierraSource(client)
 
@@ -49,7 +51,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1146055")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -86,11 +89,12 @@ class SierraSourceTest
 
         whenReady(future) {
           _ shouldBe Right(
-            SierraItem(
-              id = itemNumber,
-              status = SierraItemStatus(
-                code = "t",
-                display = "In quarantine"
+            SierraItemData(
+              deleted = false,
+              location = Some(
+                SierraSourceLocation(
+                  code = "sgmed",
+                  name = "Closed stores Med.")
               )
             )
           )
@@ -104,7 +108,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1000000")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             status = StatusCodes.NotFound,
@@ -138,7 +143,8 @@ class SierraSourceTest
       val responses = Seq(
         (
           HttpRequest(
-            uri = Uri("http://sierra:1234/v5/items/1000001")
+            uri = Uri(
+              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -161,7 +167,7 @@ class SierraSourceTest
         val future = source.lookupItem(itemNumber)
 
         whenReady(future) {
-          _.left.value shouldBe a[SierraItemLookupError.ItemHasNoStatus]
+          _.value shouldBe SierraItemData(deleted = true)
         }
       }
     }

@@ -9,48 +9,42 @@ import uk.ac.wellcome.json.JsonUtil._
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHoldRequest,
-  SierraHoldsList,
-  SierraItem
+  SierraHoldsList
 }
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
+import weco.http.client.{HttpClient, HttpGet, HttpPost}
+import weco.http.json.CirceMarshalling
 
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait SierraItemLookupError
-
-object SierraItemLookupError {
-  case class ItemHasNoStatus(t: Throwable) extends SierraItemLookupError
-
-  case object ItemNotFound extends SierraItemLookupError
-
-  case class UnknownError(errorCode: SierraErrorCode)
-      extends SierraItemLookupError
-}
-
-class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
-                                       mat: Materializer) {
-  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItem] =
-    CirceMarshalling.fromDecoder[SierraItem]
+class SierraSource(client: HttpClient with HttpGet with HttpPost)(
+  implicit
+  ec: ExecutionContext,
+  mat: Materializer) {
+  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItemData] =
+    CirceMarshalling.fromDecoder[SierraItemData]
 
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(
-    item: SierraItemNumber): Future[Either[SierraItemLookupError, SierraItem]] =
+  def lookupItem(item: SierraItemNumber)
+    : Future[Either[SierraItemLookupError, SierraItemData]] =
     for {
       resp <- client.get(
-        path = Path(s"v5/items/${item.withoutCheckDigit}")
+        path = Path(s"v5/items/${item.withoutCheckDigit}"),
+        params = Map("fields" -> "deleted,fixedFields,holdCount,suppressed")
       )
 
       result <- resp.status match {
         case StatusCodes.OK =>
           Unmarshal(resp)
-            .to[SierraItem]
+            .to[SierraItemData]
             .map(Right(_))
             .recover {
               case t: Throwable =>
@@ -70,6 +64,13 @@ class SierraSource(client: HttpClient)(implicit ec: ExecutionContext,
   private implicit val umHoldsList: Unmarshaller[HttpEntity, SierraHoldsList] =
     CirceMarshalling.fromDecoder[SierraHoldsList]
 
+  /** Returns a list of holds for this user.
+    *
+    * Note: do not rely on this method to prove the existence of a user.
+    * In particular, the Sierra API will return an empty list of holds if you
+    * query this API for a patron ID that doesn't exist.
+    *
+    */
   def listHolds(patron: SierraPatronNumber)
     : Future[Either[SierraErrorCode, SierraHoldsList]] =
     for {

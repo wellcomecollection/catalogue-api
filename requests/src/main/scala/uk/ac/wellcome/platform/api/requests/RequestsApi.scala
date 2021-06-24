@@ -1,14 +1,26 @@
 package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.server.Route
+import uk.ac.wellcome.platform.api.common.services.SierraService
+import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
+import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
+import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
-trait RequestsApi extends CreateRequest with LookupPendingRequests {
+class RequestsApi(
+  val sierraService: SierraService,
+  val itemLookup: ItemLookup
+)(
+  implicit
+  val ec: ExecutionContext,
+  val apiConfig: ApiConfig
+) extends CreateRequest
+    with LookupPendingRequests {
   val routes: Route = concat(
     pathPrefix("users" / Segment / "item-requests") { userId: String =>
       val userIdentifier = SierraPatronNumber(userId)
