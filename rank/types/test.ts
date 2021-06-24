@@ -24,13 +24,13 @@ export type Test = {
 function asRankEvalRequestBody(
   test: Test,
   queryId: string,
-  query: unknown,
+  query: SearchTemplateSource,
   index: string
 ) {
   const { cases, metric, searchTemplateAugmentation } = test
 
   const searchTemplate = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, { query })
+    ? searchTemplateAugmentation(test, query)
     : query
 
   const requests = cases.map((testCase: TestCase) => {
@@ -49,12 +49,11 @@ function asRankEvalRequestBody(
       }),
     }
   })
+
   const body = {
     requests,
     metric,
-    templates: [
-      { id: queryId, template: { source: { query: searchTemplate } } },
-    ],
+    templates: [{ id: queryId, template: { inline: searchTemplate } }],
   }
 
   return body
