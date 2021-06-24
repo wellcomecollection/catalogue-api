@@ -1,7 +1,4 @@
 import { Client } from '@elastic/elasticsearch'
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 const { ES_RANK_USER, ES_RANK_PASSWORD, ES_RANK_CLOUD_ID } = process.env
 
