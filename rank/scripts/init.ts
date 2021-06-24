@@ -16,12 +16,12 @@ async function go() {
   const client = getRankClient()
   const indices = templates.map((template) => template.index)
 
-  info(`'getting settings for ${indices}`)
+  info(`getting settings for ${indices}`)
   const settingsReq = client.indices.getSettings({
     index: indices,
   })
 
-  info(`'getting mappings for ${indices}`)
+  info(`getting mappings for ${indices}`)
   const mappingsReq = client.indices.getMapping({
     index: indices,
   })
@@ -43,12 +43,12 @@ async function go() {
       },
     })
     const query = pretty(
-      templates.find((template) => template.index === index).source
+      templates.find((template) => template.index === index).source.query
     )
-    info(`'writing index config to /data/indices/ for ${indices}`)
+    info(`writing index config to /data/indices/ for ${indices}`)
     fs.writeFileSync(p([`../data/indices/${index}.json`]), indexConfig)
 
-    info(`'writing queries to /data/indices/ for ${indices}`)
+    info(`writing queries to /data/indices/ for ${indices}`)
     fs.writeFileSync(p([`../data/queries/${index}.json`]), query)
   }
 }

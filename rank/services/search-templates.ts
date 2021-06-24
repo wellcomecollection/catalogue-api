@@ -37,13 +37,11 @@ async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
 
   // The query is returned as a string from the API
   return json.templates.map((template) => ({
-    id: template.id,
+    id: `ccr--${template.index}`,
     index: `ccr--${template.index}`,
     namespace: getNamespace(template),
     env,
-    source: {
-      query: JSON.parse(template.query),
-    },
+    source: { query: JSON.parse(template.query) },
   }))
 }
 
@@ -62,7 +60,7 @@ async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
         index: id,
         namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
         env: 'local',
-        source: queries[i],
+        source: { query: queries[i] },
       }
     })
 }
