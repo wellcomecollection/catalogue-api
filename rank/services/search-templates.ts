@@ -46,23 +46,24 @@ async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
 }
 
 async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
-  const queriesReq = ids.map((id) =>
-    import(`../data/queries/${id}.json`).then((m) => m.default).catch(() => {})
-  )
+  const queriesReq = ids.map(async (id) => {
+    const query = await import(`../data/queries/${id}.json`)
+      .then((m) => m.default)
+      .catch(() => {})
 
-  const queries = await Promise.all(queriesReq)
+    return query
+      ? {
+          id: id,
+          index: id,
+          namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
+          env: 'local' as Env,
+          source: { query: { ...query } },
+        }
+      : undefined
+  })
 
-  return ids
-    .filter((_, i) => queries[i])
-    .map((id, i) => {
-      return {
-        id: id,
-        index: id,
-        namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
-        env: 'local',
-        source: { query: queries[i] },
-      }
-    })
+  const queries: SearchTemplate[] = await Promise.all(queriesReq)
+  return queries.filter(Boolean)
 }
 
 /**

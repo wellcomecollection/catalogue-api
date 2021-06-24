@@ -45,6 +45,7 @@ async function apiRes<Props>(
     ok(res, serviceRes)
   } catch (err) {
     badRequest(res, err)
+    throw err
   }
 }
 
