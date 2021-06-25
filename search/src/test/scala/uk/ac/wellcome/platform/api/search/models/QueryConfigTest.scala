@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
+import weco.elasticsearch.ElasticClientBuilder
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.generators.ImageGenerators

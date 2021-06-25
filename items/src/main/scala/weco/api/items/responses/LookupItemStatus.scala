@@ -3,7 +3,6 @@ package weco.api.items.responses
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.api.stacks.models.display.DisplayStacksWork
-import uk.ac.wellcome.platform.api.common.models.StacksWork
 import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.models.{StacksItem, StacksWork}
 import weco.api.stacks.services.{SierraService, WorkLookup}

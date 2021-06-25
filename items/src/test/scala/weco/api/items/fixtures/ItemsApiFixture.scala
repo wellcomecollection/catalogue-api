@@ -1,11 +1,11 @@
-package uk.ac.wellcome.platform.api.items.fixtures
+package weco.api.items.fixtures
 
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.index.IndexFixtures
-import uk.ac.wellcome.platform.api.items.ItemsApi
+import weco.api.items.ItemsApi
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}

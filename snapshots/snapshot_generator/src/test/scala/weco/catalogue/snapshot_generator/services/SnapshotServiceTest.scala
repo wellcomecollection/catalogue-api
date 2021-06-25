@@ -7,7 +7,7 @@ import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.catalogue.display_model.models.DisplayWork
-import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
+import weco.elasticsearch.ElasticClientBuilder
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators

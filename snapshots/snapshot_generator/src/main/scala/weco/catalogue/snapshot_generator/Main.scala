@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
-import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
+import weco.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.messaging.sns.NotificationMessage
 import uk.ac.wellcome.messaging.typesafe.{SNSBuilder, SQSBuilder}
 import uk.ac.wellcome.storage.typesafe.S3Builder

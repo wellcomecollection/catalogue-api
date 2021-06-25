@@ -1,11 +1,11 @@
-package uk.ac.wellcome.platform.api.items
+package weco.api.items
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
-import uk.ac.wellcome.Tracing
-import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
-import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
-import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
+import weco.Tracing
+import weco.elasticsearch.typesafe.ElasticBuilder
+import weco.http.typesafe.HTTPServerBuilder
+import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.stacks.services.builders.SierraServiceBuilder
 import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp

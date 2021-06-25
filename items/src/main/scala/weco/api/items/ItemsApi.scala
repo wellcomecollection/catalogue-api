@@ -1,8 +1,8 @@
-package uk.ac.wellcome.platform.api.items
+package weco.api.items
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import uk.ac.wellcome.Tracing
+import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{SierraService, WorkLookup}
