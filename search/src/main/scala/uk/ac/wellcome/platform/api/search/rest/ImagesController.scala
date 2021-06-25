@@ -8,9 +8,9 @@ import uk.ac.wellcome.platform.api.search.services.ImagesService
 import cats.implicits._
 import uk.ac.wellcome.api.display.models.MultipleImagesIncludes
 import uk.ac.wellcome.Tracing
-import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.models.ApiConfig
+import weco.api.search.rest.CustomDirectives
 import weco.catalogue.display_model.models.{
   DisplayImage,
   MultipleImagesIncludes,

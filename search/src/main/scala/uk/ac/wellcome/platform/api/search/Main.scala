@@ -7,11 +7,11 @@ import com.typesafe.config.Config
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.platform.api.search.models.{CheckModel, QueryConfig}
 import uk.ac.wellcome.Tracing
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
-import uk.ac.wellcome.typesafe.WellcomeTypesafeApp
-import uk.ac.wellcome.typesafe.config.builders.AkkaBuilder
-import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
+import weco.api.search.models.ApiConfig
+import weco.typesafe.WellcomeTypesafeApp
+import weco.typesafe.config.builders.AkkaBuilder
+import weco.typesafe.config.builders.EnrichConfig.RichConfig
 import weco.catalogue.display_model.ElasticConfig
 
 import scala.concurrent.{ExecutionContext, Promise}

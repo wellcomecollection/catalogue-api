@@ -2,8 +2,8 @@ package uk.ac.wellcome.platform.api.search.rest
 
 import io.circe.Decoder
 import uk.ac.wellcome.api.display.models.MultipleImagesIncludes
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
+import weco.api.search.models.ApiConfig
 import weco.catalogue.display_model.models.{
   ImageAggregationRequest,
   ImageInclude,

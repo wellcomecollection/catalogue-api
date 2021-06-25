@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.models
+package weco.api.search.models
 
 import akka.http.scaladsl.model.Uri
 import org.scalatest.Inside

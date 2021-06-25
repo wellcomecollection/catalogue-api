@@ -10,10 +10,10 @@ import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.Router
 import uk.ac.wellcome.platform.api.search.models.QueryConfig
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
+import weco.api.search.models.ApiConfig
 import weco.catalogue.display_model.ElasticConfig
 
 trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {

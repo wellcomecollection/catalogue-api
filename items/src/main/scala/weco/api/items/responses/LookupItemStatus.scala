@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
 import uk.ac.wellcome.platform.api.common.models.{StacksItem, StacksWork}
 import uk.ac.wellcome.platform.api.common.services.SierraService
-import uk.ac.wellcome.platform.api.rest.SingleWorkDirectives
+import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,

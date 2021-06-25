@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCode, StatusCodes}
 import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import uk.ac.wellcome.platform.api.common.services.SierraService
-import uk.ac.wellcome.platform.api.rest.CustomDirectives
+import weco.api.search.rest.CustomDirectives
 import weco.api.stacks.models.HoldRejected
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId

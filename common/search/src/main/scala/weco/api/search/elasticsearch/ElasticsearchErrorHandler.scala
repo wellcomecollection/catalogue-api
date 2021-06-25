@@ -1,15 +1,8 @@
-package uk.ac.wellcome.platform.api.elasticsearch
+package weco.api.search.elasticsearch
 
 import akka.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError
 import grizzled.slf4j.Logging
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  IndexNotFoundError,
-  SearchPhaseExecutionError,
-  UnknownError
-}
 import weco.http.models.DisplayError
 
 object ElasticsearchErrorHandler extends Logging {
@@ -24,7 +17,7 @@ object ElasticsearchErrorHandler extends Logging {
   // When returning a 400 to the user, we wrap this error to avoid talking
   // about internal Elasticsearch concepts.
   private val resultSizePattern =
-    """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
+  """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
   def buildDisplayError(documentType: String,
                         e: ElasticsearchError): DisplayError =

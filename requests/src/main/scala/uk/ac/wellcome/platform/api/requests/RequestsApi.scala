@@ -2,9 +2,9 @@ package uk.ac.wellcome.platform.api.requests
 
 import akka.http.scaladsl.server.Route
 import uk.ac.wellcome.platform.api.common.services.SierraService
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
+import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber

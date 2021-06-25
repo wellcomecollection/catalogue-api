@@ -1,8 +1,8 @@
-package uk.ac.wellcome.platform.api.models
+package weco.api.search.models
 
 import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
-import uk.ac.wellcome.typesafe.config.builders.EnrichConfig.RichConfig
+import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
 case class ApiConfig(
   publicScheme: String,

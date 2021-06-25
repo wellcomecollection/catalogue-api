@@ -4,8 +4,8 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.common.services.SierraService
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import weco.api.items.responses.LookupItemStatus
+import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 

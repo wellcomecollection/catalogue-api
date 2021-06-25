@@ -13,8 +13,6 @@ import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ImagesMultiMatcher,
   WorksMultiMatcher
 }
-import uk.ac.wellcome.platform.api.rest.CustomDirectives
-import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models.{
   QueryConfig,
   SearchTemplate,
@@ -30,6 +28,8 @@ import uk.ac.wellcome.platform.api.search.rest.{
 }
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.models.ApiConfig
+import weco.api.search.rest.CustomDirectives
 import weco.catalogue.display_model.ElasticConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 

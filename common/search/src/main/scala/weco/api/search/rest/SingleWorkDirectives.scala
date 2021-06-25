@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.rest
+package weco.api.search.rest
 
 import akka.http.scaladsl.model.StatusCodes.Found
 import akka.http.scaladsl.server.Route

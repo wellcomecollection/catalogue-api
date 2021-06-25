@@ -3,7 +3,7 @@ package weco.api.requests.responses
 import akka.http.scaladsl.server.Route
 import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
 import uk.ac.wellcome.platform.api.common.services.SierraService
-import uk.ac.wellcome.platform.api.rest.CustomDirectives
+import weco.api.search.rest.CustomDirectives
 import weco.api.stacks.services.ItemLookup
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 

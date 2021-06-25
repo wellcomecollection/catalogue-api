@@ -1,10 +1,12 @@
-package uk.ac.wellcome.platform.api.rest
+package weco.api.search.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
-import uk.ac.wellcome.platform.api.elasticsearch.ElasticsearchErrorHandler
-import uk.ac.wellcome.platform.api.models.ApiConfig
-import weco.api.search.elasticsearch.ElasticsearchError
+import weco.api.search.elasticsearch.{
+  ElasticsearchError,
+  ElasticsearchErrorHandler
+}
+import weco.api.search.models.ApiConfig
 import weco.http.FutureDirectives
 import weco.http.models.{ContextResponse, DisplayError}
 

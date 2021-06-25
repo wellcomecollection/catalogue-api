@@ -1,10 +1,10 @@
-package uk.ac.wellcome.platform.api.rest
+package weco.api.search.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.platform.api.models.ApiConfig
+import weco.api.search.models.ApiConfig
 
 import java.net.URL
 
