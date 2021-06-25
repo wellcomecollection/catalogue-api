@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.ContentTypes
 import io.circe.Json
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import uk.ac.wellcome.api.display.models.{SingleImageIncludes, WorksIncludes}
+import uk.ac.wellcome.api.display.models.SingleImageIncludes
 import uk.ac.wellcome.platform.api.search.fixtures.ReflectionHelpers
 import uk.ac.wellcome.platform.api.search.models.{
   DisplayWorkAggregations,
@@ -19,6 +19,7 @@ import uk.ac.wellcome.platform.api.search.rest.{
 }
 import uk.ac.wellcome.platform.api.search.rest._
 import uk.ac.wellcome.platform.api.search.works.ApiWorksTestBase
+import weco.catalogue.display_model.models.{SingleImageIncludes, WorksIncludes}
 import weco.catalogue.internal_model.locations.{AccessStatus, License}
 
 class ApiSwaggerTest

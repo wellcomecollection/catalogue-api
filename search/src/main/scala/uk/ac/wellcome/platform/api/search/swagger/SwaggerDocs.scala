@@ -13,12 +13,14 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.{Content, Schema}
+
 import javax.ws.rs.{GET, Path}
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.api.display.models.{DisplayImage, DisplayWork}
+import uk.ac.wellcome.api.display.models.DisplayImage
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.platform.api.search.rest.DisplayResultList
+import weco.catalogue.display_model.models.{DisplayImage, DisplayWork}
 import weco.http.models.DisplayError
 
 class SwaggerDocs(apiConfig: ApiConfig) extends Logging {

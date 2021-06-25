@@ -1,8 +1,9 @@
 package uk.ac.wellcome.platform.api.common.models.display
 
 import java.time.Instant
-import uk.ac.wellcome.api.display.models.{DisplayIdentifier, DisplayItem}
+import uk.ac.wellcome.api.display.models.DisplayItem
 import uk.ac.wellcome.platform.api.common.models._
+import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
 
 object DisplayResultsList {
   def apply(

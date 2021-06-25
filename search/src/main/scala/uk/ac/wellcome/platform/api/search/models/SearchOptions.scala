@@ -1,6 +1,7 @@
 package uk.ac.wellcome.platform.api.search.models
 
-import uk.ac.wellcome.api.display.models.{
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import weco.catalogue.display_model.models.{
   ImageAggregationRequest,
   SortRequest,
   SortingOrder,

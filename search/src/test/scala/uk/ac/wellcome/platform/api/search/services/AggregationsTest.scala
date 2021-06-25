@@ -6,7 +6,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models._
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
@@ -18,6 +17,7 @@ import weco.catalogue.internal_model.work.generators.{
 }
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Period, Subject}
 

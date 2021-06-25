@@ -9,7 +9,6 @@ import akka.http.scaladsl.server.{
 }
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import uk.ac.wellcome.api.display.ElasticConfig
 import uk.ac.wellcome.platform.api.search.elasticsearch.{
   ImagesMultiMatcher,
   WorksMultiMatcher
@@ -31,6 +30,7 @@ import uk.ac.wellcome.platform.api.search.rest.{
 }
 import uk.ac.wellcome.platform.api.search.swagger.SwaggerDocs
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.catalogue.display_model.ElasticConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext

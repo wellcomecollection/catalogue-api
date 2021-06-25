@@ -10,8 +10,8 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models._
+import weco.catalogue.display_model.models.WorkAggregationRequest
 
 class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
 

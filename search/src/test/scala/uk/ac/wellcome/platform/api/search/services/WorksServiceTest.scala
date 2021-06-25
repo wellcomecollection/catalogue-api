@@ -8,7 +8,6 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   ProductionEventGenerators,
@@ -23,6 +22,7 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
+import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.{
   DigitalLocationType,

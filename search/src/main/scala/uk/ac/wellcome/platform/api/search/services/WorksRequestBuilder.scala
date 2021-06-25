@@ -7,13 +7,14 @@ import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
-import uk.ac.wellcome.api.display.models.{
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import uk.ac.wellcome.platform.api.search.models._
+import uk.ac.wellcome.platform.api.search.rest.PaginationQuery
+import weco.catalogue.display_model.models.{
   ProductionDateSortRequest,
   SortingOrder,
   WorkAggregationRequest
 }
-import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.platform.api.search.rest.PaginationQuery
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
 

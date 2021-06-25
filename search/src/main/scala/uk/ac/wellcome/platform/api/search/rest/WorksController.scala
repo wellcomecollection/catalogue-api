@@ -2,13 +2,14 @@ package uk.ac.wellcome.platform.api.search.rest
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import uk.ac.wellcome.api.display.models.Implicits._
-import uk.ac.wellcome.api.display.models.{DisplayWork, WorksIncludes}
+import weco.catalogue.display_model.models.Implicits._
+import uk.ac.wellcome.api.display.models.DisplayWork
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.models.ApiConfig
 import uk.ac.wellcome.platform.api.rest.SingleWorkDirectives
 import uk.ac.wellcome.platform.api.search.services.WorksService
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed

@@ -5,10 +5,7 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.akka.fixtures.Akka
-import uk.ac.wellcome.api.display.models.{
-  ApiVersions,
-  DisplaySerialisationTestBase
-}
+import uk.ac.wellcome.api.display.models.ApiVersions
 import uk.ac.wellcome.fixtures.TestWith
 import weco.json.JsonUtil._
 import weco.json.utils.JsonAssertions
@@ -18,6 +15,10 @@ import uk.ac.wellcome.models.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
+import weco.catalogue.display_model.models.{
+  ApiVersions,
+  DisplaySerialisationTestBase
+}
 import weco.catalogue.snapshot_generator.fixtures.WorkerServiceFixture
 import weco.catalogue.snapshot_generator.models.{
   CompletedSnapshotJob,

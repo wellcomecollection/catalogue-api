@@ -5,14 +5,15 @@ import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
 import io.circe.Encoder
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.ac.wellcome.api.display.models.{
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import uk.ac.wellcome.platform.api.search.models._
+import weco.catalogue.display_model.models.{
   DisplayImage,
   DisplayWork,
   MultipleImagesIncludes,
   WorkAggregationRequest,
   WorksIncludes
 }
-import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.http.json.DisplayJsonUtil._

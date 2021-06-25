@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.images
 
-import uk.ac.wellcome.api.display.models.DisplaySerialisationTestBase
 import uk.ac.wellcome.platform.api.search.ApiTestBase
+import weco.catalogue.display_model.models.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.image._
 

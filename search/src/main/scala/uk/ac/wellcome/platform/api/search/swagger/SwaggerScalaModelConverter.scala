@@ -2,19 +2,16 @@ package com.github.swagger.scala.converter
 
 import java.util.Iterator
 import java.lang.reflect.Type
-
 import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.`type`.{
-  CollectionLikeType,
-  ReferenceType,
-  SimpleType
-}
+import com.fasterxml.jackson.databind.`type`.{CollectionLikeType, ReferenceType, SimpleType}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import io.swagger.v3.core.converter._
 import io.swagger.v3.oas.models.media.{ArraySchema, Schema}
 import io.swagger.v3.core.jackson.AbstractModelConverter
 import io.swagger.v3.core.util.Json
-import uk.ac.wellcome.api.display.models.{
+import uk.ac.wellcome.api.display.models.DisplayFormat
+import uk.ac.wellcome.platform.api.search.models._
+import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,
   DisplayAvailability,
   DisplayContributor,
@@ -25,7 +22,6 @@ import uk.ac.wellcome.api.display.models.{
   DisplayPeriod,
   DisplaySubject
 }
-import uk.ac.wellcome.platform.api.search.models._
 
 /** Custom swagger model converter, used for resolving Scala types into OpenAPI schemas.
   *  https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Extensions#extending-core-resolver

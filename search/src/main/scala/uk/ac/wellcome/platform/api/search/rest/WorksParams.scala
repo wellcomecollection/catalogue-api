@@ -1,10 +1,12 @@
 package uk.ac.wellcome.platform.api.search.rest
 
 import java.time.LocalDate
-
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
-import uk.ac.wellcome.api.display.models.{
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import uk.ac.wellcome.platform.api.models.ApiConfig
+import uk.ac.wellcome.platform.api.search.models._
+import weco.catalogue.display_model.models.{
   ProductionDateSortRequest,
   SortRequest,
   SortingOrder,
@@ -12,8 +14,6 @@ import uk.ac.wellcome.api.display.models.{
   WorkInclude,
   WorksIncludes
 }
-import uk.ac.wellcome.platform.api.models.ApiConfig
-import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.internal_model.locations.AccessStatus
 import weco.catalogue.internal_model.work.WorkType
 

@@ -8,10 +8,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   GlobalAggregation
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import uk.ac.wellcome.api.display.models.{
-  ImageAggregationRequest,
-  WorkAggregationRequest
-}
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models.{
   AvailabilitiesFilter,
   ContributorsFilter,
@@ -22,6 +19,10 @@ import uk.ac.wellcome.platform.api.search.models.{
   LicenseFilter,
   SubjectFilter,
   WorkFilter
+}
+import weco.catalogue.display_model.models.{
+  ImageAggregationRequest,
+  WorkAggregationRequest
 }
 
 import scala.collection.immutable._

@@ -1,14 +1,15 @@
 package uk.ac.wellcome.platform.api.search.generators
 
-import uk.ac.wellcome.api.display.models.{
-  SortRequest,
-  SortingOrder,
-  WorkAggregationRequest
-}
+import uk.ac.wellcome.api.display.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models.{
   SearchQuery,
   WorkFilter,
   WorkSearchOptions
+}
+import weco.catalogue.display_model.models.{
+  SortRequest,
+  SortingOrder,
+  WorkAggregationRequest
 }
 
 trait SearchOptionsGenerators {
