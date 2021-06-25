@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.requests
+package weco.api.requests
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config

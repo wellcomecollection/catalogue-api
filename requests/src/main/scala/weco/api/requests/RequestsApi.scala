@@ -1,7 +1,7 @@
-package uk.ac.wellcome.platform.api.requests
+package weco.api.requests
 
 import akka.http.scaladsl.server.Route
-import uk.ac.wellcome.platform.api.requests.models.ItemRequest
+import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{ItemLookup, SierraService}

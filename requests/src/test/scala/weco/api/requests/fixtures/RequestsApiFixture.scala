@@ -1,8 +1,8 @@
-package uk.ac.wellcome.platform.api.requests.fixtures
+package weco.api.requests.fixtures
 
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import weco.fixtures.TestWith
-import uk.ac.wellcome.platform.api.requests.RequestsApi
+import weco.api.requests.RequestsApi
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
