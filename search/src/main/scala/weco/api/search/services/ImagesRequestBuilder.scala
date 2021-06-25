@@ -7,7 +7,11 @@ import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.sort._
-import weco.api.search.elasticsearch.{ColorQuery, ImageSimilarity, ImagesMultiMatcher}
+import weco.api.search.elasticsearch.{
+  ColorQuery,
+  ImageSimilarity,
+  ImagesMultiMatcher
+}
 import weco.api.search.models._
 import weco.api.search.rest.PaginationQuery
 import weco.catalogue.display_model.models.ImageAggregationRequest

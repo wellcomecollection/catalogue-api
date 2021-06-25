@@ -8,7 +8,11 @@ import org.scalatest.{EitherValues, OptionValues}
 import weco.api.search.models.QueryConfig
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
 import weco.catalogue.internal_model.generators.ImageGenerators
 

@@ -4,8 +4,16 @@ import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import weco.api.snapshot_generator.compress.GzipCompressor
-import weco.api.snapshot_generator.iterators.{ElasticsearchWorksIterator, WorkToJsonIterator}
-import weco.api.snapshot_generator.models.{CompletedSnapshotJob, SnapshotGeneratorConfig, SnapshotJob, SnapshotResult}
+import weco.api.snapshot_generator.iterators.{
+  ElasticsearchWorksIterator,
+  WorkToJsonIterator
+}
+import weco.api.snapshot_generator.models.{
+  CompletedSnapshotJob,
+  SnapshotGeneratorConfig,
+  SnapshotJob,
+  SnapshotResult
+}
 import weco.api.snapshot_generator.storage.S3Uploader
 import weco.catalogue.display_model.models.DisplayWork
 

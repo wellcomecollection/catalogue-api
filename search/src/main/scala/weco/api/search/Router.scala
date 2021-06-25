@@ -1,11 +1,25 @@
 package weco.api.search
 
 import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
-import akka.http.scaladsl.server.{MalformedQueryParamRejection, RejectionHandler, Route, ValidationRejection}
+import akka.http.scaladsl.server.{
+  MalformedQueryParamRejection,
+  RejectionHandler,
+  Route,
+  ValidationRejection
+}
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import weco.api.search.elasticsearch.{ElasticsearchService, ImagesMultiMatcher, WorksMultiMatcher}
-import weco.api.search.models.{ApiConfig, QueryConfig, SearchTemplate, SearchTemplateResponse}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  ImagesMultiMatcher,
+  WorksMultiMatcher
+}
+import weco.api.search.models.{
+  ApiConfig,
+  QueryConfig,
+  SearchTemplate,
+  SearchTemplateResponse
+}
 import weco.api.search.rest._
 import weco.api.search.swagger.SwaggerDocs
 import weco.catalogue.display_model.ElasticConfig

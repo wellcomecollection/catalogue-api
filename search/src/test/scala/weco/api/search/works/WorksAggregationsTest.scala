@@ -1,7 +1,10 @@
 package weco.api.search.works
 
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, ProductionEventGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  ProductionEventGenerators
+}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.{AccessStatus, License}

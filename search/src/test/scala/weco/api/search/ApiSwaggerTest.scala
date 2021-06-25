@@ -4,7 +4,11 @@ import akka.http.scaladsl.model.ContentTypes
 import io.circe.Json
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.{DisplayWorkAggregations, SearchQueryType, WorkAggregations}
+import weco.api.search.models.{
+  DisplayWorkAggregations,
+  SearchQueryType,
+  WorkAggregations
+}
 import weco.api.search.fixtures.ReflectionHelpers
 import weco.api.search.rest._
 import weco.api.search.works.ApiWorksTestBase

@@ -17,7 +17,7 @@ object ElasticsearchErrorHandler extends Logging {
   // When returning a 400 to the user, we wrap this error to avoid talking
   // about internal Elasticsearch concepts.
   private val resultSizePattern =
-  """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
+    """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
   def buildDisplayError(documentType: String,
                         e: ElasticsearchError): DisplayError =

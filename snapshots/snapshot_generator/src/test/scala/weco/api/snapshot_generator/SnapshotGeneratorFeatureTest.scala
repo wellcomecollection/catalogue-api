@@ -17,7 +17,10 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.catalogue.display_model.models.{ApiVersions, DisplaySerialisationTestBase}
+import weco.catalogue.display_model.models.{
+  ApiVersions,
+  DisplaySerialisationTestBase
+}
 
 import java.time.Instant
 

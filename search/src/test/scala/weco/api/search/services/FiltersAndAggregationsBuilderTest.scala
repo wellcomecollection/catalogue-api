@@ -1,12 +1,22 @@
 package weco.api.search.services
 
-import com.sksamuel.elastic4s.requests.searches.aggs.{AbstractAggregation, Aggregation, FilterAggregation, GlobalAggregation}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  AbstractAggregation,
+  Aggregation,
+  FilterAggregation,
+  GlobalAggregation
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models._
-import weco.api.search.models.{FormatFilter, GenreFilter, LanguagesFilter, WorkFilter}
+import weco.api.search.models.{
+  FormatFilter,
+  GenreFilter,
+  LanguagesFilter,
+  WorkFilter
+}
 import weco.catalogue.display_model.models.WorkAggregationRequest
 
 class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {

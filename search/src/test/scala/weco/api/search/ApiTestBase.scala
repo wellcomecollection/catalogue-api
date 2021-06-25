@@ -3,7 +3,7 @@ package weco.api.search
 import com.sksamuel.elastic4s.{ElasticDsl, Index}
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.scalatest.Assertion
-import weco.fixtures.{Fixture, RandomGenerators, fixture}
+import weco.fixtures.{fixture, Fixture, RandomGenerators}
 import weco.api.search.fixtures.ApiFixture
 
 trait ApiTestBase extends ApiFixture with RandomGenerators {

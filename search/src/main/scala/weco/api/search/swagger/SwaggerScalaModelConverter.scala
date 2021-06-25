@@ -3,7 +3,11 @@ package weco.api.search.swagger
 import java.util.Iterator
 import java.lang.reflect.Type
 import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.`type`.{CollectionLikeType, ReferenceType, SimpleType}
+import com.fasterxml.jackson.databind.`type`.{
+  CollectionLikeType,
+  ReferenceType,
+  SimpleType
+}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import io.swagger.v3.core.converter._
 import io.swagger.v3.oas.models.media.{ArraySchema, Schema}

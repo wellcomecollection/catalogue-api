@@ -12,7 +12,11 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.servers.Server
-import weco.api.search.models.{ApiConfig, DisplayImageAggregations, DisplayWorkAggregations}
+import weco.api.search.models.{
+  ApiConfig,
+  DisplayImageAggregations,
+  DisplayWorkAggregations
+}
 import weco.api.search.rest.DisplayResultList
 import weco.catalogue.display_model.models.{DisplayImage, DisplayWork}
 import weco.http.models.DisplayError

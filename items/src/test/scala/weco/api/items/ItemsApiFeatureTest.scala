@@ -1,15 +1,32 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes,
+  Uri
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.ItemsApiFixture
 import weco.json.utils.JsonAssertions
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{
+  MiroImageNumber,
+  SierraSystemNumber
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 
 import scala.util.{Failure, Try}
 

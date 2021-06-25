@@ -1,7 +1,16 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  RequestEntity,
+  StatusCodes,
+  Uri
+}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.GivenWhenThen
@@ -15,7 +24,10 @@ import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 class RequestingScenarioTest
