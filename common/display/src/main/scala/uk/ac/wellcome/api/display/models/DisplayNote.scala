@@ -101,5 +101,7 @@ object DisplayNoteType {
         DisplayNoteType("lettering-note", "Lettering note")
       case LanguageNote(_) =>
         DisplayNoteType("language-note", "Language note")
+      case ReferencesNote(_) =>
+        DisplayNoteType("references-note", "References note")
     }
 }
