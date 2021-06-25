@@ -27,7 +27,7 @@ def get_latest_internal_model_version(session):
 
     list_resp = s3.list_objects_v2(
         Bucket="releases.mvn-repo.wellcomecollection.org",
-        Prefix="uk/ac/wellcome/internal_model_2.12/",
+        Prefix="weco/internal_model_2.12/",
         Delimiter="/",
     )
 
