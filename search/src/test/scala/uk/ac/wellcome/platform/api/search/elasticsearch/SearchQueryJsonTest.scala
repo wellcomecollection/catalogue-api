@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.handlers.searches.queries.QueryBuilderFn
 import com.sksamuel.elastic4s.json.JacksonBuilder
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.json.utils.JsonAssertions
+import weco.json.utils.JsonAssertions
 import com.sksamuel.elastic4s.ElasticDsl._
 
 import scala.io.Source

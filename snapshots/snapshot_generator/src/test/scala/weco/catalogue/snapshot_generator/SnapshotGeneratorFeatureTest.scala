@@ -10,12 +10,12 @@ import uk.ac.wellcome.api.display.models.{
   DisplaySerialisationTestBase
 }
 import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.json.JsonUtil._
-import uk.ac.wellcome.json.utils.JsonAssertions
+import weco.json.JsonUtil._
+import weco.json.utils.JsonAssertions
 import uk.ac.wellcome.messaging.fixtures.SQS.Queue
 import uk.ac.wellcome.messaging.memory.MemoryMessageSender
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.work.generators.WorkGenerators
+import weco.catalogue.internal_model.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
 import weco.catalogue.snapshot_generator.fixtures.WorkerServiceFixture

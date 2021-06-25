@@ -3,8 +3,8 @@ package uk.ac.wellcome.platform.api.search.works
 import com.sksamuel.elastic4s.Indexable
 import uk.ac.wellcome.api.display.models.DisplaySerialisationTestBase
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.json.JsonUtil._
-import uk.ac.wellcome.models.work.generators._
+import weco.json.JsonUtil._
+import weco.catalogue.internal_model.work.generators._
 import uk.ac.wellcome.platform.api.search.ApiTestBase
 import weco.catalogue.internal_model.locations.DigitalLocation
 import weco.catalogue.internal_model.work.{Work, WorkType}

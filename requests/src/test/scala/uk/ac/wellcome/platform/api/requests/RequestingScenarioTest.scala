@@ -17,7 +17,7 @@ import org.scalatest.GivenWhenThen
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.models.work.generators.ItemsGenerators
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.ItemLookup

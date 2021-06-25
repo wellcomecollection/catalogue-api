@@ -2,7 +2,7 @@ package uk.ac.wellcome.api.display.test.util
 
 import io.circe.Encoder
 import org.scalatest.Assertion
-import uk.ac.wellcome.json.utils.JsonAssertions
+import weco.json.utils.JsonAssertions
 import weco.http.json.DisplayJsonUtil
 
 trait JsonMapperTestUtil extends JsonAssertions {

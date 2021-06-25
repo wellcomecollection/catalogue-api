@@ -2,7 +2,7 @@ package uk.ac.wellcome.api.display.models
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.models.work.generators.ProductionEventGenerators
+import weco.catalogue.internal_model.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.work._
 
 class DisplayProductionEventTest

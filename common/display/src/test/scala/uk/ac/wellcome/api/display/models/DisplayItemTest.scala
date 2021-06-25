@@ -2,7 +2,7 @@ package uk.ac.wellcome.api.display.models
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.models.work.generators.ItemsGenerators
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
 
 class DisplayItemTest extends AnyFunSpec with Matchers with ItemsGenerators {
 

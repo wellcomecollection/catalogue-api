@@ -1,7 +1,7 @@
 package uk.ac.wellcome.api.display.models
 
 import org.scalatest.Suite
-import uk.ac.wellcome.json.JsonUtil._
+import weco.json.JsonUtil._
 import weco.catalogue.internal_model.identifiers.{
   HasId,
   IdState,

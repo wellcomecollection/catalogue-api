@@ -49,7 +49,7 @@ import scala.util.{Success, Try}
 //    }
 object AggregationMapping {
 
-  import uk.ac.wellcome.json.JsonUtil._
+  import weco.json.JsonUtil._
 
   private case class Result(buckets: Option[Seq[Bucket]])
 

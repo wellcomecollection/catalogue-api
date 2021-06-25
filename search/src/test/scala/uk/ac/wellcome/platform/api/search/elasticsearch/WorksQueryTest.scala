@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.{
+import weco.catalogue.internal_model.work.generators.{
   ContributorGenerators,
   GenreGenerators,
   SubjectGenerators

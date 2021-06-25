@@ -5,7 +5,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.WorkGenerators
+import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.catalogue.snapshot_generator.models.SnapshotGeneratorConfig
 
 class ElasticsearchWorksIteratorTest

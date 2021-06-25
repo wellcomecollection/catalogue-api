@@ -1,7 +1,7 @@
 package uk.ac.wellcome.api.display.models
 
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.models.work.generators.SubjectGenerators
+import weco.catalogue.internal_model.work.generators.SubjectGenerators
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work._

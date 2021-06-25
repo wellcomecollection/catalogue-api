@@ -11,9 +11,9 @@ import akka.http.scaladsl.model.{
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.json.utils.JsonAssertions
+import weco.json.utils.JsonAssertions
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
 import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,

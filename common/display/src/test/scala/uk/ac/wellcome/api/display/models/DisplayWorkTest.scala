@@ -7,7 +7,7 @@ import org.scalacheck.ScalacheckShapeless._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import uk.ac.wellcome.models.work.generators.ProductionEventGenerators
+import weco.catalogue.internal_model.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,

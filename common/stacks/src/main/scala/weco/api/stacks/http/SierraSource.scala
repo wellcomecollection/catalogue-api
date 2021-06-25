@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.Materializer
 import io.circe.Encoder
-import uk.ac.wellcome.json.JsonUtil._
+import weco.json.JsonUtil._
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHoldRequest,

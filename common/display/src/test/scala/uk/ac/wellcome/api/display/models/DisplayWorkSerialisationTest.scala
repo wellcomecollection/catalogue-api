@@ -3,7 +3,7 @@ package uk.ac.wellcome.api.display.models
 import org.scalatest.funspec.AnyFunSpec
 import uk.ac.wellcome.api.display.test.util.JsonMapperTestUtil
 import Implicits._
-import uk.ac.wellcome.models.work.generators.{
+import weco.catalogue.internal_model.work.generators.{
   ProductionEventGenerators,
   SubjectGenerators
 }

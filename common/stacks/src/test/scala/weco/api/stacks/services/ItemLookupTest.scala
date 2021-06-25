@@ -8,7 +8,7 @@ import uk.ac.wellcome.models.index.IndexFixtures
 import weco.api.stacks.services.elastic.ElasticItemLookup
 import uk.ac.wellcome.models.Implicits._
 import uk.ac.wellcome.models.index.IndexFixtures
-import uk.ac.wellcome.models.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,
   SierraSystemNumber

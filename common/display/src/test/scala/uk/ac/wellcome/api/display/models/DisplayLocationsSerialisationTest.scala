@@ -2,7 +2,7 @@ package uk.ac.wellcome.api.display.models
 
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
-import uk.ac.wellcome.models.work.generators._
+import weco.catalogue.internal_model.work.generators._
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work.{Work, WorkState}
 import Implicits._

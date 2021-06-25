@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.works
 
 import com.sksamuel.elastic4s.Index
-import uk.ac.wellcome.models.work.generators.{
+import weco.catalogue.internal_model.work.generators.{
   ProductionEventGenerators,
   SubjectGenerators
 }

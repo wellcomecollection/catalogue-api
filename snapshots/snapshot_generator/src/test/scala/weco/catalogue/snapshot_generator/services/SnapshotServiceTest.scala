@@ -14,7 +14,7 @@ import uk.ac.wellcome.api.display.models.{
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
 import uk.ac.wellcome.fixtures.TestWith
 import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.work.generators.WorkGenerators
+import weco.catalogue.internal_model.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
 import weco.catalogue.snapshot_generator.fixtures.SnapshotServiceFixture

@@ -11,8 +11,8 @@ import akka.http.scaladsl.model.{
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.json.utils.JsonAssertions
-import uk.ac.wellcome.models.work.generators.ItemsGenerators
+import weco.json.utils.JsonAssertions
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber

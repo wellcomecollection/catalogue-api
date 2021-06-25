@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl.{search, termQuery}
 import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchIterator}
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.json.JsonUtil._
+import weco.json.JsonUtil._
 import uk.ac.wellcome.models.Implicits._
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed

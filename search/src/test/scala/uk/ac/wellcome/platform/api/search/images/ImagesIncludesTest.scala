@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.images
 
-import uk.ac.wellcome.models.work.generators.{
+import weco.catalogue.internal_model.work.generators.{
   ContributorGenerators,
   GenreGenerators
 }
