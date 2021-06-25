@@ -1,10 +1,9 @@
 package weco.api.requests.responses
 
 import akka.http.scaladsl.server.Route
-import uk.ac.wellcome.platform.api.common.models.display.DisplayResultsList
-import uk.ac.wellcome.platform.api.common.services.SierraService
+import weco.api.stacks.models.display.DisplayResultsList
 import weco.api.search.rest.CustomDirectives
-import weco.api.stacks.services.ItemLookup
+import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}

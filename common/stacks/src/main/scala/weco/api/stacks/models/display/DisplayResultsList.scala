@@ -1,8 +1,12 @@
-package uk.ac.wellcome.platform.api.common.models.display
+package weco.api.stacks.models.display
 
 import java.time.Instant
-import uk.ac.wellcome.api.display.models.DisplayItem
-import uk.ac.wellcome.platform.api.common.models._
+import weco.api.stacks.models.{
+  StacksHold,
+  StacksHoldStatus,
+  StacksPickupLocation,
+  StacksUserHolds
+}
 import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
 
 object DisplayResultsList {

@@ -5,8 +5,8 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.generators.ImageGenerators
 
 class QueryConfigTest

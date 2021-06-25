@@ -6,10 +6,10 @@ import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.api.display.models.DisplayWork
+import weco.catalogue.display_model.models.DisplayWork
 import uk.ac.wellcome.elasticsearch.ElasticClientBuilder
-import uk.ac.wellcome.fixtures.TestWith
-import uk.ac.wellcome.models.Implicits._
+import weco.fixtures.TestWith
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
@@ -46,7 +46,7 @@ class SnapshotServiceTest
     }
 
   val expectedDisplayWorkClassName =
-    "uk.ac.wellcome.api.display.models.DisplayWork$"
+    "weco.catalogue.display_model.models.DisplayWork$"
 
   it("completes a snapshot generation") {
     withFixtures {

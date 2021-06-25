@@ -4,8 +4,8 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.generators.{
   ContributorGenerators,
   GenreGenerators,

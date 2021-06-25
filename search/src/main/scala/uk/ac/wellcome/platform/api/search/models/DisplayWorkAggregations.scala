@@ -4,7 +4,7 @@ import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,
   DisplayAvailability,

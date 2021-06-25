@@ -3,7 +3,7 @@ package weco.catalogue.snapshot_generator.fixtures
 import akka.actor.ActorSystem
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
-import uk.ac.wellcome.fixtures.TestWith
+import weco.fixtures.TestWith
 import uk.ac.wellcome.messaging.fixtures.SQS
 import uk.ac.wellcome.messaging.fixtures.SQS.Queue
 import uk.ac.wellcome.messaging.memory.MemoryMessageSender

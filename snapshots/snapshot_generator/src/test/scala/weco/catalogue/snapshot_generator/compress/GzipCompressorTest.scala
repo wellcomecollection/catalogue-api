@@ -2,7 +2,7 @@ package weco.catalogue.snapshot_generator.compress
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.fixtures.RandomGenerators
+import weco.fixtures.RandomGenerators
 import weco.catalogue.snapshot_generator.test.utils.GzipUtils
 
 import java.io.{File, FileOutputStream}

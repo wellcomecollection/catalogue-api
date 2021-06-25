@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.works
 
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
 

@@ -3,10 +3,9 @@ package weco.api.requests.responses
 import akka.http.scaladsl.model.{HttpEntity, StatusCode, StatusCodes}
 import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.common.services.SierraService
 import weco.api.search.rest.CustomDirectives
 import weco.api.stacks.models.HoldRejected
-import weco.api.stacks.services.ItemLookup
+import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber

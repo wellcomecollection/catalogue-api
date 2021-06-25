@@ -2,11 +2,11 @@ package weco.api.items.responses
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import uk.ac.wellcome.platform.api.common.models.display.DisplayStacksWork
-import uk.ac.wellcome.platform.api.common.models.{StacksItem, StacksWork}
-import uk.ac.wellcome.platform.api.common.services.SierraService
+import weco.api.stacks.models.display.DisplayStacksWork
+import uk.ac.wellcome.platform.api.common.models.StacksWork
 import weco.api.search.rest.SingleWorkDirectives
-import weco.api.stacks.services.WorkLookup
+import weco.api.stacks.models.{StacksItem, StacksWork}
+import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,

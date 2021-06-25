@@ -5,7 +5,7 @@ import com.typesafe.config.Config
 import uk.ac.wellcome.elasticsearch.typesafe.ElasticBuilder
 import uk.ac.wellcome.http.typesafe.HTTPServerBuilder
 import uk.ac.wellcome.monitoring.typesafe.CloudWatchBuilder
-import uk.ac.wellcome.platform.api.common.services.config.builders.SierraServiceBuilder
+import weco.api.stacks.services.builders.SierraServiceBuilder
 import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder

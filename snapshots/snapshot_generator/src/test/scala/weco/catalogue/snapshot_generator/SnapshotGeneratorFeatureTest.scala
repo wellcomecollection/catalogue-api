@@ -4,14 +4,14 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.akka.fixtures.Akka
-import uk.ac.wellcome.api.display.models.ApiVersions
-import uk.ac.wellcome.fixtures.TestWith
+import weco.akka.fixtures.Akka
+import weco.catalogue.display_model.models.ApiVersions
+import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 import weco.json.utils.JsonAssertions
 import uk.ac.wellcome.messaging.fixtures.SQS.Queue
 import uk.ac.wellcome.messaging.memory.MemoryMessageSender
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import uk.ac.wellcome.storage.fixtures.S3Fixtures.Bucket
 import uk.ac.wellcome.storage.s3.S3ObjectLocation
@@ -48,7 +48,7 @@ class SnapshotGeneratorFeatureTest
         insertIntoElasticsearch(worksIndex, works: _*)
 
         val expectedDisplayWorkClassName =
-          "uk.ac.wellcome.api.display.models.DisplayWork$"
+          "weco.catalogue.display_model.models.DisplayWork$"
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
         val snapshotJob = SnapshotJob(

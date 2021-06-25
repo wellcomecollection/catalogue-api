@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.generators
 
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import weco.catalogue.display_model.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models.{
   SearchQuery,
   WorkFilter,

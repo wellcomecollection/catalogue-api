@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.images
 
 import weco.catalogue.internal_model.work.generators.SierraWorkGenerators
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 
 class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
 

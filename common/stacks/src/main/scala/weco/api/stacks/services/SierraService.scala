@@ -1,8 +1,7 @@
-package uk.ac.wellcome.platform.api.common.services
+package weco.api.stacks.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
@@ -148,7 +147,7 @@ class SierraService(
       //
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
-      case Right(SierraItemData(_, _, Some(holdCount), _, _, _))
+      case Right(SierraItemData(_, _, _, Some(holdCount), _, _, _))
           if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
@@ -207,7 +206,7 @@ class SierraService(
       )
 
       (ac, itemStatus) match {
-        case (Some(ac), _) if ac.method.contains(AccessMethod.OnlineRequest) =>
+        case (Some(ac), _) if ac.method == AccessMethod.OnlineRequest =>
           true
         case _ => false
       }

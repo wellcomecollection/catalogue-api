@@ -18,9 +18,8 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
-import uk.ac.wellcome.platform.api.common.services.SierraService
 import uk.ac.wellcome.platform.api.requests.fixtures.RequestsApiFixture
-import weco.api.stacks.services.ItemLookup
+import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item

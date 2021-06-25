@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.common.models
+package weco.api.stacks.models
 
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 

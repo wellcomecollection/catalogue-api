@@ -6,8 +6,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.{EitherValues, OptionValues}
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,

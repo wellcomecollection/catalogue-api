@@ -6,7 +6,7 @@ import weco.catalogue.display_model.models.Implicits._
 import uk.ac.wellcome.platform.api.search.models.{QueryConfig, SimilarityMetric}
 import uk.ac.wellcome.platform.api.search.services.ImagesService
 import cats.implicits._
-import uk.ac.wellcome.api.display.models.MultipleImagesIncludes
+import weco.catalogue.display_model.models.MultipleImagesIncludes
 import uk.ac.wellcome.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models.ApiConfig

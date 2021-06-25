@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticApi.{existsQuery, search}
 import com.sksamuel.elastic4s.ElasticDsl.SearchHandler
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.image.{Image, ImageState, InferredData}
 
 import scala.concurrent.duration._

@@ -1,10 +1,10 @@
-package uk.ac.wellcome.platform.api.common.services.config.builders
+package weco.api.stacks.services.builders
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
 import com.typesafe.config.Config
-import uk.ac.wellcome.platform.api.common.services.SierraService
+import weco.api.stacks.services.SierraService
 import weco.typesafe.config.builders.EnrichConfig._
 import weco.http.client.{AkkaHttpClient, HttpGet, HttpPost}
 import weco.http.client.sierra.SierraOauthHttpClient

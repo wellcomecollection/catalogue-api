@@ -13,10 +13,10 @@ import weco.catalogue.internal_model.work.generators.{
   ProductionEventGenerators,
   WorkGenerators
 }
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import uk.ac.wellcome.platform.api.search.generators.SearchOptionsGenerators
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,

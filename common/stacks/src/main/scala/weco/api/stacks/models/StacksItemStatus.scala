@@ -1,4 +1,4 @@
-package uk.ac.wellcome.platform.api.common.models
+package weco.api.stacks.models
 
 case class StacksItemStatus(id: String, label: String)
 

@@ -3,7 +3,7 @@ package uk.ac.wellcome.platform.api.search.rest
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.catalogue.display_model.models.Implicits._
-import uk.ac.wellcome.api.display.models.DisplayWork
+import weco.catalogue.display_model.models.DisplayWork
 import uk.ac.wellcome.Tracing
 import uk.ac.wellcome.platform.api.search.services.WorksService
 import weco.api.search.elasticsearch.ElasticsearchService

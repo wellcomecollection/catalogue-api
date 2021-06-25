@@ -7,8 +7,8 @@ import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import uk.ac.wellcome.platform.api.search.models._
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.generators.{
   GenreGenerators,
   ProductionEventGenerators,

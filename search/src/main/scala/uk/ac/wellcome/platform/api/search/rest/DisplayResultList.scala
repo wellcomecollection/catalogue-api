@@ -5,7 +5,7 @@ import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
 import io.circe.Encoder
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.ac.wellcome.api.display.models.WorkAggregationRequest
+import weco.catalogue.display_model.models.WorkAggregationRequest
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.display_model.models.{
   DisplayImage,

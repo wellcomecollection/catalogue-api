@@ -2,7 +2,7 @@ package uk.ac.wellcome.platform.api.search.models
 
 import java.time.{LocalDateTime, ZoneOffset}
 
-import uk.ac.wellcome.models.parse.DateHelpers
+import weco.catalogue.internal_model.parse.DateHelpers
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{InstantRange, Period}
 

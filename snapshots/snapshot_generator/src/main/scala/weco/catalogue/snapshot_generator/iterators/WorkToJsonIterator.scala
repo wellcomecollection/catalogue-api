@@ -1,7 +1,7 @@
 package weco.catalogue.snapshot_generator.iterators
 
 import weco.catalogue.display_model.models.Implicits._
-import uk.ac.wellcome.api.display.models.DisplayWork
+import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed

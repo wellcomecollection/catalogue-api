@@ -1,6 +1,6 @@
 package uk.ac.wellcome.platform.api.search.images
 
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 
 class ImagesSimilarityTest extends ApiImagesTestBase {
 

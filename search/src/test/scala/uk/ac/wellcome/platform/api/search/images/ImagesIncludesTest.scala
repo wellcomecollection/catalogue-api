@@ -4,7 +4,7 @@ import weco.catalogue.internal_model.work.generators.{
   ContributorGenerators,
   GenreGenerators
 }
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.languages.Language
 
 class ImagesIncludesTest

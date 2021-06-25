@@ -12,7 +12,10 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   MatchQuery,
   MultiMatchQuery
 }
-import uk.ac.wellcome.models.index.WorksAnalysis.{languages, whitespaceAnalyzer}
+import weco.catalogue.internal_model.index.WorksAnalysis.{
+  languages,
+  whitespaceAnalyzer
+}
 
 case object WorksMultiMatcher {
   val titleFields = Seq(

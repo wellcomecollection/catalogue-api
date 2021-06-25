@@ -9,7 +9,7 @@ import io.swagger.v3.core.converter._
 import io.swagger.v3.oas.models.media.{ArraySchema, Schema}
 import io.swagger.v3.core.jackson.AbstractModelConverter
 import io.swagger.v3.core.util.Json
-import uk.ac.wellcome.api.display.models.DisplayFormat
+import weco.catalogue.display_model.models.DisplayFormat
 import uk.ac.wellcome.platform.api.search.models._
 import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,

@@ -12,8 +12,11 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.json.utils.JsonAssertions
-import uk.ac.wellcome.models.Implicits._
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import uk.ac.wellcome.platform.api.items.fixtures.ItemsApiFixture
 import weco.catalogue.internal_model.identifiers.IdentifierType.{
   MiroImageNumber,

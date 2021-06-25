@@ -1,3 +1,3 @@
-package uk.ac.wellcome.platform.api.common.models
+package weco.api.stacks.models
 
 case class StacksPickupLocation(id: String, label: String)

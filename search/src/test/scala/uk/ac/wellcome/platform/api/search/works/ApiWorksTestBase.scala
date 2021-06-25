@@ -1,7 +1,7 @@
 package uk.ac.wellcome.platform.api.search.works
 
 import com.sksamuel.elastic4s.Indexable
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.json.JsonUtil._
 import weco.catalogue.internal_model.work.generators._
 import uk.ac.wellcome.platform.api.search.ApiTestBase

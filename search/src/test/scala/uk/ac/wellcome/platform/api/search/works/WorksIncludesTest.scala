@@ -5,7 +5,7 @@ import weco.catalogue.internal_model.work.generators.{
   ProductionEventGenerators,
   SubjectGenerators
 }
-import uk.ac.wellcome.models.Implicits._
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.languages.Language

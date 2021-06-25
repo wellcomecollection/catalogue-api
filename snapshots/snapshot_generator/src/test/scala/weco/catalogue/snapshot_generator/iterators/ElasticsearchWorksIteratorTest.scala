@@ -3,8 +3,8 @@ package weco.catalogue.snapshot_generator.iterators
 import com.sksamuel.elastic4s.ElasticClient
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.models.Implicits._
-import uk.ac.wellcome.models.index.IndexFixtures
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.catalogue.snapshot_generator.models.SnapshotGeneratorConfig
 
