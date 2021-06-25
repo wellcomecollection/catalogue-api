@@ -6,10 +6,22 @@ import uk.ac.wellcome.platform.api.common.models._
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, ItemStatus, PhysicalLocationType}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  ItemStatus,
+  PhysicalLocationType
+}
 import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
-import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraBibNumber,
+  SierraItemNumber,
+  SierraPatronNumber
+}
+import weco.catalogue.source_model.sierra.rules.{
+  SierraItemAccess,
+  SierraPhysicalLocationType
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,13 +37,12 @@ class SierraService(
     extends Logging {
 
   def getAccessCondition(sourceIdentifier: SourceIdentifier)
-  : Future[Either[SierraItemLookupError, Option[AccessCondition]]]
-  = {
+    : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.lookupItem(itemNumber).map {
       case Right(item) => Right(item.getItemStatus(itemNumber)._1)
-      case Left(err) => Left(err)
+      case Left(err)   => Left(err)
     }
   }
 
@@ -190,7 +201,8 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getItemStatus(id: SierraItemNumber): (Option[AccessCondition], ItemStatus) = {
+    def getItemStatus(
+      id: SierraItemNumber): (Option[AccessCondition], ItemStatus) = {
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
           .get("79")
