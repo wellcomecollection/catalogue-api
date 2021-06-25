@@ -22,5 +22,9 @@ object DisplayAccessMethod {
         DisplayAccessMethod("manual-request", "Manual request")
       case AccessMethod.NotRequestable =>
         DisplayAccessMethod("not-requestable", "Not requestable")
+      case AccessMethod.ViewOnline =>
+        DisplayAccessMethod("view-online", "View online")
+      case AccessMethod.OpenShelves =>
+        DisplayAccessMethod("open-shelves", "Open shelves")
     }
 }

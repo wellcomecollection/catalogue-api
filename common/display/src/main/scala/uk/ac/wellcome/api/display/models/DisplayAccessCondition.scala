@@ -8,7 +8,7 @@ import weco.catalogue.internal_model.locations.AccessCondition
   name = "AccessCondition"
 )
 case class DisplayAccessCondition(
-  method: Option[DisplayAccessMethod],
+  method: DisplayAccessMethod,
   status: Option[DisplayAccessStatus],
   terms: Option[String],
   to: Option[String],
@@ -21,7 +21,7 @@ object DisplayAccessCondition {
 
   def apply(accessCondition: AccessCondition): DisplayAccessCondition =
     DisplayAccessCondition(
-      method = accessCondition.method.map(DisplayAccessMethod.apply),
+      method = DisplayAccessMethod(accessCondition.method),
       status = accessCondition.status.map(DisplayAccessStatus.apply),
       terms = accessCondition.terms,
       to = accessCondition.to,
