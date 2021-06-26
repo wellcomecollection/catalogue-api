@@ -2,13 +2,13 @@ package weco.api.stacks.services.elastic
 
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import uk.ac.wellcome.models.Implicits._
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchError,
   ElasticsearchService
 }
 import weco.api.stacks.services.ItemLookup
+import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
