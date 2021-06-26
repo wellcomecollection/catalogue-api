@@ -91,6 +91,11 @@ trait DisplaySerialisationTestBase {
     s"""
       {
         "type": "AccessCondition",
+        "method": {
+          "type": "AccessMethod",
+          "id": "${DisplayAccessMethod(cond.method).id}",
+          "label": "${DisplayAccessMethod(cond.method).label}"
+        },
         ${optionalString("terms", cond.terms)}
         ${optionalString("to", cond.to, trailingComma = false)}
         ${optionalObject("status", accessStatus, cond.status)}
