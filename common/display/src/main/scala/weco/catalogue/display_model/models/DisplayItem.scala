@@ -23,6 +23,9 @@ case class DisplayItem(
     description = "A human readable title."
   ) title: Option[String] = None,
   @Schema(
+    description = "Information to help distinguish different items."
+  ) note: Option[String] = None,
+  @Schema(
     description = "List of locations that provide access to the item"
   ) locations: List[DisplayLocation] = List(),
   @Schema(
@@ -36,11 +39,12 @@ object DisplayItem extends GetIdentifiers {
   def apply(item: Item[IdState.Minted],
             includesIdentifiers: Boolean): DisplayItem =
     item match {
-      case Item(id, title, locations) =>
+      case Item(id, title, note, locations) =>
         DisplayItem(
           id = id.maybeCanonicalId.map { _.underlying },
           identifiers = getIdentifiers(id, includesIdentifiers),
           title = title,
+          note = note,
           locations = locations.map(DisplayLocation(_)),
           status = None
         )
