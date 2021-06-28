@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { ratingClient } from '../../types/elasticsearch'
+import { ratingClient } from '../../services/elasticsearch'
 
 export type Rating = {
   username: string | undefined
@@ -35,7 +35,7 @@ export default async (
 
       const resp = await ratingClient.index({
         index: 'ratings',
-        body: ratingDoc,œ
+        body: ratingDoc,
       })
 
       const body = resp.body
