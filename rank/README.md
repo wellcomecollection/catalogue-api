@@ -36,7 +36,7 @@ If so:
 
 - A new mappings file will be copied from the original index into `/data/indices/{index}`
 - Edit `/data/indices/{index}`
-- `yarn createIndex --indexName {index} --reindex` will craete the new index with the mappings, and start a reindex
+- `yarn createIndex --from {index} --reindex` will craete the new index with the mappings, and start a reindex
 
 [Mappings are currently in the catalogue pipeline repo](catalogue-pipeline-mappings) - so you'll need to copy the JSON there,
 and get [the tests](https://github.com/wellcomecollection/catalogue-pipeline/blob/main/common/internal_model/src/test/scala/weco/catalogue/internal_model/index/SearchIndexConfigJsonTest.scala) to pass.
