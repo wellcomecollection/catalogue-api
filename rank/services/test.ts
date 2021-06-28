@@ -74,7 +74,7 @@ async function service({
     return {
       query,
       description: test.cases.find((c) => c.query === query)?.description,
-      result: test.pass(detail),
+      result: test.eval(detail),
     }
   })
 

@@ -1,4 +1,4 @@
-import { Pass, PassFn } from '../data/tests/pass'
+import { Eval, Pass } from '../data/tests/pass'
 
 import { Env } from './env'
 import { Metric } from './elasticsearch'
@@ -14,7 +14,7 @@ export type Test = {
   id: string
   label: string
   description: string
-  pass: PassFn
+  eval: Eval
   cases: TestCase[]
   metric: Metric
   searchTemplateAugmentation?: (
@@ -22,7 +22,6 @@ export type Test = {
     source: SearchTemplateSource
   ) => SearchTemplateSource
 }
-
 
 export type TestResult = {
   index: string
