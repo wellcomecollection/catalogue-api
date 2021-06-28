@@ -59,7 +59,6 @@ export function rankEvalRequest(
   return req
 }
 
-
 export function runTests(
   tests: Test[],
   template: SearchTemplate
@@ -70,11 +69,11 @@ export function runTests(
         return {
           query,
           description: test.cases.find((c) => c.query === query).description,
-          result: test.pass(detail),
+          result: test.eval(detail),
         }
       })
       return {
-        env: template.env, 
+        env: template.env,
         index: template.id,
         label: test.label,
         description: test.description,
