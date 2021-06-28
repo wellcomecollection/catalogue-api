@@ -1,5 +1,6 @@
-import { Test } from '../../types/test'
 import { equalTo0, equalTo1 } from './pass'
+
+import { Test } from '../../types/test'
 import { filterCaseRatings } from './queryAugmentation'
 
 const tests: Test[] = [
@@ -10,9 +11,9 @@ const tests: Test[] = [
     pass: equalTo1,
     cases: [
       { query: 'crick dna sketch', ratings: ['gzv2hhgy'] },
-      { query: 'gzv2hhgy', ratings: ['gzv2hhgy'] },
-      { query: 'kmebmktz', ratings: ['gzv2hhgy'] }, // search for work ID and get associated images
-      { query: 'L0033046', ratings: ['gzv2hhgy'] },
+      { query: 'gzv2hhgy', ratings: ['gzv2hhgy'], description: "image id" },
+      { query: 'kmebmktz', ratings: ['gzv2hhgy'], description: "search for work ID and get associated images" },
+      { query: 'L0033046', ratings: ['gzv2hhgy'], description: "miro ID" },
     ],
     metric: {
       precision: {
