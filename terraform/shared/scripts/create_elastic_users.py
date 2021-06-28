@@ -145,33 +145,12 @@ if __name__ == '__main__':
 
     cluster_client.put_settings(
         body={
+            # This setting is a fix for performance problems with an optimisation added in 7.13.1
+            # See: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/release-notes-7.13.2.html
+            # "Add setting to disable aggs optimization #73620 (issue: #73426)"
+            # TODO: A fix is likely in ES 7.14, after which we can remove this setting.
             "persistent": {
                 "search.aggs.rewrite_to_filter_by_filter": False
             }
-        }
-    )
-
-    # Configure auto-follow
-    ccr_client = elasticsearch.client.ccr.CcrClient(es)
-
-    ccr_client.put_auto_follow_pattern(
-        name="works",
-        body={
-            "remote_cluster": "catalogue",
-            "leader_index_patterns": [
-                "works-*"
-            ],
-            "follow_index_pattern": "{{leader_index}}"
-        }
-    )
-
-    ccr_client.put_auto_follow_pattern(
-        name="images",
-        body={
-            "remote_cluster": "catalogue",
-            "leader_index_patterns": [
-                "images-*"
-            ],
-            "follow_index_pattern": "{{leader_index}}"
         }
     )
