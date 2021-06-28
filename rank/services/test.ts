@@ -51,7 +51,7 @@ async function service({
       ratings: testCase.ratings.map((id) => {
         return {
           _id: id,
-          _index: index.id,
+          _index: index,
           rating: 3,
         }
       }),

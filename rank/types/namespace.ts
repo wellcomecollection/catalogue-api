@@ -2,7 +2,7 @@ export const namespaces = ['works', 'images'] as const
 export type Namespace = typeof namespaces[number]
 
 export function isNamespace(v: any): v is Namespace {
-  return namespaces.includes(v.toString())
+  return v && namespaces.includes(v.toString())
 }
 
 export function getNamespaceFromIndexName(
