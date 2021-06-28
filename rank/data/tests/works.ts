@@ -1,12 +1,13 @@
-import { Test } from '../../types/test'
 import { equalTo0, equalTo1 } from './pass'
+
+import { Test } from '../../types/test'
 import { filterCaseRatings } from './queryAugmentation'
 
 const tests: Test[] = [
   {
     id: 'precision',
     label: 'Precision',
-    description: 'TBD',
+    description: 'Ensure that the query brings back the works we expect at the top of the list',
     pass: equalTo1,
     cases: [
       { query: 'Cassils Time lapse', ratings: ['ftqy78zj'] },
@@ -49,7 +50,7 @@ const tests: Test[] = [
   {
     id: 'recall',
     label: 'Recall',
-    description: 'TBD',
+    description: 'Ensure that the query brings back the results we expect somewhere in the list',
     pass: equalTo1,
     cases: [
       {
@@ -68,14 +69,14 @@ const tests: Test[] = [
     metric: {
       recall: {
         relevant_rating_threshold: 3,
-        k: 5,
+        k: 100,
       },
     },
   },
   {
     id: 'alternative-spellings',
     label: 'Alternative spellings',
-    description: 'TBD',
+    description: 'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     pass: equalTo1,
     cases: [
       { query: 'at-tib', ratings: ['qmm9mauk'] },
@@ -102,7 +103,7 @@ const tests: Test[] = [
     id: 'false-positives',
     label: 'False positives',
     description:
-      "Due to fuzzy matching on alternative spellings, we need to ensure we aren't too fuzzy.",
+      "Ensure that the query doesn't return results which we know are irrelevant. Due to fuzzy matching on alternative spellings, we need to ensure we aren't too fuzzy.",
     pass: equalTo0,
     searchTemplateAugmentation: filterCaseRatings,
     cases: [
@@ -150,7 +151,7 @@ const tests: Test[] = [
     metric: {
       recall: {
         relevant_rating_threshold: 3,
-        k: 10,
+        k: 100,
       },
     },
   },

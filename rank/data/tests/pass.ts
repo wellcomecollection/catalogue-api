@@ -1,4 +1,4 @@
-import { RankDetail } from '../../services/elasticsearch'
+import { RankDetail } from '../../types/elasticsearch'
 
 type Pass = {
   score: number // should be a range between 0 => 1

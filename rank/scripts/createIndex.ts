@@ -1,6 +1,7 @@
-import { rankClient } from '../services/elasticsearch'
-import { namespaces } from '../types/namespace'
 import { error, info } from './utils'
+
+import { namespaces } from '../types/namespace'
+import { rankClient } from '../services/elasticsearch'
 
 async function go() {
   const [indexName] = process.argv.slice(2)

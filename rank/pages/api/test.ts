@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { badRequest, ok } from '../../responses'
-import { apiRes } from '../../services/api'
 import service, { decoder } from '../../services/test'
-import { Decoder } from '../../types/decoder'
+
+import { apiRes } from '../../services/api'
 
 export default async (
   req: NextApiRequest,

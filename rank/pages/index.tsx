@@ -32,8 +32,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   }
 }
 
-function scoreToEmoji(pass: boolean): string {
-  return pass ? '✅' : '❌'
+function passEmoji(pass: boolean): string {
+   switch(pass){
+    case null:  return '❓' 
+    case true: return '✅' 
+    case false: return '❌'
+  }
 }
 
 type ResultComponentProps = {
@@ -45,7 +49,7 @@ const ResultsComponent = ({ result }: ResultComponentProps) => {
   return (
     <div className="py-4 font-mono">
       <h2 className="text-2xl font-bold">
-        {scoreToEmoji(result.pass)} {result.label} in {result.namespace}
+        {passEmoji(result.pass)} {result.label} in {result.namespace}
       </h2>
 
       <h3 className="font-bold">Queries:</h3>
@@ -56,7 +60,7 @@ const ResultsComponent = ({ result }: ResultComponentProps) => {
             const searchURL = `https://wellcomecollection.org/${namespace}?query=${encodedQuery}`
             return (
               <li key={key} className="py-1">
-                {scoreToEmoji(result.pass)} <a href={searchURL}>{query}</a>{' '}
+                {passEmoji(result.pass)} <a href={searchURL}>{query}</a>{' '}
                 <p className="text-gray-500 text-sm">{description || null}</p>
               </li>
             )

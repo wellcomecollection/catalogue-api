@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { rankClient } from '../../services/elasticsearch'
-import { getSearchTemplates } from '../../services/search-templates'
+
+import { getRankClient } from '../../services/elasticsearch'
+import { getRemoteTemplates } from '../../services/search-templates'
 
 function getNamespace(indexName: string) {
   return indexName.replace('ccr--', '').split('-')[0]
@@ -30,8 +31,8 @@ export default async (
     return
   }
 
-  const searchTemplates = await getSearchTemplates('prod')
-  const { body: allIndices } = await rankClient.indices.get({ index: '_all' })
+  const searchTemplates = await getRemoteTemplates('prod')
+  const { body: allIndices } = await getRankClient().indices.get({ index: '_all' })
 
   const state: State[] = (
     await Promise.all(
@@ -41,7 +42,7 @@ export default async (
         // we're only working with works for now, but should extend to images
 
         console.info(`searching for ${ccrIndexName}`)
-        const { body: indexExists } = await rankClient.indices
+        const { body: indexExists } = await getRankClient().indices
           .exists({
             index: ccrIndexName,
           })
@@ -57,7 +58,7 @@ export default async (
 
         if (deleteIndices.length > 0) {
           console.info(`deleting ${deleteIndices}`)
-          await rankClient.indices
+          await getRankClient().indices
             .delete({
               index: deleteIndices,
             })
@@ -83,7 +84,7 @@ export default async (
           ]
         }
 
-        await rankClient.ccr.follow({
+        await getRankClient().ccr.follow({
           index: ccrIndexName,
           body: {
             remote_cluster: 'catalogue',

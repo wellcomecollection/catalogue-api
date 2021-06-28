@@ -1,8 +1,21 @@
 import { Env } from '../types/env'
 import { Namespace } from '../types/namespace'
-import listIndicesService from './list-indices'
+import { getRankClient } from './elasticsearch'
+
+export async function listIndices() {
+  const { body } = await getRankClient().cat.indices({ h: ['index'] })
+  const indices = body
+    .split('\n')
+    .filter(
+      (index: string) => !index.startsWith('.') && !index.startsWith('metrics')
+    )
+    .filter(Boolean)
+
+  return indices
+}
 
 export type SearchTemplateSource = { query: unknown }
+
 export type SearchTemplate = {
   id: string
   index: string
@@ -31,7 +44,7 @@ const endpoints = {
   prod: 'https://api.wellcomecollection.org/catalogue/v2/search-templates.json',
 }
 
-async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
+export async function getRemoteTemplates(env: Env): Promise<SearchTemplate[]> {
   const res = await fetch(endpoints[env])
   const json: ApiSearchTemplateRes = await res.json()
 
@@ -45,7 +58,8 @@ async function getSearchTemplates(env: Env): Promise<SearchTemplate[]> {
   }))
 }
 
-async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
+export async function getLocalTemplates(): Promise<SearchTemplate[]> {
+  const ids = await listIndices()
   const queriesReq = ids.map(async (id) => {
     const query = await import(`../data/queries/${id}.json`)
       .then((m) => m.default)
@@ -70,15 +84,13 @@ async function getLocalTemplates(ids: string[]): Promise<SearchTemplate[]> {
  * This service merges remote and local search templates.
  *
  * A local search template is available when there is an existing index
- * with a correspondiny query in `./data/queries/{index}.json`.
+ * with a corresponding query in `./data/queries/{index}.json`.
  */
-async function service(): Promise<SearchTemplate[]> {
-  const remoteTemplates = await getSearchTemplates('prod')
-  const indices = await listIndicesService()
-  const localTemplates = await getLocalTemplates(indices)
-
-  return localTemplates.concat(remoteTemplates)
+export async function getTemplates(): Promise<SearchTemplate[]> {
+  const remoteTemplates = await getRemoteTemplates('prod')
+  const localTemplates = await getLocalTemplates()
+  const templates = localTemplates.concat(remoteTemplates)
+  return templates
 }
 
-export default service
-export { getSearchTemplates }
+export default getTemplates

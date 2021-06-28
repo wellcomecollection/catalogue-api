@@ -1,6 +1,7 @@
-import { getSearchTemplates, SearchTemplate } from './services/search-templates'
-import tests from './data/tests'
+import { SearchTemplate, getLocalTemplates, getRemoteTemplates } from './services/search-templates'
+
 import { Test } from './types/test'
+import tests from './data/tests'
 
 type Rank = {
   id: string
@@ -14,7 +15,7 @@ const ranks: Rank[] = [
     id: 'works-prod',
     label: 'Works',
     searchTemplate: async () => {
-      const templates = await getSearchTemplates('prod')
+      const templates = await getRemoteTemplates('prod')
       return templates.find((template) => template.namespace === 'works')
     },
     tests: () => {
@@ -25,7 +26,29 @@ const ranks: Rank[] = [
     id: 'images-prod',
     label: 'Images',
     searchTemplate: async () => {
-      const templates = await getSearchTemplates('prod')
+      const templates = await getRemoteTemplates('prod')
+      return templates.find((template) => template.namespace === 'images')
+    },
+    tests: () => {
+      return tests.images
+    },
+  },
+  {
+    id: 'works-local',
+    label: 'Works',
+    searchTemplate: async () => {
+      const templates = await getLocalTemplates()
+      return templates.find((template) => template.namespace === 'works')
+    },
+    tests: () => {
+      return tests.works
+    },
+  },
+  {
+    id: 'images-local',
+    label: 'Images',
+    searchTemplate: async () => {
+      const templates = await getLocalTemplates()
       return templates.find((template) => template.namespace === 'images')
     },
     tests: () => {

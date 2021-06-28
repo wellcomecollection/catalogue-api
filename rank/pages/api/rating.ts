@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+
 import { ratingClient } from '../../services/elasticsearch'
 
 export type Rating = {

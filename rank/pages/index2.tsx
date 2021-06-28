@@ -1,19 +1,17 @@
-import { GetServerSideProps, NextPage } from 'next'
-import absoluteUrl from 'next-absolute-url'
 import { FC, useEffect, useState } from 'react'
+import { GetServerSideProps, NextPage } from 'next'
+import { SearchTemplate, getTemplates } from '../services/search-templates'
+import { Test, TestResult } from '../types/test'
+
+import absoluteUrl from 'next-absolute-url'
 import tests from '../data/tests'
-import service, { SearchTemplate } from '../services/search-templates'
-import { Env } from '../types/env'
-import { Namespace } from '../types/namespace'
-import { Test } from '../types/test'
-import { TestResult } from './api/eval'
 
 type Props = {
   searchTemplates: SearchTemplate[]
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const searchTemplates = await service()
+  const searchTemplates = await getTemplates()
   return {
     props: {
       searchTemplates,
@@ -67,10 +65,10 @@ const TestRun: FC<TestRunProps> = ({ test, template }) => {
 export const Index2: NextPage<Props> = ({ searchTemplates }) => {
   const worksTemplates = searchTemplates.filter((t) => t.namespace === 'works')
   const worksTests = tests.works
-  const imagesTemplates = searchTemplates.filter(
-    (t) => t.namespace === 'images'
-  )
-  const imagesTests = tests.images
+  // const imagesTemplates = searchTemplates.filter(
+  //   (t) => t.namespace === 'images'
+  // )
+  // const imagesTests = tests.images
 
   return (
     <>
