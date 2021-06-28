@@ -2,8 +2,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "env": "vercel env pull",
-    "link": "vercel link",
+    "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
     "devInit": "ts-node -r dotenv/config ./scripts/init",
     "devPublish": "ts-node -r dotenv/config ./scripts/publish",

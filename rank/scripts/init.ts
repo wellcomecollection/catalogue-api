@@ -1,23 +1,23 @@
-import { getRankClient } from '../services/elasticsearch-clients'
-import { getSearchTemplates } from '../services/search-templates'
-import fs from 'fs'
 import { info, p, pretty } from './utils'
+
+import fs from 'fs'
+import { getRemoteTemplates } from '../services/search-templates'
+import { rankClient } from '../services/elasticsearch'
 
 global.fetch = require('node-fetch')
 
 async function go() {
   info('fetching search templates')
-  const templates = await getSearchTemplates('prod')
-  const client = getRankClient()
+  const templates = await getRemoteTemplates('prod')
   const indices = templates.map((template) => template.index)
 
   info(`getting settings for ${indices}`)
-  const settingsReq = client.indices.getSettings({
+  const settingsReq = rankClient.indices.getSettings({
     index: indices,
   })
 
   info(`getting mappings for ${indices}`)
-  const mappingsReq = client.indices.getMapping({
+  const mappingsReq = rankClient.indices.getMapping({
     index: indices,
   })
 

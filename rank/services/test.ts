@@ -1,23 +1,19 @@
-import tests from '../data/tests'
-import { Namespace } from '../types/namespace'
-import { RankEvalResponse } from './elasticsearch'
-import { asRankEvalRequestBody } from '../types/test'
-import { TestResult } from '../pages/api/eval'
-import { ParsedUrlQuery } from 'querystring'
-import { decodeNamespace, Decoder, decodeString } from '../types/decoder'
-import { getRankClient } from './elasticsearch-clients'
-import { Env, isEnv } from '../types/env'
-import searchTemplatesService from './search-templates'
-import { addListener } from 'process'
+import { TestCase, TestResult } from '../types/test'
+import { decodeEnv, decodeNamespace, decodeString } from './decoder'
 
-type EnvIndex = {
-  env: Env
-  id: string
-}
+import { Decoder } from '../types/decoder'
+import { Env } from '../types/env'
+import { Namespace } from '../types/namespace'
+import { ParsedUrlQuery } from 'querystring'
+import { RankEvalResponse } from '../types/elasticsearch'
+import { getRankClient } from './elasticsearch'
+import getTemplates from './search-templates'
+import tests from '../data/tests'
 
 type Props = {
   testId: string
-  index: EnvIndex
+  env: Env
+  index: string
   namespace: Namespace
 }
 
@@ -29,26 +25,48 @@ type Props = {
 async function service({
   namespace,
   testId,
+  env,
   index,
 }: Props): Promise<TestResult> {
   const test = tests[namespace].find((test) => test.id === testId)
   if (!test) throw Error(`No such test ${testId}`)
 
-  const templates = await searchTemplatesService()
+  const templates = await getTemplates()
   const template = templates.find(
-    (template) => template.id === index.id && template.env === index.env
+    (template) => template.id === index && template.env === env
   )
+  const { cases, metric, searchTemplateAugmentation } = test
 
-  const reqBody = asRankEvalRequestBody(
-    test,
-    template.id,
-    template.source,
-    index.id
-  )
+  const searchTemplate = searchTemplateAugmentation
+    ? searchTemplateAugmentation(test, { ...template.source })
+    : { ...template.source }
+
+  const requests = cases.map((testCase: TestCase) => {
+    return {
+      id: testCase.query,
+      template_id: template.id,
+      params: {
+        query: testCase.query,
+      },
+      ratings: testCase.ratings.map((id) => {
+        return {
+          _id: id,
+          _index: index.id,
+          rating: 3,
+        }
+      }),
+    }
+  })
+
+  const reqBody = {
+    requests,
+    metric,
+    templates: [{ id: template.id, template: { inline: searchTemplate } }],
+  }
 
   const { body: rankEvalRes } =
     await getRankClient().rankEval<RankEvalResponse>({
-      index: index.id,
+      index,
       body: reqBody,
     })
 
@@ -61,6 +79,8 @@ async function service({
   })
 
   return {
+    index,
+    env,
     label: test.label,
     description: test.description,
     namespace: template.namespace,
@@ -69,23 +89,10 @@ async function service({
   }
 }
 
-const decodeEnvIndex = (q: ParsedUrlQuery) => {
-  if (!q.index) throw new Error('Missing value for queryId')
-  const val = q.index.toString()
-  const [env, id] = val.split(':')
-
-  if (!env || !id) throw new Error(`${val} is not a valid EnvIndex`)
-  if (!isEnv(env)) throw new Error(`${env} is not a valid Env`)
-
-  return {
-    env,
-    id,
-  }
-}
-
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   testId: decodeString(q, 'testId'),
-  index: decodeEnvIndex(q),
+  index: decodeString(q, 'index'),
+  env: decodeEnv(q.env),
   namespace: decodeNamespace(q.namespace),
 })
 

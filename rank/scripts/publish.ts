@@ -1,7 +1,6 @@
-import { getRankClient } from '../services/elasticsearch-clients'
-import { getSearchTemplates } from '../services/search-templates'
+import { error, p, pretty } from './utils'
+
 import fs from 'fs'
-import { error, info, p, pretty } from './utils'
 
 global.fetch = require('node-fetch')
 

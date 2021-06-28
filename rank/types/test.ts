@@ -1,5 +1,7 @@
-import { PassFn } from '../data/tests/pass'
-import { Metric } from '../services/elasticsearch'
+import { Pass, PassFn } from '../data/tests/pass'
+
+import { Env } from './env'
+import { Metric } from './elasticsearch'
 import { SearchTemplateSource } from '../services/search-templates'
 
 export type TestCase = {
@@ -21,42 +23,17 @@ export type Test = {
   ) => SearchTemplateSource
 }
 
-function asRankEvalRequestBody(
-  test: Test,
-  queryId: string,
-  query: SearchTemplateSource,
+
+export type TestResult = {
   index: string
-) {
-  const { cases, metric, searchTemplateAugmentation } = test
-
-  const searchTemplate = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, { ...query })
-    : { ...query }
-
-  const requests = cases.map((testCase: TestCase) => {
-    return {
-      id: testCase.query,
-      template_id: queryId,
-      params: {
-        query: testCase.query,
-      },
-      ratings: testCase.ratings.map((id) => {
-        return {
-          _id: id,
-          _index: index,
-          rating: 3,
-        }
-      }),
-    }
-  })
-
-  const body = {
-    requests,
-    metric,
-    templates: [{ id: queryId, template: { inline: searchTemplate } }],
-  }
-
-  return body
+  env: Env
+  label: string
+  description: string
+  pass: boolean
+  namespace: string
+  results: {
+    query: string
+    description?: string
+    result: Pass
+  }[]
 }
-
-export { asRankEvalRequestBody }

@@ -2,16 +2,16 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import {
   RankEvalRequestRequest,
   RankEvalResponse,
-  rankClient,
-} from '../../services/elasticsearch'
+} from '../../types/elasticsearch'
 import {
   SearchTemplate,
-  getSearchTemplates,
+  getRemoteTemplates,
 } from '../../services/search-templates'
-import { Pass } from '../../data/tests/pass'
-import tests from '../../data/tests'
+import { Test, TestCase, TestResult } from '../../types/test'
+
 import { Env } from '../../types/env'
-import { Test, TestCase } from '../../types/test'
+import { getRankClient } from '../../services/elasticsearch'
+import tests from '../../data/tests'
 
 function casesToRankEvalRequest(
   cases: TestCase[],
@@ -52,24 +52,13 @@ export function rankEvalRequest(
     templates: [{ id, template: { source: searchTemplate } }],
   }
 
-  const req = rankClient
+  const req = getRankClient()
     .rankEval<RankEvalResponse>({ index, body })
     .then((res) => res.body)
 
   return req
 }
 
-export type TestResult = {
-  label: string
-  description: string
-  pass: boolean
-  namespace: string
-  results: {
-    query: string
-    description?: string
-    result: Pass
-  }[]
-}
 
 export function runTests(
   tests: Test[],
@@ -85,6 +74,8 @@ export function runTests(
         }
       })
       return {
+        env: template.env, 
+        index: template.id,
         label: test.label,
         description: test.description,
         namespace: template.namespace,
@@ -106,7 +97,7 @@ export default async (
   res: NextApiResponse
 ): Promise<void> => {
   const env = req.query.env ? req.query.env : 'prod'
-  const searchTemplates = await getSearchTemplates(env as Env)
+  const searchTemplates = await getRemoteTemplates(env as Env)
 
   // We run multiple tests with different metrics against different indexes
   // see: https://github.com/elastic/elasticsearch/issues/51680
