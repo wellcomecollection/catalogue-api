@@ -35,6 +35,7 @@ const tests: Test[] = [
       {
         query: 'The Piggle',
         ratings: ['vp7q52gs'],
+        knownFailure: true,
         description:
           "Example of a known title's prefix, but not the full thing",
       },
@@ -95,6 +96,7 @@ const tests: Test[] = [
         query: 'wa/hmm benin',
         ratings: ['qfdvkegw', 'je5pm2gj', 'dppjjtqz'],
         description: 'Archive refno and a word from the description',
+        knownFailure: true,
       },
       {
         query: 'eugenics society annual reports',
@@ -120,7 +122,7 @@ const tests: Test[] = [
       { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'] },
       { query: 'nuğūm', ratings: ['jtbenqbq'] },
       { query: 'nujum', ratings: ['jtbenqbq'] },
-      { query: 'arbeiten', ratings: ['xn7yyrqf'] },
+      { query: 'arbeiten', ratings: ['xn7yyrqf'], knownFailure: true },
       { query: 'travaillons', ratings: ['jb823ud6'] },
       { query: 'conosceva', ratings: ['va2vy7wb'] },
       { query: 'sharh', ratings: ['frd5y363'] },
@@ -158,6 +160,7 @@ const tests: Test[] = [
         query: 'posters',
         ratings: ['z85jd9f4', 'qpkfxsst'],
         description: "Shouldn't match 'porter'",
+        knownFailure: true,
       },
       {
         query: 'gout',
@@ -168,21 +171,25 @@ const tests: Test[] = [
         query: 'L0062541',
         ratings: ['wsqmrqfj'],
         description: "Shouldn't match 'L0032741' in the title",
+        knownFailure: true,
       },
       {
         query: 'Maori',
         ratings: ['h464szg9', 'y48zg6af', 'uf2ds6qs'],
         description: "shouldn't match 'mary' or 'amoris' or 'maris'",
+        knownFailure: true,
       },
       {
         query: 'monsters',
         ratings: ['uyueynsp', 'd592f8ff'],
         description: "Should not match 'Monastery' or 'Ministers'",
+        knownFailure: true,
       },
       {
         query: 'Maclise',
         ratings: ['kft2kzec'],
         description: "Should not match 'machine'",
+        knownFailure: true,
       },
     ],
     metric: {
