@@ -199,8 +199,7 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(
-      id: SierraItemNumber): Option[AccessCondition] = {
+    def getAccessCondition(id: SierraItemNumber): Option[AccessCondition] = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
