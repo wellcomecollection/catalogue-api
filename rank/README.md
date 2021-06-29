@@ -20,25 +20,23 @@ Rank uses [elasticsearch's `rank_eval` API](https://www.elastic.co/guide/en/elas
 
 After a clean install and run, you will be able to see how our prod query is doing.
 
-To start working on some improvements:
+To start working on some query improvements:
 
-- `yarn devInit --name {name:=candidate}` will copy prod search templates to `./data/search-templates/`
-- Edit `/data/search-templates/{namespace}-{name}`. This tests results will be available on the index page
-- `yarn publishQuery {namespace}-{name}` publishes the JSON to the scala app in [`/search/src/test/resources/`](/search/src/test/resources/)
-- Go to [`SearchQueryJsonTest.scala`](/search/src/test/scala/uk/ac/wellcome/platform/api/search/elasticsearch/SearchQueryJsonTest.scala), and update the relevant scala query to match the newly updated JSON
+- For works edit [`WorksMultiMatcherQuery.json`](/search/src/test/resources/WorksMultiMatcherQuery.json)
+- For images edit [`ImagesMultiMatcherQuery.json`](/search/src/test/resources/ImagesMultiMatcherQuery.json)
+
+Results will show up on the homepage.
 
 ### Developing the mappings
 
 If we new mappings, we'll need a new index.
 
-When running the `yarn devInit --name {name:=candidate}` script, you will be asked a if you need new mappings.
-If so:
+- `yarn getIndexConfigs --name {name:=candidate}` will dump the index config into [`./data/indices/{namespace}-{name}`](./data/indices/)
+- Edit [`./data/indices/{namespace}-{index}.json`](./data/indices/)
+- `yarn putIndexConfig --name {namespace}-{name} --reindex` will craete the new index with the mappings, and start a reindex
 
-- A new mappings file will be copied from the original index into `/data/indices/{namespace}-{name}`
-- Edit `/data/indices/{namespace}-{index}`
-- `yarn createIndex --from {namespace}-{name} --reindex` will craete the new index with the mappings, and start a reindex
-
-[Mappings are currently in the catalogue pipeline repo](catalogue-pipeline-mappings) - so you'll need to copy the JSON there,
-and get [the tests](https://github.com/wellcomecollection/catalogue-pipeline/blob/main/common/internal_model/src/test/scala/weco/catalogue/internal_model/index/SearchIndexConfigJsonTest.scala) to pass.
+[Mappings are currently in the catalogue pipeline repo](catalogue-pipeline-mappings) - so you'll need to copy the JSON there, and get [the tests](search-tests) to pass.
 
 [catalogue-pipeline-mappings]: https://github.com/wellcomecollection/catalogue-pipeline/tree/main/common/internal_model/src/test/resources
+
+[search-tests]: https://github.com/wellcomecollection/catalogue-pipeline/blob/main/common/internal_model/src/test/scala/weco/catalogue/internal_model/index/SearchIndexConfigJsonTest.scala
