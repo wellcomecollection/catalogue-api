@@ -10,12 +10,12 @@ provider "aws" {
   }
 
   default_tags {
-     tags = {
-       TerraformConfigurationURL = "https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/terraform"
-       Environment               = "Production"
-       Department                = "Digital Platform"
-       Division                  = "Culture and Society"
-       Use                       = "Catalogue Snapshots"
-     }
-   }
+    tags = {
+      TerraformConfigurationURL = "https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/terraform"
+      Environment               = "Production"
+      Department                = "Digital Platform"
+      Division                  = "Culture and Society"
+      Use                       = "Catalogue Snapshots"
+    }
+  }
 }

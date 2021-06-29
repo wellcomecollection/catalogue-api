@@ -33,11 +33,19 @@ def get_api_es_url(session):
     """
     secrets = session.client("secretsmanager")
 
-    host = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/public_host")
+    host = get_secret_string(
+        secrets, secret_id="elasticsearch/catalogue_api/public_host"
+    )
     port = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/port")
-    protocol = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/protocol")
-    username = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/search/username")
-    password = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/search/password")
+    protocol = get_secret_string(
+        secrets, secret_id="elasticsearch/catalogue_api/protocol"
+    )
+    username = get_secret_string(
+        secrets, secret_id="elasticsearch/catalogue_api/search/username"
+    )
+    password = get_secret_string(
+        secrets, secret_id="elasticsearch/catalogue_api/search/password"
+    )
 
     return f"{protocol}://{username}:{password}@{host}:{port}"
 
