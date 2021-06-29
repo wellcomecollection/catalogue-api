@@ -24,6 +24,12 @@ To start working on some query improvements:
 
 - For works edit [`WorksMultiMatcherQuery.json`](/search/src/test/resources/WorksMultiMatcherQuery.json)
 - For images edit [`ImagesMultiMatcherQuery.json`](/search/src/test/resources/ImagesMultiMatcherQuery.json)
+- Check homepage for results
+- Edit [images](images-scala-file) or [works](works-scala-file) scala files to get [the tests](scala-tests) to pass
+
+[works-scala-file]: /search/src/main/scala/weco/api/search/elasticsearch/WorksMultiMatcher.scala
+[images-scala-file]: /search/src/test/scala/weco/api/search/images/ImagesSimilarityTest.scala
+[scala-tests]: /search/src/test/scala/weco/api/search/elasticsearch/SearchQueryJsonTest.scala
 
 Results will show up on the homepage.
 
