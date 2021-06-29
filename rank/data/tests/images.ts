@@ -117,26 +117,31 @@ const tests: Test[] = [
         query: 'monsters',
         ratings: ['n7r5s65w'],
         description: "shouldn't match 'Monastery'",
+        knownFailure: true,
       },
       {
         query: 'maori',
         ratings: ['fgksh2cc', 'tqk8vfq2'],
         description: "shouldn't match 'mary' or 'mori'",
+        knownFailure: true,
       },
       {
         query: 'Deptford',
         ratings: ['c5zv5zqh', 'eq4pvgmu'],
         description: "shouldn't match 'dartford' or 'hertford'",
+        knownFailure: true,
       },
       {
         query: 'Maclise',
         ratings: ['sxbgjm4y'],
         description: "shouldn't match 'machine'",
+        knownFailure: true,
       },
       {
         query: 'machine',
         ratings: ['uyym87vg', 'hpjx2g82'],
         description: "shouldn't match 'martin' or 'vaccine'",
+        knownFailure: true,
       },
       {
         query: 'asylum',
@@ -163,7 +168,10 @@ const tests: Test[] = [
           'cfwn8qpp',
           'emfaj7a7',
         ],
-      }, // shouldn't match Macao, Aaron, matron, Martinez, Macon, Arago,
+        description:
+          "shouldn't match Macao, Aaron, matron, Martinez, Macon, Arago",
+        knownFailure: true,
+      },
     ],
     metric: {
       recall: {

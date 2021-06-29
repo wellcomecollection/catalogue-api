@@ -9,6 +9,7 @@ import { RankEvalResponse } from '../types/elasticsearch'
 import { getRankClient } from './elasticsearch'
 import getTemplates from './search-templates'
 import tests from '../data/tests'
+import test from '../pages/api/test'
 
 type Props = {
   testId: string
@@ -71,9 +72,11 @@ async function service({
     })
 
   const results = Object.entries(rankEvalRes.details).map(([query, detail]) => {
+    const testCase = test.cases.find((c) => c.query === query)
     return {
       query,
-      description: test.cases.find((c) => c.query === query)?.description,
+      description: testCase?.description,
+      knownFailure: testCase?.knownFailure,
       result: test.eval(detail),
     }
   })

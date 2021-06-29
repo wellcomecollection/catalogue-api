@@ -8,6 +8,7 @@ export type TestCase = {
   query: string
   ratings: string[]
   description?: string
+  knownFailure?: true
 }
 
 export type Test = {
@@ -33,6 +34,7 @@ export type TestResult = {
   results: {
     query: string
     description?: string
+    knownFailure?: true
     result: Pass
   }[]
 }
