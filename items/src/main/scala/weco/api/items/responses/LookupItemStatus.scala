@@ -2,55 +2,58 @@ package weco.api.items.responses
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import weco.api.stacks.models.display.DisplayStacksWork
 import weco.api.search.rest.SingleWorkDirectives
-import weco.api.stacks.models.{StacksItem, StacksWork}
 import weco.api.stacks.services.{SierraService, WorkLookup}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  IdentifierType
-}
+import weco.catalogue.display_model.models.DisplayItem
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType, SourceIdentifier}
+import weco.catalogue.internal_model.locations.PhysicalLocation
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.Future
+
+case class DisplayItemResponse(items: Seq[DisplayItem])
 
 trait LookupItemStatus extends SingleWorkDirectives {
   val workLookup: WorkLookup
   val sierraService: SierraService
   val index: Index
 
+  private def isSierraId(sourceIdentifier: SourceIdentifier) =
+    sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
+
   def lookupStatus(workId: CanonicalId): Future[Route] =
     workLookup
       .byCanonicalId(workId)(index)
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
-        val items =
-          work.data.items
-            .collect {
-              case Item(
-                  IdState.Identified(canonicalId, sourceIdentifier, _),
-                  _,
-                  _,
-                  _)
-                  if sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber =>
-                (canonicalId, sourceIdentifier)
-            }
+
+        val futureItems = work.data.items.map {
+          case item@Item(IdState.Identified(_, srcId, _), _, _, _) if isSierraId(srcId) =>
+            sierraService
+              .getAccessCondition(srcId)
+              .map {
+                case Right(accessConditionOption) => {
+                  val locations = item.locations.map {
+                    case physicalLocation: PhysicalLocation => physicalLocation.copy(
+                      accessConditions = accessConditionOption.toList)
+                    case location => location
+                  }
+
+                  item.copy(locations = locations)
+                }
+                case Left(err) => {
+                  error(msg = f"Couldn't refresh item: ${item.id} got error ${err}")
+
+                  item
+                }
+              }
+          case item => Future(item)
+        }
 
         for {
-          stacksItems <- Future.sequence(
-            items.map {
-              case (canonicalId, sourceIdentifier) =>
-                sierraService
-                  .getItemStatus(sourceIdentifier)
-                  .map { result =>
-                    StacksItem(canonicalId, sourceIdentifier, result.right.get)
-                  }
-            }
-          )
+          items <- Future.sequence(futureItems)
+          displayItems = items.map(item => DisplayItem(item, true))
+          displayItemResponse = DisplayItemResponse(displayItems)
 
-          stacksWork = StacksWork(workId, stacksItems)
-
-          displayWork = DisplayStacksWork(stacksWork)
-        } yield complete(displayWork)
+        } yield complete(displayItemResponse)
       }
 }
