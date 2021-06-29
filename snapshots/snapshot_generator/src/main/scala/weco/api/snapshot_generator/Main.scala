@@ -6,7 +6,10 @@ import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
 import weco.api.snapshot_generator.config.builders.SnapshotGeneratorElasticClientBuilder
 import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
-import weco.api.snapshot_generator.services.{SnapshotGeneratorWorkerService, SnapshotService}
+import weco.api.snapshot_generator.services.{
+  SnapshotGeneratorWorkerService,
+  SnapshotService
+}
 import weco.catalogue.display_model.ElasticConfig
 import weco.messaging.sns.NotificationMessage
 import weco.messaging.typesafe.{SNSBuilder, SQSBuilder}
