@@ -4,21 +4,25 @@ import { Decoder } from '../types/decoder'
 import { ParsedUrlQuery } from 'querystring'
 import { RankEvalResponse } from '../types/elasticsearch'
 import { getRankClient } from './elasticsearch'
-import getTemplates from './search-templates'
+import getTemplates, { Props as SearchTemplateProps } from './search-templates'
 import tests from '../data/tests'
 
 type Props = {
   testId: string
   templateId: string
-}
+} & SearchTemplateProps
 
 /**
  * This service takes fetches a test from a `namespace`
  * looks up the query from our local or remote search-templates
  * and generates results from a rank_eval requst
  */
-async function service({ templateId, testId }: Props): Promise<TestResult> {
-  const templates = await getTemplates()
+async function service({
+  templateId,
+  testId,
+  ...templateProps
+}: Props): Promise<TestResult> {
+  const templates = await getTemplates(templateProps)
   const template = templates.find((template) => template.id === templateId)
   const test = tests[template.namespace].find((test) => test.id === testId)
 
@@ -83,6 +87,8 @@ async function service({ templateId, testId }: Props): Promise<TestResult> {
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   testId: decodeString(q, 'testId'),
   templateId: decodeString(q, 'templateId'),
+  worksIndex: q.worksIndex ? decodeString(q, 'worksIndex') : undefined,
+  imagesIndex: q.imagesIndex ? decodeString(q, 'imagesIndex') : undefined,
 })
 
 export default service

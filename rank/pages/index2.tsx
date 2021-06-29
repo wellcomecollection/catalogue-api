@@ -8,28 +8,50 @@ import tests from '../data/tests'
 
 type Props = {
   searchTemplates: SearchTemplate[]
+  worksIndex?: string
+  imagesIndex?: string
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const searchTemplates = await getTemplates()
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  query,
+}) => {
+  const { worksIndex, imagesIndex } = query
+  const w = worksIndex ? worksIndex.toString() : undefined
+  const i = imagesIndex ? imagesIndex.toString() : undefined
+
+  const searchTemplates = await getTemplates({
+    worksIndex: w,
+    imagesIndex: i,
+  })
   return {
-    props: {
-      searchTemplates,
-    },
+    props: JSON.parse(
+      JSON.stringify({
+        searchTemplates,
+        worksIndex: w,
+        imagesIndex: i,
+      })
+    ),
   }
 }
 
 type TestRunProps = {
   test: Test
   template: SearchTemplate
+  worksIndex?: string
+  imagesIndex?: string
 }
-const TestRun: FC<TestRunProps> = ({ test, template }) => {
+const TestRun: FC<TestRunProps> = ({
+  test,
+  template,
+  worksIndex,
+  imagesIndex,
+}) => {
   const [testResult, setTestResult] = useState<TestResult>()
   useEffect(() => {
     const fetchData = async () => {
       const { origin } = absoluteUrl()
       const data: TestResult = await fetch(
-        `${origin}/api/test?testId=${test.id}&templateId=${template.id}`
+        `${origin}/api/test?testId=${test.id}&templateId=${template.id}&worksIndex=${worksIndex}&imagesIndex=${imagesIndex}`
       ).then((res) => res.json())
 
       setTestResult(data)
@@ -60,7 +82,11 @@ const TestRun: FC<TestRunProps> = ({ test, template }) => {
   )
 }
 
-export const Index2: NextPage<Props> = ({ searchTemplates }) => {
+export const Index2: NextPage<Props> = ({
+  searchTemplates,
+  worksIndex,
+  imagesIndex,
+}) => {
   const worksTemplates = searchTemplates.filter((t) => t.namespace === 'works')
   const worksTests = tests.works
   // const imagesTemplates = searchTemplates.filter(
@@ -78,7 +104,7 @@ export const Index2: NextPage<Props> = ({ searchTemplates }) => {
               return (
                 <TestRun
                   key={`works-${test.id}-${template.env}-${template.index}`}
-                  {...{ test, template }}
+                  {...{ test, template, worksIndex, imagesIndex }}
                 />
               )
             })}

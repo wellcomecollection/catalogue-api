@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "next build",
+    "build": "ts-node ./scripts/build && next build",
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
