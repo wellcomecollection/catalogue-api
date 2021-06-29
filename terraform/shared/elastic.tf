@@ -25,6 +25,13 @@ resource "ec_deployment" "catalogue_api" {
     }
   }
 
+  # The catalogue-api cluster gets the pipeline-storage clusters added
+  # as remote clusters dynamically.  We don't want these to be rolled
+  # back when we change the Terraform, so ignore any changes here.
+  lifecycle {
+    ignore_changes = [elasticsearch[0].remote_cluster]
+  }
+
   kibana {
     topology {
       zone_count = 1
