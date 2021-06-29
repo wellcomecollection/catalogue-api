@@ -5,7 +5,7 @@
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
     "devInit": "ts-node -r dotenv/config ./scripts/init",
-    "devPublish": "ts-node -r dotenv/config ./scripts/publish",
+    "publishQuery": "ts-node -r dotenv/config ./scripts/publishQuery",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
     "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
