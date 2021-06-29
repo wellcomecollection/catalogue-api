@@ -16,7 +16,7 @@ object ElasticConfig {
 
   def apply(): ElasticConfig =
     ElasticConfig(
-      worksIndex = Index(s"works-$indexDate"),
-      imagesIndex = Index(s"images-$indexDate")
+      worksIndex = Index(s"works-indexed-$indexDate"),
+      imagesIndex = Index(s"images-indexed-$indexDate")
     )
 }
