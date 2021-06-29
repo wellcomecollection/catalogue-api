@@ -49,19 +49,10 @@ async function go(args: typeof argv) {
     info(`Writing index config to ./data/indices/${filename}`)
     fs.writeFileSync(p([`../data/indices/${filename}`]), pretty(indexConfig))
 
-    // Override the previous templates with new indices
-    fs.writeFileSync(
-      p([`../data/search-templates/${filename}`]),
-      pretty({
-        ...template,
-        index,
-      })
-    )
-
     // We could have a prompt here to create and start the reindex,
     // but more often than not, you're going to want to change the mappings first
     success(
-      `New config files created. Edit the mappings in ./data/indices/${filename}, and then run \n`
+      `New config files created. Edit the mappings in ./data/indices/${filename}, then run \n`
     )
     code(`  yarn createIndex --from ${index} --reindex \n`)
   }
