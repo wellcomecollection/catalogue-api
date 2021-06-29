@@ -47,7 +47,7 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
           works
             .flatMap { _.data.items }
             .collectFirst {
-              case item @ Item(IdState.Identified(id, _, _), _, _)
+              case item @ Item(IdState.Identified(id, _, _), _, _, _)
                   if id == itemId =>
                 // This .asInstanceOf[] is a no-op to help the compiler see what
                 // we can see by reading the code.
@@ -85,7 +85,7 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
           works
             .flatMap { _.data.items }
             .collectFirst {
-              case item @ Item(id @ IdState.Identified(_, _, _), _, _)
+              case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
                   if id.sourceIdentifier == sourceIdentifier =>
                 // This .asInstanceOf[] is a no-op to help the compiler see what
                 // we can see by reading the code.
