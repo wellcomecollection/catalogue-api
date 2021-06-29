@@ -108,6 +108,7 @@ object ExternalDependencies {
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val akka = "2.6.14"
     val akkaHttp = "10.1.11"
+    val aws2 = "2.11.14"
   }
 
   val circeOpticsDependencies = Seq(
@@ -127,6 +128,11 @@ object ExternalDependencies {
     "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
   )
+
+  val secretsDependencies = Seq(
+    "software.amazon.awssdk" % "secretsmanager" % versions.aws2
+  )
+
 }
 
 object CatalogueDependencies {
@@ -157,5 +163,6 @@ object CatalogueDependencies {
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary
+      WellcomeDependencies.typesafeLibrary ++
+      ExternalDependencies.secretsDependencies
 }
