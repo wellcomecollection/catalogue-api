@@ -8,4 +8,14 @@ provider "aws" {
   ignore_tags {
     keys = ["deployment:label"]
   }
+
+  default_tags {
+    tags = {
+      TerraformConfigurationURL = "https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/terraform"
+      Environment               = "Production"
+      Department                = "Digital Platform"
+      Division                  = "Culture and Society"
+      Use                       = "Catalogue Snapshots"
+    }
+  }
 }
