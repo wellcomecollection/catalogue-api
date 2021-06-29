@@ -14,14 +14,6 @@ module "snapshot_generator" {
   cpu    = 4096
   memory = 8192
 
-  secret_env_vars = {
-    es_host     = "elasticsearch/catalogue/private_host"
-    es_port     = "catalogue/api/es_port"
-    es_protocol = "catalogue/api/es_protocol"
-    es_username = "catalogue/api/es_username"
-    es_password = "catalogue/api/es_password"
-  }
-
   subnets = var.subnets
 
   cluster_name = var.cluster_name
