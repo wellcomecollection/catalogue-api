@@ -57,7 +57,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -71,7 +71,8 @@ class SierraServiceTest
           val future = service.getAccessCondition(identifier)
 
           whenReady(future) {
-            _.value shouldBe Some(AccessCondition(OnlineRequest,None,None,None,None))
+            _.value shouldBe Some(
+              AccessCondition(OnlineRequest, None, None, None, None))
           }
         }
       }
