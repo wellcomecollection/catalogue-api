@@ -1,4 +1,4 @@
-// We do this as the way most of te next documentation is set for the API routes
+// We do this as the way most of the next documentation is set for the API routes
 // is export default () => {}
 {
   "rules": {

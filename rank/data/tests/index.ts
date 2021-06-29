@@ -1,7 +1,8 @@
-import works from './works'
 import images from './images'
+import works from './works'
 
-export default {
+const tests = {
   works,
   images,
 }
+export default tests

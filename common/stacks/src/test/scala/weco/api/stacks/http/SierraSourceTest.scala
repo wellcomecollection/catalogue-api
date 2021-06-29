@@ -5,8 +5,8 @@ import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import uk.ac.wellcome.akka.fixtures.Akka
-import uk.ac.wellcome.fixtures.TestWith
+import weco.akka.fixtures.Akka
+import weco.fixtures.TestWith
 import weco.api.stacks.models.{
   SierraErrorCode,
   SierraHold,

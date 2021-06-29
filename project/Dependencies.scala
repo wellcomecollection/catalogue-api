@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "26.19.1" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "28.0.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "4307.1402c7563448041182b081834fe9ed862bafea56"
+    val internalModel = "4622.50254173899be5d706d6af7bac15989254cd823f"
   }
 
   val internalModel: Seq[ModuleID] = library(
@@ -92,8 +92,8 @@ object WellcomeDependencies {
   )
 
   private def library(name: String, version: String): Seq[ModuleID] = Seq(
-    "uk.ac.wellcome" %% name % version,
-    "uk.ac.wellcome" %% name % version % "test" classifier "tests"
+    "weco" %% name % version,
+    "weco" %% name % version % "test" classifier "tests"
   )
 }
 
@@ -108,6 +108,7 @@ object ExternalDependencies {
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val akka = "2.6.14"
     val akkaHttp = "10.1.11"
+    val aws2 = "2.11.14"
   }
 
   val circeOpticsDependencies = Seq(
@@ -127,6 +128,11 @@ object ExternalDependencies {
     "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
   )
+
+  val secretsDependencies = Seq(
+    "software.amazon.awssdk" % "secretsmanager" % versions.aws2
+  )
+
 }
 
 object CatalogueDependencies {
@@ -157,5 +163,6 @@ object CatalogueDependencies {
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary
+      WellcomeDependencies.typesafeLibrary ++
+      ExternalDependencies.secretsDependencies
 }

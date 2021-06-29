@@ -60,6 +60,7 @@ steps:
   - label: trigger prod deploy
     branches: "main"
     trigger: "catalogue-api-deploy-prod"
+    async: true
     build:
       message: "${BUILDKITE_MESSAGE}"
       commit: "${BUILDKITE_COMMIT}"

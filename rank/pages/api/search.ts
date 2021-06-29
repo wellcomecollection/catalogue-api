@@ -1,35 +1,32 @@
+import { Namespace, namespaces } from '../../types/namespace'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { SearchResponse, rankClient } from '../../services/elasticsearch'
-import { TestResult, runTests } from './eval'
+
+import { SearchResponse } from '../../types/elasticsearch'
+import { TestResult } from '../../types/test'
+import { getRankClient } from '../../services/elasticsearch'
 import ranks from '../../ranks'
-import { Namespace } from '../../types/namespace'
+import { runTests } from './eval'
 
 export type ApiResponse = SearchResponse & {
   results: TestResult[]
 }
 
-export type ApiRequest = {
-  query?: string
-  useTestQuery?: 'true' | 'false'
-  namespace?: Namespace
-}
-
-type Q = NextApiRequest['query']
-const decoder = (q: Q) => ({
-  query: q.query ? q.query.toString() : undefined,
-  rankId: q.rankId ? q.rankId.toString() : 'works-prod',
+const decoder = (req: NextApiRequest) => ({
+  query: req.query.query ? req.query.query.toString() : undefined,
+  namespace: req.query.namespace ? req.query.namespace : 'works',
+  env: req.query.env ? req.query.env : 'prod',
 })
 
 export default async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  const { query, rankId } = decoder(req.query)
-  const rank = ranks.find((r) => r.id === rankId)
+  const { query, namespace, env } = decoder(req)
+  const rank = ranks.find((r) => r.id === `${namespace}-${env}`)
   const template = await rank.searchTemplate()
   const tests = rank.tests()
   const resultsReq = runTests(tests, template)
-  const searchReq = rankClient
+  const searchReq = getRankClient()
     .searchTemplate<SearchResponse>({
       index: template.index,
       body: {
@@ -38,12 +35,13 @@ export default async (
           ...template.source,
           track_total_hits: true,
           highlight: {
-            pre_tags: ['<em class="bg-yellow-200">'],
-            post_tags: ['</em>'],
+            pre_tags: ['<span class="bg-yellow-200">'],
+            post_tags: ['</span>'],
             fields: { '*': { number_of_fragments: 0 } },
           },
         },
-        params: { query },
+        params: { query, size: 100 },
+        
       },
     })
     .then((res) => res.body)

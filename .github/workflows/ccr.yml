@@ -1,14 +1,14 @@
-name: Manage CCR everyday at 8am
-on:
-  schedule:
-    - cron: '0 8 * * *'
-jobs:
-  hit-ccr-endpoint:
-    name: Hit CCR endpoint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Manage CCR
-        run: |
-          curl --request POST \
-          --url 'https://rank.wellcomecollection.org/api/ccr' \
-          --header 'Authorization: Bearer ${{ secrets.CCR_MANAGE_API_KEY }}'
+# name: Manage CCR everyday at 8am
+# on:
+#   schedule:
+#     - cron: '0 8 * * *'
+# jobs:
+#   hit-ccr-endpoint:
+#     name: Hit CCR endpoint
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Manage CCR
+#         run: |
+#           curl --request POST \
+#           --url 'https://rank.wellcomecollection.org/api/ccr' \
+#           --header 'Authorization: Bearer ${{ secrets.CCR_MANAGE_API_KEY }}'

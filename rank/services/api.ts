@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+
 import { Decoder } from '../types/decoder'
 
 export function ok(res: NextApiResponse, content: unknown): void {
@@ -45,6 +46,7 @@ async function apiRes<Props>(
     ok(res, serviceRes)
   } catch (err) {
     badRequest(res, err)
+    throw err
   }
 }
 

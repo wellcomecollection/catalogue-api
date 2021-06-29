@@ -1,5 +1,6 @@
-import { Test } from '../../types/test'
 import { equalTo0, equalTo1 } from './pass'
+
+import { Test } from '../../types/test'
 import { filterCaseRatings } from './queryAugmentation'
 
 const tests: Test[] = [
@@ -7,12 +8,16 @@ const tests: Test[] = [
     id: 'precision',
     label: 'Precision',
     description: 'TBD',
-    pass: equalTo1,
+    eval: equalTo1,
     cases: [
       { query: 'crick dna sketch', ratings: ['gzv2hhgy'] },
-      { query: 'gzv2hhgy', ratings: ['gzv2hhgy'] },
-      { query: 'kmebmktz', ratings: ['gzv2hhgy'] }, // search for work ID and get associated images
-      { query: 'L0033046', ratings: ['gzv2hhgy'] },
+      { query: 'gzv2hhgy', ratings: ['gzv2hhgy'], description: 'image id' },
+      {
+        query: 'kmebmktz',
+        ratings: ['gzv2hhgy'],
+        description: 'search for work ID and get associated images',
+      },
+      { query: 'L0033046', ratings: ['gzv2hhgy'], description: 'miro ID' },
     ],
     metric: {
       precision: {
@@ -25,7 +30,7 @@ const tests: Test[] = [
     id: 'recall',
     label: 'Recall',
     description: 'TBD',
-    pass: equalTo1,
+    eval: equalTo1,
     cases: [
       { query: 'horse battle', ratings: ['ud35y7c8'] },
       {
@@ -87,7 +92,7 @@ const tests: Test[] = [
     id: 'alternative-spellings',
     label: 'Alternative spellings',
     description: 'TBD',
-    pass: equalTo1,
+    eval: equalTo1,
     cases: [
       { query: 'arbeiten', ratings: ['sr4kxmk3', 'utbtee43'] },
       { query: 'conosco', ratings: ['nnh3nh47'] },
@@ -105,33 +110,38 @@ const tests: Test[] = [
     label: 'False positives',
     description:
       "Due to fuzzy matching on alternative spellings, we need to ensure we aren't too fuzzy.",
-    pass: equalTo0,
+    eval: equalTo0,
     searchTemplateAugmentation: filterCaseRatings,
     cases: [
       {
         query: 'monsters',
         ratings: ['n7r5s65w'],
         description: "shouldn't match 'Monastery'",
+        knownFailure: true,
       },
       {
         query: 'maori',
         ratings: ['fgksh2cc', 'tqk8vfq2'],
         description: "shouldn't match 'mary' or 'mori'",
+        knownFailure: true,
       },
       {
         query: 'Deptford',
         ratings: ['c5zv5zqh', 'eq4pvgmu'],
         description: "shouldn't match 'dartford' or 'hertford'",
+        knownFailure: true,
       },
       {
         query: 'Maclise',
         ratings: ['sxbgjm4y'],
         description: "shouldn't match 'machine'",
+        knownFailure: true,
       },
       {
         query: 'machine',
         ratings: ['uyym87vg', 'hpjx2g82'],
         description: "shouldn't match 'martin' or 'vaccine'",
+        knownFailure: true,
       },
       {
         query: 'asylum',
@@ -158,7 +168,10 @@ const tests: Test[] = [
           'cfwn8qpp',
           'emfaj7a7',
         ],
-      }, // shouldn't match Macao, Aaron, matron, Martinez, Macon, Arago,
+        description:
+          "shouldn't match Macao, Aaron, matron, Martinez, Macon, Arago",
+        knownFailure: true,
+      },
     ],
     metric: {
       recall: {
