@@ -25,13 +25,11 @@ type TestRunProps = {
 }
 const TestRun: FC<TestRunProps> = ({ test, template }) => {
   const [testResult, setTestResult] = useState<TestResult>()
-
-  const envIndex = `${template.env}:${template.index}`
   useEffect(() => {
     const fetchData = async () => {
       const { origin } = absoluteUrl()
       const data: TestResult = await fetch(
-        `${origin}/api/test?index=${envIndex}&testId=${test.id}&namespace=${template.namespace}`
+        `${origin}/api/test?testId=${test.id}&templateId=${template.id}`
       ).then((res) => res.json())
 
       setTestResult(data)

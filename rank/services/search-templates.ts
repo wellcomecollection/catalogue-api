@@ -1,5 +1,5 @@
 import { Env } from '../types/env'
-import { Namespace } from '../types/namespace'
+import { getNamespaceFromIndexName, Namespace } from '../types/namespace'
 import { getRankClient } from './elasticsearch'
 
 export async function listIndices() {
@@ -49,31 +49,26 @@ export async function getRemoteTemplates(env: Env): Promise<SearchTemplate[]> {
   const json: ApiSearchTemplateRes = await res.json()
 
   // The query is returned as a string from the API
-  return json.templates.map((template) => ({
-    id: `ccr--${template.index}`,
-    index: `ccr--${template.index}`,
-    namespace: getNamespace(template),
-    env,
-    source: { query: JSON.parse(template.query) },
-  }))
+  return json.templates.map((template) => {
+    const namespace = getNamespaceFromIndexName(template.index)
+    return {
+      id: `${env}/${namespace}/${template.index}`,
+      index: `${template.index}`,
+      namespace,
+      env,
+      source: { query: JSON.parse(template.query) },
+    }
+  })
 }
 
 export async function getLocalTemplates(): Promise<SearchTemplate[]> {
   const ids = await listIndices()
   const queriesReq = ids.map(async (id) => {
-    const query = await import(`../data/queries/${id}.json`)
+    const searchTemplate = await import(`../data/search-templates/${id}.json`)
       .then((m) => m.default)
       .catch(() => {})
 
-    return query
-      ? {
-          id: id,
-          index: id,
-          namespace: id.replace('ccr--', '').split('-')[0] as Namespace,
-          env: 'local' as Env,
-          source: { query: { ...query } },
-        }
-      : undefined
+    return searchTemplate
   })
 
   const queries: SearchTemplate[] = await Promise.all(queriesReq)

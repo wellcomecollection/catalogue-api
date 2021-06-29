@@ -53,10 +53,8 @@ test.each(works)('works.$id', async ({ id }) => {
   )
 
   const result = await testService({
-    namespace: template.namespace,
     testId: id,
-    env: 'prod',
-    index: template.index,
+    templateId: template.id,
   })
 
   result.results.forEach((result) => {
@@ -70,10 +68,8 @@ test.each(images)('images.$id', async ({ id }) => {
   )
 
   const result = await testService({
-    namespace: template.namespace,
     testId: id,
-    env: 'prod',
-    index: template.index,
+    templateId: template.id,
   })
 
   result.results.forEach((result) => {

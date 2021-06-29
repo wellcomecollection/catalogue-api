@@ -7,113 +7,112 @@ import {
 } from '../services/search-templates'
 import { getRankClient } from '../services/elasticsearch'
 import { getNamespaceFromIndexName } from '../types/namespace'
+import yargs from 'yargs/yargs'
+import { hideBin } from 'yargs/helpers'
 
 global.fetch = require('node-fetch')
 
-async function go() {
+async function go(args: typeof argv) {
   const client = getRankClient()
+  const { name } = args
 
-  info(`fetching search templates`)
+  info(`Fetching search templates`)
   const templates = await getRemoteTemplates('prod')
-  const indices = templates.map((template) => template.index)
+  const localTemplates: SearchTemplate[] = templates.map((template) => ({
+    ...template,
+    id: `local/${getNamespaceFromIndexName(template.index)}/${name}`,
+    env: 'local',
+  }))
 
-  info(`getting settings for index config for ${indices}`)
-  const settingsReq = client.indices.getSettings({
-    index: indices,
-  })
-  const mappingsReq = client.indices.getMapping({
-    index: indices,
-  })
-  const [{ body: settingsRes }, { body: mappingsRes }] = await Promise.all([
-    settingsReq,
-    mappingsReq,
-  ])
+  info(`Writing local search templates`)
+  for (const template of localTemplates) {
+    const filename = `${template.namespace}-${name}.json`
+    info(`Writing search templates to ./data/search-templates/${filename}`)
 
-  for (const index of indices) {
-    const mappings = mappingsRes[index].mappings
-    const analysis = settingsRes[index].settings.index.analysis
-    const indexConfig = pretty({
-      mappings,
-      settings: {
-        index: {
-          analysis,
-        },
-      },
-    })
-    const query = pretty(
-      templates.find((template) => template.index === index).source.query
-    )
-    info(`writing index config to /data/indices/ for ${index}`)
-    fs.writeFileSync(p([`../data/indices/${index}.json`]), indexConfig)
-
-    info(`writing query to /data/indices/ for ${index}`)
-    fs.writeFileSync(p([`../data/queries/${index}.json`]), query)
-
-    const searchTemplate = pretty({
-      id: index,
-      index,
-      namespace: getNamespaceFromIndexName(index),
-      env: 'local',
-      source: { query: {} },
-    } as SearchTemplate)
-
-    info(`writing search templates to /data/search-templates/${index}.json`)
     fs.writeFileSync(
-      p([`../data/search-templates/${index}.json`]),
-      searchTemplate
+      p([`../data/search-templates/${filename}`]),
+      pretty(template)
     )
   }
 
-  const { value: newMappingsFor } = await prompts({
+  info(`New index creation`)
+  const localTemplateIds = localTemplates.map((template) => template.id)
+  const { value: newMappingsFor } = (await prompts({
     type: 'select',
     name: 'value',
     message: 'Do you need new mappings for:',
     choices: [
       {
         title: 'None',
-        value: undefined,
+        value: [],
       },
       {
         title: 'Both',
-        value: indices,
+        value: localTemplates,
       },
-      ...indices.map((index) => ({
-        title: index,
-        value: [index],
+      ...localTemplateIds.map((id) => ({
+        title: id,
+        value: [localTemplates.find((template) => template.id === id)],
       })),
     ],
-  })
+  })) as { value: SearchTemplate[] }
 
-  if (newMappingsFor) {
-    const { value: postFix } = await prompts({
-      type: 'text',
-      name: 'value',
-      message: 'Postfix your index name (no namespace):',
+  if (newMappingsFor.length > 0) {
+    const indices = templates.map((template) => template.index)
+
+    info(`Getting settings for index config for ${indices}`)
+    const settingsReq = client.indices.getSettings({
+      index: indices,
     })
+    const mappingsReq = client.indices.getMapping({
+      index: indices,
+    })
+    const [{ body: settingsRes }, { body: mappingsRes }] = await Promise.all([
+      settingsReq,
+      mappingsReq,
+    ])
 
-    for (const index of newMappingsFor) {
-      const name = `${getNamespaceFromIndexName(index)}-${postFix}`
-      info(`copying data from ${index} to ${name}`)
-      fs.copyFileSync(
-        p([`../data/indices/${index}.json`]),
-        p([`../data/indices/${name}.json`])
-      )
-      fs.copyFileSync(
-        p([`../data/queries/${index}.json`]),
-        p([`../data/queries/${name}.json`])
-      )
-      fs.copyFileSync(
-        p([`../data/search-templates/${index}.json`]),
-        p([`../data/search-templates/${name}.json`])
+    for (const template of newMappingsFor) {
+      const index = `${template.namespace}-${name}`
+      const filename = `${index}.json`
+      const mappings = mappingsRes[template.index].mappings
+      const analysis = settingsRes[template.index].settings.index.analysis
+
+      const indexConfig = {
+        mappings,
+        settings: {
+          index: {
+            analysis,
+          },
+        },
+      }
+
+      info(`Writing index config to ./data/indices/${filename}`)
+      fs.writeFileSync(p([`../data/indices/${filename}`]), pretty(indexConfig))
+
+      // Override the previous templates with new indices
+      fs.writeFileSync(
+        p([`../data/search-templates/${filename}`]),
+        pretty({
+          ...template,
+          index,
+        })
       )
 
       // We could have a prompt here to create and start the reindex,
       // but more often than not, you're going to want to change the mappings first
       success(
-        `new config files created. Edit the mappings in /data/indices/${name}, and then run \n`
+        `New config files created. Edit the mappings in ./data/indices/${filename}, and then run \n`
       )
-      code(`  yarn createIndex --from ${name} --reindex \n`)
+      code(`  yarn createIndex --from ${index} --reindex \n`)
     }
   }
 }
-go()
+
+const argv = yargs(hideBin(process.argv))
+  .options({
+    name: { type: 'string', default: 'candidate' },
+  })
+  .parseSync()
+
+go(argv)
