@@ -7,8 +7,17 @@ import com.sksamuel.elastic4s.Index
 import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.catalogue.display_model.models.DisplayItem
-import weco.catalogue.internal_model.locations.{AccessCondition, PhysicalLocation}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType, SourceIdentifier}
+
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  PhysicalLocation
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  IdentifierType,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.locations.PhysicalLocation
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 import weco.http.models.ContextResponse
@@ -25,7 +34,9 @@ trait LookupItemStatus extends SingleWorkDirectives {
   private def isSierraId(sourceIdentifier: SourceIdentifier) =
     sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
 
-  private def updateAccessCondition(item: Item[IdState.Minted], accessConditionOption: Option[AccessCondition]) =
+  private def updateAccessCondition(
+    item: Item[IdState.Minted],
+    accessConditionOption: Option[AccessCondition]) =
     item.locations.map {
       case physicalLocation: PhysicalLocation =>
         physicalLocation.copy(
@@ -39,7 +50,8 @@ trait LookupItemStatus extends SingleWorkDirectives {
       .getAccessCondition(srcId)
       .map {
         case Right(accessConditionOption) =>
-          item.copy(locations = updateAccessCondition(item, accessConditionOption))
+          item.copy(
+            locations = updateAccessCondition(item, accessConditionOption))
 
         case Left(err) =>
           error(msg = f"Couldn't refresh item: ${item.id} got error ${err}")
