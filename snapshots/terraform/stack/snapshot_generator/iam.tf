@@ -15,6 +15,11 @@ resource "aws_iam_role_policy" "snapshot_generator_read_from_q" {
   policy = module.snapshot_generator_input_queue.read_policy
 }
 
+resource "aws_iam_role_policy" "snapshot_generator_get_secrets" {
+  role   = module.snapshot_generator.task_role_name
+  policy = data.aws_iam_policy_document.get_secrets.json
+}
+
 # Policy documents
 
 data "aws_iam_policy_document" "allow_cloudwatch_push_metrics" {
@@ -40,3 +45,16 @@ data "aws_iam_policy_document" "public_data_bucket_full_access_policy" {
     ]
   }
 }
+
+data "aws_iam_policy_document" "get_secrets" {
+  statement {
+    actions = [
+      "secretsmanager:GetSecretValue",
+    ]
+
+    resources = [
+      "arn:aws:secretsmanager:eu-west-1:756629837203:secret:elasticsearch/*",
+    ]
+  }
+}
+

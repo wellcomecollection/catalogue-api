@@ -9,8 +9,7 @@ import weco.akka.fixtures.Akka
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.AccessCondition
-import weco.catalogue.internal_model.locations.AccessMethod.OnlineRequest
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
@@ -57,7 +56,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -71,7 +70,8 @@ class SierraServiceTest
           val future = service.getAccessCondition(identifier)
 
           whenReady(future) {
-            _.value shouldBe Some(AccessCondition(OnlineRequest,None,None,None,None))
+            _.value shouldBe Some(
+              AccessCondition(method = AccessMethod.OnlineRequest))
           }
         }
       }

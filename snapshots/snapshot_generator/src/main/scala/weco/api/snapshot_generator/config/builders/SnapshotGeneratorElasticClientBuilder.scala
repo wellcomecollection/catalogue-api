@@ -22,17 +22,23 @@ object SnapshotGeneratorElasticClientBuilder {
 
     val pipelineDate = ElasticConfig.indexDate
 
+    val hostname = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/private_host")
+    val port = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/port").toInt
+    val protocol = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/protocol")
+    val username = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_username")
+    val password = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_password")
+
     ElasticClientBuilder.create(
-      hostname = getSecretString(
-        s"elasticsearch/pipeline_storage_$pipelineDate/private_host"),
-      port = getSecretString(
-        s"elasticsearch/pipeline_storage_$pipelineDate/port").toInt,
-      protocol = getSecretString(
-        s"elasticsearch/pipeline_storage_$pipelineDate/protocol"),
-      username = getSecretString(
-        s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_username"),
-      password = getSecretString(
-        s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_password")
+      hostname = hostname,
+      port = port,
+      protocol = protocol,
+      username = username,
+      password = password
     )
   }
 

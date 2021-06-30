@@ -25,7 +25,7 @@ import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
-  *                  TODO: Make this a configurable parameter.
+  *                   TODO: Make this a configurable parameter.
   *
   */
 class SierraService(
@@ -38,10 +38,12 @@ class SierraService(
     : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.lookupItem(itemNumber).map {
-      case Right(item) => Right(item.getAccessCondition(itemNumber))
-      case Left(err)   => Left(err)
-    }
+    for {
+      itemEither <- sierraSource.lookupItem(itemNumber)
+      accessCondition = itemEither.map { item =>
+        item.getAccessCondition(itemNumber)
+      }
+    } yield accessCondition
   }
 
   def getItemStatus(sourceIdentifier: SourceIdentifier)
@@ -199,8 +201,7 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(
-      id: SierraItemNumber): Option[AccessCondition] = {
+    def getAccessCondition(id: SierraItemNumber): Option[AccessCondition] = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
