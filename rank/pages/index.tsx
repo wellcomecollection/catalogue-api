@@ -1,8 +1,8 @@
 import { GetServerSideProps, NextPage } from 'next'
-
-import { ApiResponse as EvalApiResponse } from './api/eval'
 import Head from 'next/head'
 import absoluteUrl from 'next-absolute-url'
+import { ApiResponse as EvalApiResponse } from './api/eval'
+import Result from '../components/Result'
 
 type Props = {
   data: EvalApiResponse
@@ -32,14 +32,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   }
 }
 
-function passEmoji(pass: boolean): string {
-   switch(pass){
-    case null:  return '❓' 
-    case true: return '✅' 
-    case false: return '❌'
-  }
-}
-
 type ResultComponentProps = {
   result: EvalApiResponse['results'][number]
 }
@@ -49,7 +41,7 @@ const ResultsComponent = ({ result }: ResultComponentProps) => {
   return (
     <div className="py-4 font-mono">
       <h2 className="text-2xl font-bold">
-        {passEmoji(result.pass)} {result.label} in {result.namespace}
+        <Result pass={result.pass} /> {result.label} in {result.namespace}
       </h2>
 
       <h3 className="font-bold">Queries:</h3>
@@ -60,7 +52,7 @@ const ResultsComponent = ({ result }: ResultComponentProps) => {
             const searchURL = `https://wellcomecollection.org/${namespace}?query=${encodedQuery}`
             return (
               <li key={key} className="py-1">
-                {passEmoji(result.pass)} <a href={searchURL}>{query}</a>{' '}
+                <Result pass={result.pass} /> <a href={searchURL}>{query}</a>{' '}
                 <p className="text-gray-500 text-sm">{description || null}</p>
               </li>
             )
