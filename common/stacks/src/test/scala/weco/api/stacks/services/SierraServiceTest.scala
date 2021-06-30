@@ -9,8 +9,7 @@ import weco.akka.fixtures.Akka
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.AccessCondition
-import weco.catalogue.internal_model.locations.AccessMethod.OnlineRequest
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
