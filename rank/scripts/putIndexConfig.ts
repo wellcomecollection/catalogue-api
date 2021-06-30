@@ -73,27 +73,6 @@ async function go(args: typeof argv) {
     }
   }
 
-  info(`looking for search template /data/search-templates/${index}.json`)
-  const searchTemplateExists = fs.existsSync(
-    p([`/data/search-templates/${index}.json`])
-  )
-
-  if (!searchTemplateExists) {
-    const searchTemplate = pretty({
-      id: index,
-      index,
-      namespace,
-      env: 'local',
-      source: { query: {} },
-    } as SearchTemplate)
-
-    info(`writing search templates to /data/search-templates/${index}.json`)
-    fs.writeFileSync(
-      p([`../data/search-templates/${index}.json`]),
-      searchTemplate
-    )
-  }
-
   const reindex =
     args.reindex === undefined
       ? await prompts({

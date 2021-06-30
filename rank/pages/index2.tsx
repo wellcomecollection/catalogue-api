@@ -2,36 +2,66 @@ import { FC, useEffect, useState } from 'react'
 import { GetServerSideProps, NextPage } from 'next'
 import { SearchTemplate, getTemplates } from '../services/search-templates'
 import { Test, TestResult } from '../types/test'
-
 import absoluteUrl from 'next-absolute-url'
 import tests from '../data/tests'
+import { removeEmpty } from '../utils'
 
 type Props = {
   searchTemplates: SearchTemplate[]
+  worksIndex?: string
+  imagesIndex?: string
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const searchTemplates = await getTemplates()
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  query,
+}) => {
+  const { worksIndex, imagesIndex } = query
+  const w = worksIndex ? worksIndex.toString() : undefined
+  const i = imagesIndex ? imagesIndex.toString() : undefined
+
+  const searchTemplates = await getTemplates({
+    worksIndex: w,
+    imagesIndex: i,
+  })
+
+  const props = removeEmpty({
+    searchTemplates,
+    worksIndex: w,
+    imagesIndex: i,
+  })
+
   return {
-    props: {
-      searchTemplates,
-    },
+    props,
   }
 }
 
 type TestRunProps = {
   test: Test
   template: SearchTemplate
+  worksIndex?: string
+  imagesIndex?: string
 }
-const TestRun: FC<TestRunProps> = ({ test, template }) => {
+const TestRun: FC<TestRunProps> = ({
+  test,
+  template,
+  worksIndex,
+  imagesIndex,
+}) => {
   const [testResult, setTestResult] = useState<TestResult>()
-
-  const envIndex = `${template.env}:${template.index}`
   useEffect(() => {
     const fetchData = async () => {
       const { origin } = absoluteUrl()
+      const params = new URLSearchParams(
+        removeEmpty({
+          testId: test.id,
+          templateId: template.id,
+          worksIndex,
+          imagesIndex,
+        })
+      )
+
       const data: TestResult = await fetch(
-        `${origin}/api/test?index=${envIndex}&testId=${test.id}&namespace=${template.namespace}`
+        `${origin}/api/test?${params.toString()}`
       ).then((res) => res.json())
 
       setTestResult(data)
@@ -62,7 +92,11 @@ const TestRun: FC<TestRunProps> = ({ test, template }) => {
   )
 }
 
-export const Index2: NextPage<Props> = ({ searchTemplates }) => {
+export const Index2: NextPage<Props> = ({
+  searchTemplates,
+  worksIndex,
+  imagesIndex,
+}) => {
   const worksTemplates = searchTemplates.filter((t) => t.namespace === 'works')
   const worksTests = tests.works
   // const imagesTemplates = searchTemplates.filter(
@@ -80,7 +114,7 @@ export const Index2: NextPage<Props> = ({ searchTemplates }) => {
               return (
                 <TestRun
                   key={`works-${test.id}-${template.env}-${template.index}`}
-                  {...{ test, template }}
+                  {...{ test, template, worksIndex, imagesIndex }}
                 />
               )
             })}

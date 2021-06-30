@@ -1,22 +1,16 @@
 import { TestCase, TestResult } from '../types/test'
-import { decodeEnv, decodeNamespace, decodeString } from './decoder'
-
+import { decodeString } from './decoder'
 import { Decoder } from '../types/decoder'
-import { Env } from '../types/env'
-import { Namespace } from '../types/namespace'
 import { ParsedUrlQuery } from 'querystring'
 import { RankEvalResponse } from '../types/elasticsearch'
 import { getRankClient } from './elasticsearch'
-import getTemplates from './search-templates'
+import getTemplates, { Props as SearchTemplateProps } from './search-templates'
 import tests from '../data/tests'
-import test from '../pages/api/test'
 
 type Props = {
   testId: string
-  env: Env
-  index: string
-  namespace: Namespace
-}
+  templateId: string
+} & SearchTemplateProps
 
 /**
  * This service takes fetches a test from a `namespace`
@@ -24,18 +18,16 @@ type Props = {
  * and generates results from a rank_eval requst
  */
 async function service({
-  namespace,
+  templateId,
   testId,
-  env,
-  index,
+  ...templateProps
 }: Props): Promise<TestResult> {
-  const test = tests[namespace].find((test) => test.id === testId)
+  const templates = await getTemplates(templateProps)
+  const template = templates.find((template) => template.id === templateId)
+  const test = tests[template.namespace].find((test) => test.id === testId)
+
   if (!test) throw Error(`No such test ${testId}`)
 
-  const templates = await getTemplates()
-  const template = templates.find(
-    (template) => template.id === index && template.env === env
-  )
   const { cases, metric, searchTemplateAugmentation } = test
 
   const searchTemplate = searchTemplateAugmentation
@@ -52,7 +44,7 @@ async function service({
       ratings: testCase.ratings.map((id) => {
         return {
           _id: id,
-          _index: index,
+          _index: template.index,
           rating: 3,
         }
       }),
@@ -67,7 +59,7 @@ async function service({
 
   const { body: rankEvalRes } =
     await getRankClient().rankEval<RankEvalResponse>({
-      index,
+      index: template.index,
       body: reqBody,
     })
 
@@ -82,8 +74,8 @@ async function service({
   })
 
   return {
-    index,
-    env,
+    index: template.index,
+    env: template.env,
     label: test.label,
     description: test.description,
     namespace: template.namespace,
@@ -94,9 +86,9 @@ async function service({
 
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   testId: decodeString(q, 'testId'),
-  index: decodeString(q, 'index'),
-  env: decodeEnv(q.env),
-  namespace: decodeNamespace(q.namespace),
+  templateId: decodeString(q, 'templateId'),
+  worksIndex: q.worksIndex ? decodeString(q, 'worksIndex') : undefined,
+  imagesIndex: q.imagesIndex ? decodeString(q, 'imagesIndex') : undefined,
 })
 
 export default service
