@@ -5,8 +5,14 @@ import com.sksamuel.elastic4s.Index
 import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.catalogue.display_model.models.DisplayItem
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType, SourceIdentifier}
 import weco.catalogue.internal_model.locations.{AccessCondition, PhysicalLocation}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  IdentifierType,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.locations.PhysicalLocation
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.Future
@@ -47,8 +53,28 @@ trait LookupItemStatus extends SingleWorkDirectives {
       .byCanonicalId(workId)(index)
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
         val futureItems = work.data.items.map {
-          case item@Item(IdState.Identified(_, srcId, _), _, _, _) if isSierraId(srcId) =>
-            refreshItem(srcId, item)
+          case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
+              if isSierraId(srcId) =>
+            sierraService
+              .getAccessCondition(srcId)
+              .map {
+                case Right(accessConditionOption) => {
+                  val locations = item.locations.map {
+                    case physicalLocation: PhysicalLocation =>
+                      physicalLocation.copy(
+                        accessConditions = accessConditionOption.toList)
+                    case location => location
+                  }
+
+                  item.copy(locations = locations)
+                }
+                case Left(err) => {
+                  error(
+                    msg = f"Couldn't refresh item: ${item.id} got error ${err}")
+
+                  item
+                }
+              }
           case item => Future(item)
         }
 
