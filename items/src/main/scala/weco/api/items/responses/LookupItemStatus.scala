@@ -1,19 +1,17 @@
 package weco.api.items.responses
 
+import java.net.URL
+
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.catalogue.display_model.models.DisplayItem
 import weco.catalogue.internal_model.locations.{AccessCondition, PhysicalLocation}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType, SourceIdentifier}
 import weco.catalogue.internal_model.locations.PhysicalLocation
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+import weco.http.models.ContextResponse
 
 import scala.concurrent.Future
 
@@ -54,35 +52,19 @@ trait LookupItemStatus extends SingleWorkDirectives {
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
         val futureItems = work.data.items.map {
           case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
-              if isSierraId(srcId) =>
-            sierraService
-              .getAccessCondition(srcId)
-              .map {
-                case Right(accessConditionOption) => {
-                  val locations = item.locations.map {
-                    case physicalLocation: PhysicalLocation =>
-                      physicalLocation.copy(
-                        accessConditions = accessConditionOption.toList)
-                    case location => location
-                  }
-
-                  item.copy(locations = locations)
-                }
-                case Left(err) => {
-                  error(
-                    msg = f"Couldn't refresh item: ${item.id} got error ${err}")
-
-                  item
-                }
-              }
+              if isSierraId(srcId) => refreshItem(srcId, item)
           case item => Future(item)
         }
 
         for {
           items: Seq[Item[IdState.Minted]] <- Future.sequence(futureItems)
           displayItems = items.map(item => DisplayItem(item, true))
-          displayItemResponse = DisplayItemResponse(displayItems)
 
-        } yield complete(displayItemResponse)
+        } yield complete(
+            ContextResponse(
+              contextUrl = new URL("http://www.example.com"),
+              result = displayItems
+            )
+        )
       }
 }

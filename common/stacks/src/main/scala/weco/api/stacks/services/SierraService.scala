@@ -5,21 +5,10 @@ import grizzled.slf4j.Logging
 import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  PhysicalLocationType
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocationType}
 import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
+import weco.catalogue.source_model.sierra.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
+import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,16 +33,6 @@ class SierraService(
         item.getAccessCondition(itemNumber)
       }
     } yield accessCondition
-  }
-
-  def getItemStatus(sourceIdentifier: SourceIdentifier)
-    : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
-    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
-
-    sierraSource.lookupItem(item).map {
-      case Right(item) => Right(StacksItemStatus(item.fixedFields("88").value))
-      case Left(err)   => Left(err)
-    }
   }
 
   def placeHold(

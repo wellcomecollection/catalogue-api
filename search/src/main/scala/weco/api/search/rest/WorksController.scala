@@ -42,7 +42,7 @@ class WorksController(
                   complete(
                     ContextResponse(
                       contextUrl = contextUrl,
-                      rest.DisplayResultList(
+                      DisplayResultList(
                         resultList = resultList,
                         searchOptions = searchOptions,
                         includes = params.include.getOrElse(WorksIncludes.none),

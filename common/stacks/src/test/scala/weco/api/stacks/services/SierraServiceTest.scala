@@ -116,7 +116,7 @@ class SierraServiceTest
             ontologyType = "Item"
           )
 
-          val future = service.getItemStatus(identifier)
+          val future = service.getAccessCondition(identifier)
 
           whenReady(future) {
             _.value shouldBe StacksItemStatus("available", "Available")

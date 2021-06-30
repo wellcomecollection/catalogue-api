@@ -30,6 +30,7 @@ object SierraItemIdentifier {
 
   def fromSourceIdentifier(
     sourceIdentifier: SourceIdentifier): SierraItemNumber = {
+
     require(
       sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber)
     require(sourceIdentifier.ontologyType == "Item")

@@ -4,42 +4,21 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
 import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  ProductionEventGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, ProductionEventGenerators, WorkGenerators}
 import weco.catalogue.internal_model.Implicits._
 import weco.api.search.models._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
 import weco.api.search.generators.SearchOptionsGenerators
-import weco.api.search.models.{
-  Aggregation,
-  AggregationBucket,
-  DateRangeFilter,
-  FormatFilter,
-  ItemLocationTypeIdFilter,
-  ResultList,
-  SearchQuery,
-  WorkAggregations,
-  WorkSearchOptions
-}
+import weco.api.search.models.{Aggregation, AggregationBucket, DateRangeFilter, FormatFilter, ItemLocationTypeIdFilter, SearchQuery, WorkAggregations, WorkSearchOptions}
 import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{
-  DigitalLocationType,
-  LocationType,
-  PhysicalLocationType
-}
+import weco.catalogue.internal_model.locations.{DigitalLocationType, LocationType, PhysicalLocationType}
 import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work.WorkState.Indexed

@@ -9,11 +9,7 @@ import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.rest
 import weco.api.search.services.ImagesService
 import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{
-  DisplayImage,
-  MultipleImagesIncludes,
-  SingleImageIncludes
-}
+import weco.catalogue.display_model.models.{DisplayImage, MultipleImagesIncludes, SingleImageIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.models.ContextResponse
 
@@ -87,7 +83,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                   complete(
                     ContextResponse(
                       contextUrl = contextUrl,
-                      rest.DisplayResultList(
+                      DisplayResultList(
                         resultList = resultList,
                         searchOptions = searchOptions,
                         includes =

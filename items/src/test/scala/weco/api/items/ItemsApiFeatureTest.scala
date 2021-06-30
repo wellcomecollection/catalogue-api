@@ -1,32 +1,16 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes,
-  Uri
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.ItemsApiFixture
 import weco.json.utils.JsonAssertions
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, PhysicalLocation}
 
 import scala.util.{Failure, Try}
 
@@ -39,34 +23,64 @@ class ItemsApiFeatureTest
     with WorkGenerators
     with ItemsGenerators {
 
+  private def createPhysicalItemWith(sierraItemIdentifier: String, accessCondition: AccessCondition) = {
+    val physicalItemLocation: PhysicalLocation = createPhysicalLocationWith(
+      accessConditions = List(accessCondition)
+    )
+
+    // Sierra identifiers without check digits are always 7 digits
+    require(sierraItemIdentifier.matches("^\\d{7}$"))
+
+    val physicalItemSierraIdentifierWithCheckDigit = f"${sierraItemIdentifier}5"
+    val physicalItemSierraSourceIdentifier = f"i${physicalItemSierraIdentifierWithCheckDigit}"
+
+    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
+      value = physicalItemSierraSourceIdentifier,
+      ontologyType = "Item"
+    )
+
+    createIdentifiedItemWith(
+      sourceIdentifier = itemSourceIdentifier,
+      locations = List(physicalItemLocation)
+    )
+  }
+
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
-      val item = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          value = "i16010176",
-          ontologyType = "Item"
-        )
+      val digitalItem = createDigitalItem
+
+      val temporarilyUnavailableOnline = AccessCondition(
+        method = AccessMethod.OnlineRequest,
+        status = AccessStatus.TemporarilyUnavailable
       )
 
-      val work = indexedWork().items(List(item))
+      val physicalSierraItemIdentifier = "1823449"
+
+      val physicalItem = createPhysicalItemWith(
+        sierraItemIdentifier = physicalSierraItemIdentifier,
+        accessCondition = temporarilyUnavailableOnline
+      )
+
+      val work = indexedWork().items(List(digitalItem, physicalItem))
 
       val responses = Seq(
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed")
+              f"http://sierra:1234/v5/items/${physicalSierraItemIdentifier}?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
-              """
+              f"""
                 |{
-                |  "id": "1601017",
+                |  "id": "${physicalSierraItemIdentifier}",
                 |  "deleted": false,
                 |  "suppressed": false,
                 |  "fixedFields": {
-                |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
                 |  },
                 |  "holdCount": 0
                 |}
@@ -88,7 +102,7 @@ class ItemsApiFeatureTest
                |  "id" : "${work.state.canonicalId}",
                |  "items" : [
                |    {
-               |      "id" : "${item.id.canonicalId}",
+               |      "id" : "${physicalItem.id.canonicalId}",
                |      "locations" : [
                |      ],
                |      "status" : {
