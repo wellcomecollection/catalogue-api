@@ -9,6 +9,7 @@ import weco.akka.fixtures.Akka
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
@@ -25,6 +26,57 @@ class SierraServiceTest
     with SierraGenerators {
 
   describe("SierraService") {
+    describe("getAccessCondition") {
+      it("gets an AccessCondition") {
+        val responses = Seq(
+          (
+            HttpRequest(uri =
+              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "id": "1601017",
+                  |  "deleted": false,
+                  |  "suppressed": false,
+                  |  "fixedFields": {
+                  |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                  |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                  |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                  |  },
+                  |  "holdCount": 0
+                  |}
+                  |""".stripMargin
+              )
+            )
+          )
+        )
+
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            client = new MemoryHttpClient(responses) with HttpGet
+            with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
+            }
+          )
+
+          val identifier = SourceIdentifier(
+            identifierType = SierraSystemNumber,
+            value = "i16010176",
+            ontologyType = "Item"
+          )
+
+          val future = service.getAccessCondition(identifier)
+
+          whenReady(future) {
+            _.value shouldBe Some(
+              AccessCondition(method = AccessMethod.OnlineRequest))
+          }
+        }
+      }
+    }
+
     describe("getItemStatus") {
       it("gets a StacksItemStatus") {
         val responses = Seq(

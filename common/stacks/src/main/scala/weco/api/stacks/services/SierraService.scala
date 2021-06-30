@@ -6,6 +6,7 @@ import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{
+  AccessCondition,
   AccessMethod,
   PhysicalLocationType
 }
@@ -24,7 +25,7 @@ import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
-  *                  TODO: Make this a configurable parameter.
+  *                   TODO: Make this a configurable parameter.
   *
   */
 class SierraService(
@@ -32,6 +33,18 @@ class SierraService(
   holdLimit: Int = 10
 )(implicit ec: ExecutionContext)
     extends Logging {
+
+  def getAccessCondition(sourceIdentifier: SourceIdentifier)
+    : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
+    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
+
+    for {
+      itemEither <- sierraSource.lookupItem(itemNumber)
+      accessCondition = itemEither.map { item =>
+        item.getAccessCondition(itemNumber)
+      }
+    } yield accessCondition
+  }
 
   def getItemStatus(sourceIdentifier: SourceIdentifier)
     : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
@@ -188,7 +201,8 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
+    def getAccessCondition(id: SierraItemNumber): Option[AccessCondition] = {
+
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
           .get("79")
@@ -197,7 +211,7 @@ class SierraService(
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking.  We can use placeholder data here.
-      val (ac, _, itemStatus) = SierraItemAccess(
+      val (ac, _, _) = SierraItemAccess(
         bibId = SierraBibNumber("0000000"),
         itemId = id,
         bibStatus = None,
@@ -205,8 +219,12 @@ class SierraService(
         itemData = itemData
       )
 
-      (ac, itemStatus) match {
-        case (Some(ac), _) if ac.method == AccessMethod.OnlineRequest =>
+      ac
+    }
+
+    def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
+      getAccessCondition(id) match {
+        case Some(ac) if ac.method == AccessMethod.OnlineRequest =>
           true
         case _ => false
       }
