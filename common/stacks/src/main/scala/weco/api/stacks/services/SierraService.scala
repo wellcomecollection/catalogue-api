@@ -38,11 +38,10 @@ class SierraService(
     : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.lookupItem(itemNumber).map {
-      case Right(item) => Right(item.getAccessCondition(itemNumber))
-      case Left(err)   => Left(err)
-    }
-  }
+    sierraSource.lookupItem(itemNumber)
+      .map { item) =>
+        Right(item.getAccessCondition(itemNumber))
+      }
 
   def getItemStatus(sourceIdentifier: SourceIdentifier)
     : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
