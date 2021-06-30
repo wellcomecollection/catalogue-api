@@ -2,9 +2,9 @@ import { FC, useEffect, useState } from 'react'
 import { GetServerSideProps, NextPage } from 'next'
 import { SearchTemplate, getTemplates } from '../services/search-templates'
 import { Test, TestResult } from '../types/test'
-
 import absoluteUrl from 'next-absolute-url'
 import tests from '../data/tests'
+import { removeEmpty } from '../utils'
 
 type Props = {
   searchTemplates: SearchTemplate[]
@@ -23,14 +23,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     worksIndex: w,
     imagesIndex: i,
   })
+
+  const props = removeEmpty({
+    searchTemplates,
+    worksIndex: w,
+    imagesIndex: i,
+  })
+
   return {
-    props: JSON.parse(
-      JSON.stringify({
-        searchTemplates,
-        worksIndex: w,
-        imagesIndex: i,
-      })
-    ),
+    props,
   }
 }
 
@@ -50,8 +51,17 @@ const TestRun: FC<TestRunProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       const { origin } = absoluteUrl()
+      const params = new URLSearchParams(
+        removeEmpty({
+          testId: test.id,
+          templateId: template.id,
+          worksIndex,
+          imagesIndex,
+        })
+      )
+
       const data: TestResult = await fetch(
-        `${origin}/api/test?testId=${test.id}&templateId=${template.id}&worksIndex=${worksIndex}&imagesIndex=${imagesIndex}`
+        `${origin}/api/test?${params.toString()}`
       ).then((res) => res.json())
 
       setTestResult(data)
