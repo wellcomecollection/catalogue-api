@@ -25,17 +25,17 @@ import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
- *                   TODO: Make this a configurable parameter.
- *
- */
+  *                   TODO: Make this a configurable parameter.
+  *
+  */
 class SierraService(
-                     sierraSource: SierraSource,
-                     holdLimit: Int = 10
-                   )(implicit ec: ExecutionContext)
-  extends Logging {
+  sierraSource: SierraSource,
+  holdLimit: Int = 10
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def getAccessCondition(sourceIdentifier: SourceIdentifier)
-  : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
+    : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     for {
@@ -47,19 +47,19 @@ class SierraService(
   }
 
   def getItemStatus(sourceIdentifier: SourceIdentifier)
-  : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
+    : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.lookupItem(item).map {
       case Right(item) => Right(StacksItemStatus(item.fixedFields("88").value))
-      case Left(err) => Left(err)
+      case Left(err)   => Left(err)
     }
   }
 
   def placeHold(
-                 patron: SierraPatronNumber,
-                 sourceIdentifier: SourceIdentifier
-               ): Future[Either[HoldRejected, HoldAccepted]] = {
+    patron: SierraPatronNumber,
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[HoldRejected, HoldAccepted]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.createHold(patron, item).flatMap {
@@ -100,12 +100,12 @@ class SierraService(
       //      so we look to see if this item can be requested.
       //
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
-        if specificCode == 2 || specificCode == 929 =>
+          if specificCode == 2 || specificCode == 929 =>
         getStacksUserHolds(patron).flatMap {
           case Right(holds)
-            if holds.holds
-              .map(_.sourceIdentifier)
-              .contains(sourceIdentifier) =>
+              if holds.holds
+                .map(_.sourceIdentifier)
+                .contains(sourceIdentifier) =>
             Future.successful(Right(HoldAccepted.HoldAlreadyExists))
 
           case Right(holds) if holds.holds.size >= holdLimit =>
@@ -141,7 +141,7 @@ class SierraService(
   }
 
   private def checkIfItemCanBeRequested(
-                                         item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
+    item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -161,7 +161,7 @@ class SierraService(
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
       case Right(SierraItemData(_, _, _, Some(holdCount), _, _, _))
-        if holdCount > 0 =>
+          if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
       // This would be extremely unusual in practice -- when items are deleted
@@ -254,8 +254,8 @@ class SierraService(
   }
 
   def getStacksUserHolds(
-                          patronNumber: SierraPatronNumber
-                        ): Future[Either[SierraErrorCode, StacksUserHolds]] =
+    patronNumber: SierraPatronNumber
+  ): Future[Either[SierraErrorCode, StacksUserHolds]] =
     sierraSource
       .listHolds(patronNumber)
       .map {
