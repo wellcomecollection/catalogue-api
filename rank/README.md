@@ -39,7 +39,7 @@ If we new mappings, we'll need a new index.
 
 - `yarn getIndexConfigs --name {name:=candidate}` will dump the index config into [`./data/indices/{namespace}-{name}`](./data/indices/)
 - Edit [`./data/indices/{namespace}-{index}.json`](./data/indices/)
-- `yarn putIndexConfig --name {namespace}-{name} --reindex` will craete the new index with the mappings, and start a reindex
+- `yarn putIndexConfig --name {namespace}-{name} --reindex` will create the new index with the mappings, and start a reindex
 
 [Mappings are currently in the catalogue pipeline repo](catalogue-pipeline-mappings) - so you'll need to copy the JSON there, and get [the tests](search-tests) to pass.
 
