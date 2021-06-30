@@ -1,16 +1,38 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes,
+  Uri
+}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.ItemsApiFixture
 import weco.json.utils.JsonAssertions
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, PhysicalLocation}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{
+  MiroImageNumber,
+  SierraSystemNumber
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus,
+  PhysicalLocation
+}
 
 import scala.util.{Failure, Try}
 
@@ -23,7 +45,8 @@ class ItemsApiFeatureTest
     with WorkGenerators
     with ItemsGenerators {
 
-  private def createPhysicalItemWith(sierraItemIdentifier: String, accessCondition: AccessCondition) = {
+  private def createPhysicalItemWith(sierraItemIdentifier: String,
+                                     accessCondition: AccessCondition) = {
     val physicalItemLocation: PhysicalLocation = createPhysicalLocationWith(
       accessConditions = List(accessCondition)
     )
@@ -32,7 +55,8 @@ class ItemsApiFeatureTest
     require(sierraItemIdentifier.matches("^\\d{7}$"))
 
     val physicalItemSierraIdentifierWithCheckDigit = f"${sierraItemIdentifier}5"
-    val physicalItemSierraSourceIdentifier = f"i${physicalItemSierraIdentifierWithCheckDigit}"
+    val physicalItemSierraSourceIdentifier =
+      f"i${physicalItemSierraIdentifierWithCheckDigit}"
 
     val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
       value = physicalItemSierraSourceIdentifier,
