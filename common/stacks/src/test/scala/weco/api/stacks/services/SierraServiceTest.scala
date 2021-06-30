@@ -72,7 +72,7 @@ class SierraServiceTest
 
           whenReady(future) {
             _.value shouldBe Some(
-              AccessCondition(OnlineRequest, None, None, None, None))
+              AccessCondition(method = AccessMethod.OnlineRequest))
           }
         }
       }
