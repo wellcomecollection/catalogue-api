@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "4622.50254173899be5d706d6af7bac15989254cd823f"
+    val internalModel = "4654.7bebf1eb987cd2ed5af9a2ab82ce176a564d6c41"
   }
 
   val internalModel: Seq[ModuleID] = library(
@@ -132,7 +132,6 @@ object ExternalDependencies {
   val secretsDependencies = Seq(
     "software.amazon.awssdk" % "secretsmanager" % versions.aws2
   )
-
 }
 
 object CatalogueDependencies {

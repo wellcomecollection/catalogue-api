@@ -211,7 +211,7 @@ class SierraService(
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking.  We can use placeholder data here.
-      val (ac, _, _) = SierraItemAccess(
+      val (ac, _) = SierraItemAccess(
         bibId = SierraBibNumber("0000000"),
         itemId = id,
         bibStatus = None,
