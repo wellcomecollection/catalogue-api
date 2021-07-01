@@ -18,8 +18,11 @@ class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
         .mkString
 
     val queryJson = JacksonBuilder.writeAsString(
-      QueryBuilderFn(WorksMultiMatcher("{{query}}").filter(
-        termQuery(field = "type", value = "Visible"))).value)
+      QueryBuilderFn(
+        WorksMultiMatcher("{{query}}")
+          .filter(termQuery(field = "type", value = "Visible"))
+      ).value
+    )
 
     assertJsonStringsAreEqual(fileJson, queryJson)
   }
@@ -32,7 +35,8 @@ class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions {
         .mkString
 
     val queryJson = JacksonBuilder.writeAsString(
-      QueryBuilderFn(ImagesMultiMatcher("{{query}}")).value)
+      QueryBuilderFn(ImagesMultiMatcher("{{query}}")).value
+    )
     assertJsonStringsAreEqual(fileJson, queryJson)
   }
 }

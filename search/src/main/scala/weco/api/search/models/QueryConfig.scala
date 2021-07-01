@@ -18,7 +18,8 @@ case class QueryConfig(
 
 object QueryConfig {
   def fetchFromIndex(elasticClient: ElasticClient, imagesIndex: Index)(
-    implicit ec: ExecutionContext): QueryConfig = {
+    implicit ec: ExecutionContext
+  ): QueryConfig = {
     val (binSizes, binMinima) = Try(
       Await.result(
         getPaletteParamsFromIndex(elasticClient, imagesIndex),
@@ -34,9 +35,10 @@ object QueryConfig {
   val defaultPaletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5))
   val defaultPaletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
 
-  private def getPaletteParamsFromIndex(elasticClient: ElasticClient,
-                                        index: Index)(
-    implicit ec: ExecutionContext): Future[(Seq[Seq[Int]], Seq[Float])] =
+  private def getPaletteParamsFromIndex(
+    elasticClient: ElasticClient,
+    index: Index
+  )(implicit ec: ExecutionContext): Future[(Seq[Seq[Int]], Seq[Float])] =
     elasticClient
       .execute(
         search(index).query(

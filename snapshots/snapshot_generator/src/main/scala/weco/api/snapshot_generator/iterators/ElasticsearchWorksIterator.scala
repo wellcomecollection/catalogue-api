@@ -33,7 +33,8 @@ class ElasticsearchWorksIterator(
           if (index % 10000 == 0) {
             info(
               s"Received another ${intComma(10000)} hits " +
-                s"(${intComma(index)} so far) from $index")
+                s"(${intComma(index)} so far) from $index"
+            )
           }
 
           hit

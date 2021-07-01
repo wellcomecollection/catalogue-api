@@ -31,7 +31,8 @@ trait LookupItemStatus extends SingleWorkDirectives {
                   IdState.Identified(canonicalId, sourceIdentifier, _),
                   _,
                   _,
-                  _)
+                  _
+                  )
                   if sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber =>
                 (canonicalId, sourceIdentifier)
             }

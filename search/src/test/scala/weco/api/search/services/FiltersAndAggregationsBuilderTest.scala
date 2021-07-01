@@ -100,7 +100,8 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
         aggregationRequests = List(
           WorkAggregationRequest.Format,
           WorkAggregationRequest.Languages,
-          WorkAggregationRequest.Genre),
+          WorkAggregationRequest.Genre
+        ),
         filters = List(formatFilter, languagesFilter, genreFilter),
         requestToAggregation = requestToAggregation,
         filterToQuery = filterToQuery,
@@ -126,7 +127,8 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
   }
 
   private def requestToAggregation(
-    request: WorkAggregationRequest): Aggregation =
+    request: WorkAggregationRequest
+  ): Aggregation =
     MockAggregation("cabbage", request)
 
   private def filterToQuery(filter: WorkFilter): Query = MockQuery(filter)
@@ -134,11 +136,12 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
   private case class MockQuery(filter: WorkFilter) extends Query
   private case object MockSearchQuery extends Query
 
-  private case class MockAggregation(name: String,
-                                     request: WorkAggregationRequest,
-                                     subaggs: Seq[AbstractAggregation] = Nil,
-                                     metadata: Map[String, AnyRef] = Map.empty)
-      extends Aggregation {
+  private case class MockAggregation(
+    name: String,
+    request: WorkAggregationRequest,
+    subaggs: Seq[AbstractAggregation] = Nil,
+    metadata: Map[String, AnyRef] = Map.empty
+  ) extends Aggregation {
     type T = MockAggregation
     override def subAggregations(aggs: Iterable[AbstractAggregation]): T =
       copy(subaggs = aggs.toSeq)

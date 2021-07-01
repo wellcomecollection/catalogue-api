@@ -27,7 +27,8 @@ object CommonDecoders {
 trait QueryParamsUtils extends Directives {
 
   implicit def unmarshaller[T](
-    implicit decoder: Decoder[T]): Unmarshaller[String, T] =
+    implicit decoder: Decoder[T]
+  ): Unmarshaller[String, T] =
     Unmarshaller.strict[String, T] { str =>
       decoder.decodeJson(Json.fromString(str)) match {
         case Left(err)    => throw new IllegalArgumentException(err.message)
@@ -54,7 +55,9 @@ trait QueryParamsUtils extends Directives {
               delimiter = ',',
               quoteChar = '"'
             )
-            .getOrElse(List(str))))
+            .getOrElse(List(str))
+        )
+    )
 
   def decodeOneOf[T](values: (String, T)*): Decoder[T] =
     Decoder.decodeString.emap { str =>
@@ -79,7 +82,8 @@ trait QueryParamsUtils extends Directives {
   }
 
   def decodeIncludesAndExcludes[T](
-    values: (String, T)*): Decoder[(List[T], List[T])] = {
+    values: (String, T)*
+  ): Decoder[(List[T], List[T])] = {
     val mapping = values.toMap
     val validStrs = values.map(_._1).toList
     decodeCommaSeparated
@@ -101,8 +105,10 @@ trait QueryParamsUtils extends Directives {
   def stringListFilter[T](applyFilter: Seq[String] => T): Decoder[T] =
     decodeCommaSeparated.emap(strs => Right(applyFilter(strs)))
 
-  def invalidValuesMsg(values: List[String],
-                       validValues: List[String]): String = {
+  def invalidValuesMsg(
+    values: List[String],
+    validValues: List[String]
+  ): String = {
     val oneOfMsg =
       s"Please choose one of: [${validValues.mkString("'", "', '", "'")}]"
     values match {
@@ -112,8 +118,10 @@ trait QueryParamsUtils extends Directives {
     }
   }
 
-  def validated[T <: QueryParams](errors: List[String],
-                                  params: T): Directive[Tuple1[T]] =
+  def validated[T <: QueryParams](
+    errors: List[String],
+    params: T
+  ): Directive[Tuple1[T]] =
     errors match {
       case Nil => provide(params)
       case errs =>
@@ -123,7 +131,8 @@ trait QueryParamsUtils extends Directives {
 
   def mapStringsToValues[T](
     strs: List[String],
-    mapping: Map[String, T]): Either[List[String], List[T]] = {
+    mapping: Map[String, T]
+  ): Either[List[String], List[T]] = {
     val results = strs.map { str =>
       mapping
         .get(str)

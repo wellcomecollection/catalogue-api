@@ -18,7 +18,7 @@ case class WorkAggregations(
   subjectsLabel: Option[Aggregation[Subject[Minted]]] = None,
   contributorsAgentsLabel: Option[Aggregation[Contributor[Minted]]] = None,
   itemsLocationsLicense: Option[Aggregation[License]] = None,
-  availabilities: Option[Aggregation[Availability]] = None,
+  availabilities: Option[Aggregation[Availability]] = None
 )
 
 object WorkAggregations extends ElasticAggregations {
@@ -41,7 +41,8 @@ object WorkAggregations extends ElasticAggregations {
           itemsLocationsLicense = e4sAggregations.decodeAgg[License]("license"),
           availabilities =
             e4sAggregations.decodeAgg[Availability]("availabilities")
-        ))
+        )
+      )
     } else {
       None
     }

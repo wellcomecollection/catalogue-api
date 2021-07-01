@@ -12,7 +12,8 @@ import weco.catalogue.internal_model.work.{Work, WorkState, WorkType}
 case class DisplayWork(
   @Schema(
     accessMode = Schema.AccessMode.READ_ONLY,
-    description = "The canonical identifier given to a thing.") id: String,
+    description = "The canonical identifier given to a thing."
+  ) id: String,
   @Schema(
     description =
       "The title or other short label of a work, including labels not present in the actual work or item but applied by the cataloguer for the purposes of search or description."
@@ -126,8 +127,10 @@ case class DisplayWork(
 
 object DisplayWork {
 
-  def apply(work: Work.Visible[WorkState.Indexed],
-            includes: WorksIncludes): DisplayWork =
+  def apply(
+    work: Work.Visible[WorkState.Indexed],
+    includes: WorksIncludes
+  ): DisplayWork =
     DisplayWork(
       id = work.state.canonicalId.underlying,
       title = work.data.title,
@@ -220,7 +223,7 @@ object DisplayWork {
           Some(
             work.state.relations.siblingsSucceeding.map(DisplayRelation(_))
           )
-        else None,
+        else None
     )
 
   def apply(work: Work.Visible[WorkState.Indexed]): DisplayWork =

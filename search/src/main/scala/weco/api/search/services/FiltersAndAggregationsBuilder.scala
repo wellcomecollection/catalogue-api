@@ -66,7 +66,8 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     }
 
   private def pairedFilter(
-    aggregationRequest: AggregationRequest): Option[Filter] =
+    aggregationRequest: AggregationRequest
+  ): Option[Filter] =
     filters.find { filter =>
       pairedAggregationRequests(filter)
         .contains(aggregationRequest)
@@ -82,7 +83,8 @@ class WorkFiltersAndAggregationsBuilder(
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
   override def pairedAggregationRequests(
-    filter: WorkFilter): List[WorkAggregationRequest] =
+    filter: WorkFilter
+  ): List[WorkAggregationRequest] =
     filter match {
       case _: FormatFilter       => List(WorkAggregationRequest.Format)
       case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
@@ -105,7 +107,8 @@ class ImageFiltersAndAggregationsBuilder(
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
 
   override def pairedAggregationRequests(
-    filter: ImageFilter): List[ImageAggregationRequest] =
+    filter: ImageFilter
+  ): List[ImageAggregationRequest] =
     filter match {
       case _: LicenseFilter => List(ImageAggregationRequest.License)
       case _                => Nil

@@ -54,7 +54,8 @@ class QueryConfigTest
             _.copy(
               binMinima = List(1f),
               binSizes = List(List(1))
-            ))
+            )
+          )
         )
         insertImagesIntoElasticsearch(index, image)
 

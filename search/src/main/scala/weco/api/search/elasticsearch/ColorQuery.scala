@@ -21,12 +21,15 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
   lazy private val satMin = binMinima(1)
   lazy private val valMin = binMinima(2)
 
-  def apply(field: String,
-            hexColors: Seq[String],
-            binIndices: Seq[Int] = binSizes.indices): MoreLikeThisQuery =
+  def apply(
+    field: String,
+    hexColors: Seq[String],
+    binIndices: Seq[Int] = binSizes.indices
+  ): MoreLikeThisQuery =
     moreLikeThisQuery(field)
       .likeTexts(
-        getColorsSignature(hexColors.map(ColorQuery.hexToHsv), binIndices))
+        getColorsSignature(hexColors.map(ColorQuery.hexToHsv), binIndices)
+      )
       .copy(
         minTermFreq = Some(1),
         minDocFreq = Some(1),
@@ -36,8 +39,10 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
       .boost(2000)
 
   // This replicates the logic in palette_encoder.py:get_bin_index
-  private def getColorsSignature(colors: Seq[ColorQuery.Hsv],
-                                 binIndices: Seq[Int]): Seq[String] =
+  private def getColorsSignature(
+    colors: Seq[ColorQuery.Hsv],
+    binIndices: Seq[Int]
+  ): Seq[String] =
     binIndices
       .map(transposedSizes)
       .zip(binIndices)

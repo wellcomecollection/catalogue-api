@@ -32,7 +32,8 @@ case class DisplayWorkAggregations(
     name = "production.dates",
     description = "Date aggregation on a set of results."
   ) @JsonKey("production.dates") `production.dates`: Option[
-    DisplayAggregation[DisplayPeriod]],
+    DisplayAggregation[DisplayPeriod]
+  ],
   @Schema(
     name = "genres.label",
     description = "Genre aggregation on a set of results."
@@ -45,7 +46,8 @@ case class DisplayWorkAggregations(
     name = "contributors.agent.label",
     description = "Contributor aggregation on a set of results."
   ) `contributors.agent.label`: Option[
-    DisplayAggregation[DisplayAbstractAgent]],
+    DisplayAggregation[DisplayAbstractAgent]
+  ],
   @Schema(
     description = "Language aggregation on a set of results."
   ) languages: Option[DisplayAggregation[DisplayLanguage]],
@@ -56,7 +58,8 @@ case class DisplayWorkAggregations(
   @Schema(
     description = "Availabilities aggregation on a set of results."
   ) availabilities: Option[DisplayAggregation[DisplayAvailability]],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations")
+  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations"
+)
 
 object DisplayWorkAggregations {
   import weco.catalogue.display_model.models.Implicits._
@@ -66,7 +69,8 @@ object DisplayWorkAggregations {
 
   def apply(
     aggs: WorkAggregations,
-    aggregationRequests: Seq[WorkAggregationRequest]): DisplayWorkAggregations =
+    aggregationRequests: Seq[WorkAggregationRequest]
+  ): DisplayWorkAggregations =
     DisplayWorkAggregations(
       workType = displayAggregation(aggs.format, DisplayFormat.apply),
       `production.dates` =
@@ -75,7 +79,8 @@ object DisplayWorkAggregations {
         whenRequestPresent(aggregationRequests, WorkAggregationRequest.Genre)(
           displayAggregation[Genre[Minted], DisplayGenre](
             aggs.genresLabel,
-            DisplayGenre(_, includesIdentifiers = false))
+            DisplayGenre(_, includesIdentifiers = false)
+          )
         ),
       languages = displayAggregation(aggs.languages, DisplayLanguage.apply),
       `subjects.label` =
@@ -83,15 +88,18 @@ object DisplayWorkAggregations {
           displayAggregation[Subject[Minted], DisplaySubject](
             aggs.subjectsLabel,
             subject => DisplaySubject(subject, includesIdentifiers = false)
-          )),
+          )
+        ),
       `contributors.agent.label` = whenRequestPresent(
         aggregationRequests,
-        WorkAggregationRequest.Contributor)(
+        WorkAggregationRequest.Contributor
+      )(
         displayAggregation[Contributor[Minted], DisplayAbstractAgent](
           aggs.contributorsAgentsLabel,
           contributor =>
             DisplayAbstractAgent(contributor.agent, includesIdentifiers = false)
-        )),
+        )
+      ),
       `items.locations.license` =
         whenRequestPresent(aggregationRequests, WorkAggregationRequest.License)(
           displayAggregation(aggs.itemsLocationsLicense, DisplayLicense.apply)
@@ -112,7 +120,8 @@ object DisplayWorkAggregations {
 
   private def displayAggregation[T, D](
     maybeAgg: Option[Aggregation[T]],
-    display: T => D): Option[DisplayAggregation[D]] =
+    display: T => D
+  ): Option[DisplayAggregation[D]] =
     maybeAgg.map {
       DisplayAggregation(_, display)
     }

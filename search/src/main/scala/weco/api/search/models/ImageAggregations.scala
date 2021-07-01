@@ -22,7 +22,8 @@ object ImageAggregations extends ElasticAggregations {
             .decodeAgg[AbstractAgent[Minted]]("sourceContributorAgents"),
           sourceGenres =
             e4sAggregations.decodeAgg[Genre[Minted]]("sourceGenres")
-        ))
+        )
+      )
     } else {
       None
     }

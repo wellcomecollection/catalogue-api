@@ -30,9 +30,10 @@ trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
       contextPath = "context.json"
     )
 
-  def withItemsApi[R](index: Index,
-                      responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
-    testWith: TestWith[URL, R]): R = {
+  def withItemsApi[R](
+    index: Index,
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[URL, R]): R = {
 
     val httpClient = new MemoryHttpClient(responses) with HttpGet
     with HttpPost {

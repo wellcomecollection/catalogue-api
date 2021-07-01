@@ -54,7 +54,7 @@ case object WorksIncludes {
       parts = includes.contains(WorkInclude.Parts),
       partOf = includes.contains(WorkInclude.PartOf),
       precededBy = includes.contains(WorkInclude.PrecededBy),
-      succeededBy = includes.contains(WorkInclude.SucceededBy),
+      succeededBy = includes.contains(WorkInclude.SucceededBy)
     )
 
   def none: WorksIncludes = WorksIncludes()

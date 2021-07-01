@@ -15,9 +15,11 @@ import weco.catalogue.internal_model.work._
 trait DisplaySerialisationTestBase {
   this: Suite =>
 
-  def optionalString(fieldName: String,
-                     maybeStringValue: Option[String],
-                     trailingComma: Boolean = true): String =
+  def optionalString(
+    fieldName: String,
+    maybeStringValue: Option[String],
+    trailingComma: Boolean = true
+  ): String =
     maybeStringValue match {
       case None => ""
       case Some(value) =>
@@ -27,10 +29,12 @@ trait DisplaySerialisationTestBase {
         """
     }
 
-  def optionalObject[T](fieldName: String,
-                        formatter: T => String,
-                        maybeObjectValue: Option[T],
-                        firstField: Boolean = false) =
+  def optionalObject[T](
+    fieldName: String,
+    formatter: T => String,
+    maybeObjectValue: Option[T],
+    firstField: Boolean = false
+  ) =
     maybeObjectValue match {
       case None => ""
       case Some(o) =>
@@ -179,7 +183,8 @@ trait DisplaySerialisationTestBase {
     }"""
 
   def abstractRootConcept(
-    abstractRootConcept: AbstractRootConcept[IdState.Minted]) =
+    abstractRootConcept: AbstractRootConcept[IdState.Minted]
+  ) =
     abstractRootConcept match {
       case c: Concept[IdState.Minted]      => concept(c)
       case p: Place[IdState.Minted]        => place(p)
@@ -193,8 +198,10 @@ trait DisplaySerialisationTestBase {
   def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
     concepts.map(abstractRootConcept).mkString(",")
 
-  def subject(s: Subject[IdState.Minted],
-              showConcepts: Boolean = true): String =
+  def subject(
+    s: Subject[IdState.Minted],
+    showConcepts: Boolean = true
+  ): String =
     s"""
     {
       "label": "${s.label}",

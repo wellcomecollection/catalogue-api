@@ -25,7 +25,8 @@ case class DisplayImageAggregations(
   @Schema(
     description = "Contributor agent aggregation on a set of results."
   ) `source.contributors.agent.label`: Option[
-    DisplayAggregation[DisplayAbstractAgent]] = None,
+    DisplayAggregation[DisplayAbstractAgent]
+  ] = None,
   @Schema(
     description = "Genre aggregation on a set of results."
   ) `source.genres.label`: Option[DisplayAggregation[DisplayGenre]],
@@ -48,12 +49,14 @@ object DisplayImageAggregations {
         ),
       `source.genres.label` = displayAggregation[Genre[Minted], DisplayGenre](
         aggs.sourceGenres,
-        DisplayGenre(_, includesIdentifiers = false))
+        DisplayGenre(_, includesIdentifiers = false)
+      )
     )
 
   private def displayAggregation[T, D](
     maybeAgg: Option[Aggregation[T]],
-    display: T => D): Option[DisplayAggregation[D]] =
+    display: T => D
+  ): Option[DisplayAggregation[D]] =
     maybeAgg.map {
       DisplayAggregation(_, display)
     }

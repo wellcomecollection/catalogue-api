@@ -19,8 +19,10 @@ object ElasticsearchErrorHandler extends Logging {
   private val resultSizePattern =
     """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
-  def buildDisplayError(documentType: String,
-                        e: ElasticsearchError): DisplayError =
+  def buildDisplayError(
+    documentType: String,
+    e: ElasticsearchError
+  ): DisplayError =
     e match {
       case DocumentNotFoundError(id) =>
         DisplayError(
@@ -46,7 +48,8 @@ object ElasticsearchErrorHandler extends Logging {
           case _ =>
             serverError(
               s"Unknown error in search phase execution: ${e.reason}",
-              e.elasticError)
+              e.elasticError
+            )
         }
 
       // Anything else should bubble up as a 500, as it's at least somewhat
@@ -55,30 +58,39 @@ object ElasticsearchErrorHandler extends Logging {
         serverError("Unknown error", e)
     }
 
-  private def userError(message: String,
-                        elasticError: ElasticError): DisplayError = {
+  private def userError(
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     warn(
-      s"Sending HTTP 400 from ${this.getClass.getSimpleName} ($message; $elasticError)")
+      s"Sending HTTP 400 from ${this.getClass.getSimpleName} ($message; $elasticError)"
+    )
     DisplayError(
       statusCode = StatusCodes.BadRequest,
       description = message
     )
   }
 
-  private def notFound(message: String,
-                       elasticError: ElasticError): DisplayError = {
+  private def notFound(
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     warn(
-      s"Sending HTTP 404 from ${this.getClass.getSimpleName} ($message; $elasticError)")
+      s"Sending HTTP 404 from ${this.getClass.getSimpleName} ($message; $elasticError)"
+    )
     DisplayError(
       statusCode = StatusCodes.NotFound,
       description = message
     )
   }
 
-  private def serverError(message: String,
-                          elasticError: ElasticError): DisplayError = {
+  private def serverError(
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     error(
-      s"Sending HTTP 500 from ${this.getClass.getSimpleName} ($message; $elasticError)")
+      s"Sending HTTP 500 from ${this.getClass.getSimpleName} ($message; $elasticError)"
+    )
     DisplayError(statusCode = StatusCodes.InternalServerError)
   }
 }

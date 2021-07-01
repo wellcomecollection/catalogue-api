@@ -25,6 +25,6 @@ object DisplayAccessCondition {
       status = accessCondition.status.map(DisplayAccessStatus.apply),
       terms = accessCondition.terms,
       to = accessCondition.to,
-      note = accessCondition.note,
+      note = accessCondition.note
     )
 }

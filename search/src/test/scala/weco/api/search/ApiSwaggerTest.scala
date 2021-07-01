@@ -354,7 +354,8 @@ class ApiSwaggerTest
       it("locations.license") {
         val actualValues = getParameterEnumValues(
           multipleImagesEndpoint,
-          name = "locations.license")
+          name = "locations.license"
+        )
         val expectedValues = License.values.map { _.id }
 
         actualValues should contain theSameElementsAs expectedValues
@@ -378,7 +379,8 @@ class ApiSwaggerTest
       it("items.locations.license") {
         val actualValues = getParameterEnumValues(
           multipleWorksEndpoint,
-          name = "items.locations.license")
+          name = "items.locations.license"
+        )
         val expectedValues = License.values.map { _.id }
 
         actualValues should contain theSameElementsAs expectedValues

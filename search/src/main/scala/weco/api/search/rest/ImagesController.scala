@@ -19,10 +19,12 @@ import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesController(elasticsearchService: ElasticsearchService,
-                       implicit val apiConfig: ApiConfig,
-                       imagesIndex: Index,
-                       queryConfig: QueryConfig)(implicit ec: ExecutionContext)
+class ImagesController(
+  elasticsearchService: ElasticsearchService,
+  implicit val apiConfig: ApiConfig,
+  imagesIndex: Index,
+  queryConfig: QueryConfig
+)(implicit ec: ExecutionContext)
     extends CustomDirectives
     with Tracing {
 
@@ -59,7 +61,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                           withSimilarColors =
                             similarImages.get(SimilarityMetric.Colors),
                           withSimilarFeatures =
-                            similarImages.get(SimilarityMetric.Features),
+                            similarImages.get(SimilarityMetric.Features)
                         )
                       )
                     )
@@ -92,7 +94,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                         searchOptions = searchOptions,
                         includes =
                           params.include.getOrElse(MultipleImagesIncludes.none),
-                        requestUri = uri,
+                        requestUri = uri
                       )
                     )
                   )
@@ -103,7 +105,8 @@ class ImagesController(elasticsearchService: ElasticsearchService,
     }
 
   private def getSimilarityMetrics(
-    maybeIncludes: Option[SingleImageIncludes]): List[SimilarityMetric] =
+    maybeIncludes: Option[SingleImageIncludes]
+  ): List[SimilarityMetric] =
     maybeIncludes
       .map { includes =>
         List(
@@ -112,7 +115,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
           else None,
           if (includes.withSimilarColors) Some(SimilarityMetric.Colors)
-          else None,
+          else None
         ).flatten
       }
       .getOrElse(Nil)

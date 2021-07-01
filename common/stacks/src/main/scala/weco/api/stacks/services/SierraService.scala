@@ -34,8 +34,9 @@ class SierraService(
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  def getAccessCondition(sourceIdentifier: SourceIdentifier)
-    : Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
+  def getAccessCondition(
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     for {
@@ -46,8 +47,9 @@ class SierraService(
     } yield accessCondition
   }
 
-  def getItemStatus(sourceIdentifier: SourceIdentifier)
-    : Future[Either[SierraItemLookupError, StacksItemStatus]] = {
+  def getItemStatus(
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[SierraItemLookupError, StacksItemStatus]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource.lookupItem(item).map {
@@ -141,7 +143,8 @@ class SierraService(
   }
 
   private def checkIfItemCanBeRequested(
-    item: SierraItemNumber): Future[Either[HoldRejected, HoldAccepted]] =
+    item: SierraItemNumber
+  ): Future[Either[HoldRejected, HoldAccepted]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -152,7 +155,8 @@ class SierraService(
       // this does exist -- so instead, we return a generic "CannotBeRequested" error.
       case Right(item) if item.deleted || item.suppressed =>
         warn(
-          s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra")
+          s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra"
+        )
         Left(HoldRejected.ItemCannotBeRequested)
 
       // If the holdCount is non-zero, that means another user has a hold on this item,
@@ -173,7 +177,8 @@ class SierraService(
       // We bubble up a 500 error, so we can be alerted and investigate further.
       case Left(SierraItemLookupError.ItemNotFound) =>
         warn(
-          s"User tried to place a hold on item $item, which does not exist in Sierra")
+          s"User tried to place a hold on item $item, which does not exist in Sierra"
+        )
         Left(HoldRejected.ItemMissingFromSourceSystem)
 
       // If the rules for requesting prevent an item from being requested, we can
@@ -275,7 +280,8 @@ object SierraService {
   def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int = 10)(
     implicit
     ec: ExecutionContext,
-    mat: Materializer): SierraService =
+    mat: Materializer
+  ): SierraService =
     new SierraService(
       new SierraSource(client),
       holdLimit = holdLimit

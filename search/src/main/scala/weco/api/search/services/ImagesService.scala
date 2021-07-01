@@ -10,14 +10,13 @@ import weco.catalogue.internal_model.image.{Image, ImageState}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesService(val elasticsearchService: ElasticsearchService,
-                    queryConfig: QueryConfig)(implicit
-                                              val ec: ExecutionContext)
-    extends SearchService[
-      Image[ImageState.Indexed],
-      Image[ImageState.Indexed],
-      ImageAggregations,
-      ImageSearchOptions] {
+class ImagesService(
+  val elasticsearchService: ElasticsearchService,
+  queryConfig: QueryConfig
+)(
+  implicit
+  val ec: ExecutionContext
+) extends SearchService[Image[ImageState.Indexed], Image[ImageState.Indexed], ImageAggregations, ImageSearchOptions] {
 
   private val nVisuallySimilarImages = 5
 
@@ -27,17 +26,18 @@ class ImagesService(val elasticsearchService: ElasticsearchService,
   implicit val decoderV: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
 
   override protected def createAggregations(
-    searchResponse: SearchResponse): Option[ImageAggregations] =
+    searchResponse: SearchResponse
+  ): Option[ImageAggregations] =
     ImageAggregations(searchResponse)
 
   override protected val requestBuilder: ImagesRequestBuilder =
     new ImagesRequestBuilder(queryConfig)
 
-  def retrieveSimilarImages(index: Index,
-                            image: Image[ImageState.Indexed],
-                            similarityMetric: SimilarityMetric =
-                              SimilarityMetric.Blended)
-    : Future[List[Image[ImageState.Indexed]]] = {
+  def retrieveSimilarImages(
+    index: Index,
+    image: Image[ImageState.Indexed],
+    similarityMetric: SimilarityMetric = SimilarityMetric.Blended
+  ): Future[List[Image[ImageState.Indexed]]] = {
     val builder = similarityMetric match {
       case SimilarityMetric.Blended =>
         requestBuilder.requestWithBlendedSimilarity

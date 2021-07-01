@@ -28,10 +28,12 @@ class DisplayLocationTest
       val displayDigitalLocation =
         displayLocation.asInstanceOf[DisplayDigitalLocation]
       displayDigitalLocation.locationType shouldBe DisplayLocationType(
-        locationType)
+        locationType
+      )
       displayDigitalLocation.url shouldBe thumbnailUrl
       displayDigitalLocation.license shouldBe Some(
-        DisplayLicense(internalLocation.license.get))
+        DisplayLicense(internalLocation.license.get)
+      )
       displayDigitalLocation.ontologyType shouldBe "DigitalLocation"
     }
 
@@ -62,7 +64,8 @@ class DisplayLocationTest
 
       displayLocation shouldBe DisplayPhysicalLocation(
         locationType = DisplayLocationType(locationType),
-        locationLabel)
+        locationLabel
+      )
     }
 
     it("copies the License from a PhysicalLocation") {
@@ -98,7 +101,8 @@ class DisplayLocationTest
 
       DisplayLocation(digitalLocation) shouldBe DisplayDigitalLocation(
         locationType = DisplayLocationType(locationType),
-        url = url)
+        url = url
+      )
     }
 
     it("copies the license from a DigitalLocation") {

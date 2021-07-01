@@ -93,7 +93,8 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       case GenreFilter(genreQueries) =>
         termsQuery(
           "source.canonicalWork.data.genres.label.keyword",
-          genreQueries)
+          genreQueries
+        )
     }
 
   def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
@@ -114,10 +115,9 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   def requestWithSimilarColors: (Index, String, Int) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
-  private def similarityRequest(query: (String, Index) => Query)(
-    index: Index,
-    id: String,
-    n: Int): SearchRequest =
+  private def similarityRequest(
+    query: (String, Index) => Query
+  )(index: Index, id: String, n: Int): SearchRequest =
     search(index)
       .query(query(id, index))
       .size(n)
