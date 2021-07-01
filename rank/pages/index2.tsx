@@ -13,6 +13,7 @@ import Form, { Label, FormBar, Select, Submit } from '../components/Form'
 import Result from '../components/Result'
 import { H2 } from '../components/H'
 import { Meta } from '../components/Text'
+import { string } from 'yargs'
 
 type Props = {
   searchTemplates: SearchTemplate[]
@@ -104,6 +105,54 @@ const TestRun: FC<TestRunProps> = ({
   )
 }
 
+type IndexSelectorProps = {
+  worksIndex?: string
+  imagesIndex?: string
+  indices: string[]
+}
+const IndexSelector: FC<IndexSelectorProps> = ({
+  worksIndex,
+  imagesIndex,
+  indices,
+}) => {
+  const [worksIndexVal, setWorksIndexVal] = useState(worksIndex)
+  const [imagesIndexVal, setImagesIndexVal] = useState(imagesIndex)
+  return (
+    <>
+      <Label>
+        Works index
+        <Select
+          name="worksIndex"
+          value={worksIndexVal}
+          onChange={(event) => setWorksIndexVal(event.currentTarget.value)}
+        >
+          <option value="">default</option>
+          {indices
+            .filter((index) => index.startsWith('works'))
+            .map((index) => (
+              <option key={index}>{index}</option>
+            ))}
+        </Select>
+      </Label>
+      <Label>
+        Images index
+        <Select
+          name="imagesIndex"
+          value={imagesIndexVal}
+          onChange={(event) => setImagesIndexVal(event.currentTarget.value)}
+        >
+          <option value="">default</option>
+          {indices
+            .filter((index) => index.startsWith('images'))
+            .map((index) => (
+              <option key={index}>{index}</option>
+            ))}
+        </Select>
+      </Label>
+    </>
+  )
+}
+
 export const Index2: NextPage<Props> = ({
   searchTemplates,
   worksIndex,
@@ -116,46 +165,30 @@ export const Index2: NextPage<Props> = ({
   //   (t) => t.namespace === 'images'
   // )
   // const imagesTests = tests.images
-
-  const [testing, setTesting] = useState(false)
-  const [worksIndexVal, setWorksIndexVal] = useState(worksIndex)
-  const [imagesIndexVal, setImagesIndexVal] = useState(imagesIndex)
   return (
     <>
       <Form>
-        <FormBar>
-          <Label>
-            Works index
-            <Select
-              name="worksIndex"
-              value={worksIndexVal}
-              onChange={(event) => setWorksIndexVal(event.currentTarget.value)}
-            >
-              <option value="">default</option>
-              {indices
-                .filter((index) => index.startsWith('works'))
-                .map((index) => (
-                  <option key={index}>{index}</option>
-                ))}
-            </Select>
-          </Label>
-          <Label>
-            Images index
-            <Select
-              name="imagesIndex"
-              value={imagesIndexVal}
-              onChange={(event) => setImagesIndexVal(event.currentTarget.value)}
-            >
-              <option value="">default</option>
-              {indices
-                .filter((index) => index.startsWith('images'))
-                .map((index) => (
-                  <option key={index}>{index}</option>
-                ))}
-            </Select>
-          </Label>
-          <Submit />
-        </FormBar>
+        <div className={`grid grid-cols-${worksTemplates.length}`}>
+          <div>
+            <IndexSelector
+              worksIndex={worksIndex}
+              imagesIndex={imagesIndex}
+              indices={[]}
+            />
+          </div>
+          <div className="flex">
+            <div>
+              <IndexSelector
+                worksIndex={worksIndex}
+                imagesIndex={imagesIndex}
+                indices={indices}
+              />
+            </div>
+            <div className="flex-shrink">
+              <Submit />
+            </div>
+          </div>
+        </div>
       </Form>
       {worksTests.map((test) => (
         <div key={`works-${test.id}`} className="mb-5">

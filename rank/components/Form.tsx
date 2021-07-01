@@ -38,7 +38,7 @@ const Submit: FC = () => {
   return (
     <button
       type="submit"
-      className="rounded-full bg-pink-500 flex items-center justify-center w-12 h-12"
+      className="bg-pink-500 flex items-center justify-center w-12 h-12"
     >
       <span className="sr-only">Submit</span>
       🔍
