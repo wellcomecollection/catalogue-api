@@ -31,7 +31,8 @@ class SierraServiceTest
         val responses = Seq(
           (
             HttpRequest(
-              uri = "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
+              uri =
+                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
             ),
             HttpResponse(
               entity = HttpEntity(
@@ -84,7 +85,8 @@ class SierraServiceTest
         val responses = Seq(
           (
             HttpRequest(
-              uri = "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
+              uri =
+                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
             ),
             HttpResponse(
               entity = HttpEntity(
