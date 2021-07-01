@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# -*- encoding: utf-8
 
 import argparse
 import os
 import sys
 
-from commands import make
+from commands import run_build_script
 from git_utils import (
     local_current_head,
     get_sha1_for_tag,
