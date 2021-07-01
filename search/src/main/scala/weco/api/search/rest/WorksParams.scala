@@ -11,7 +11,7 @@ import weco.catalogue.internal_model.work.WorkType
 
 case class SingleWorkParams(
   include: Option[WorksIncludes],
-  _index: Option[String],
+  _index: Option[String]
 ) extends QueryParams
 
 object SingleWorkParams extends QueryParamsUtils {
@@ -47,7 +47,7 @@ object SingleWorkParams extends QueryParamsUtils {
       "parts" -> WorkInclude.Parts,
       "partOf" -> WorkInclude.PartOf,
       "precededBy" -> WorkInclude.PrecededBy,
-      "succeededBy" -> WorkInclude.SucceededBy,
+      "succeededBy" -> WorkInclude.SucceededBy
     ).emap(values => Right(WorksIncludes(values: _*)))
 }
 
@@ -74,7 +74,7 @@ case class MultipleWorksParams(
   partOf: Option[PartOfFilter],
   availabilities: Option[AvailabilitiesFilter],
   _queryType: Option[SearchQueryType],
-  _index: Option[String],
+  _index: Option[String]
 ) extends QueryParams
     with Paginated {
 
@@ -88,7 +88,7 @@ case class MultipleWorksParams(
       pageNumber = page.getOrElse(1),
       aggregations = aggregations.getOrElse(Nil),
       sortBy = sort.getOrElse(Nil),
-      sortOrder = sortOrder.getOrElse(SortingOrder.Ascending),
+      sortOrder = sortOrder.getOrElse(SortingOrder.Ascending)
     )
 
   private def filters: List[WorkFilter] =
@@ -169,13 +169,14 @@ object MultipleWorksParams extends QueryParamsUtils {
           itemLocationTypeId,
           accessStatus,
           workType,
-          partOf) =>
+          partOf
+          ) =>
         // Scala has a max tuple size of 22 so this is nested to get around this limit
         parameter(
           (
             "availabilities".as[AvailabilitiesFilter].?,
             "_queryType".as[SearchQueryType].?,
-            "_index".as[String].?,
+            "_index".as[String].?
           )
         ).tflatMap {
           case (availabilities, queryType, index) =>
@@ -244,7 +245,7 @@ object MultipleWorksParams extends QueryParamsUtils {
       "closed" -> AccessStatus.Closed,
       "licensed-resources" -> AccessStatus.LicensedResources,
       "unavailable" -> AccessStatus.Unavailable,
-      "permission-required" -> AccessStatus.PermissionRequired,
+      "permission-required" -> AccessStatus.PermissionRequired
     ).emap {
       case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
     }
@@ -269,12 +270,12 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val sortOrderDecoder: Decoder[SortingOrder] =
     decodeOneOf(
       "asc" -> SortingOrder.Ascending,
-      "desc" -> SortingOrder.Descending,
+      "desc" -> SortingOrder.Descending
     )
 
   implicit val _queryTypeDecoder: Decoder[SearchQueryType] =
     decodeOneWithDefaultOf(
       SearchQueryType.default,
-      "MultiMatcher" -> SearchQueryType.MultiMatcher,
+      "MultiMatcher" -> SearchQueryType.MultiMatcher
     )
 }

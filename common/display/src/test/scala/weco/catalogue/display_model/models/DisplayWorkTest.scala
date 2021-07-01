@@ -83,7 +83,8 @@ class DisplayWorkTest
       includes = WorksIncludes(WorkInclude.Identifiers)
     )
     displayWork.identifiers shouldBe Some(
-      List(DisplayIdentifier(work.sourceIdentifier)))
+      List(DisplayIdentifier(work.sourceIdentifier))
+    )
   }
 
   it("gets the physicalDescription from a Work") {
@@ -155,7 +156,7 @@ class DisplayWorkTest
               sourceIdentifier = sourceIdentifier
             )
           ),
-          roles = Nil,
+          roles = Nil
         ),
         Contributor(
           agent = Organisation(label = "Transylvania Terrors"),
@@ -170,7 +171,8 @@ class DisplayWorkTest
       DisplayWork(
         work,
         includes =
-          WorksIncludes(WorkInclude.Identifiers, WorkInclude.Contributors))
+          WorksIncludes(WorkInclude.Identifiers, WorkInclude.Contributors)
+      )
 
     displayWork.contributors.get shouldBe List(
       DisplayContributor(
@@ -202,7 +204,8 @@ class DisplayWorkTest
     val displayWork =
       DisplayWork(work, includes = WorksIncludes(WorkInclude.Production))
     displayWork.production.get shouldBe List(
-      DisplayProductionEvent(productionEvent, includesIdentifiers = false))
+      DisplayProductionEvent(productionEvent, includesIdentifiers = false)
+    )
   }
 
   // We use this for the scalacheck of the java.time.Instant type
@@ -214,7 +217,8 @@ class DisplayWorkTest
       for {
         millis <- chooseNum(
           Instant.MIN.getEpochSecond,
-          Instant.MAX.getEpochSecond)
+          Instant.MAX.getEpochSecond
+        )
         nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
       } yield {
         Instant.ofEpochMilli(millis).plusNanos(nanos)
@@ -286,7 +290,8 @@ class DisplayWorkTest
               id = IdState
                 .Identified(
                   createCanonicalId,
-                  contributorAgentSourceIdentifier),
+                  contributorAgentSourceIdentifier
+                )
             ),
             roles = Nil
           ),
@@ -295,7 +300,8 @@ class DisplayWorkTest
               label = "Big Business",
               id = IdState.Identified(
                 createCanonicalId,
-                contributorOrganisationSourceIdentifier),
+                contributorOrganisationSourceIdentifier
+              )
             ),
             roles = Nil
           ),
@@ -305,7 +311,8 @@ class DisplayWorkTest
               id = IdState
                 .Identified(
                   createCanonicalId,
-                  contributorPersonSourceIdentifier),
+                  contributorPersonSourceIdentifier
+                )
             ),
             roles = Nil
           )
@@ -321,21 +328,21 @@ class DisplayWorkTest
               Concept(
                 label = "Bonding",
                 id = IdState
-                  .Identified(createCanonicalId, conceptSourceIdentifier),
+                  .Identified(createCanonicalId, conceptSourceIdentifier)
               ),
               Period(
                 label = "Before",
                 id =
                   IdState.Identified(createCanonicalId, periodSourceIdentifier),
-                range = None,
+                range = None
               ),
               Place(
                 label = "Bulgaria",
                 id =
-                  IdState.Identified(createCanonicalId, placeSourceIdentifier),
+                  IdState.Identified(createCanonicalId, placeSourceIdentifier)
               )
             )
-          ),
+          )
         )
       )
       .genres(
@@ -401,7 +408,8 @@ class DisplayWorkTest
 
       it("on the top-level Work") {
         displayWork.identifiers shouldBe Some(
-          List(DisplayIdentifier(work.sourceIdentifier)))
+          List(DisplayIdentifier(work.sourceIdentifier))
+        )
       }
 
       it("contributors") {
@@ -409,7 +417,8 @@ class DisplayWorkTest
           DisplayWork(
             work,
             includes =
-              WorksIncludes(WorkInclude.Contributors, WorkInclude.Identifiers))
+              WorksIncludes(WorkInclude.Contributors, WorkInclude.Identifiers)
+          )
 
         val expectedIdentifiers = List(
           contributorAgentSourceIdentifier,
@@ -427,12 +436,14 @@ class DisplayWorkTest
       it("items") {
         val displayWork = DisplayWork(
           work,
-          includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items))
+          includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)
+        )
         val item: DisplayItem = displayWork.items.get.head
         val identifiedItem =
           work.data.items.head.asInstanceOf[Item[IdState.Identified]]
         item.identifiers shouldBe Some(
-          List(DisplayIdentifier(identifiedItem.id.sourceIdentifier)))
+          List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
+        )
       }
 
       it("subjects") {
@@ -440,7 +451,8 @@ class DisplayWorkTest
           DisplayWork(
             work,
             includes =
-              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Subjects))
+              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Subjects)
+          )
         val expectedIdentifiers = List(
           conceptSourceIdentifier,
           periodSourceIdentifier,
@@ -451,7 +463,8 @@ class DisplayWorkTest
 
         val subject = displayWork.subjects.get.head
         subject.identifiers shouldBe Some(
-          List(DisplayIdentifier(subjectSourceIdentifier)))
+          List(DisplayIdentifier(subjectSourceIdentifier))
+        )
 
         val concepts = subject.concepts
         concepts.map { _.identifiers } shouldBe expectedIdentifiers
@@ -462,9 +475,11 @@ class DisplayWorkTest
           DisplayWork(
             work,
             includes =
-              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Genres))
+              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Genres)
+          )
         displayWork.genres.get.head.concepts.head.identifiers shouldBe Some(
-          List(DisplayIdentifier(conceptSourceIdentifier)))
+          List(DisplayIdentifier(conceptSourceIdentifier))
+        )
       }
 
       it("images") {
@@ -526,7 +541,7 @@ class DisplayWorkTest
       displayWork.parts shouldBe Some(
         List(
           DisplayRelation(relationE),
-          DisplayRelation(relationF),
+          DisplayRelation(relationF)
         )
       )
     }

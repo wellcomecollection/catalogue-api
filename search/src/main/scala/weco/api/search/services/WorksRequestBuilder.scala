@@ -35,7 +35,8 @@ object WorksRequestBuilder
   }
 
   private def filteredAggregationBuilder(
-    implicit searchOptions: WorkSearchOptions) =
+    implicit searchOptions: WorkSearchOptions
+  ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
@@ -110,7 +111,8 @@ object WorksRequestBuilder
     }
 
   private def searchQuery(
-    implicit searchOptions: WorkSearchOptions): BoolQuery =
+    implicit searchOptions: WorkSearchOptions
+  ): BoolQuery =
     searchOptions.searchQuery
       .map {
         case SearchQuery(query, queryType) =>
@@ -119,7 +121,8 @@ object WorksRequestBuilder
       .getOrElse { boolQuery }
 
   private def filteredQuery(
-    implicit searchOptions: WorkSearchOptions): BoolQuery =
+    implicit searchOptions: WorkSearchOptions
+  ): BoolQuery =
     searchQuery
       .filter {
         (VisibleWorkFilter :: searchOptions.filters)
@@ -135,7 +138,8 @@ object WorksRequestBuilder
       case WorkTypeFilter(types) =>
         termsQuery(
           field = "data.workType",
-          values = types.map(WorkType.getName))
+          values = types.map(WorkType.getName)
+        )
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
@@ -151,26 +155,30 @@ object WorksRequestBuilder
       case LicenseFilter(licenseIds) =>
         termsQuery(
           field = "data.items.locations.license.id",
-          values = licenseIds)
+          values = licenseIds
+        )
       case IdentifiersFilter(identifiers) =>
         should(
           termsQuery(
             field = "state.sourceIdentifier.value",
-            values = identifiers),
+            values = identifiers
+          ),
           termsQuery(
             field = "data.otherIdentifiers.value",
-            values = identifiers)
+            values = identifiers
+          )
         )
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
           field = "data.items.locations.accessConditions.status.type",
           includes = includes.map(_.name),
-          excludes = excludes.map(_.name),
+          excludes = excludes.map(_.name)
         )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
         termsQuery(
           field = "data.items.locations.locationType.id",
-          values = itemLocationTypeIds)
+          values = itemLocationTypeIds
+        )
       case PartOfFilter(id) =>
         termQuery(field = "state.relations.ancestors.id", value = id)
       case AvailabilitiesFilter(availabilityIds) =>

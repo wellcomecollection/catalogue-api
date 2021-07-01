@@ -22,7 +22,8 @@ class CustomDirectivesTest
 
   it("gets the context URL") {
     contextUrl shouldBe new URL(
-      "https://api-test.wellcomecollection.org/catalogue/v2/context.json")
+      "https://api-test.wellcomecollection.org/catalogue/v2/context.json"
+    )
   }
 
   describe("extractPublicUri") {

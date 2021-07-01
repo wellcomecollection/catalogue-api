@@ -8,7 +8,8 @@ import weco.catalogue.internal_model.work.Relation
 case class DisplayRelation(
   @Schema(
     accessMode = Schema.AccessMode.READ_ONLY,
-    description = "The canonical identifier given to a thing.") id: String,
+    description = "The canonical identifier given to a thing."
+  ) id: String,
   @Schema(
     description =
       "The title or other short label of a work, including labels not present in the actual work or item but applied by the cataloguer for the purposes of search or description."

@@ -32,8 +32,10 @@ case class DisplayImageSource(
 
 object DisplayImageSource {
 
-  def apply(imageSource: ImageSource,
-            includes: ImageIncludes): DisplayImageSource =
+  def apply(
+    imageSource: ImageSource,
+    includes: ImageIncludes
+  ): DisplayImageSource =
     imageSource match {
       case works: ParentWorks =>
         DisplayImageSource(works, includes)
@@ -47,7 +49,8 @@ object DisplayImageSource {
         if (includes.`source.contributors`)
           Some(
             parent.canonicalWork.data.contributors
-              .map(DisplayContributor(_, includesIdentifiers = false)))
+              .map(DisplayContributor(_, includesIdentifiers = false))
+          )
         else None,
       languages =
         if (includes.`source.languages`)
@@ -57,7 +60,8 @@ object DisplayImageSource {
         if (includes.`source.genres`)
           Some(
             parent.canonicalWork.data.genres
-              .map(DisplayGenre(_, includesIdentifiers = false)))
+              .map(DisplayGenre(_, includesIdentifiers = false))
+          )
         else None,
       ontologyType = "Work"
     )

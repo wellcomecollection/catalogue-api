@@ -10,9 +10,10 @@ import weco.storage.fixtures.S3Fixtures
 
 trait SnapshotServiceFixture extends IndexFixtures with S3Fixtures {
   this: Suite =>
-  def withSnapshotService[R](worksIndex: Index = "worksIndex",
-                             elasticClient: ElasticClient = elasticClient)(
-    testWith: TestWith[SnapshotService, R]): R =
+  def withSnapshotService[R](
+    worksIndex: Index = "worksIndex",
+    elasticClient: ElasticClient = elasticClient
+  )(testWith: TestWith[SnapshotService, R]): R =
     testWith(
       new SnapshotService(
         SnapshotGeneratorConfig(index = worksIndex)

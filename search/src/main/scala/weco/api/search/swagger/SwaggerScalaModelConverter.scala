@@ -28,9 +28,11 @@ class SwaggerScalaModelConverter extends AbstractModelConverter(Json.mapper()) {
 
   Json.mapper().registerModule(new DefaultScalaModule())
 
-  override def resolve(annotatedType: AnnotatedType,
-                       context: ModelConverterContext,
-                       chain: Iterator[ModelConverter]): Schema[_] = {
+  override def resolve(
+    annotatedType: AnnotatedType,
+    context: ModelConverterContext,
+    chain: Iterator[ModelConverter]
+  ): Schema[_] = {
     val cls = getClass(annotatedType.getType)
 
     if (cls == classOf[Option[_]])
@@ -45,7 +47,8 @@ class SwaggerScalaModelConverter extends AbstractModelConverter(Json.mapper()) {
         schema.name(s"${getAggregationClassName(annotatedType)}Aggregation")
       else if (cls == classOf[DisplayAggregationBucket[_]])
         schema.name(
-          s"${getAggregationClassName(annotatedType)}AggregationBucket")
+          s"${getAggregationClassName(annotatedType)}AggregationBucket"
+        )
       else
         schema
     } else

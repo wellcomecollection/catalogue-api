@@ -36,7 +36,8 @@ class SnapshotServiceTest
   import weco.catalogue.display_model.models.Implicits._
 
   def withFixtures[R](
-    testWith: TestWith[(SnapshotService, Index, Bucket), R]): R =
+    testWith: TestWith[(SnapshotService, Index, Bucket), R]
+  ): R =
     withLocalWorksIndex { worksIndex =>
       withLocalS3Bucket { bucket =>
         withSnapshotService(worksIndex) { snapshotService =>
@@ -89,9 +90,11 @@ class SnapshotServiceTest
         result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
         result.snapshotResult.startedAt shouldBe >=(
-          result.snapshotJob.requestedAt)
+          result.snapshotJob.requestedAt
+        )
         result.snapshotResult.finishedAt shouldBe >(
-          result.snapshotResult.startedAt)
+          result.snapshotResult.startedAt
+        )
 
         result.snapshotResult.s3Etag shouldBe s3Etag
         result.snapshotResult.s3Size shouldBe s3Size
@@ -140,9 +143,11 @@ class SnapshotServiceTest
         result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
         result.snapshotResult.startedAt shouldBe >=(
-          result.snapshotJob.requestedAt)
+          result.snapshotJob.requestedAt
+        )
         result.snapshotResult.finishedAt shouldBe >=(
-          result.snapshotResult.startedAt)
+          result.snapshotResult.startedAt
+        )
 
         result.snapshotResult.s3Etag shouldBe s3Etag
         result.snapshotResult.s3Size shouldBe s3Size
@@ -181,7 +186,8 @@ class SnapshotServiceTest
 
       withSnapshotService(
         worksIndex = "wrong-index",
-        elasticClient = brokenElasticClient) { brokenSnapshotService =>
+        elasticClient = brokenElasticClient
+      ) { brokenSnapshotService =>
         val snapshotJob = SnapshotJob(
           s3Location = createS3ObjectLocationWith(bucket),
           apiVersion = ApiVersions.v2,

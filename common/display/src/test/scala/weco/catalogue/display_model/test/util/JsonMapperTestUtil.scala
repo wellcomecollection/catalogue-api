@@ -8,6 +8,7 @@ import weco.http.json.DisplayJsonUtil
 trait JsonMapperTestUtil extends JsonAssertions {
 
   def assertObjectMapsToJson[T](value: T, expectedJson: String)(
-    implicit encoder: Encoder[T]): Assertion =
+    implicit encoder: Encoder[T]
+  ): Assertion =
     assertJsonStringsAreEqual(DisplayJsonUtil.toJson(value), expectedJson)
 }

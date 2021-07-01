@@ -9,13 +9,16 @@ import io.swagger.v3.oas.annotations.media.Schema
 )
 case class DisplayAggregation[T](
   @Schema(description = "An aggregation on a set of results") buckets: List[
-    DisplayAggregationBucket[T]],
+    DisplayAggregationBucket[T]
+  ],
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregation"
 )
 
 case object DisplayAggregation {
-  def apply[T, DisplayT](agg: Aggregation[T],
-                         display: T => DisplayT): DisplayAggregation[DisplayT] =
+  def apply[T, DisplayT](
+    agg: Aggregation[T],
+    display: T => DisplayT
+  ): DisplayAggregation[DisplayT] =
     DisplayAggregation(
       buckets = agg.buckets.map { bucket =>
         DisplayAggregationBucket(

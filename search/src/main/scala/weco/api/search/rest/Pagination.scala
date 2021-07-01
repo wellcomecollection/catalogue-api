@@ -22,8 +22,10 @@ trait Paginated { this: QueryParams =>
           size >= PaginationLimits.minSize &&
           size <= PaginationLimits.maxSize
         }
-        .map(_ =>
-          s"pageSize: must be between ${PaginationLimits.minSize} and ${PaginationLimits.maxSize}")
+        .map(
+          _ =>
+            s"pageSize: must be between ${PaginationLimits.minSize} and ${PaginationLimits.maxSize}"
+        )
     ).flatten
 
 }
@@ -35,9 +37,11 @@ case class PaginationResponse(
 )
 
 object PaginationResponse {
-  def apply(resultList: ResultList[_, _],
-            searchOptions: SearchOptions[_, _, _],
-            requestUri: Uri): PaginationResponse = {
+  def apply(
+    resultList: ResultList[_, _],
+    searchOptions: SearchOptions[_, _, _],
+    requestUri: Uri
+  ): PaginationResponse = {
     val totalPages =
       getTotalPages(resultList.totalResults, searchOptions.pageSize)
     PaginationResponse(
@@ -47,9 +51,11 @@ object PaginationResponse {
     )
   }
 
-  private def pageLink(page: Int,
-                       totalPages: Int,
-                       requestUri: Uri): Option[String] =
+  private def pageLink(
+    page: Int,
+    totalPages: Int,
+    requestUri: Uri
+  ): Option[String] =
     if (pageInBounds(page, totalPages))
       Some(
         requestUri

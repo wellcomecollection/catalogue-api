@@ -74,8 +74,10 @@ class WorksController(
       }
     }
 
-  private def workFound(work: Work.Visible[Indexed],
-                        includes: WorksIncludes): Route =
+  private def workFound(
+    work: Work.Visible[Indexed],
+    includes: WorksIncludes
+  ): Route =
     complete(
       ContextResponse(
         contextUrl = contextUrl,

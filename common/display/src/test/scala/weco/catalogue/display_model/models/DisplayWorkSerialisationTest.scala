@@ -118,7 +118,8 @@ class DisplayWorkSerialisationTest
       |   }
       | ],
       | "availabilities": [${availabilities(
-           workWithCopyright.state.availabilities)}]
+           workWithCopyright.state.availabilities
+         )}]
       |}
     """.stripMargin
 
@@ -132,7 +133,8 @@ class DisplayWorkSerialisationTest
   }
 
   it(
-    "includes subject information in DisplayWork serialisation with the subjects include") {
+    "includes subject information in DisplayWork serialisation with the subjects include"
+  ) {
     val workWithSubjects = indexedWork().subjects(
       (1 to 3).map(_ => createSubject).toList
     )
@@ -145,7 +147,8 @@ class DisplayWorkSerialisationTest
       | "alternativeTitles": [],
       | "subjects": [${subjects(workWithSubjects.data.subjects)}],
       | "availabilities": [${availabilities(
-                            workWithSubjects.state.availabilities)}]
+                            workWithSubjects.state.availabilities
+                          )}]
       |}
     """.stripMargin
 
@@ -159,7 +162,8 @@ class DisplayWorkSerialisationTest
   }
 
   it(
-    "includes production information in DisplayWork serialisation with the production include") {
+    "includes production information in DisplayWork serialisation with the production include"
+  ) {
     val workWithProduction = indexedWork().production(
       createProductionEventList(count = 3)
     )
@@ -173,7 +177,8 @@ class DisplayWorkSerialisationTest
       | "alternativeTitles": [],
       | "production": [${production(workWithProduction.data.production)}],
       | "availabilities": [${availabilities(
-           workWithProduction.state.availabilities)}]
+           workWithProduction.state.availabilities
+         )}]
       |}
     """.stripMargin
 
@@ -187,7 +192,8 @@ class DisplayWorkSerialisationTest
   }
 
   it(
-    "includes the contributors in DisplayWork serialisation with the contribuotrs include") {
+    "includes the contributors in DisplayWork serialisation with the contribuotrs include"
+  ) {
     val work = indexedWork()
       .format(Format.EBooks)
       .description(randomAlphanumeric(100))
@@ -221,7 +227,8 @@ class DisplayWorkSerialisationTest
   }
 
   it(
-    "includes genre information in DisplayWork serialisation with the genres include") {
+    "includes genre information in DisplayWork serialisation with the genres include"
+  ) {
     val work = indexedWork().genres(
       List(
         Genre(
@@ -249,7 +256,8 @@ class DisplayWorkSerialisationTest
   }
 
   it(
-    "includes 'notes' if the notes include is present, with similar notes grouped together") {
+    "includes 'notes' if the notes include is present, with similar notes grouped together"
+  ) {
     val work = indexedWork().notes(
       List(GeneralNote("A"), FundingInformation("B"), GeneralNote("C"))
     )

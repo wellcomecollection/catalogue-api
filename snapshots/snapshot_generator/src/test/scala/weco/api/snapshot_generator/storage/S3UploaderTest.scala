@@ -55,6 +55,7 @@ class S3UploaderTest
 
     uploadResult shouldBe a[AmazonS3Exception]
     uploadResult.getMessage should startWith(
-      "The specified bucket does not exist")
+      "The specified bucket does not exist"
+    )
   }
 }

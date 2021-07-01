@@ -113,9 +113,11 @@ class WorksQueryTest
     it("searches the items.otherIdentifiers") {
       withLocalWorksIndex { index =>
         val item1 = createIdentifiedItemWith(
-          otherIdentifiers = List(createSourceIdentifier))
+          otherIdentifiers = List(createSourceIdentifier)
+        )
         val item2 = createIdentifiedItemWith(
-          otherIdentifiers = List(createSourceIdentifier))
+          otherIdentifiers = List(createSourceIdentifier)
+        )
 
         val work1 = indexedWork().items(List(item1))
         val work2 = indexedWork().items(List(item2))
@@ -297,7 +299,8 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         val matchingWork = indexedWork()
           .lettering(
-            "Old Mughal minaret near Shahjahanabad (Delhi), Ghulam Ali Khan, early XIX century")
+            "Old Mughal minaret near Shahjahanabad (Delhi), Ghulam Ali Khan, early XIX century"
+          )
         val notMatchingWork = indexedWork()
           .lettering("Not matching")
 
@@ -337,12 +340,15 @@ class WorksQueryTest
   private def assertResultsMatchForAllowedQueryTypes(
     index: Index,
     query: String,
-    matches: List[Work[Indexed]]): List[Assertion] =
+    matches: List[Work[Indexed]]
+  ): List[Assertion] =
     SearchQueryType.allowed map { queryType =>
       val results = searchResults(
         index,
         searchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery(query, queryType))))
+          searchQuery = Some(SearchQuery(query, queryType))
+        )
+      )
 
       withClue(s"Using: ${queryType.name}") {
         results.size shouldBe matches.size
@@ -356,7 +362,8 @@ class WorksQueryTest
 
   private def searchResults(
     index: Index,
-    searchOptions: WorkSearchOptions): List[Work[Indexed]] = {
+    searchOptions: WorkSearchOptions
+  ): List[Work[Indexed]] = {
     val future = worksService.listOrSearch(index, searchOptions)
 
     whenReady(future) {

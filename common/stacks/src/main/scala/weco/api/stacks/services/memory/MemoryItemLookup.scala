@@ -13,8 +13,9 @@ import scala.concurrent.Future
 
 class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
     extends ItemLookup {
-  override def byCanonicalId(itemId: CanonicalId)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] =
+  override def byCanonicalId(
+    itemId: CanonicalId
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] =
     Future.successful(
       items.find(_.id.canonicalId == itemId) match {
         case Some(it) => Right(it)
@@ -22,8 +23,9 @@ class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
       }
     )
 
-  override def bySourceIdentifier(sourceIdentifier: SourceIdentifier)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] =
+  override def bySourceIdentifier(
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] =
     Future.successful(
       items.find(_.id.sourceIdentifier == sourceIdentifier) match {
         case Some(it) => Right(it)

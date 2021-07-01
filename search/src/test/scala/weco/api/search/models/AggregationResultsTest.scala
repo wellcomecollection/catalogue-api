@@ -23,7 +23,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
-        hits = Array()),
+        hits = Array()
+      ),
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count_error_upper_bound" -> 0,
@@ -52,7 +53,9 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           AggregationBucket(data = Books, count = 393145),
           AggregationBucket(data = ManuscriptsAsian, count = 5696),
           AggregationBucket(data = Music, count = 9)
-        )))
+        )
+      )
+    )
   }
 
   it("uses the filtered count for aggregations with a filter subaggregation") {
@@ -66,7 +69,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
-        hits = Array()),
+        hits = Array()
+      ),
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count_error_upper_bound" -> 0,
@@ -85,7 +89,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
-      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234))))
+      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234)))
+    )
   }
 
   it("uses the buckets from the global aggregation when present") {
@@ -99,7 +104,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
-        hits = Array()),
+        hits = Array()
+      ),
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count" -> 12345,
@@ -121,7 +127,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
-      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234))))
+      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234)))
+    )
   }
 
   it("sorts the buckets by count (in descending order)") {
@@ -135,7 +142,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
-        hits = Array()),
+        hits = Array()
+      ),
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count" -> 12345,

@@ -23,8 +23,10 @@ case class DisplayProductionEvent(
 )
 
 object DisplayProductionEvent {
-  def apply(productionEvent: ProductionEvent[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayProductionEvent = {
+  def apply(
+    productionEvent: ProductionEvent[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayProductionEvent = {
     DisplayProductionEvent(
       label = productionEvent.label,
       places = productionEvent.places.map { DisplayPlace(_) },

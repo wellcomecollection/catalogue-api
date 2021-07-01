@@ -18,22 +18,25 @@ import scala.collection.JavaConverters._
 import scala.util.Try
 
 class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
-  implicit s3Client: AmazonS3)
-    extends Logging {
+  implicit s3Client: AmazonS3
+) extends Logging {
 
   require(
     partSize >= 5 * FileUtils.ONE_MB,
     s"Parts must be at least 5 MB in size, got $partSize < ${5 * FileUtils.ONE_MB}; see https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html"
   )
 
-  def upload(location: S3ObjectLocation,
-             bytes: Iterator[Byte]): Try[CompleteMultipartUploadResult] = Try {
+  def upload(
+    location: S3ObjectLocation,
+    bytes: Iterator[Byte]
+  ): Try[CompleteMultipartUploadResult] = Try {
     val initResponse = s3Client.initiateMultipartUpload(
       new InitiateMultipartUploadRequest(location.bucket, location.key)
     )
 
     debug(
-      s"Got init response for MultiPart Upload: upload ID ${initResponse.getUploadId}")
+      s"Got init response for MultiPart Upload: upload ID ${initResponse.getUploadId}"
+    )
 
     val partUploadResults = uploadParts(initResponse, location, bytes)
 

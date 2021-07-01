@@ -43,7 +43,7 @@ object Main extends WellcomeTypesafeApp {
       sqsStream = SQSBuilder.buildSQSStream[NotificationMessage](config),
       messageSender = SNSBuilder.buildSNSMessageSender(
         config,
-        subject = s"source: ${this.getClass.getSimpleName}.processMessage",
+        subject = s"source: ${this.getClass.getSimpleName}.processMessage"
       )
     )
   }

@@ -21,8 +21,10 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
   val sierraService: SierraService
   val itemLookup: ItemLookup
 
-  def createRequest(itemId: CanonicalId,
-                    patronNumber: SierraPatronNumber): Future[Route] =
+  def createRequest(
+    itemId: CanonicalId,
+    patronNumber: SierraPatronNumber
+  ): Future[Route] =
     itemLookup.byCanonicalId(itemId).map {
       case Right(item)
           if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
@@ -58,14 +60,17 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
       case Right(sourceIdentifier) =>
         // TODO: This looks wrong
         warn(
-          s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier")
+          s"Somebody tried to request non-Sierra item $itemId / $sourceIdentifier"
+        )
         invalidRequest("You cannot request " + itemId)
 
       case Left(err) => elasticError("Item", err)
     }
 
-  private def handleError(reason: HoldRejected,
-                          itemId: CanonicalId): (StatusCode, Option[String]) =
+  private def handleError(
+    reason: HoldRejected,
+    itemId: CanonicalId
+  ): (StatusCode, Option[String]) =
     reason match {
       case HoldRejected.ItemCannotBeRequested =>
         (StatusCodes.BadRequest, Some(s"You cannot request $itemId"))
@@ -73,7 +78,8 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
       case HoldRejected.ItemIsOnHoldForAnotherUser =>
         (
           StatusCodes.Conflict,
-          Some(s"Item $itemId is on hold for another reader"))
+          Some(s"Item $itemId is on hold for another reader")
+        )
 
       case HoldRejected.UserDoesNotExist(patron) =>
         (StatusCodes.NotFound, Some(s"There is no such user $patron"))
@@ -82,7 +88,9 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         (
           StatusCodes.Forbidden,
           Some(
-            "You are at your account limit and you cannot request more items"))
+            "You are at your account limit and you cannot request more items"
+          )
+        )
 
       case _ =>
         (StatusCodes.InternalServerError, None)

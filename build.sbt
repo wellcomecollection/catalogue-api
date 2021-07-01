@@ -32,7 +32,8 @@ def setupProject(
 lazy val display = setupProject(
   project,
   "common/display",
-  externalDependencies = CatalogueDependencies.displayModelDependencies)
+  externalDependencies = CatalogueDependencies.displayModelDependencies
+)
 
 lazy val search_common = setupProject(
   project,

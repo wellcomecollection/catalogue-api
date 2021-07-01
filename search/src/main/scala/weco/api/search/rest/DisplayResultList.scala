@@ -35,7 +35,8 @@ object DisplayResultList {
     resultList: ResultList[Work.Visible[WorkState.Indexed], WorkAggregations],
     searchOptions: SearchOptions[_, WorkAggregationRequest, _],
     includes: WorksIncludes,
-    requestUri: Uri): DisplayResultList[DisplayWork, DisplayWorkAggregations] =
+    requestUri: Uri
+  ): DisplayResultList[DisplayWork, DisplayWorkAggregations] =
     rest.PaginationResponse(resultList, searchOptions, requestUri) match {
       case PaginationResponse(totalPages, prevPage, nextPage) =>
         DisplayResultList(
@@ -55,8 +56,8 @@ object DisplayResultList {
     resultList: ResultList[Image[ImageState.Indexed], ImageAggregations],
     searchOptions: SearchOptions[_, _, _],
     includes: MultipleImagesIncludes,
-    requestUri: Uri)
-    : DisplayResultList[DisplayImage, DisplayImageAggregations] =
+    requestUri: Uri
+  ): DisplayResultList[DisplayImage, DisplayImageAggregations] =
     rest.PaginationResponse(resultList, searchOptions, requestUri) match {
       case PaginationResponse(totalPages, prevPage, nextPage) =>
         DisplayResultList(

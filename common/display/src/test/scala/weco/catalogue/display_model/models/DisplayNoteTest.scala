@@ -24,7 +24,7 @@ class DisplayNoteTest
         contents = List("Open signed in American Sign language."),
         noteType = DisplayNoteType("language-note", "Language note")
       )
-    ),
+    )
   )
 
   it("converts a Note to a DisplayNote") {

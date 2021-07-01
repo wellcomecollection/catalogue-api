@@ -23,17 +23,21 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
 
   protected def createAggregations(searchResponse: SearchResponse): Option[Aggs]
 
-  def findById(id: CanonicalId)(
-    index: Index): Future[Either[ElasticsearchError, T]] =
+  def findById(
+    id: CanonicalId
+  )(index: Index): Future[Either[ElasticsearchError, T]] =
     elasticsearchService.findById[T](id)(index)
 
-  def listOrSearch(index: Index, searchOptions: S)
-    : Future[Either[ElasticsearchError, ResultList[VisibleT, Aggs]]] =
+  def listOrSearch(
+    index: Index,
+    searchOptions: S
+  ): Future[Either[ElasticsearchError, ResultList[VisibleT, Aggs]]] =
     executeSearch(searchOptions, index)
       .map { _.map(createResultList) }
 
   private def createResultList(
-    searchResponse: SearchResponse): ResultList[VisibleT, Aggs] =
+    searchResponse: SearchResponse
+  ): ResultList[VisibleT, Aggs] =
     ResultList(
       results = searchResponse.hits.hits
         .map(deserialize[VisibleT])
@@ -56,7 +60,8 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
     */
   private def executeSearch(
     searchOptions: S,
-    index: Index): Future[Either[ElasticsearchError, SearchResponse]] = {
+    index: Index
+  ): Future[Either[ElasticsearchError, SearchResponse]] = {
     val searchRequest = requestBuilder
       .request(searchOptions, index)
       .trackTotalHits(true)
@@ -71,13 +76,16 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
       transaction.setLabel("sortOrder", searchOptions.sortOrder.toString)
       transaction.setLabel(
         "sortBy",
-        searchOptions.sortBy.map { _.toString }.mkString(","))
+        searchOptions.sortBy.map { _.toString }.mkString(",")
+      )
       transaction.setLabel(
         "filters",
-        searchOptions.filters.map { _.toString }.mkString(","))
+        searchOptions.filters.map { _.toString }.mkString(",")
+      )
       transaction.setLabel(
         "aggregations",
-        searchOptions.aggregations.map { _.toString }.mkString(","))
+        searchOptions.aggregations.map { _.toString }.mkString(",")
+      )
     }
   }
 }

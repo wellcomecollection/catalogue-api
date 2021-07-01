@@ -196,7 +196,8 @@ class RequestingScenarioTest
         (
           HttpRequest(
             uri = Uri(
-              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed")
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"
+            )
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -430,8 +431,10 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"
+          ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -601,8 +604,10 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"
+          ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -691,8 +696,10 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"
+          ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -781,8 +788,10 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(uri =
-            s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"),
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/items/$itemNumber?fields=deleted,fixedFields,holdCount,suppressed"
+          ),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -823,7 +832,8 @@ class RequestingScenarioTest
       And("we display a generic response")
       assertIsDisplayError(
         response,
-        statusCode = StatusCodes.InternalServerError)
+        statusCode = StatusCodes.InternalServerError
+      )
     }
 
     Scenario("A user that doesn't exist in Sierra") {
@@ -898,7 +908,8 @@ class RequestingScenarioTest
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(
-    implicit route: Route): HttpResponse = {
+    implicit route: Route
+  ): HttpResponse = {
     val request = HttpRequest(
       method = POST,
       uri = s"https://localhost$path",
@@ -920,7 +931,8 @@ class RequestingScenarioTest
     )
 
   def createIdentifiedSierraItemWith(
-    itemNumber: SierraItemNumber): Item[IdState.Identified] =
+    itemNumber: SierraItemNumber
+  ): Item[IdState.Identified] =
     createIdentifiedItemWith(
       sourceIdentifier = createSourceIdentifierWith(
         identifierType = IdentifierType.SierraSystemNumber,
@@ -933,9 +945,11 @@ class RequestingScenarioTest
   def createSierraPatronNumber: SierraPatronNumber =
     SierraPatronNumber(createSierraRecordNumberString)
 
-  def createRoute(itemLookup: ItemLookup,
-                  responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-                  holdLimit: Int = 10): Route = {
+  def createRoute(
+    itemLookup: ItemLookup,
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    holdLimit: Int = 10
+  ): Route = {
     val client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
@@ -954,8 +968,10 @@ class RequestingScenarioTest
       uri = s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
     )
 
-  def createListHoldsResponse(patron: SierraPatronNumber,
-                              items: Seq[SierraItemNumber]): HttpResponse =
+  def createListHoldsResponse(
+    patron: SierraPatronNumber,
+    items: Seq[SierraItemNumber]
+  ): HttpResponse =
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
@@ -973,13 +989,16 @@ class RequestingScenarioTest
       )
     )
 
-  private def createListHoldEntry(patron: SierraPatronNumber,
-                                  item: SierraItemNumber): String =
+  private def createListHoldEntry(
+    patron: SierraPatronNumber,
+    item: SierraItemNumber
+  ): String =
     s"""
        |{
        |  "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/${randomInt(
          from = 0,
-         to = 10000)}",
+         to = 10000
+       )}",
        |  "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}",
        |  "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
        |  "frozen": false,
@@ -990,8 +1009,10 @@ class RequestingScenarioTest
        |}
        |""".stripMargin
 
-  def createHoldRequest(patron: SierraPatronNumber,
-                        item: SierraItemNumber): HttpRequest =
+  def createHoldRequest(
+    patron: SierraPatronNumber,
+    item: SierraItemNumber
+  ): HttpRequest =
     HttpRequest(
       method = HttpMethods.POST,
       uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",

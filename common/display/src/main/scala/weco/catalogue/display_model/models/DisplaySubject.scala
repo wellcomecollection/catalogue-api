@@ -14,13 +14,16 @@ case class DisplaySubject(
   identifiers: Option[List[DisplayIdentifier]] = None,
   @Schema(description = "A label given to a thing.") label: String,
   @Schema(description = "Relates a subject to a list of concepts.") concepts: List[
-    DisplayAbstractRootConcept],
+    DisplayAbstractRootConcept
+  ],
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Subject"
 )
 
 object DisplaySubject extends GetIdentifiers {
-  def apply(subject: Subject[IdState.Minted],
-            includesIdentifiers: Boolean): DisplaySubject =
+  def apply(
+    subject: Subject[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplaySubject =
     subject match {
       case Subject(id, label, concepts) =>
         DisplaySubject(

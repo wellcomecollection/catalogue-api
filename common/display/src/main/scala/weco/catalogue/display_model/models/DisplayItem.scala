@@ -12,8 +12,8 @@ import weco.catalogue.internal_model.work.Item
 case class DisplayItem(
   @Schema(
     `type` = "String",
-    description = "The canonical identifier given to a thing.") id: Option[
-    String],
+    description = "The canonical identifier given to a thing."
+  ) id: Option[String],
   @Schema(
     `type` = "List[uk.ac.wellcome.Display.models.DisplayIdentifier]",
     description =
@@ -36,8 +36,10 @@ case class DisplayItem(
 
 object DisplayItem extends GetIdentifiers {
 
-  def apply(item: Item[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayItem =
+  def apply(
+    item: Item[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayItem =
     item match {
       case Item(id, title, note, locations) =>
         DisplayItem(

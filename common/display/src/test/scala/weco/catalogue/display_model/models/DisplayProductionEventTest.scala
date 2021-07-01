@@ -30,7 +30,8 @@ class DisplayProductionEventTest
           id = None,
           identifiers = None,
           label = "Macmillan"
-        )),
+        )
+      ),
       dates = List(DisplayPeriod(label = "2005")),
       function = Some(DisplayConcept(label = "Manufacture"))
     )

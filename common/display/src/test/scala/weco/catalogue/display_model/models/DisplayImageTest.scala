@@ -21,7 +21,8 @@ class DisplayImageTest
       includes = SingleImageIncludes.none,
       visuallySimilar = Some(similarImages),
       withSimilarColors = None,
-      withSimilarFeatures = None)
+      withSimilarFeatures = None
+    )
     displayImage.visuallySimilar.value should have length similarImages.size
     displayImage.visuallySimilar.value
       .map(_.id) should contain theSameElementsAs
