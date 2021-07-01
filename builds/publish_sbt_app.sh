@@ -14,7 +14,7 @@ BUILDS_DIR="$ROOT/builds"
 if [[ -f "$PROJECT_DIRECTORY/Dockerfile" ]]
 then
   $BUILDS_DIR/build_sbt_image.sh "$PROJECT"
-  $BUILDS_DIR/publish_image_with_weco_deploy.sh "storage" "$PROJECT"
+  $BUILDS_DIR/publish_image_with_weco_deploy.sh "$PROJECT"
 else
   echo "No Dockerfile, nothing to build!"
 fi
