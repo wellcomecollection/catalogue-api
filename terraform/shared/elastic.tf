@@ -73,6 +73,15 @@ locals {
     es_password = aws_secretsmanager_secret.service-items-password.name
   }
 
+  # This config will be consumed by the requests service in the identity stack
+  es_items_secret_config = {
+    es_host     = "elasticsearch/catalogue_api/public_host"
+    es_port     = "elasticsearch/catalogue_api/port"
+    es_protocol = "elasticsearch/catalogue_api/protocol"
+    es_username = aws_secretsmanager_secret.service-requests-username.name
+    es_password = aws_secretsmanager_secret.service-requests-password.name
+  }
+
   # This config will be consumed by the search service in the catalogue_api stack
   es_search_secret_config = {
     es_host     = "elasticsearch/catalogue_api/public_host"
@@ -126,6 +135,26 @@ resource "aws_secretsmanager_secret" "service-items-password" {
   tags        = local.default_tags
 }
 
+# Requests service credentials
+
+resource "aws_secretsmanager_secret" "service-requests-username" {
+  name = "elasticsearch/catalogue_api/requests/username"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  provider = "aws.identity"
+}
+
+resource "aws_secretsmanager_secret" "service-requests-password" {
+  name = "elasticsearch/catalogue_api/requests/password"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  provider = "aws.identity"
+}
+
 # Diff tool service credentials
 
 resource "aws_secretsmanager_secret" "service-diff_tool-username" {
@@ -172,6 +201,8 @@ resource "null_resource" "elasticsearch_users" {
     aws_secretsmanager_secret.service-search-password,
     aws_secretsmanager_secret.service-items-username,
     aws_secretsmanager_secret.service-items-password,
+    aws_secretsmanager_secret.service-requests-username,
+    aws_secretsmanager_secret.service-requests-password,
     aws_secretsmanager_secret.service-diff_tool-username,
     aws_secretsmanager_secret.service-diff_tool-password,
     aws_secretsmanager_secret.service-replication_manager-username,
