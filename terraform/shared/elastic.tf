@@ -17,12 +17,6 @@ resource "ec_deployment" "catalogue_api" {
       size       = "8g"
       zone_count = 3
     }
-
-    remote_cluster {
-      deployment_id = local.catalogue_ec_cluster_id
-      alias         = local.catalogue_ec_cluster_name
-      ref_id        = local.catalogue_ec_cluster_ref_id
-    }
   }
 
   # The catalogue-api cluster gets the pipeline-storage clusters added
