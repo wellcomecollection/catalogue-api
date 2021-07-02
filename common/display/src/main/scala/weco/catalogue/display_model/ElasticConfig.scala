@@ -15,14 +15,16 @@ object ElasticConfig {
   val indexDate = "2021-06-27"
 
   // This index has been manually created as a workaround for performance issue
-  // TODO: This line should be removed when the index moves on from 2021-06-27
-  val temporaryWorksIndex = s"works-indexed-2021-06-27a"
+  // TODO: These lines should be removed when the index moves on from 2021-06-27
+  val temporaryWorksIndex = s"works-indexed-2021-06-27b"
+  val temporaryImagesIndex = s"images-indexed-2021-06-27b"
 
   def apply(): ElasticConfig =
     ElasticConfig(
       // worksIndex = Index(s"works-indexed-$indexDate"),
-      // TODO: This line should be removed and the one above uncommented when the index moves on from 2021-06-27
+      // imagesIndex = Index(s"images-indexed-$indexDate")
+      // TODO: these lines should be removed and the above uncommented when the index moves on from 2021-06-27
       worksIndex = Index(temporaryWorksIndex),
-      imagesIndex = Index(s"images-indexed-$indexDate")
+      imagesIndex = Index(temporaryImagesIndex)
     )
 }
