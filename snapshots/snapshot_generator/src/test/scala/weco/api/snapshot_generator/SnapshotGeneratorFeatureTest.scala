@@ -123,7 +123,7 @@ class SnapshotGeneratorFeatureTest
     testWith: TestWith[(Queue, MemoryMessageSender, Index, Index, Bucket), R]
   ): R =
     withActorSystem { implicit actorSystem =>
-      withLocalSqsQueue(visibilityTimeout = 5) { queue =>
+      withLocalSqsQueue() { queue =>
         val messageSender = new MemoryMessageSender()
 
         withLocalWorksIndex { worksIndex =>
