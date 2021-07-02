@@ -14,7 +14,7 @@ resource "aws_secretsmanager_secret" "es_credentials" {
   name = "catalogue/${each.value}"
 }
 
-resource "aws_secretsmanager_secret" "es_credentials" {
+resource "aws_secretsmanager_secret" "es_credentials_identity" {
   for_each = toset([
   for path in setproduct(local.elasticsearch_apps_identity, local.elasticsearch_creds) : "${path[0]}/${path[1]}"
   ])

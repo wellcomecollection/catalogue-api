@@ -74,7 +74,7 @@ locals {
   }
 
   # This config will be consumed by the requests service in the identity stack
-  es_items_secret_config = {
+  es_requests_secret_config = {
     es_host     = "elasticsearch/catalogue_api/public_host"
     es_port     = "elasticsearch/catalogue_api/port"
     es_protocol = "elasticsearch/catalogue_api/protocol"
