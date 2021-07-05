@@ -10,7 +10,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.ErrorDirectives
-import weco.http.models.{ContextResponse, DisplayError}
+import weco.http.models.DisplayError
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -43,14 +43,11 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
               handleError(holdRejected, itemId = itemId)
             complete(
               status ->
-                ContextResponse(
-                  contextUrl = contextUrl,
-                  DisplayError(
-                    errorType = "http",
-                    httpStatus = status.intValue,
-                    label = status.reason(),
-                    description = description
-                  )
+                DisplayError(
+                  errorType = "http",
+                  httpStatus = status.intValue,
+                  label = status.reason(),
+                  description = description
                 )
             )
 

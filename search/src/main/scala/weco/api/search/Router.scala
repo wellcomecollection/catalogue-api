@@ -66,9 +66,6 @@ class Router(
             case _ => notFound(s"Image not found for identifier $id")
           }
         },
-        path("context.json") {
-          getFromResource("context-v2.json")
-        },
         path("swagger.json") {
           swagger
         },

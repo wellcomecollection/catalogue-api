@@ -12,7 +12,6 @@ trait ApiImagesTestBase
 
   def singleImageResult: String =
     s"""
-       |  "@context": "$contextUrl",
        |  "type": "Image"
      """.stripMargin
 

@@ -25,7 +25,6 @@ trait ApiWorksTestBase
 
   def singleWorkResult(ontologyType: String = "Work"): String =
     s"""
-        "@context": "$contextUrl",
         "type": "$ontologyType"
      """.stripMargin
 

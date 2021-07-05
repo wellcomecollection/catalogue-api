@@ -8,13 +8,9 @@ import weco.api.search.elasticsearch.{
 }
 import weco.api.search.models.ApiConfig
 import weco.http.FutureDirectives
-import weco.http.models.{ContextResponse, DisplayError}
-
-import java.net.URL
+import weco.http.models.DisplayError
 
 trait CustomDirectives extends FutureDirectives {
-  import weco.http.models.ContextResponse._
-
   implicit val apiConfig: ApiConfig
 
   // Directive for getting public URI of the current request, using the host
@@ -33,24 +29,11 @@ trait CustomDirectives extends FutureDirectives {
         )
     }
 
-  def contextUrl: URL =
-    apiConfig match {
-      case ApiConfig(scheme, host, rootPath, contextPath, _)
-          if rootPath.isEmpty =>
-        new URL(s"$scheme://$host/$contextPath")
-      case ApiConfig(scheme, host, rootPath, contextPath, _) =>
-        new URL(s"$scheme://$host$rootPath/$contextPath")
-    }
-
   def elasticError(documentType: String, err: ElasticsearchError): Route =
     error(
       ElasticsearchErrorHandler.buildDisplayError(documentType, err)
     )
 
-  private def error(err: DisplayError): Route = {
-    val status = err.httpStatus
-    complete(
-      status -> ContextResponse(contextUrl = contextUrl, result = err)
-    )
-  }
+  private def error(err: DisplayError): Route =
+    complete(err.httpStatus -> err)
 }

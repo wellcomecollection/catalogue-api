@@ -71,7 +71,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 400,
@@ -113,7 +112,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 404,
@@ -271,7 +269,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 400,
@@ -478,7 +475,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 409,
@@ -555,7 +551,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 403,
@@ -649,7 +644,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 400,
@@ -744,7 +738,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 400,
@@ -894,7 +887,6 @@ class RequestingScenarioTest
           _,
           s"""
              |{
-             |  "@context": "$contextUrl",
              |  "type": "Error",
              |  "errorType": "http",
              |  "httpStatus": 404,
