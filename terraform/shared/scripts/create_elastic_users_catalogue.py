@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This script is run by a Terraform local-exec provisioner to create roles/users in
+This script is run manually after "terraform apply" to create roles/users in
 an Elastic Cloud cluster immediately after it's been created.
 """
 
