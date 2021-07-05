@@ -10,7 +10,6 @@ import secrets
 import boto3
 import click
 
-import elasticsearch
 from elasticsearch import Elasticsearch
 
 SERVICES = {
