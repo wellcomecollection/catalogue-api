@@ -25,7 +25,7 @@ trait RequestsApiFixture extends HttpFixtures {
   def withRequestsApi[R](
     itemLookup: ItemLookup,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-  )(testWith: TestWith[(), R]): R = {
+  )(testWith: TestWith[Unit, R]): R =
     withMaterializer { implicit mat =>
       val sierraService = SierraService(
         new MemoryHttpClient(responses) with HttpGet with HttpPost {
@@ -42,5 +42,4 @@ trait RequestsApiFixture extends HttpFixtures {
         testWith(())
       }
     }
-  }
 }
