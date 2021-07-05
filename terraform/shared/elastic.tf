@@ -48,7 +48,7 @@ locals {
   catalogue_private_host = "${local.catalogue_elastic_region}.vpce.${local.catalogue_elastic_region}.aws.elastic-cloud.com"
   catalogue_public_host  = "${local.catalogue_api_elastic_id}.${local.catalogue_elastic_region}.aws.found.io"
 
-  catalogue_api_secrets = {
+  cluster_secrets = {
     "elasticsearch/catalogue_api/public_host"  = local.catalogue_public_host
     "elasticsearch/catalogue_api/private_host" = local.catalogue_private_host
 
@@ -91,7 +91,7 @@ locals {
 module "catalogue_api_secrets" {
   source = "../modules/secrets"
 
-  key_value_map = local.catalogue_api_secrets
+  key_value_map = local.cluster_secrets
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
@@ -137,7 +137,7 @@ resource "aws_secretsmanager_secret" "service-requests-username" {
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 
-  provider = "aws.identity"
+  provider = aws.identity
 }
 
 resource "aws_secretsmanager_secret" "service-requests-password" {
@@ -146,7 +146,7 @@ resource "aws_secretsmanager_secret" "service-requests-password" {
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 
-  provider = "aws.identity"
+  provider = aws.identity
 }
 
 # Diff tool service credentials
