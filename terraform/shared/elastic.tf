@@ -48,14 +48,17 @@ locals {
   catalogue_private_host = "${local.catalogue_elastic_region}.vpce.${local.catalogue_elastic_region}.aws.elastic-cloud.com"
   catalogue_public_host  = "${local.catalogue_api_elastic_id}.${local.catalogue_elastic_region}.aws.found.io"
 
+  # These are used for creating users in scripts/create_elastic_users.py
+  cluster_elastic_user_secrets = {
+    "elasticsearch/catalogue_api/username" = local.catalogue_elastic_username
+    "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
+  }
+
   cluster_secrets = {
     "elasticsearch/catalogue_api/public_host"  = local.catalogue_public_host
     "elasticsearch/catalogue_api/private_host" = local.catalogue_private_host
-
-    "elasticsearch/catalogue_api/username" = local.catalogue_elastic_username
-    "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
-    "elasticsearch/catalogue_api/protocol" = "https"
-    "elasticsearch/catalogue_api/port"     = 9243
+    "elasticsearch/catalogue_api/protocol"     = "https"
+    "elasticsearch/catalogue_api/port"         = 9243
   }
 
   # This config will be consumed by the items service in the catalogue_api stack
@@ -86,7 +89,20 @@ locals {
   }
 }
 
-# Cluster management secrets
+# Cluster secrets
+
+## Elastic user details
+
+module "elastic_user_secrets" {
+  source = "../modules/secrets"
+
+  key_value_map = local.cluster_elastic_user_secrets
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}
+
+## Cluster host details - catalogue account
 
 module "catalogue_api_secrets" {
   source = "../modules/secrets"
@@ -95,6 +111,21 @@ module "catalogue_api_secrets" {
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
+}
+
+## Cluster host details - identity account
+
+module "identity_secrets" {
+  source = "../modules/secrets"
+
+  key_value_map = local.cluster_secrets
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  providers = {
+    aws = aws.identity
+  }
 }
 
 # Search service credentials
