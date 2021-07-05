@@ -120,7 +120,7 @@ def prepare_slack_payload(snapshots, api_document_count):
         heading = ":white_check_mark: Catalogue Snapshot"
         message = _snapshot_message(latest_snapshot)
     else:
-        kibana_logs_link = "https://logging.wellcomecollection.org/goto/ddc4dfc7308261cf17f956515ca1ce35"
+        kibana_logs_link = "https://logging.wellcomecollection.org/goto/c98eb0e4e37c802e60d5affea422a98e"
         heading = ":interrobang: Catalogue Snapshot not found"
         message = f"No snapshot found within the last day. See logs: {kibana_logs_link}"
 
