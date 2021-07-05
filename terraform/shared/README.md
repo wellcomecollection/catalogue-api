@@ -13,4 +13,4 @@ Run the scripts in this order:
 
 ## Improvements
 
-We have used a local-exec provisioner in terraform to run these scripts, but adding users safely without rotating existing passwords is tricky. We should find a way to automate this safely from terraform.
+We have used a local-exec provisioner in terraform to run these scripts in the past, but adding users safely without rotating existing passwords is tricky. We should find a way to automate this safely from terraform.
