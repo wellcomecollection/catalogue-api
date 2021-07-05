@@ -87,7 +87,6 @@ if __name__ == '__main__':
     newly_created_usernames = []
     for service_name, roles in SERVICES.items():
         service_password = secrets.token_hex()
-        # TODO: REMOVE
 
         es.security.put_user(
             username=service_name,
