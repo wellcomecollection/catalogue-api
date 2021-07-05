@@ -13,7 +13,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
   // not necessarily the expected public path! When it is empty, requests
   // are made to the root of the host API.
   val rootPath: String = ""
-  val contextUrl: String = s"$publicRootUri/context.json"
 
   def emptyJsonResult: String =
     s"""
@@ -24,7 +23,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
 
   def badRequest(description: String) =
     s"""{
-      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 400,
@@ -34,7 +32,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
 
   def goneRequest(description: String) =
     s"""{
-      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,
@@ -48,7 +45,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
     totalResults: Int
   ) =
     s"""
-      "@context": "$contextUrl",
       "type": "ResultList",
       "pageSize": $pageSize,
       "totalPages": $totalPages,
@@ -57,7 +53,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
 
   def notFound(description: String) =
     s"""{
-      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 404,
@@ -67,7 +62,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
 
   def deleted =
     s"""{
-      "@context": "$contextUrl",
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,

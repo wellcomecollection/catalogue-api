@@ -279,7 +279,6 @@ class WorksErrorsTest extends ApiWorksTestBase {
             Status.InternalServerError ->
               s"""
                  |{
-                 |  "@context": "$contextUrl",
                  |  "type": "Error",
                  |  "errorType": "http",
                  |  "httpStatus": 500,

@@ -44,7 +44,6 @@ object Main extends WellcomeTypesafeApp {
         metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
       ),
       httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
-      contextUrl = router.contextUrl,
       appName = appName
     )
   }

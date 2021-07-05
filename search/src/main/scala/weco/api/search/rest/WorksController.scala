@@ -6,13 +6,11 @@ import weco.catalogue.display_model.models.Implicits._
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models.ApiConfig
-import weco.api.search.rest
 import weco.api.search.services.WorksService
 import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -23,7 +21,6 @@ class WorksController(
 )(implicit val ec: ExecutionContext)
     extends Tracing
     with SingleWorkDirectives {
-  import ContextResponse.encoder
   import DisplayResultList.encoder
 
   def multipleWorks(params: MultipleWorksParams): Route =
@@ -40,14 +37,11 @@ class WorksController(
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(
-                    ContextResponse(
-                      contextUrl = contextUrl,
-                      rest.DisplayResultList(
-                        resultList = resultList,
-                        searchOptions = searchOptions,
-                        includes = params.include.getOrElse(WorksIncludes.none),
-                        requestUri = requestUri
-                      )
+                    DisplayResultList(
+                      resultList = resultList,
+                      searchOptions = searchOptions,
+                      includes = params.include.getOrElse(WorksIncludes.none),
+                      requestUri = requestUri
                     )
                   )
                 }
@@ -68,22 +62,13 @@ class WorksController(
           worksService
             .findById(id)(index)
             .mapVisible { work: Work.Visible[Indexed] =>
-              Future.successful(workFound(work, includes))
+              Future.successful(
+                complete(DisplayWork(work, includes))
+              )
             }
         }
       }
     }
-
-  private def workFound(
-    work: Work.Visible[Indexed],
-    includes: WorksIncludes
-  ): Route =
-    complete(
-      ContextResponse(
-        contextUrl = contextUrl,
-        result = DisplayWork(work, includes)
-      )
-    )
 
   private lazy val worksService = new WorksService(elasticsearchService)
 }

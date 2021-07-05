@@ -11,11 +11,10 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
     inside(
       ApiConfig(
         publicRootUri = Uri(publicRoot),
-        defaultPageSize = 10,
-        contextSuffix = "context.json"
+        defaultPageSize = 10
       )
     ) {
-      case ApiConfig(publicScheme, publicHost, publicRootPath, _, _) =>
+      case ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
         publicScheme shouldBe "https"
         publicHost shouldBe "api.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
