@@ -70,12 +70,12 @@ if __name__ == '__main__':
     username = read_secret(f"{catalogue_secret_prefix}/username", catalogue_role_arn)
     password = read_secret(f"{catalogue_secret_prefix}/password", catalogue_role_arn)
 
-    role_arn = "arn:aws:iam::770700576653:role/identity-developer"
-    secret_prefix = f"elasticsearch/catalogue_api"
+    identity_role_arn = "arn:aws:iam::770700576653:role/identity-developer"
+    identity_secret_prefix = f"elasticsearch/catalogue_api"
 
-    es_host = read_secret(f"{secret_prefix}/public_host", role_arn)
-    es_protocol = read_secret(f"{secret_prefix}/protocol", role_arn)
-    es_port = read_secret(f"{secret_prefix}/port", role_arn)
+    es_host = read_secret(f"{identity_secret_prefix}/public_host", identity_role_arn)
+    es_protocol = read_secret(f"{identity_secret_prefix}/protocol", identity_role_arn)
+    es_port = read_secret(f"{identity_secret_prefix}/port", identity_role_arn)
 
     endpoint = f"https://{es_host}:{es_port}"
 
@@ -102,13 +102,13 @@ if __name__ == '__main__':
     # Store secrets
     for service_name, service_password in newly_created_usernames:
         store_secret(
-            secret_id=f"{secret_prefix}/{service_name}/username",
+            secret_id=f"{identity_secret_prefix}/{service_name}/username",
             secret_value=service_name,
-            role_arn=role_arn
+            role_arn=identity_role_arn
         )
 
         store_secret(
-            secret_id=f"{secret_prefix}/{service_name}/password",
+            secret_id=f"{identity_secret_prefix}/{service_name}/password",
             secret_value=service_password,
-            role_arn=role_arn
+            role_arn=identity_role_arn
         )
