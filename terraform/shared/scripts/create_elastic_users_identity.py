@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This script is run by a Terraform local-exec provisioner to create roles/users in
+This script is run by manually after to create roles/users in
 an Elastic Cloud cluster immediately after it's been created.
 """
 
@@ -13,35 +13,8 @@ import click
 import elasticsearch
 from elasticsearch import Elasticsearch
 
-WORK_INDEX_PATTERN = "works-*"
-IMAGE_INDEX_PATTERN = "images-*"
-
-ROLES = {
-    "catalogue_read": {
-        "indices": [
-            {
-                "names": [WORK_INDEX_PATTERN, IMAGE_INDEX_PATTERN],
-                "privileges": ["read", "view_index_metadata"]
-            }
-        ]
-    },
-    "catalogue_manage_ccr": {
-        "indices": [
-            {
-                "names": [WORK_INDEX_PATTERN, IMAGE_INDEX_PATTERN],
-                "privileges": ["manage_follow_index"]
-            }
-        ],
-        "cluster": ["manage_ccr"]
-    }
-}
-
 SERVICES = {
-    "search": ["catalogue_read"],
     "requests": ["catalogue_read"],
-    "items": ["catalogue_read"],
-    "diff_tool": ["catalogue_read"],
-    "replication_manager": ["catalogue_read", "catalogue_manage_ccr"]
 }
 
 
@@ -92,31 +65,31 @@ def store_secret(secret_id, secret_value, role_arn):
 
 
 if __name__ == '__main__':
-    role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    catalogue_role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    catalogue_secret_prefix = f"elasticsearch/catalogue_api"
+
+    username = read_secret(f"{catalogue_secret_prefix}/username", catalogue_role_arn)
+    password = read_secret(f"{catalogue_secret_prefix}/password", catalogue_role_arn)
+
+    role_arn = "arn:aws:iam::770700576653:role/identity-developer"
     secret_prefix = f"elasticsearch/catalogue_api"
 
     es_host = read_secret(f"{secret_prefix}/public_host", role_arn)
     es_protocol = read_secret(f"{secret_prefix}/protocol", role_arn)
     es_port = read_secret(f"{secret_prefix}/port", role_arn)
 
-    username = read_secret(f"{secret_prefix}/username", role_arn)
-    password = read_secret(f"{secret_prefix}/password", role_arn)
-
     endpoint = f"https://{es_host}:{es_port}"
 
     es = Elasticsearch(endpoint, http_auth=(username, password))
 
-    # Create roles
-    for role_name, index_privileges in ROLES.items():
-        es.security.put_role(
-            role_name,
-            body=index_privileges,
-        )
+    # Roles are created already in create_elasticsearch_users_catalogue.py
 
     # Create usernames
     newly_created_usernames = []
     for service_name, roles in SERVICES.items():
         service_password = secrets.token_hex()
+        # TODO: REMOVE
+
         es.security.put_user(
             username=service_name,
             body={
@@ -140,18 +113,3 @@ if __name__ == '__main__':
             secret_value=service_password,
             role_arn=role_arn
         )
-
-    # Configure cluster settings
-    cluster_client = elasticsearch.client.ClusterClient(es)
-
-    cluster_client.put_settings(
-        body={
-            # This setting is a fix for performance problems with an optimisation added in 7.13.1
-            # See: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/release-notes-7.13.2.html
-            # "Add setting to disable aggs optimization #73620 (issue: #73426)"
-            # TODO: A fix is likely in ES 7.14, after which we can remove this setting.
-            "persistent": {
-                "search.aggs.rewrite_to_filter_by_filter": False
-            }
-        }
-    )

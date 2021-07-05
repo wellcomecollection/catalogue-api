@@ -48,7 +48,7 @@ locals {
   catalogue_private_host = "${local.catalogue_elastic_region}.vpce.${local.catalogue_elastic_region}.aws.elastic-cloud.com"
   catalogue_public_host  = "${local.catalogue_api_elastic_id}.${local.catalogue_elastic_region}.aws.found.io"
 
-  # These are used for creating users in scripts/create_elastic_users.py
+  # These are used for creating users in scripts/create_elastic_users_catalogue.py
   cluster_elastic_user_secrets = {
     "elasticsearch/catalogue_api/username" = local.catalogue_elastic_username
     "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
@@ -210,31 +210,4 @@ resource "aws_secretsmanager_secret" "service-replication_manager-password" {
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
-}
-
-# Create users
-
-resource "null_resource" "elasticsearch_users" {
-  triggers = {
-    pipeline_storage_elastic_id = ec_deployment.catalogue_api.elasticsearch[0].resource_id
-  }
-
-  depends_on = [
-    ec_deployment.catalogue_api,
-    module.catalogue_api_secrets,
-    aws_secretsmanager_secret.service-search-username,
-    aws_secretsmanager_secret.service-search-password,
-    aws_secretsmanager_secret.service-items-username,
-    aws_secretsmanager_secret.service-items-password,
-    aws_secretsmanager_secret.service-requests-username,
-    aws_secretsmanager_secret.service-requests-password,
-    aws_secretsmanager_secret.service-diff_tool-username,
-    aws_secretsmanager_secret.service-diff_tool-password,
-    aws_secretsmanager_secret.service-replication_manager-username,
-    aws_secretsmanager_secret.service-replication_manager-password,
-  ]
-
-  provisioner "local-exec" {
-    command = "python3 scripts/create_elastic_users.py"
-  }
 }
