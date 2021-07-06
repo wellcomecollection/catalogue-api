@@ -1,6 +1,4 @@
 locals {
-  context_url = "https://${var.external_hostname}/catalogue/v2/context.json"
-
   v1_deprecation_string = "This API is now decommissioned. Please use https://api.wellcomecollection.org/catalogue/v2/works."
   v1_gone_body = {
     errorType   = "http",
@@ -8,7 +6,6 @@ locals {
     label       = "Gone",
     description = local.v1_deprecation_string
     type        = "Error",
-    "@context"  = local.context_url
   }
 
   not_found_body = {
@@ -17,7 +14,6 @@ locals {
     label       = "Not Found",
     description = "Page not found for URL $context.path"
     type        = "Error",
-    "@context"  = local.context_url
   }
 }
 
