@@ -96,7 +96,7 @@ class DisplayLocationsSerialisationTest
         AccessCondition(
           method = AccessMethod.ViewOnline,
           status = Some(AccessStatus.Restricted),
-          terms = Some("Ask politely"),
+          terms = Some("Ask politely")
         )
       )
     )
