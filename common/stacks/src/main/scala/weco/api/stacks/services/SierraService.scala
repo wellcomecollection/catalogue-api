@@ -10,7 +10,7 @@ import weco.catalogue.internal_model.locations.{
   AccessMethod,
   PhysicalLocationType
 }
-import weco.catalogue.source_model.sierra.SierraItemData
+import weco.catalogue.source_model.sierra.{SierraBibData, SierraItemData}
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraBibNumber,
   SierraItemNumber,
@@ -215,13 +215,14 @@ class SierraService(
           .flatMap(name => SierraPhysicalLocationType.fromName(id, name))
 
       // The bib ID is used for debugging purposes; the bib status is only used
-      // for consistency checking.  We can use placeholder data here.
-      val (ac, _, _) = SierraItemAccess(
+      // for consistency checking. We can use placeholder data here.
+      val (ac, _) = SierraItemAccess(
         bibId = SierraBibNumber("0000000"),
         itemId = id,
         bibStatus = None,
         location = location,
-        itemData = itemData
+        itemData = itemData,
+        bibData = SierraBibData()
       )
 
       ac
