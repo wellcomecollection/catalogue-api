@@ -100,7 +100,7 @@ trait DisplaySerialisationTestBase {
           "id": "${DisplayAccessMethod(cond.method).id}",
           "label": "${DisplayAccessMethod(cond.method).label}"
         },
-        ${optionalString("terms", cond.terms)}
+        ${optionalString("terms", cond.terms, trailingComma = false)}
         ${optionalObject("status", accessStatus, cond.status)}
       }
     """
