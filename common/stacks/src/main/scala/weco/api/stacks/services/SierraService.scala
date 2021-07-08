@@ -10,7 +10,7 @@ import weco.catalogue.internal_model.locations.{
   AccessMethod,
   PhysicalLocationType
 }
-import weco.catalogue.source_model.sierra.{SierraBibData, SierraItemData}
+import weco.catalogue.source_model.sierra.SierraItemData
 import weco.catalogue.source_model.sierra.identifiers.{
   SierraBibNumber,
   SierraItemNumber,
