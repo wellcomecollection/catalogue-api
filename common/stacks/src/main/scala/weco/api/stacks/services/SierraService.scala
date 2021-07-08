@@ -221,8 +221,7 @@ class SierraService(
         itemId = id,
         bibStatus = None,
         location = location,
-        itemData = itemData,
-        bibData = SierraBibData()
+        itemData = itemData
       )
 
       ac
