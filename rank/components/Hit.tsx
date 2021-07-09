@@ -1,9 +1,9 @@
-import { FunctionComponent, useState } from 'react'
+import { FC, useState } from 'react'
 
 import { Hit as HitType } from '../types/elasticsearch'
 
-type HitProps = { hit: HitType }
-const Hit: FunctionComponent<HitProps> = ({ hit }) => {
+type Props = { hit: HitType }
+const Hit: FC<Props> = ({ hit }) => {
   const [showExplanation, setShowExplanation] = useState(false)
   const [showMatches, setShowMatches] = useState(false)
   const title =
