@@ -15,7 +15,7 @@ import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, A
 import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
-    extends AnyFunSpec
+  extends AnyFunSpec
     with Matchers
     with ItemsApiFixture
     with JsonAssertions
@@ -76,18 +76,18 @@ class ItemsApiFeatureTest
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               f"""
-                |{
-                |  "id": "${physicalSierraItemIdentifier}",
-                |  "deleted": false,
-                |  "suppressed": false,
-                |  "fixedFields": {
-                |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                |  },
-                |  "holdCount": 0
-                |}
-                |""".stripMargin
+                 |{
+                 |  "id": "${physicalSierraItemIdentifier}",
+                 |  "deleted": false,
+                 |  "suppressed": false,
+                 |  "fixedFields": {
+                 |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                 |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                 |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                 |  },
+                 |  "holdCount": 0
+                 |}
+                 |""".stripMargin
             )
           )
         )
@@ -120,25 +120,23 @@ class ItemsApiFeatureTest
                |      ],
                |      "locations" : [
                |        {
-               |          "DisplayPhysicalLocation" : {
-               |            "locationType" : {
-               |              "id" : "closed-stores",
-               |              "label" : "Closed stores",
-               |              "type" : "LocationType"
-               |            },
-               |            "label" : "locationLabel",
-               |            "accessConditions" : [
-               |              {
-               |                "method" : {
-               |                  "id" : "online-request",
-               |                  "label" : "Online request",
-               |                  "type" : "AccessMethod"
-               |                },
-               |                "type" : "AccessCondition"
-               |              }
-               |            ],
-               |            "type" : "PhysicalLocation"
-               |          }
+               |          "locationType" : {
+               |            "id" : "closed-stores",
+               |            "label" : "Closed stores",
+               |            "type" : "LocationType"
+               |          },
+               |          "label" : "locationLabel",
+               |          "accessConditions" : [
+               |            {
+               |              "method" : {
+               |                "id" : "online-request",
+               |                "label" : "Online request",
+               |                "type" : "AccessMethod"
+               |              },
+               |              "type" : "AccessCondition"
+               |            }
+               |          ],
+               |          "type" : "PhysicalLocation"
                |        }
                |      ],
                |      "type" : "Item"

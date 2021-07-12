@@ -11,6 +11,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
+
 class ItemsApi(
   val sierraService: SierraService,
   val workLookup: WorkLookup,

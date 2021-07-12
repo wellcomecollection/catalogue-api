@@ -12,6 +12,8 @@ import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 import scala.concurrent.Future
 
 trait LookupItemStatus extends SingleWorkDirectives {
+  import weco.catalogue.display_model.models.Implicits._
+
   val workLookup: WorkLookup
   val sierraService: SierraService
   val index: Index
@@ -49,8 +51,7 @@ trait LookupItemStatus extends SingleWorkDirectives {
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
         val futureItems = work.data.items.map {
           case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
-              if isSierraId(srcId) =>
-            refreshItem(srcId, item)
+              if isSierraId(srcId) => refreshItem(srcId, item)
           case item => Future(item)
         }
 
