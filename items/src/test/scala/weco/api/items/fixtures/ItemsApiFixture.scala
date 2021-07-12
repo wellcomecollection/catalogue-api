@@ -1,20 +1,18 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
-import weco.fixtures.TestWith
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.items.ItemsApi
 import weco.api.items.services.ItemUpdateService
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.services.{SierraService, WorkLookup}
-import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
-import weco.http.fixtures.HttpFixtures
+import weco.api.stacks.services.WorkLookup
+import weco.catalogue.internal_model.index.IndexFixtures
+import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
+trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures { this: Suite =>
 
   val metricsName = "ItemsApiFixture"
 
@@ -30,23 +28,18 @@ trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
     index: Index,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R = {
+      withMaterializer { implicit mat =>
+        withSierraService(responses) { sierraService =>
 
-    val httpClient = new MemoryHttpClient(responses) with HttpGet
-    with HttpPost {
-      override val baseUri: Uri = Uri("http://sierra:1234")
-    }
+        val api: ItemsApi = new ItemsApi(
+          itemUpdateService = new ItemUpdateService(sierraService),
+          workLookup = WorkLookup(elasticClient),
+          index = index
+        )
 
-    withMaterializer { implicit mat =>
-      val sierraService = SierraService(httpClient)
-
-      val api: ItemsApi = new ItemsApi(
-        itemUpdateService = new ItemUpdateService(sierraService),
-        workLookup = WorkLookup(elasticClient),
-        index = index
-      )
-
-      withApp(api.routes) { _ =>
-        testWith(())
+        withApp(api.routes) { _ =>
+          testWith(())
+        }
       }
     }
   }
