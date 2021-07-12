@@ -2,21 +2,13 @@ package weco.api.items.responses
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
+import weco.api.items.models.DisplayItemsList
 import weco.api.search.rest.SingleWorkDirectives
 import weco.api.stacks.services.{SierraService, WorkLookup}
-import weco.catalogue.display_model.models.DisplayItem
-
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  PhysicalLocation
-}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, PhysicalLocation}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, IdentifierType, SourceIdentifier}
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+
 import scala.concurrent.Future
 
 trait LookupItemStatus extends SingleWorkDirectives {
@@ -63,8 +55,8 @@ trait LookupItemStatus extends SingleWorkDirectives {
         }
 
         for {
-          items: Seq[Item[IdState.Minted]] <- Future.sequence(futureItems)
-          displayItems = items.map(item => DisplayItem(item, true))
+          items <- Future.sequence(futureItems)
+          displayItems = DisplayItemsList(items)
         } yield complete(displayItems)
       }
 }

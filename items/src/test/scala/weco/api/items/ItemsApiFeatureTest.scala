@@ -1,38 +1,16 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes,
-  Uri
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.ItemsApiFixture
 import weco.json.utils.JsonAssertions
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-  PhysicalLocation
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType, PhysicalLocation}
 
 import scala.util.{Failure, Try}
 
@@ -48,8 +26,9 @@ class ItemsApiFeatureTest
   private def createPhysicalItemWith(sierraItemIdentifier: String,
                                      accessCondition: AccessCondition) = {
     val physicalItemLocation: PhysicalLocation = createPhysicalLocationWith(
-      accessConditions = List(accessCondition)
-    )
+      accessConditions = List(accessCondition),
+      locationType = LocationType.ClosedStores
+    ).copy(license = None, shelfmark = None)
 
     // Sierra identifiers without check digits are always 7 digits
     require(sierraItemIdentifier.matches("^\\d{7}$"))
@@ -65,14 +44,12 @@ class ItemsApiFeatureTest
 
     createIdentifiedItemWith(
       sourceIdentifier = itemSourceIdentifier,
-      locations = List(physicalItemLocation)
+      locations = List(physicalItemLocation),
     )
   }
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
-      val digitalItem = createDigitalItem
-
       val temporarilyUnavailableOnline = AccessCondition(
         method = AccessMethod.OnlineRequest,
         status = AccessStatus.TemporarilyUnavailable
@@ -85,7 +62,9 @@ class ItemsApiFeatureTest
         accessCondition = temporarilyUnavailableOnline
       )
 
-      val work = indexedWork().items(List(digitalItem, physicalItem))
+      physicalItem.locations.head.license
+
+      val work = indexedWork().items(List(physicalItem))
 
       val responses = Seq(
         (
@@ -123,21 +102,48 @@ class ItemsApiFeatureTest
           val expectedJson =
             s"""
                |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [
+               |  "type" : "ItemsList",
+               |  "totalResults" : 1,
+               |  "results" : [
                |    {
                |      "id" : "${physicalItem.id.canonicalId}",
-               |      "locations" : [
+               |      "identifiers" : [
+               |        {
+               |          "identifierType" : {
+               |            "id" : "sierra-system-number",
+               |            "label" : "Sierra system number",
+               |            "type" : "IdentifierType"
+               |          },
+               |          "value" : "i18234495",
+               |          "type" : "Identifier"
+               |        }
                |      ],
-               |      "status" : {
-               |        "id" : "available",
-               |        "label" : "Available",
-               |        "type": "ItemStatus"
-               |      },
-               |      "type": "Item"
+               |      "locations" : [
+               |        {
+               |          "DisplayPhysicalLocation" : {
+               |            "locationType" : {
+               |              "id" : "closed-stores",
+               |              "label" : "Closed stores",
+               |              "type" : "LocationType"
+               |            },
+               |            "label" : "locationLabel",
+               |            "accessConditions" : [
+               |              {
+               |                "method" : {
+               |                  "id" : "online-request",
+               |                  "label" : "Online request",
+               |                  "type" : "AccessMethod"
+               |                },
+               |                "type" : "AccessCondition"
+               |              }
+               |            ],
+               |            "type" : "PhysicalLocation"
+               |          }
+               |        }
+               |      ],
+               |      "type" : "Item"
                |    }
-               |  ],
-               |  "type": "Work"
+               |  ]
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>
@@ -163,9 +169,10 @@ class ItemsApiFeatureTest
           val expectedJson =
             s"""
                |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [ ],
-               |  "type": "Work"
+               |  "type" : "ItemsList",
+               |  "totalResults" : 0,
+               |  "results" : [
+               |  ]
                |}
               """.stripMargin
 
@@ -174,42 +181,6 @@ class ItemsApiFeatureTest
 
             withStringEntity(response.entity) {
               assertJsonStringsAreEqual(_, expectedJson)
-            }
-          }
-        }
-      }
-    }
-
-    it("returns an empty list if a work has no Sierra-identified items") {
-      val item = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = MiroImageNumber,
-          value = "V0001234",
-          ontologyType = "Item"
-        )
-      )
-
-      val work = indexedWork().items(List(item))
-
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
-
-        withItemsApi(index) { _ =>
-          val path = s"/works/${work.state.canonicalId}"
-
-          val expectedJson =
-            s"""
-               |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [ ],
-               |  "type": "Work"
-               |}""".stripMargin
-
-          whenGetRequestReady(path) { response =>
-            response.status shouldBe StatusCodes.OK
-
-            withStringEntity(response.entity) { actualJson =>
-              assertJsonStringsAreEqual(actualJson, expectedJson)
             }
           }
         }
