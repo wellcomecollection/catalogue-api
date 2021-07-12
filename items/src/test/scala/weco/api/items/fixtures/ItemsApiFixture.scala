@@ -6,6 +6,7 @@ import org.scalatest.Suite
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.items.ItemsApi
+import weco.api.items.services.ItemUpdateService
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
@@ -36,8 +37,10 @@ trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
     }
 
     withMaterializer { implicit mat =>
+      val sierraService = SierraService(httpClient)
+
       val api: ItemsApi = new ItemsApi(
-        sierraService = SierraService(httpClient),
+        itemUpdateService = new ItemUpdateService(sierraService),
         workLookup = WorkLookup(elasticClient),
         index = index
       )

@@ -62,8 +62,6 @@ class ItemsApiFeatureTest
         accessCondition = temporarilyUnavailableOnline
       )
 
-      physicalItem.locations.head.license
-
       val work = indexedWork().items(List(physicalItem))
 
       val responses = Seq(
