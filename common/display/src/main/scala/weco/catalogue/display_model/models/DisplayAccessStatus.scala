@@ -28,7 +28,8 @@ object DisplayAccessStatus {
       case AccessStatus.TemporarilyUnavailable =>
         DisplayAccessStatus(
           "temporarily-unavailable",
-          "Temporarily unavailable")
+          "Temporarily unavailable"
+        )
       case AccessStatus.Unavailable =>
         DisplayAccessStatus("unavailable", "Unavailable")
       case AccessStatus.Closed =>

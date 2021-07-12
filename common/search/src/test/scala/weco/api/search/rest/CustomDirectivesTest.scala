@@ -6,8 +6,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models.ApiConfig
 
-import java.net.URL
-
 class CustomDirectivesTest
     extends AnyFunSpec
     with Matchers
@@ -16,14 +14,8 @@ class CustomDirectivesTest
 
   implicit val apiConfig = ApiConfig(
     publicRootUri = Uri("https://api-test.wellcomecollection.org/catalogue/v2"),
-    defaultPageSize = 10,
-    contextSuffix = "context.json"
+    defaultPageSize = 10
   )
-
-  it("gets the context URL") {
-    contextUrl shouldBe new URL(
-      "https://api-test.wellcomecollection.org/catalogue/v2/context.json")
-  }
 
   describe("extractPublicUri") {
     val testRoute = concat(

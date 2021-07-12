@@ -22,6 +22,10 @@ output "es_items_secret_config" {
   value = local.es_items_secret_config
 }
 
+output "es_requests_secret_config" {
+  value = local.es_requests_secret_config
+}
+
 output "es_search_secret_config" {
   value = local.es_search_secret_config
 }

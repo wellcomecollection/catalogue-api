@@ -158,7 +158,8 @@ class WorksServiceTest
         expectedWorks = List(workEmu),
         expectedTotalResults = 1,
         worksSearchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery("emu \"")))
+          searchQuery = Some(SearchQuery("emu \""))
+        )
       )
     }
 
@@ -346,7 +347,9 @@ class WorksServiceTest
           searchQuery = Some(SearchQuery("tangerines")),
           filters = List(
             ItemLocationTypeIdFilter(
-              Seq(LocationType.IIIFImageAPI.id, LocationType.OpenShelves.id)))
+              Seq(LocationType.IIIFImageAPI.id, LocationType.OpenShelves.id)
+            )
+          )
         )
       )
     }
@@ -356,20 +359,26 @@ class WorksServiceTest
     it("uses only PHRASE simple query syntax") {
       val work = indexedWork()
         .title(
-          "+a -title | with (all the simple) query~4 syntax operators in it*")
+          "+a -title | with (all the simple) query~4 syntax operators in it*"
+        )
 
       assertListOrSearchResultIsCorrect(
         allWorks = List(work),
         expectedWorks = List(work),
         expectedTotalResults = 1,
         worksSearchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery(
-            "+a -title | with (all the simple) query~4 syntax operators in it*")))
+          searchQuery = Some(
+            SearchQuery(
+              "+a -title | with (all the simple) query~4 syntax operators in it*"
+            )
+          )
+        )
       )
     }
 
     it(
-      "doesn't throw a too_many_clauses exception when passed a query that creates too many clauses") {
+      "doesn't throw a too_many_clauses exception when passed a query that creates too many clauses"
+    ) {
       val work = indexedWork().title("(a b c d e) h")
 
       // This query uses precedence and would exceed the default 1024 clauses
@@ -378,7 +387,8 @@ class WorksServiceTest
         expectedWorks = List(work),
         expectedTotalResults = 1,
         worksSearchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery("(a b c d e) h")))
+          searchQuery = Some(SearchQuery("(a b c d e) h"))
+        )
       )
     }
 
@@ -391,7 +401,8 @@ class WorksServiceTest
 
         val worksSearchOptions =
           createWorksSearchOptionsWith(
-            aggregations = List(WorkAggregationRequest.Format))
+            aggregations = List(WorkAggregationRequest.Format)
+          )
 
         val expectedAggregations = WorkAggregations(
           Some(
@@ -399,8 +410,10 @@ class WorksServiceTest
               List(
                 AggregationBucket(data = Books, count = 2),
                 AggregationBucket(data = ArchivesAndManuscripts, count = 1),
-                AggregationBucket(data = Audio, count = 1),
-              ))),
+                AggregationBucket(data = Audio, count = 1)
+              )
+            )
+          ),
           None
         )
 
@@ -419,7 +432,8 @@ class WorksServiceTest
     def createDatedWork(dateLabel: String): Work.Visible[Indexed] =
       indexedWork()
         .production(
-          List(createProductionEventWith(dateLabel = Some(dateLabel))))
+          List(createProductionEventWith(dateLabel = Some(dateLabel)))
+        )
 
     val work1709 = createDatedWork("1709")
     val work1950 = createDatedWork("1950")
@@ -523,11 +537,14 @@ class WorksServiceTest
       expectedWorks,
       expectedTotalResults,
       expectedAggregations,
-      worksSearchOptions)
+      worksSearchOptions
+    )
 
   private def assertResultIsCorrect(
-    partialSearchFunction: (Index, WorkSearchOptions) => Future[
-      Either[_, ResultList[Work.Visible[Indexed], WorkAggregations]]]
+    partialSearchFunction: (
+      Index,
+      WorkSearchOptions
+    ) => Future[Either[_, ResultList[Work.Visible[Indexed], WorkAggregations]]]
   )(
     allWorks: Seq[Work[Indexed]],
     expectedWorks: Seq[Work[Indexed]],
@@ -553,7 +570,8 @@ class WorksServiceTest
     }
 
   private def createItemWithLocationType(
-    locationType: LocationType): Item[IdState.Minted] =
+    locationType: LocationType
+  ): Item[IdState.Minted] =
     createIdentifiedItemWith(
       locations = List(
         locationType match {

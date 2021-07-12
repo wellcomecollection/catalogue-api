@@ -42,7 +42,8 @@ class ImagesServiceTest
 
         whenReady(
           imagesService
-            .findById(id = image.state.canonicalId)(index)) {
+            .findById(id = image.state.canonicalId)(index)
+        ) {
           _.right.value shouldBe image
         }
       }
@@ -81,7 +82,8 @@ class ImagesServiceTest
 
         whenReady(
           imagesService
-            .retrieveSimilarImages(index, images.head)) { results =>
+            .retrieveSimilarImages(index, images.head)
+        ) { results =>
           results should not be empty
           results should contain theSameElementsAs images.tail
         }
@@ -99,7 +101,9 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               images.head,
-              similarityMetric = SimilarityMetric.Features)) { results =>
+              similarityMetric = SimilarityMetric.Features
+            )
+        ) { results =>
           results should not be empty
           results should contain theSameElementsAs images.tail
         }
@@ -117,7 +121,9 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               images.head,
-              similarityMetric = SimilarityMetric.Colors)) { results =>
+              similarityMetric = SimilarityMetric.Colors
+            )
+        ) { results =>
           results should not be empty
           results should contain theSameElementsAs images.tail
         }
@@ -134,12 +140,14 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             index,
             images.head,
-            similarityMetric = SimilarityMetric.Colors)
+            similarityMetric = SimilarityMetric.Colors
+          )
         val blendedResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
             images.head,
-            similarityMetric = SimilarityMetric.Blended)
+            similarityMetric = SimilarityMetric.Blended
+          )
         whenReady(colorResultsFuture) { colorResults =>
           whenReady(blendedResultsFuture) { blendedResults =>
             colorResults should not contain
@@ -165,7 +173,9 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            createImageData.toIndexedImage)) {
+            createImageData.toIndexedImage
+          )
+      ) {
         _ shouldBe empty
       }
     }

@@ -17,12 +17,6 @@ resource "ec_deployment" "catalogue_api" {
       size       = "8g"
       zone_count = 3
     }
-
-    remote_cluster {
-      deployment_id = local.catalogue_ec_cluster_id
-      alias         = local.catalogue_ec_cluster_name
-      ref_id        = local.catalogue_ec_cluster_ref_id
-    }
   }
 
   # The catalogue-api cluster gets the pipeline-storage clusters added
@@ -54,14 +48,17 @@ locals {
   catalogue_private_host = "${local.catalogue_elastic_region}.vpce.${local.catalogue_elastic_region}.aws.elastic-cloud.com"
   catalogue_public_host  = "${local.catalogue_api_elastic_id}.${local.catalogue_elastic_region}.aws.found.io"
 
-  catalogue_api_secrets = {
-    "elasticsearch/catalogue_api/public_host"  = local.catalogue_public_host
-    "elasticsearch/catalogue_api/private_host" = local.catalogue_private_host
-
+  # These are used for creating users in scripts/create_elastic_users_catalogue.py
+  cluster_elastic_user_secrets = {
     "elasticsearch/catalogue_api/username" = local.catalogue_elastic_username
     "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
-    "elasticsearch/catalogue_api/protocol" = "https"
-    "elasticsearch/catalogue_api/port"     = 9243
+  }
+
+  cluster_secrets = {
+    "elasticsearch/catalogue_api/public_host"  = local.catalogue_public_host
+    "elasticsearch/catalogue_api/private_host" = local.catalogue_private_host
+    "elasticsearch/catalogue_api/protocol"     = "https"
+    "elasticsearch/catalogue_api/port"         = 9243
   }
 
   # This config will be consumed by the items service in the catalogue_api stack
@@ -71,6 +68,15 @@ locals {
     es_protocol = "elasticsearch/catalogue_api/protocol"
     es_username = aws_secretsmanager_secret.service-items-username.name
     es_password = aws_secretsmanager_secret.service-items-password.name
+  }
+
+  # This config will be consumed by the requests service in the identity stack
+  es_requests_secret_config = {
+    es_host     = "elasticsearch/catalogue_api/public_host"
+    es_port     = "elasticsearch/catalogue_api/port"
+    es_protocol = "elasticsearch/catalogue_api/protocol"
+    es_username = aws_secretsmanager_secret.service-requests-username.name
+    es_password = aws_secretsmanager_secret.service-requests-password.name
   }
 
   # This config will be consumed by the search service in the catalogue_api stack
@@ -83,15 +89,43 @@ locals {
   }
 }
 
-# Cluster management secrets
+# Cluster secrets
+
+## Elastic user details
+
+module "elastic_user_secrets" {
+  source = "../modules/secrets"
+
+  key_value_map = local.cluster_elastic_user_secrets
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}
+
+## Cluster host details - catalogue account
 
 module "catalogue_api_secrets" {
   source = "../modules/secrets"
 
-  key_value_map = local.catalogue_api_secrets
+  key_value_map = local.cluster_secrets
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
+}
+
+## Cluster host details - identity account
+
+module "identity_secrets" {
+  source = "../modules/secrets"
+
+  key_value_map = local.cluster_secrets
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  providers = {
+    aws = aws.identity
+  }
 }
 
 # Search service credentials
@@ -126,6 +160,26 @@ resource "aws_secretsmanager_secret" "service-items-password" {
   tags        = local.default_tags
 }
 
+# Requests service credentials
+
+resource "aws_secretsmanager_secret" "service-requests-username" {
+  name = "elasticsearch/catalogue_api/requests/username"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  provider = aws.identity
+}
+
+resource "aws_secretsmanager_secret" "service-requests-password" {
+  name = "elasticsearch/catalogue_api/requests/password"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+
+  provider = aws.identity
+}
+
 # Diff tool service credentials
 
 resource "aws_secretsmanager_secret" "service-diff_tool-username" {
@@ -156,29 +210,4 @@ resource "aws_secretsmanager_secret" "service-replication_manager-password" {
 
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
-}
-
-# Create users
-
-resource "null_resource" "elasticsearch_users" {
-  triggers = {
-    pipeline_storage_elastic_id = ec_deployment.catalogue_api.elasticsearch[0].resource_id
-  }
-
-  depends_on = [
-    ec_deployment.catalogue_api,
-    module.catalogue_api_secrets,
-    aws_secretsmanager_secret.service-search-username,
-    aws_secretsmanager_secret.service-search-password,
-    aws_secretsmanager_secret.service-items-username,
-    aws_secretsmanager_secret.service-items-password,
-    aws_secretsmanager_secret.service-diff_tool-username,
-    aws_secretsmanager_secret.service-diff_tool-password,
-    aws_secretsmanager_secret.service-replication_manager-username,
-    aws_secretsmanager_secret.service-replication_manager-password,
-  ]
-
-  provisioner "local-exec" {
-    command = "python3 scripts/create_elastic_users.py"
-  }
 }

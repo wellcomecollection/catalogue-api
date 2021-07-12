@@ -196,7 +196,7 @@ class ItemsApiFeatureTest
       val id = createCanonicalId
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) { contextUrl =>
+        withItemsApi(index) { _ =>
           val path = s"/works/$id"
 
           val expectedError =
@@ -206,8 +206,7 @@ class ItemsApiFeatureTest
                |  "httpStatus": 404,
                |  "label": "Not Found",
                |  "description": "Work not found for identifier $id",
-               |  "type": "Error",
-               |  "@context": "$contextUrl"
+               |  "type": "Error"
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>
@@ -228,7 +227,7 @@ class ItemsApiFeatureTest
       } shouldBe a[Failure[_]]
 
       withLocalWorksIndex { index =>
-        withItemsApi(index) { contextUrl =>
+        withItemsApi(index) { _ =>
           val path = s"/works/$id"
 
           val expectedError =
@@ -238,8 +237,7 @@ class ItemsApiFeatureTest
                |  "httpStatus": 404,
                |  "label": "Not Found",
                |  "description": "Work not found for identifier $id",
-               |  "type": "Error",
-               |  "@context": "$contextUrl"
+               |  "type": "Error"
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>
@@ -305,7 +303,7 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, invisibleWork)
 
-        withItemsApi(index) { contextUrl =>
+        withItemsApi(index) { _ =>
           val path = s"/works/${invisibleWork.state.canonicalId}"
 
           val expectedError =
@@ -315,8 +313,7 @@ class ItemsApiFeatureTest
                |  "httpStatus": 410,
                |  "label": "Gone",
                |  "description": "This work has been deleted",
-               |  "type": "Error",
-               |  "@context": "$contextUrl"
+               |  "type": "Error"
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>
@@ -344,7 +341,7 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, deletedWork)
 
-        withItemsApi(index) { contextUrl =>
+        withItemsApi(index) { _ =>
           val path = s"/works/${deletedWork.state.canonicalId}"
 
           val expectedError =
@@ -354,8 +351,7 @@ class ItemsApiFeatureTest
                |  "httpStatus": 410,
                |  "label": "Gone",
                |  "description": "This work has been deleted",
-               |  "type": "Error",
-               |  "@context": "$contextUrl"
+               |  "type": "Error"
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>

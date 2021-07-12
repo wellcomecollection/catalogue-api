@@ -15,8 +15,10 @@ sealed trait DisplayAbstractRootConcept {
 }
 
 object DisplayAbstractRootConcept {
-  def apply(abstractConcept: AbstractRootConcept[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayAbstractRootConcept =
+  def apply(
+    abstractConcept: AbstractRootConcept[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayAbstractRootConcept =
     abstractConcept match {
       case agent: AbstractAgent[IdState.Minted] =>
         DisplayAbstractAgent(agent, includesIdentifiers)
@@ -32,8 +34,10 @@ sealed trait DisplayAbstractConcept extends DisplayAbstractRootConcept
 
 case object DisplayAbstractConcept extends GetIdentifiers {
 
-  def apply(abstractConcept: AbstractConcept[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayAbstractConcept =
+  def apply(
+    abstractConcept: AbstractConcept[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayAbstractConcept =
     abstractConcept match {
       case Concept(id, label) =>
         DisplayConcept(
@@ -135,14 +139,16 @@ sealed trait DisplayAbstractAgent extends DisplayAbstractRootConcept
 
 case object DisplayAbstractAgent extends GetIdentifiers {
 
-  def apply(agent: AbstractAgent[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayAbstractAgent =
+  def apply(
+    agent: AbstractAgent[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayAbstractAgent =
     agent match {
       case Agent(id, label) =>
         DisplayAgent(
           id = id.maybeCanonicalId.map { _.underlying },
           label = label,
-          identifiers = getIdentifiers(id, includesIdentifiers),
+          identifiers = getIdentifiers(id, includesIdentifiers)
         )
       case Person(id, label, prefix, numeration) =>
         DisplayPerson(
@@ -156,13 +162,13 @@ case object DisplayAbstractAgent extends GetIdentifiers {
         DisplayOrganisation(
           id = id.maybeCanonicalId.map { _.underlying },
           label = label,
-          identifiers = getIdentifiers(id, includesIdentifiers),
+          identifiers = getIdentifiers(id, includesIdentifiers)
         )
       case Meeting(id, label) =>
         DisplayMeeting(
           id = id.maybeCanonicalId.map { _.underlying },
           label = label,
-          identifiers = getIdentifiers(id, includesIdentifiers),
+          identifiers = getIdentifiers(id, includesIdentifiers)
         )
     }
 }
@@ -185,8 +191,8 @@ case class DisplayAgent(
 case class DisplayPerson(
   @Schema(
     `type` = "String",
-    description = "The canonical identifier given to a thing.") id: Option[
-    String],
+    description = "The canonical identifier given to a thing."
+  ) id: Option[String],
   @Schema(
     `type` = "List[uk.ac.wellcome.Display.models.DisplayIdentifier]",
     description =
@@ -203,8 +209,8 @@ case class DisplayPerson(
     `type` = "String",
     description = "The numeration of the person"
   ) numeration: Option[String] = None,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Person")
-    extends DisplayAbstractAgent
+  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Person"
+) extends DisplayAbstractAgent
 
 @Schema(
   name = "Organisation"
@@ -212,8 +218,8 @@ case class DisplayPerson(
 case class DisplayOrganisation(
   @Schema(
     `type` = "String",
-    description = "The canonical identifier given to a thing.") id: Option[
-    String],
+    description = "The canonical identifier given to a thing."
+  ) id: Option[String],
   @Schema(
     `type` = "List[uk.ac.wellcome.Display.models.DisplayIdentifier]",
     description =
@@ -222,14 +228,14 @@ case class DisplayOrganisation(
   @Schema(
     description = "The name of the organisation"
   ) label: String,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Organisation")
-    extends DisplayAbstractAgent
+  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Organisation"
+) extends DisplayAbstractAgent
 
 case class DisplayMeeting(
   @Schema(
     `type` = "String",
-    description = "The canonical identifier given to a thing.") id: Option[
-    String],
+    description = "The canonical identifier given to a thing."
+  ) id: Option[String],
   @Schema(
     `type` = "List[uk.ac.wellcome.Display.models.DisplayIdentifier]",
     description =
@@ -238,8 +244,8 @@ case class DisplayMeeting(
   @Schema(
     description = "The name of the meeting"
   ) label: String,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Meeting")
-    extends DisplayAbstractAgent
+  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Meeting"
+) extends DisplayAbstractAgent
 
 trait GetIdentifiers {
 

@@ -1,3 +1,7 @@
+data "ec_deployment" "logging" {
+  id = local.logging_cluster_id
+}
+
 data "ec_stack" "latest" {
   version_regex = "latest"
   region        = "us-east-1"
@@ -5,7 +9,7 @@ data "ec_stack" "latest" {
 
 
 resource "ec_deployment" "rank_catalogue" {
-  name                   = "rank_catalogue"
+  name                   = "rank-catalogue"
   region                 = "eu-west-1"
   version                = data.ec_stack.latest.version
   deployment_template_id = "aws-io-optimized-v2"
@@ -13,15 +17,20 @@ resource "ec_deployment" "rank_catalogue" {
   elasticsearch {
     topology {
       id         = "hot_content"
-      size       = "4g"
-      zone_count = 1
+      size       = "2g"
+      zone_count = 2
     }
+  }
 
-    remote_cluster {
-      deployment_id = local.catalogue_ec_cluster_id
-      alias         = local.catalogue_ec_cluster_name
-      ref_id        = local.catalogue_ec_cluster_ref_id
-    }
+  # The catalogue-api cluster gets the pipeline-storage clusters added
+  # as remote clusters dynamically.  We don't want these to be rolled
+  # back when we change the Terraform, so ignore any changes here.
+  lifecycle {
+    ignore_changes = [elasticsearch[0].remote_cluster]
+  }
+
+  observability {
+    deployment_id = data.ec_deployment.logging.id
   }
 
   kibana {

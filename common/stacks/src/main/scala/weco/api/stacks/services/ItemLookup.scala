@@ -11,9 +11,11 @@ import weco.catalogue.internal_model.work.Item
 import scala.concurrent.Future
 
 trait ItemLookup {
-  def byCanonicalId(itemId: CanonicalId)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]]
+  def byCanonicalId(
+    itemId: CanonicalId
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]]
 
-  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]]
+  def bySourceIdentifier(
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]]
 }

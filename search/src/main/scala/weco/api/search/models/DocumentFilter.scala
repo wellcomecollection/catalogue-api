@@ -15,9 +15,10 @@ case class FormatFilter(formatIds: Seq[String]) extends WorkFilter
 
 case class WorkTypeFilter(types: List[WorkType]) extends WorkFilter
 
-case class DateRangeFilter(fromDate: Option[LocalDate],
-                           toDate: Option[LocalDate])
-    extends WorkFilter
+case class DateRangeFilter(
+  fromDate: Option[LocalDate],
+  toDate: Option[LocalDate]
+) extends WorkFilter
 
 case object VisibleWorkFilter extends WorkFilter
 
@@ -39,9 +40,10 @@ case class LicenseFilter(licenseIds: Seq[String])
 
 case class IdentifiersFilter(values: Seq[String]) extends WorkFilter
 
-case class AccessStatusFilter(includes: List[AccessStatus],
-                              excludes: List[AccessStatus])
-    extends WorkFilter
+case class AccessStatusFilter(
+  includes: List[AccessStatus],
+  excludes: List[AccessStatus]
+) extends WorkFilter
 
 case class PartOfFilter(id: String) extends WorkFilter
 

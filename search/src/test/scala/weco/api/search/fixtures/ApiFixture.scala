@@ -28,8 +28,7 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 
   lazy val apiConfig = ApiConfig(
     publicRootUri = Uri(publicRootUri),
-    defaultPageSize = 10,
-    contextSuffix = "context.json"
+    defaultPageSize = 10
   )
 
   // Note: creating new instances of the SwaggerDocs class is expensive, so
@@ -149,6 +148,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
                 (key, sortedJson(unordered)(value))
             }
             .sortBy(tup => tup._1): _*
-      )
+        )
     )
 }

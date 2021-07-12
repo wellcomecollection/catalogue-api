@@ -17,7 +17,7 @@ class ColorQueryTest extends AnyFunSpec with Matchers {
       (0f, 1f, 1f),
       (120f / 360f, 1f, 1f),
       (240f / 360f, 1f, 1f),
-      (0.43600f, 1f, 0.98039216f),
+      (0.43600f, 1f, 0.98039216f)
     )
   }
 

@@ -29,10 +29,11 @@ object SierraItemIdentifier {
     )
 
   def fromSourceIdentifier(
-    sourceIdentifier: SourceIdentifier): SierraItemNumber = {
-
+    sourceIdentifier: SourceIdentifier
+  ): SierraItemNumber = {
     require(
-      sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber)
+      sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
+    )
     require(sourceIdentifier.ontologyType == "Item")
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix

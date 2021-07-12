@@ -52,7 +52,6 @@ module "items_api" {
   environment = {
     app_port           = local.container_ports.items
     app_base_url       = "https://${var.external_hostname}/stacks/v1/items"
-    context_url        = "https://${var.external_hostname}/stacks/v1/context.json"
     catalogue_base_url = "https://${var.external_hostname}/catalogue/v2"
     sierra_base_url    = "https://libsys.wellcomelibrary.org/iii/sierra-api"
 

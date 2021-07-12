@@ -1,6 +1,7 @@
-FROM 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/typesafe_config_base:21
+FROM 760097843905.dkr.ecr.eu-west-1.amazonaws.com/openjdk:11
+
+LABEL maintainer = "Wellcome Collection <digital@wellcomecollection.org>"
 
 ADD target/universal/stage /opt/docker
 
-ENV PROJECT snapshot_generator
-
+ENTRYPOINT ["/opt/docker/bin/snapshot_generator"]

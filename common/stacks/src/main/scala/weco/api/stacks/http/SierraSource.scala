@@ -26,15 +26,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   implicit
   ec: ExecutionContext,
-  mat: Materializer) {
+  mat: Materializer
+) {
   private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItemData] =
     CirceMarshalling.fromDecoder[SierraItemData]
 
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(item: SierraItemNumber)
-    : Future[Either[SierraItemLookupError, SierraItemData]] =
+  def lookupItem(
+    item: SierraItemNumber
+  ): Future[Either[SierraItemLookupError, SierraItemData]] =
     for {
       resp <- client.get(
         path = Path(s"v5/items/${item.withoutCheckDigit}"),
@@ -71,8 +73,9 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     * query this API for a patron ID that doesn't exist.
     *
     */
-  def listHolds(patron: SierraPatronNumber)
-    : Future[Either[SierraErrorCode, SierraHoldsList]] =
+  def listHolds(
+    patron: SierraPatronNumber
+  ): Future[Either[SierraErrorCode, SierraHoldsList]] =
     for {
       resp <- client.get(
         path = Path(s"v5/patrons/${patron.withoutCheckDigit}/holds"),
@@ -94,11 +97,12 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
 
   def createHold(
     patron: SierraPatronNumber,
-    item: SierraItemNumber): Future[Either[SierraErrorCode, Unit]] =
+    item: SierraItemNumber
+  ): Future[Either[SierraErrorCode, Unit]] =
     for {
       resp <- client.post(
         path = Path(s"v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
-        body = Some(SierraHoldRequest(item)),
+        body = Some(SierraHoldRequest(item))
       )
 
       result <- resp.status match {

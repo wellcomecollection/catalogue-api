@@ -30,8 +30,10 @@ class SierraServiceTest
       it("gets an AccessCondition") {
         val responses = Seq(
           (
-            HttpRequest(uri =
-              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"),
+            HttpRequest(
+              uri =
+                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
+            ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -71,7 +73,8 @@ class SierraServiceTest
 
           whenReady(future) {
             _.value shouldBe Some(
-              AccessCondition(method = AccessMethod.OnlineRequest))
+              AccessCondition(method = AccessMethod.OnlineRequest)
+            )
           }
         }
       }
@@ -81,8 +84,10 @@ class SierraServiceTest
       it("gets a StacksItemStatus") {
         val responses = Seq(
           (
-            HttpRequest(uri =
-              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"),
+            HttpRequest(
+              uri =
+                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
+            ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -134,8 +139,10 @@ class SierraServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(uri =
-              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"),
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+            ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -268,7 +275,8 @@ class SierraServiceTest
 
           val future = service.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier)
+            sourceIdentifier = sourceIdentifier
+          )
 
           whenReady(future) {
             _.value shouldBe HoldAccepted.HoldCreated
@@ -318,8 +326,10 @@ class SierraServiceTest
             )
           ),
           (
-            HttpRequest(uri =
-              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"),
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+            ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -334,8 +344,10 @@ class SierraServiceTest
             )
           ),
           (
-            HttpRequest(uri =
-              s"http://sierra:1234/v5/items/$item?fields=deleted,fixedFields,holdCount,suppressed"),
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/items/$item?fields=deleted,fixedFields,holdCount,suppressed"
+            ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -365,7 +377,8 @@ class SierraServiceTest
 
           val future = service.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier)
+            sourceIdentifier = sourceIdentifier
+          )
 
           whenReady(future) {
             _.left.value shouldBe HoldRejected.ItemCannotBeRequested

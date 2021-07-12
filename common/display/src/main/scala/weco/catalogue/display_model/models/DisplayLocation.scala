@@ -79,7 +79,7 @@ object DisplayDigitalLocation {
 )
 case class DisplayPhysicalLocation(
   @Schema(
-    description = "The type of location that an item is accessible from.",
+    description = "The type of location that an item is accessible from."
   ) locationType: DisplayLocationType,
   @Schema(
     `type` = "String",

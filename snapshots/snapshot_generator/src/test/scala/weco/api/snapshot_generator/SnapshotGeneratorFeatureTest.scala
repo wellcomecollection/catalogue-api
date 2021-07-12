@@ -106,9 +106,11 @@ class SnapshotGeneratorFeatureTest
           result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
           result.snapshotResult.startedAt shouldBe >(
-            result.snapshotJob.requestedAt)
+            result.snapshotJob.requestedAt
+          )
           result.snapshotResult.finishedAt shouldBe >(
-            result.snapshotResult.startedAt)
+            result.snapshotResult.startedAt
+          )
 
           result.snapshotResult.s3Etag shouldBe s3Etag
           result.snapshotResult.s3Size shouldBe s3Size
@@ -118,10 +120,10 @@ class SnapshotGeneratorFeatureTest
   }
 
   def withFixtures[R](
-    testWith: TestWith[(Queue, MemoryMessageSender, Index, Index, Bucket), R])
-    : R =
+    testWith: TestWith[(Queue, MemoryMessageSender, Index, Index, Bucket), R]
+  ): R =
     withActorSystem { implicit actorSystem =>
-      withLocalSqsQueue(visibilityTimeout = 5) { queue =>
+      withLocalSqsQueue() { queue =>
         val messageSender = new MemoryMessageSender()
 
         withLocalWorksIndex { worksIndex =>

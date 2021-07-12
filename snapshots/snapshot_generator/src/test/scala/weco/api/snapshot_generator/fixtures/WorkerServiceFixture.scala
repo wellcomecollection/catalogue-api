@@ -15,8 +15,10 @@ trait WorkerServiceFixture extends SnapshotServiceFixture with SQS {
   def withWorkerService[R](
     queue: Queue,
     messageSender: MemoryMessageSender,
-    worksIndex: Index)(testWith: TestWith[SnapshotGeneratorWorkerService, R])(
-    implicit actorSystem: ActorSystem): R =
+    worksIndex: Index
+  )(
+    testWith: TestWith[SnapshotGeneratorWorkerService, R]
+  )(implicit actorSystem: ActorSystem): R =
     withSnapshotService(worksIndex) { snapshotService =>
       withSQSStream[NotificationMessage, R](queue) { sqsStream =>
         val workerService = new SnapshotGeneratorWorkerService(

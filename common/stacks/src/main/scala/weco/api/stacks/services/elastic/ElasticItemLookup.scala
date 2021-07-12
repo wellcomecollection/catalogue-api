@@ -19,8 +19,10 @@ import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ElasticItemLookup(elasticsearchService: ElasticsearchService,
-                        index: Index)(
+class ElasticItemLookup(
+  elasticsearchService: ElasticsearchService,
+  index: Index
+)(
   implicit ec: ExecutionContext
 ) extends ItemLookup {
 
@@ -28,8 +30,9 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
     * canonical ID.
     *
     */
-  def byCanonicalId(itemId: CanonicalId)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
+  def byCanonicalId(
+    itemId: CanonicalId
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
     val searchRequest =
       search(index)
         .query(
@@ -61,8 +64,9 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
     }
   }
 
-  def bySourceIdentifier(sourceIdentifier: SourceIdentifier)
-    : Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
+  def bySourceIdentifier(
+    sourceIdentifier: SourceIdentifier
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
     // TODO: What if we get something with the right value but wrong type?
     // We should be able to filter by ontologyType and IdentifierType.
     val searchRequest =
@@ -73,7 +77,8 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
             .should(
               termQuery(
                 "data.items.id.sourceIdentifier.value",
-                sourceIdentifier.value),
+                sourceIdentifier.value
+              )
             )
         )
         .size(10)
@@ -102,7 +107,8 @@ class ElasticItemLookup(elasticsearchService: ElasticsearchService,
 
 object ElasticItemLookup {
   def apply(elasticClient: ElasticClient, index: Index)(
-    implicit ec: ExecutionContext): ElasticItemLookup =
+    implicit ec: ExecutionContext
+  ): ElasticItemLookup =
     new ElasticItemLookup(
       elasticsearchService = new ElasticsearchService(elasticClient),
       index = index

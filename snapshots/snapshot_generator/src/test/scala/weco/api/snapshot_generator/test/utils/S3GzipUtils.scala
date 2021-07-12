@@ -8,7 +8,8 @@ import weco.storage.s3.S3ObjectLocation
 
 trait S3GzipUtils extends GzipUtils with S3Fixtures {
   def getGzipObjectFromS3(
-    location: S3ObjectLocation): (ObjectMetadata, String) = {
+    location: S3ObjectLocation
+  ): (ObjectMetadata, String) = {
     val downloadFile =
       File.createTempFile("snapshotServiceTest", ".txt.gz")
     s3Client.getObject(

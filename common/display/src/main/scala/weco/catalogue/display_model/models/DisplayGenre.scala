@@ -12,13 +12,16 @@ import weco.catalogue.internal_model.work.Genre
 case class DisplayGenre(
   @Schema(description = "A label given to a thing.") label: String,
   @Schema(description = "Relates a genre to a list of concepts.") concepts: List[
-    DisplayAbstractConcept],
+    DisplayAbstractConcept
+  ],
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Genre"
 )
 
 object DisplayGenre {
-  def apply(genre: Genre[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayGenre =
+  def apply(
+    genre: Genre[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayGenre =
     DisplayGenre(
       label = genre.label,
       concepts = genre.concepts.map {

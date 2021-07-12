@@ -11,28 +11,24 @@ import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
 
-import java.net.URL
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
 
   val metricsName = "ItemsApiFixture"
 
-  override def contextUrl =
-    new URL("https://localhost/catalogue/v2/context.json")
-
   implicit val apiConfig: ApiConfig =
     ApiConfig(
       publicHost = "localhost",
       publicScheme = "https",
       defaultPageSize = 10,
-      publicRootPath = "/catalogue",
-      contextPath = "context.json"
+      publicRootPath = "/catalogue"
     )
 
-  def withItemsApi[R](index: Index,
-                      responses: Seq[(HttpRequest, HttpResponse)] = Seq())(
-    testWith: TestWith[URL, R]): R = {
+  def withItemsApi[R](
+    index: Index,
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[Unit, R]): R = {
 
     val httpClient = new MemoryHttpClient(responses) with HttpGet
     with HttpPost {
@@ -47,7 +43,7 @@ trait ItemsApiFixture extends HttpFixtures with IndexFixtures { this: Suite =>
       )
 
       withApp(api.routes) { _ =>
-        testWith(api.contextUrl)
+        testWith(())
       }
     }
   }

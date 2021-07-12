@@ -26,26 +26,30 @@ object DateAggregationMerger extends DateHelpers {
   def apply(
     agg: Aggregation[Period[IdState.Minted]],
     maxBuckets: Int = 20,
-    range: DateBucketRange = Decade): Aggregation[Period[IdState.Minted]] =
+    range: DateBucketRange = Decade
+  ): Aggregation[Period[IdState.Minted]] =
     if (agg.buckets.length > maxBuckets)
       range match {
         case Decade =>
           DateAggregationMerger(
             Aggregation(mergeBuckets(agg.buckets, 10)),
             maxBuckets,
-            HalfCentury)
+            HalfCentury
+          )
         case HalfCentury =>
           DateAggregationMerger(
             Aggregation(mergeBuckets(agg.buckets, 50)),
             maxBuckets,
-            Century)
+            Century
+          )
         case Century =>
           Aggregation(mergeBuckets(agg.buckets, 100))
       } else agg
 
   private def mergeBuckets(
     buckets: List[AggregationBucket[Period[IdState.Minted]]],
-    yearRange: Int): List[AggregationBucket[Period[IdState.Minted]]] =
+    yearRange: Int
+  ): List[AggregationBucket[Period[IdState.Minted]]] =
     buckets
       .foldLeft(Map.empty[Int, Int]) {
         case (map, bucket) =>

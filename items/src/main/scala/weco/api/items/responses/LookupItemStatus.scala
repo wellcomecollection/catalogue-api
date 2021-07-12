@@ -18,10 +18,7 @@ import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.locations.PhysicalLocation
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
-import weco.http.models.ContextResponse
-
 import scala.concurrent.Future
 
 case class DisplayItemResponse(items: Seq[DisplayItem])
@@ -72,11 +69,6 @@ trait LookupItemStatus extends SingleWorkDirectives {
           items: Seq[Item[IdState.Minted]] <- Future.sequence(futureItems)
           displayItems = items.map(item => DisplayItem(item, true))
 
-        } yield complete(
-            ContextResponse(
-              contextUrl = new URL("http://www.example.com"),
-              result = displayItems
-            )
-        )
+        } yield complete(displayItems)
       }
 }

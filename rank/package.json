@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "build": "next build",
+    "build": "ts-node ./scripts/build && next build",
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
-    "devInit": "ts-node -r dotenv/config ./scripts/init",
-    "devPublish": "ts-node -r dotenv/config ./scripts/publish",
-    "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
+    "getIndexConfigs": "ts-node -r dotenv/config ./scripts/getIndexConfigs",
+    "putIndexConfig": "ts-node -r dotenv/config ./scripts/putIndexConfig",
+    "publishQuery": "ts-node -r dotenv/config ./scripts/publishQuery",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
     "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
   },

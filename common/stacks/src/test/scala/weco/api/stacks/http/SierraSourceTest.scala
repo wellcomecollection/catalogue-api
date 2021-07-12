@@ -31,8 +31,9 @@ class SierraSourceTest
     with Akka
     with ScalaFutures
     with IntegrationPatience {
-  def withSource[R](responses: Seq[(HttpRequest, HttpResponse)])(
-    testWith: TestWith[SierraSource, R]): R =
+  def withSource[R](
+    responses: Seq[(HttpRequest, HttpResponse)]
+  )(testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
       val client =
         new MemoryHttpClient(responses = responses) with HttpGet with HttpPost {
@@ -52,7 +53,8 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed")
+              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed"
+            )
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -94,7 +96,8 @@ class SierraSourceTest
               location = Some(
                 SierraSourceLocation(
                   code = "sgmed",
-                  name = "Closed stores Med.")
+                  name = "Closed stores Med."
+                )
               )
             )
           )
@@ -109,7 +112,8 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed")
+              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed"
+            )
           ),
           HttpResponse(
             status = StatusCodes.NotFound,
@@ -144,7 +148,8 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed")
+              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed"
+            )
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -181,7 +186,8 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0"
+            )
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -246,27 +252,34 @@ class SierraSourceTest
               entries = List(
                 SierraHold(
                   id = new URI(
-                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"
+                  ),
                   record = new URI(
-                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"),
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"
+                  ),
                   pickupLocation = SierraSourceLocation(
                     code = "sotop",
-                    name = "Rare Materials Room"),
+                    name = "Rare Materials Room"
+                  ),
                   pickupByDate = None,
                   status = SierraHoldStatus(code = "0", name = "on hold.")
                 ),
                 SierraHold(
                   id = new URI(
-                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"
+                  ),
                   record = new URI(
-                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"),
+                    "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"
+                  ),
                   pickupLocation = SierraSourceLocation(
                     code = "hgser",
-                    name = "Library Enquiry Desk"),
+                    name = "Library Enquiry Desk"
+                  ),
                   pickupByDate = None,
                   status = SierraHoldStatus(
                     code = "i",
-                    name = "item hold ready for pickup.")
+                    name = "item hold ready for pickup."
+                  )
                 )
               )
             )
@@ -281,7 +294,8 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0")
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds?limit=100&offset=0"
+            )
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -319,7 +333,8 @@ class SierraSourceTest
           HttpRequest(
             method = HttpMethods.POST,
             uri = Uri(
-              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"
+            ),
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""
@@ -350,7 +365,8 @@ class SierraSourceTest
           HttpRequest(
             method = HttpMethods.POST,
             uri = Uri(
-              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"),
+              s"http://sierra:1234/v5/patrons/${patron.withoutCheckDigit}/holds/requests"
+            ),
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               s"""{"recordType":"i","recordNumber":${item.withoutCheckDigit},"pickupLocation":"unspecified"}"""

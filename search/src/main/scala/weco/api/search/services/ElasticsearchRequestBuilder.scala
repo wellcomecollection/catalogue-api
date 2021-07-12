@@ -15,9 +15,11 @@ trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _, _]] {
 
 object ElasticsearchRequestBuilder {
 
-  def includesExcludesQuery(field: String,
-                            includes: List[String],
-                            excludes: List[String]): Query =
+  def includesExcludesQuery(
+    field: String,
+    includes: List[String],
+    excludes: List[String]
+  ): Query =
     (includes, excludes) match {
       case (_, Nil) =>
         termsQuery(field = field, values = includes)
@@ -26,6 +28,7 @@ object ElasticsearchRequestBuilder {
       case _ =>
         must(
           termsQuery(field = field, values = includes),
-          not(termsQuery(field = field, values = excludes)))
+          not(termsQuery(field = field, values = excludes))
+        )
     }
 }

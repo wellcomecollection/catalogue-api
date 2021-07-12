@@ -6,23 +6,22 @@ import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
-import weco.api.search.rest
 import weco.api.search.services.ImagesService
 import weco.catalogue.display_model.models.Implicits._
 import weco.catalogue.display_model.models.{DisplayImage, MultipleImagesIncludes, SingleImageIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.http.models.ContextResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImagesController(elasticsearchService: ElasticsearchService,
-                       implicit val apiConfig: ApiConfig,
-                       imagesIndex: Index,
-                       queryConfig: QueryConfig)(implicit ec: ExecutionContext)
+class ImagesController(
+  elasticsearchService: ElasticsearchService,
+  implicit val apiConfig: ApiConfig,
+  imagesIndex: Index,
+  queryConfig: QueryConfig
+)(implicit ec: ExecutionContext)
     extends CustomDirectives
     with Tracing {
 
-  import ContextResponse.encoder
   import DisplayResultList.encoder
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
@@ -44,19 +43,16 @@ class ImagesController(elasticsearchService: ElasticsearchService,
                   .map(_.toMap)
                   .map { similarImages =>
                     complete(
-                      ContextResponse(
-                        contextUrl = contextUrl,
-                        result = DisplayImage(
-                          image = image,
-                          includes =
-                            params.include.getOrElse(SingleImageIncludes.none),
-                          visuallySimilar =
-                            similarImages.get(SimilarityMetric.Blended),
-                          withSimilarColors =
-                            similarImages.get(SimilarityMetric.Colors),
-                          withSimilarFeatures =
-                            similarImages.get(SimilarityMetric.Features),
-                        )
+                      DisplayImage(
+                        image = image,
+                        includes =
+                          params.include.getOrElse(SingleImageIncludes.none),
+                        visuallySimilar =
+                          similarImages.get(SimilarityMetric.Blended),
+                        withSimilarColors =
+                          similarImages.get(SimilarityMetric.Colors),
+                        withSimilarFeatures =
+                          similarImages.get(SimilarityMetric.Features)
                       )
                     )
                   }
@@ -81,15 +77,12 @@ class ImagesController(elasticsearchService: ElasticsearchService,
               case Right(resultList) =>
                 extractPublicUri { uri =>
                   complete(
-                    ContextResponse(
-                      contextUrl = contextUrl,
-                      DisplayResultList(
-                        resultList = resultList,
-                        searchOptions = searchOptions,
-                        includes =
-                          params.include.getOrElse(MultipleImagesIncludes.none),
-                        requestUri = uri,
-                      )
+                    DisplayResultList(
+                      resultList = resultList,
+                      searchOptions = searchOptions,
+                      includes =
+                        params.include.getOrElse(MultipleImagesIncludes.none),
+                      requestUri = uri
                     )
                   )
                 }
@@ -99,7 +92,8 @@ class ImagesController(elasticsearchService: ElasticsearchService,
     }
 
   private def getSimilarityMetrics(
-    maybeIncludes: Option[SingleImageIncludes]): List[SimilarityMetric] =
+    maybeIncludes: Option[SingleImageIncludes]
+  ): List[SimilarityMetric] =
     maybeIncludes
       .map { includes =>
         List(
@@ -108,7 +102,7 @@ class ImagesController(elasticsearchService: ElasticsearchService,
           if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
           else None,
           if (includes.withSimilarColors) Some(SimilarityMetric.Colors)
-          else None,
+          else None
         ).flatten
       }
       .getOrElse(Nil)

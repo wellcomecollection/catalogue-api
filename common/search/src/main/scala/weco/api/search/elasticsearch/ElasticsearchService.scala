@@ -18,8 +18,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 ) extends Logging
     with Tracing {
 
-  def findById[T](id: CanonicalId)(index: Index)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
+  def findById[T](id: CanonicalId)(
+    index: Index
+  )(implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
         get(index, id.underlying)
@@ -35,8 +36,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield result
 
-  def findBySearch[T](request: SearchRequest)(
-    implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, List[T]]] =
+  def findBySearch[T](
+    request: SearchRequest
+  )(implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, List[T]]] =
     for {
       response <- executeSearchRequest(request)
 
@@ -47,8 +49,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
-  def executeSearchRequest(request: SearchRequest)
-    : Future[Either[ElasticsearchError, SearchResponse]] =
+  def executeSearchRequest(
+    request: SearchRequest
+  ): Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",
       spanType = "request",

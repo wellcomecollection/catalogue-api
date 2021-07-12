@@ -8,7 +8,6 @@ case class ApiConfig(
   publicScheme: String,
   publicHost: String,
   publicRootPath: String,
-  contextPath: String,
   defaultPageSize: Int
 )
 
@@ -24,22 +23,17 @@ object ApiConfig {
       ),
       defaultPageSize = config
         .getIntOption("api.pageSize")
-        .getOrElse(10),
-      contextSuffix = config
-        .getStringOption("api.context.suffix")
-        .getOrElse("context.json")
+        .getOrElse(10)
     )
 
   def apply(
     publicRootUri: Uri,
-    defaultPageSize: Int,
-    contextSuffix: String
+    defaultPageSize: Int
   ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,
       publicRootPath = publicRootUri.path.toString,
-      contextPath = contextSuffix,
       defaultPageSize = defaultPageSize
     )
 }

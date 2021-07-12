@@ -119,7 +119,7 @@ class AggregationsTest
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
-            FormatFilter(List(Format.Books.id)),
+            FormatFilter(List(Format.Books.id))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>

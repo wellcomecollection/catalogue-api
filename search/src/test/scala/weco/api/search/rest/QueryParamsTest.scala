@@ -14,7 +14,7 @@ class QueryParamsTest extends AnyFunSpec with Matchers {
 
     val decoder = QueryParamsUtils.decodeIncludesAndExcludes(
       "a" -> A,
-      "b" -> B,
+      "b" -> B
     )
 
     def decode(str: String) =

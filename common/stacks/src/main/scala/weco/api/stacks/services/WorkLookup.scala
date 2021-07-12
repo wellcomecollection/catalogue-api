@@ -14,14 +14,16 @@ class WorkLookup(elasticsearchService: ElasticsearchService) {
   /** Returns the Work that corresponds to this canonical ID.
     *
     */
-  def byCanonicalId(id: CanonicalId)(
-    index: Index): Future[Either[ElasticsearchError, Work[Indexed]]] =
+  def byCanonicalId(
+    id: CanonicalId
+  )(index: Index): Future[Either[ElasticsearchError, Work[Indexed]]] =
     elasticsearchService.findById[Work[Indexed]](id)(index)
 }
 
 object WorkLookup {
-  def apply(elasticClient: ElasticClient)(
-    implicit ec: ExecutionContext): WorkLookup =
+  def apply(
+    elasticClient: ElasticClient
+  )(implicit ec: ExecutionContext): WorkLookup =
     new WorkLookup(
       elasticsearchService = new ElasticsearchService(elasticClient)
     )

@@ -12,17 +12,21 @@ import weco.catalogue.internal_model.work.Contributor
 case class DisplayContributor(
   @Schema(description = "The agent.") agent: DisplayAbstractAgent,
   @Schema(description = "The list of contribution roles.") roles: List[
-    DisplayContributionRole],
+    DisplayContributionRole
+  ],
   @JsonKey("type") @Schema(name = "type") ontologyType: String = "Contributor"
 )
 
 object DisplayContributor {
-  def apply(contributor: Contributor[IdState.Minted],
-            includesIdentifiers: Boolean): DisplayContributor =
+  def apply(
+    contributor: Contributor[IdState.Minted],
+    includesIdentifiers: Boolean
+  ): DisplayContributor =
     DisplayContributor(
       agent = DisplayAbstractAgent(
         contributor.agent,
-        includesIdentifiers = includesIdentifiers),
+        includesIdentifiers = includesIdentifiers
+      ),
       roles = contributor.roles.map { DisplayContributionRole(_) }
     )
 }

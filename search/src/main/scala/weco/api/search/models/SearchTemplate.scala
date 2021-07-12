@@ -14,7 +14,8 @@ object SearchTemplate {
     SearchTemplate(
       id,
       index,
-      JacksonBuilder.writeAsString(QueryBuilderFn(query).value))
+      JacksonBuilder.writeAsString(QueryBuilderFn(query).value)
+    )
 
   implicit val encoder: Encoder[SearchTemplate] =
     deriveConfiguredEncoder
