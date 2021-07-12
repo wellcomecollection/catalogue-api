@@ -1,7 +1,5 @@
 package weco.api.items.responses
 
-import java.net.URL
-
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.api.search.rest.SingleWorkDirectives
@@ -20,8 +18,6 @@ import weco.catalogue.internal_model.identifiers.{
 }
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 import scala.concurrent.Future
-
-case class DisplayItemResponse(items: Seq[DisplayItem])
 
 trait LookupItemStatus extends SingleWorkDirectives {
   val workLookup: WorkLookup
