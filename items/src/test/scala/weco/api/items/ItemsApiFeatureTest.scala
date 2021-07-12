@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResp
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.items.fixtures.{Generators, ItemsApiFixture}
+import weco.api.items.fixtures.{ItemsApiGenerators, ItemsApiFixture}
 import weco.json.utils.JsonAssertions
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -20,7 +20,7 @@ class ItemsApiFeatureTest
     with ItemsApiFixture
     with JsonAssertions
     with IntegrationPatience
-    with Generators {
+    with ItemsApiGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {

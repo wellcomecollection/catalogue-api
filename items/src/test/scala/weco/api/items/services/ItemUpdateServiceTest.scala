@@ -4,7 +4,7 @@ import akka.http.scaladsl.model._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.items.fixtures.{Generators, SierraServiceFixture}
+import weco.api.items.fixtures.{ItemsApiGenerators, SierraServiceFixture}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
 import weco.catalogue.internal_model.work.{Work, WorkState}
@@ -19,7 +19,7 @@ class ItemUpdateServiceTest extends AnyFunSpec
   with Matchers
   with JsonAssertions
   with ScalaFutures
-  with Generators {
+  with ItemsApiGenerators {
 
   def availableItemResponses(itemIdentifier: String) = Seq(
     (

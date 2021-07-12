@@ -3,7 +3,7 @@ package weco.api.items.fixtures
 import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
 import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 
-trait Generators
+trait ItemsApiGenerators
   extends WorkGenerators
   with ItemsGenerators{
 
