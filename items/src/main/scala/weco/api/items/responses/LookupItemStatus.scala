@@ -57,14 +57,14 @@ trait LookupItemStatus extends SingleWorkDirectives {
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
         val futureItems = work.data.items.map {
           case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
-              if isSierraId(srcId) => refreshItem(srcId, item)
+              if isSierraId(srcId) =>
+            refreshItem(srcId, item)
           case item => Future(item)
         }
 
         for {
           items: Seq[Item[IdState.Minted]] <- Future.sequence(futureItems)
           displayItems = items.map(item => DisplayItem(item, true))
-
         } yield complete(displayItems)
       }
 }

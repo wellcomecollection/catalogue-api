@@ -8,7 +8,11 @@ import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
 import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{DisplayImage, MultipleImagesIncludes, SingleImageIncludes}
+import weco.catalogue.display_model.models.{
+  DisplayImage,
+  MultipleImagesIncludes,
+  SingleImageIncludes
+}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
