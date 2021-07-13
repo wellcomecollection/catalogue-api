@@ -11,8 +11,7 @@ import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SierraServiceFixture
-    extends HttpFixtures {
+trait SierraServiceFixture extends HttpFixtures {
 
   this: Suite =>
 

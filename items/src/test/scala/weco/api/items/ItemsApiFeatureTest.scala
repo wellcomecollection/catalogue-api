@@ -7,8 +7,16 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.json.utils.JsonAssertions
 
@@ -16,12 +24,12 @@ import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
-      with Matchers
-      with ItemsApiFixture
-      with JsonAssertions
-      with IntegrationPatience
-      with ItemsApiGenerators
-      with SierraGenerators {
+    with Matchers
+    with ItemsApiFixture
+    with JsonAssertions
+    with IntegrationPatience
+    with ItemsApiGenerators
+    with SierraGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
