@@ -8,7 +8,11 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.json.utils.JsonAssertions
