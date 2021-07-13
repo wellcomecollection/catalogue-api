@@ -101,7 +101,6 @@ trait DisplaySerialisationTestBase {
           "label": "${DisplayAccessMethod(cond.method).label}"
         },
         ${optionalString("terms", cond.terms)}
-        ${optionalString("to", cond.to, trailingComma = false)}
         ${optionalObject("status", accessStatus, cond.status)}
       }
     """
