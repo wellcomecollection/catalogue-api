@@ -80,56 +80,6 @@ class SierraServiceTest
       }
     }
 
-    describe("getItemStatus") {
-      it("gets a StacksItemStatus") {
-        val responses = Seq(
-          (
-            HttpRequest(
-              uri =
-                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                """
-                   |{
-                   |  "id": "1601017",
-                   |  "deleted": false,
-                   |  "suppressed": false,
-                   |  "fixedFields": {
-                   |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
-                   |  },
-                   |  "holdCount": 0
-                   |}
-                   |""".stripMargin
-              )
-            )
-          )
-        )
-
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
-          val identifier = SourceIdentifier(
-            identifierType = SierraSystemNumber,
-            value = "i16010176",
-            ontologyType = "Item"
-          )
-
-          val future = service.getItemStatus(identifier)
-
-          whenReady(future) {
-            _.value shouldBe StacksItemStatus("available", "Available")
-          }
-        }
-      }
-    }
-
     describe("getStacksUserHolds") {
       it("gets a StacksUserHolds") {
         val patron = SierraPatronNumber("1234567")

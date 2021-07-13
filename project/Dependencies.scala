@@ -132,7 +132,6 @@ object ExternalDependencies {
   val secretsDependencies = Seq(
     "software.amazon.awssdk" % "secretsmanager" % versions.aws2
   )
-
 }
 
 object CatalogueDependencies {

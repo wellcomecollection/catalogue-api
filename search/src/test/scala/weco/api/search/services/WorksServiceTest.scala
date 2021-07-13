@@ -4,6 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
 import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
@@ -28,7 +29,6 @@ import weco.api.search.models.{
   DateRangeFilter,
   FormatFilter,
   ItemLocationTypeIdFilter,
-  ResultList,
   SearchQuery,
   WorkAggregations,
   WorkSearchOptions

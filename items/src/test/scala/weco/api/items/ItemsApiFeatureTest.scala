@@ -1,32 +1,24 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes,
-  Uri
-}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.items.fixtures.ItemsApiFixture
-import weco.json.utils.JsonAssertions
+import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
+import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
   SourceIdentifier
 }
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
+import weco.catalogue.source_model.generators.SierraGenerators
+import weco.json.utils.JsonAssertions
 
 import scala.util.{Failure, Try}
 
@@ -36,42 +28,31 @@ class ItemsApiFeatureTest
     with ItemsApiFixture
     with JsonAssertions
     with IntegrationPatience
-    with WorkGenerators
-    with ItemsGenerators {
+    with ItemsApiGenerators
+    with SierraGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
-      val item = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          value = "i16010176",
-          ontologyType = "Item"
-        )
+      val sierraItemNumber = createSierraItemNumber
+
+      val temporarilyUnavailableOnline = AccessCondition(
+        method = AccessMethod.OnlineRequest,
+        status = AccessStatus.TemporarilyUnavailable
       )
 
-      val work = indexedWork().items(List(item))
+      val physicalItem = createPhysicalItemWith(
+        sierraItemNumber = sierraItemNumber,
+        accessCondition = temporarilyUnavailableOnline
+      )
 
-      val responses = Seq(
+      val work = indexedWork().items(List(physicalItem))
+
+      val availableItemResponses = Seq(
         (
-          HttpRequest(
-            uri = Uri(
-              "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
-            )
-          ),
+          HttpRequest(uri = sierraUri(sierraItemNumber)),
           HttpResponse(
-            entity = HttpEntity(
-              contentType = ContentTypes.`application/json`,
-              """
-                |{
-                |  "id": "1601017",
-                |  "deleted": false,
-                |  "suppressed": false,
-                |  "fixedFields": {
-                |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
-                |  },
-                |  "holdCount": 0
-                |}
-                |""".stripMargin
+            entity = sierraItemResponse(
+              sierraItemNumber = sierraItemNumber
             )
           )
         )
@@ -80,27 +61,52 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withItemsApi(index, responses) { _ =>
+        withItemsApi(index, availableItemResponses) { _ =>
           val path = s"/works/${work.state.canonicalId}"
 
           val expectedJson =
             s"""
                |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [
+               |  "type" : "ItemsList",
+               |  "totalResults" : 1,
+               |  "results" : [
                |    {
-               |      "id" : "${item.id.canonicalId}",
-               |      "locations" : [
+               |      "id" : "${physicalItem.id.canonicalId}",
+               |      "identifiers" : [
+               |        {
+               |          "identifierType" : {
+               |            "id" : "sierra-system-number",
+               |            "label" : "Sierra system number",
+               |            "type" : "IdentifierType"
+               |          },
+               |          "value" : "${sierraItemNumber.withCheckDigit}",
+               |          "type" : "Identifier"
+               |        }
                |      ],
-               |      "status" : {
-               |        "id" : "available",
-               |        "label" : "Available",
-               |        "type": "ItemStatus"
-               |      },
-               |      "type": "Item"
+               |      "locations" : [
+               |        {
+               |          "locationType" : {
+               |            "id" : "closed-stores",
+               |            "label" : "Closed stores",
+               |            "type" : "LocationType"
+               |          },
+               |          "label" : "locationLabel",
+               |          "accessConditions" : [
+               |            {
+               |              "method" : {
+               |                "id" : "online-request",
+               |                "label" : "Online request",
+               |                "type" : "AccessMethod"
+               |              },
+               |              "type" : "AccessCondition"
+               |            }
+               |          ],
+               |          "type" : "PhysicalLocation"
+               |        }
+               |      ],
+               |      "type" : "Item"
                |    }
-               |  ],
-               |  "type": "Work"
+               |  ]
                |}""".stripMargin
 
           whenGetRequestReady(path) { response =>
@@ -126,9 +132,10 @@ class ItemsApiFeatureTest
           val expectedJson =
             s"""
                |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [ ],
-               |  "type": "Work"
+               |  "type" : "ItemsList",
+               |  "totalResults" : 0,
+               |  "results" : [
+               |  ]
                |}
               """.stripMargin
 
@@ -137,42 +144,6 @@ class ItemsApiFeatureTest
 
             withStringEntity(response.entity) {
               assertJsonStringsAreEqual(_, expectedJson)
-            }
-          }
-        }
-      }
-    }
-
-    it("returns an empty list if a work has no Sierra-identified items") {
-      val item = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = MiroImageNumber,
-          value = "V0001234",
-          ontologyType = "Item"
-        )
-      )
-
-      val work = indexedWork().items(List(item))
-
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
-
-        withItemsApi(index) { _ =>
-          val path = s"/works/${work.state.canonicalId}"
-
-          val expectedJson =
-            s"""
-               |{
-               |  "id" : "${work.state.canonicalId}",
-               |  "items" : [ ],
-               |  "type": "Work"
-               |}""".stripMargin
-
-          whenGetRequestReady(path) { response =>
-            response.status shouldBe StatusCodes.OK
-
-            withStringEntity(response.entity) { actualJson =>
-              assertJsonStringsAreEqual(actualJson, expectedJson)
             }
           }
         }

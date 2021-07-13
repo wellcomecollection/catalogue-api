@@ -47,17 +47,6 @@ class SierraService(
     } yield accessCondition
   }
 
-  def getItemStatus(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[SierraItemLookupError, StacksItemStatus]] = {
-    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
-
-    sierraSource.lookupItem(item).map {
-      case Right(item) => Right(StacksItemStatus(item.fixedFields("88").value))
-      case Left(err)   => Left(err)
-    }
-  }
-
   def placeHold(
     patron: SierraPatronNumber,
     sourceIdentifier: SourceIdentifier
