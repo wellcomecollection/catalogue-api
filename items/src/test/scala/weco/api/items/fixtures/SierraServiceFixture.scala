@@ -5,6 +5,8 @@ import akka.stream.Materializer
 import org.scalatest.Suite
 import weco.api.stacks.services.SierraService
 import weco.catalogue.internal_model.index.IndexFixtures
+import weco.catalogue.source_model.generators.SierraGenerators
+import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
@@ -12,7 +14,11 @@ import weco.http.fixtures.HttpFixtures
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-trait SierraServiceFixture extends HttpFixtures with IndexFixtures {
+trait SierraServiceFixture
+  extends HttpFixtures
+    with IndexFixtures
+    with SierraGenerators {
+
   this: Suite =>
 
   def withSierraService[R](
@@ -27,4 +33,7 @@ trait SierraServiceFixture extends HttpFixtures with IndexFixtures {
     testWith(sierraService)
 
   }
+  def sierraUri(sierraItemNumber: SierraItemNumber) =
+    Uri(f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
+
 }

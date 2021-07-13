@@ -1,15 +1,15 @@
 package weco.api.items
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.items.fixtures.{ItemsApiGenerators, ItemsApiFixture}
-import weco.json.utils.JsonAssertions
+import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.json.utils.JsonAssertions
 
 import scala.util.{Failure, Try}
 
@@ -40,28 +40,10 @@ class ItemsApiFeatureTest
 
       val responses = Seq(
         (
-          HttpRequest(
-            uri = Uri(
-              f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
-          ),
-          HttpResponse(
-            entity = HttpEntity(
-              contentType = ContentTypes.`application/json`,
-              f"""
-                 |{
-                 |  "id": "${sierraItemNumber.withoutCheckDigit}",
-                 |  "deleted": false,
-                 |  "suppressed": false,
-                 |  "fixedFields": {
-                 |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                 |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                 |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                 |  },
-                 |  "holdCount": 0
-                 |}
-                 |""".stripMargin
-            )
-          )
+          HttpRequest(uri = sierraUri(sierraItemNumber)),
+          HttpResponse(entity = sierraItemResponse(
+            sierraItemNumber = sierraItemNumber
+          ))
         )
       )
 
