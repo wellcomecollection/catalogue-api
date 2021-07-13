@@ -45,7 +45,7 @@ class ItemUpdateService(
           )
 
         case Left(err) =>
-          error(msg = f"Couldn't refresh item: ${item.id} got error ${err}")
+          error(msg = f"Couldn't refresh item: ${item.id} got error $err")
           item
       }
 
