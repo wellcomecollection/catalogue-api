@@ -277,12 +277,12 @@ trait DisplaySerialisationTestBase {
 
   def format(fmt: Format): String =
     s"""
-      {
-        "id": "${fmt.id}",
-        "label": "${fmt.label}",
-        "type": "Format"
-      }
-    """
+       |{
+       |  "id": "${fmt.id}",
+       |  "label": "${fmt.label}",
+       |  "type": "Format"
+       |}
+       |""".stripMargin.tidy
 
   def language(lang: Language): String =
     s"""
