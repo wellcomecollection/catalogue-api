@@ -48,7 +48,7 @@ class ItemUpdateServiceTest
       )
     )
   )
-  
+
   val temporarilyUnavailableItem: Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
@@ -62,14 +62,13 @@ class ItemUpdateServiceTest
   }
 
   val availableItem = {
-    val temporarilyUnavailableOnline = AccessCondition(
-      method = AccessMethod.OnlineRequest,
-      status = AccessStatus.TemporarilyUnavailable
+    val availableOnline = AccessCondition(
+      method = AccessMethod.OnlineRequest
     )
 
     createPhysicalItemWith(
       sierraItemNumber = sierraItemNumber,
-      accessCondition = temporarilyUnavailableOnline
+      accessCondition = availableOnline
     )
   }
 
@@ -99,8 +98,16 @@ class ItemUpdateServiceTest
 
   val itemStates = Table(
     ("Sierra Responses", "Catalogue Work", "AccessCondition"),
-    (onHoldItemResponses, workWithAvailableItem, onHoldAccessCondition),
-    (onHoldItemResponses, workWithUnavailableItem, onHoldAccessCondition),
+    (
+      onHoldItemResponses,
+      workWithAvailableItem,
+      onHoldAccessCondition
+    ),
+    (
+      onHoldItemResponses,
+      workWithUnavailableItem,
+      onHoldAccessCondition
+    ),
     (
       availableItemResponses,
       workWithAvailableItem,
@@ -113,19 +120,21 @@ class ItemUpdateServiceTest
     )
   )
 
-  forAll(itemStates) {
-    (sierraResponses, catalogueWork, expectedAccessCondition) =>
-      withItemUpdateService(sierraResponses) { itemUpdateService =>
-        whenReady(itemUpdateService.updateItems(catalogueWork)) {
-          updatedItems =>
-            updatedItems.length shouldBe 2
+  it("updates AccessCondition correctly based on Sierra responses") {
+    forAll(itemStates) {
+      (sierraResponses, catalogueWork, expectedAccessCondition) =>
+        withItemUpdateService(sierraResponses) { itemUpdateService =>
+          whenReady(itemUpdateService.updateItems(catalogueWork)) {
+            updatedItems =>
+              updatedItems.length shouldBe 2
 
-            val physicalItem = updatedItems(0)
-            val digitalItem = updatedItems(1)
+              val physicalItem = updatedItems(0)
+              val digitalItem = updatedItems(1)
 
-            physicalItem.locations.head.accessConditions.head shouldBe expectedAccessCondition
-            digitalItem shouldBe dummyDigitalItem
+              physicalItem.locations.head.accessConditions.head shouldBe expectedAccessCondition
+              digitalItem shouldBe dummyDigitalItem
+          }
         }
-      }
+    }
   }
 }
