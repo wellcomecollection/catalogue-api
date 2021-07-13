@@ -7,27 +7,21 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.source_model.generators.SierraGenerators
 import weco.json.utils.JsonAssertions
 
 import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
-    with Matchers
-    with ItemsApiFixture
-    with JsonAssertions
-    with IntegrationPatience
-    with ItemsApiGenerators {
+      with Matchers
+      with ItemsApiFixture
+      with JsonAssertions
+      with IntegrationPatience
+      with ItemsApiGenerators
+      with SierraGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
@@ -45,7 +39,7 @@ class ItemsApiFeatureTest
 
       val work = indexedWork().items(List(physicalItem))
 
-      val responses = Seq(
+      val availableItemResponses = Seq(
         (
           HttpRequest(uri = sierraUri(sierraItemNumber)),
           HttpResponse(
@@ -59,7 +53,7 @@ class ItemsApiFeatureTest
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
 
-        withItemsApi(index, responses) { _ =>
+        withItemsApi(index, availableItemResponses) { _ =>
           val path = s"/works/${work.state.canonicalId}"
 
           val expectedJson =

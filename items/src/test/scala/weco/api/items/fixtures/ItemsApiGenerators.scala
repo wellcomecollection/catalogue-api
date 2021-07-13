@@ -32,20 +32,19 @@ trait ItemsApiGenerators
 
   def withItemUpdateService[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-  )(testWith: TestWith[ItemUpdateService, R]): R = {
+  )(testWith: TestWith[ItemUpdateService, R]): R =
     withMaterializer { implicit mat =>
       withSierraService(responses) { sierraService =>
         testWith(new ItemUpdateService(sierraService))
       }
     }
-  }
 
   def sierraItemResponse(
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
     suppressed: String = "false",
     holdCount: Int = 0
-  ): HttpEntity.Strict = {
+  ): HttpEntity.Strict =
     HttpEntity(
       contentType = ContentTypes.`application/json`,
       f"""
@@ -62,7 +61,6 @@ trait ItemsApiGenerators
          |}
          |""".stripMargin
     )
-  }
 
   def createPhysicalItemWith(
     sierraItemNumber: SierraItemNumber,
