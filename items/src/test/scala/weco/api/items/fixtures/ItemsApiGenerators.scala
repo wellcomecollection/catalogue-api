@@ -1,26 +1,38 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse
+}
 import org.scalatest.Suite
 import weco.api.items.services.ItemUpdateService
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  LocationType,
+  PhysicalLocation
+}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ItemsApiGenerators
-  extends SierraServiceFixture
+    extends SierraServiceFixture
     with WorkGenerators
     with ItemsGenerators {
   this: Suite =>
 
   def withItemUpdateService[R](
-                                responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-                              )(testWith: TestWith[ItemUpdateService, R]): R = {
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[ItemUpdateService, R]): R = {
     withMaterializer { implicit mat =>
       withSierraService(responses) { sierraService =>
         testWith(new ItemUpdateService(sierraService))
@@ -29,11 +41,11 @@ trait ItemsApiGenerators
   }
 
   def sierraItemResponse(
-                          sierraItemNumber: SierraItemNumber,
-                          deleted: String = "false",
-                          suppressed: String = "false",
-                          holdCount: Int = 0
-                        ): HttpEntity.Strict = {
+    sierraItemNumber: SierraItemNumber,
+    deleted: String = "false",
+    suppressed: String = "false",
+    holdCount: Int = 0
+  ): HttpEntity.Strict = {
     HttpEntity(
       contentType = ContentTypes.`application/json`,
       f"""
@@ -70,7 +82,7 @@ trait ItemsApiGenerators
 
     createIdentifiedItemWith(
       sourceIdentifier = itemSourceIdentifier,
-      locations = List(physicalItemLocation),
+      locations = List(physicalItemLocation)
     )
   }
 }

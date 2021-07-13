@@ -11,18 +11,16 @@ import weco.catalogue.internal_model.work.Item
   description = "A list of items."
 )
 case class DisplayItemsList(
-                             @JsonKey("type") @Schema(name = "type") ontologyType: String = "ItemsList",
-                             totalResults: Int,
-                             results: Seq[DisplayItem],
-                           )
+  @JsonKey("type") @Schema(name = "type") ontologyType: String = "ItemsList",
+  totalResults: Int,
+  results: Seq[DisplayItem]
+)
 
 object DisplayItemsList {
 
   def apply(items: Seq[Item[IdState.Minted]]): DisplayItemsList = {
-    val displayItems: Seq[DisplayItem] = items.map(item => DisplayItem(
-      item = item,
-      includesIdentifiers = true)
-    )
+    val displayItems: Seq[DisplayItem] =
+      items.map(item => DisplayItem(item = item, includesIdentifiers = true))
 
     DisplayItemsList(
       totalResults = displayItems.length,

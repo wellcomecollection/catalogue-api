@@ -11,7 +11,6 @@ import weco.catalogue.internal_model.work.{Work, WorkState}
 
 import scala.concurrent.Future
 
-
 trait LookupItemStatus extends SingleWorkDirectives {
   import weco.catalogue.display_model.models.Implicits._
 
@@ -24,7 +23,8 @@ trait LookupItemStatus extends SingleWorkDirectives {
     workLookup
       .byCanonicalId(workId)(index)
       .mapVisible { work: Work.Visible[WorkState.Indexed] =>
-        itemUpdateService.updateItems(work)
+        itemUpdateService
+          .updateItems(work)
           .map(DisplayItemsList(_))
           .map(complete(_))
       }

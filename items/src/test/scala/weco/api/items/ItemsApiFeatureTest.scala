@@ -7,15 +7,22 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.json.utils.JsonAssertions
 
 import scala.util.{Failure, Try}
 
-
 class ItemsApiFeatureTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with ItemsApiFixture
     with JsonAssertions
@@ -41,9 +48,11 @@ class ItemsApiFeatureTest
       val responses = Seq(
         (
           HttpRequest(uri = sierraUri(sierraItemNumber)),
-          HttpResponse(entity = sierraItemResponse(
-            sierraItemNumber = sierraItemNumber
-          ))
+          HttpResponse(
+            entity = sierraItemResponse(
+              sierraItemNumber = sierraItemNumber
+            )
+          )
         )
       )
 
