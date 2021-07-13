@@ -8,16 +8,20 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.catalogue.internal_model.work.Item
 import weco.json.utils.JsonAssertions
 
-
-class ItemUpdateServiceTest extends AnyFunSpec
-  with Matchers
-  with JsonAssertions
-  with ScalaFutures
-  with ItemsApiGenerators {
+class ItemUpdateServiceTest
+    extends AnyFunSpec
+    with Matchers
+    with JsonAssertions
+    with ScalaFutures
+    with ItemsApiGenerators {
 
   val sierraItemNumber = createSierraItemNumber
   val dummyDigitalItem = createDigitalItem
@@ -25,22 +29,26 @@ class ItemUpdateServiceTest extends AnyFunSpec
   val availableItemResponses = Seq(
     (
       HttpRequest(uri = sierraUri(sierraItemNumber)),
-      HttpResponse(entity = sierraItemResponse(
-        sierraItemNumber = sierraItemNumber
-      ))
+      HttpResponse(
+        entity = sierraItemResponse(
+          sierraItemNumber = sierraItemNumber
+        )
+      )
     )
   )
 
   val onHoldItemResponses = Seq(
     (
       HttpRequest(uri = sierraUri(sierraItemNumber)),
-      HttpResponse(entity = sierraItemResponse(
-        sierraItemNumber = sierraItemNumber,
-        holdCount = 1
-      ))
+      HttpResponse(
+        entity = sierraItemResponse(
+          sierraItemNumber = sierraItemNumber,
+          holdCount = 1
+        )
+      )
     )
   )
-
+  
   val temporarilyUnavailableItem: Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
@@ -75,35 +83,49 @@ class ItemUpdateServiceTest extends AnyFunSpec
     method = AccessMethod.OnlineRequest
   )
 
-  val workWithUnavailableItem = indexedWork().items(List(
-    temporarilyUnavailableItem,
-    dummyDigitalItem
-  ))
-
-  val workWithAvailableItem = indexedWork().items(List(
-    availableItem,
-    dummyDigitalItem
-  ))
-
-  val itemStates = Table(
-    ("Sierra Responses","Catalogue Work","AccessCondition"),
-    (onHoldItemResponses, workWithAvailableItem, onHoldAccessCondition),
-    (onHoldItemResponses, workWithUnavailableItem, onHoldAccessCondition),
-    (availableItemResponses, workWithAvailableItem, onlineRequestAccessCondition),
-    (availableItemResponses, workWithUnavailableItem, onlineRequestAccessCondition),
+  val workWithUnavailableItem = indexedWork().items(
+    List(
+      temporarilyUnavailableItem,
+      dummyDigitalItem
+    )
   )
 
-  forAll(itemStates) { (sierraResponses, catalogueWork, expectedAccessCondition) =>
-    withItemUpdateService(sierraResponses) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(catalogueWork)) { updatedItems =>
-        updatedItems.length shouldBe 2
+  val workWithAvailableItem = indexedWork().items(
+    List(
+      availableItem,
+      dummyDigitalItem
+    )
+  )
 
-        val physicalItem = updatedItems(0)
-        val digitalItem = updatedItems(1)
+  val itemStates = Table(
+    ("Sierra Responses", "Catalogue Work", "AccessCondition"),
+    (onHoldItemResponses, workWithAvailableItem, onHoldAccessCondition),
+    (onHoldItemResponses, workWithUnavailableItem, onHoldAccessCondition),
+    (
+      availableItemResponses,
+      workWithAvailableItem,
+      onlineRequestAccessCondition
+    ),
+    (
+      availableItemResponses,
+      workWithUnavailableItem,
+      onlineRequestAccessCondition
+    )
+  )
 
-        physicalItem.locations.head.accessConditions.head shouldBe expectedAccessCondition
-        digitalItem shouldBe dummyDigitalItem
+  forAll(itemStates) {
+    (sierraResponses, catalogueWork, expectedAccessCondition) =>
+      withItemUpdateService(sierraResponses) { itemUpdateService =>
+        whenReady(itemUpdateService.updateItems(catalogueWork)) {
+          updatedItems =>
+            updatedItems.length shouldBe 2
+
+            val physicalItem = updatedItems(0)
+            val digitalItem = updatedItems(1)
+
+            physicalItem.locations.head.accessConditions.head shouldBe expectedAccessCondition
+            digitalItem shouldBe dummyDigitalItem
+        }
       }
-    }
   }
 }

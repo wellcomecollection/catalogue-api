@@ -12,7 +12,8 @@ import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures { this: Suite =>
+trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures {
+  this: Suite =>
 
   val metricsName = "ItemsApiFixture"
 
@@ -28,9 +29,8 @@ trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures { this: Su
     index: Index,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R = {
-      withMaterializer { implicit mat =>
-        withSierraService(responses) { sierraService =>
-
+    withMaterializer { implicit mat =>
+      withSierraService(responses) { sierraService =>
         val api: ItemsApi = new ItemsApi(
           itemUpdateService = new ItemUpdateService(sierraService),
           workLookup = WorkLookup(elasticClient),

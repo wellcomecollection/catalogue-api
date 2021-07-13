@@ -13,19 +13,18 @@ import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 trait SierraServiceFixture
-  extends HttpFixtures
+    extends HttpFixtures
     with IndexFixtures
     with SierraGenerators {
 
   this: Suite =>
 
   def withSierraService[R](
-                            responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-                          )(testWith: TestWith[SierraService, R])(implicit mat: Materializer): R = {
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[SierraService, R])(implicit mat: Materializer): R = {
     val httpClient = new MemoryHttpClient(responses) with HttpGet
-      with HttpPost {
+    with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
@@ -34,6 +33,8 @@ trait SierraServiceFixture
 
   }
   def sierraUri(sierraItemNumber: SierraItemNumber) =
-    Uri(f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
+    Uri(
+      f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed"
+    )
 
 }
