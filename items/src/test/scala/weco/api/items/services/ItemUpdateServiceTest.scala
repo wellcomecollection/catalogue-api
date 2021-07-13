@@ -1,18 +1,14 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.json.utils.JsonAssertions
@@ -23,6 +19,7 @@ class ItemUpdateServiceTest
     with JsonAssertions
     with ScalaFutures
     with ItemsApiGenerators
+    with IntegrationPatience
     with SierraGenerators {
 
   val sierraItemNumber = createSierraItemNumber
