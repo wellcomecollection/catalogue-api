@@ -41,16 +41,6 @@ class ItemUpdateServiceTest extends AnyFunSpec
     )
   )
 
-  val suppressedItemResponses = Seq(
-    (
-      HttpRequest(uri = sierraUri(sierraItemNumber)),
-      HttpResponse(entity = sierraItemResponse(
-        sierraItemNumber = sierraItemNumber,
-        suppressed = "true"
-      ))
-    )
-  )
-
   val temporarilyUnavailableItem: Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
