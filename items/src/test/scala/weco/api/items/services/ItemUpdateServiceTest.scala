@@ -5,9 +5,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiGenerators, SierraServiceFixture}
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
-import weco.catalogue.internal_model.work.{Work, WorkState}
+import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 
@@ -21,18 +23,18 @@ class ItemUpdateServiceTest extends AnyFunSpec
   with ScalaFutures
   with ItemsApiGenerators {
 
-  def availableItemResponses(itemIdentifier: String) = Seq(
+  def availableItemResponses(sierraItemNumber: SierraItemNumber) = Seq(
     (
       HttpRequest(
         uri = Uri(
-          f"http://sierra:1234/v5/items/${itemIdentifier}?fields=deleted,fixedFields,holdCount,suppressed")
+          f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
       ),
       HttpResponse(
         entity = HttpEntity(
           contentType = ContentTypes.`application/json`,
           f"""
              |{
-             |  "id": "${itemIdentifier}",
+             |  "id": "${sierraItemNumber.withCheckDigit}",
              |  "deleted": false,
              |  "suppressed": false,
              |  "fixedFields": {
@@ -48,18 +50,18 @@ class ItemUpdateServiceTest extends AnyFunSpec
     )
   )
 
-  def onHoldItemResponses(itemIdentifier: String) = Seq(
+  def onHoldItemResponses(sierraItemNumber: SierraItemNumber) = Seq(
     (
       HttpRequest(
         uri = Uri(
-          f"http://sierra:1234/v5/items/${itemIdentifier}?fields=deleted,fixedFields,holdCount,suppressed")
+          f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
       ),
       HttpResponse(
         entity = HttpEntity(
           contentType = ContentTypes.`application/json`,
           f"""
              |{
-             |  "id": "${itemIdentifier}",
+             |  "id": "${sierraItemNumber.withCheckDigit}",
              |  "deleted": false,
              |  "suppressed": false,
              |  "fixedFields": {
@@ -75,26 +77,28 @@ class ItemUpdateServiceTest extends AnyFunSpec
     )
   )
 
-  def temporarilyUnavailableItem(itemIdentifier: String) = {
+  val sierraItemNumber = createSierraItemNumber
+
+  def temporarilyUnavailableItem: Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
       status = AccessStatus.TemporarilyUnavailable
     )
 
     createPhysicalItemWith(
-      sierraItemIdentifier = itemIdentifier,
+      sierraItemNumber = sierraItemNumber,
       accessCondition = temporarilyUnavailableOnline
     )
   }
 
-  def availableItem(itemIdentifier: String) = {
+  def availableItem = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
       status = AccessStatus.TemporarilyUnavailable
     )
 
     createPhysicalItemWith(
-      sierraItemIdentifier = itemIdentifier,
+      sierraItemNumber = sierraItemNumber,
       accessCondition = temporarilyUnavailableOnline
     )
   }
@@ -109,21 +113,19 @@ class ItemUpdateServiceTest extends AnyFunSpec
     method = AccessMethod.OnlineRequest
   )
 
-  val itemIdentifier = "1823449"
-
   val workWithUnavailableItem = indexedWork().items(List(
-    temporarilyUnavailableItem(itemIdentifier)
+    temporarilyUnavailableItem
   ))
 
   val workWithAvailableItem = indexedWork().items(List(
-    availableItem(itemIdentifier)
+    availableItem
   ))
 
   describe("when the catalogue thinks an item is NOT available") {
     describe("but sierra knows the item is available") {
       it("the item will be marked as available") {
         runTest(
-          sierraResponses = availableItemResponses(itemIdentifier),
+          sierraResponses = availableItemResponses(sierraItemNumber),
           catalogueWork = workWithUnavailableItem,
           expectedAccessCondition = onlineRequestAccessCondition
         )
@@ -133,7 +135,7 @@ class ItemUpdateServiceTest extends AnyFunSpec
     describe("and sierra agrees the item is on hold") {
       it("the item will be marked as NOT available") {
         runTest(
-          sierraResponses = onHoldItemResponses(itemIdentifier),
+          sierraResponses = onHoldItemResponses(sierraItemNumber),
           catalogueWork = workWithUnavailableItem,
           expectedAccessCondition = onHoldAccessCondition
         )
@@ -145,7 +147,7 @@ class ItemUpdateServiceTest extends AnyFunSpec
     describe("but sierra knows the item is NOT available") {
       it("the item will be marked as NOT available") {
         runTest(
-          sierraResponses = onHoldItemResponses(itemIdentifier),
+          sierraResponses = onHoldItemResponses(sierraItemNumber),
           catalogueWork = workWithAvailableItem,
           expectedAccessCondition = onHoldAccessCondition
         )
@@ -155,7 +157,7 @@ class ItemUpdateServiceTest extends AnyFunSpec
     describe("but sierra knows the item is available") {
       it("the item will be marked as available") {
         runTest(
-          sierraResponses = availableItemResponses(itemIdentifier),
+          sierraResponses = availableItemResponses(sierraItemNumber),
           catalogueWork = workWithAvailableItem,
           expectedAccessCondition = onlineRequestAccessCondition
         )

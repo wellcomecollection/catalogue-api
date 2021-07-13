@@ -24,15 +24,15 @@ class ItemsApiFeatureTest
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
+      val sierraItemNumber = createSierraItemNumber
+
       val temporarilyUnavailableOnline = AccessCondition(
         method = AccessMethod.OnlineRequest,
         status = AccessStatus.TemporarilyUnavailable
       )
 
-      val physicalSierraItemIdentifier = "1823449"
-
       val physicalItem = createPhysicalItemWith(
-        sierraItemIdentifier = physicalSierraItemIdentifier,
+        sierraItemNumber = sierraItemNumber,
         accessCondition = temporarilyUnavailableOnline
       )
 
@@ -42,14 +42,14 @@ class ItemsApiFeatureTest
         (
           HttpRequest(
             uri = Uri(
-              f"http://sierra:1234/v5/items/${physicalSierraItemIdentifier}?fields=deleted,fixedFields,holdCount,suppressed")
+              f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed")
           ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               f"""
                  |{
-                 |  "id": "${physicalSierraItemIdentifier}",
+                 |  "id": "${sierraItemNumber.withoutCheckDigit}",
                  |  "deleted": false,
                  |  "suppressed": false,
                  |  "fixedFields": {
@@ -86,7 +86,7 @@ class ItemsApiFeatureTest
                |            "label" : "Sierra system number",
                |            "type" : "IdentifierType"
                |          },
-               |          "value" : "i18234495",
+               |          "value" : "${sierraItemNumber.withCheckDigit}",
                |          "type" : "Identifier"
                |        }
                |      ],
