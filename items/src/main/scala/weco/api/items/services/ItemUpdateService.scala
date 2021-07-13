@@ -25,12 +25,12 @@ class ItemUpdateService(
 
   private def updateAccessCondition(
     item: Item[IdState.Minted],
-    accessConditionOption: Option[AccessCondition]
+    accessCondition: AccessCondition
   ) =
     item.locations.map {
       case physicalLocation: PhysicalLocation =>
         physicalLocation.copy(
-          accessConditions = accessConditionOption.toList
+          accessConditions = List(accessCondition)
         )
       case location => location
     }
@@ -39,11 +39,11 @@ class ItemUpdateService(
     sierraService
       .getAccessCondition(srcId)
       .map {
-        case Right(accessConditionOption) =>
+        case Right(Some(accessCondition)) =>
           item.copy(
-            locations = updateAccessCondition(item, accessConditionOption)
+            locations = updateAccessCondition(item, accessCondition)
           )
-
+        case Right(_) => item
         case Left(err) =>
           error(msg = f"Couldn't refresh item: ${item.id} got error $err")
           item
