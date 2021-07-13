@@ -22,7 +22,7 @@ trait DisplaySerialisationTestBase {
     def tidy: String = {
       val tidiedFields =
         s
-          // Replace anything that looks like '"key": None,' in the output.
+        // Replace anything that looks like '"key": None,' in the output.
           .replaceAll(""""[a-zA-Z]+": None,""".stripMargin, "")
           // Unwrap anything that looks like '"key": Some({…})' in the output
           .replaceAll("""Some\(\{(.*)\}\)""", "{$1}")
@@ -31,7 +31,10 @@ trait DisplaySerialisationTestBase {
 
       fromJson[Json](tidiedFields) match {
         case Success(j) => j.noSpaces
-        case Failure(_) => throw new IllegalArgumentException(s"Unable to parse JSON:\n$tidiedFields")
+        case Failure(_) =>
+          throw new IllegalArgumentException(
+            s"Unable to parse JSON:\n$tidiedFields"
+          )
       }
     }
 
