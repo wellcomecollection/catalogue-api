@@ -1,4 +1,5 @@
 import { equalTo0, equalTo1 } from './pass'
+
 import { Test } from '../../types/test'
 import { filterCaseRatings } from './queryAugmentation'
 
@@ -103,6 +104,16 @@ const tests: Test[] = [
         ratings: ['k9w95csw', 'asqf8kzb', 'n499pzsr'],
         description: 'Matches archives without providing refnos',
       },
+      {
+        query: 'الكشف',
+        ratings: ['ymnmz59p'],
+        description: 'Matches stemmed arabic text',
+      },
+      {
+        query: 'معرفت',
+        ratings: ['a9w79fzj'],
+        description: 'Matches stemmed arabic text',
+      }
     ],
     metric: {
       recall: {
