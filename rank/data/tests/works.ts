@@ -105,12 +105,22 @@ const tests: Test[] = [
         description: 'Matches archives without providing refnos',
       },
       {
-        query: 'الكشف',
+        query: 'لكشف',
         ratings: ['ymnmz59p'],
         description: 'Matches stemmed arabic text',
       },
       {
+        query: 'الكشف',
+        ratings: ['ymnmz59p'],
+        description: 'Matches arabic text',
+      },
+      {
         query: 'معرفت',
+        ratings: ['a9w79fzj'],
+        description: 'Matches arabic text',
+      },
+      {
+        query: 'عرف',
         ratings: ['a9w79fzj'],
         description: 'Matches stemmed arabic text',
       }
