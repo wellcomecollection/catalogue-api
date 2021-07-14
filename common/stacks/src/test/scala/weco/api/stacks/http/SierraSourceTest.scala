@@ -45,6 +45,91 @@ class SierraSourceTest
       testWith(source)
     }
 
+  describe("lookupItemEntries") {
+    it("looks up multiple items") {
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        SierraItemNumber("1234567")
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "total": 2,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    },
+                |    {
+                |      "id": "1234567",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Right(
+            SierraItemDataEntries(
+              total = 2,
+              start = 0,
+              entries = Seq(
+                SierraItemData(
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
+                  )
+                ),
+                SierraItemData(
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+  }
+
   describe("lookupItem") {
     it("looks up a single item") {
       val itemNumber = SierraItemNumber("1146055")
