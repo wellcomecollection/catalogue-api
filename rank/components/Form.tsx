@@ -1,12 +1,12 @@
-import { FC, HTMLProps } from 'react'
+import { Children, FC, HTMLProps } from 'react'
 
-type Props = {}
 type FormProps = HTMLProps<HTMLFormElement>
 type LabelProps = HTMLProps<HTMLLabelElement>
 type SelectProps = HTMLProps<HTMLSelectElement>
 type ButtonProps = HTMLProps<HTMLButtonElement>
+type InputProps = HTMLProps<HTMLInputElement>
 
-const Form: FC<Props & FormProps> = ({ children, ...formProps }) => {
+const Form: FC<FormProps> = ({ children, ...formProps }) => {
   return (
     <form className="pt-2 pb-2 border-b border-gray-500" {...formProps}>
       {children}
@@ -14,11 +14,7 @@ const Form: FC<Props & FormProps> = ({ children, ...formProps }) => {
   )
 }
 
-const FormBar: FC<Props> = ({ children }) => {
-  return <div className="flex space-x-5">{children}</div>
-}
-
-const Label: FC<Props & LabelProps> = ({ children, ...labelProps }) => {
+const Label: FC<LabelProps> = ({ children, ...labelProps }) => {
   return (
     <label className="inline-block font-bold flex-1" {...labelProps}>
       {children}
@@ -26,7 +22,7 @@ const Label: FC<Props & LabelProps> = ({ children, ...labelProps }) => {
   )
 }
 
-const Select: FC<Props & SelectProps> = ({ children, ...selectProps }) => {
+const Select: FC<SelectProps> = ({ children, ...selectProps }) => {
   return (
     <select className="block" {...selectProps}>
       {children}
@@ -34,17 +30,23 @@ const Select: FC<Props & SelectProps> = ({ children, ...selectProps }) => {
   )
 }
 
-const Submit: FC = () => {
+const TextInput: FC<InputProps> = ({ children, ...inputProps }) => {
   return (
-    <button
-      type="submit"
-      className="bg-pink-500 flex items-center justify-center w-12 h-12"
-    >
-      <span className="sr-only">Submit</span>
-      🔍
+    <input
+      type="text"
+      {...inputProps}
+      className="px-3 py-1 border-2 border-pink-500"
+    />
+  )
+}
+
+const Button: FC<ButtonProps> = ({ children }) => {
+  return (
+    <button className="bg-pink-500 flex items-center justify-center px-3 py-1 text-white">
+      {children}
     </button>
   )
 }
 
 export default Form
-export { FormBar, Label, Select, Submit }
+export { Label, Select, Button, TextInput }
