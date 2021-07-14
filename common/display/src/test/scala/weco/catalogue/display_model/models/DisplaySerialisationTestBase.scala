@@ -129,13 +129,15 @@ trait DisplaySerialisationTestBase {
     }
 
   def person(person: Person[IdState.Minted]): String =
-    s"""{
-      ${identifiers(person)}
-      "type": "Person",
-      "prefix": ${person.prefix.map(_.toJson)},
-      "numeration": ${person.numeration.map(_.toJson)},
-      "label": "${person.label}"
-    }"""
+    s"""
+       |{
+       |  ${identifiers(person)}
+       |  "type": "Person",
+       |  "prefix": ${person.prefix.map(_.toJson)},
+       |  "numeration": ${person.numeration.map(_.toJson)},
+       |  "label": "${person.label}"
+       |}
+       |""".stripMargin.tidy
 
   def organisation(organisation: Organisation[IdState.Minted]) =
     s"""{
