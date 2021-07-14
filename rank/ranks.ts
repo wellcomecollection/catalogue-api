@@ -41,7 +41,7 @@ const ranks: Rank[] = [
     id: 'works-local',
     label: 'Works',
     searchTemplate: async () => {
-      const templates = await getLocalTemplates({})
+      const templates = await getLocalTemplates()
       return templates.find((template) => template.namespace === 'works')
     },
     tests: () => {
@@ -52,7 +52,7 @@ const ranks: Rank[] = [
     id: 'images-local',
     label: 'Images',
     searchTemplate: async () => {
-      const templates = await getLocalTemplates({})
+      const templates = await getLocalTemplates()
       return templates.find((template) => template.namespace === 'images')
     },
     tests: () => {
