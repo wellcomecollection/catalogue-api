@@ -1,6 +1,3 @@
-variable "aws_region" {
-  type = string
-}
 variable "snapshot_generator_input_topic_arn" {
   type = string
 }
