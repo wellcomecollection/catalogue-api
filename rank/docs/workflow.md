@@ -10,7 +10,7 @@ The properties of a test case are
 
 - `query` - the search terms a researcher uses
 - `ratings` - IDs of documents that we want to evaluate against the results
-- `metric` - an [elasticesarch metric](elasticsearch-metrics) to run the ratings against
+- `metric` - an [Elasticsearch metric](elasticsearch-metrics) to run the ratings against
 - `eval` - an evaluation method to run against the metric score returned by elastic
 
 Often `ratings` are documents you expect in the results. There are occasions though,
