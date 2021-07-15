@@ -1,8 +1,6 @@
 module "stack" {
   source = "./stack"
 
-  aws_region = var.aws_region
-
   cluster_arn  = local.cluster_arn
   cluster_name = local.cluster_name
 

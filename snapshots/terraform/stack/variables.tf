@@ -1,6 +1,3 @@
-variable "aws_region" {
-  type = string
-}
 variable "cluster_arn" {
   type = string
 }
