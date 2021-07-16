@@ -46,20 +46,6 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  type Unmarshalled[T] =
-    Future[Either[SierraItemLookupError.ItemHasNoStatus, T]]
-
-  def unmarshalOKResponse[T](
-    response: model.HttpResponse
-  )(implicit um: Unmarshaller[model.HttpResponse, T]): Unmarshalled[T] =
-    Unmarshal(response)
-      .to[T]
-      .map(Right(_))
-      .recover {
-        case t: Throwable =>
-          Left(SierraItemLookupError.ItemHasNoStatus(t))
-      }
-
   /** Returns data for a list of items
     *
     * Note: if some of the IDs requested do not exist, they will
@@ -75,7 +61,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
       .mkString(",")
 
     for {
-      response: model.HttpResponse <- client.get(
+      response <- client.get(
         path = Path("v5/items"),
         params = Map(
           "id" -> idList,
@@ -85,7 +71,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
 
       result <- response.status match {
         case StatusCodes.OK =>
-          unmarshalOKResponse[SierraItemDataEntries](response)
+          Unmarshal(response).to[SierraItemDataEntries].map(Right(_))
 
         case _ =>
           Unmarshal(response)
@@ -109,10 +95,9 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
 
       result <- response.status match {
         case StatusCodes.OK =>
-          unmarshalOKResponse[SierraItemData](response)
+          Unmarshal(response).to[SierraItemData].map(Right(_))
         case StatusCodes.NotFound =>
           Future.successful(Left(SierraItemLookupError.ItemNotFound))
-
         case _ =>
           Unmarshal(response)
             .to[SierraErrorCode]
