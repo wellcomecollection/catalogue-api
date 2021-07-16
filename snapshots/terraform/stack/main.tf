@@ -1,6 +1,5 @@
 module "snapshot_generator" {
-  source     = "./snapshot_generator"
-  aws_region = var.aws_region
+  source = "./snapshot_generator"
 
   cluster_arn  = var.cluster_arn
   cluster_name = var.cluster_name

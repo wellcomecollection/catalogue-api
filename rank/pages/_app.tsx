@@ -24,7 +24,7 @@ export default function WecoApp({ Component, pageProps }: AppProps) {
           href="/favicon-16x16.png"
         />
       </Head>
-      <div className="px-4 py-2 lg:max-w-3xl max-w-2xl">
+      <div className="px-4 py-2 max-w-5xl text-blue-700">
         <div>
           <Component {...pageProps} />
         </div>

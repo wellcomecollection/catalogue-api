@@ -4,8 +4,13 @@ import { Env } from '../types/env'
 import { getNamespaceFromIndexName, Namespace } from '../types/namespace'
 import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
+import worksProdQuery from '../public/WorksMultiMatcherQuery.json'
 
-export async function listIndices() {
+export type NamespacedIndex = {
+  namespace: Namespace
+  index: string
+}
+export async function listIndices(): Promise<NamespacedIndex[]> {
   const { body } = await getRankClient().cat.indices({ h: ['index'] })
   const indices = body
     .split('\n')
@@ -14,7 +19,10 @@ export async function listIndices() {
     )
     .filter(Boolean)
 
-  return indices
+  return indices.map((index: string) => ({
+    namespace: getNamespaceFromIndexName(index),
+    index,
+  }))
 }
 
 export type SearchTemplateSource = { query: unknown }
@@ -37,10 +45,6 @@ type ApiSearchTemplateRes = {
   templates: ApiSearchTemplate[]
 }
 
-function getNamespace(template: ApiSearchTemplate): Namespace {
-  return template.index.split('-')[0] as Namespace
-}
-
 const endpoints = {
   stage:
     'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json',
@@ -57,7 +61,7 @@ export async function getRemoteTemplates(env: Env): Promise<SearchTemplate[]> {
     remoteTemplates = json.templates.map((template) => {
       const namespace = getNamespaceFromIndexName(template.index)
       return {
-        id: `${env}/${namespace}/${template.index}`,
+        id: `${namespace}/${env}/${template.index}`,
         index: `${template.index}`,
         namespace,
         env,
@@ -68,10 +72,7 @@ export async function getRemoteTemplates(env: Env): Promise<SearchTemplate[]> {
   return remoteTemplates
 }
 
-export async function getLocalTemplates({
-  worksIndex,
-  imagesIndex,
-}: Props): Promise<SearchTemplate[]> {
+export async function getLocalTemplates(): Promise<SearchTemplate[]> {
   const { NODE_ENV } = process.env
   const searchTemplates = await getRemoteTemplates('prod')
   const imports =
@@ -95,13 +96,8 @@ export async function getLocalTemplates({
 
   return searchTemplates.map((template) => ({
     ...template,
-    id: `local/${template.namespace}/${template.index}`,
-    index:
-      template.namespace === 'works' && worksIndex
-        ? worksIndex
-        : template.namespace === 'images' && imagesIndex
-        ? imagesIndex
-        : template.index,
+    id: `${template.namespace}/local/${template.index}`,
+    index: template.index,
     env: 'local',
     source: { query: queries[template.namespace] },
   }))
@@ -113,24 +109,18 @@ export async function getLocalTemplates({
  * A local search template is available when there is an existing index
  * with a corresponding query in `./data/queries/{index}.json`.
  */
-export async function getTemplates({
-  worksIndex,
-  imagesIndex,
-}: Props): Promise<SearchTemplate[]> {
-  const remoteTemplates = await getRemoteTemplates('prod')
-  const localTemplates = await getLocalTemplates({ worksIndex, imagesIndex })
+type Props = {
+  prod?: true
+  local?: true
+  test?: string[]
+}
+export async function getTemplates({ prod, local, test }: Props = {}): Promise<
+  SearchTemplate[]
+> {
+  const remoteTemplates = prod ? await getRemoteTemplates('prod') : []
+  const localTemplates = local ? await getLocalTemplates() : []
   const templates = remoteTemplates.concat(localTemplates)
   return templates
 }
-
-export type Props = {
-  worksIndex?: string
-  imagesIndex?: string
-}
-
-export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  worksIndex: q.worksIndex ? decodeString(q, 'worksIndex') : undefined,
-  imagesIndex: q.imagesIndex ? decodeString(q, 'imagesIndex') : undefined,
-})
 
 export default getTemplates

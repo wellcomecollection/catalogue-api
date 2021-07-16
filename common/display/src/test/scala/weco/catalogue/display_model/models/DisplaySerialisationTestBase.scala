@@ -1,5 +1,6 @@
 package weco.catalogue.display_model.models
 
+import io.circe.Json
 import org.scalatest.Suite
 import weco.json.JsonUtil._
 import weco.catalogue.internal_model.identifiers.{
@@ -12,49 +13,47 @@ import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
 
+import scala.util.{Failure, Success}
+
 trait DisplaySerialisationTestBase {
   this: Suite =>
 
-  def optionalString(
-    fieldName: String,
-    maybeStringValue: Option[String],
-    trailingComma: Boolean = true
-  ): String =
-    maybeStringValue match {
-      case None => ""
-      case Some(value) =>
-        s"""
-          "$fieldName": "$value"
-          ${if (trailingComma) "," else ""}
-        """
+  implicit class JsonStringOps(s: String) {
+    def tidy: String = {
+      val tidiedFields =
+        s
+        // Replace anything that looks like '"key": None,' in the output.
+          .replaceAll(""""[a-zA-Z]+": None,""".stripMargin, "")
+          // Unwrap anything that looks like '"key": Some({…})' in the output
+          .replaceAll("""Some\(\{(.*)\}\)""", "{$1}")
+          // Unwrap anything that looks like '"key": Some("…")' in the output
+          .replaceAll("""Some\("(.*)"\)""", "\"$1\"")
+
+      fromJson[Json](tidiedFields) match {
+        case Success(j) => j.noSpaces
+        case Failure(_) =>
+          throw new IllegalArgumentException(
+            s"Unable to parse JSON:\n$tidiedFields"
+          )
+      }
     }
 
-  def optionalObject[T](
-    fieldName: String,
-    formatter: T => String,
-    maybeObjectValue: Option[T],
-    firstField: Boolean = false
-  ) =
-    maybeObjectValue match {
-      case None => ""
-      case Some(o) =>
-        s"""
-           ${if (!firstField) ","}"$fieldName": ${formatter(o)}
-         """
-    }
+    def toJson: String =
+      Json.fromString(s).noSpaces
+  }
 
   def items(items: List[Item[IdState.Minted]]) =
     items.map(item).mkString(",")
 
-  def item(item: Item[IdState.Minted]) =
+  def item(item: Item[IdState.Minted]): String =
     s"""
      {
        ${identifiers(item)}
        "type": "Item",
-       ${optionalString("title", item.title)}
+       "title": ${item.title.map(_.toJson)},
        "locations": [${locations(item.locations)}]
      }
-    """
+    """.tidy
 
   def locations(locations: List[Location]) =
     locations.map(location).mkString(",")
@@ -65,56 +64,54 @@ trait DisplaySerialisationTestBase {
       case l: PhysicalLocation => physicalLocation(l)
     }
 
-  def digitalLocation(digitalLocation: DigitalLocation) =
+  def digitalLocation(loc: DigitalLocation): String =
     s"""{
       "type": "DigitalLocation",
-      "locationType": ${locationType(digitalLocation.locationType)},
-      "url": "${digitalLocation.url}"
-      ${optionalObject("license", license, digitalLocation.license)},
-      ${optionalString("credit", digitalLocation.credit)}
-      ${optionalString("linkText", digitalLocation.linkText)}
-      "accessConditions": ${accessConditions(digitalLocation.accessConditions)}
-    }"""
+      "locationType": ${locationType(loc.locationType)},
+      "url": "${loc.url}",
+      "license": ${loc.license.map(license)},
+      "credit": ${loc.credit.map(_.toJson)},
+      "linkText": ${loc.linkText.map(_.toJson)},
+      "accessConditions": ${accessConditions(loc.accessConditions)}
+    }""".tidy
 
-  def physicalLocation(loc: PhysicalLocation) =
+  def physicalLocation(loc: PhysicalLocation): String =
     s"""
        {
         "type": "PhysicalLocation",
         "locationType": ${locationType(loc.locationType)},
-        "label": "${loc.label}"
-        ${optionalObject("license", license, loc.license)},
-        ${optionalString("shelfmark", loc.shelfmark)}
+        "label": "${loc.label}",
+        "license": ${loc.license.map(license)},
+        "shelfmark": ${loc.shelfmark.map(_.toJson)},
         "accessConditions": ${accessConditions(loc.accessConditions)}
        }
-     """
+     """.tidy
 
   def accessConditions(conds: List[AccessCondition]) =
     s"[${conds.map(accessCondition).mkString(",")}]"
 
-  def accessCondition(cond: AccessCondition) =
+  def accessCondition(cond: AccessCondition): String =
     s"""
       {
-        "type": "AccessCondition",
         "method": {
           "type": "AccessMethod",
           "id": "${DisplayAccessMethod(cond.method).id}",
           "label": "${DisplayAccessMethod(cond.method).label}"
         },
-        ${optionalString("terms", cond.terms)}
-        ${optionalString("to", cond.to, trailingComma = false)}
-        ${optionalObject("status", accessStatus, cond.status)}
+        "terms": ${cond.terms.map(_.toJson)},
+        "status": ${cond.status.map(accessStatus)},
+        "type": "AccessCondition"
       }
-    """
+    """.tidy
 
-  def accessStatus(status: AccessStatus) = {
-    s"""
-      {
-        "type": "AccessStatus",
-        "id": "${DisplayAccessStatus(status).id}",
-        "label": "${DisplayAccessStatus(status).label}"
-      }
-    """
-  }
+  def accessStatus(status: AccessStatus): String =
+    s"""{
+       |  "type": "AccessStatus",
+       |  "id": ${DisplayAccessStatus(status).id.toJson},
+       |  "label": ${DisplayAccessStatus(status).label.toJson}
+       |}
+       |""".stripMargin.tidy
+
   def identifiers(obj: HasId[IdState.Minted]) =
     obj.id match {
       case IdState.Identified(canonicalId, _, _) => s"""
@@ -131,14 +128,16 @@ trait DisplaySerialisationTestBase {
       case m: Meeting[IdState.Minted]      => meeting(m)
     }
 
-  def person(person: Person[IdState.Minted]) =
-    s"""{
-       ${identifiers(person)}
-        "type": "Person",
-        ${optionalString("prefix", person.prefix)}
-        ${optionalString("numeration", person.numeration)}
-        "label": "${person.label}"
-      }"""
+  def person(person: Person[IdState.Minted]): String =
+    s"""
+       |{
+       |  ${identifiers(person)}
+       |  "type": "Person",
+       |  "prefix": ${person.prefix.map(_.toJson)},
+       |  "numeration": ${person.numeration.map(_.toJson)},
+       |  "label": "${person.label}"
+       |}
+       |""".stripMargin.tidy
 
   def organisation(organisation: Organisation[IdState.Minted]) =
     s"""{
@@ -249,43 +248,43 @@ trait DisplaySerialisationTestBase {
 
   def workImageInclude(image: ImageData[IdState.Identified]) =
     s"""
-       {
-         "id": "${image.id.canonicalId}",
-         "type": "Image"
-       }
-    """
+       |{
+       |  "id": "${image.id.canonicalId}",
+       |  "type": "Image"
+       |}
+       |""".stripMargin
 
   def workImageIncludes(images: List[ImageData[IdState.Identified]]) =
     images.map(workImageInclude).mkString(",")
 
   def availability(availability: Availability): String =
     s"""
-      {
-        "id": "${availability.id}",
-        "label": "${availability.label}",
-        "type": "Availability"
-      }
-     """.stripMargin
+       |{
+       |  "id": "${availability.id}",
+       |  "label": "${availability.label}",
+       |  "type": "Availability"
+       |}
+       |""".stripMargin
 
   def productionEvent(event: ProductionEvent[IdState.Minted]): String =
     s"""
-      {
-        "label": "${event.label}",
-        "dates": [${event.dates.map(period).mkString(",")}],
-        "agents": [${event.agents.map(abstractAgent).mkString(",")}],
-        "places": [${event.places.map(place).mkString(",")}],
-        "type": "ProductionEvent"
-      }
-    """
+       |{
+       |  "label": "${event.label}",
+       |  "dates": [${event.dates.map(period).mkString(",")}],
+       |  "agents": [${event.agents.map(abstractAgent).mkString(",")}],
+       |  "places": [${event.places.map(place).mkString(",")}],
+       |  "type": "ProductionEvent"
+       |}
+       |""".stripMargin.tidy
 
   def format(fmt: Format): String =
     s"""
-      {
-        "id": "${fmt.id}",
-        "label": "${fmt.label}",
-        "type": "Format"
-      }
-    """
+       |{
+       |  "id": "${fmt.id}",
+       |  "label": "${fmt.label}",
+       |  "type": "Format"
+       |}
+       |""".stripMargin.tidy
 
   def language(lang: Language): String =
     s"""
@@ -296,13 +295,13 @@ trait DisplaySerialisationTestBase {
        }
      """
 
-  def license(license: License) =
+  def license(license: License): String =
     s"""{
       "id": "${license.id}",
       "label": "${license.label}",
       "url": "${license.url}",
       "type": "License"
-    }"""
+    }""".tidy
 
   def identifier(identifier: SourceIdentifier) =
     s"""{
@@ -323,21 +322,18 @@ trait DisplaySerialisationTestBase {
        }
      """ stripMargin
 
-  def singleHoldings(h: Holdings): String =
+  def singleHoldings(h: Holdings): String = {
+    val enumerations = h.enumeration.map(_.toJson)
+
     s"""
        |{
-       |  ${optionalString("note", h.note)}
-       |  "enumeration": [
-       |    ${h.enumeration
-         .map { en =>
-           '"' + en + '"'
-         }
-         .mkString(",")}
-       |  ]
-       |  ${optionalObject("location", location, h.location)},
+       |  "note": ${h.note.map(_.toJson)},
+       |  "enumeration": [${enumerations.mkString(",")}],
+       |  "location": ${h.location.map(location)},
        |  "type": "Holdings"
        |}
-       |""".stripMargin
+       |""".stripMargin.tidy
+  }
 
   def listOfHoldings(hs: List[Holdings]): String =
     hs.map { singleHoldings }.mkString(",")

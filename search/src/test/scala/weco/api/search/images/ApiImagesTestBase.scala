@@ -19,12 +19,12 @@ trait ApiImagesTestBase
     source match {
       case ParentWorks(work, _) =>
         s"""
-             | {
-             |   "id": "${source.id.canonicalId}",
-             |   ${optionalString("title", work.data.title)}
-             |   "type": "Work"
-             | }
-           """.stripMargin
+           |{
+           |  "id": "${source.id.canonicalId}",
+           |  "title": ${work.data.title.map(_.toJson)},
+           |  "type": "Work"
+           |}
+           |""".stripMargin.tidy
     }
 
   def imageResponse(image: Image[ImageState.Indexed]): String =

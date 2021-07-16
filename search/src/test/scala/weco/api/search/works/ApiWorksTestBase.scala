@@ -31,14 +31,14 @@ trait ApiWorksTestBase
   def workResponse(work: Work.Visible[Indexed]): String =
     s"""
       | {
-      |   "type": "${formatOntologyType(work.data.workType)}",
       |   "id": "${work.state.canonicalId}",
       |   "title": "${work.data.title.get}",
       |   "availabilities": [${availabilities(work.state.availabilities)}],
-      |   "alternativeTitles": []
-      |   ${optionalObject("workType", format, work.data.format)}
+      |   "alternativeTitles": [],
+      |   "workType": ${work.data.format.map(format)},
+      |   "type": "${formatOntologyType(work.data.workType)}"
       | }
-    """.stripMargin
+    """.stripMargin.tidy
 
   def worksListResponse(works: Seq[Work.Visible[Indexed]]): String =
     s"""
