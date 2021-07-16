@@ -2,15 +2,12 @@ const removeEmpty = <T extends Record<string, unknown>>(obj: T): T => {
   return JSON.parse(JSON.stringify(obj))
 }
 
-const passEmoji = (pass: boolean): string => {
-  switch (pass) {
-    case true:
-      return '✔'
-    case false:
-      return '✘'
-    default:
-      return '?'
-  }
-}
+const groupBy = <T, K extends keyof any>(list: T[], getKey: (item: T) => K) =>
+  list.reduce((previous, currentItem) => {
+    const group = getKey(currentItem)
+    if (!previous[group]) previous[group] = []
+    previous[group].push(currentItem)
+    return previous
+  }, {} as Record<K, T[]>)
 
-export { removeEmpty, passEmoji }
+export { removeEmpty, groupBy }
