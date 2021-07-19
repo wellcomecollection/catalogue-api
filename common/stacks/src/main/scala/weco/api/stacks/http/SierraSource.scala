@@ -21,8 +21,6 @@ import weco.http.json.CirceMarshalling
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
 
-import akka.http.scaladsl.model
-
 import scala.concurrent.{ExecutionContext, Future}
 
 case class SierraItemDataEntries(
