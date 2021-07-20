@@ -28,26 +28,34 @@ class SierraServiceTest
   describe("SierraService") {
     describe("getAccessCondition") {
       it("gets an AccessCondition") {
+
         val responses = Seq(
           (
             HttpRequest(
-              uri =
-                "http://sierra:1234/v5/items/1601017?fields=deleted,fixedFields,holdCount,suppressed"
+              uri = Uri(
+                "http://sierra:1234/v5/items?id=1601017&fields=deleted,fixedFields,holdCount,suppressed"
+              )
             ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
                 """
                   |{
-                  |  "id": "1601017",
-                  |  "deleted": false,
-                  |  "suppressed": false,
-                  |  "fixedFields": {
-                  |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                  |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                  |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                  |  },
-                  |  "holdCount": 0
+                  |  "total": 1,
+                  |  "start": 0,
+                  |  "entries": [
+                  |    {
+                  |      "id": "1601017",
+                  |      "deleted": false,
+                  |      "suppressed": false,
+                  |      "fixedFields": {
+                  |        "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                  |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                  |      },
+                  |      "holdCount": 0
+                  |    }
+                  |  ]
                   |}
                   |""".stripMargin
               )
@@ -295,24 +303,31 @@ class SierraServiceTest
           ),
           (
             HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/items/$item?fields=deleted,fixedFields,holdCount,suppressed"
+              uri = Uri(
+                f"http://sierra:1234/v5/items?id=$item&fields=deleted,fixedFields,holdCount,suppressed"
+              )
             ),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "id": "$item",
-                   |  "deletedDate": "2001-01-01",
-                   |  "deleted": false,
-                   |  "suppressed": true,
-                   |  "fixedFields": {
-                   |    "88": {"label": "STATUS", "value": "-", "display": "Available"}
-                   |  },
-                   |  "holdCount": 0
-                   |}
-                   |""".stripMargin
+                f"""
+                  |{
+                  |  "total": 1,
+                  |  "start": 0,
+                  |  "entries": [
+                  |    {
+                  |      "id": "$item",
+                  |      "deletedDate": "2001-01-01",
+                  |      "deleted": false,
+                  |      "suppressed": true,
+                  |      "fixedFields": {
+                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                  |      },
+                  |      "holdCount": 0
+                  |    }
+                  |  ]
+                  |}
+                  |""".stripMargin
               )
             )
           )
