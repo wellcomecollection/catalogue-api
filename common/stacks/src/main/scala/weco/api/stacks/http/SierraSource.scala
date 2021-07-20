@@ -107,7 +107,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     */
   def lookupItem(
     item: SierraItemNumber
-  ): Future[Either[SierraItemLookupError, SierraItemData]] = {
+  ): Future[Either[SierraItemLookupError, SierraItemData]] = 
     lookupItemEntries(Seq(item)).map {
       case Right(itemDataEntries) =>
         Right(itemDataEntries.entries.head)
@@ -115,7 +115,6 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
         Left(SierraItemLookupError.ItemNotFound)
       case Left(value) => Left(value)
     }
-  }
 
   private implicit val umHoldsList: Unmarshaller[HttpEntity, SierraHoldsList] =
     CirceMarshalling.fromDecoder[SierraHoldsList]
