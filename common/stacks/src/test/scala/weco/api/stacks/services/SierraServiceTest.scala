@@ -77,7 +77,7 @@ class SierraServiceTest
             ontologyType = "Item"
           )
 
-          val future = service.getAccessCondition(identifier)
+          val future = service.getAccessConditions(identifier)
 
           whenReady(future) {
             _.value shouldBe Some(

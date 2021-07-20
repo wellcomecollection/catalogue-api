@@ -34,15 +34,15 @@ class SierraService(
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  def getAccessCondition(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
-    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
+  def getAccessConditions(
+    sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Either[SierraItemLookupError, Map[SierraItemNumber, Option[AccessCondition]]]] = {
+    val itemNumbers =sourceIdentifiers.map(SierraItemIdentifier.fromSourceIdentifier(_))
 
     for {
-      itemEither <- sierraSource.lookupItem(itemNumber)
-      accessCondition = itemEither.map { item =>
-        item.getAccessCondition(itemNumber)
+      itemEither <- sierraSource.lookupItemEntries(itemNumbers)
+      accessCondition = itemEither.map { itemDataEntries =>
+        itemDataEntries.entries.map(item => item.id -> item.getAccessCondition()).toMap
       }
     } yield accessCondition
   }
@@ -195,13 +195,13 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(id: SierraItemNumber): Option[AccessCondition] = {
+    def getAccessCondition(): Option[AccessCondition] = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
           .get("79")
           .flatMap(_.display)
-          .flatMap(name => SierraPhysicalLocationType.fromName(id, name))
+          .flatMap(name => SierraPhysicalLocationType.fromName(itemData.id, name))
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking. We can use placeholder data here.

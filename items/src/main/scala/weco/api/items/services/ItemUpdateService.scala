@@ -35,9 +35,11 @@ class ItemUpdateService(
       case location => location
     }
 
-  private def refreshItem(srcId: SourceIdentifier, item: Item[IdState.Minted]) =
+  private def refreshItems(items: Seq[Item[IdState.Minted]]) = {
+    val sourceIdentifiers = items.map(_.id.)
+
     sierraService
-      .getAccessCondition(srcId)
+      .getAccessConditions(sourceIdentifiers)
       .map {
         case Right(Some(accessCondition)) =>
           item.copy(
@@ -48,6 +50,7 @@ class ItemUpdateService(
           error(msg = f"Couldn't refresh item: ${item.id} got error $err")
           item
       }
+  }
 
   def updateItems(
     work: Work.Visible[WorkState.Indexed]
@@ -55,7 +58,7 @@ class ItemUpdateService(
     work.data.items.map {
       case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
           if isSierraId(srcId) =>
-        refreshItem(srcId, item)
+        refreshItems(srcId, item)
       case item => Future(item)
     }
   }
