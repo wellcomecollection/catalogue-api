@@ -153,7 +153,7 @@ class SierraService(
       //
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
-      case Right(SierraItemData(_, _, _, Some(holdCount), _, _, _))
+      case Right(SierraItemData(_,_, _, _, Some(holdCount), _, _, _))
           if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
@@ -207,7 +207,6 @@ class SierraService(
       // for consistency checking. We can use placeholder data here.
       val (ac, _) = SierraItemAccess(
         bibId = SierraBibNumber("0000000"),
-        itemId = id,
         bibStatus = None,
         location = location,
         itemData = itemData
