@@ -150,7 +150,7 @@ class SierraSourceTest
               contentType = ContentTypes.`application/json`,
               """
                 |{
-                |  "total": 2,
+                |  "total": 1,
                 |  "start": 0,
                 |  "entries": [
                 |    {
@@ -245,7 +245,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1146055&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -253,24 +253,30 @@ class SierraSourceTest
               contentType = ContentTypes.`application/json`,
               """
                 |{
-                |  "id": "1146055",
-                |  "updatedDate": "2021-06-09T13:23:27Z",
-                |  "createdDate": "1999-11-15T18:56:00Z",
-                |  "deleted": false,
-                |  "bibIds": [
-                |    "1126829"
-                |  ],
-                |  "location": {
-                |    "code": "sgmed",
-                |    "name": "Closed stores Med."
-                |  },
-                |  "status": {
-                |    "code": "t",
-                |    "display": "In quarantine"
-                |  },
-                |  "volumes": [],
-                |  "barcode": "22500271327",
-                |  "callNumber": "K33043"
+                |  "total": 1,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "updatedDate": "2021-06-09T13:23:27Z",
+                |      "createdDate": "1999-11-15T18:56:00Z",
+                |      "deleted": false,
+                |      "bibIds": [
+                |        "1126829"
+                |      ],
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      },
+                |      "status": {
+                |        "code": "t",
+                |        "display": "In quarantine"
+                |      },
+                |      "volumes": [],
+                |      "barcode": "22500271327",
+                |      "callNumber": "K33043"
+                |    }
+                |  ]
                 |}
                 |""".stripMargin
             )
@@ -305,7 +311,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1000000&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -341,7 +347,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1000001&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -349,11 +355,17 @@ class SierraSourceTest
               contentType = ContentTypes.`application/json`,
               """
                 |{
-                |  "id": "1000001",
-                |  "deletedDate": "2004-04-14",
-                |  "deleted": true,
-                |  "bibIds": [],
-                |  "volumes": []
+                |  "total": 1,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1000001",
+                |      "deletedDate": "2004-04-14",
+                |      "deleted": true,
+                |      "bibIds": [],
+                |      "volumes": []
+                |    }
+                |  ]
                 |}
                 |""".stripMargin
             )
