@@ -107,7 +107,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     */
   def lookupItem(
     item: SierraItemNumber
-  ): Future[Either[SierraItemLookupError, SierraItemData]] = 
+  ): Future[Either[SierraItemLookupError, SierraItemData]] =
     lookupItemEntries(Seq(item)).map {
       case Right(itemDataEntries) =>
         Right(itemDataEntries.entries.head)
