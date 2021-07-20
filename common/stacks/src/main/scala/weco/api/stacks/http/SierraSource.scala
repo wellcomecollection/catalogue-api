@@ -44,7 +44,7 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   /** Returns data for a list of items
     */
   def lookupItemEntries(
-                         itemNumbers: Seq[SierraItemNumber]
+    itemNumbers: Seq[SierraItemNumber]
   ): Future[Either[SierraItemLookupError, SierraItemDataEntries]] = {
 
     val idList = itemNumbers
@@ -70,11 +70,14 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
             // dealt with here, so we ignore them for simplicity.
             val foundItemNumbers = itemDataEntries.entries.map(_.id)
 
-            if(itemDataEntries.entries.size < itemNumbers.size) {
-              Left(SierraItemLookupError.MissingItems(
-                missingItems = itemNumbers.filterNot(foundItemNumbers.contains(_)),
-                itemsReturned = itemDataEntries.entries
-              ))
+            if (itemDataEntries.entries.size < itemNumbers.size) {
+              Left(
+                SierraItemLookupError.MissingItems(
+                  missingItems =
+                    itemNumbers.filterNot(foundItemNumbers.contains(_)),
+                  itemsReturned = itemDataEntries.entries
+                )
+              )
             } else {
               Right(itemDataEntries)
             }
@@ -83,10 +86,12 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
         // When none of the item ids requested exist, sierra will 404
         case StatusCodes.NotFound =>
           Future.successful(
-            Left(SierraItemLookupError.MissingItems(
-              missingItems = itemNumbers,
-              itemsReturned = Seq.empty
-            ))
+            Left(
+              SierraItemLookupError.MissingItems(
+                missingItems = itemNumbers,
+                itemsReturned = Seq.empty
+              )
+            )
           )
 
         case _ =>

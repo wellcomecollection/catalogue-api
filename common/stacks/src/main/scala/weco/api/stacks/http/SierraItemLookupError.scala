@@ -12,9 +12,9 @@ object SierraItemLookupError {
   case object ItemNotFound extends SierraItemLookupError
 
   case class MissingItems(
-                                     missingItems: Seq[SierraItemNumber],
-                                     itemsReturned: Seq[SierraItemData],
-                                   ) extends SierraItemLookupError
+    missingItems: Seq[SierraItemNumber],
+    itemsReturned: Seq[SierraItemData]
+  ) extends SierraItemLookupError
 
   case class UnknownError(errorCode: SierraErrorCode)
       extends SierraItemLookupError

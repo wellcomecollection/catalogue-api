@@ -175,21 +175,23 @@ class SierraSourceTest
         val future = source.lookupItemEntries(itemNumbers)
 
         whenReady(future) {
-          _ shouldBe Left(SierraItemLookupError.MissingItems(
-            missingItems = Seq(missingItemNumber),
-            itemsReturned = Seq(
-              SierraItemData(
-                id = SierraItemNumber("1146055"),
-                deleted = false,
-                location = Some(
-                  SierraSourceLocation(
-                    code = "sgmed",
-                    name = "Closed stores Med."
+          _ shouldBe Left(
+            SierraItemLookupError.MissingItems(
+              missingItems = Seq(missingItemNumber),
+              itemsReturned = Seq(
+                SierraItemData(
+                  id = SierraItemNumber("1146055"),
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
                   )
                 )
               )
             )
-          ))
+          )
         }
       }
     }
@@ -228,10 +230,12 @@ class SierraSourceTest
         val future = source.lookupItemEntries(itemNumbers)
 
         whenReady(future) {
-          _ shouldBe Left(SierraItemLookupError.MissingItems(
-            missingItems = itemNumbers,
-            itemsReturned = Seq.empty
-          ))
+          _ shouldBe Left(
+            SierraItemLookupError.MissingItems(
+              missingItems = itemNumbers,
+              itemsReturned = Seq.empty
+            )
+          )
         }
       }
     }
