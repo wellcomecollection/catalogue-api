@@ -153,7 +153,7 @@ class SierraService(
       //
       // By this point, we've already checked the list of holds for this user -- since they
       // don't have it, this item must be on hold for another user.
-      case Right(SierraItemData(_,_, _, _, Some(holdCount), _, _, _))
+      case Right(SierraItemData(_, _, _, _, Some(holdCount), _, _, _))
           if holdCount > 0 =>
         Left(HoldRejected.ItemIsOnHoldForAnotherUser)
 
