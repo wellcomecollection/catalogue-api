@@ -92,6 +92,7 @@ class SierraSourceTest
         whenReady(future) {
           _ shouldBe Right(
             SierraItemData(
+              id = itemNumber,
               deleted = false,
               location = Some(
                 SierraSourceLocation(
@@ -172,7 +173,7 @@ class SierraSourceTest
         val future = source.lookupItem(itemNumber)
 
         whenReady(future) {
-          _.value shouldBe SierraItemData(deleted = true)
+          _.value shouldBe SierraItemData(id = itemNumber, deleted = true)
         }
       }
     }
