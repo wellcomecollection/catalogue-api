@@ -51,10 +51,10 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
     * identify that and react to it as required.
     */
   def lookupItemEntries(
-    items: Seq[SierraItemNumber]
+                         itemNumbers: Seq[SierraItemNumber]
   ): Future[Either[SierraItemLookupError, SierraItemDataEntries]] = {
 
-    val idList = items
+    val idList = itemNumbers
       .map(_.withoutCheckDigit)
       .mkString(",")
 
@@ -69,7 +69,32 @@ class SierraSource(client: HttpClient with HttpGet with HttpPost)(
 
       result <- response.status match {
         case StatusCodes.OK =>
-          Unmarshal(response).to[SierraItemDataEntries].map(Right(_))
+          Unmarshal(response).to[SierraItemDataEntries].map { itemDataEntries =>
+            // There are a number of edge cases ignored here e.g.
+            // - there are more items returned than requested for this query
+            // - there are different items ids returned than requested for this query
+            // These cases are far less likely than requesting missing items which we
+            // deal with here, so we ignore them for simplicity.
+            val foundItemNumbers = itemDataEntries.entries.map(_.id)
+
+            if(itemDataEntries.entries.size < itemNumbers.size) {
+              Left(SierraItemLookupError.MissingItems(
+                missingItems = itemNumbers.filterNot(foundItemNumbers.contains(_)),
+                itemsReturned = itemDataEntries.entries
+              ))
+            } else {
+              Right(itemDataEntries)
+            }
+          }
+
+        // When none of the item ids requested exist, sierra will 404
+        case StatusCodes.NotFound =>
+          Future.successful(
+            Left(SierraItemLookupError.MissingItems(
+              missingItems = itemNumbers,
+              itemsReturned = Seq.empty
+            ))
+          )
 
         case _ =>
           Unmarshal(response)

@@ -130,6 +130,111 @@ class SierraSourceTest
         }
       }
     }
+
+    it("looks up multiple items where some do not exist") {
+      val missingItemNumber = SierraItemNumber("1234567")
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        missingItemNumber
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "total": 2,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Left(SierraItemLookupError.MissingItems(
+            missingItems = Seq(missingItemNumber),
+            itemsReturned = Seq(
+              SierraItemData(
+                id = SierraItemNumber("1146055"),
+                deleted = false,
+                location = Some(
+                  SierraSourceLocation(
+                    code = "sgmed",
+                    name = "Closed stores Med."
+                  )
+                )
+              )
+            )
+          ))
+        }
+      }
+    }
+
+    it("looks up multiple items where none exist") {
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        SierraItemNumber("1234567")
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Left(SierraItemLookupError.MissingItems(
+            missingItems = itemNumbers,
+            itemsReturned = Seq.empty
+          ))
+        }
+      }
+    }
   }
 
   describe("lookupItem") {
