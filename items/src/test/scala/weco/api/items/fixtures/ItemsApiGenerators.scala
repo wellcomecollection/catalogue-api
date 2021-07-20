@@ -45,9 +45,9 @@ trait ItemsApiGenerators
     suppressed: String = "false",
     holdCount: Int = 0
   ): HttpEntity.Strict =
-  HttpEntity(
-    contentType = ContentTypes.`application/json`,
-    f"""
+    HttpEntity(
+      contentType = ContentTypes.`application/json`,
+      f"""
       |{
       |  "total": 1,
       |  "start": 0,
@@ -66,7 +66,7 @@ trait ItemsApiGenerators
       |  ]
       |}
       |""".stripMargin
-  )
+    )
 
   def createPhysicalItemWith(
     sierraItemNumber: SierraItemNumber,
