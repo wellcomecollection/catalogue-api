@@ -18,50 +18,103 @@ import weco.catalogue.source_model.sierra.identifiers.{
 }
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.http.json.CirceMarshalling
-
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
+
 import scala.concurrent.{ExecutionContext, Future}
+
+case class SierraItemDataEntries(
+  total: Int,
+  start: Int,
+  entries: Seq[SierraItemData]
+)
 
 class SierraSource(client: HttpClient with HttpGet with HttpPost)(
   implicit
   ec: ExecutionContext,
   mat: Materializer
 ) {
-  private implicit val umItemStub: Unmarshaller[HttpEntity, SierraItemData] =
-    CirceMarshalling.fromDecoder[SierraItemData]
+  private implicit val umItemEntriesStub
+    : Unmarshaller[HttpEntity, SierraItemDataEntries] =
+    CirceMarshalling.fromDecoder[SierraItemDataEntries]
 
   private implicit val umErrorCode: Unmarshaller[HttpEntity, SierraErrorCode] =
     CirceMarshalling.fromDecoder[SierraErrorCode]
 
-  def lookupItem(
-    item: SierraItemNumber
-  ): Future[Either[SierraItemLookupError, SierraItemData]] =
+  /** Returns data for a list of items
+    */
+  def lookupItemEntries(
+    itemNumbers: Seq[SierraItemNumber]
+  ): Future[Either[SierraItemLookupError, SierraItemDataEntries]] = {
+
+    val idList = itemNumbers
+      .map(_.withoutCheckDigit)
+      .mkString(",")
+
     for {
-      resp <- client.get(
-        path = Path(s"v5/items/${item.withoutCheckDigit}"),
-        params = Map("fields" -> "deleted,fixedFields,holdCount,suppressed")
+      response <- client.get(
+        path = Path("v5/items"),
+        params = Map(
+          "id" -> idList,
+          "fields" -> "deleted,fixedFields,holdCount,suppressed"
+        )
       )
 
-      result <- resp.status match {
+      result <- response.status match {
         case StatusCodes.OK =>
-          Unmarshal(resp)
-            .to[SierraItemData]
-            .map(Right(_))
-            .recover {
-              case t: Throwable =>
-                Left(SierraItemLookupError.ItemHasNoStatus(t))
-            }
+          Unmarshal(response).to[SierraItemDataEntries].map { itemDataEntries =>
+            // There are a number of edge cases ignored here e.g.
+            // - there are more items returned than requested for this query
+            // - there are different items ids returned than requested for this query
+            // These cases are far less likely than requesting missing items which is
+            // dealt with here, so we ignore them for simplicity.
+            val foundItemNumbers = itemDataEntries.entries.map(_.id)
 
+            if (itemDataEntries.entries.size < itemNumbers.size) {
+              Left(
+                SierraItemLookupError.MissingItems(
+                  missingItems =
+                    itemNumbers.filterNot(foundItemNumbers.contains(_)),
+                  itemsReturned = itemDataEntries.entries
+                )
+              )
+            } else {
+              Right(itemDataEntries)
+            }
+          }
+
+        // When none of the item ids requested exist, sierra will 404
         case StatusCodes.NotFound =>
-          Future.successful(Left(SierraItemLookupError.ItemNotFound))
+          Future.successful(
+            Left(
+              SierraItemLookupError.MissingItems(
+                missingItems = itemNumbers,
+                itemsReturned = Seq.empty
+              )
+            )
+          )
 
         case _ =>
-          Unmarshal(resp)
+          Unmarshal(response)
             .to[SierraErrorCode]
             .map(err => Left(SierraItemLookupError.UnknownError(err)))
       }
+
     } yield result
+  }
+
+  /** Returns data for a single item
+    */
+  def lookupItem(
+    item: SierraItemNumber
+  ): Future[Either[SierraItemLookupError, SierraItemData]] =
+    lookupItemEntries(Seq(item)).map {
+      case Right(itemDataEntries) =>
+        Right(itemDataEntries.entries.head)
+      case Left(SierraItemLookupError.MissingItems(_, _)) =>
+        Left(SierraItemLookupError.ItemNotFound)
+      case Left(value) => Left(value)
+    }
 
   private implicit val umHoldsList: Unmarshaller[HttpEntity, SierraHoldsList] =
     CirceMarshalling.fromDecoder[SierraHoldsList]

@@ -45,6 +45,202 @@ class SierraSourceTest
       testWith(source)
     }
 
+  describe("lookupItemEntries") {
+    it("looks up multiple items") {
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        SierraItemNumber("1234567")
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "total": 2,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    },
+                |    {
+                |      "id": "1234567",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Right(
+            SierraItemDataEntries(
+              total = 2,
+              start = 0,
+              entries = Seq(
+                SierraItemData(
+                  id = SierraItemNumber("1146055"),
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
+                  )
+                ),
+                SierraItemData(
+                  id = SierraItemNumber("1234567"),
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    it("looks up multiple items where some do not exist") {
+      val missingItemNumber = SierraItemNumber("1234567")
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        missingItemNumber
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "total": 1,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "deleted": false,
+                |      "suppressed": false,
+                |      "holdCount": 0,
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      }
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Left(
+            SierraItemLookupError.MissingItems(
+              missingItems = Seq(missingItemNumber),
+              itemsReturned = Seq(
+                SierraItemData(
+                  id = SierraItemNumber("1146055"),
+                  deleted = false,
+                  location = Some(
+                    SierraSourceLocation(
+                      code = "sgmed",
+                      name = "Closed stores Med."
+                    )
+                  )
+                )
+              )
+            )
+          )
+        }
+      }
+    }
+
+    it("looks up multiple items where none exist") {
+      val itemNumbers = List(
+        SierraItemNumber("1146055"),
+        SierraItemNumber("1234567")
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            uri = Uri(
+              "http://sierra:1234/v5/items?id=1146055,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+            )
+          ),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 107,
+                |  "specificCode": 0,
+                |  "httpStatus": 404,
+                |  "name": "Record not found"
+                |}
+                |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withSource(responses) { source =>
+        val future = source.lookupItemEntries(itemNumbers)
+
+        whenReady(future) {
+          _ shouldBe Left(
+            SierraItemLookupError.MissingItems(
+              missingItems = itemNumbers,
+              itemsReturned = Seq.empty
+            )
+          )
+        }
+      }
+    }
+  }
+
   describe("lookupItem") {
     it("looks up a single item") {
       val itemNumber = SierraItemNumber("1146055")
@@ -53,7 +249,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1146055?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1146055&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -61,24 +257,30 @@ class SierraSourceTest
               contentType = ContentTypes.`application/json`,
               """
                 |{
-                |  "id": "1146055",
-                |  "updatedDate": "2021-06-09T13:23:27Z",
-                |  "createdDate": "1999-11-15T18:56:00Z",
-                |  "deleted": false,
-                |  "bibIds": [
-                |    "1126829"
-                |  ],
-                |  "location": {
-                |    "code": "sgmed",
-                |    "name": "Closed stores Med."
-                |  },
-                |  "status": {
-                |    "code": "t",
-                |    "display": "In quarantine"
-                |  },
-                |  "volumes": [],
-                |  "barcode": "22500271327",
-                |  "callNumber": "K33043"
+                |  "total": 1,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1146055",
+                |      "updatedDate": "2021-06-09T13:23:27Z",
+                |      "createdDate": "1999-11-15T18:56:00Z",
+                |      "deleted": false,
+                |      "bibIds": [
+                |        "1126829"
+                |      ],
+                |      "location": {
+                |        "code": "sgmed",
+                |        "name": "Closed stores Med."
+                |      },
+                |      "status": {
+                |        "code": "t",
+                |        "display": "In quarantine"
+                |      },
+                |      "volumes": [],
+                |      "barcode": "22500271327",
+                |      "callNumber": "K33043"
+                |    }
+                |  ]
                 |}
                 |""".stripMargin
             )
@@ -113,7 +315,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000000?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1000000&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -149,7 +351,7 @@ class SierraSourceTest
         (
           HttpRequest(
             uri = Uri(
-              "http://sierra:1234/v5/items/1000001?fields=deleted,fixedFields,holdCount,suppressed"
+              "http://sierra:1234/v5/items?id=1000001&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
           HttpResponse(
@@ -157,11 +359,17 @@ class SierraSourceTest
               contentType = ContentTypes.`application/json`,
               """
                 |{
-                |  "id": "1000001",
-                |  "deletedDate": "2004-04-14",
-                |  "deleted": true,
-                |  "bibIds": [],
-                |  "volumes": []
+                |  "total": 1,
+                |  "start": 0,
+                |  "entries": [
+                |    {
+                |      "id": "1000001",
+                |      "deletedDate": "2004-04-14",
+                |      "deleted": true,
+                |      "bibIds": [],
+                |      "volumes": []
+                |    }
+                |  ]
                 |}
                 |""".stripMargin
             )

@@ -29,7 +29,7 @@ trait SierraServiceFixture extends HttpFixtures {
   }
   def sierraUri(sierraItemNumber: SierraItemNumber) =
     Uri(
-      f"http://sierra:1234/v5/items/${sierraItemNumber.withoutCheckDigit}?fields=deleted,fixedFields,holdCount,suppressed"
+      f"http://sierra:1234/v5/items?id=${sierraItemNumber.withoutCheckDigit}&fields=deleted,fixedFields,holdCount,suppressed"
     )
 
 }
