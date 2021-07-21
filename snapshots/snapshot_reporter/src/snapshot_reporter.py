@@ -18,8 +18,8 @@ import json
 import os
 
 
-def get_secret(secret_id):
-    secrets_client = boto3.client("secretsmanager")
+def get_secret(session, *, secret_id):
+    secrets_client = session.client("secretsmanager")
 
     resp = secrets_client.get_secret_value(SecretId=secret_id)
 
@@ -33,17 +33,17 @@ def get_secret(secret_id):
     return secret
 
 
-def get_elastic_client(elastic_secret_id):
-    secret = get_secret(elastic_secret_id)
+def get_elastic_client(session, *, elastic_secret_id):
+    secret = get_secret(session, secret_id=elastic_secret_id)
 
     return Elasticsearch(
         secret["endpoint"], http_auth=(secret["username"], secret["password"])
     )
 
 
-def get_snapshots(es_client, elastic_index):
+def get_snapshots(es_client, *, snapshots_index):
     response = es_client.search(
-        index=elastic_index,
+        index=snapshots_index,
         body={
             "query": {
                 "bool": {
@@ -81,7 +81,7 @@ def format_date(d):
         return d.strftime("on %A, %B %-d at %-I:%M %p %Z")
 
 
-def prepare_slack_payload(snapshots, api_document_count):
+def prepare_slack_payload(*, snapshots, api_document_count, hours, recent_updates):
     def _snapshot_message(snapshot):
         index_name = snapshot["snapshotResult"]["indexName"]
         snapshot_document_count = snapshot["snapshotResult"]["documentCount"]
@@ -117,23 +117,40 @@ def prepare_slack_payload(snapshots, api_document_count):
     if snapshots:
         latest_snapshot = snapshots[0]
 
-        heading = ":white_check_mark: Catalogue Snapshot"
-        message = _snapshot_message(latest_snapshot)
+        snapshot_heading = ":white_check_mark: Catalogue Snapshot"
+        snapshot_message = _snapshot_message(latest_snapshot)
     else:
         kibana_logs_link = "https://logging.wellcomecollection.org/goto/c98eb0e4e37c802e60d5affea422a98e"
-        heading = ":interrobang: Catalogue Snapshot not found"
-        message = f"No snapshot found within the last day. See logs: {kibana_logs_link}"
+        snapshot_heading = ":interrobang: Catalogue Snapshot not found"
+        snapshot_message = (
+            f"No snapshot found within the last day. See logs: {kibana_logs_link}"
+        )
 
-    return {
-        "blocks": [
-            {"type": "header", "text": {"type": "plain_text", "text": heading}},
-            {"type": "section", "text": {"type": "mrkdwn", "text": message}},
+    snapshot_blocks = [
+        {
+            "type": "header",
+            "text": {"type": "plain_text", "text": snapshot_heading},
+        },
+        {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
+    ]
+
+    if recent_updates:
+        message = f"There {'have' if recent_updates > 1 else 'has'} been {humanize.intcomma(recent_updates)} update{'s' if recent_updates > 1 else ''} in the last {hours} hours."
+        update_blocks = [
+            {"type": "section", "text": {"type": "mrkdwn", "text": message}}
         ]
-    }
+    else:
+        message = f":warning: There haven't been any updates in the last {hours} hours."
+        update_blocks = [
+            {"type": "section", "text": {"type": "mrkdwn", "text": message}}
+        ]
+
+    return {"blocks": snapshot_blocks + update_blocks}
 
 
-def post_to_slack(slack_secret_id, payload):
-    resp = httpx.post(get_secret(slack_secret_id), json=payload)
+def post_to_slack(session, *, slack_secret_id, payload):
+    slack_endpoint = get_secret(session, secret_id=slack_secret_id)
+    resp = httpx.post(slack_endpoint, json=payload)
 
     print(f"Sent payload to Slack: {resp}")
 
@@ -151,21 +168,71 @@ def post_to_slack(slack_secret_id, payload):
         print(resp.text)
 
 
-def main(*args):
-    elastic_secret_id = os.environ["ELASTIC_SECRET_ID"]
-    slack_secret_id = os.environ["SLACK_SECRET_ID"]
-    elastic_index = os.environ["ELASTIC_INDEX"]
+def count_recent_updates(session, *, hours):
+    username = get_secret(
+        session, secret_id="elasticsearch/catalogue_api/search/username"
+    )
+    password = get_secret(
+        session, secret_id="elasticsearch/catalogue_api/search/password"
+    )
+    host = get_secret(session, secret_id="elasticsearch/catalogue_api/public_host")
 
-    elastic_client = get_elastic_client(elastic_secret_id)
-
-    snapshots = get_snapshots(elastic_client, elastic_index)
-    api_document_count = get_catalogue_api_document_count(endpoint="works")
-
-    slack_payload = prepare_slack_payload(
-        snapshots=snapshots, api_document_count=api_document_count
+    api_es_client = Elasticsearch(
+        f"https://{host}:9243", http_auth=(username, password)
     )
 
-    post_to_slack(slack_secret_id, slack_payload)
+    works_index_name = httpx.get(
+        "https://api.wellcomecollection.org/catalogue/v2/search-templates.json"
+    ).json()["templates"][0]["index"]
+
+    indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
+
+    count_resp = api_es_client.count(
+        index=works_index_name,
+        body={
+            "query": {
+                "bool": {
+                    "filter": [
+                        {
+                            "range": {
+                                "state.indexedTime": {
+                                    "gte": indexed_after.strftime("%Y-%m-%dT%H:%M:%SZ")
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+    )
+
+    return count_resp["count"]
+
+
+def main(*args):
+    session = boto3.Session()
+
+    elastic_secret_id = os.environ["ELASTIC_SECRET_ID"]
+    slack_secret_id = os.environ["SLACK_SECRET_ID"]
+    snapshots_index = os.environ["ELASTIC_INDEX"]
+
+    elastic_client = get_elastic_client(session, elastic_secret_id=elastic_secret_id)
+
+    snapshots = get_snapshots(elastic_client, snapshots_index=snapshots_index)
+    api_document_count = get_catalogue_api_document_count(endpoint="works")
+
+    hours = 24
+
+    recent_updates = count_recent_updates(session, hours=hours)
+
+    slack_payload = prepare_slack_payload(
+        snapshots=snapshots,
+        api_document_count=api_document_count,
+        hours=hours,
+        recent_updates=recent_updates,
+    )
+
+    post_to_slack(session, slack_secret_id=slack_secret_id, payload=slack_payload)
 
 
 if __name__ == "__main__":
