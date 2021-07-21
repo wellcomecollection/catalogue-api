@@ -26,8 +26,8 @@ class SierraServiceTest
     with SierraGenerators {
 
   describe("SierraService") {
-    describe("getAccessCondition") {
-      it("gets an AccessCondition") {
+    describe("getAccessConditions") {
+      it("gets AccessConditions") {
 
         val responses = Seq(
           (
@@ -77,12 +77,14 @@ class SierraServiceTest
             ontologyType = "Item"
           )
 
-          val future = service.getAccessConditions(identifier)
+          val itemNumber = SierraItemIdentifier.fromSourceIdentifier(identifier)
+
+          val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
-            _.value shouldBe Some(
+            _.value shouldBe Map(itemNumber -> Some(
               AccessCondition(method = AccessMethod.OnlineRequest)
-            )
+            ))
           }
         }
       }

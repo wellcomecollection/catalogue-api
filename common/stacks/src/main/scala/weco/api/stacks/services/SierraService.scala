@@ -35,14 +35,13 @@ class SierraService(
     extends Logging {
 
   def getAccessConditions(
-    sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[Either[SierraItemLookupError, Map[SierraItemNumber, Option[AccessCondition]]]] = {
-    val itemNumbers =sourceIdentifiers.map(SierraItemIdentifier.fromSourceIdentifier(_))
-
+                           itemNumbers: Seq[SierraItemNumber]
+                         ): Future[Either[SierraItemLookupError, Map[SierraItemNumber, Option[AccessCondition]]]] = {
     for {
       itemEither <- sierraSource.lookupItemEntries(itemNumbers)
-      accessCondition = itemEither.map { itemDataEntries =>
-        itemDataEntries.entries.map(item => item.id -> item.getAccessCondition()).toMap
+      accessCondition = itemEither.map { _.entries.map(
+          item => item.id -> item.getAccessCondition
+        ) toMap
       }
     } yield accessCondition
   }
@@ -176,7 +175,7 @@ class SierraService(
       // Usually we won't display the "Online request" button for an item that doesn't
       // pass the rules for requesting.  We could hit this branch if the data has been
       // updated in Sierra to prevent requesting, but this hasn't updated in the API yet.
-      case Right(itemData) if !itemData.allowsOnlineRequesting(item) =>
+      case Right(itemData) if !itemData.allowsOnlineRequesting =>
         warn(
           s"User tried to place a hold on item $item, which is blocked by rules for requesting"
         )
@@ -195,7 +194,7 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(): Option[AccessCondition] = {
+    def getAccessCondition: Option[AccessCondition] = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
@@ -215,8 +214,8 @@ class SierraService(
       ac
     }
 
-    def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
-      getAccessCondition(id) match {
+    def allowsOnlineRequesting: Boolean = {
+      getAccessCondition match {
         case Some(ac) if ac.method == AccessMethod.OnlineRequest =>
           true
         case _ => false
