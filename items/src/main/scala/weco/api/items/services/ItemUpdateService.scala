@@ -11,10 +11,13 @@ import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemUpdateService(
-  sierraService: SierraService
-)(implicit executionContext: ExecutionContext)
-    extends Logging {
+trait ItemUpdater {
+  def updateItems(items: Seq[Item[IdState.Minted]]): Future[Seq[Item[IdState.Minted]]]
+}
+
+class SierraItemUpdater(sierraService: SierraService)(implicit executionContext: ExecutionContext)
+  extends ItemUpdater
+    with Logging {
 
   private def updateLocations(
                                item: Item[IdState.Minted],
@@ -44,7 +47,7 @@ class ItemUpdateService(
     }
   }
 
-  def updateSierraItem(items: Seq[Item[IdState.Minted]]) = {
+  def updateItems(items: Seq[Item[IdState.Minted]]) = {
     val sierraItemSourceIdentifiers = items.map {
       case item@Item(IdState.Identified(_, srcId, _), _, _, _) =>
         SierraItemIdentifier.fromSourceIdentifier(srcId) -> item
@@ -61,6 +64,12 @@ class ItemUpdateService(
           items
       } map(_.toSeq)
   }
+}
+
+
+class ItemUpdateService(
+  sierraItemUpdater: SierraItemUpdater
+)(implicit executionContext: ExecutionContext) {
 
   private def buildItemsMap(items: Seq[Item[IdState.Minted]]): Map[SourceIdentifier, Item[IdState.Minted]] =
     items.map {
@@ -99,7 +108,7 @@ class ItemUpdateService(
         case (Item(IdState.Identified(_, srcId, _), _, _, _), _) => srcId.identifierType
       } map {
         case (IdentifierType.SierraSystemNumber, itemsWithIndex) =>
-          preserveOrder(itemsWithIndex, updateSierraItem)
+          preserveOrder(itemsWithIndex, sierraItemUpdater.updateItems)
         // In the future if we wish to update other sources we can add that here
         case (_, itemsWithIndex) => Future(itemsWithIndex)
       }
