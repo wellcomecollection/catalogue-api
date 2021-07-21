@@ -81,7 +81,7 @@ def format_date(d):
         return d.strftime("on %A, %B %-d at %-I:%M %p %Z")
 
 
-def prepare_slack_payload(*, snapshots, api_document_count, hours, recent_updates):
+def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
     def _snapshot_message(snapshot):
         index_name = snapshot["snapshotResult"]["indexName"]
         snapshot_document_count = snapshot["snapshotResult"]["documentCount"]
@@ -134,13 +134,14 @@ def prepare_slack_payload(*, snapshots, api_document_count, hours, recent_update
         {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
     ]
 
-    if recent_updates:
-        message = f"There {'have' if recent_updates > 1 else 'has'} been {humanize.intcomma(recent_updates)} update{'s' if recent_updates > 1 else ''} in the last {hours} hours."
+    if recent_updates["count"]:
+        message = f"There {'have' if recent_updates['count'] > 1 else 'has'} been {humanize.intcomma(recent_updates['count'])} update{'s' if recent_updates['count'] > 1 else ''} in the last {recent_updates['hours']} hours."
         update_blocks = [
             {"type": "section", "text": {"type": "mrkdwn", "text": message}}
         ]
     else:
-        message = f":warning: There haven't been any updates in the last {hours} hours."
+        delta = datetime.datetime.now(datetime.timezone.utc) - recent_updates["latest"]
+        message = f":warning: There haven't been any updates in the last {recent_updates['hours']} hours. The last update was at {format_date(recent_updates['latest'])} ({humanize.naturaldelta(delta)} ago)."
         update_blocks = [
             {"type": "section", "text": {"type": "mrkdwn", "text": message}}
         ]
@@ -168,7 +169,7 @@ def post_to_slack(session, *, slack_secret_id, payload):
         print(resp.text)
 
 
-def count_recent_updates(session, *, hours):
+def get_recent_update_stats(session, *, hours):
     username = get_secret(
         session, secret_id="elasticsearch/catalogue_api/search/username"
     )
@@ -206,7 +207,22 @@ def count_recent_updates(session, *, hours):
         },
     )
 
-    return count_resp["count"]
+    search_resp = api_es_client.search(
+        index=works_index_name,
+        body={
+            "sort": [{"state.indexedTime": {"order": "desc"}}],
+            "_source": ["state.indexedTime"],
+            "size": 1,
+        },
+    )
+
+    return {
+        "hours": hours,
+        "count": count_resp["count"],
+        "latest": parser.parse(
+            search_resp["hits"]["hits"][0]["_source"]["state"]["indexedTime"]
+        ),
+    }
 
 
 def main(*args):
@@ -223,12 +239,11 @@ def main(*args):
 
     hours = 24
 
-    recent_updates = count_recent_updates(session, hours=hours)
+    recent_updates = get_recent_update_stats(session, hours=hours)
 
     slack_payload = prepare_slack_payload(
         snapshots=snapshots,
         api_document_count=api_document_count,
-        hours=hours,
         recent_updates=recent_updates,
     )
 
