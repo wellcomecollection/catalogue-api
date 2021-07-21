@@ -127,10 +127,7 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
         )
 
     snapshot_blocks = [
-        {
-            "type": "header",
-            "text": {"type": "plain_text", "text": snapshot_heading},
-        },
+        {"type": "header", "text": {"type": "plain_text", "text": snapshot_heading}},
         {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
     ]
 
