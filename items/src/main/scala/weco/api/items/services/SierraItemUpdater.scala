@@ -15,6 +15,7 @@ class SierraItemUpdater(sierraService: SierraService)(implicit executionContext:
   extends ItemUpdater
     with Logging {
 
+  // TODO: Can we cover multiple types here?
   val identifierType = IdentifierType.SierraSystemNumber
 
   private def updateLocations(
@@ -29,12 +30,18 @@ class SierraItemUpdater(sierraService: SierraService)(implicit executionContext:
   }
 
   private def updateAccessConditions(
-                                      sierraItemSourceIdentifiers: Map[SierraItemNumber, Item[IdState.Minted]],
-                                      accessConditions: Map[SierraItemNumber, Option[AccessCondition]]
-                                    ): immutable.Iterable[Item[IdState.Minted]] = {
+                                      itemNumberMap: Map[SierraItemNumber, Item[IdState.Minted]],
+                                      accessConditions: Map[SierraItemNumber, AccessCondition]
+  ): immutable.Iterable[Item[IdState.Minted]] = {
+    require(itemNumberMap.keySet == accessConditions.keySet,
+      s"Inconsistent update to AccessConditions set! Original: $itemNumberMap, updated: $accessConditions"
+    )
+
+    //todo: Can I just sort both maps on keys, then zip them?
+
     accessConditions.flatMap {
-      case (itemNumber, Some(accessCondition)) => {
-        sierraItemSourceIdentifiers
+      case (itemNumber, accessCondition) => {
+        itemNumberMap
           .get(itemNumber)
           .map(item => {
             item.copy(
