@@ -11,7 +11,7 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumb
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -71,14 +71,7 @@ class SierraServiceTest
             }
           )
 
-          val identifier = SourceIdentifier(
-            identifierType = SierraSystemNumber,
-            value = "i16010176",
-            ontologyType = "Item"
-          )
-
-          val itemNumber = SierraItemIdentifier.fromSourceIdentifier(identifier)
-
+          val itemNumber = SierraItemNumber("1601017")
           val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
@@ -133,21 +126,8 @@ class SierraServiceTest
             }
           )
 
-          val itemNumber = SierraItemIdentifier.fromSourceIdentifier(
-            SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              value = "i16010176",
-              ontologyType = "Item"
-            )
-          )
-
-          val missingItemNumber = SierraItemIdentifier.fromSourceIdentifier(
-            SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              value = "i12345672",
-              ontologyType = "Item"
-            )
-          )
+          val itemNumber = SierraItemNumber("1601017")
+          val missingItemNumber = SierraItemNumber("1234567")
 
           val future =
             service.getAccessConditions(Seq(itemNumber, missingItemNumber))
@@ -194,14 +174,7 @@ class SierraServiceTest
             }
           )
 
-          val itemNumber = SierraItemIdentifier.fromSourceIdentifier(
-            SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              value = "i16010176",
-              ontologyType = "Item"
-            )
-          )
-
+          val itemNumber = SierraItemNumber("1601017")
           val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
