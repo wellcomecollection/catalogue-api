@@ -33,7 +33,7 @@ object Main extends WellcomeTypesafeApp {
     val elasticClient = ElasticBuilder.buildElasticClient(config)
     val sierraService = SierraServiceBuilder.build(config)
 
-    // To add a new item updater, implement ItemUpdater and add it to the list here
+    // To add an item updater for a new service, implement ItemUpdater and add it to the list here
     val itemUpdaters = List(
       new SierraItemUpdater(sierraService)
     )
