@@ -2,24 +2,13 @@ package weco.api.stacks.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
+import weco.api.stacks.http.{SierraItemDataEntries, SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  PhysicalLocationType
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocationType}
 import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
+import weco.catalogue.source_model.sierra.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
+import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,14 +25,21 @@ class SierraService(
 
   def getAccessConditions(
                            itemNumbers: Seq[SierraItemNumber]
-                         ): Future[Either[SierraItemLookupError, Map[SierraItemNumber, AccessCondition]]] = {
+                         ): Future[Map[SierraItemNumber, AccessCondition]] = {
     for {
       itemEither <- sierraSource.lookupItemEntries(itemNumbers)
-      accessCondition = itemEither.map { _.entries.map(
-          item => item.id -> item.getAccessCondition
-        ) toMap
+
+      accessConditions = itemEither match {
+        case Right(SierraItemDataEntries(_,_,entries)) =>
+          entries.map(item => item.id -> item.getAccessCondition).toMap
+        case Left(SierraItemLookupError.MissingItems(missingItems, itemsReturned)) =>
+          warn(s"Item lookup missing items: ${missingItems}")
+          itemsReturned.map(item => item.id -> item.getAccessCondition).toMap
+        case Left(itemLookupError) =>
+          error(s"Item lookup failed: ${itemLookupError}")
+          Map.empty[SierraItemNumber, AccessCondition]
       }
-    } yield accessCondition
+    } yield accessConditions
   }
 
   def placeHold(

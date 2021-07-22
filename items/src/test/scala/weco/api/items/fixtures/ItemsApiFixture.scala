@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
 import weco.api.items.ItemsApi
-import weco.api.items.services.ItemUpdateService
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater}
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -31,8 +31,12 @@ trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures {
   )(testWith: TestWith[Unit, R]): R = {
     withMaterializer { implicit mat =>
       withSierraService(responses) { sierraService =>
+        val itemsUpdaters = List(
+          new SierraItemUpdater(sierraService)
+        )
+
         val api: ItemsApi = new ItemsApi(
-          itemUpdateService = new ItemUpdateService(sierraService),
+          itemUpdateService = new ItemUpdateService(itemsUpdaters),
           workLookup = WorkLookup(elasticClient),
           index = index
         )

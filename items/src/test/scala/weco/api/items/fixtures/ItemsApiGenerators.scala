@@ -2,7 +2,7 @@ package weco.api.items.fixtures
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse}
 import org.scalatest.Suite
-import weco.api.items.services.ItemUpdateService
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
 import weco.catalogue.internal_model.work.Item
@@ -23,7 +23,11 @@ trait ItemsApiGenerators
   )(testWith: TestWith[ItemUpdateService, R]): R =
     withMaterializer { implicit mat =>
       withSierraService(responses) { sierraService =>
-        testWith(new ItemUpdateService(sierraService))
+        val itemsUpdaters = List(
+          new SierraItemUpdater(sierraService)
+        )
+
+        testWith(new ItemUpdateService(itemsUpdaters))
       }
     }
 

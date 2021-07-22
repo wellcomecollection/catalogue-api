@@ -8,65 +8,48 @@ import weco.catalogue.internal_model.locations.{AccessCondition, PhysicalLocatio
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 
-import scala.collection.immutable
 import scala.concurrent.{ExecutionContext, Future}
 
 class SierraItemUpdater(sierraService: SierraService)(implicit executionContext: ExecutionContext)
   extends ItemUpdater
     with Logging {
 
-  // TODO: Can we cover multiple types here?
   val identifierType = IdentifierType.SierraSystemNumber
 
   private def updateLocations(
-                               item: Item[IdState.Minted],
+                               item: Item[IdState.Identified],
                                accessCondition: AccessCondition
-                             ) = item.locations.map {
-    case physicalLocation: PhysicalLocation =>
-      physicalLocation.copy(
-        accessConditions = List(accessCondition)
-      )
-    case location => location
+                             ) = {
+    val updatedItemLocations = item.locations.map {
+      case physicalLocation: PhysicalLocation =>
+        physicalLocation.copy(
+          accessConditions = List(accessCondition)
+        )
+      case location => location
+    }
+
+    item.copy(locations = updatedItemLocations)
   }
 
   private def updateAccessConditions(
-                                      itemNumberMap: Map[SierraItemNumber, Item[IdState.Minted]],
-                                      accessConditions: Map[SierraItemNumber, AccessCondition]
-  ): immutable.Iterable[Item[IdState.Minted]] = {
-    require(itemNumberMap.keySet == accessConditions.keySet,
-      s"Inconsistent update to AccessConditions set! Original: $itemNumberMap, updated: $accessConditions"
-    )
+                                      itemMap: Map[SierraItemNumber, Item[IdState.Identified]],
+                                      accessConditionMap: Map[SierraItemNumber, AccessCondition]
+  ) = itemMap.map {
+      case (itemNumber,item) => accessConditionMap
+        .get(itemNumber)
+        .map(updateLocations(item,_))
+        .getOrElse(item)
+    } toSeq
 
-    //todo: Can I just sort both maps on keys, then zip them?
 
-    accessConditions.flatMap {
-      case (itemNumber, accessCondition) => {
-        itemNumberMap
-          .get(itemNumber)
-          .map(item => {
-            item.copy(
-              locations = updateLocations(item, accessCondition)
-            )
-          })
-      }
-    }
-  }
-
-  def updateItems(items: Seq[Item[IdState.Minted]]): Future[Seq[Item[IdState.Minted]]] = {
-    val sierraItemSourceIdentifiers = items.map {
+  def updateItems(items: Seq[Item[IdState.Identified]]): Future[Seq[Item[IdState.Identified]]] = {
+    val itemMap = items.map {
       case item@Item(IdState.Identified(_, srcId, _), _, _, _) =>
         SierraItemIdentifier.fromSourceIdentifier(srcId) -> item
     } toMap
 
-    val itemNumbers = sierraItemSourceIdentifiers.keys.toSeq
-
-    sierraService.getAccessConditions(itemNumbers)
-      .map {
-        case Right(accessConditions) =>
-          updateAccessConditions(sierraItemSourceIdentifiers, accessConditions)
-        case Left(err) =>
-          error(msg = f"Couldn't refresh items for $itemNumbers got error $err")
-          items
-      } map(_.toSeq)
+    sierraService.getAccessConditions(itemMap.keys.toSeq).map(
+      updateAccessConditions(itemMap, _)
+    )
   }
 }
