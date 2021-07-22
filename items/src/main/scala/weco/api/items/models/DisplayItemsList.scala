@@ -20,9 +20,10 @@ object DisplayItemsList {
 
   def apply(items: Iterable[Item[IdState.Minted]]): DisplayItemsList = {
     val displayItems: Seq[DisplayItem] =
-      items.map(
-        item => DisplayItem(item = item, includesIdentifiers = true)
-      ) toSeq
+      items
+        .map(
+          item => DisplayItem(item = item, includesIdentifiers = true)
+        ) toSeq
 
     DisplayItemsList(
       totalResults = displayItems.length,

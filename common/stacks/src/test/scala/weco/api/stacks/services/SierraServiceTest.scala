@@ -82,9 +82,11 @@ class SierraServiceTest
           val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
-            _ shouldBe Map(itemNumber -> Some(
-              AccessCondition(method = AccessMethod.OnlineRequest)
-            ))
+            _ shouldBe Map(
+              itemNumber -> Some(
+                AccessCondition(method = AccessMethod.OnlineRequest)
+              )
+            )
           }
         }
       }

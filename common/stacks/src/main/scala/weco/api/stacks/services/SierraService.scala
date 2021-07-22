@@ -2,13 +2,28 @@ package weco.api.stacks.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{SierraItemDataEntries, SierraItemLookupError, SierraSource}
+import weco.api.stacks.http.{
+  SierraItemDataEntries,
+  SierraItemLookupError,
+  SierraSource
+}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocationType}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  PhysicalLocationType
+}
 import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
-import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraBibNumber,
+  SierraItemNumber,
+  SierraPatronNumber
+}
+import weco.catalogue.source_model.sierra.rules.{
+  SierraItemAccess,
+  SierraPhysicalLocationType
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,15 +39,17 @@ class SierraService(
     extends Logging {
 
   def getAccessConditions(
-                           itemNumbers: Seq[SierraItemNumber]
-                         ): Future[Map[SierraItemNumber, AccessCondition]] = {
+    itemNumbers: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, AccessCondition]] = {
     for {
       itemEither <- sierraSource.lookupItemEntries(itemNumbers)
 
       accessConditions = itemEither match {
-        case Right(SierraItemDataEntries(_,_,entries)) =>
+        case Right(SierraItemDataEntries(_, _, entries)) =>
           entries.map(item => item.id -> item.getAccessCondition).toMap
-        case Left(SierraItemLookupError.MissingItems(missingItems, itemsReturned)) =>
+        case Left(
+            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+            ) =>
           warn(s"Item lookup missing items: ${missingItems}")
           itemsReturned.map(item => item.id -> item.getAccessCondition).toMap
         case Left(itemLookupError) =>
@@ -196,7 +213,9 @@ class SierraService(
         itemData.fixedFields
           .get("79")
           .flatMap(_.display)
-          .flatMap(name => SierraPhysicalLocationType.fromName(itemData.id, name))
+          .flatMap(
+            name => SierraPhysicalLocationType.fromName(itemData.id, name)
+          )
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking. We can use placeholder data here.
