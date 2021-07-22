@@ -8,7 +8,11 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.source_model.generators.SierraGenerators
 import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
@@ -51,7 +55,9 @@ class ItemUpdateServiceTest
     )
   )
 
-  def temporarilyUnavailableItem(sierraItemNumber: SierraItemNumber): Item[IdState.Identified] = {
+  def temporarilyUnavailableItem(
+    sierraItemNumber: SierraItemNumber
+  ): Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.OnlineRequest,
       status = AccessStatus.TemporarilyUnavailable
@@ -84,12 +90,17 @@ class ItemUpdateServiceTest
     method = AccessMethod.OnlineRequest
   )
 
-  class DummyItemUpdater(itemTransform: Seq[Item[IdState.Identified]] => Seq[Item[IdState.Identified]] = identity) extends ItemUpdater {
-    override val identifierType: IdentifierType = IdentifierType.SierraSystemNumber
+  class DummyItemUpdater(
+    itemTransform: Seq[Item[IdState.Identified]] => Seq[
+      Item[IdState.Identified]
+    ] = identity
+  ) extends ItemUpdater {
+    override val identifierType: IdentifierType =
+      IdentifierType.SierraSystemNumber
 
     override def updateItems(
-                              items: Seq[Item[IdState.Identified]]
-                            ): Future[Seq[Item[IdState.Identified]]] = Future {
+      items: Seq[Item[IdState.Identified]]
+    ): Future[Seq[Item[IdState.Identified]]] = Future {
       items
     }
   }
@@ -123,7 +134,7 @@ class ItemUpdateServiceTest
       }
     }
   }
-  
+
   describe("with SierraItemUpdater") {
     val workWithUnavailableItemNumber = createSierraItemNumber
     val workWithAvailableItemNumber = createSierraItemNumber

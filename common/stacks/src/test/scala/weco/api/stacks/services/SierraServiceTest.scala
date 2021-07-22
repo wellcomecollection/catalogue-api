@@ -82,8 +82,9 @@ class SierraServiceTest
           val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
-            _ shouldBe Map(itemNumber ->
-              AccessCondition(method = AccessMethod.OnlineRequest)
+            _ shouldBe Map(
+              itemNumber ->
+                AccessCondition(method = AccessMethod.OnlineRequest)
             )
           }
         }
@@ -127,7 +128,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -137,20 +138,24 @@ class SierraServiceTest
               identifierType = SierraSystemNumber,
               value = "i16010176",
               ontologyType = "Item"
-            ))
+            )
+          )
 
           val missingItemNumber = SierraItemIdentifier.fromSourceIdentifier(
             SourceIdentifier(
               identifierType = SierraSystemNumber,
               value = "i12345672",
               ontologyType = "Item"
-            ))
+            )
+          )
 
-          val future = service.getAccessConditions(Seq(itemNumber, missingItemNumber))
+          val future =
+            service.getAccessConditions(Seq(itemNumber, missingItemNumber))
 
           whenReady(future) {
-            _ shouldBe Map(itemNumber ->
-              AccessCondition(method = AccessMethod.OnlineRequest)
+            _ shouldBe Map(
+              itemNumber ->
+                AccessCondition(method = AccessMethod.OnlineRequest)
             )
           }
         }
@@ -184,7 +189,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -194,7 +199,8 @@ class SierraServiceTest
               identifierType = SierraSystemNumber,
               value = "i16010176",
               ontologyType = "Item"
-            ))
+            )
+          )
 
           val future = service.getAccessConditions(Seq(itemNumber))
 

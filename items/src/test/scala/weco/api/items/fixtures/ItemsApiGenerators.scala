@@ -1,12 +1,28 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse
+}
 import org.scalatest.Suite
-import weco.api.items.services.{ItemUpdateService, ItemUpdater, SierraItemUpdater}
+import weco.api.items.services.{
+  ItemUpdateService,
+  ItemUpdater,
+  SierraItemUpdater
+}
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  LocationType,
+  PhysicalLocation
+}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
 
@@ -19,8 +35,8 @@ trait ItemsApiGenerators
   this: Suite =>
 
   def withSierraItemUpdater[R](
-                                responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-                              )(testWith: TestWith[ItemUpdater, R]): R =
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[ItemUpdater, R]): R =
     withMaterializer { implicit mat =>
       withSierraService(responses) { sierraService =>
         testWith(new SierraItemUpdater(sierraService))
@@ -28,11 +44,9 @@ trait ItemsApiGenerators
     }
 
   def withItemUpdateService[R](
-    itemUpdaters: List[ItemUpdater],
+    itemUpdaters: List[ItemUpdater]
   )(testWith: TestWith[ItemUpdateService, R]): R =
-        testWith(new ItemUpdateService(itemUpdaters))
-
-
+    testWith(new ItemUpdateService(itemUpdaters))
 
   def buildEntry(
     sierraItemNumber: SierraItemNumber,
