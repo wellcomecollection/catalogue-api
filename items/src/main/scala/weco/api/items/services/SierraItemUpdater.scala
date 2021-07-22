@@ -20,7 +20,7 @@ class SierraItemUpdater(sierraService: SierraService)(
 
   val identifierType = IdentifierType.SierraSystemNumber
 
-  private def updateLocations(
+  private def updateAccessCondition(
     item: Item[IdState.Identified],
     accessCondition: AccessCondition
   ) = {
@@ -43,7 +43,7 @@ class SierraItemUpdater(sierraService: SierraService)(
       case (itemNumber, item) =>
         accessConditionMap
           .get(itemNumber)
-          .map(updateLocations(item, _))
+          .map(updateAccessCondition(item, _))
           .getOrElse(item)
     } toSeq
 
