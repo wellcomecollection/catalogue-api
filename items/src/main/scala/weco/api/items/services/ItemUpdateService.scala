@@ -9,13 +9,6 @@ import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ItemUpdater {
-  val identifierType: IdentifierType
-  def updateItems(
-    items: Seq[Item[IdState.Identified]]
-  ): Future[Seq[Item[IdState.Identified]]]
-}
-
 class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
 )(implicit executionContext: ExecutionContext) {
