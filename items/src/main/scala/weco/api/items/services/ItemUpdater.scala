@@ -8,6 +8,6 @@ import scala.concurrent.Future
 trait ItemUpdater {
   val identifierType: IdentifierType
   def updateItems(
-                   items: Seq[Item[IdState.Identified]]
-                 ): Future[Seq[Item[IdState.Identified]]]
+    items: Seq[Item[IdState.Identified]]
+  ): Future[Seq[Item[IdState.Identified]]]
 }
