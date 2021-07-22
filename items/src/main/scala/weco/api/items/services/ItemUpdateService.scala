@@ -33,16 +33,16 @@ class ItemUpdateService(
     } toMap
 
   private def preserveOrder(
-    itemsWithIndex: Seq[(Item[IdState.Identified], Int)],
-    f: Seq[Item[IdState.Identified]] => Future[Seq[Item[IdState.Identified]]]
+                             itemsWithIndex: Seq[(Item[IdState.Identified], Int)],
+                             updateFunction: Seq[Item[IdState.Identified]] => Future[Seq[Item[IdState.Identified]]]
   ) = {
-    val itemsMap = buildItemsMap(itemsWithIndex.map(_._1))
+    val items = itemsWithIndex.map(_._1)
     val indexes = itemsWithIndex.map(_._2)
 
+    val itemsMap = buildItemsMap(items)
     val indexLookup = itemsMap.keys.zip(indexes).toMap
-    val items = itemsMap.values.toSeq
 
-    f(items).flatMap { updatedItems =>
+    updateFunction(items).flatMap { updatedItems =>
       val updatedItemsMap = buildItemsMap(updatedItems)
       val updatedItemsWithIndex = indexLookup.map {
         case (srcId, index) =>
