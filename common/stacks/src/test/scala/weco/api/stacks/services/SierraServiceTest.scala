@@ -11,7 +11,10 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumb
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
