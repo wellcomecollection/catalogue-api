@@ -921,6 +921,97 @@ class RequestingScenarioTest
         )
       }
     }
+
+    Scenario("A user whose account is barred") {
+      Given("a physical item from Sierra in the catalogue API")
+      val itemNumber = createSierraItemNumber
+      val item = createIdentifiedSierraItemWith(itemNumber)
+      val lookup = new MemoryItemLookup(items = Seq(item))
+
+      And("and a user whose account is barred")
+      val patronNumber = createSierraPatronNumber
+      val responses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber),
+          HttpResponse(
+            status = StatusCodes.NotFound,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 2,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : There is a problem with your library record.  Please see a librarian."
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          createListHoldsRequest(patronNumber),
+          createListHoldsResponse(patronNumber, items = Seq())
+        ),
+        (
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 1,
+                 |  "start": 0,
+                 |  "entries": [
+                 |    {
+                 |      "id": "$itemNumber",
+                 |      "deletedDate": "2001-01-01",
+                 |      "deleted": false,
+                 |      "suppressed": false,
+                 |      "holdCount": 0,
+                 |      "fixedFields": {
+                 |        "79": {"label": "LOCATION", "value": "scmac", "display": "Closed stores Arch. & MSS"},
+                 |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                 |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                 |      }
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      implicit val route: Route = createRoute(lookup, responses)
+
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("we throw an internal server error")
+      response.status shouldBe StatusCodes.InternalServerError
+      response.status.intValue shouldBe 500
+
+      And("we display a generic response")
+      assertIsDisplayError(
+        response,
+        statusCode = StatusCodes.InternalServerError
+      )
+    }
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(
