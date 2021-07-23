@@ -136,7 +136,7 @@ class ItemUpdateServiceTest
   }
 
   it("detects if the item updater returns inconsistent results") {
-    def badUpdate(items:  Seq[Item[IdState.Identified]]) = items.tail
+    def badUpdate(items: Seq[Item[IdState.Identified]]) = items.tail
 
     val itemUpdater = new DummyItemUpdater(badUpdate)
 
@@ -151,9 +151,12 @@ class ItemUpdateServiceTest
     val workWithItems = indexedWork().items(startingItems)
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) { failure =>
-        failure shouldBe a[IllegalArgumentException]
-        failure.getMessage should include("Inconsistent results updating items")
+      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+        failure =>
+          failure shouldBe a[IllegalArgumentException]
+          failure.getMessage should include(
+            "Inconsistent results updating items"
+          )
       }
     }
   }
