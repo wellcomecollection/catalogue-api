@@ -101,7 +101,7 @@ class ItemUpdateServiceTest
     override def updateItems(
       items: Seq[Item[IdState.Identified]]
     ): Future[Seq[Item[IdState.Identified]]] = Future {
-      items
+      itemTransform(items)
     }
   }
 
