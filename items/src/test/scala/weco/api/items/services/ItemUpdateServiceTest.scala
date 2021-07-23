@@ -135,6 +135,29 @@ class ItemUpdateServiceTest
     }
   }
 
+  it("detects if the item updater returns inconsistent results") {
+    def badUpdate(items:  Seq[Item[IdState.Identified]]) = items.tail
+
+    val itemUpdater = new DummyItemUpdater(badUpdate)
+
+    val startingItems = List(
+      temporarilyUnavailableItem(createSierraItemNumber),
+      availableItem(createSierraItemNumber),
+      temporarilyUnavailableItem(createSierraItemNumber),
+      createDigitalItem,
+      createDigitalItem
+    )
+
+    val workWithItems = indexedWork().items(startingItems)
+
+    withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+      whenReady(itemUpdateService.updateItems(workWithItems).failed) { failure =>
+        failure shouldBe a[IllegalArgumentException]
+        failure.getMessage should include("Inconsistent results updating items")
+      }
+    }
+  }
+
   describe("with SierraItemUpdater") {
     val workWithUnavailableItemNumber = createSierraItemNumber
     val workWithAvailableItemNumber = createSierraItemNumber
