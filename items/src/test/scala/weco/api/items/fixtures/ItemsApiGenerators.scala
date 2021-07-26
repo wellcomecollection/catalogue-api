@@ -55,7 +55,7 @@ trait ItemsApiGenerators
     holdCount: Int = 0
   ) = f"""
                         |{
-                        |  "id": "${sierraItemNumber.withCheckDigit}",
+                        |  "id": "${sierraItemNumber.withoutCheckDigit}",
                         |  "deleted": ${deleted},
                         |  "suppressed": ${suppressed},
                         |  "fixedFields": {
