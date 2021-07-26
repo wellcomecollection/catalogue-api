@@ -18,8 +18,6 @@ import scala.concurrent.{ExecutionContext, Future}
   *  This provides an up to date view on whether a hold
   *  can be placed on an item.
   *
-  *  @param sierraService
-  *  @param executionContext
   */
 class SierraItemUpdater(sierraService: SierraService)(
   implicit executionContext: ExecutionContext
@@ -36,9 +34,6 @@ class SierraItemUpdater(sierraService: SierraService)(
     *  only have one PhysicalLocation, so we update it if
     *  we find it.
     *
-    *  @param item
-    *  @param accessCondition
-    *  @return
     */
   private def updateAccessCondition(
     item: Item[IdState.Identified],
