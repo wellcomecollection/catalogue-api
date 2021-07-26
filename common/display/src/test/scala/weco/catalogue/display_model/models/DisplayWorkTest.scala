@@ -218,26 +218,26 @@ class DisplayWorkTest
     // Taken from here:
     // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
     implicit val arbInstant: Arbitrary[Instant] =
-    Arbitrary {
-      for {
-        millis <- chooseNum(
-          Instant.MIN.getEpochSecond,
-          Instant.MAX.getEpochSecond
-        )
-        nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
-      } yield {
-        Instant.ofEpochMilli(millis).plusNanos(nanos)
+      Arbitrary {
+        for {
+          millis <- chooseNum(
+            Instant.MIN.getEpochSecond,
+            Instant.MAX.getEpochSecond
+          )
+          nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
+        } yield {
+          Instant.ofEpochMilli(millis).plusNanos(nanos)
+        }
       }
-    }
 
     // We have a rule that says SourceIdentifier isn't allowed to contain whitespace,
     // but sometimes scalacheck will happen to generate such a string, which breaks
     // tests in CI.  This generator is meant to create SourceIdentifiers that
     // don't contain whitespace.
     implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
-    Arbitrary {
-      createSourceIdentifier
-    }
+      Arbitrary {
+        createSourceIdentifier
+      }
 
     implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
       Arbitrary {
@@ -249,7 +249,8 @@ class DisplayWorkTest
       Arbitrary {
         Language(
           id = randomAlphanumeric(length = 3),
-          label = randomAlphanumeric())
+          label = randomAlphanumeric()
+        )
       }
   }
 
@@ -257,7 +258,6 @@ class DisplayWorkTest
     import ScalaCheckWorkImplicits._
 
     forAll { work: Work.Visible[WorkState.Indexed] =>
-
       val displayWork = DisplayWork(work, includes = WorksIncludes.none)
 
       displayWork.production shouldNot be(defined)
