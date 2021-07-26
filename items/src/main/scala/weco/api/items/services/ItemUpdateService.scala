@@ -39,11 +39,10 @@ class ItemUpdateService(
     sierraService
       .getAccessCondition(srcId)
       .map {
-        case Right(Some(accessCondition)) =>
+        case Right(accessCondition) =>
           item.copy(
             locations = updateAccessCondition(item, accessCondition)
           )
-        case Right(_) => item
         case Left(err) =>
           error(msg = f"Couldn't refresh item: ${item.id} got error $err")
           item
