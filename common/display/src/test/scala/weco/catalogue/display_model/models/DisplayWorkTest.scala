@@ -208,11 +208,16 @@ class DisplayWorkTest
     )
   }
 
-  // We use this for the scalacheck of the java.time.Instant type
-  // We could just import the library, but I might wait until we need more
-  // Taken from here:
-  // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
-  implicit val arbInstant: Arbitrary[Instant] =
+  // ScalaCheck generates a Work by deconstructing it and
+  // implicitly providing random data for Primitive types.
+  // Where necessary to adhere to internal restrictions
+  // data for a type can be provided as in this object.
+  object ScalaCheckWorkImplicits {
+    // We use this for the scalacheck of the java.time.Instant type
+    // We could just import the library, but I might wait until we need more
+    // Taken from here:
+    // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
+    implicit val arbInstant: Arbitrary[Instant] =
     Arbitrary {
       for {
         millis <- chooseNum(
@@ -225,22 +230,34 @@ class DisplayWorkTest
       }
     }
 
-  // We have a rule that says SourceIdentifier isn't allowed to contain whitespace,
-  // but sometimes scalacheck will happen to generate such a string, which breaks
-  // tests in CI.  This generator is meant to create SourceIdentifiers that
-  // don't contain whitespace.
-  implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
+    // We have a rule that says SourceIdentifier isn't allowed to contain whitespace,
+    // but sometimes scalacheck will happen to generate such a string, which breaks
+    // tests in CI.  This generator is meant to create SourceIdentifiers that
+    // don't contain whitespace.
+    implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
     Arbitrary {
       createSourceIdentifier
     }
 
-  implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
-    Arbitrary {
-      createCanonicalId
-    }
+    implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
+      Arbitrary {
+        createCanonicalId
+      }
+
+    // We have a rule that says language codes should be exactly 3 characters long
+    implicit val arbitraryLanguage: Arbitrary[Language] =
+      Arbitrary {
+        Language(
+          id = randomAlphanumeric(length = 3),
+          label = randomAlphanumeric())
+      }
+  }
 
   it("does not extract includes set to false") {
+    import ScalaCheckWorkImplicits._
+
     forAll { work: Work.Visible[WorkState.Indexed] =>
+
       val displayWork = DisplayWork(work, includes = WorksIncludes.none)
 
       displayWork.production shouldNot be(defined)
