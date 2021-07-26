@@ -135,7 +135,7 @@ class ItemUpdateServiceTest
     }
   }
 
-  it("detects if the item updater returns inconsistent results") {
+  it("detects if the item updater returns items with differing IDs") {
     def badUpdate(items: Seq[Item[IdState.Identified]]) = items.tail
 
     val itemUpdater = new DummyItemUpdater(badUpdate)
