@@ -2,7 +2,11 @@ package weco.api.stacks.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
+import weco.api.stacks.http.{
+  SierraItemDataEntries,
+  SierraItemLookupError,
+  SierraSource
+}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{
@@ -34,17 +38,25 @@ class SierraService(
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  def getAccessCondition(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[SierraItemLookupError, AccessCondition]] = {
-    val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
-
+  def getAccessConditions(
+    itemNumbers: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, AccessCondition]] = {
     for {
-      itemEither <- sierraSource.lookupItem(itemNumber)
-      accessCondition = itemEither.map { item =>
-        item.getAccessCondition(itemNumber)
+      itemEither <- sierraSource.lookupItemEntries(itemNumbers)
+
+      accessConditions = itemEither match {
+        case Right(SierraItemDataEntries(_, _, entries)) =>
+          entries.map(item => item.id -> item.getAccessCondition).toMap
+        case Left(
+            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+            ) =>
+          warn(s"Item lookup missing items: ${missingItems}")
+          itemsReturned.map(item => item.id -> item.getAccessCondition).toMap
+        case Left(itemLookupError) =>
+          error(s"Item lookup failed: ${itemLookupError}")
+          Map.empty[SierraItemNumber, AccessCondition]
       }
-    } yield accessCondition
+    } yield accessConditions
   }
 
   def placeHold(
@@ -176,7 +188,7 @@ class SierraService(
       // Usually we won't display the "Online request" button for an item that doesn't
       // pass the rules for requesting.  We could hit this branch if the data has been
       // updated in Sierra to prevent requesting, but this hasn't updated in the API yet.
-      case Right(itemData) if !itemData.allowsOnlineRequesting(item) =>
+      case Right(itemData) if !itemData.allowsOnlineRequesting =>
         warn(
           s"User tried to place a hold on item $item, which is blocked by rules for requesting"
         )
@@ -195,13 +207,15 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(id: SierraItemNumber): AccessCondition = {
+    def getAccessCondition: AccessCondition = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
           .get("79")
           .flatMap(_.display)
-          .flatMap(name => SierraPhysicalLocationType.fromName(id, name))
+          .flatMap(
+            name => SierraPhysicalLocationType.fromName(itemData.id, name)
+          )
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking. We can use placeholder data here.
@@ -215,8 +229,8 @@ class SierraService(
       ac
     }
 
-    def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
-      val accessCondition = getAccessCondition(id)
+    def allowsOnlineRequesting: Boolean = {
+      val accessCondition = getAccessCondition
       accessCondition.method == AccessMethod.OnlineRequest
     }
   }

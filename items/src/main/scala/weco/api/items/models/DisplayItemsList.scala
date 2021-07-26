@@ -17,7 +17,6 @@ case class DisplayItemsList(
 )
 
 object DisplayItemsList {
-
   def apply(items: Seq[Item[IdState.Minted]]): DisplayItemsList = {
     val displayItems: Seq[DisplayItem] =
       items.map(item => DisplayItem(item = item, includesIdentifiers = true))

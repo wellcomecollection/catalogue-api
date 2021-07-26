@@ -11,7 +11,10 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumb
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.catalogue.source_model.sierra.identifiers.{
+  SierraItemNumber,
+  SierraPatronNumber
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,8 +29,8 @@ class SierraServiceTest
     with SierraGenerators {
 
   describe("SierraService") {
-    describe("getAccessCondition") {
-      it("gets an AccessCondition") {
+    describe("getAccessConditions") {
+      it("gets AccessConditions") {
 
         val responses = Seq(
           (
@@ -71,18 +74,114 @@ class SierraServiceTest
             }
           )
 
-          val identifier = SourceIdentifier(
-            identifierType = SierraSystemNumber,
-            value = "i16010176",
-            ontologyType = "Item"
-          )
-
-          val future = service.getAccessCondition(identifier)
+          val itemNumber = SierraItemNumber("1601017")
+          val future = service.getAccessConditions(Seq(itemNumber))
 
           whenReady(future) {
-            _.value shouldBe AccessCondition(
-              method = AccessMethod.OnlineRequest
+            _ shouldBe Map(
+              itemNumber ->
+                AccessCondition(method = AccessMethod.OnlineRequest)
             )
+          }
+        }
+      }
+
+      it("if some entries are missing, returns the available AccessConditions") {
+        val responses = Seq(
+          (
+            HttpRequest(
+              uri = Uri(
+                "http://sierra:1234/v5/items?id=1601017,1234567&fields=deleted,fixedFields,holdCount,suppressed"
+              )
+            ),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "total": 1,
+                  |  "start": 0,
+                  |  "entries": [
+                  |    {
+                  |      "id": "1601017",
+                  |      "deleted": false,
+                  |      "suppressed": false,
+                  |      "fixedFields": {
+                  |        "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                  |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                  |      },
+                  |      "holdCount": 0
+                  |    }
+                  |  ]
+                  |}
+                  |""".stripMargin
+              )
+            )
+          )
+        )
+
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            client = new MemoryHttpClient(responses) with HttpGet
+            with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
+            }
+          )
+
+          val itemNumber = SierraItemNumber("1601017")
+          val missingItemNumber = SierraItemNumber("1234567")
+
+          val future =
+            service.getAccessConditions(Seq(itemNumber, missingItemNumber))
+
+          whenReady(future) {
+            _ shouldBe Map(
+              itemNumber ->
+                AccessCondition(method = AccessMethod.OnlineRequest)
+            )
+          }
+        }
+      }
+
+      it("if all entries are missing, returns no AccessConditions") {
+        val responses = Seq(
+          (
+            HttpRequest(
+              uri = Uri(
+                "http://sierra:1234/v5/items?id=1601017&fields=deleted,fixedFields,holdCount,suppressed"
+              )
+            ),
+            HttpResponse(
+              status = StatusCodes.NotFound,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 107,
+                  |  "specificCode": 0,
+                  |  "httpStatus": 404,
+                  |  "name": "Record not found"
+                  |}
+                  |""".stripMargin
+              )
+            )
+          )
+        )
+
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            client = new MemoryHttpClient(responses) with HttpGet
+            with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
+            }
+          )
+
+          val itemNumber = SierraItemNumber("1601017")
+          val future = service.getAccessConditions(Seq(itemNumber))
+
+          whenReady(future) {
+            _ shouldBe Map.empty
           }
         }
       }

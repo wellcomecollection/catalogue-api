@@ -1,61 +1,110 @@
 package weco.api.items.services
 
-import grizzled.slf4j.Logging
-import weco.api.stacks.services.SierraService
-import weco.catalogue.internal_model.identifiers.{
-  IdState,
-  IdentifierType,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  PhysicalLocation
-}
+import weco.catalogue.internal_model.identifiers.{IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/** A service for updating the items on a Work
+  *
+  *  @param itemUpdaters a list of ItemUpdater for updating items of particular IdentifierType
+  */
 class ItemUpdateService(
-  sierraService: SierraService
-)(implicit executionContext: ExecutionContext)
-    extends Logging {
+  itemUpdaters: List[ItemUpdater]
+)(implicit executionContext: ExecutionContext) {
 
-  private def isSierraId(sourceIdentifier: SourceIdentifier) =
-    sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
+  type ItemsWithIndex = Seq[(Item[IdState.Identified], Int)]
 
-  private def updateAccessCondition(
-    item: Item[IdState.Minted],
-    accessCondition: AccessCondition
-  ) =
-    item.locations.map {
-      case physicalLocation: PhysicalLocation =>
-        physicalLocation.copy(
-          accessConditions = List(accessCondition)
-        )
-      case location => location
+  private final val itemUpdatesMap = itemUpdaters
+    .map(updater => updater.identifierType -> updater)
+    .toMap
+
+  def getSrcId(item: Item[IdState.Identified]): SourceIdentifier =
+    item match {
+      case Item(IdState.Identified(_, srcId, _), _, _, _) => srcId
     }
 
-  private def refreshItem(srcId: SourceIdentifier, item: Item[IdState.Minted]) =
-    sierraService
-      .getAccessCondition(srcId)
-      .map {
-        case Right(accessCondition) =>
-          item.copy(
-            locations = updateAccessCondition(item, accessCondition)
-          )
-        case Left(err) =>
-          error(msg = f"Couldn't refresh item: ${item.id} got error $err")
-          item
-      }
+  /** Updates a tuple of Item and index preserving the original index
+    *
+    *  @return a list of updated items with their index maintained
+    */
+  private def preservedOrderItemsUpdate(
+    itemsWithIndex: ItemsWithIndex,
+    updateFunction: Seq[Item[IdState.Identified]] => Future[
+      Seq[Item[IdState.Identified]]
+    ]
+  ): Future[ItemsWithIndex] = {
+    val items = itemsWithIndex.map(_._1)
 
-  def updateItems(
-    work: Work.Visible[WorkState.Indexed]
-  ): Future[List[Item[IdState.Minted]]] = Future.sequence {
-    work.data.items.map {
-      case item @ Item(IdState.Identified(_, srcId, _), _, _, _)
-          if isSierraId(srcId) =>
-        refreshItem(srcId, item)
-      case item => Future(item)
+    updateFunction(items).map { updatedItems =>
+      // Construct a lookup from SourceIdentifier -> index
+      val updatedItemsWithIndex = itemsWithIndex
+        .map {
+          case (item, index) => getSrcId(item) -> index
+        }
+        .flatMap {
+          // Add the correct index for an item by SourceIdentifier
+          case (srcId, index) =>
+            updatedItems.find(_.id.sourceIdentifier == srcId).map {
+              updatedItem =>
+                (updatedItem, index)
+            }
+        }
+
+      // Ensure that the update function has updated the correct number of results
+      require(
+        updatedItemsWithIndex.size == itemsWithIndex.size,
+        "Inconsistent results updating items: " +
+          s"Received: ${itemsWithIndex}, updated: ${updatedItemsWithIndex}"
+      )
+
+      updatedItemsWithIndex
     }
   }
+
+  /** Updates the Identified items on a work
+    *
+    *  Uses an ItemUpdater to update Identified items
+    *  where the ItemUpdater acts on a specific IdentifierType
+    *
+    *  @return a sequence of updated items
+    */
+  def updateItems(
+    work: Work.Visible[WorkState.Indexed]
+  ): Future[Seq[Item[IdState.Minted]]] =
+    Future.sequence {
+      // Group our results by IdentifierType or where Unidentifiable
+      work.data.items.zipWithIndex.groupBy {
+        case (Item(IdState.Identified(_, srcId, _), _, _, _), _) =>
+          Some(srcId.identifierType)
+        case (Item(IdState.Unidentifiable, _, _, _), _) => None
+      } map {
+        /* To satisfy the compiler when calling preserveOrder we need to add a type for itemsWithIndex
+         * The above groupBy ensures ONLY IdState.Identified is handed here, unknown to the compiler
+         * A further complication of type erasure means that we must acknowledge that Seq[_] is unchecked
+         */
+        case (
+            Some(identifierType),
+            itemsWithIndex: Seq[(Item[IdState.Identified], Int) @unchecked]
+            ) =>
+          // Look for an ItemUpdater for this IdentifierType and update
+          itemUpdatesMap
+            .get(identifierType)
+            .map(
+              updater =>
+                preservedOrderItemsUpdate(
+                  itemsWithIndex = itemsWithIndex,
+                  updateFunction = updater.updateItems
+                )
+            )
+            .getOrElse(Future(itemsWithIndex))
+        case (None, itemsWithIndex) =>
+          Future(itemsWithIndex)
+      }
+      // unzipWithIndex
+    } map (_.flatten.toList.sortBy {
+      case (_, index) => index
+    } map {
+      case (item, _) => item
+    })
 }
