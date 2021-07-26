@@ -80,8 +80,8 @@ class SierraServiceTest
           val future = service.getAccessCondition(identifier)
 
           whenReady(future) {
-            _.value shouldBe Some(
-              AccessCondition(method = AccessMethod.OnlineRequest)
+            _.value shouldBe AccessCondition(
+              method = AccessMethod.OnlineRequest
             )
           }
         }

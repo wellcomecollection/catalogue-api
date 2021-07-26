@@ -36,7 +36,7 @@ class SierraService(
 
   def getAccessCondition(
     sourceIdentifier: SourceIdentifier
-  ): Future[Either[SierraItemLookupError, Option[AccessCondition]]] = {
+  ): Future[Either[SierraItemLookupError, AccessCondition]] = {
     val itemNumber = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     for {
@@ -195,7 +195,7 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition(id: SierraItemNumber): Option[AccessCondition] = {
+    def getAccessCondition(id: SierraItemNumber): AccessCondition = {
 
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
@@ -216,11 +216,8 @@ class SierraService(
     }
 
     def allowsOnlineRequesting(id: SierraItemNumber): Boolean = {
-      getAccessCondition(id) match {
-        case Some(ac) if ac.method == AccessMethod.OnlineRequest =>
-          true
-        case _ => false
-      }
+      val accessCondition = getAccessCondition(id)
+      accessCondition.method == AccessMethod.OnlineRequest
     }
   }
 

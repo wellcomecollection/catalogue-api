@@ -16,7 +16,7 @@ class ImagesIncludesTest
       .title("Apple agitator")
       .languages(
         List(
-          Language(label = "English", id = "en"),
+          Language(label = "English", id = "eng"),
           Language(label = "Turkish", id = "tur")
         )
       )
