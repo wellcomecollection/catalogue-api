@@ -1,18 +1,15 @@
 package weco.api.items.services
 
-import weco.catalogue.internal_model.identifiers.{
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.{Item, Work, WorkState}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /** A service for updating the items on a Work
- *
- *  @param itemUpdaters a list of ItemUpdater for updating items of particular IdentifierType
- *  @param executionContext
- */
+  *
+  *  @param itemUpdaters a list of ItemUpdater for updating items of particular IdentifierType
+  *  @param executionContext
+  */
 class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
 )(implicit executionContext: ExecutionContext) {
@@ -29,11 +26,11 @@ class ItemUpdateService(
     }
 
   /** Updates a tuple of Item and index preserving the original index
-   *
-   *  @param itemsWithIndex
-   *  @param updateFunction
-   *  @return a list of updated items with their index maintained
-   */
+    *
+    *  @param itemsWithIndex
+    *  @param updateFunction
+    *  @return a list of updated items with their index maintained
+    */
   private def preservedOrderItemsUpdate(
     itemsWithIndex: ItemsWithIndex,
     updateFunction: Seq[Item[IdState.Identified]] => Future[
@@ -43,20 +40,23 @@ class ItemUpdateService(
     val items = itemsWithIndex.map(_._1)
 
     updateFunction(items).map { updatedItems =>
-
       // Construct a lookup from SourceIdentifier -> index
-      val updatedItemsWithIndex = itemsWithIndex.map {
-        case (item, index) => getSrcId(item) -> index
-      }.flatMap {
-        // Add the correct index for an item by SourceIdentifier
-        case (srcId, index) =>
-          updatedItems.find(_.id.sourceIdentifier == srcId).map { updatedItem =>
-            (updatedItem, index)
-          }
-      }
+      val updatedItemsWithIndex = itemsWithIndex
+        .map {
+          case (item, index) => getSrcId(item) -> index
+        }
+        .flatMap {
+          // Add the correct index for an item by SourceIdentifier
+          case (srcId, index) =>
+            updatedItems.find(_.id.sourceIdentifier == srcId).map {
+              updatedItem =>
+                (updatedItem, index)
+            }
+        }
 
       // Ensure that the update function has updated the correct number of results
-      require(updatedItemsWithIndex.size == itemsWithIndex.size,
+      require(
+        updatedItemsWithIndex.size == itemsWithIndex.size,
         "Inconsistent results updating items: " +
           s"Received: ${itemsWithIndex}, updated: ${updatedItemsWithIndex}"
       )
@@ -66,13 +66,13 @@ class ItemUpdateService(
   }
 
   /** Updates the Identified items on a work
-   *
-   *  Uses an ItemUpdater to update Identified items
-   *  where the ItemUpdater acts on a specific IdentifierType
-   *
-   *  @param work
-   *  @return a sequence of updated items
-   */
+    *
+    *  Uses an ItemUpdater to update Identified items
+    *  where the ItemUpdater acts on a specific IdentifierType
+    *
+    *  @param work
+    *  @return a sequence of updated items
+    */
   def updateItems(
     work: Work.Visible[WorkState.Indexed]
   ): Future[Seq[Item[IdState.Minted]]] =
@@ -94,9 +94,12 @@ class ItemUpdateService(
           // Look for an ItemUpdater for this IdentifierType and update
           itemUpdatesMap
             .get(identifierType)
-            .map(updater => preservedOrderItemsUpdate(
-              itemsWithIndex = itemsWithIndex,
-              updateFunction = updater.updateItems)
+            .map(
+              updater =>
+                preservedOrderItemsUpdate(
+                  itemsWithIndex = itemsWithIndex,
+                  updateFunction = updater.updateItems
+                )
             )
             .getOrElse(Future(itemsWithIndex))
         case (None, itemsWithIndex) =>

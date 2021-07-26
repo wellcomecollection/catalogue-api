@@ -14,13 +14,13 @@ import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
- *
- *  This provides an up to date view on whether a hold
- *  can be placed on an item.
- *
- *  @param sierraService
- *  @param executionContext
- */
+  *
+  *  This provides an up to date view on whether a hold
+  *  can be placed on an item.
+  *
+  *  @param sierraService
+  *  @param executionContext
+  */
 class SierraItemUpdater(sierraService: SierraService)(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
@@ -29,17 +29,17 @@ class SierraItemUpdater(sierraService: SierraService)(
   val identifierType = IdentifierType.SierraSystemNumber
 
   /** Updates the AccessCondition for a single item
-   *
-   *  We are interested in updating the status of an Item
-   *  a library patron can request. These are items with a
-   *  PhysicalLocation. In data sourced from Sierra we can
-   *  only have one PhysicalLocation, so we update it if
-   *  we find it.
-   *
-   *  @param item
-   *  @param accessCondition
-   *  @return
-   */
+    *
+    *  We are interested in updating the status of an Item
+    *  a library patron can request. These are items with a
+    *  PhysicalLocation. In data sourced from Sierra we can
+    *  only have one PhysicalLocation, so we update it if
+    *  we find it.
+    *
+    *  @param item
+    *  @param accessCondition
+    *  @return
+    */
   private def updateAccessCondition(
     item: Item[IdState.Identified],
     accessCondition: AccessCondition
