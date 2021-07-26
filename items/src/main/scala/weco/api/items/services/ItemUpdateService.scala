@@ -24,7 +24,6 @@ class ItemUpdateService(
       case Item(IdState.Identified(_, srcId, _), _, _, _) => srcId
     }
 
-
   /** Updates a tuple of Item and index preserving the original index
     *
     *  @return a list of updated items with their index maintained
