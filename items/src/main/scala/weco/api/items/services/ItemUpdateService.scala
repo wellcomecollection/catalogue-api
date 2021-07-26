@@ -101,6 +101,10 @@ class ItemUpdateService(
         case (None, itemsWithIndex) =>
           Future(itemsWithIndex)
       }
-      // unzipWithIndex
-    } map (_.flatten.toList.sortBy(_._2).map(_._1))
+    // unzipWithIndex
+    } map (_.flatten.toList.sortBy {
+      case (_,index) => index
+    } map {
+      case (item,_) => item
+    })
 }
