@@ -208,8 +208,10 @@ class DisplayWorkTest
     )
   }
 
-  // ScalaCheck generates a Work by deconstructing it and
-  // implicitly providing random data for Primitive types.
+  // ScalaCheck generates a Work by using reflection to
+  // implicitly provide random data for its constituent
+  // types.
+  //
   // Where necessary to adhere to internal restrictions
   // data for a type can be provided as in this object.
   object ScalaCheckWorkImplicits {
