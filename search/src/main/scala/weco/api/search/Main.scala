@@ -24,7 +24,6 @@ object Main extends WellcomeTypesafeApp {
 
     Tracing.init(config)
     val elasticClient = ElasticBuilder.buildElasticClient(config)
-
     val elasticConfig = ElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)

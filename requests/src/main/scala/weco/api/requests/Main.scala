@@ -2,6 +2,7 @@ package weco.api.requests
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
+import weco.Tracing
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
@@ -17,11 +18,14 @@ import weco.http.monitoring.HttpMetrics
 import scala.concurrent.ExecutionContext
 
 object Main extends WellcomeTypesafeApp {
+
   runWithConfig { config: Config =>
     implicit val asMain: ActorSystem =
       AkkaBuilder.buildActorSystem()
     implicit val ec: ExecutionContext =
       AkkaBuilder.buildExecutionContext()
+
+    Tracing.init(config)
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
