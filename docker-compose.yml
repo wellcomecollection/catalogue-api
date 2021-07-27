@@ -8,3 +8,8 @@ services:
     image: diff_tool
     build:
       context: ./diff_tool
+  internal_model_tool:
+    image: internal_model_tool
+    build:
+      context: ./
+      dockerfile: ./internal_model_tool/Dockerfile

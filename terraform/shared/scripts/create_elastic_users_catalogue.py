@@ -40,7 +40,8 @@ SERVICES = {
     "search": ["catalogue_read"],
     "items": ["catalogue_read"],
     "diff_tool": ["catalogue_read"],
-    "replication_manager": ["catalogue_read", "catalogue_manage_ccr"]
+    "replication_manager": ["catalogue_read", "catalogue_manage_ccr"],
+    "internal_model_tool": ["catalogue_read"],
 }
 
 
