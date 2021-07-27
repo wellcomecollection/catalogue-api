@@ -5,12 +5,13 @@ an Elastic Cloud cluster immediately after it's been created.
 """
 
 import functools
-import secrets
 
 import boto3
 import click
 
 from elasticsearch import Elasticsearch
+
+from users import put_user_safely
 
 SERVICES = {
     "requests": ["catalogue_read"],
@@ -86,17 +87,9 @@ if __name__ == '__main__':
     # Create usernames
     newly_created_usernames = []
     for service_name, roles in SERVICES.items():
-        service_password = secrets.token_hex()
-
-        es.security.put_user(
-            username=service_name,
-            body={
-                "password": service_password,
-                "roles": roles
-            }
-        )
-
-        newly_created_usernames.append((service_name, service_password))
+        user = put_user_safely(es, service_name, roles)
+        if user:
+            newly_created_usernames.append(user)
 
     # Store secrets
     for service_name, service_password in newly_created_usernames:

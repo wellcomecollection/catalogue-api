@@ -5,13 +5,14 @@ an Elastic Cloud cluster immediately after it's been created.
 """
 
 import functools
-import secrets
 
 import boto3
 import click
 
 import elasticsearch
 from elasticsearch import Elasticsearch
+
+from users import put_user_safely
 
 WORK_INDEX_PATTERN = "works-*"
 IMAGE_INDEX_PATTERN = "images-*"
@@ -106,26 +107,17 @@ if __name__ == '__main__':
 
     es = Elasticsearch(endpoint, http_auth=(username, password))
 
-    # Create roles
     for role_name, index_privileges in ROLES.items():
         es.security.put_role(
             role_name,
             body=index_privileges,
         )
 
-    # Create usernames
     newly_created_usernames = []
     for service_name, roles in SERVICES.items():
-        service_password = secrets.token_hex()
-        es.security.put_user(
-            username=service_name,
-            body={
-                "password": service_password,
-                "roles": roles
-            }
-        )
-
-        newly_created_usernames.append((service_name, service_password))
+        user = put_user_safely(es, service_name, roles)
+        if user:
+            newly_created_usernames.append(user)
 
     # Store secrets
     for service_name, service_password in newly_created_usernames:
