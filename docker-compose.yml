@@ -12,3 +12,4 @@ services:
     image: internal_model_tool
     build:
       context: ./
+      dockerfile: ./internal_model_tool/Dockerfile
