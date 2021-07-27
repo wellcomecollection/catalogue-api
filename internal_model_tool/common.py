@@ -40,23 +40,28 @@ def get_remote_latest_internal_model(session, date):
 
 
 def get_remote_meta(session, date):
-    sm = session.client('secretsmanager')
-    host = sm.get_secret_value(SecretId='elasticsearch/catalogue_api/public_host')['SecretString']
-    username = sm.get_secret_value(SecretId='elasticsearch/catalogue_api/search/username')['SecretString']
-    password = sm.get_secret_value(SecretId='elasticsearch/catalogue_api/search/password')['SecretString']
+    sm = session.client("secretsmanager")
+    host = sm.get_secret_value(SecretId="elasticsearch/catalogue_api/public_host")[
+        "SecretString"
+    ]
+    username = sm.get_secret_value(
+        SecretId="elasticsearch/catalogue_api/search/username"
+    )["SecretString"]
+    password = sm.get_secret_value(
+        SecretId="elasticsearch/catalogue_api/search/password"
+    )["SecretString"]
     index = f"works-indexed-{date}"
     auth = base64.b64encode(f"{username}:{password}".encode()).decode("utf-8")
     request = Request(f"https://{host}:9243/{index}/_mapping")
     request.add_header("Authorization", f"Basic {auth}")
-    meta = json.loads(urlopen(request).read())[f"works-indexed-{date}"]["mappings"]["_meta"]
+    meta = json.loads(urlopen(request).read())[f"works-indexed-{date}"]["mappings"][
+        "_meta"
+    ]
     return meta
 
 
 def get_local_internal_model():
-    deps_file = open(
-        "../project/Dependencies.scala",
-        "r",
-    )
+    deps_file = open("../project/Dependencies.scala", "r")
     config_text = deps_file.read()
     deps_file.close()
     model_version = re.findall('val internalModel = "(.*)"', config_text)[0]
@@ -72,4 +77,3 @@ def set_local_internal_model(latest_version):
                 out_file.write(f'    val internalModel = "{latest_version}"\n')
             else:
                 out_file.write(line)
-
