@@ -7,7 +7,7 @@ LABEL description = "A Docker image for deploying our Docker images to AWS"
 
 WORKDIR /usr/src/app
 
-ADD requirements.txt requirements.txt
+ADD ./internal_model_tool/requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 ADD ./internal_model_tool/common.py common.py
