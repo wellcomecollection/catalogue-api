@@ -150,8 +150,7 @@ object CatalogueDependencies {
       WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
-      WellcomeDependencies.httpTypesafeLibrary ++
-      ExternalDependencies.akkaHttpDependencies
+      WellcomeDependencies.httpTypesafeLibrary
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
