@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-ADD common.json common.json
+ADD common.py common.py
 ADD check_compatibility.py check_compatibility.py
 
 CMD ["/usr/local/bin/python3", "/usr/src/app/check_compatibility.py"]
