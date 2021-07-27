@@ -27,12 +27,12 @@ def put_user_safely(es, username, roles):
     except elasticsearch.exceptions.NotFoundError:
         print(f"user: {username} missing, creating...")
         service_password = secrets.token_hex()
-        # es.security.put_user(
-        #     username=username,
-        #     body={
-        #         "password": service_password,
-        #         "roles": roles
-        #     }
-        # )
+        es.security.put_user(
+            username=username,
+            body={
+                "password": service_password,
+                "roles": roles
+            }
+        )
         print(f"{username} created")
         return username, service_password
