@@ -21,4 +21,4 @@ if __name__ == "__main__":
     date = get_local_date()
     latest_internal_model = get_remote_latest_internal_model(catalogue_session, date)
     set_local_internal_model(latest_internal_model)
-    print(f"set dependency to {set_local_internal_model}")
+    print(f"set dependency to {latest_internal_model}")
