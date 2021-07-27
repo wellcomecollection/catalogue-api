@@ -1,6 +1,18 @@
 steps:
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
+  - label: "Internal model tool: check compatibility"
+#    branches: "main"
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      - docker-compose#v3.5.0:
+          run: internal_model_tool
+          env:
+            - AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY
+            - AWS_SESSION_TOKEN
+            - AWS_REGION=eu-west-1
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"
