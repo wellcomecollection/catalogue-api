@@ -14,11 +14,8 @@ from common import (
 )
 
 if __name__ == "__main__":
-    session = get_session(role_arn="arn:aws:iam::760097843905:role/platform-read_only")
-    catalogue_session = get_session(
-        role_arn="arn:aws:iam::756629837203:role/catalogue-developer"
-    )
+    session = get_session(role_arn="arn:aws:iam::756629837203:role/catalogue-ci")
     date = get_local_date()
-    latest_internal_model = get_remote_latest_internal_model(catalogue_session, date)
+    latest_internal_model = get_remote_latest_internal_model(session, date)
     set_local_internal_model(latest_internal_model)
     print(f"set dependency to {latest_internal_model}")

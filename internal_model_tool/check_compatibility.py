@@ -13,14 +13,11 @@ from common import (
 
 
 if __name__ == "__main__":
-    session = get_session(role_arn="arn:aws:iam::760097843905:role/platform-read_only")
-    catalogue_session = get_session(
-        role_arn="arn:aws:iam::756629837203:role/catalogue-developer"
-    )
+    session = get_session(role_arn="arn:aws:iam::756629837203:role/catalogue-ci")
     date = get_local_date()
     internal_model = get_local_internal_model()
     version, hash = internal_model.split(".")
-    meta = get_remote_meta(catalogue_session, date)
+    meta = get_remote_meta(session, date)
     meta_key = f"model.versions.{version}"
     is_compatible = meta_key in meta and meta[meta_key] == hash
     if is_compatible:
