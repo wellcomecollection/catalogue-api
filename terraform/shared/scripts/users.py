@@ -6,6 +6,8 @@ This method checks if a user exists.
 Exists: it updates the roles if needed with no password update, returns None
 Missing: creates the user with a new password , returns username, password
 """
+
+
 def put_user_safely(es, username, roles):
     try:
         data = es.security.get_user(username=username)
