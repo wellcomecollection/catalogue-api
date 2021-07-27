@@ -211,3 +211,20 @@ resource "aws_secretsmanager_secret" "service-replication_manager-password" {
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 }
+
+
+# Internal model tool credentials
+
+resource "aws_secretsmanager_secret" "service-internal_model_tool-username" {
+  name = "elasticsearch/catalogue_api/internal_model_tool/username"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}
+
+resource "aws_secretsmanager_secret" "service-internal_model_tool-password" {
+  name = "elasticsearch/catalogue_api/internal_model_tool/password"
+
+  description = "Config secret populated by Terraform"
+  tags        = local.default_tags
+}

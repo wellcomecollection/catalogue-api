@@ -45,10 +45,10 @@ def get_remote_meta(session, date):
         "SecretString"
     ]
     username = sm.get_secret_value(
-        SecretId="elasticsearch/catalogue_api/search/username"
+        SecretId="elasticsearch/catalogue_api/internal_model_tool/username"
     )["SecretString"]
     password = sm.get_secret_value(
-        SecretId="elasticsearch/catalogue_api/search/password"
+        SecretId="elasticsearch/catalogue_api/internal_model_tool/password"
     )["SecretString"]
     index = f"works-indexed-{date}"
     auth = base64.b64encode(f"{username}:{password}".encode()).decode("utf-8")
