@@ -12,6 +12,7 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
+            - AWS_DEFAULT_REGION=eu-west-1
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"
