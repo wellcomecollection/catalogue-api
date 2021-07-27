@@ -48,6 +48,6 @@ if __name__ == '__main__':
         password = sys.argv[2]
         roles = sys.argv[3].split(",")
     except IndexError:
-        sys.exit(f"Usage: {__file__} <USERNAME> <PASSWORD>")
+        sys.exit(f"Usage: {__file__} <USERNAME> <PASSWORD> <ROLES>")
 
     put_user_safely(username, password, roles)
