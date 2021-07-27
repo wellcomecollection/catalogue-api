@@ -230,7 +230,7 @@ resource "aws_secretsmanager_secret" "service-internal_model_tool-password" {
 }
 
 module "test_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "test_service"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 }
