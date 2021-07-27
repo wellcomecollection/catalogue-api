@@ -7,7 +7,7 @@ import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.stacks.services.builders.SierraServiceBuilder
-import weco.api.search.models.ApiConfig
+import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
 import weco.api.stacks.services.elastic.ElasticItemLookup
@@ -20,9 +20,9 @@ import scala.concurrent.ExecutionContext
 object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
-    implicit val asMain: ActorSystem =
+    implicit val actorSystem: ActorSystem =
       AkkaBuilder.buildActorSystem()
-    implicit val ec: ExecutionContext =
+    implicit val executionContext: ExecutionContext =
       AkkaBuilder.buildExecutionContext()
 
     Tracing.init(config)
@@ -30,6 +30,9 @@ object Main extends WellcomeTypesafeApp {
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
+    val elasticConfig = ElasticConfig()
+
+    CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
     val router: RequestsApi = new RequestsApi(
       sierraService = SierraServiceBuilder.build(config),
