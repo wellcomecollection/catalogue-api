@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "29.1.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "30.1.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "4659.6171f9f14c5f8164c670b03f5ba97701478036cb"
+    val internalModel = "5021.6fbf97350117e797abb25ab41f1a00d20d7899e5"
   }
 
   val internalModel: Seq[ModuleID] = library(
@@ -132,7 +132,6 @@ object ExternalDependencies {
   val secretsDependencies = Seq(
     "software.amazon.awssdk" % "secretsmanager" % versions.aws2
   )
-
 }
 
 object CatalogueDependencies {

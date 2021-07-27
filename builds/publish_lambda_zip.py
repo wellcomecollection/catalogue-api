@@ -124,4 +124,14 @@ if __name__ == "__main__":
     name = os.path.basename(key)
     filename = build_lambda_local(path=path, name=name)
 
-    client.upload_file(Bucket=bucket, Filename=filename, Key=key)
+    client.upload_file(
+        Bucket=bucket,
+        Filename=filename,
+        Key=key,
+        ExtraArgs={
+            "Metadata": {
+                "git.remoteUrl": git("remote", "get-url", "origin"),
+                "git.commit": git("rev-parse", "HEAD"),
+            }
+        },
+    )

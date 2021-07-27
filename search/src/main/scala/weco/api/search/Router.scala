@@ -72,6 +72,9 @@ class Router(
         path("search-templates.json") {
           getSearchTemplates
         },
+        path("_elasticConfig") {
+          getElasticConfig
+        },
         pathPrefix("management") {
           concat(
             path("healthcheck") {
@@ -142,6 +145,16 @@ class Router(
       )
     )
   }
+
+  private def getElasticConfig: Route =
+    get {
+      complete(
+        Map(
+          "worksIndex" -> ElasticConfig().worksIndex.name,
+          "imagesIndex" -> ElasticConfig().imagesIndex.name
+        )
+      )
+    }
 
   def rejectionHandler =
     RejectionHandler.newBuilder

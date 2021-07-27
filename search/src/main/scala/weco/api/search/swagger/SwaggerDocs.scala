@@ -17,11 +17,11 @@ import weco.api.search.models.{
   DisplayImageAggregations,
   DisplayWorkAggregations
 }
-import weco.api.search.rest.DisplayResultList
 import weco.catalogue.display_model.models.{DisplayImage, DisplayWork}
 import weco.http.models.DisplayError
-
 import javax.ws.rs.{GET, Path}
+import weco.api.search.rest.DisplayResultList
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 

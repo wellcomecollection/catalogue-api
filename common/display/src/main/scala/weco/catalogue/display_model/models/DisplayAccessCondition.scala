@@ -11,7 +11,6 @@ case class DisplayAccessCondition(
   method: DisplayAccessMethod,
   status: Option[DisplayAccessStatus],
   terms: Option[String],
-  to: Option[String],
   note: Option[String],
   @JsonKey("type") @Schema(name = "type") ontologyType: String =
     "AccessCondition"
@@ -24,7 +23,6 @@ object DisplayAccessCondition {
       method = DisplayAccessMethod(accessCondition.method),
       status = accessCondition.status.map(DisplayAccessStatus.apply),
       terms = accessCondition.terms,
-      to = accessCondition.to,
       note = accessCondition.note
     )
 }
