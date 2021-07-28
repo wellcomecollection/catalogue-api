@@ -8,7 +8,7 @@ import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.stacks.services.builders.SierraServiceBuilder
-import weco.api.search.models.ApiConfig
+import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
 import weco.api.stacks.services.WorkLookup
@@ -21,9 +21,9 @@ import scala.concurrent.ExecutionContext
 object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
-    implicit val asMain: ActorSystem =
+    implicit val actorSystem: ActorSystem =
       AkkaBuilder.buildActorSystem()
-    implicit val ec: ExecutionContext =
+    implicit val executionContext: ExecutionContext =
       AkkaBuilder.buildExecutionContext()
 
     Tracing.init(config)
@@ -31,10 +31,14 @@ object Main extends WellcomeTypesafeApp {
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
+    val elasticConfig = ElasticConfig()
+
+    CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
     val sierraService = SierraServiceBuilder.build(config)
 
-    // To add an item updater for a new service, implement ItemUpdater and add it to the list here
+    // To add an item updater for a new service:
+    // implement ItemUpdater and add it to the list here
     val itemUpdaters = List(
       new SierraItemUpdater(sierraService)
     )

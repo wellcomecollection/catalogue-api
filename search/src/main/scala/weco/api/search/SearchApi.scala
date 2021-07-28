@@ -28,7 +28,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
-class Router(
+class SearchApi(
   elasticClient: ElasticClient,
   elasticConfig: ElasticConfig,
   queryConfig: QueryConfig,

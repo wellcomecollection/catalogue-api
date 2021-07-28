@@ -147,7 +147,10 @@ object CatalogueDependencies {
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
+      WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
+      WellcomeDependencies.monitoringLibrary ++
+      WellcomeDependencies.httpTypesafeLibrary ++
       ExternalDependencies.akkaHttpDependencies
 
   val stacksDependencies: Seq[ModuleID] =
