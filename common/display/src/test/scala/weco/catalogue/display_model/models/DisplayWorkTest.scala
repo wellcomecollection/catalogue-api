@@ -18,7 +18,6 @@ import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
 
-
 class DisplayWorkTest
     extends AnyFunSpec
     with Matchers
