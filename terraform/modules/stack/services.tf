@@ -24,9 +24,12 @@ module "search_api" {
 
   environment = {
     app_port         = local.container_ports.search
+    app_base_url     = "https://${var.external_hostname}/catalogue/v2"
     api_public_root  = "https://${var.external_hostname}/catalogue/v2"
     apm_service_name = "search-api"
     apm_environment  = var.environment_name
+
+    metrics_namespace = "search-api"
   }
 
   secrets = merge(var.es_search_secret_config, var.apm_secret_config)
