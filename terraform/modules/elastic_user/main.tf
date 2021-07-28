@@ -7,12 +7,12 @@ variable "roles" {
 }
 
 resource "aws_secretsmanager_secret" "username" {
-  name = "elasticsearch/catalogue_api/${var.service}/username"
+  name        = "elasticsearch/catalogue_api/${var.service}/username"
   description = "Config secret populated by Terraform"
 }
 
 resource "aws_secretsmanager_secret" "password" {
-  name = "elasticsearch/catalogue_api/${var.service}/password"
+  name        = "elasticsearch/catalogue_api/${var.service}/password"
   description = "Config secret populated by Terraform"
 }
 
