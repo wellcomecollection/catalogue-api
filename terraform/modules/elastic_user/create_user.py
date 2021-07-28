@@ -5,49 +5,36 @@ Exists: it updates the roles if needed with no password update, returns None
 Missing: creates the user with a new password , returns username, password
 """
 import elasticsearch
-import secrets
 import sys
+from elastic import get_es_client
 
 
-
-
-def put_user_safely(es, username, password, roles):
+def create_user(es, username, password, roles):
+    #  if a user exists, throw an error
     try:
         data = es.security.get_user(username=username)
-        print(f"user: {username} exists")
-        if data[username]["roles"] != roles:
-            print(f"user: {username} updating roles...")
-            es.security.put_user(
-                username=username,
-                body={
-                    "roles": roles
-                }
-            )
-            print(f"user: {username} roles updated")
-        else:
-            print(f"user: {username} has no role updates")
-
-        return None
-
+        if data:
+            raise Exception(f"user: {username} exists, exiting")
     except elasticsearch.exceptions.NotFoundError:
         print(f"user: {username} missing, creating...")
-        es.security.put_user(
-            username=username,
-            body={
-                "password": password,
-                "roles": roles
-            }
-        )
-        print(f"{username} created")
-        return username, password
+
+    es.security.put_user(
+        username=username,
+        body={
+            "password": password,
+            "roles": roles
+        }
+    )
+    print(f"{username} created")
 
 
 if __name__ == '__main__':
     try:
         username = sys.argv[1]
         password = sys.argv[2]
-        roles = sys.argv[3].split(",")
+        roles = sys.argv[2].split(",")
     except IndexError:
-        sys.exit(f"Usage: {__file__} <USERNAME> <PASSWORD>")
+        sys.exit(f"Usage: {__file__} <USERNAME> <PASSWORD> <ROLES>")
 
-    put_user_safely(username, password, roles)
+    es = get_es_client()
+    create_user(es=es, username=username, password=password, roles=roles)

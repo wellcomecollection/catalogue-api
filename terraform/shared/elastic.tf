@@ -228,9 +228,3 @@ resource "aws_secretsmanager_secret" "service-internal_model_tool-password" {
   description = "Config secret populated by Terraform"
   tags        = local.default_tags
 }
-
-module "test_user" {
-  source = "../modules/elastic_user"
-  service = "test_service"
-  roles = ["catalogue_read"]
-}

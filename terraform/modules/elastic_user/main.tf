@@ -35,3 +35,14 @@ resource "random_password" "password" {
   special          = true
   override_special = "_%@"
 }
+
+resource "null_resource" "roles" {
+  triggers = {
+    roles = join(",", var.roles)
+  }
+
+  depends_on = [aws_secretsmanager_secret_version.password]
+  provisioner "local-exec" {
+    command = "python3 ../modules/elastic_user/update_user.py ${var.service} ${join(",", var.roles)}"
+  }
+}
