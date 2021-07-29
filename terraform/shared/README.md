@@ -4,13 +4,17 @@ This stack contains the catalogue-api elasticsearch cluster configuration, inclu
 
 ## Creating the shared stack from scratch
 
-At present you will need to run a `terraform apply` operation, and then run the scripts in the `./scripts` folder.
+At present you will need to run a `./run_terraform.sh apply` operation, and then run the scripts in the `./scripts` folder.
 
 Run the scripts in this order:
 
-- [./scripts/create_elastic_users_catalogue.py](./scripts/create_elastic_users_catalogue.py): Creates roles and users for catalogue-api services, along with any other cluster configuration that doesn't make sense to apply in Terraform.
-- [./scripts/create_elastic_users_identity.py](./scripts/create_elastic_users_identity.py): Creates the users required in the identity account (specifically at present only the requests API).
+- [./scripts/create_elastic_roles.py](./scripts/create_elastic_roles.py): Creates roles for catalogue-api services.
 
-## Improvements
+## Elastic users
 
-We have used a local-exec provisioner in terraform to run these scripts in the past, but adding users safely without rotating existing passwords is tricky. We should find a way to automate this safely from terraform.
+Elastic users are managed in terraform. The have an AWS secret for their username and password. These are then stored
+in the Elastic cluster using [`local-exec`](https://www.terraform.io/docs/language/resources/provisioners/local-exec.html)
+provisioner in the [`elastic_user`](../modules/elastic_user) module.  
+
+It would be good to provision these with TF, [but currently there looks like there is little appetite](https://github.com/elastic/terraform-provider-ec/issues/344)
+to provide this from Elastic.
