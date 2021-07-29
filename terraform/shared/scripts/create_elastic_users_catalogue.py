@@ -5,7 +5,6 @@ an Elastic Cloud cluster immediately after it's been created.
 """
 
 import functools
-import secrets
 
 import boto3
 import click
@@ -35,6 +34,7 @@ ROLES = {
         "cluster": ["manage_ccr"]
     }
 }
+
 
 @functools.lru_cache()
 def get_aws_client(resource, *, role_arn):
