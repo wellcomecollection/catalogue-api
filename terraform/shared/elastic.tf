@@ -131,21 +131,21 @@ module "identity_secrets" {
 # Elastic users
 
 module "search_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "search"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 }
 
 module "items_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "items"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 }
 
 module "requests_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "requests"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 
   providers = {
     aws = aws.identity
@@ -153,21 +153,21 @@ module "requests_elastic_user" {
 }
 
 module "replication_manager_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "replication_manager"
-  roles = ["catalogue_read", "catalogue_manage_ccr"]
+  roles   = ["catalogue_read", "catalogue_manage_ccr"]
 }
 
 module "diff_tool_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "diff_tool"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 }
 
 module "internal_model_tool_elastic_user" {
-  source = "../modules/elastic_user"
+  source  = "../modules/elastic_user"
   service = "internal_model_tool"
-  roles = ["catalogue_read"]
+  roles   = ["catalogue_read"]
 }
 
 
