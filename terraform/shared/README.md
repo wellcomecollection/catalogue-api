@@ -12,9 +12,9 @@ Run the scripts in this order:
 
 ## Elastic users
 
-Elastic users are managed in terraform. The have an AWS secret for their username and password. These are then stored
-in the Elastic cluster using [`local-exec`](https://www.terraform.io/docs/language/resources/provisioners/local-exec.html)
-provisioner in the [`elastic_user`](../modules/elastic_user) module.  
+Elastic users are managed in terraform. Each have AWS secrets for their username and password. These are then `PUT`
+into the Elastic cluster using the [`local-exec` provisioner](https://www.terraform.io/docs/language/resources/provisioners/local-exec.html)
+run in the [`elastic_user` module](../modules/elastic_user).
 
 It would be good to provision these with TF, [but currently there looks like there is little appetite](https://github.com/elastic/terraform-provider-ec/issues/344)
 to provide this from Elastic.
