@@ -22,7 +22,7 @@ resource "aws_secretsmanager_secret_version" "username" {
 }
 
 resource "aws_secretsmanager_secret_version" "password" {
-  secret_id     = aws_secretsmanager_secret.username.id
+  secret_id     = aws_secretsmanager_secret.password.id
   secret_string = random_password.password.result
 
   provisioner "local-exec" {
@@ -31,9 +31,12 @@ resource "aws_secretsmanager_secret_version" "password" {
 }
 
 resource "random_password" "password" {
-  length           = 16
-  special          = true
-  override_special = "_%@"
+  length = 64
+
+  # This is to avoid us changing passwords inadvertently
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "null_resource" "roles" {

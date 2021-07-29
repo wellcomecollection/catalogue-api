@@ -5,7 +5,6 @@ an Elastic Cloud cluster immediately after it's been created.
 """
 
 import functools
-import secrets
 
 import boto3
 import click
@@ -34,14 +33,6 @@ ROLES = {
         ],
         "cluster": ["manage_ccr"]
     }
-}
-
-SERVICES = {
-    "search": ["catalogue_read"],
-    "items": ["catalogue_read"],
-    "diff_tool": ["catalogue_read"],
-    "replication_manager": ["catalogue_read", "catalogue_manage_ccr"],
-    "internal_model_tool": ["catalogue_read"],
 }
 
 
@@ -111,34 +102,6 @@ if __name__ == '__main__':
         es.security.put_role(
             role_name,
             body=index_privileges,
-        )
-
-    # Create usernames
-    newly_created_usernames = []
-    for service_name, roles in SERVICES.items():
-        service_password = secrets.token_hex()
-        es.security.put_user(
-            username=service_name,
-            body={
-                "password": service_password,
-                "roles": roles
-            }
-        )
-
-        newly_created_usernames.append((service_name, service_password))
-
-    # Store secrets
-    for service_name, service_password in newly_created_usernames:
-        store_secret(
-            secret_id=f"{secret_prefix}/{service_name}/username",
-            secret_value=service_name,
-            role_arn=role_arn
-        )
-
-        store_secret(
-            secret_id=f"{secret_prefix}/{service_name}/password",
-            secret_value=service_password,
-            role_arn=role_arn
         )
 
     # Configure cluster settings

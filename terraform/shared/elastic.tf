@@ -66,8 +66,8 @@ locals {
     es_host     = "elasticsearch/catalogue_api/public_host"
     es_port     = "elasticsearch/catalogue_api/port"
     es_protocol = "elasticsearch/catalogue_api/protocol"
-    es_username = aws_secretsmanager_secret.service-items-username.name
-    es_password = aws_secretsmanager_secret.service-items-password.name
+    es_username = module.items_elastic_user.aws_secretsmanager_secret_username_name
+    es_password = module.items_elastic_user.aws_secretsmanager_secret_password_name
   }
 
   # This config will be consumed by the requests service in the identity stack
@@ -75,8 +75,8 @@ locals {
     es_host     = "elasticsearch/catalogue_api/public_host"
     es_port     = "elasticsearch/catalogue_api/port"
     es_protocol = "elasticsearch/catalogue_api/protocol"
-    es_username = aws_secretsmanager_secret.service-requests-username.name
-    es_password = aws_secretsmanager_secret.service-requests-password.name
+    es_username = module.requests_elastic_user.aws_secretsmanager_secret_username_name
+    es_password = module.requests_elastic_user.aws_secretsmanager_secret_password_name
   }
 
   # This config will be consumed by the search service in the catalogue_api stack
@@ -84,8 +84,8 @@ locals {
     es_host     = "elasticsearch/catalogue_api/public_host"
     es_port     = "elasticsearch/catalogue_api/port"
     es_protocol = "elasticsearch/catalogue_api/protocol"
-    es_username = aws_secretsmanager_secret.service-search-username.name
-    es_password = aws_secretsmanager_secret.service-search-password.name
+    es_username = module.search_elastic_user.aws_secretsmanager_secret_username_name
+    es_password = module.search_elastic_user.aws_secretsmanager_secret_password_name
   }
 }
 
@@ -128,103 +128,49 @@ module "identity_secrets" {
   }
 }
 
-# Search service credentials
+# Elastic users
 
-resource "aws_secretsmanager_secret" "service-search-username" {
-  name = "elasticsearch/catalogue_api/search/username"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
+module "search_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "search"
+  roles   = ["catalogue_read"]
 }
 
-resource "aws_secretsmanager_secret" "service-search-password" {
-  name = "elasticsearch/catalogue_api/search/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
+module "items_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "items"
+  roles   = ["catalogue_read"]
 }
 
-# Items service credentials
+module "requests_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "requests"
+  roles   = ["catalogue_read"]
 
-resource "aws_secretsmanager_secret" "service-items-username" {
-  name = "elasticsearch/catalogue_api/items/username"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
+  providers = {
+    aws = aws.identity
+  }
 }
 
-resource "aws_secretsmanager_secret" "service-items-password" {
-  name = "elasticsearch/catalogue_api/items/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
+module "replication_manager_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "replication_manager"
+  roles   = ["catalogue_read", "catalogue_manage_ccr"]
 }
 
-# Requests service credentials
-
-resource "aws_secretsmanager_secret" "service-requests-username" {
-  name = "elasticsearch/catalogue_api/requests/username"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-
-  provider = aws.identity
+module "diff_tool_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "diff_tool"
+  roles   = ["catalogue_read"]
 }
 
-resource "aws_secretsmanager_secret" "service-requests-password" {
-  name = "elasticsearch/catalogue_api/requests/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-
-  provider = aws.identity
-}
-
-# Diff tool service credentials
-
-resource "aws_secretsmanager_secret" "service-diff_tool-username" {
-  name = "elasticsearch/catalogue_api/diff_tool/username"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-}
-
-resource "aws_secretsmanager_secret" "service-diff_tool-password" {
-  name = "elasticsearch/catalogue_api/diff_tool/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-}
-
-# Replication manager service credentials
-
-resource "aws_secretsmanager_secret" "service-replication_manager-username" {
-  name = "elasticsearch/catalogue_api/replication_manager/username"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-}
-
-resource "aws_secretsmanager_secret" "service-replication_manager-password" {
-  name = "elasticsearch/catalogue_api/replication_manager/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
+module "internal_model_tool_elastic_user" {
+  source  = "../modules/elastic_user"
+  service = "internal_model_tool"
+  roles   = ["catalogue_read"]
 }
 
 
-# Internal model tool credentials
 
-resource "aws_secretsmanager_secret" "service-internal_model_tool-username" {
-  name = "elasticsearch/catalogue_api/internal_model_tool/username"
 
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-}
 
-resource "aws_secretsmanager_secret" "service-internal_model_tool-password" {
-  name = "elasticsearch/catalogue_api/internal_model_tool/password"
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
-}
