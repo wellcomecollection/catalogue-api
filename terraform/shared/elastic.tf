@@ -1,7 +1,3 @@
-data "ec_deployment" "logging" {
-  id = local.logging_cluster_id
-}
-
 resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
@@ -34,7 +30,7 @@ resource "ec_deployment" "catalogue_api" {
   }
 
   observability {
-    deployment_id = data.ec_deployment.logging.id
+    deployment_id = local.logging_cluster_id
   }
 }
 
