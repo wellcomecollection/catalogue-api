@@ -1,13 +1,3 @@
-# DEPRECATED! delete after switching to items
-resource "aws_ecr_repository" "items_api" {
-  name = "uk.ac.wellcome/items_api"
-}
-
-# DEPRECATED! delete after switching to requests
-resource "aws_ecr_repository" "requests_api" {
-  name = "uk.ac.wellcome/requests_api"
-}
-
 resource "aws_ecr_repository" "items" {
   name = "uk.ac.wellcome/items"
 
