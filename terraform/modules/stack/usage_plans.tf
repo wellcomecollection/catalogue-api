@@ -18,7 +18,7 @@ resource "aws_api_gateway_usage_plan_key" "items_api" {
 }
 
 module "items_api_key_secret" {
-  source = "github.com/wellcomecollection/terraform-aws-ecs-service.git//modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0
 
   providers = {
     aws = aws.experience
