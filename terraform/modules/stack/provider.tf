@@ -1,7 +1,12 @@
-provider "aws" {
-  alias = "dns"
-}
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
 
-provider "aws" {
-  alias = "experience"
+      configuration_aliases = [
+        aws.dns,
+        aws.experience,
+      ]
+    }
+  }
 }
