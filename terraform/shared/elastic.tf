@@ -99,7 +99,6 @@ module "elastic_user_secrets" {
   key_value_map = local.cluster_elastic_user_secrets
 
   description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 }
 
 ## Cluster host details - catalogue account
@@ -110,7 +109,6 @@ module "catalogue_api_secrets" {
   key_value_map = local.cluster_secrets
 
   description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 }
 
 ## Cluster host details - identity account
@@ -121,7 +119,6 @@ module "identity_secrets" {
   key_value_map = local.cluster_secrets
 
   description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 
   providers = {
     aws = aws.identity
