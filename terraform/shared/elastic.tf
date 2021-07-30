@@ -90,31 +90,25 @@ locals {
 ## Elastic user details
 
 module "elastic_user_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_elastic_user_secrets
-
-  description = "Config secret populated by Terraform"
 }
 
 ## Cluster host details - catalogue account
 
 module "catalogue_api_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_secrets
-
-  description = "Config secret populated by Terraform"
 }
 
 ## Cluster host details - identity account
 
 module "identity_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_secrets
-
-  description = "Config secret populated by Terraform"
 
   providers = {
     aws = aws.identity
@@ -162,8 +156,3 @@ module "internal_model_tool_elastic_user" {
   service = "internal_model_tool"
   roles   = ["catalogue_read"]
 }
-
-
-
-
-
