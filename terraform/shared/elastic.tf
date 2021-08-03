@@ -1,7 +1,3 @@
-data "ec_deployment" "logging" {
-  id = local.logging_cluster_id
-}
-
 resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
@@ -34,7 +30,7 @@ resource "ec_deployment" "catalogue_api" {
   }
 
   observability {
-    deployment_id = data.ec_deployment.logging.id
+    deployment_id = local.logging_cluster_id
   }
 }
 
@@ -94,34 +90,25 @@ locals {
 ## Elastic user details
 
 module "elastic_user_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_elastic_user_secrets
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 }
 
 ## Cluster host details - catalogue account
 
 module "catalogue_api_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_secrets
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 }
 
 ## Cluster host details - identity account
 
 module "identity_secrets" {
-  source = "../modules/secrets"
+  source = "github.com/wellcomecollection/terraform-aws-secrets.git?ref=v1.2.0"
 
   key_value_map = local.cluster_secrets
-
-  description = "Config secret populated by Terraform"
-  tags        = local.default_tags
 
   providers = {
     aws = aws.identity
@@ -169,8 +156,3 @@ module "internal_model_tool_elastic_user" {
   service = "internal_model_tool"
   roles   = ["catalogue_read"]
 }
-
-
-
-
-
