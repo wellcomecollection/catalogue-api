@@ -243,7 +243,7 @@ object MultipleWorksParams extends QueryParamsUtils {
       "open-with-advisory" -> AccessStatus.OpenWithAdvisory,
       "restricted" -> AccessStatus.Restricted,
       "closed" -> AccessStatus.Closed,
-      "licensed-resources" -> AccessStatus.LicensedResources,
+      "licensed-resources" -> AccessStatus.LicensedResources(),
       "unavailable" -> AccessStatus.Unavailable,
       "permission-required" -> AccessStatus.PermissionRequired
     ).emap {

@@ -1,27 +1,21 @@
 package weco.catalogue.display_model.models
 
-import java.time.Instant
-import org.scalacheck.Arbitrary
-import org.scalacheck.Gen.chooseNum
 import org.scalacheck.ScalacheckShapeless._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import weco.catalogue.internal_model.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
+import weco.catalogue.internal_model.work.generators.{ProductionEventGenerators, WorkGenerators}
 
 class DisplayWorkTest
     extends AnyFunSpec
     with Matchers
     with ProductionEventGenerators
+    with WorkGenerators
     with ImageGenerators
     with ScalaCheckPropertyChecks {
 
@@ -208,57 +202,7 @@ class DisplayWorkTest
     )
   }
 
-  // ScalaCheck generates a Work by using reflection to
-  // implicitly provide random data for its constituent
-  // types.
-  //
-  // Where necessary to adhere to internal restrictions
-  // data for a type can be provided as in this object.
-  object ScalaCheckWorkImplicits {
-    // We use this for the scalacheck of the java.time.Instant type
-    // We could just import the library, but I might wait until we need more
-    // Taken from here:
-    // https://github.com/rallyhealth/scalacheck-ops/blob/master/core/src/main/scala/org/scalacheck/ops/time/ImplicitJavaTimeGenerators.scala
-    implicit val arbInstant: Arbitrary[Instant] =
-      Arbitrary {
-        for {
-          millis <- chooseNum(
-            Instant.MIN.getEpochSecond,
-            Instant.MAX.getEpochSecond
-          )
-          nanos <- chooseNum(Instant.MIN.getNano, Instant.MAX.getNano)
-        } yield {
-          Instant.ofEpochMilli(millis).plusNanos(nanos)
-        }
-      }
-
-    // We have a rule that says SourceIdentifier isn't allowed to contain whitespace,
-    // but sometimes scalacheck will happen to generate such a string, which breaks
-    // tests in CI.  This generator is meant to create SourceIdentifiers that
-    // don't contain whitespace.
-    implicit val arbitrarySourceIdentifier: Arbitrary[SourceIdentifier] =
-      Arbitrary {
-        createSourceIdentifier
-      }
-
-    implicit val arbitraryCanonicalId: Arbitrary[CanonicalId] =
-      Arbitrary {
-        createCanonicalId
-      }
-
-    // We have a rule that says language codes should be exactly 3 characters long
-    implicit val arbitraryLanguage: Arbitrary[Language] =
-      Arbitrary {
-        Language(
-          id = randomAlphanumeric(length = 3),
-          label = randomAlphanumeric()
-        )
-      }
-  }
-
   it("does not extract includes set to false") {
-    import ScalaCheckWorkImplicits._
-
     forAll { work: Work.Visible[WorkState.Indexed] =>
       val displayWork = DisplayWork(work, includes = WorksIncludes.none)
 
