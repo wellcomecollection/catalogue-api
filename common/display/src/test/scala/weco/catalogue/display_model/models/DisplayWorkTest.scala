@@ -9,7 +9,10 @@ import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
-import weco.catalogue.internal_model.work.generators.{ProductionEventGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ProductionEventGenerators,
+  WorkGenerators
+}
 
 class DisplayWorkTest
     extends AnyFunSpec
