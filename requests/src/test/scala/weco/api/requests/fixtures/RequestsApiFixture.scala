@@ -25,16 +25,14 @@ trait RequestsApiFixture extends SierraServiceFixture {
     itemLookup: ItemLookup,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R =
-    withMaterializer { implicit mat =>
-      withSierraService(responses) { sierraService =>
-        val api: RequestsApi = new RequestsApi(
-          sierraService = sierraService,
-          itemLookup = itemLookup
-        )
+    withSierraService(responses) { sierraService =>
+      val api: RequestsApi = new RequestsApi(
+        sierraService = sierraService,
+        itemLookup = itemLookup
+      )
 
-        withApp(api.routes) { _ =>
-          testWith(())
-        }
+      withApp(api.routes) { _ =>
+        testWith(())
       }
     }
 }

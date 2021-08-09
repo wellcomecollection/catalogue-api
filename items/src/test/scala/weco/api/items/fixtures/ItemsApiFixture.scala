@@ -29,23 +29,20 @@ trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures {
   def withItemsApi[R](
     index: Index,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-  )(testWith: TestWith[Unit, R]): R = {
-    withMaterializer { implicit mat =>
-      withSierraService(responses) { sierraService =>
-        val itemsUpdaters = List(
-          new SierraItemUpdater(sierraService)
-        )
+  )(testWith: TestWith[Unit, R]): R =
+    withSierraService(responses) { sierraService =>
+      val itemsUpdaters = List(
+        new SierraItemUpdater(sierraService)
+      )
 
-        val api: ItemsApi = new ItemsApi(
-          itemUpdateService = new ItemUpdateService(itemsUpdaters),
-          workLookup = WorkLookup(elasticClient),
-          index = index
-        )
+      val api: ItemsApi = new ItemsApi(
+        itemUpdateService = new ItemUpdateService(itemsUpdaters),
+        workLookup = WorkLookup(elasticClient),
+        index = index
+      )
 
-        withApp(api.routes) { _ =>
-          testWith(())
-        }
+      withApp(api.routes) { _ =>
+        testWith(())
       }
     }
-  }
 }

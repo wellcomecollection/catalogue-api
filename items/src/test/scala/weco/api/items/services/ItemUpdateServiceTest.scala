@@ -36,10 +36,8 @@ class ItemUpdateServiceTest
   def withSierraItemUpdater[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[ItemUpdater, R]): R =
-    withMaterializer { implicit mat =>
-      withSierraService(responses) { sierraService =>
-        testWith(new SierraItemUpdater(sierraService))
-      }
+    withSierraService(responses) { sierraService =>
+      testWith(new SierraItemUpdater(sierraService))
     }
 
   def withItemUpdateService[R](
