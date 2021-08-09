@@ -25,14 +25,14 @@ trait ItemsApiGenerators
   ) = f"""
                         |{
                         |  "id": "${sierraItemNumber.withoutCheckDigit}",
-                        |  "deleted": ${deleted},
-                        |  "suppressed": ${suppressed},
+                        |  "deleted": $deleted,
+                        |  "suppressed": $suppressed,
                         |  "fixedFields": {
                         |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
                         |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
                         |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
                         |  },
-                        |  "holdCount": ${holdCount}
+                        |  "holdCount": $holdCount
                         |}
                         |""".stripMargin
 
