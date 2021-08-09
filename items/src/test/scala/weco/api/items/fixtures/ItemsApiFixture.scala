@@ -6,13 +6,14 @@ import org.scalatest.Suite
 import weco.api.items.ItemsApi
 import weco.api.items.services.{ItemUpdateService, SierraItemUpdater}
 import weco.api.search.models.ApiConfig
+import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends SierraItemUriFixture with IndexFixtures {
+trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures {
   this: Suite =>
 
   val metricsName = "ItemsApiFixture"

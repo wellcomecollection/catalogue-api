@@ -1,17 +1,6 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse
-}
-import org.scalatest.Suite
-import weco.api.items.services.{
-  ItemUpdateService,
-  ItemUpdater,
-  SierraItemUpdater
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, Uri}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
@@ -23,31 +12,11 @@ import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   WorkGenerators
 }
-import weco.fixtures.TestWith
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 trait ItemsApiGenerators
-    extends SierraItemUriFixture
-    with WorkGenerators
+    extends WorkGenerators
     with ItemsGenerators {
-  this: Suite =>
-
-  def withSierraItemUpdater[R](
-    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-  )(testWith: TestWith[ItemUpdater, R]): R =
-    withMaterializer { implicit mat =>
-      withSierraService(responses) { sierraService =>
-        testWith(new SierraItemUpdater(sierraService))
-      }
-    }
-
-  def withItemUpdateService[R](
-    itemUpdaters: List[ItemUpdater]
-  )(testWith: TestWith[ItemUpdateService, R]): R =
-    testWith(new ItemUpdateService(itemUpdaters))
-
   def buildEntry(
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
@@ -66,6 +35,13 @@ trait ItemsApiGenerators
                         |  "holdCount": ${holdCount}
                         |}
                         |""".stripMargin
+
+  def sierraItemRequest(itemNumber: SierraItemNumber): HttpRequest =
+    HttpRequest(
+      uri = Uri(
+        f"http://sierra:1234/v5/items?id=${itemNumber.withoutCheckDigit}&fields=deleted,fixedFields,holdCount,suppressed"
+      )
+    )
 
   def sierraItemResponse(
     sierraItemNumber: SierraItemNumber,

@@ -49,7 +49,7 @@ class ItemsApiFeatureTest
 
       val availableItemResponses = Seq(
         (
-          HttpRequest(uri = sierraUri(sierraItemNumber)),
+          sierraItemRequest(sierraItemNumber),
           HttpResponse(
             entity = sierraItemResponse(
               sierraItemNumber = sierraItemNumber
