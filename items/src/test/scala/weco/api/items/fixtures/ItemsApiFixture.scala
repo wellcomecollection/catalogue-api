@@ -12,7 +12,7 @@ import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends SierraServiceFixture with IndexFixtures {
+trait ItemsApiFixture extends SierraItemUriFixture with IndexFixtures {
   this: Suite =>
 
   val metricsName = "ItemsApiFixture"

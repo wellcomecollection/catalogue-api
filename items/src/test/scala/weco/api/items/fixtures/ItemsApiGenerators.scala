@@ -29,7 +29,7 @@ import weco.sierra.models.identifiers.SierraItemNumber
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ItemsApiGenerators
-    extends SierraServiceFixture
+    extends SierraItemUriFixture
     with WorkGenerators
     with ItemsGenerators {
   this: Suite =>
