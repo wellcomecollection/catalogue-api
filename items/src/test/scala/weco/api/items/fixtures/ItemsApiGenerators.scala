@@ -58,7 +58,7 @@ trait ItemsApiGenerators
       contentType = ContentTypes.`application/json`,
       f"""
         |{
-        |  "total": ${entries.size},
+        |  "total": ${entries.length},
         |  "start": 0,
         |  "entries": [
         |    $entries
