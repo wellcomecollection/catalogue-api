@@ -16,7 +16,7 @@ trait SierraServiceFixture extends HttpFixtures with Akka {
   )(testWith: TestWith[SierraService, R]): R =
     withMaterializer { implicit mat =>
       val httpClient = new MemoryHttpClient(responses) with HttpGet
-        with HttpPost {
+      with HttpPost {
         override val baseUri: Uri = Uri("http://sierra:1234")
       }
 

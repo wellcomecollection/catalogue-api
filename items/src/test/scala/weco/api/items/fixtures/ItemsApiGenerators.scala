@@ -14,9 +14,7 @@ import weco.catalogue.internal_model.work.generators.{
 }
 import weco.sierra.models.identifiers.SierraItemNumber
 
-trait ItemsApiGenerators
-    extends WorkGenerators
-    with ItemsGenerators {
+trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
   def buildEntry(
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
