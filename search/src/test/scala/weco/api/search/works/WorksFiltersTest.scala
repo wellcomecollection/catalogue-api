@@ -820,8 +820,13 @@ class WorksFiltersTest
     val workC = work(AccessStatus.Closed)
     val workD = work(AccessStatus.Open)
     val workE = work(AccessStatus.OpenWithAdvisory)
-    val workF = work(AccessStatus.LicensedResources(relationship = LicensedResources.Resource))
-    val workG = work(AccessStatus.LicensedResources(relationship = LicensedResources.RelatedResource))
+    val workF = work(
+      AccessStatus.LicensedResources(relationship = LicensedResources.Resource)
+    )
+    val workG = work(
+      AccessStatus
+        .LicensedResources(relationship = LicensedResources.RelatedResource)
+    )
 
     val works = Seq(workA, workB, workC, workD, workE, workF, workG)
 
@@ -868,7 +873,8 @@ class WorksFiltersTest
             s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
           ) {
             Status.OK -> worksListResponse(
-              works = Seq(workD, workE, workF, workG).sortBy(_.state.canonicalId)
+              works =
+                Seq(workD, workE, workF, workG).sortBy(_.state.canonicalId)
             )
           }
       }
