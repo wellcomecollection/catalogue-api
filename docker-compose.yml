@@ -1,4 +1,5 @@
-version: "3.3"
+version: "3.9"
+
 services:
   smoke_test_catalogue_api_stage:
     image: smoke_test_catalogue_api_stage
