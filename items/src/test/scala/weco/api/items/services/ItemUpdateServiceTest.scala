@@ -81,7 +81,7 @@ class ItemUpdateServiceTest
   }
 
   val onHoldAccessCondition = AccessCondition(
-    method = AccessMethod.ManualRequest,
+    method = AccessMethod.OnlineRequest,
     status = Some(TemporarilyUnavailable),
     note = Some("Item is in use by another reader. Please ask at Enquiry Desk.")
   )
