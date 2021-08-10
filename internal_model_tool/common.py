@@ -39,17 +39,23 @@ def get_remote_latest_internal_model(session, date):
     return f"{version}.{hash}"
 
 
+def get_secret_string(session, *, secret_id):
+    secrets_client = session.client("secretsmanager")
+    resp = secrets_client.get_secret_value(SecretId=secret_id)
+    return resp["SecretString"]
+
+
 def get_remote_meta(session, date):
-    sm = session.client("secretsmanager")
-    host = sm.get_secret_value(SecretId="elasticsearch/catalogue_api/public_host")[
-        "SecretString"
-    ]
-    username = sm.get_secret_value(
-        SecretId="elasticsearch/catalogue_api/internal_model_tool/username"
-    )["SecretString"]
-    password = sm.get_secret_value(
-        SecretId="elasticsearch/catalogue_api/internal_model_tool/password"
-    )["SecretString"]
+    host = get_secret_string(
+        session, secret_id="elasticsearch/catalogue_api/public_host"
+    )
+    username = get_secret_string(
+        session, secret_id="elasticsearch/catalogue_api/internal_model_tool/username"
+    )
+    password = get_secret_string(
+        session, secret_id="elasticsearch/catalogue_api/internal_model_tool/password"
+    )
+
     index = f"works-indexed-{date}"
     auth = base64.b64encode(f"{username}:{password}".encode()).decode("utf-8")
     request = Request(f"https://{host}:9243/{index}/_mapping")

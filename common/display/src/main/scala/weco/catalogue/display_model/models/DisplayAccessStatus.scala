@@ -14,29 +14,9 @@ case class DisplayAccessStatus(
 )
 
 object DisplayAccessStatus {
-
   def apply(accessStatus: AccessStatus): DisplayAccessStatus =
-    accessStatus match {
-      case AccessStatus.Open =>
-        DisplayAccessStatus("open", "Open")
-      case AccessStatus.OpenWithAdvisory =>
-        DisplayAccessStatus("open-with-advisory", "Open with advisory")
-      case AccessStatus.Restricted =>
-        DisplayAccessStatus("restricted", "Restricted")
-      case AccessStatus.ByAppointment =>
-        DisplayAccessStatus("by-appointment", "By appointment")
-      case AccessStatus.TemporarilyUnavailable =>
-        DisplayAccessStatus(
-          "temporarily-unavailable",
-          "Temporarily unavailable"
-        )
-      case AccessStatus.Unavailable =>
-        DisplayAccessStatus("unavailable", "Unavailable")
-      case AccessStatus.Closed =>
-        DisplayAccessStatus("closed", "Closed")
-      case AccessStatus.LicensedResources =>
-        DisplayAccessStatus("licensed-resources", "Licensed resources")
-      case AccessStatus.PermissionRequired =>
-        DisplayAccessStatus("permission-required", "Permission required")
-    }
+    DisplayAccessStatus(
+      id = accessStatus.id,
+      label = accessStatus.label
+    )
 }

@@ -367,11 +367,13 @@ class ApiSwaggerTest
         val actualValues = getParameterEnumValues(
           multipleWorksEndpoint,
           name = "items.locations.accessConditions.status"
-        ).map { id =>
-          // e.g. "open-with-advisory" => "OpenWithAdvisory"
-          id.split("-").map { _.capitalize }.mkString("")
-        }
-        val expectedValues = AccessStatus.values.map { _.name }
+        )
+
+        // licensed-resources is a bit special and doesn't appear in the .values
+        // list, because it's a case class rather than an object.
+        //
+        // TODO: Patch internal_model so LicensedResources is in the .values list.
+        val expectedValues = AccessStatus.values.map { _.id } :+ "licensed-resources"
 
         actualValues should contain theSameElementsAs expectedValues
       }
