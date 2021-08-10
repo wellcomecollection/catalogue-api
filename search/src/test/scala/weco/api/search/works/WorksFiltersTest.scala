@@ -9,6 +9,7 @@ import weco.catalogue.internal_model.work.generators.{
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
+import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work._
@@ -819,11 +820,15 @@ class WorksFiltersTest
     val workC = work(AccessStatus.Closed)
     val workD = work(AccessStatus.Open)
     val workE = work(AccessStatus.OpenWithAdvisory)
+    val workF = work(AccessStatus.LicensedResources(relationship = LicensedResources.Resource))
+    val workG = work(AccessStatus.LicensedResources(relationship = LicensedResources.RelatedResource))
+
+    val works = Seq(workA, workB, workC, workD, workE, workF, workG)
 
     it("includes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD, workE)
+          insertIntoElasticsearch(worksIndex, works: _*)
           assertJsonResponse(
             routes,
             s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
@@ -835,16 +840,35 @@ class WorksFiltersTest
       }
     }
 
+    // The licensed resources access status is a bit special: it's a case class that
+    // takes two values rather than a value.
+    //
+    // Check we're handling it correctly.
+    it("includes works which are licensed resources") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(worksIndex, works: _*)
+          assertJsonResponse(
+            routes,
+            s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
+          ) {
+            Status.OK -> worksListResponse(
+              works = Seq(workF, workG).sortBy(_.state.canonicalId)
+            )
+          }
+      }
+    }
+
     it("excludes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD, workE)
+          insertIntoElasticsearch(worksIndex, works: _*)
           assertJsonResponse(
             routes,
             s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
           ) {
             Status.OK -> worksListResponse(
-              works = Seq(workD, workE).sortBy(_.state.canonicalId)
+              works = Seq(workD, workE, workF, workG).sortBy(_.state.canonicalId)
             )
           }
       }
