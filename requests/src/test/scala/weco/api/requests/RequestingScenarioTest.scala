@@ -1049,9 +1049,6 @@ class RequestingScenarioTest
       locations = List(createPhysicalLocation)
     )
 
-  def createSierraPatronNumber: SierraPatronNumber =
-    SierraPatronNumber(createSierraRecordNumberString)
-
   def createRoute(
     itemLookup: ItemLookup,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
