@@ -24,10 +24,7 @@ import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
 import weco.sierra.generators.SierraIdentifierGenerators
-import weco.sierra.models.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 class RequestingScenarioTest

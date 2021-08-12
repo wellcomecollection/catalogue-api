@@ -20,10 +20,7 @@ import weco.api.stacks.models.{
 }
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.models.data.SierraItemData
-import weco.sierra.models.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.sierra.models.fields.SierraLocation
 
 import java.net.URI
