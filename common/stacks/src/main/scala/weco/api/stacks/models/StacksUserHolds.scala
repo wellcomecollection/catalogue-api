@@ -1,6 +1,10 @@
 package weco.api.stacks.models
 
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import java.time.Instant
 
 import weco.catalogue.internal_model.work.Item
