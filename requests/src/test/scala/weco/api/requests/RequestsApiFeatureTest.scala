@@ -17,8 +17,8 @@ import weco.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
@@ -27,7 +27,7 @@ class RequestsApiFeatureTest
     with JsonAssertions
     with IntegrationPatience
     with ItemsGenerators
-    with SierraGenerators {
+    with SierraIdentifierGenerators {
 
   describe("requests") {
     it("provides information about a users' holds") {

@@ -14,17 +14,17 @@ import weco.catalogue.internal_model.locations.{
   AccessMethod,
   PhysicalLocationType
 }
-import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
 import weco.catalogue.source_model.sierra.rules.{
   SierraItemAccess,
   SierraPhysicalLocationType
 }
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
+import weco.sierra.models.data.SierraItemData
+import weco.sierra.models.identifiers.{
+  SierraBibNumber,
+  SierraItemNumber,
+  SierraPatronNumber
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 

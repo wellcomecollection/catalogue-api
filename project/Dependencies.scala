@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "30.1.1" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "30.4.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -13,16 +13,11 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "5103.cbd9c6a3407a4fb6102bff761a1d7fc36c640030"
+    val internalModel = "5153.231ec77cb4a1dcbb60558320cc7e12fed8f821c6"
   }
 
   val internalModel: Seq[ModuleID] = library(
     name = "internal_model",
-    version = versions.internalModel
-  )
-
-  val sourceModel: Seq[ModuleID] = library(
-    name = "source_model",
     version = versions.internalModel
   )
 
@@ -88,6 +83,16 @@ object WellcomeDependencies {
 
   val httpTypesafeLibrary: Seq[ModuleID] = library(
     name = "http_typesafe",
+    version = versions.http
+  )
+
+  val sierraLibrary: Seq[ModuleID] = library(
+    name = "sierra",
+    version = versions.http
+  )
+
+  val sierraTypesafeLibrary: Seq[ModuleID] = sierraLibrary ++ library(
+    name = "sierra_typesafe",
     version = versions.http
   )
 
@@ -160,11 +165,17 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
-      WellcomeDependencies.sourceModel
+      WellcomeDependencies.sierraLibrary
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       ExternalDependencies.secretsDependencies
+
+  val itemsDependencies: Seq[ModuleID] =
+    WellcomeDependencies.sierraTypesafeLibrary
+
+  val requestsDependencies: Seq[ModuleID] =
+    WellcomeDependencies.sierraTypesafeLibrary
 }

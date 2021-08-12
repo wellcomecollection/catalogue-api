@@ -1,6 +1,6 @@
 package weco.api.stacks.models
 
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 sealed trait HoldResponse
 

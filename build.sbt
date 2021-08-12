@@ -60,14 +60,14 @@ lazy val items = setupProject(
   project,
   "items",
   localDependencies = Seq(stacks),
-  externalDependencies = CatalogueDependencies.stacksDependencies
+  externalDependencies = CatalogueDependencies.itemsDependencies
 )
 
 lazy val requests = setupProject(
   project,
   "requests",
   localDependencies = Seq(stacks),
-  externalDependencies = CatalogueDependencies.stacksDependencies
+  externalDependencies = CatalogueDependencies.requestsDependencies
 )
 
 lazy val snapshot_generator = setupProject(

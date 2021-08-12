@@ -11,13 +11,10 @@ import weco.api.stacks.models.{
   SierraHoldRequest,
   SierraHoldsList
 }
-import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{
-  SierraItemNumber,
-  SierraPatronNumber
-}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.http.json.CirceMarshalling
+import weco.sierra.models.data.SierraItemData
+import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import java.time.{Instant, ZoneId}
 import java.time.format.DateTimeFormatter
 

@@ -8,9 +8,9 @@ import weco.api.stacks.models.HoldRejected
 import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}

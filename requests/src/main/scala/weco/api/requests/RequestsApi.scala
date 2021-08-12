@@ -6,7 +6,7 @@ import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.search.models.ApiConfig
 import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}

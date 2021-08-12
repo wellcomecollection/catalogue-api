@@ -4,7 +4,7 @@ import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
 }
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import java.net.URI
 import scala.util.{Failure, Success, Try}
