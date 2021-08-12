@@ -28,9 +28,10 @@ case class DisplayResultsList(
 object DisplayRequest {
   def apply(hold: StacksHold): DisplayRequest = {
     DisplayRequest(
-      item = new DisplayItem(
-        id = hold.canonicalId.map { _.underlying },
-        identifiers = Some(List(DisplayIdentifier(hold.sourceIdentifier)))
+      // TODO: Remove this .get!
+      item = DisplayItem(
+        item = hold.item.get,
+        includesIdentifiers = true
       ),
       pickupDate = hold.pickup.pickUpBy,
       pickupLocation = DisplayLocationDescription(
