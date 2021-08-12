@@ -8,7 +8,7 @@ import weco.api.stacks.models.StacksHold
 import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.sierra.identifiers.SierraPatronNumber
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
