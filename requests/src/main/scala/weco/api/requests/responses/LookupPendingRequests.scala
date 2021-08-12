@@ -30,7 +30,9 @@ trait LookupPendingRequests extends CustomDirectives {
               .bySourceIdentifier(hold.sourceIdentifier)
               .map {
                 case Left(elasticError: ElasticsearchError) =>
-                  warn(s"Unable to look up $hold in Elasticsearch: ${elasticError}")
+                  warn(
+                    s"Unable to look up $hold in Elasticsearch: ${elasticError}"
+                  )
                   hold
 
                 case Right(item: Item[IdState.Identified]) =>
