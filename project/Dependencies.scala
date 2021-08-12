@@ -91,6 +91,16 @@ object WellcomeDependencies {
     version = versions.http
   )
 
+  val sierraLibrary: Seq[ModuleID] = library(
+    name = "sierra",
+    version = versions.http
+  )
+
+  val sierraTypesafeLibrary: Seq[ModuleID] = sierraLibrary ++ library(
+    name = "sierra_typesafe",
+    version = versions.http
+  )
+
   private def library(name: String, version: String): Seq[ModuleID] = Seq(
     "weco" %% name % version,
     "weco" %% name % version % "test" classifier "tests"
@@ -160,11 +170,18 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
-      WellcomeDependencies.sourceModel
+      WellcomeDependencies.sourceModel ++
+      WellcomeDependencies.sierraLibrary
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       ExternalDependencies.secretsDependencies
+
+  val itemsDependencies: Seq[ModuleID] =
+    WellcomeDependencies.sierraTypesafeLibrary
+
+  val requestsDependencies: Seq[ModuleID] =
+    WellcomeDependencies.sierraTypesafeLibrary
 }
