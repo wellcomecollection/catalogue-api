@@ -7,7 +7,7 @@ import weco.api.stacks.models.{
   StacksPickupLocation,
   StacksUserHolds
 }
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.models.DisplayItem
 
 object DisplayResultsList {
   def apply(
