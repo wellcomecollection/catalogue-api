@@ -1,5 +1,3 @@
-// WRONG
-
 package weco.catalogue.source_model.sierra.rules
 
 sealed trait RulesForRequestingResult
