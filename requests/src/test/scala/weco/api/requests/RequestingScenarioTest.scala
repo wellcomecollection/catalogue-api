@@ -23,8 +23,8 @@ import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.{
+import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
@@ -38,7 +38,7 @@ class RequestingScenarioTest
     with RequestsApiFixture
     with IntegrationPatience
     with ScalatestRouteTest
-    with SierraGenerators {
+    with SierraIdentifierGenerators {
 
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {

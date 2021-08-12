@@ -21,11 +21,6 @@ object WellcomeDependencies {
     version = versions.internalModel
   )
 
-  val sourceModel: Seq[ModuleID] = library(
-    name = "source_model",
-    version = versions.internalModel
-  )
-
   val jsonLibrary: Seq[ModuleID] = library(
     name = "json",
     version = versions.json
@@ -170,7 +165,6 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
-      WellcomeDependencies.sourceModel ++
       WellcomeDependencies.sierraLibrary
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =

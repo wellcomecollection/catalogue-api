@@ -17,8 +17,8 @@ import weco.catalogue.internal_model.locations.{
   AccessMethod,
   AccessStatus
 }
-import weco.catalogue.source_model.generators.SierraGenerators
 import weco.json.utils.JsonAssertions
+import weco.sierra.generators.SierraIdentifierGenerators
 
 import scala.util.{Failure, Try}
 
@@ -29,7 +29,7 @@ class ItemsApiFeatureTest
     with JsonAssertions
     with IntegrationPatience
     with ItemsApiGenerators
-    with SierraGenerators {
+    with SierraIdentifierGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {

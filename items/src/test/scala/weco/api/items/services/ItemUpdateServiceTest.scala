@@ -14,9 +14,9 @@ import weco.catalogue.internal_model.locations.{
   AccessStatus
 }
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.json.utils.JsonAssertions
+import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,7 +28,7 @@ class ItemUpdateServiceTest
     with ScalaFutures
     with ItemsApiGenerators
     with IntegrationPatience
-    with SierraGenerators {
+    with SierraIdentifierGenerators {
 
   val dummyDigitalItem = createDigitalItem
 

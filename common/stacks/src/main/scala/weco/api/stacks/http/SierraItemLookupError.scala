@@ -1,8 +1,8 @@
 package weco.api.stacks.http
 
 import weco.api.stacks.models.SierraErrorCode
-import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
+import weco.sierra.models.data.SierraItemData
+import weco.sierra.models.identifiers.SierraItemNumber
 
 sealed trait SierraItemLookupError
 

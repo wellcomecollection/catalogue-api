@@ -1,6 +1,6 @@
 package weco.api.stacks.models
 
-import weco.catalogue.source_model.sierra.source.SierraSourceLocation
+import weco.sierra.models.fields.SierraLocation
 
 import java.net.URI
 import java.time.Instant
@@ -16,7 +16,7 @@ case class SierraHoldStatus(
 case class SierraHold(
   id: URI,
   record: URI,
-  pickupLocation: SierraSourceLocation,
+  pickupLocation: SierraLocation,
   pickupByDate: Option[Instant],
   status: SierraHoldStatus
 )

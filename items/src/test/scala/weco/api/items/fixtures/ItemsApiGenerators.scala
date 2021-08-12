@@ -23,8 +23,8 @@ import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   WorkGenerators
 }
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

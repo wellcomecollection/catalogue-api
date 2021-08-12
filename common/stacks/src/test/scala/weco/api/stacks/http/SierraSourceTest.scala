@@ -13,13 +13,13 @@ import weco.api.stacks.models.{
   SierraHoldStatus,
   SierraHoldsList
 }
-import weco.catalogue.source_model.sierra.SierraItemData
-import weco.catalogue.source_model.sierra.identifiers.{
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+import weco.sierra.models.data.SierraItemData
+import weco.sierra.models.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
-import weco.catalogue.source_model.sierra.source.SierraSourceLocation
-import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+import weco.sierra.models.fields.SierraLocation
 
 import java.net.URI
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -108,7 +108,7 @@ class SierraSourceTest
                   id = SierraItemNumber("1146055"),
                   deleted = false,
                   location = Some(
-                    SierraSourceLocation(
+                    SierraLocation(
                       code = "sgmed",
                       name = "Closed stores Med."
                     )
@@ -118,7 +118,7 @@ class SierraSourceTest
                   id = SierraItemNumber("1234567"),
                   deleted = false,
                   location = Some(
-                    SierraSourceLocation(
+                    SierraLocation(
                       code = "sgmed",
                       name = "Closed stores Med."
                     )
@@ -183,7 +183,7 @@ class SierraSourceTest
                   id = SierraItemNumber("1146055"),
                   deleted = false,
                   location = Some(
-                    SierraSourceLocation(
+                    SierraLocation(
                       code = "sgmed",
                       name = "Closed stores Med."
                     )
@@ -297,7 +297,7 @@ class SierraSourceTest
               id = itemNumber,
               deleted = false,
               location = Some(
-                SierraSourceLocation(
+                SierraLocation(
                   code = "sgmed",
                   name = "Closed stores Med."
                 )
@@ -466,7 +466,7 @@ class SierraSourceTest
                   record = new URI(
                     "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/1111111"
                   ),
-                  pickupLocation = SierraSourceLocation(
+                  pickupLocation = SierraLocation(
                     code = "sotop",
                     name = "Rare Materials Room"
                   ),
@@ -480,7 +480,7 @@ class SierraSourceTest
                   record = new URI(
                     "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/2222222"
                   ),
-                  pickupLocation = SierraSourceLocation(
+                  pickupLocation = SierraLocation(
                     code = "hgser",
                     name = "Library Enquiry Desk"
                   ),

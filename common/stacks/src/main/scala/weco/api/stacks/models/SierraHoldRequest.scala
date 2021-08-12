@@ -1,6 +1,6 @@
 package weco.api.stacks.models
 
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
+import weco.sierra.models.identifiers.SierraItemNumber
 
 case class SierraHoldRequest(
   recordType: String,

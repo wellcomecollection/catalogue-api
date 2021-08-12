@@ -10,12 +10,12 @@ import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
-import weco.catalogue.source_model.generators.SierraGenerators
-import weco.catalogue.source_model.sierra.identifiers.{
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.identifiers.{
   SierraItemNumber,
   SierraPatronNumber
 }
-import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -26,7 +26,7 @@ class SierraServiceTest
     with IntegrationPatience
     with Akka
     with EitherValues
-    with SierraGenerators {
+    with SierraIdentifierGenerators {
 
   describe("SierraService") {
     describe("getAccessConditions") {

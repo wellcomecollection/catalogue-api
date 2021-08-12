@@ -4,10 +4,10 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import akka.stream.Materializer
 import org.scalatest.Suite
 import weco.api.stacks.services.SierraService
-import weco.catalogue.source_model.sierra.identifiers.SierraItemNumber
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
