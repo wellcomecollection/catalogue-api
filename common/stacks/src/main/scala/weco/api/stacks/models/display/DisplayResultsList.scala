@@ -28,7 +28,8 @@ case class DisplayResultsList(
 object DisplayRequest {
   def apply(hold: StacksHold): DisplayRequest = {
     DisplayRequest(
-      // TODO: Remove this .get!
+      // TODO: This .get should always be Some here
+      // TODO: but we should refactor to remove it!
       item = DisplayItem(
         item = hold.item.get,
         includesIdentifiers = true
