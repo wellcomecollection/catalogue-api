@@ -116,8 +116,6 @@ def get_fixed_field(item_data, *, code):
 
 
 if __name__ == "__main__":
-    from pprint import pprint
-
     with open("unmapped_item_data.csv", "w") as outfile:
         writer = csv.DictWriter(
             outfile,
