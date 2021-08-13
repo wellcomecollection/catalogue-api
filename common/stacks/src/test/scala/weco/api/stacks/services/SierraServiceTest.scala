@@ -398,23 +398,23 @@ class SierraServiceTest
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
                 f"""
-                   |{
-                   |  "total": 1,
-                   |  "start": 0,
-                   |  "entries": [
-                   |    {
-                   |      "id": "$item",
-                   |      "deletedDate": "2001-01-01",
-                   |      "deleted": false,
-                   |      "suppressed": true,
-                   |      "fixedFields": {
-                   |        "88": {"label": "STATUS", "value": "-", "display": "Available"}
-                   |      },
-                   |      "holdCount": 0
-                   |    }
-                   |  ]
-                   |}
-                   |""".stripMargin
+                  |{
+                  |  "total": 1,
+                  |  "start": 0,
+                  |  "entries": [
+                  |    {
+                  |      "id": "$item",
+                  |      "deletedDate": "2001-01-01",
+                  |      "deleted": false,
+                  |      "suppressed": true,
+                  |      "fixedFields": {
+                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                  |      },
+                  |      "holdCount": 0
+                  |    }
+                  |  ]
+                  |}
+                  |""".stripMargin
               )
             )
           )
