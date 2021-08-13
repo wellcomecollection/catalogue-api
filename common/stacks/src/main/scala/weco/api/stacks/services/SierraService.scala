@@ -237,7 +237,8 @@ class SierraService(
       holds <- sierraSource
         .listHolds(patronNumber)
         .flatMap {
-          case Right(holds) => Future(holds)
+          case Right(holds) =>
+            Future.successful(holds)
           case Left(sierraError) =>
             error(
               s"Failed to list holds for patron ${patronNumber} in Sierra, got: ${sierraError}"
