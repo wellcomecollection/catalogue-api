@@ -67,12 +67,16 @@ class RequestsApiFeatureTest
         )
       )
 
+      val titleString = randomAlphanumeric(length = 20)
+
       val item = createIdentifiedItemWith(
         sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
           value = itemNumber.withCheckDigit,
           ontologyType = "Item"
-        )
+        ),
+        locations = List.empty,
+        title = Some(titleString)
       )
 
       val lookup = new MemoryItemLookup(items = Seq(item))
@@ -98,6 +102,7 @@ class RequestsApiFeatureTest
              |            "type" : "Identifier"
              |          }
              |        ],
+             |        "title" : "${titleString}",
              |        "locations" : [
              |        ],
              |        "type" : "Item"

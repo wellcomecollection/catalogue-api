@@ -1,9 +1,13 @@
 package weco.api.requests.responses
 
 import akka.http.scaladsl.server.Route
+import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.stacks.models.display.DisplayResultsList
 import weco.api.search.rest.CustomDirectives
+import weco.api.stacks.models.StacksHold
 import weco.api.stacks.services.{ItemLookup, SierraService}
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,16 +25,18 @@ trait LookupPendingRequests extends CustomDirectives {
         userHolds <- sierraService.getStacksUserHolds(patronNumber)
 
         holdsWithCatalogueIds <- Future.sequence(
-          userHolds.right.get.holds.map { hold =>
+          userHolds.right.get.holds.map { hold: StacksHold =>
             itemLookup
               .bySourceIdentifier(hold.sourceIdentifier)
               .map {
-                case Left(elasticError) =>
-                  warn(s"Unable to look up $hold in Elasticsearch")
+                case Left(elasticError: ElasticsearchError) =>
+                  warn(
+                    s"Unable to look up $hold in Elasticsearch: ${elasticError}"
+                  )
                   hold
 
-                case Right(item) =>
-                  hold.copy(canonicalId = Some(item.id.canonicalId))
+                case Right(item: Item[IdState.Identified]) =>
+                  hold.copy(item = Some(item))
               }
           }
         )

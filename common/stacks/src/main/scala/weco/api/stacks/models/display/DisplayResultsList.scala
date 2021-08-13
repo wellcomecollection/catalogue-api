@@ -7,7 +7,7 @@ import weco.api.stacks.models.{
   StacksPickupLocation,
   StacksUserHolds
 }
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.models.DisplayItem
 
 object DisplayResultsList {
   def apply(
@@ -28,9 +28,11 @@ case class DisplayResultsList(
 object DisplayRequest {
   def apply(hold: StacksHold): DisplayRequest = {
     DisplayRequest(
-      item = new DisplayItem(
-        id = hold.canonicalId.map { _.underlying },
-        identifiers = Some(List(DisplayIdentifier(hold.sourceIdentifier)))
+      // TODO: This .get should always be Some here
+      // TODO: but we should refactor to remove it!
+      item = DisplayItem(
+        item = hold.item.get,
+        includesIdentifiers = true
       ),
       pickupDate = hold.pickup.pickUpBy,
       pickupLocation = DisplayLocationDescription(
