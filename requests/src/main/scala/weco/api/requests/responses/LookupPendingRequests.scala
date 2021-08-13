@@ -1,13 +1,9 @@
 package weco.api.requests.responses
 
 import akka.http.scaladsl.server.Route
-import weco.api.search.elasticsearch.ElasticsearchError
-import weco.api.stacks.models.display.DisplayResultsList
 import weco.api.search.rest.CustomDirectives
-import weco.api.stacks.models.StacksHold
+import weco.api.stacks.models.display.DisplayResultsList
 import weco.api.stacks.services.{ItemLookup, SierraService}
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,31 +16,35 @@ trait LookupPendingRequests extends CustomDirectives {
   implicit val ec: ExecutionContext
 
   def lookupRequests(patronNumber: SierraPatronNumber): Route = {
-    val userHolds =
-      for {
-        userHolds <- sierraService.getStacksUserHolds(patronNumber)
+    val itemHolds = for {
+      holdsMap <- sierraService.getHolds(patronNumber)
 
-        holdsWithCatalogueIds <- Future.sequence(
-          userHolds.right.get.holds.map { hold: StacksHold =>
-            itemLookup
-              .bySourceIdentifier(hold.sourceIdentifier)
-              .map {
-                case Left(elasticError: ElasticsearchError) =>
-                  warn(
-                    s"Unable to look up $hold in Elasticsearch: ${elasticError}"
-                  )
-                  hold
+      itemLookupResults <- Future.sequence(
+        holdsMap.keys.map(itemLookup.bySourceIdentifier)
+          .map(_.map {
+            case Right(item) => Some(item)
+            case Left(err) =>
+              warn(s"$err")
+              None
+          })
+          .map(_.recover {
+            case err =>
+              warn(s"$err")
+              None
+          })
+      ).map(
+        _.flatten
+      )
 
-                case Right(item: Item[IdState.Identified]) =>
-                  hold.copy(item = Some(item))
-              }
-          }
-        )
+      itemHoldTuples = itemLookupResults.flatMap { item =>
+        holdsMap.get(item.id.sourceIdentifier).map { hold =>
+          (hold, item)
+        }
+      } toList
 
-        updatedHolds = userHolds.right.get.copy(holds = holdsWithCatalogueIds)
-      } yield updatedHolds
+    } yield itemHoldTuples
 
-    onComplete(userHolds) {
+    onComplete(itemHolds) {
       case Success(value) => complete(DisplayResultsList(value))
       case Failure(err)   => failWith(err)
     }

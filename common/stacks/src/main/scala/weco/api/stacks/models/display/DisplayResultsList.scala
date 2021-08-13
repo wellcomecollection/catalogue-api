@@ -1,64 +1,56 @@
 package weco.api.stacks.models.display
 
 import java.time.Instant
-import weco.api.stacks.models.{
-  StacksHold,
-  StacksHoldStatus,
-  StacksPickupLocation,
-  StacksUserHolds
-}
+
+import weco.api.stacks.models.SierraHold
 import weco.catalogue.display_model.models.DisplayItem
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.work.Item
+
+case class DisplayResultsList(
+                               results: List[DisplayRequest],
+                               totalResults: Int,
+                               `type`: String = "ResultList"
+                             )
 
 object DisplayResultsList {
   def apply(
-    stacksUserHolds: StacksUserHolds
-  ): DisplayResultsList =
+             itemHolds: List[(SierraHold, Item[IdState.Identified])]
+           ): DisplayResultsList =
     DisplayResultsList(
-      results = stacksUserHolds.holds.map(DisplayRequest(_)),
-      totalResults = stacksUserHolds.holds.size
+      results = itemHolds.map {
+        case (hold, item) => DisplayRequest(hold, item)
+      },
+      totalResults = itemHolds.size
     )
-}
-
-case class DisplayResultsList(
-  results: List[DisplayRequest],
-  totalResults: Int,
-  `type`: String = "ResultList"
-)
-
-object DisplayRequest {
-  def apply(hold: StacksHold): DisplayRequest = {
-    DisplayRequest(
-      // TODO: This .get should always be Some here
-      // TODO: but we should refactor to remove it!
-      item = DisplayItem(
-        item = hold.item.get,
-        includesIdentifiers = true
-      ),
-      pickupDate = hold.pickup.pickUpBy,
-      pickupLocation = DisplayLocationDescription(
-        hold.pickup.location
-      ),
-      status = DisplayRequestStatus(
-        hold.status
-      )
-    )
-  }
 }
 
 case class DisplayRequest(
-  item: DisplayItem,
-  pickupDate: Option[Instant],
-  pickupLocation: DisplayLocationDescription,
-  status: DisplayRequestStatus,
-  `type`: String = "Request"
-)
+                           item: DisplayItem,
+                           pickupDate: Option[Instant],
+                           pickupLocation: DisplayLocationDescription,
+                           status: DisplayRequestStatus,
+                           `type`: String = "Request"
+                         )
 
-object DisplayLocationDescription {
-  def apply(location: StacksPickupLocation): DisplayLocationDescription =
-    DisplayLocationDescription(
-      id = location.id,
-      label = location.label
+object DisplayRequest {
+  def apply(hold: SierraHold, item: Item[IdState.Identified]): DisplayRequest = {
+    DisplayRequest(
+      item = DisplayItem(
+        item = item,
+        includesIdentifiers = true
+      ),
+      pickupDate = hold.pickupByDate,
+      pickupLocation = DisplayLocationDescription(
+        id = hold.pickupLocation.code,
+        label = hold.pickupLocation.name
+      ),
+      status = DisplayRequestStatus(
+        id = hold.status.code,
+        label = hold.status.name
+      )
     )
+  }
 }
 
 case class DisplayLocationDescription(
@@ -66,14 +58,6 @@ case class DisplayLocationDescription(
   label: String,
   `type`: String = "LocationDescription"
 )
-
-object DisplayRequestStatus {
-  def apply(holdStatus: StacksHoldStatus): DisplayRequestStatus =
-    DisplayRequestStatus(
-      id = holdStatus.id,
-      label = holdStatus.label
-    )
-}
 
 case class DisplayRequestStatus(
   id: String,

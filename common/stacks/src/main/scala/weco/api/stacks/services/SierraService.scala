@@ -104,16 +104,11 @@ class SierraService(
       //
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
-        getStacksUserHolds(patron).flatMap {
-          case Right(holds)
-              if holds.holds
-                .map(_.sourceIdentifier)
-                .contains(sourceIdentifier) =>
-            Future.successful(Right(HoldAccepted.HoldAlreadyExists))
-
-          case Right(holds) if holds.holds.size >= holdLimit =>
+        getHolds(patron).flatMap {
+          case holds if holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
-
+          case holds if holds.keys.toList.contains(sourceIdentifier) =>
+            Future.successful(Right(HoldAccepted.HoldAlreadyExists))
           case _ => checkIfItemCanBeRequested(item)
         }
 
@@ -235,45 +230,21 @@ class SierraService(
     }
   }
 
-  protected def buildStacksHold(entry: SierraHold): StacksHold = {
-    val itemNumber = SierraItemIdentifier.fromUrl(entry.record)
-    val sourceIdentifier = SierraItemIdentifier.toSourceIdentifier(itemNumber)
-
-    val pickupLocation = StacksPickupLocation(
-      id = entry.pickupLocation.code,
-      label = entry.pickupLocation.name
-    )
-
-    val pickup = StacksPickup(
-      location = pickupLocation,
-      pickUpBy = entry.pickupByDate
-    )
-
-    val status = StacksHoldStatus(
-      id = entry.status.code,
-      label = entry.status.name
-    )
-
-    StacksHold(sourceIdentifier, pickup, status)
-  }
-
-  def getStacksUserHolds(
-    patronNumber: SierraPatronNumber
-  ): Future[Either[SierraErrorCode, StacksUserHolds]] =
-    sierraSource
+  def getHolds(patronNumber: SierraPatronNumber) = for {
+    holds <- sierraSource
       .listHolds(patronNumber)
-      .map {
-        case Right(holds) =>
-          Right(
-            StacksUserHolds(
-              userId = patronNumber.withoutCheckDigit,
-              holds = holds.entries.map(buildStacksHold)
-            )
-          )
-
-        case Left(err) => Left(err)
+      .flatMap {
+        case Right(holds) => Future(holds)
+        // TODO: Proper error here please
+        case Left(err) => Future.failed(new Throwable(s"$err"))
       }
 
+    sourceIdentifiers = holds.entries.map { hold =>
+      SierraItemIdentifier.toSourceIdentifier(
+        SierraItemIdentifier.fromUrl(hold.record)
+      )
+    }
+  } yield sourceIdentifiers.zip(holds.entries).toMap
 }
 
 object SierraService {

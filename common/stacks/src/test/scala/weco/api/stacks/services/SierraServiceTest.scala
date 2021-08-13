@@ -22,7 +22,7 @@ import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraServiceTest
-    extends AnyFunSpec
+  extends AnyFunSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
@@ -71,7 +71,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
+              with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -126,7 +126,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
+              with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -174,7 +174,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
+              with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -239,216 +239,174 @@ class SierraServiceTest
         )
 
         withMaterializer { implicit mat =>
-          val service = SierraService(
+          val _ = SierraService(
             new MemoryHttpClient(responses) with HttpGet with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
 
-          val future = service.getStacksUserHolds(patron)
+          //          val future = service.getStacksUserHolds(patron)
+          //          whenReady(future) {
+          true shouldBe false
+        }
+      }
+    }
+  }
 
-          whenReady(future) {
-            _.value shouldBe StacksUserHolds(
-              userId = "1234567",
-              holds = List(
-                StacksHold(
-                  sourceIdentifier = SourceIdentifier(
-                    ontologyType = "Item",
-                    identifierType = SierraSystemNumber,
-                    value = item1.withCheckDigit
-                  ),
-                  pickup = StacksPickup(
-                    location = StacksPickupLocation(
-                      id = "sepbb",
-                      label = "Rare Materials Room"
-                    ),
-                    pickUpBy = None
-                  ),
-                  status = StacksHoldStatus(
-                    id = "0",
-                    label = "on hold."
-                  )
-                ),
-                StacksHold(
-                  sourceIdentifier = SourceIdentifier(
-                    ontologyType = "Item",
-                    identifierType = SierraSystemNumber,
-                    value = item2.withCheckDigit
-                  ),
-                  pickup = StacksPickup(
-                    location = StacksPickupLocation(
-                      id = "sotop",
-                      label = "Rare Materials Room"
-                    ),
-                    pickUpBy = None
-                  ),
-                  status = StacksHoldStatus(
-                    id = "i",
-                    label = "item hold ready for pickup"
-                  )
-                )
-              )
+  describe("placeHold") {
+    it("requests a hold from the Sierra API") {
+      val patron = SierraPatronNumber("1234567")
+      val item = createSierraItemNumber
+
+      val sourceIdentifier = SourceIdentifier(
+        identifierType = SierraSystemNumber,
+        ontologyType = "Item",
+        value = item.withCheckDigit
+      )
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "recordType": "i",
+                 |  "recordNumber": ${item.withoutCheckDigit},
+                 |  "pickupLocation": "unspecified"
+                 |}
+                 |""".stripMargin
             )
+          ),
+          HttpResponse(status = StatusCodes.NoContent)
+        )
+      )
+
+      withMaterializer { implicit mat =>
+        val service = SierraService(
+          new MemoryHttpClient(responses) with HttpGet with HttpPost {
+            override val baseUri: Uri = Uri("http://sierra:1234")
           }
+        )
+
+        val future = service.placeHold(
+          patron = patron,
+          sourceIdentifier = sourceIdentifier
+        )
+
+        whenReady(future) {
+          _.value shouldBe HoldAccepted.HoldCreated
         }
       }
     }
 
-    describe("placeHold") {
-      it("requests a hold from the Sierra API") {
-        val patron = SierraPatronNumber("1234567")
-        val item = createSierraItemNumber
+    it("rejects a hold when the Sierra API errors indicating such") {
+      val patron = SierraPatronNumber("1234567")
+      val item = createSierraItemNumber
+      val sourceIdentifier = SourceIdentifier(
+        identifierType = SierraSystemNumber,
+        ontologyType = "Item",
+        value = item.withCheckDigit
+      )
 
-        val sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          ontologyType = "Item",
-          value = item.withCheckDigit
-        )
-
-        val responses = Seq(
-          (
-            HttpRequest(
-              method = HttpMethods.POST,
-              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "pickupLocation": "unspecified"
-                   |}
-                   |""".stripMargin
-              )
-            ),
-            HttpResponse(status = StatusCodes.NoContent)
-          )
-        )
-
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
-          val future = service.placeHold(
-            patron = patron,
-            sourceIdentifier = sourceIdentifier
-          )
-
-          whenReady(future) {
-            _.value shouldBe HoldAccepted.HoldCreated
-          }
-        }
-      }
-
-      it("rejects a hold when the Sierra API errors indicating such") {
-        val patron = SierraPatronNumber("1234567")
-        val item = createSierraItemNumber
-        val sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          ontologyType = "Item",
-          value = item.withCheckDigit
-        )
-
-        val responses = Seq(
-          (
-            HttpRequest(
-              method = HttpMethods.POST,
-              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "pickupLocation": "unspecified"
-                   |}
-                   |""".stripMargin
-              )
-            ),
-            HttpResponse(
-              status = StatusCodes.InternalServerError,
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                """
-                  |{
-                  |  "code": 132,
-                  |  "specificCode": 2,
-                  |  "httpStatus": 500,
-                  |  "name": "XCirc error",
-                  |  "description": "XCirc error : This record is not available"
-                  |}
-                  |""".stripMargin
-              )
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.POST,
+            uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "recordType": "i",
+                 |  "recordNumber": ${item.withoutCheckDigit},
+                 |  "pickupLocation": "unspecified"
+                 |}
+                 |""".stripMargin
             )
           ),
-          (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "total": 0,
-                   |  "start": 0,
-                   |  "entries": []
-                   |}
-                   |""".stripMargin
-              )
+          HttpResponse(
+            status = StatusCodes.InternalServerError,
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """
+                |{
+                |  "code": 132,
+                |  "specificCode": 2,
+                |  "httpStatus": 500,
+                |  "name": "XCirc error",
+                |  "description": "XCirc error : This record is not available"
+                |}
+                |""".stripMargin
+            )
+          )
+        ),
+        (
+          HttpRequest(
+            uri =
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 0,
+                 |  "start": 0,
+                 |  "entries": []
+                 |}
+                 |""".stripMargin
+            )
+          )
+        ),
+        (
+          HttpRequest(
+            uri = Uri(
+              f"http://sierra:1234/v5/items?id=$item&fields=deleted,fixedFields,holdCount,suppressed"
             )
           ),
-          (
-            HttpRequest(
-              uri = Uri(
-                f"http://sierra:1234/v5/items?id=$item&fields=deleted,fixedFields,holdCount,suppressed"
-              )
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                f"""
-                  |{
-                  |  "total": 1,
-                  |  "start": 0,
-                  |  "entries": [
-                  |    {
-                  |      "id": "$item",
-                  |      "deletedDate": "2001-01-01",
-                  |      "deleted": false,
-                  |      "suppressed": true,
-                  |      "fixedFields": {
-                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"}
-                  |      },
-                  |      "holdCount": 0
-                  |    }
-                  |  ]
-                  |}
-                  |""".stripMargin
-              )
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              f"""
+                 |{
+                 |  "total": 1,
+                 |  "start": 0,
+                 |  "entries": [
+                 |    {
+                 |      "id": "$item",
+                 |      "deletedDate": "2001-01-01",
+                 |      "deleted": false,
+                 |      "suppressed": true,
+                 |      "fixedFields": {
+                 |        "88": {"label": "STATUS", "value": "-", "display": "Available"}
+                 |      },
+                 |      "holdCount": 0
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin
             )
           )
         )
+      )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
-          val future = service.placeHold(
-            patron = patron,
-            sourceIdentifier = sourceIdentifier
-          )
-
-          whenReady(future) {
-            _.left.value shouldBe HoldRejected.ItemCannotBeRequested
+      withMaterializer { implicit mat =>
+        val service = SierraService(
+          new MemoryHttpClient(responses) with HttpGet with HttpPost {
+            override val baseUri: Uri = Uri("http://sierra:1234")
           }
+        )
+
+        val future = service.placeHold(
+          patron = patron,
+          sourceIdentifier = sourceIdentifier
+        )
+
+        whenReady(future) {
+          _.left.value shouldBe HoldRejected.ItemCannotBeRequested
         }
       }
     }
