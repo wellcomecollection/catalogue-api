@@ -22,8 +22,6 @@ import sys
 import click
 import tqdm
 
-from utils import get_latest_snapshot_filename, get_works
-
 
 def trim_snapshot(*, snapshot_filename, fields):
     fields = set(fields)
@@ -36,8 +34,10 @@ def trim_snapshot(*, snapshot_filename, fields):
     if not os.path.exists(new_name):
         tmp_path = new_name + "." + str(uuid.uuid4()) + ".tmp"
 
+        from utils import get_works
+
         with gzip.open(tmp_path, "wb") as outfile:
-            for work in tqdm.tqdm(get_works(snapshot_filename)):
+            for work in tqdm.tqdm(get_works(snapshot_filename=snapshot_filename)):
                 trimmed_work = {
                     key: value for key, value in work.items() if key in fields
                 }
@@ -55,26 +55,3 @@ def trim_snapshot(*, snapshot_filename, fields):
 
 def _size(filename):
     return os.stat(filename).st_size
-
-
-@click.command()
-@click.option("--filename", help="Snapshot to trim")
-@click.argument("fields", nargs=-1)
-def main(filename, fields):
-    if filename is None:
-        filename = get_latest_snapshot_filename()
-
-    original_snapshot = filename
-    trimmed_snapshot = trim_snapshot(snapshot_filename=filename, fields=fields)
-
-    saving = abs(1 - _size(trimmed_snapshot) / _size(original_snapshot))
-
-    print(
-        "Trimming complete; the trimmed snapshot is %.1f%% smaller" % (saving * 100),
-        file=sys.stderr,
-    )
-    print(trimmed_snapshot)
-
-
-if __name__ == "__main__":
-    main()

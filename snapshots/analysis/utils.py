@@ -48,7 +48,7 @@ def get_works(*, snapshot_filename=None, fields=None):
     if snapshot_filename is None:
         snapshot_filename = get_latest_snapshot_filename()
 
-    if interested_fields is not None:
+    if fields is not None:
         snapshot_filename = trim_snapshot(
             snapshot_filename=snapshot_filename, fields=fields
         )
