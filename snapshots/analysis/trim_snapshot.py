@@ -17,9 +17,7 @@ import gzip
 import json
 import os
 import uuid
-import sys
 
-import click
 import tqdm
 
 
