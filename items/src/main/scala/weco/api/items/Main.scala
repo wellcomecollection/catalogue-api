@@ -35,8 +35,9 @@ object Main extends WellcomeTypesafeApp {
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
+    // We don't actually care about the hold limit in the items service.
     val client = SierraOauthHttpClientBuilder.build(config)
-    val sierraService = SierraService(client)
+    val sierraService = SierraService(client, holdLimit = 10)
 
     // To add an item updater for a new service:
     // implement ItemUpdater and add it to the list here
