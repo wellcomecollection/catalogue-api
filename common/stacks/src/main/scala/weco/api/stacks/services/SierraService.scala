@@ -230,14 +230,18 @@ class SierraService(
     }
   }
 
-  def getHolds(patronNumber: SierraPatronNumber) =
+  def getHolds(patronNumber: SierraPatronNumber): Future[Map[SourceIdentifier, SierraHold]] =
     for {
       holds <- sierraSource
         .listHolds(patronNumber)
         .flatMap {
           case Right(holds) => Future(holds)
-          // TODO: Proper error here please
-          case Left(err) => Future.failed(new Throwable(s"$err"))
+          case Left(sierraError) =>
+            error(s"Failed to list holds for patron ${patronNumber} in Sierra, got: ${sierraError}")
+
+            Future.failed(new RuntimeException(
+              s"Sierra error trying to retrieve holds!"
+            ))
         }
 
       sourceIdentifiers = holds.entries.map { hold =>
