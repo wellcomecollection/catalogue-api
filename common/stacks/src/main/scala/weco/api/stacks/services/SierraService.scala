@@ -105,10 +105,10 @@ class SierraService(
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
         getHolds(patron).flatMap {
-          case holds if holds.size >= holdLimit =>
-            Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
           case holds if holds.keys.toList.contains(sourceIdentifier) =>
             Future.successful(Right(HoldAccepted.HoldAlreadyExists))
+          case holds if holds.size >= holdLimit =>
+            Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
           case _ => checkIfItemCanBeRequested(item)
         }
 
