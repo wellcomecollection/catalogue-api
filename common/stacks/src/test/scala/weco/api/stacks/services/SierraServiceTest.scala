@@ -69,7 +69,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -124,7 +124,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -172,7 +172,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -260,15 +260,23 @@ class SierraServiceTest
 
             result shouldBe Map(
               item1SrcId -> SierraHold(
-                id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
-                record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"),
+                id = new URI(
+                  "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"
+                ),
+                record = new URI(
+                  s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"
+                ),
                 pickupLocation = SierraLocation("sepbb", "Rare Materials Room"),
                 pickupByDate = None,
                 status = SierraHoldStatus("0", "on hold.")
               ),
               item2SrcId -> SierraHold(
-                id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
-                record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"),
+                id = new URI(
+                  "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"
+                ),
+                record = new URI(
+                  s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"
+                ),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
                 pickupByDate = None,
                 status = SierraHoldStatus("i", "item hold ready for pickup")
@@ -278,7 +286,6 @@ class SierraServiceTest
         }
       }
     }
-
 
     describe("placeHold") {
       it("requests a hold from the Sierra API") {
