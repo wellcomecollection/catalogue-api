@@ -246,15 +246,27 @@ class SierraServiceTest
           val future = service.getHolds(patron)
 
           whenReady(future) { result =>
+            val item1SrcId = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = item1.withCheckDigit
+            )
+
+            val item2SrcId = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = item2.withCheckDigit
+            )
+
             result shouldBe Map(
-              s"sierra-system-number/${item1.withCheckDigit}" -> SierraHold(
+              item1SrcId -> SierraHold(
                 id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
                 record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"),
                 pickupLocation = SierraLocation("sepbb","Rare Materials Room"),
                 pickupByDate = None,
                 status = SierraHoldStatus("0","on hold.")
               ),
-              s"sierra-system-number/${item2.withCheckDigit}" -> SierraHold(
+              item2SrcId -> SierraHold(
                 id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
                 record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
