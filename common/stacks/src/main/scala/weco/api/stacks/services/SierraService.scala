@@ -255,7 +255,7 @@ class SierraService(
         val identifier = SierraItemIdentifier.toSourceIdentifier(
           SierraItemIdentifier.fromUrl(hold.record)
         )
-        
+
         identifier -> hold
       }
     } yield sourceIdentifiers.toMap
