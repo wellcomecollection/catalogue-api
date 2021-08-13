@@ -285,6 +285,48 @@ class SierraServiceTest
           }
         }
       }
+
+      it("fails if Sierra returns an error") {
+        val patron = SierraPatronNumber("1234567")
+
+        val responses = Seq(
+          (
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+            ),
+            HttpResponse(
+              status = StatusCodes.InternalServerError,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 132,
+                  |  "specificCode": 2,
+                  |  "httpStatus": 500,
+                  |  "name": "XCirc error",
+                  |  "description": "XCirc error"
+                  |}
+                  |""".stripMargin
+              )
+            )
+          )
+        )
+
+        withMaterializer { implicit mat =>
+          val service = SierraService(
+            new MemoryHttpClient(responses) with HttpGet with HttpPost {
+              override val baseUri: Uri = Uri("http://sierra:1234")
+            }
+          )
+
+          val future = service.getHolds(patron)
+
+          whenReady(future.failed) { failure =>
+            failure.getMessage shouldBe "Sierra error trying to retrieve holds!"
+          }
+        }
+      }
     }
 
     describe("placeHold") {
