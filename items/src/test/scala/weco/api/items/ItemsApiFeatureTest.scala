@@ -36,7 +36,7 @@ class ItemsApiFeatureTest
       val sierraItemNumber = createSierraItemNumber
 
       val temporarilyUnavailableOnline = AccessCondition(
-        method = AccessMethod.OnlineRequest,
+        method = AccessMethod.NotRequestable,
         status = AccessStatus.TemporarilyUnavailable
       )
 
@@ -97,6 +97,11 @@ class ItemsApiFeatureTest
                |                "id" : "online-request",
                |                "label" : "Online request",
                |                "type" : "AccessMethod"
+               |              },
+               |              "status": {
+               |                "id" : "open",
+               |                "label" : "Open",
+               |                "type" : "AccessStatus"
                |              },
                |              "type" : "AccessCondition"
                |            }

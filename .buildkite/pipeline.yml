@@ -13,6 +13,8 @@ steps:
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
             - AWS_DEFAULT_REGION=eu-west-1
+  - command: .buildkite/scripts/check_vendored_code.py
+    label: "check vendored code"
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"

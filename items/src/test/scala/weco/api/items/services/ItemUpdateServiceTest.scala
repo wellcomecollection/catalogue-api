@@ -59,7 +59,7 @@ class ItemUpdateServiceTest
     sierraItemNumber: SierraItemNumber
   ): Item[IdState.Identified] = {
     val temporarilyUnavailableOnline = AccessCondition(
-      method = AccessMethod.OnlineRequest,
+      method = AccessMethod.NotRequestable,
       status = AccessStatus.TemporarilyUnavailable
     )
 
@@ -81,13 +81,14 @@ class ItemUpdateServiceTest
   }
 
   val onHoldAccessCondition = AccessCondition(
-    method = AccessMethod.OnlineRequest,
+    method = AccessMethod.NotRequestable,
     status = Some(TemporarilyUnavailable),
     note = Some("Item is in use by another reader. Please ask at Enquiry Desk.")
   )
 
   val onlineRequestAccessCondition = AccessCondition(
-    method = AccessMethod.OnlineRequest
+    method = AccessMethod.OnlineRequest,
+    status = AccessStatus.Open
   )
 
   class DummyItemUpdater(
