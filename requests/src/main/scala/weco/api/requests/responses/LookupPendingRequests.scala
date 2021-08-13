@@ -19,22 +19,25 @@ trait LookupPendingRequests extends CustomDirectives {
     val itemHolds = for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
-      itemLookupResults <- Future.sequence(
-        holdsMap.keys.map(itemLookup.bySourceIdentifier)
-          .map(_.map {
-            case Right(item) => Some(item)
-            case Left(err) =>
-              warn(s"$err")
-              None
-          })
-          .map(_.recover {
-            case err =>
-              warn(s"$err")
-              None
-          })
-      ).map(
-        _.flatten
-      )
+      itemLookupResults <- Future
+        .sequence(
+          holdsMap.keys
+            .map(itemLookup.bySourceIdentifier)
+            .map(_.map {
+              case Right(item) => Some(item)
+              case Left(err) =>
+                warn(s"$err")
+                None
+            })
+            .map(_.recover {
+              case err =>
+                warn(s"$err")
+                None
+            })
+        )
+        .map(
+          _.flatten
+        )
 
       itemHoldTuples = itemLookupResults.flatMap { item =>
         holdsMap.get(item.id.sourceIdentifier).map { hold =>

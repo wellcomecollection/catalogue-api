@@ -22,7 +22,7 @@ import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraServiceTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
@@ -71,7 +71,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -126,7 +126,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )
@@ -174,7 +174,7 @@ class SierraServiceTest
         withMaterializer { implicit mat =>
           val service = SierraService(
             client = new MemoryHttpClient(responses) with HttpGet
-              with HttpPost {
+            with HttpPost {
               override val baseUri: Uri = Uri("http://sierra:1234")
             }
           )

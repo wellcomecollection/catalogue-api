@@ -230,21 +230,22 @@ class SierraService(
     }
   }
 
-  def getHolds(patronNumber: SierraPatronNumber) = for {
-    holds <- sierraSource
-      .listHolds(patronNumber)
-      .flatMap {
-        case Right(holds) => Future(holds)
-        // TODO: Proper error here please
-        case Left(err) => Future.failed(new Throwable(s"$err"))
-      }
+  def getHolds(patronNumber: SierraPatronNumber) =
+    for {
+      holds <- sierraSource
+        .listHolds(patronNumber)
+        .flatMap {
+          case Right(holds) => Future(holds)
+          // TODO: Proper error here please
+          case Left(err) => Future.failed(new Throwable(s"$err"))
+        }
 
-    sourceIdentifiers = holds.entries.map { hold =>
-      SierraItemIdentifier.toSourceIdentifier(
-        SierraItemIdentifier.fromUrl(hold.record)
-      )
-    }
-  } yield sourceIdentifiers.zip(holds.entries).toMap
+      sourceIdentifiers = holds.entries.map { hold =>
+        SierraItemIdentifier.toSourceIdentifier(
+          SierraItemIdentifier.fromUrl(hold.record)
+        )
+      }
+    } yield sourceIdentifiers.zip(holds.entries).toMap
 }
 
 object SierraService {

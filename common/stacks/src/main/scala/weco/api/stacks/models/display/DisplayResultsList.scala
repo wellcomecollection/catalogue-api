@@ -8,15 +8,15 @@ import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.Item
 
 case class DisplayResultsList(
-                               results: List[DisplayRequest],
-                               totalResults: Int,
-                               `type`: String = "ResultList"
-                             )
+  results: List[DisplayRequest],
+  totalResults: Int,
+  `type`: String = "ResultList"
+)
 
 object DisplayResultsList {
   def apply(
-             itemHolds: List[(SierraHold, Item[IdState.Identified])]
-           ): DisplayResultsList =
+    itemHolds: List[(SierraHold, Item[IdState.Identified])]
+  ): DisplayResultsList =
     DisplayResultsList(
       results = itemHolds.map {
         case (hold, item) => DisplayRequest(hold, item)
@@ -26,15 +26,18 @@ object DisplayResultsList {
 }
 
 case class DisplayRequest(
-                           item: DisplayItem,
-                           pickupDate: Option[Instant],
-                           pickupLocation: DisplayLocationDescription,
-                           status: DisplayRequestStatus,
-                           `type`: String = "Request"
-                         )
+  item: DisplayItem,
+  pickupDate: Option[Instant],
+  pickupLocation: DisplayLocationDescription,
+  status: DisplayRequestStatus,
+  `type`: String = "Request"
+)
 
 object DisplayRequest {
-  def apply(hold: SierraHold, item: Item[IdState.Identified]): DisplayRequest = {
+  def apply(
+    hold: SierraHold,
+    item: Item[IdState.Identified]
+  ): DisplayRequest = {
     DisplayRequest(
       item = DisplayItem(
         item = item,
