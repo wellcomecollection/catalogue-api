@@ -1,4 +1,4 @@
-package weco.api.stacks.models.display
+package weco.api.requests.models.display
 
 import java.time.Instant
 

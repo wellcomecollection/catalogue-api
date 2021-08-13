@@ -3,7 +3,7 @@ package weco.api.requests.responses
 import akka.http.scaladsl.server.Route
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
-import weco.api.stacks.models.display.DisplayResultsList
+import weco.api.requests.models.display.DisplayResultsList
 import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.sierra.models.identifiers.SierraPatronNumber
 
