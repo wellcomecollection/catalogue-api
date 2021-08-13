@@ -102,7 +102,7 @@ class RequestsApiFeatureTest
              |            "type" : "Identifier"
              |          }
              |        ],
-             |        "title" : "${titleString}",
+             |        "title" : "$titleString",
              |        "locations" : [
              |        ],
              |        "type" : "Item"
