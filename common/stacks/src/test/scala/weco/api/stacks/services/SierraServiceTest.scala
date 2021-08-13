@@ -1,5 +1,7 @@
 package weco.api.stacks.services
 
+import java.net.URI
+
 import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -12,6 +14,7 @@ import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.fields.SierraLocation
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -242,8 +245,23 @@ class SierraServiceTest
 
           val future = service.getHolds(patron)
 
-          whenReady(future) { foo =>
-            foo shouldBe false
+          whenReady(future) { result =>
+            result shouldBe Map(
+              s"sierra-system-number/${item1.withCheckDigit}" -> SierraHold(
+                id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"),
+                record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"),
+                pickupLocation = SierraLocation("sepbb","Rare Materials Room"),
+                pickupByDate = None,
+                status = SierraHoldStatus("0","on hold.")
+              ),
+              s"sierra-system-number/${item2.withCheckDigit}" -> SierraHold(
+                id = new URI("https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"),
+                record = new URI(s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"),
+                pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
+                pickupByDate = None,
+                status = SierraHoldStatus("i", "item hold ready for pickup")
+              )
+            )
           }
         }
       }
