@@ -5,7 +5,7 @@ import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.akka.fixtures.Akka
+import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
@@ -14,20 +14,17 @@ import weco.catalogue.internal_model.locations.{
   AccessMethod,
   AccessStatus
 }
-import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class SierraServiceTest
     extends AnyFunSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
-    with Akka
     with EitherValues
-    with SierraIdentifierGenerators {
+    with SierraIdentifierGenerators
+    with SierraServiceFixture {
 
   describe("SierraService") {
     describe("getAccessConditions") {
@@ -67,26 +64,20 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
+        val itemNumber = SierraItemNumber("1601017")
+
+        val future = withSierraService(responses) {
+          _.getAccessConditions(Seq(itemNumber))
+        }
+
+        whenReady(future) {
+          _ shouldBe Map(
+            itemNumber ->
+              AccessCondition(
+                method = AccessMethod.OnlineRequest,
+                status = AccessStatus.Open
+              )
           )
-
-          val itemNumber = SierraItemNumber("1601017")
-          val future = service.getAccessConditions(Seq(itemNumber))
-
-          whenReady(future) {
-            _ shouldBe Map(
-              itemNumber ->
-                AccessCondition(
-                  method = AccessMethod.OnlineRequest,
-                  status = AccessStatus.Open
-                )
-            )
-          }
         }
       }
 
@@ -125,29 +116,21 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
+        val itemNumber = SierraItemNumber("1601017")
+        val missingItemNumber = SierraItemNumber("1234567")
+
+        val future = withSierraService(responses) {
+          _.getAccessConditions(Seq(itemNumber, missingItemNumber))
+        }
+
+        whenReady(future) {
+          _ shouldBe Map(
+            itemNumber ->
+              AccessCondition(
+                method = AccessMethod.OnlineRequest,
+                status = AccessStatus.Open
+              )
           )
-
-          val itemNumber = SierraItemNumber("1601017")
-          val missingItemNumber = SierraItemNumber("1234567")
-
-          val future =
-            service.getAccessConditions(Seq(itemNumber, missingItemNumber))
-
-          whenReady(future) {
-            _ shouldBe Map(
-              itemNumber ->
-                AccessCondition(
-                  method = AccessMethod.OnlineRequest,
-                  status = AccessStatus.Open
-                )
-            )
-          }
         }
       }
 
@@ -176,20 +159,14 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            client = new MemoryHttpClient(responses) with HttpGet
-            with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
+        val itemNumber = SierraItemNumber("1601017")
 
-          val itemNumber = SierraItemNumber("1601017")
-          val future = service.getAccessConditions(Seq(itemNumber))
+        val future = withSierraService(responses) {
+          _.getAccessConditions(Seq(itemNumber))
+        }
 
-          whenReady(future) {
-            _ shouldBe Map.empty
-          }
+        whenReady(future) {
+          _ shouldBe Map.empty
         }
       }
     }
@@ -243,58 +220,52 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
+        val future = withSierraService(responses) {
+          _.getStacksUserHolds(patron)
+        }
 
-          val future = service.getStacksUserHolds(patron)
-
-          whenReady(future) {
-            _.value shouldBe StacksUserHolds(
-              userId = "1234567",
-              holds = List(
-                StacksHold(
-                  sourceIdentifier = SourceIdentifier(
-                    ontologyType = "Item",
-                    identifierType = SierraSystemNumber,
-                    value = item1.withCheckDigit
-                  ),
-                  pickup = StacksPickup(
-                    location = StacksPickupLocation(
-                      id = "sepbb",
-                      label = "Rare Materials Room"
-                    ),
-                    pickUpBy = None
-                  ),
-                  status = StacksHoldStatus(
-                    id = "0",
-                    label = "on hold."
-                  )
+        whenReady(future) {
+          _.value shouldBe StacksUserHolds(
+            userId = "1234567",
+            holds = List(
+              StacksHold(
+                sourceIdentifier = SourceIdentifier(
+                  ontologyType = "Item",
+                  identifierType = SierraSystemNumber,
+                  value = item1.withCheckDigit
                 ),
-                StacksHold(
-                  sourceIdentifier = SourceIdentifier(
-                    ontologyType = "Item",
-                    identifierType = SierraSystemNumber,
-                    value = item2.withCheckDigit
+                pickup = StacksPickup(
+                  location = StacksPickupLocation(
+                    id = "sepbb",
+                    label = "Rare Materials Room"
                   ),
-                  pickup = StacksPickup(
-                    location = StacksPickupLocation(
-                      id = "sotop",
-                      label = "Rare Materials Room"
-                    ),
-                    pickUpBy = None
+                  pickUpBy = None
+                ),
+                status = StacksHoldStatus(
+                  id = "0",
+                  label = "on hold."
+                )
+              ),
+              StacksHold(
+                sourceIdentifier = SourceIdentifier(
+                  ontologyType = "Item",
+                  identifierType = SierraSystemNumber,
+                  value = item2.withCheckDigit
+                ),
+                pickup = StacksPickup(
+                  location = StacksPickupLocation(
+                    id = "sotop",
+                    label = "Rare Materials Room"
                   ),
-                  status = StacksHoldStatus(
-                    id = "i",
-                    label = "item hold ready for pickup"
-                  )
+                  pickUpBy = None
+                ),
+                status = StacksHoldStatus(
+                  id = "i",
+                  label = "item hold ready for pickup"
                 )
               )
             )
-          }
+          )
         }
       }
     }
@@ -330,21 +301,15 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
-          val future = service.placeHold(
+        val future = withSierraService(responses) {
+          _.placeHold(
             patron = patron,
             sourceIdentifier = sourceIdentifier
           )
+        }
 
-          whenReady(future) {
-            _.value shouldBe HoldAccepted.HoldCreated
-          }
+        whenReady(future) {
+          _.value shouldBe HoldAccepted.HoldCreated
         }
       }
 
@@ -439,21 +404,15 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
-          val future = service.placeHold(
+        val future = withSierraService(responses) {
+          _.placeHold(
             patron = patron,
             sourceIdentifier = sourceIdentifier
           )
+        }
 
-          whenReady(future) {
-            _.left.value shouldBe HoldRejected.ItemCannotBeRequested
-          }
+        whenReady(future) {
+          _.left.value shouldBe HoldRejected.ItemCannotBeRequested
         }
       }
     }

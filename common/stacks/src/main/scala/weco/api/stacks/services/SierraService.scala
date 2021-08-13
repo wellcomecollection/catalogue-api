@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class SierraService(
   sierraSource: SierraSource,
-  holdLimit: Int = 10
+  holdLimit: Int
 )(implicit ec: ExecutionContext)
     extends Logging {
 

@@ -6,6 +6,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
+import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{
@@ -14,6 +15,7 @@ import weco.catalogue.internal_model.locations.{
   AccessStatus
 }
 import weco.catalogue.internal_model.work.Item
+import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -28,13 +30,26 @@ class ItemUpdateServiceTest
     with ScalaFutures
     with ItemsApiGenerators
     with IntegrationPatience
-    with SierraIdentifierGenerators {
+    with SierraIdentifierGenerators
+    with SierraServiceFixture {
+
+  def withSierraItemUpdater[R](
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[ItemUpdater, R]): R =
+    withSierraService(responses) { sierraService =>
+      testWith(new SierraItemUpdater(sierraService))
+    }
+
+  def withItemUpdateService[R](
+    itemUpdaters: List[ItemUpdater]
+  )(testWith: TestWith[ItemUpdateService, R]): R =
+    testWith(new ItemUpdateService(itemUpdaters))
 
   val dummyDigitalItem = createDigitalItem
 
   def availableItemResponses(sierraItemNumber: SierraItemNumber) = Seq(
     (
-      HttpRequest(uri = sierraUri(sierraItemNumber)),
+      sierraItemRequest(sierraItemNumber),
       HttpResponse(
         entity = sierraItemResponse(
           sierraItemNumber = sierraItemNumber
@@ -45,7 +60,7 @@ class ItemUpdateServiceTest
 
   def onHoldItemResponses(sierraItemNumber: SierraItemNumber) = Seq(
     (
-      HttpRequest(uri = sierraUri(sierraItemNumber)),
+      sierraItemRequest(sierraItemNumber),
       HttpResponse(
         entity = sierraItemResponse(
           sierraItemNumber = sierraItemNumber,
