@@ -3,6 +3,8 @@ import json
 import os
 import re
 
+from trim_snapshot import trim_snapshot
+
 
 def get_latest_snapshot_filename():
     try:
@@ -17,7 +19,7 @@ def get_latest_snapshot_filename():
         raise RuntimeError("No local snapshots found!")
 
 
-def get_works(snapshot_filename=None):
+def get_works(*, snapshot_filename=None, fields=None):
     """
     Generates a list of works from a given snapshot.
     If no snapshot is given, it uses the latest snapshot.
@@ -31,9 +33,25 @@ def get_works(snapshot_filename=None):
             pprint(work)
             break
 
+    If you're only interested in a subset of fields, pass the ``fields``
+    argument, e.g.:
+
+        for work in get_works(fields=["items"]):
+            pprint(work)
+            break
+
+    This will generate Works that only have that subset of fields populated.
+    Limiting your analysis to a subset of fields can make this much faster
+    after the initial run.
+
     """
     if snapshot_filename is None:
         snapshot_filename = get_latest_snapshot_filename()
+
+    if fields is not None:
+        snapshot_filename = trim_snapshot(
+            snapshot_filename=snapshot_filename, fields=fields
+        )
 
     for line in gzip.open(snapshot_filename):
         yield json.loads(line)

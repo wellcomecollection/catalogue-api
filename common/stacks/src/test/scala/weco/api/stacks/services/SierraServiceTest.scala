@@ -11,7 +11,11 @@ import weco.akka.fixtures.Akka
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.fields.SierraLocation
@@ -80,7 +84,10 @@ class SierraServiceTest
           whenReady(future) {
             _ shouldBe Map(
               itemNumber ->
-                AccessCondition(method = AccessMethod.OnlineRequest)
+                AccessCondition(
+                  method = AccessMethod.OnlineRequest,
+                  status = AccessStatus.Open
+                )
             )
           }
         }
@@ -138,7 +145,10 @@ class SierraServiceTest
           whenReady(future) {
             _ shouldBe Map(
               itemNumber ->
-                AccessCondition(method = AccessMethod.OnlineRequest)
+                AccessCondition(
+                  method = AccessMethod.OnlineRequest,
+                  status = AccessStatus.Open
+                )
             )
           }
         }
