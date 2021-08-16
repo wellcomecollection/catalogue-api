@@ -25,8 +25,8 @@ trait LookupPendingRequests extends CustomDirectives {
           holdsMap.keys
             .map(srcId => (srcId, itemLookup.bySourceIdentifier(srcId)))
             .map {
-              case (srcId, itemLookup) =>
-                itemLookup.map {
+              case (srcId, itemLookupFuture) =>
+                itemLookupFuture.map {
                   case Right(item) => Some(item)
                   case Left(elasticError: ElasticsearchError) =>
                     warn(
