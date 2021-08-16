@@ -241,7 +241,7 @@ class SierraService(
             Future.successful(holds)
           case Left(sierraError) =>
             error(
-              s"Failed to list holds for patron ${patronNumber} in Sierra, got: ${sierraError}"
+              s"Failed to list holds for patron $patronNumber in Sierra, got: $sierraError"
             )
 
             Future.failed(
