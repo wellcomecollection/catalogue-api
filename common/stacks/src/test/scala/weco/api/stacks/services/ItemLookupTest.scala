@@ -26,6 +26,7 @@ class ItemLookupTest
     with IndexFixtures
     with ItemsGenerators
     with WorkGenerators {
+
   def createLookup(index: Index): ItemLookup =
     ElasticItemLookup(elasticClient, index = index)
 
