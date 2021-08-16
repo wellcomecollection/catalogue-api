@@ -294,10 +294,7 @@ class SierraServiceTest
           )
         )
 
-
-
         withSierraService(responses) { service =>
-
           val future = service.getHolds(patron)
 
           whenReady(future.failed) { failure =>
