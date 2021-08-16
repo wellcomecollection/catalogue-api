@@ -223,13 +223,7 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
-
+        withSierraService(responses) { service =>
           val future = service.getHolds(patron)
 
           whenReady(future) { result =>
@@ -269,7 +263,7 @@ class SierraServiceTest
                 status = SierraHoldStatus("i", "item hold ready for pickup")
               )
             )
-          )
+          }
         }
       }
 
@@ -300,12 +294,9 @@ class SierraServiceTest
           )
         )
 
-        withMaterializer { implicit mat =>
-          val service = SierraService(
-            new MemoryHttpClient(responses) with HttpGet with HttpPost {
-              override val baseUri: Uri = Uri("http://sierra:1234")
-            }
-          )
+
+
+        withSierraService(responses) { service =>
 
           val future = service.getHolds(patron)
 
