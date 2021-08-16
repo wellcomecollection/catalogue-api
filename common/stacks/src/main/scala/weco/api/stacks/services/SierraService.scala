@@ -103,16 +103,11 @@ class SierraService(
       //
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
-        getStacksUserHolds(patron).flatMap {
-          case Right(holds)
-              if holds.holds
-                .map(_.sourceIdentifier)
-                .contains(sourceIdentifier) =>
+        getHolds(patron).flatMap {
+          case holds if holds.keys.toList.contains(sourceIdentifier) =>
             Future.successful(Right(HoldAccepted.HoldAlreadyExists))
-
-          case Right(holds) if holds.holds.size >= holdLimit =>
+          case holds if holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
-
           case _ => checkIfItemCanBeRequested(item)
         }
 
@@ -234,44 +229,35 @@ class SierraService(
     }
   }
 
-  protected def buildStacksHold(entry: SierraHold): StacksHold = {
-    val itemNumber = SierraItemIdentifier.fromUrl(entry.record)
-    val sourceIdentifier = SierraItemIdentifier.toSourceIdentifier(itemNumber)
-
-    val pickupLocation = StacksPickupLocation(
-      id = entry.pickupLocation.code,
-      label = entry.pickupLocation.name
-    )
-
-    val pickup = StacksPickup(
-      location = pickupLocation,
-      pickUpBy = entry.pickupByDate
-    )
-
-    val status = StacksHoldStatus(
-      id = entry.status.code,
-      label = entry.status.name
-    )
-
-    StacksHold(sourceIdentifier, pickup, status)
-  }
-
-  def getStacksUserHolds(
+  def getHolds(
     patronNumber: SierraPatronNumber
-  ): Future[Either[SierraErrorCode, StacksUserHolds]] =
-    sierraSource
-      .listHolds(patronNumber)
-      .map {
-        case Right(holds) =>
-          Right(
-            StacksUserHolds(
-              userId = patronNumber.withoutCheckDigit,
-              holds = holds.entries.map(buildStacksHold)
+  ): Future[Map[SourceIdentifier, SierraHold]] =
+    for {
+      holds <- sierraSource
+        .listHolds(patronNumber)
+        .flatMap {
+          case Right(holds) =>
+            Future.successful(holds)
+          case Left(sierraError) =>
+            error(
+              s"Failed to list holds for patron $patronNumber in Sierra, got: $sierraError"
             )
-          )
 
-        case Left(err) => Left(err)
+            Future.failed(
+              new RuntimeException(
+                s"Sierra error trying to retrieve holds!"
+              )
+            )
+        }
+
+      sourceIdentifiers = holds.entries.map { hold =>
+        val identifier = SierraItemIdentifier.toSourceIdentifier(
+          SierraItemIdentifier.fromUrl(hold.record)
+        )
+
+        identifier -> hold
       }
+    } yield sourceIdentifiers.toMap
 }
 
 object SierraService {

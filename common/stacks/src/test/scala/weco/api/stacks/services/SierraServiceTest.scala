@@ -1,5 +1,7 @@
 package weco.api.stacks.services
 
+import java.net.URI
+
 import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -15,6 +17,7 @@ import weco.catalogue.internal_model.locations.{
   AccessStatus
 }
 import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.fields.SierraLocation
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 
 class SierraServiceTest
@@ -171,8 +174,8 @@ class SierraServiceTest
       }
     }
 
-    describe("getStacksUserHolds") {
-      it("gets a StacksUserHolds") {
+    describe("getHolds") {
+      it("wraps a response from the Sierra API") {
         val patron = SierraPatronNumber("1234567")
 
         val item1 = createSierraItemNumber
@@ -220,52 +223,83 @@ class SierraServiceTest
           )
         )
 
-        val future = withSierraService(responses) {
-          _.getStacksUserHolds(patron)
-        }
+        withSierraService(responses) { service =>
+          val future = service.getHolds(patron)
 
-        whenReady(future) {
-          _.value shouldBe StacksUserHolds(
-            userId = "1234567",
-            holds = List(
-              StacksHold(
-                sourceIdentifier = SourceIdentifier(
-                  ontologyType = "Item",
-                  identifierType = SierraSystemNumber,
-                  value = item1.withCheckDigit
+          whenReady(future) { result =>
+            val item1SrcId = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = item1.withCheckDigit
+            )
+
+            val item2SrcId = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = item2.withCheckDigit
+            )
+
+            result shouldBe Map(
+              item1SrcId -> SierraHold(
+                id = new URI(
+                  "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111"
                 ),
-                pickup = StacksPickup(
-                  location = StacksPickupLocation(
-                    id = "sepbb",
-                    label = "Rare Materials Room"
-                  ),
-                  pickUpBy = None
+                record = new URI(
+                  s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"
                 ),
-                status = StacksHoldStatus(
-                  id = "0",
-                  label = "on hold."
-                )
+                pickupLocation = SierraLocation("sepbb", "Rare Materials Room"),
+                pickupByDate = None,
+                status = SierraHoldStatus("0", "on hold.")
               ),
-              StacksHold(
-                sourceIdentifier = SourceIdentifier(
-                  ontologyType = "Item",
-                  identifierType = SierraSystemNumber,
-                  value = item2.withCheckDigit
+              item2SrcId -> SierraHold(
+                id = new URI(
+                  "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"
                 ),
-                pickup = StacksPickup(
-                  location = StacksPickupLocation(
-                    id = "sotop",
-                    label = "Rare Materials Room"
-                  ),
-                  pickUpBy = None
+                record = new URI(
+                  s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"
                 ),
-                status = StacksHoldStatus(
-                  id = "i",
-                  label = "item hold ready for pickup"
-                )
+                pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
+                pickupByDate = None,
+                status = SierraHoldStatus("i", "item hold ready for pickup")
+              )
+            )
+          }
+        }
+      }
+
+      it("fails if Sierra returns an error") {
+        val patron = SierraPatronNumber("1234567")
+
+        val responses = Seq(
+          (
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+            ),
+            HttpResponse(
+              status = StatusCodes.InternalServerError,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 132,
+                  |  "specificCode": 2,
+                  |  "httpStatus": 500,
+                  |  "name": "XCirc error",
+                  |  "description": "XCirc error"
+                  |}
+                  |""".stripMargin
               )
             )
           )
+        )
+
+        withSierraService(responses) { service =>
+          val future = service.getHolds(patron)
+
+          whenReady(future.failed) { failure =>
+            failure.getMessage shouldBe "Sierra error trying to retrieve holds!"
+          }
         }
       }
     }

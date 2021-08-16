@@ -32,7 +32,8 @@ class RequestsApiFeatureTest
   describe("requests") {
     it("provides information about a users' holds") {
       val patron = SierraPatronNumber("1234567")
-      val itemNumber = createSierraItemNumber
+      val itemNumber1 = createSierraItemNumber
+      val itemNumber2 = createSierraItemNumber
 
       val responses = Seq(
         (
@@ -51,7 +52,17 @@ class RequestsApiFeatureTest
                  |  "entries": [
                  |    {
                  |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
-                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber.withoutCheckDigit}",
+                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber1.withoutCheckDigit}",
+                 |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                 |      "frozen": false,
+                 |      "placed": "2021-05-07",
+                 |      "notWantedBeforeDate": "2021-05-07",
+                 |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
+                 |      "status": {"code": "0", "name": "on hold."}
+                 |    },
+                 |    {
+                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber2.withoutCheckDigit}",
                  |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
                  |      "frozen": false,
                  |      "placed": "2021-05-07",
@@ -72,7 +83,7 @@ class RequestsApiFeatureTest
       val item = createIdentifiedItemWith(
         sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
-          value = itemNumber.withCheckDigit,
+          value = itemNumber1.withCheckDigit,
           ontologyType = "Item"
         ),
         locations = List.empty,
@@ -98,11 +109,11 @@ class RequestsApiFeatureTest
              |              "label" : "Sierra system number",
              |              "type" : "IdentifierType"
              |            },
-             |            "value" : "${itemNumber.withCheckDigit}",
+             |            "value" : "${itemNumber1.withCheckDigit}",
              |            "type" : "Identifier"
              |          }
              |        ],
-             |        "title" : "${titleString}",
+             |        "title" : "$titleString",
              |        "locations" : [
              |        ],
              |        "type" : "Item"
