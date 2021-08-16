@@ -15,6 +15,7 @@ import weco.catalogue.display_model.ElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
+import weco.typesafe.config.builders.EnrichConfig._
 
 import scala.concurrent.ExecutionContext
 
@@ -35,10 +36,12 @@ object Main extends WellcomeTypesafeApp {
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
+    val holdLimit = config.requireInt("sierra.holdLimit")
     val client = SierraOauthHttpClientBuilder.build(config)
+    val sierraService = SierraService(client, holdLimit = holdLimit)
 
     val router: RequestsApi = new RequestsApi(
-      sierraService = SierraService(client),
+      sierraService = sierraService,
       itemLookup = ElasticItemLookup(
         elasticClient,
         index = ElasticConfig.apply().worksIndex

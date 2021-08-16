@@ -29,12 +29,11 @@ import weco.sierra.models.identifiers.{
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
-  *                   TODO: Make this a configurable parameter.
   *
   */
 class SierraService(
   sierraSource: SierraSource,
-  holdLimit: Int = 10
+  holdLimit: Int
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -262,7 +261,7 @@ class SierraService(
 }
 
 object SierraService {
-  def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int = 10)(
+  def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int)(
     implicit
     ec: ExecutionContext,
     mat: Materializer
