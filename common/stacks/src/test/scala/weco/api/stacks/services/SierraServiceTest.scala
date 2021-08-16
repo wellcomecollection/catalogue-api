@@ -198,7 +198,7 @@ class SierraServiceTest
     }
 
     describe("getHolds") {
-      it("gets a Map[SourceIdentifier, SierraHold]") {
+      it("wraps a response from the Sierra API") {
         val patron = SierraPatronNumber("1234567")
 
         val item1 = createSierraItemNumber
