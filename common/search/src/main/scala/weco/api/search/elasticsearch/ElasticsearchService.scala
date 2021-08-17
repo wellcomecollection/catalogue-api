@@ -3,7 +3,12 @@ package weco.api.search.elasticsearch
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.{SearchRequest, SearchResponse}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  MultiSearchResponse,
+  SearchRequest,
+  SearchResponse
+}
 import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
@@ -66,6 +71,45 @@ class ElasticsearchService(elasticClient: ElasticClient)(
           case Right(response) =>
             transaction.setLabel("elasticTook", response.took)
             Right(response)
+
+          case Left(err) =>
+            Left(ElasticsearchError(err))
+        }
+    }
+
+  def executeMultiSearchRequest(
+    request: MultiSearchRequest
+  ): Future[Either[ElasticsearchError, MultiSearchResponse]] =
+    spanFuture(
+      name = "ElasticSearch#executeMultiSearchRequest",
+      spanType = "request",
+      subType = "elastic",
+      action = "query"
+    ) {
+      debug(s"Sending ES request: ${request.show}")
+      val transaction = Tracing.currentTransaction
+      withActiveTrace(elasticClient.execute(request))
+        .map(_.toEither)
+        .map {
+          case Right(multiResponse) =>
+            val accumulatedTime =
+              multiResponse.items.zipWithIndex.foldLeft(0L) {
+                (acc, itemWithIndex) =>
+                  val (item, index) = itemWithIndex
+
+                  item.response match {
+                    case Right(itemResponse) =>
+                      transaction.setLabel(
+                        s"elasticTook-${index}",
+                        itemResponse.took
+                      )
+                      acc + itemResponse.took
+                    case Left(_) => acc
+                  }
+              }
+
+            transaction.setLabel("elasticTookTotal", accumulatedTime)
+            Right(multiResponse)
 
           case Left(err) =>
             Left(ElasticsearchError(err))
