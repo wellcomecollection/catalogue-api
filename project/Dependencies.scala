@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "5153.231ec77cb4a1dcbb60558320cc7e12fed8f821c6"
+    val internalModel = "5194.72ea40ecc1ecb28c0d0924d7f64209bf9c5a6e06"
   }
 
   val internalModel: Seq[ModuleID] = library(
