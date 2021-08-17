@@ -1,12 +1,6 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{
-  boolQuery,
-  bulk,
-  indexInto,
-  search,
-  termQuery
-}
+import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery}
 import com.sksamuel.elastic4s.analysis.Analysis
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
@@ -20,13 +14,11 @@ import io.circe.generic.auto._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
-import com.sksamuel.elastic4s.requests.searches.{
-  MultiSearchRequest,
-  SearchRequest
-}
+import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.{RandomGenerators, TestWith}
 
@@ -38,12 +30,13 @@ class ElasticsearchServiceTest
     with IndexFixtures
     with EitherValues
     with RandomGenerators
+    with IdentifiersGenerators
     with ElasticsearchFixtures {
 
   case class ExampleThing(id: CanonicalId, name: String)
 
   def randomThing: ExampleThing = ExampleThing(
-    id = CanonicalId(randomAlphanumeric(8).toLowerCase),
+    id = createCanonicalId,
     name = randomAlphanumeric(10).toLowerCase
   )
 
@@ -109,7 +102,7 @@ class ElasticsearchServiceTest
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
-        val badId = CanonicalId(randomAlphanumeric(8))
+        val badId = createCanonicalId
 
         val findByIdFuture =
           elasticsearchService.findById[ExampleThing](badId)(index)
@@ -123,22 +116,17 @@ class ElasticsearchServiceTest
     }
 
     it("should return an appropriate error if the index does not exist") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
 
-      withExampleIndex(thingsToIndex) { _ =>
-        val elasticsearchService = new ElasticsearchService(elasticClient)
-        val thingToQueryFor = thingsToIndex.head
-        val badIndex = Index(randomAlphanumeric(10))
+      val findByIdFuture = elasticsearchService.findById[ExampleThing](
+        createCanonicalId
+      )(badIndex)
 
-        val findByIdFuture = elasticsearchService.findById[ExampleThing](
-          thingToQueryFor.id
-        )(badIndex)
+      whenReady(findByIdFuture) { findByIdEither =>
+        val failedFindByID = findByIdEither.left.value
 
-        whenReady(findByIdFuture) { findByIdEither =>
-          val failedFindByID = findByIdEither.left.value
-
-          failedFindByID shouldBe a[IndexNotFoundError]
-        }
+        failedFindByID shouldBe a[IndexNotFoundError]
       }
     }
   }
@@ -168,26 +156,20 @@ class ElasticsearchServiceTest
     }
 
     it("returns an appropriate error when the specified index does not exist") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
 
-      withExampleIndex(thingsToIndex) { _ =>
-        val elasticsearchService = new ElasticsearchService(elasticClient)
-        val thingToQueryFor = thingsToIndex.head
+      val searchRequest = searchRequestForThingByName(
+        index = badIndex,
+        name = randomAlphanumeric(10)
+      )
 
-        val badIndex = Index(randomAlphanumeric(10))
+      val findBySearchFuture =
+        elasticsearchService.findBySearch[ExampleThing](searchRequest)
 
-        val searchRequest = searchRequestForThingByName(
-          index = badIndex,
-          name = thingToQueryFor.name
-        )
-
-        val findBySearchFuture =
-          elasticsearchService.findBySearch[ExampleThing](searchRequest)
-
-        whenReady(findBySearchFuture) { findBySearchEither =>
-          val failedFindBySearch = findBySearchEither.left.value
-          failedFindBySearch shouldBe a[IndexNotFoundError]
-        }
+      whenReady(findBySearchFuture) { findBySearchEither =>
+        val failedFindBySearch = findBySearchEither.left.value
+        failedFindBySearch shouldBe a[IndexNotFoundError]
       }
     }
   }
@@ -220,7 +202,7 @@ class ElasticsearchServiceTest
       }
     }
 
-    it("returns an appropriate error when the specified index does not exist") {
+    it("returns an appropriate error for only those queries where the specified index does not exist") {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
@@ -277,7 +259,7 @@ class ElasticsearchServiceTest
 
         whenReady(multiSearchResponseFuture) {
           case (errors, searchResponses) =>
-            errors should have size (0)
+            errors shouldBe empty
 
             val returnedThings = searchResponses.flatMap(_.to[ExampleThing])
             returnedThings.toSet shouldBe thingsToQueryFor.toSet
@@ -285,7 +267,7 @@ class ElasticsearchServiceTest
       }
     }
 
-    it("returns an appropriate error when the specified index does not exist") {
+    it("returns an appropriate error for only those queries where the specified index does not exist") {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
@@ -347,26 +329,21 @@ class ElasticsearchServiceTest
     }
 
     it("returns an appropriate error when the specified index does not exist") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
 
-      withExampleIndex(thingsToIndex) { _ =>
-        val elasticsearchService = new ElasticsearchService(elasticClient)
-        val thingToQueryFor = thingsToIndex.head
-        val badIndex = Index(randomAlphanumeric(10))
+      val searchRequest = searchRequestForThingByName(
+        index = badIndex,
+        name = randomAlphanumeric(10)
+      )
 
-        val searchRequest = searchRequestForThingByName(
-          index = badIndex,
-          name = thingToQueryFor.name
-        )
+      val searchResponseFuture =
+        elasticsearchService.executeSearchRequest(searchRequest)
 
-        val searchResponseFuture =
-          elasticsearchService.executeSearchRequest(searchRequest)
+      whenReady(searchResponseFuture) { searchResponseEither =>
+        val failedSearchResponse = searchResponseEither.left.value
 
-        whenReady(searchResponseFuture) { searchResponseEither =>
-          val failedSearchResponse = searchResponseEither.left.value
-
-          failedSearchResponse shouldBe a[IndexNotFoundError]
-        }
+        failedSearchResponse shouldBe a[IndexNotFoundError]
       }
     }
   }
