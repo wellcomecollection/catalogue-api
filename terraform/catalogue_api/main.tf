@@ -24,6 +24,8 @@ module "catalogue_api_prod" {
   es_search_secret_config = local.es_search_secret_config
   sierra_secret_config    = local.sierra_secret_config
 
+  api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
+
   providers = {
     aws.dns        = aws.dns
     aws.experience = aws.experience
@@ -55,6 +57,8 @@ module "catalogue_api_stage" {
   es_items_secret_config  = local.es_items_secret_config
   es_search_secret_config = local.es_search_secret_config
   sierra_secret_config    = local.sierra_secret_config
+
+  api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
 
   providers = {
     aws.dns        = aws.dns
