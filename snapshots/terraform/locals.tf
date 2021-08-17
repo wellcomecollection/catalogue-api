@@ -13,8 +13,10 @@ locals {
 
   shared_logging_secrets = data.terraform_remote_state.shared.outputs.shared_secrets_logging
 
+  monitoring_outputs = data.terraform_remote_state.monitoring.outputs
+
   lambda_error_alarm_arn = data.terraform_remote_state.shared.outputs.lambda_error_alarm_arn
-  dlq_alarm_arn          = data.terraform_remote_state.shared.outputs.dlq_alarm_arn
+  dlq_alarm_arn          = local.monitoring_outputs["catalogue_dlq_alarm_topic_arn"]
 
   vpc_id  = data.terraform_remote_state.catalogue_account.outputs.catalogue_vpc_id
   subnets = data.terraform_remote_state.catalogue_account.outputs.catalogue_vpc_private_subnets
