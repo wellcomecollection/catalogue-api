@@ -54,6 +54,27 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
+  def findByMultiSearch[T](
+                       request: MultiSearchRequest
+  )(implicit decoder: Decoder[T]): Future[(Seq[ElasticsearchError], Seq[T])] =
+    for {
+      response <- executeMultiSearchRequest(request)
+
+      results = response match {
+        case Right(searchResponse: MultiSearchResponse) =>
+          val failures = searchResponse.failures
+            .map(ElasticsearchError(_))
+
+          val successes = searchResponse.successes
+            .flatMap(_.hits.hits)
+            .map(deserialize[T])
+
+          (failures, successes)
+
+        case Left(err) => (Seq(err), List.empty)
+      }
+    } yield results
+
   def executeSearchRequest(
     request: SearchRequest
   ): Future[Either[ElasticsearchError, SearchResponse]] =
