@@ -1,6 +1,12 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery}
+import com.sksamuel.elastic4s.ElasticDsl.{
+  boolQuery,
+  bulk,
+  indexInto,
+  search,
+  termQuery
+}
 import com.sksamuel.elastic4s.analysis.Analysis
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
@@ -14,7 +20,10 @@ import io.circe.generic.auto._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
-import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  SearchRequest
+}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
@@ -202,7 +211,9 @@ class ElasticsearchServiceTest
       }
     }
 
-    it("returns an appropriate error for only those queries where the specified index does not exist") {
+    it(
+      "returns an appropriate error for only those queries where the specified index does not exist"
+    ) {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
@@ -267,7 +278,9 @@ class ElasticsearchServiceTest
       }
     }
 
-    it("returns an appropriate error for only those queries where the specified index does not exist") {
+    it(
+      "returns an appropriate error for only those queries where the specified index does not exist"
+    ) {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
