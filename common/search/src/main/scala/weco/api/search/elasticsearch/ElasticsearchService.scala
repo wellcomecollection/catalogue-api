@@ -92,16 +92,21 @@ class ElasticsearchService(elasticClient: ElasticClient)(
         .map(_.toEither)
         .map {
           case Right(multiResponse) =>
-            val accumulatedTime = multiResponse.items.zipWithIndex.foldLeft(0L) { (acc, itemWithIndex) =>
-              val (item, index) = itemWithIndex
+            val accumulatedTime =
+              multiResponse.items.zipWithIndex.foldLeft(0L) {
+                (acc, itemWithIndex) =>
+                  val (item, index) = itemWithIndex
 
-              item.response match {
-                case Right(itemResponse) =>
-                  transaction.setLabel(s"elasticTook-${index}", itemResponse.took)
-                  acc + itemResponse.took
-                case Left(_) => acc
+                  item.response match {
+                    case Right(itemResponse) =>
+                      transaction.setLabel(
+                        s"elasticTook-${index}",
+                        itemResponse.took
+                      )
+                      acc + itemResponse.took
+                    case Left(_) => acc
+                  }
               }
-            }
 
             transaction.setLabel("elasticTookTotal", accumulatedTime)
             Right(multiResponse)
