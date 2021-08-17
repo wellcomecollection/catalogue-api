@@ -3,12 +3,7 @@ package weco.api.search.elasticsearch
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.{
-  MultiSearchRequest,
-  MultiSearchResponse,
-  SearchRequest,
-  SearchResponse
-}
+import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest, SearchResponse}
 import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
@@ -57,23 +52,14 @@ class ElasticsearchService(elasticClient: ElasticClient)(
   def findByMultiSearch[T](
                        request: MultiSearchRequest
   )(implicit decoder: Decoder[T]): Future[(Seq[ElasticsearchError], Seq[T])] =
-    for {
-      response <- executeMultiSearchRequest(request)
+    executeMultiSearchRequest(request).map {
+      case (errors, responses) =>
+        val deserialisedResponses = responses
+          .flatMap(_.hits.hits)
+          .map(deserialize[T])
 
-      results = response match {
-        case Right(searchResponse: MultiSearchResponse) =>
-          val failures = searchResponse.failures
-            .map(ElasticsearchError(_))
-
-          val successes = searchResponse.successes
-            .flatMap(_.hits.hits)
-            .map(deserialize[T])
-
-          (failures, successes)
-
-        case Left(err) => (Seq(err), List.empty)
-      }
-    } yield results
+        (errors, deserialisedResponses)
+    }
 
   def executeSearchRequest(
     request: SearchRequest
@@ -100,7 +86,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def executeMultiSearchRequest(
     request: MultiSearchRequest
-  ): Future[Either[ElasticsearchError, MultiSearchResponse]] =
+  ): Future[(Seq[ElasticsearchError], Seq[SearchResponse])] =
     spanFuture(
       name = "ElasticSearch#executeMultiSearchRequest",
       spanType = "request",
@@ -113,27 +99,37 @@ class ElasticsearchService(elasticClient: ElasticClient)(
         .map(_.toEither)
         .map {
           case Right(multiResponse) =>
-            val accumulatedTime =
-              multiResponse.items.zipWithIndex.foldLeft(0L) {
-                (acc, itemWithIndex) =>
-                  val (item, index) = itemWithIndex
+            val foldInitial = (0L, Seq.empty[Long], Seq.empty[ElasticsearchError], Seq.empty[SearchResponse])
+
+            val (finalTotalTimeTaken, finalTimesTaken, finalErrors, finalSearchResponses) =
+              multiResponse.items.foldLeft(foldInitial) {
+                (acc, item) =>
+                  val (timeTakenTotal, timesTaken, errors, searchResponses) = acc
 
                   item.response match {
-                    case Right(itemResponse) =>
-                      transaction.setLabel(
-                        s"elasticTook-${index}",
-                        itemResponse.took
-                      )
-                      acc + itemResponse.took
-                    case Left(_) => acc
+                    case Right(itemResponse) => {
+                      val updatedTotalTimeTaken = timeTakenTotal + itemResponse.took
+                      val updatedTimesTaken = timesTaken :+ itemResponse.took
+                      val updatedSearchResponses = searchResponses :+ itemResponse
+
+                      (updatedTotalTimeTaken, updatedTimesTaken, errors, updatedSearchResponses)
+                    }
+
+                    case Left(error) => {
+                      val updatedErrors = errors :+ ElasticsearchError(error)
+                      (timeTakenTotal, timesTaken, updatedErrors, searchResponses)
+                    }
                   }
               }
 
-            transaction.setLabel("elasticTookTotal", accumulatedTime)
-            Right(multiResponse)
+            finalTimesTaken.zipWithIndex.map { case (timeTaken, index) =>
+              transaction.setLabel(s"elasticTook-$index", timeTaken)
+            }
+            transaction.setLabel("elasticTookTotal", finalTotalTimeTaken)
 
-          case Left(err) =>
-            Left(ElasticsearchError(err))
+            (finalErrors, finalSearchResponses)
+
+          case Left(err) => (Seq(ElasticsearchError(err)), Seq.empty)
         }
     }
 
