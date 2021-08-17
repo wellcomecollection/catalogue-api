@@ -1,6 +1,12 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery}
+import com.sksamuel.elastic4s.ElasticDsl.{
+  boolQuery,
+  bulk,
+  indexInto,
+  search,
+  termQuery
+}
 import com.sksamuel.elastic4s.analysis.Analysis
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
@@ -22,9 +28,8 @@ import weco.fixtures.{RandomGenerators, TestWith}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 class ElasticsearchServiceTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with IndexFixtures
     with EitherValues
@@ -48,7 +53,9 @@ class ElasticsearchServiceTest
       .size(1)
   }
 
-  def withExampleIndex[R](thingsToIndex: List[ExampleThing])(testWith : TestWith[Index, R]) : R = {
+  def withExampleIndex[R](
+    thingsToIndex: List[ExampleThing]
+  )(testWith: TestWith[Index, R]): R = {
     val id = KeywordField("id")
     val name = TextField("name")
     val mapping = MappingDefinition(properties = List(id, name))
@@ -78,10 +85,9 @@ class ElasticsearchServiceTest
   describe("executeMultiSearchRequest") {
     it("performs a multiSearchRequest") {
 
-      val thingsToIndex = 0.to(randomInt(5,10)).map(_ => randomThing).toList
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
-
         val elasticsearchService = new ElasticsearchService(elasticClient)
 
         val searchRequests = thingsToIndex.map { thing =>
@@ -92,11 +98,13 @@ class ElasticsearchServiceTest
         }
 
         val multiSearchRequest = MultiSearchRequest(searchRequests)
-        val multiSearchResponseFuture = elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
+        val multiSearchResponseFuture =
+          elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
 
         whenReady(multiSearchResponseFuture) { multiSearchResponseEither =>
           val multiSearchResponse = multiSearchResponseEither.right.value
-          val queryResults = multiSearchResponse.items.map(_.response.right.value)
+          val queryResults =
+            multiSearchResponse.items.map(_.response.right.value)
           val returnedThings = queryResults.flatMap(_.to[ExampleThing])
 
           returnedThings.toSet shouldBe thingsToIndex.toSet
@@ -108,10 +116,9 @@ class ElasticsearchServiceTest
   describe("executeSearchRequest") {
     it("performs a searchRequest") {
 
-      val thingsToIndex = 0.to(randomInt(5,10)).map(_ => randomThing).toList
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
-
         val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
@@ -120,7 +127,8 @@ class ElasticsearchServiceTest
           name = thingToQueryFor.name
         )
 
-        val searchResponseFuture = elasticsearchService.executeSearchRequest(searchRequest)
+        val searchResponseFuture =
+          elasticsearchService.executeSearchRequest(searchRequest)
 
         whenReady(searchResponseFuture) { searchResponseEither =>
           val searchResponse = searchResponseEither.right.value
