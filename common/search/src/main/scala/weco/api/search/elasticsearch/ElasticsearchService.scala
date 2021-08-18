@@ -5,7 +5,6 @@ import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{
   MultiSearchRequest,
-  MultiSearchResponse,
   SearchRequest,
   SearchResponse
 }
@@ -54,6 +53,18 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       }
     } yield results
 
+  def findByMultiSearch[T](
+    request: MultiSearchRequest
+  )(implicit decoder: Decoder[T]): Future[(Seq[ElasticsearchError], Seq[T])] =
+    executeMultiSearchRequest(request).map {
+      case (errors, responses) =>
+        val deserialisedResponses = responses
+          .flatMap(_.hits.hits)
+          .map(deserialize[T])
+
+        (errors, deserialisedResponses)
+    }
+
   def executeSearchRequest(
     request: SearchRequest
   ): Future[Either[ElasticsearchError, SearchResponse]] =
@@ -79,7 +90,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def executeMultiSearchRequest(
     request: MultiSearchRequest
-  ): Future[Either[ElasticsearchError, MultiSearchResponse]] =
+  ): Future[(Seq[ElasticsearchError], Seq[SearchResponse])] =
     spanFuture(
       name = "ElasticSearch#executeMultiSearchRequest",
       spanType = "request",
@@ -92,27 +103,52 @@ class ElasticsearchService(elasticClient: ElasticClient)(
         .map(_.toEither)
         .map {
           case Right(multiResponse) =>
-            val accumulatedTime =
-              multiResponse.items.zipWithIndex.foldLeft(0L) {
-                (acc, itemWithIndex) =>
-                  val (item, index) = itemWithIndex
+            val foldInitial = (
+              0L,
+              Seq.empty[Long],
+              Seq.empty[ElasticsearchError],
+              Seq.empty[SearchResponse]
+            )
 
-                  item.response match {
-                    case Right(itemResponse) =>
-                      transaction.setLabel(
-                        s"elasticTook-${index}",
-                        itemResponse.took
-                      )
-                      acc + itemResponse.took
-                    case Left(_) => acc
+            val (
+              finalTotalTimeTaken,
+              finalTimesTaken,
+              finalErrors,
+              finalSearchResponses
+            ) =
+              multiResponse.items.foldLeft(foldInitial) { (acc, item) =>
+                val (timeTakenTotal, timesTaken, errors, searchResponses) = acc
+
+                item.response match {
+                  case Right(itemResponse) => {
+                    val updatedTotalTimeTaken = timeTakenTotal + itemResponse.took
+                    val updatedTimesTaken = timesTaken :+ itemResponse.took
+                    val updatedSearchResponses = searchResponses :+ itemResponse
+
+                    (
+                      updatedTotalTimeTaken,
+                      updatedTimesTaken,
+                      errors,
+                      updatedSearchResponses
+                    )
                   }
+
+                  case Left(error) => {
+                    val updatedErrors = errors :+ ElasticsearchError(error)
+                    (timeTakenTotal, timesTaken, updatedErrors, searchResponses)
+                  }
+                }
               }
 
-            transaction.setLabel("elasticTookTotal", accumulatedTime)
-            Right(multiResponse)
+            finalTimesTaken.zipWithIndex.map {
+              case (timeTaken, index) =>
+                transaction.setLabel(s"elasticTook-$index", timeTaken)
+            }
+            transaction.setLabel("elasticTookTotal", finalTotalTimeTaken)
 
-          case Left(err) =>
-            Left(ElasticsearchError(err))
+            (finalErrors, finalSearchResponses)
+
+          case Left(err) => (Seq(ElasticsearchError(err)), Seq.empty)
         }
     }
 

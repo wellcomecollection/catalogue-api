@@ -20,10 +20,15 @@ import io.circe.generic.auto._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
-import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  SearchRequest
+}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.{RandomGenerators, TestWith}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,16 +39,17 @@ class ElasticsearchServiceTest
     with IndexFixtures
     with EitherValues
     with RandomGenerators
+    with IdentifiersGenerators
     with ElasticsearchFixtures {
 
-  case class ExampleThing(id: String, name: String)
+  case class ExampleThing(id: CanonicalId, name: String)
 
-  def randomThing = ExampleThing(
-    id = randomAlphanumeric(10).toLowerCase,
+  def randomThing: ExampleThing = ExampleThing(
+    id = createCanonicalId,
     name = randomAlphanumeric(10).toLowerCase
   )
 
-  def searchRequestForThingByName(index: Index, name: String) = {
+  def searchRequestForThingByName(index: Index, name: String): SearchRequest = {
     search(index)
       .query(
         boolQuery.filter(
@@ -68,7 +74,7 @@ class ElasticsearchServiceTest
           thingsToIndex.map { thing =>
             val jsonDoc = toJson(thing).get
             indexInto(index.name)
-              .id(thing.id)
+              .id(thing.id.underlying)
               .doc(jsonDoc)
           }
         ).refreshImmediately
@@ -82,6 +88,156 @@ class ElasticsearchServiceTest
     }
   }
 
+  describe("findById") {
+    it("finds documents by ID") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingToQueryFor = thingsToIndex.head
+
+        val findByIdFuture =
+          elasticsearchService.findById[ExampleThing](thingToQueryFor.id)(index)
+
+        whenReady(findByIdFuture) {
+          _.right.value shouldBe thingToQueryFor
+        }
+      }
+    }
+
+    it("should return an appropriate error if no ID matches") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val badId = createCanonicalId
+
+        val findByIdFuture =
+          elasticsearchService.findById[ExampleThing](badId)(index)
+
+        whenReady(findByIdFuture) {
+          _.left.value shouldBe a[DocumentNotFoundError[_]]
+        }
+      }
+    }
+
+    it("should return an appropriate error if the index does not exist") {
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
+
+      val findByIdFuture = elasticsearchService.findById[ExampleThing](
+        createCanonicalId
+      )(badIndex)
+
+      whenReady(findByIdFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
+      }
+    }
+  }
+
+  describe("findBySearch") {
+    it("finds documents by search") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingToQueryFor = thingsToIndex.head
+
+        val searchRequest = searchRequestForThingByName(
+          index = index,
+          name = thingToQueryFor.name
+        )
+
+        val findBySearchFuture =
+          elasticsearchService.findBySearch[ExampleThing](searchRequest)
+
+        whenReady(findBySearchFuture) {
+          _.right.value shouldBe Seq(thingToQueryFor)
+        }
+      }
+    }
+
+    it("returns an appropriate error when the specified index does not exist") {
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
+
+      val searchRequest = searchRequestForThingByName(
+        index = badIndex,
+        name = randomAlphanumeric(10)
+      )
+
+      val findBySearchFuture =
+        elasticsearchService.findBySearch[ExampleThing](searchRequest)
+
+      whenReady(findBySearchFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
+      }
+    }
+  }
+
+  describe("findByMultiSearch") {
+    it("finds documents by performing a MultiSearch") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingsToQueryFor = thingsToIndex.slice(0, 3)
+
+        val searchRequests = thingsToQueryFor.map { thing =>
+          searchRequestForThingByName(
+            index = index,
+            name = thing.name
+          )
+        }
+
+        val multiSearchRequest = MultiSearchRequest(searchRequests)
+
+        val findByMultiSearchFuture = elasticsearchService
+          .findByMultiSearch[ExampleThing](multiSearchRequest)
+
+        whenReady(findByMultiSearchFuture) {
+          case (errors, foundBySearch) =>
+            errors should have length (0)
+            foundBySearch.toSet shouldBe thingsToQueryFor.toSet
+        }
+      }
+    }
+
+    it("returns errors for queries that fail") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingsToQueryFor = thingsToIndex.slice(0, 3)
+
+        val badIndex = Index(randomAlphanumeric(10))
+
+        val searchRequests = thingsToQueryFor.map { thing =>
+          searchRequestForThingByName(
+            index = index,
+            name = thing.name
+          )
+        } :+ searchRequestForThingByName(
+          index = badIndex,
+          name = randomAlphanumeric(10)
+        )
+
+        val multiSearchRequest = MultiSearchRequest(searchRequests)
+
+        val findByMultiSearchFuture = elasticsearchService
+          .findByMultiSearch[ExampleThing](multiSearchRequest)
+
+        whenReady(findByMultiSearchFuture) {
+          case (errors, foundBySearch) =>
+            foundBySearch.toSet shouldBe thingsToQueryFor.toSet
+
+            errors should have size (1)
+            errors.head shouldBe a[IndexNotFoundError]
+        }
+      }
+    }
+  }
+
   describe("executeMultiSearchRequest") {
     it("performs a multiSearchRequest") {
 
@@ -89,8 +245,9 @@ class ElasticsearchServiceTest
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingsToQueryFor = thingsToIndex.slice(0, 3)
 
-        val searchRequests = thingsToIndex.map { thing =>
+        val searchRequests = thingsToQueryFor.map { thing =>
           searchRequestForThingByName(
             index = index,
             name = thing.name
@@ -101,13 +258,46 @@ class ElasticsearchServiceTest
         val multiSearchResponseFuture =
           elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
 
-        whenReady(multiSearchResponseFuture) { multiSearchResponseEither =>
-          val multiSearchResponse = multiSearchResponseEither.right.value
-          val queryResults =
-            multiSearchResponse.items.map(_.response.right.value)
-          val returnedThings = queryResults.flatMap(_.to[ExampleThing])
+        whenReady(multiSearchResponseFuture) {
+          case (errors, searchResponses) =>
+            errors shouldBe empty
 
-          returnedThings.toSet shouldBe thingsToIndex.toSet
+            val returnedThings = searchResponses.flatMap(_.to[ExampleThing])
+            returnedThings.toSet shouldBe thingsToQueryFor.toSet
+        }
+      }
+    }
+
+    it("returns errors for queries that fail") {
+      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingsToQueryFor = thingsToIndex.slice(0, 3)
+        val badIndex = Index(randomAlphanumeric(10))
+
+        val searchRequests = thingsToQueryFor.map { thing =>
+          searchRequestForThingByName(
+            index = index,
+            name = thing.name
+          )
+        } :+ searchRequestForThingByName(
+          index = badIndex,
+          name = randomAlphanumeric(10)
+        )
+
+        val multiSearchRequest = MultiSearchRequest(searchRequests)
+        val multiSearchResponseFuture =
+          elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
+
+        whenReady(multiSearchResponseFuture) {
+          case (errors, searchResponses) =>
+            val returnedThings = searchResponses.flatMap(_.to[ExampleThing])
+
+            returnedThings.toSet shouldBe thingsToQueryFor.toSet
+
+            errors should have size (1)
+            errors.head shouldBe a[IndexNotFoundError]
         }
       }
     }
@@ -130,12 +320,26 @@ class ElasticsearchServiceTest
         val searchResponseFuture =
           elasticsearchService.executeSearchRequest(searchRequest)
 
-        whenReady(searchResponseFuture) { searchResponseEither =>
-          val searchResponse = searchResponseEither.right.value
-          val queryResult = searchResponse.to[ExampleThing].head
-
-          queryResult shouldBe thingToQueryFor
+        whenReady(searchResponseFuture) {
+          _.right.value.to[ExampleThing] shouldBe Seq(thingToQueryFor)
         }
+      }
+    }
+
+    it("returns an appropriate error when the specified index does not exist") {
+      val elasticsearchService = new ElasticsearchService(elasticClient)
+      val badIndex = createIndex
+
+      val searchRequest = searchRequestForThingByName(
+        index = badIndex,
+        name = randomAlphanumeric(10)
+      )
+
+      val searchResponseFuture =
+        elasticsearchService.executeSearchRequest(searchRequest)
+
+      whenReady(searchResponseFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }
