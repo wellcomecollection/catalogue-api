@@ -4,7 +4,7 @@ import akka.http.scaladsl.server.Route
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
 import weco.api.requests.models.display.DisplayResultsList
-import weco.api.stacks.services.{ItemLookup, SierraService}
+import weco.api.stacks.services.{ItemLookup, ItemLookupFailure, ItemLookupSuccess, SierraService}
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
@@ -23,17 +23,24 @@ trait LookupPendingRequests extends CustomDirectives {
       itemLookupResults <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
-        case (Right(item), _) => Some(item)
-        case (Left(elasticError: ElasticsearchError), srcId) =>
+        case (ItemLookupSuccess(item, works), _) => {
+          // TODO: Here is where we would apply any logic for picking the "correct" work
+          val workTitle = works.collectFirst {
+            case work if work.data.title.isDefined => work.data.title.get
+          }
+
+          Some((item, workTitle))
+        }
+        case (ItemLookupFailure(elasticError: ElasticsearchError), srcId) =>
           warn(
             s"Error looking up item ${srcId}. Elasticsearch error: ${elasticError}"
           )
           None
       }
 
-      itemHoldTuples = itemsFound.flatMap { item =>
+      itemHoldTuples = itemsFound.flatMap { case (item, holdTitle) =>
         holdsMap.get(item.id.sourceIdentifier).map { hold =>
-          (hold, item)
+          (hold, item, holdTitle)
         }
       }
 

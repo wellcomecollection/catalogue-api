@@ -15,17 +15,18 @@ case class DisplayResultsList(
 
 object DisplayResultsList {
   def apply(
-    itemHolds: List[(SierraHold, Item[IdState.Identified])]
+    itemHolds: List[(SierraHold, Item[IdState.Identified], Option[String])]
   ): DisplayResultsList =
     DisplayResultsList(
       results = itemHolds.map {
-        case (hold, item) => DisplayRequest(hold, item)
+        case (hold, item, requestTitle) => DisplayRequest(requestTitle, hold, item)
       },
       totalResults = itemHolds.size
     )
 }
 
 case class DisplayRequest(
+  requestTitle: Option[String],
   item: DisplayItem,
   pickupDate: Option[Instant],
   pickupLocation: DisplayLocationDescription,
@@ -35,10 +36,12 @@ case class DisplayRequest(
 
 object DisplayRequest {
   def apply(
+    requestTitle: Option[String],
     hold: SierraHold,
     item: Item[IdState.Identified]
   ): DisplayRequest = {
     DisplayRequest(
+      requestTitle = requestTitle,
       item = DisplayItem(
         item = item,
         includesIdentifiers = true

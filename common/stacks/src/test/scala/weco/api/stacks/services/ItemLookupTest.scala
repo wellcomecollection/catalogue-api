@@ -7,14 +7,8 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.stacks.services.elastic.ElasticItemLookup
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -132,7 +126,10 @@ class ItemLookupTest
           )
 
         whenReady(future) {
-          _ shouldBe List(Right(item1), Right(item2))
+          _ shouldBe List(
+            ItemLookupSuccess(item1, List(workA)),
+            ItemLookupSuccess(item2, List(workA, workB))
+          )
         }
       }
     }
@@ -162,9 +159,9 @@ class ItemLookupTest
 
         whenReady(future) {
           _ shouldBe List(
-            Right(item1),
-            Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
-            Right(item3)
+            ItemLookupSuccess(item1, List(workA)),
+            ItemLookupFailure(DocumentNotFoundError(item4.id.sourceIdentifier)),
+            ItemLookupSuccess(item2, List(workB))
           )
         }
       }
@@ -177,7 +174,8 @@ class ItemLookupTest
 
       whenReady(future) { results =>
         results should have length (1)
-        results.head.left.value shouldBe a[IndexNotFoundError]
+        results.head shouldBe a[ItemLookupFailure]
+        results.head.asInstanceOf[ItemLookupFailure].error shouldBe a[IndexNotFoundError]
       }
     }
   }

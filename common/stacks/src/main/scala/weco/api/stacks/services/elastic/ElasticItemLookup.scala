@@ -3,18 +3,10 @@ package weco.api.stacks.services.elastic
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
 import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  ElasticsearchService
-}
-import weco.api.stacks.services.ItemLookup
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
+import weco.api.stacks.services.{ItemLookup, ItemLookupFailure, ItemLookupResponse, ItemLookupSuccess}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
@@ -79,8 +71,6 @@ class ElasticItemLookup(
             )
           )
       )
-      // TODO: How many things do we need to retrieve here?
-      .size(10)
 
   val searchRequestOnIndex = buildSourceIdentifierSearchRequest(index)(_)
 
@@ -115,7 +105,7 @@ class ElasticItemLookup(
 
   override def bySourceIdentifiers(
     sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = {
+  ): Future[Seq[ItemLookupResponse]] = {
     val multiSearchRequest = MultiSearchRequest(
       sourceIdentifiers.map(searchRequestOnIndex)
     )
@@ -126,14 +116,12 @@ class ElasticItemLookup(
         _.zip(sourceIdentifiers).map {
           case (Right(works), srcId) =>
             matchItemsOnWorksBySourceIdentifier(works, srcId).toList match {
-              // TODO: We can return multiple items from multiple works
-              // TODO: Apply better logic when picking an item!
-              case List(item) => Right(item)
-              case item :: _  => Right(item)
-              case List()     => Left(DocumentNotFoundError(srcId))
+              case List(item) => ItemLookupSuccess(item, works.toList)
+              case item :: _  => ItemLookupSuccess(item, works.toList)
+              case List()     => ItemLookupFailure(DocumentNotFoundError(srcId))
             }
 
-          case (Left(err), _) => Left(err)
+          case (Left(err), _) => ItemLookupFailure(err)
         }
       }
   }
