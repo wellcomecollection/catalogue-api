@@ -99,9 +99,8 @@ class ElasticsearchServiceTest
         val findByIdFuture =
           elasticsearchService.findById[ExampleThing](thingToQueryFor.id)(index)
 
-        whenReady(findByIdFuture) { findByIdEither =>
-          val foundById = findByIdEither.right.value
-          foundById shouldBe thingToQueryFor
+        whenReady(findByIdFuture) {
+          _.right.value shouldBe thingToQueryFor
         }
       }
     }
@@ -116,10 +115,8 @@ class ElasticsearchServiceTest
         val findByIdFuture =
           elasticsearchService.findById[ExampleThing](badId)(index)
 
-        whenReady(findByIdFuture) { findByIdEither =>
-          val failedFindByID = findByIdEither.left.value
-
-          failedFindByID shouldBe a[DocumentNotFoundError[_]]
+        whenReady(findByIdFuture) {
+          _.left.value shouldBe a[DocumentNotFoundError[_]]
         }
       }
     }
@@ -132,10 +129,8 @@ class ElasticsearchServiceTest
         createCanonicalId
       )(badIndex)
 
-      whenReady(findByIdFuture) { findByIdEither =>
-        val failedFindByID = findByIdEither.left.value
-
-        failedFindByID shouldBe a[IndexNotFoundError]
+      whenReady(findByIdFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }
@@ -156,10 +151,8 @@ class ElasticsearchServiceTest
         val findBySearchFuture =
           elasticsearchService.findBySearch[ExampleThing](searchRequest)
 
-        whenReady(findBySearchFuture) { findBySearchEither =>
-          val foundBySearch = findBySearchEither.right.value
-          foundBySearch should have size (1)
-          foundBySearch.head shouldBe thingToQueryFor
+        whenReady(findBySearchFuture) {
+          _.right.value shouldBe Seq(thingToQueryFor)
         }
       }
     }
@@ -176,9 +169,8 @@ class ElasticsearchServiceTest
       val findBySearchFuture =
         elasticsearchService.findBySearch[ExampleThing](searchRequest)
 
-      whenReady(findBySearchFuture) { findBySearchEither =>
-        val failedFindBySearch = findBySearchEither.left.value
-        failedFindBySearch shouldBe a[IndexNotFoundError]
+      whenReady(findBySearchFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }
@@ -211,9 +203,7 @@ class ElasticsearchServiceTest
       }
     }
 
-    it(
-      "returns an appropriate error for only those queries where the specified index does not exist"
-    ) {
+    it("returns errors for queries that fail") {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
@@ -278,9 +268,7 @@ class ElasticsearchServiceTest
       }
     }
 
-    it(
-      "returns an appropriate error for only those queries where the specified index does not exist"
-    ) {
+    it("returns errors for queries that fail") {
       val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
 
       withExampleIndex(thingsToIndex) { index =>
@@ -332,11 +320,8 @@ class ElasticsearchServiceTest
         val searchResponseFuture =
           elasticsearchService.executeSearchRequest(searchRequest)
 
-        whenReady(searchResponseFuture) { searchResponseEither =>
-          val searchResponse = searchResponseEither.right.value
-          val queryResult = searchResponse.to[ExampleThing].head
-
-          queryResult shouldBe thingToQueryFor
+        whenReady(searchResponseFuture) {
+          _.right.value.to[ExampleThing] shouldBe Seq(thingToQueryFor)
         }
       }
     }
@@ -353,10 +338,8 @@ class ElasticsearchServiceTest
       val searchResponseFuture =
         elasticsearchService.executeSearchRequest(searchRequest)
 
-      whenReady(searchResponseFuture) { searchResponseEither =>
-        val failedSearchResponse = searchResponseEither.left.value
-
-        failedSearchResponse shouldBe a[IndexNotFoundError]
+      whenReady(searchResponseFuture) {
+        _.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }
