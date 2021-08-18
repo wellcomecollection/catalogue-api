@@ -5,8 +5,6 @@ import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
 import weco.api.requests.models.display.DisplayResultsList
 import weco.api.stacks.services.{ItemLookup, SierraService}
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
@@ -22,7 +20,7 @@ trait LookupPendingRequests extends CustomDirectives {
     val itemHolds = for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
-      itemLookupResults: Seq[Either[ElasticsearchError, Item[IdState.Identified]]] <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
+      itemLookupResults <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
         case (Right(item), _) => Some(item)
