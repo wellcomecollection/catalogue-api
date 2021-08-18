@@ -20,6 +20,6 @@ trait ItemLookup {
   ): Future[Either[ElasticsearchError, Item[IdState.Identified]]]
 
   def bySourceIdentifiers(
-                           sourceIdentifiers: Seq[SourceIdentifier]
-                        ): Future[(Seq[ElasticsearchError], Seq[Item[IdState.Identified]])]
+     sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]]
 }

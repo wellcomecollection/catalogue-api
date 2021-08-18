@@ -93,36 +93,33 @@ class ElasticItemLookup(
     elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
       case Right(works) =>
-        matchItemsOnWorksBySourceIdentifier(works, sourceIdentifier) match {
+        matchItemsOnWorksBySourceIdentifier(works, sourceIdentifier).toList match {
           case item :: _ => Right(item)
-          case Seq.empty => Left(DocumentNotFoundError(sourceIdentifier))
+          case List() => Left(DocumentNotFoundError(sourceIdentifier))
         }
     }
   }
 
   override def bySourceIdentifiers(
     sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[(Seq[ElasticsearchError], Seq[Item[IdState.Identified]])] = ???
-//  {
-//    val multiSearchRequest = MultiSearchRequest(sourceIdentifiers.map(searchRequestOnIndex))
-//
-//    elasticsearchService.findByMultiSearch[Work[Indexed]](multiSearchRequest).map {
-//      case (errors, Seq.empty) => (errors, Seq.empty)
-//      case (Seq.empty, works) =>
-//        val foundItems = sourceIdentifiers.flatMap(
-//          srcId => matchItemsOnWorksBySourceIdentifier(works, srcId)
-//        )
-//
-//        val foundSrcIds = foundItems.map(_.id.sourceIdentifier)
-//        val notFoundSrcIds = sourceIdentifiers.filterNot(foundSrcIds.contains(_))
-//        val notFoundErrors = notFoundSrcIds.map(DocumentNotFoundError(_))
-//
-//        (notFoundErrors, foundItems)
-//
-//      // What about where there are some errors?
-//      case (foo, bar) => ???
-//    }
-//  }
+  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = {
+    val multiSearchRequest = MultiSearchRequest(sourceIdentifiers.map(searchRequestOnIndex))
+
+    elasticsearchService.findByMultiSearch[Work[Indexed]](multiSearchRequest).map {
+      _.zip(sourceIdentifiers).map {
+        case (Right(works), srcId) =>
+          matchItemsOnWorksBySourceIdentifier(works, srcId).toList match {
+            // TODO: We can return multiple items from multiple works
+            // TODO: Apply better logic when picking an item!
+            case List(item) => Right(item)
+            case item :: _  => Right(item)
+            case List() => Left(DocumentNotFoundError(srcId))
+          }
+
+        case (Left(err), _) => Left(err)
+      }
+    }
+  }
 }
 
 object ElasticItemLookup {

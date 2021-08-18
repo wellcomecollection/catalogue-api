@@ -34,18 +34,15 @@ class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
     )
 
   override def bySourceIdentifiers(
-                                    sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[(Seq[ElasticsearchError], Seq[Item[IdState.Identified]])] = ???
+    sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = Future.successful {
+      val foldInitial = Seq.empty[Either[ElasticsearchError,Item[IdState.Identified]]]
 
-//    Future.successful {
-//    val foldInitial = (Seq.empty[ElasticsearchError], Seq.empty[Item[IdState.Identified]]])
-//    sourceIdentifiers.foldLeft(foldInitial) { (acc, sourceIdentifier) =>
-//      val (errors, successes) = acc
-//
-//      items.find(_.id.sourceIdentifier == sourceIdentifier) match {
-//        case Some(item) => (errors, successes :+ item)
-//        case None => (errors :+ DocumentNotFoundError(sourceIdentifier), successes)
-//      }
-//    }
-//  }
+      sourceIdentifiers.foldLeft(foldInitial) { (acc, sourceIdentifier) =>
+        items.find(_.id.sourceIdentifier == sourceIdentifier) match {
+          case Some(item) => acc :+ Right(item)
+          case None => acc :+  Left(DocumentNotFoundError(sourceIdentifier))
+        }
+      }
+  }
 }

@@ -109,6 +109,79 @@ class ItemLookupTest
     }
   }
 
+  describe("bySourceIdentifiers") {
+    it("finds items with the same item IDs") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createIdentifiedItem
+
+      val workA = indexedWork().items(List(item1, item2))
+      val workB = indexedWork().items(List(item2, item3))
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, workA, workB)
+
+        val lookup = createLookup(index)
+
+        val future =
+          lookup.bySourceIdentifiers(
+            Seq(
+              item1.id.sourceIdentifier,
+              item2.id.sourceIdentifier
+            )
+          )
+
+        whenReady(future) {
+          _ shouldBe List(Right(item1), Right(item2))
+        }
+      }
+    }
+
+    it("returns not found errors where ID matches cannot be found") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createIdentifiedItem
+      val item4 = createIdentifiedItem
+
+      val workA = indexedWork().items(List(item1, item2))
+      val workB = indexedWork().items(List(item2, item3))
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, workA, workB)
+
+        val lookup = createLookup(index)
+
+        val future =
+          lookup.bySourceIdentifiers(
+            Seq(
+              item1.id.sourceIdentifier,
+              item4.id.sourceIdentifier,
+              item3.id.sourceIdentifier
+            )
+          )
+
+        whenReady(future) {
+          _ shouldBe List(
+            Right(item1),
+            Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
+            Right(item3),
+          )
+        }
+      }
+    }
+
+    it("returns Left[Error] if Elasticsearch has an error") {
+      val lookup = createLookup(index = createIndex)
+      val future =
+        lookup.bySourceIdentifiers(Seq(createSourceIdentifier))
+
+      whenReady(future) { results =>
+        results should have length(1)
+        results.head.left.value shouldBe a[IndexNotFoundError]
+      }
+    }
+  }
+
   describe("bySourceIdentifier") {
     it("finds an item with the same item ID") {
       val item1 = createIdentifiedItem
