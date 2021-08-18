@@ -51,6 +51,9 @@ trait QueryParamsUtils extends Directives {
         //       "reason": "failed to parse date field [+11860-01-01] with format [strict_date_optional_time||epoch_millis]",
         //       "type": "illegal_argument_exception"
         //
+        // This would cause a 500 Internal Server Error to be thrown, when what we should
+        // be throwing is a 400 Bad Request.
+        //
         // We could catch this when we get the response from Elasticsearch, but then it's
         // harder to map back to the user-supplied parameter where the value came from.
         // Since 9999 is the max date we use in the pipeline (as a synonym for "never"),
