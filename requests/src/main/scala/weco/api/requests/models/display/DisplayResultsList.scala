@@ -19,7 +19,8 @@ object DisplayResultsList {
   ): DisplayResultsList =
     DisplayResultsList(
       results = itemHolds.map {
-        case (hold, item, requestTitle) => DisplayRequest(requestTitle, hold, item)
+        case (hold, item, requestTitle) =>
+          DisplayRequest(requestTitle, hold, item)
       },
       totalResults = itemHolds.size
     )

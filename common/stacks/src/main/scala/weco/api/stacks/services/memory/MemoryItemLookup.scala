@@ -1,8 +1,17 @@
 package weco.api.stacks.services.memory
 
 import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError}
-import weco.api.stacks.services.{ItemLookup, ItemLookupFailure, ItemLookupResponse, ItemLookupSuccess}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.api.stacks.services.{
+  ItemLookup,
+  ItemLookupFailure,
+  ItemLookupResponse,
+  ItemLookupSuccess
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.work.Item
 
 import scala.concurrent.Future
@@ -36,7 +45,8 @@ class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
       sourceIdentifiers.map { sourceIdentifier =>
         items.find(_.id.sourceIdentifier == sourceIdentifier) match {
           case Some(item) => ItemLookupSuccess(item, List.empty)
-          case None       => ItemLookupFailure(DocumentNotFoundError(sourceIdentifier))
+          case None =>
+            ItemLookupFailure(DocumentNotFoundError(sourceIdentifier))
         }
       }
     }

@@ -4,7 +4,12 @@ import akka.http.scaladsl.server.Route
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
 import weco.api.requests.models.display.DisplayResultsList
-import weco.api.stacks.services.{ItemLookup, ItemLookupFailure, ItemLookupSuccess, SierraService}
+import weco.api.stacks.services.{
+  ItemLookup,
+  ItemLookupFailure,
+  ItemLookupSuccess,
+  SierraService
+}
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
@@ -38,10 +43,11 @@ trait LookupPendingRequests extends CustomDirectives {
           None
       }
 
-      itemHoldTuples = itemsFound.flatMap { case (item, holdTitle) =>
-        holdsMap.get(item.id.sourceIdentifier).map { hold =>
-          (hold, item, holdTitle)
-        }
+      itemHoldTuples = itemsFound.flatMap {
+        case (item, holdTitle) =>
+          holdsMap.get(item.id.sourceIdentifier).map { hold =>
+            (hold, item, holdTitle)
+          }
       }
 
     } yield itemHoldTuples.toList
