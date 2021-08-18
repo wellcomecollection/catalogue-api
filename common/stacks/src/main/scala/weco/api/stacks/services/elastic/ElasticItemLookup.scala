@@ -102,25 +102,27 @@ class ElasticItemLookup(
 
   override def bySourceIdentifiers(
     sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[(Seq[ElasticsearchError], Seq[Item[IdState.Identified]])] = {
-    val multiSearchRequest = MultiSearchRequest(sourceIdentifiers.map(searchRequestOnIndex))
-
-    elasticsearchService.findByMultiSearch[Work[Indexed]](multiSearchRequest).map {
-      case (errors, Seq.empty) => (errors, Seq.empty)
-      case (Seq.empty, works) =>
-        val foundItems = sourceIdentifiers.flatMap(
-          srcId => matchItemsOnWorksBySourceIdentifier(works, srcId)
-        )
-        val foundSrcIds = foundItems.map(_.id.sourceIdentifier)
-        val notFoundSrcIds = sourceIdentifiers.filterNot(foundSrcIds.contains(_))
-        val notFoundErrors = notFoundSrcIds.map(DocumentNotFoundError(_))
-
-        (notFoundErrors, foundItems)
-
-      // What about where there are some errors?
-      case (foo, bar) => ???
-    }
-  }
+  ): Future[(Seq[ElasticsearchError], Seq[Item[IdState.Identified]])] = ???
+//  {
+//    val multiSearchRequest = MultiSearchRequest(sourceIdentifiers.map(searchRequestOnIndex))
+//
+//    elasticsearchService.findByMultiSearch[Work[Indexed]](multiSearchRequest).map {
+//      case (errors, Seq.empty) => (errors, Seq.empty)
+//      case (Seq.empty, works) =>
+//        val foundItems = sourceIdentifiers.flatMap(
+//          srcId => matchItemsOnWorksBySourceIdentifier(works, srcId)
+//        )
+//
+//        val foundSrcIds = foundItems.map(_.id.sourceIdentifier)
+//        val notFoundSrcIds = sourceIdentifiers.filterNot(foundSrcIds.contains(_))
+//        val notFoundErrors = notFoundSrcIds.map(DocumentNotFoundError(_))
+//
+//        (notFoundErrors, foundItems)
+//
+//      // What about where there are some errors?
+//      case (foo, bar) => ???
+//    }
+//  }
 }
 
 object ElasticItemLookup {

@@ -55,15 +55,16 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def findByMultiSearch[T](
     request: MultiSearchRequest
-  )(implicit decoder: Decoder[T]): Future[(Seq[ElasticsearchError], Seq[T])] =
-    executeMultiSearchRequest(request).map {
-      case (errors, responses) =>
-        val deserialisedResponses = responses
-          .flatMap(_.hits.hits)
-          .map(deserialize[T])
-
-        (errors, deserialisedResponses)
-    }
+  )(implicit decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
+    for {
+      multiSearchResults <- executeMultiSearchRequest(request)
+      deserialisedResults = multiSearchResults.map {
+        case Right(searchResponse) => {
+          Right(searchResponse.hits.hits.map(deserialize[T]).toSeq)
+        }
+        case Left(err) => Left(err)
+      }
+    } yield deserialisedResults
 
   def executeSearchRequest(
     request: SearchRequest
@@ -90,7 +91,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def executeMultiSearchRequest(
     request: MultiSearchRequest
-  ): Future[(Seq[ElasticsearchError], Seq[SearchResponse])] =
+  ): Future[Seq[Either[ElasticsearchError, SearchResponse]]] =
     spanFuture(
       name = "ElasticSearch#executeMultiSearchRequest",
       spanType = "request",
@@ -106,36 +107,32 @@ class ElasticsearchService(elasticClient: ElasticClient)(
             val foldInitial = (
               0L,
               Seq.empty[Long],
-              Seq.empty[ElasticsearchError],
-              Seq.empty[SearchResponse]
+              Seq.empty[Either[ElasticsearchError, SearchResponse]],
             )
 
             val (
               finalTotalTimeTaken,
               finalTimesTaken,
-              finalErrors,
-              finalSearchResponses
+              finalResults
             ) =
               multiResponse.items.foldLeft(foldInitial) { (acc, item) =>
-                val (timeTakenTotal, timesTaken, errors, searchResponses) = acc
+                val (timeTakenTotal, timesTaken, results) = acc
 
                 item.response match {
                   case Right(itemResponse) => {
-                    val updatedTotalTimeTaken = timeTakenTotal + itemResponse.took
-                    val updatedTimesTaken = timesTaken :+ itemResponse.took
-                    val updatedSearchResponses = searchResponses :+ itemResponse
-
                     (
-                      updatedTotalTimeTaken,
-                      updatedTimesTaken,
-                      errors,
-                      updatedSearchResponses
+                      timeTakenTotal + itemResponse.took,
+                      timesTaken :+ itemResponse.took,
+                      results :+ Right(itemResponse)
                     )
                   }
 
                   case Left(error) => {
-                    val updatedErrors = errors :+ ElasticsearchError(error)
-                    (timeTakenTotal, timesTaken, updatedErrors, searchResponses)
+                    (
+                      timeTakenTotal,
+                      timesTaken,
+                      results :+ Left(ElasticsearchError(error))
+                    )
                   }
                 }
               }
@@ -146,9 +143,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
             }
             transaction.setLabel("elasticTookTotal", finalTotalTimeTaken)
 
-            (finalErrors, finalSearchResponses)
+            finalResults
 
-          case Left(err) => (Seq(ElasticsearchError(err)), Seq.empty)
+          case Left(err) => throw err.asException
         }
     }
 
