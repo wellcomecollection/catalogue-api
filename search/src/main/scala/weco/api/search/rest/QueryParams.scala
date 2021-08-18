@@ -37,9 +37,36 @@ trait QueryParamsUtils extends Directives {
     }
 
   implicit val decodeLocalDate: Decoder[LocalDate] =
-    Decoder.decodeLocalDate.withErrorMessage(
-      "Invalid date encoding. Expected YYYY-MM-DD"
-    )
+    Decoder.decodeLocalDate
+      .withErrorMessage("Invalid date encoding. Expected YYYY-MM-DD")
+      .emap { date =>
+        // This check is trying to avoid an Elasticsearch error.  We saw a query
+        // for the date "+11860-01-01", which returned an exception from Elasticsearch:
+        //
+        //       "caused_by": {
+        //         "caused_by": {
+        //           "reason": "Failed to parse with all enclosed parsers",
+        //           "type": "date_time_parse_exception"
+        //         },
+        //       "reason": "failed to parse date field [+11860-01-01] with format [strict_date_optional_time||epoch_millis]",
+        //       "type": "illegal_argument_exception"
+        //
+        // We could catch this when we get the response from Elasticsearch, but then it's
+        // harder to map back to the user-supplied parameter where the value came from.
+        // Since 9999 is the max date we use in the pipeline (as a synonym for "never"),
+        // allowing users to request beyond this seems pointless.
+        //
+        // Catching it in the decoder lets us tell the user which parameter was causing
+        // the issue.
+        //
+        // Note: this code will need rewriting sometime in the eleventh millenium to raise
+        // the limit.  Hopefully Elasticsearch can handle five-digit years by then.
+        Either.cond(
+          date.getYear <= 9999,
+          date,
+          "year must be less than 9999"
+        )
+      }
 
   implicit val decodeInt: Decoder[Int] =
     Decoder.decodeInt.withErrorMessage("must be a valid Integer")

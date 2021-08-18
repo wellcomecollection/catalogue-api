@@ -220,6 +220,31 @@ class WorksErrorsTest extends ApiWorksTestBase {
           "page: must be greater than 1, pageSize: must be between 1 and 100"
       )
     }
+
+    // This test is a best-effort regression test for a real query we saw, which caused
+    // the following error in Elasticsearch:
+    //
+    //       "caused_by": {
+    //         "caused_by": {
+    //           "reason": "Failed to parse with all enclosed parsers",
+    //           "type": "date_time_parse_exception"
+    //         },
+    //       "reason": "failed to parse date field [+11860-01-01] with format [strict_date_optional_time||epoch_millis]",
+    //       "type": "illegal_argument_exception"
+    //
+    // Trying to reproduce that exact error with a local Elasticsearch is hard: it only
+    // seems to occur with at least a few thousand works in the index, and not consistently.
+    //
+    // This test confirms that we do something sensible with the query parameters, but
+    // it's possible that there are other scenarios in which this Elasticsearch exception
+    // could arise which we aren't covering.
+    //
+    it("if the date is too large") {
+      assertIsBadRequest(
+        path = s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
+        description = "production.dates.from: year must be less than 9999"
+      )
+    }
   }
 
   describe("returns a 404 Not Found for missing resources") {
