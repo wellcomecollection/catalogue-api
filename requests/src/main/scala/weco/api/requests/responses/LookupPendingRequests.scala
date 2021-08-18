@@ -22,7 +22,9 @@ trait LookupPendingRequests extends CustomDirectives {
     val itemHolds = for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
-      itemLookupResults: Seq[Either[ElasticsearchError, Item[IdState.Identified]]] <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
+      itemLookupResults: Seq[
+        Either[ElasticsearchError, Item[IdState.Identified]]
+      ] <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
         case (Right(item), _) => Some(item)

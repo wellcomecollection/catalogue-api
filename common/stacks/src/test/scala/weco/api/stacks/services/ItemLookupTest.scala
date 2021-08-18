@@ -164,7 +164,7 @@ class ItemLookupTest
           _ shouldBe List(
             Right(item1),
             Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
-            Right(item3),
+            Right(item3)
           )
         }
       }
@@ -176,7 +176,7 @@ class ItemLookupTest
         lookup.bySourceIdentifiers(Seq(createSourceIdentifier))
 
       whenReady(future) { results =>
-        results should have length(1)
+        results should have length (1)
         results.head.left.value shouldBe a[IndexNotFoundError]
       }
     }

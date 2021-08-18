@@ -1,6 +1,12 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery}
+import com.sksamuel.elastic4s.ElasticDsl.{
+  boolQuery,
+  bulk,
+  indexInto,
+  search,
+  termQuery
+}
 import com.sksamuel.elastic4s.analysis.Analysis
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
@@ -14,7 +20,10 @@ import io.circe.generic.auto._
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.{ElasticClient, Index}
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
-import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  SearchRequest
+}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
@@ -42,7 +51,7 @@ class ElasticsearchServiceTest
     protocol = "http",
     username = "elastic",
     password = "changeme",
-    compressionEnabled = false,
+    compressionEnabled = false
   )
 
   def randomThing: ExampleThing = ExampleThing(
@@ -114,7 +123,9 @@ class ElasticsearchServiceTest
         val thingToQueryFor = thingsToIndex.head
 
         val findByIdFuture =
-          elasticsearchService.findById[DifferentExampleThing](thingToQueryFor.id)(index)
+          elasticsearchService.findById[DifferentExampleThing](
+            thingToQueryFor.id
+          )(index)
 
         whenReady(findByIdFuture.failed) {
           _.getMessage should include("Unable to parse JSON")
@@ -200,7 +211,9 @@ class ElasticsearchServiceTest
         )
 
         val findBySearchFuture =
-          elasticsearchService.findBySearch[DifferentExampleThing](searchRequest)
+          elasticsearchService.findBySearch[DifferentExampleThing](
+            searchRequest
+          )
 
         whenReady(findBySearchFuture.failed) {
           _.getMessage should include("Unable to parse JSON")
@@ -322,11 +335,13 @@ class ElasticsearchServiceTest
         val findByMultiSearchFuture = elasticsearchService
           .findByMultiSearch[ExampleThing](multiSearchRequest)
 
-        whenReady(findByMultiSearchFuture) {  results =>
+        whenReady(findByMultiSearchFuture) { results =>
           val expectedFailure :: expectedSuccess = results
 
           expectedFailure.left.value shouldBe a[IndexNotFoundError]
-          expectedSuccess.map(_.right.value) shouldBe thingsToQueryFor.map(Seq(_))
+          expectedSuccess.map(_.right.value) shouldBe thingsToQueryFor.map(
+            Seq(_)
+          )
         }
       }
     }
@@ -334,10 +349,12 @@ class ElasticsearchServiceTest
     it("fails if it cannot connect to Elasticsearch") {
       val elasticsearchService = new ElasticsearchService(badElasticClient)
 
-      val searchRequests = Seq(searchRequestForThingByName(
-        index = createIndex,
-        name = randomAlphanumeric(10)
-      ))
+      val searchRequests = Seq(
+        searchRequestForThingByName(
+          index = createIndex,
+          name = randomAlphanumeric(10)
+        )
+      )
 
       val multiSearchRequest = MultiSearchRequest(searchRequests)
 
@@ -372,7 +389,8 @@ class ElasticsearchServiceTest
         whenReady(multiSearchResponseFuture) { results =>
           val (errorEither, searchResponsesEither) = results.partition(_.isLeft)
           val errors = errorEither.map(_.left.value)
-          val searchResponses = searchResponsesEither.flatMap(_.right.value.to[ExampleThing])
+          val searchResponses =
+            searchResponsesEither.flatMap(_.right.value.to[ExampleThing])
 
           errors should have length (0)
           searchResponses shouldBe thingsToQueryFor
@@ -414,10 +432,12 @@ class ElasticsearchServiceTest
     it("fails if it cannot connect to Elasticsearch") {
       val elasticsearchService = new ElasticsearchService(badElasticClient)
 
-      val searchRequests = Seq(searchRequestForThingByName(
-        index = createIndex,
-        name = randomAlphanumeric(10)
-      ))
+      val searchRequests = Seq(
+        searchRequestForThingByName(
+          index = createIndex,
+          name = randomAlphanumeric(10)
+        )
+      )
 
       val multiSearchRequest = MultiSearchRequest(searchRequests)
 

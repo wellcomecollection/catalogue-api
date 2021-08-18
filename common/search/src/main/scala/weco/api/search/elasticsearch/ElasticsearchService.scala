@@ -55,7 +55,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def findByMultiSearch[T](
     request: MultiSearchRequest
-  )(implicit decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
+  )(
+    implicit decoder: Decoder[T]
+  ): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
     for {
       multiSearchResults <- executeMultiSearchRequest(request)
       deserialisedResults = multiSearchResults.map {
@@ -107,7 +109,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
             val foldInitial = (
               0L,
               Seq.empty[Long],
-              Seq.empty[Either[ElasticsearchError, SearchResponse]],
+              Seq.empty[Either[ElasticsearchError, SearchResponse]]
             )
 
             val (
