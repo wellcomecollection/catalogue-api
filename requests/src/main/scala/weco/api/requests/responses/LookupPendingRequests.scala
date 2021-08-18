@@ -5,9 +5,11 @@ import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
 import weco.api.requests.models.display.DisplayResultsList
 import weco.api.stacks.services.{ItemLookup, SierraService}
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 trait LookupPendingRequests extends CustomDirectives {
@@ -20,40 +22,24 @@ trait LookupPendingRequests extends CustomDirectives {
     val itemHolds = for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
-      itemLookupResults <- Future
-        .sequence(
-          holdsMap.keys
-            .map(srcId => (srcId, itemLookup.bySourceIdentifier(srcId)))
-            .map {
-              case (srcId, itemLookupFuture) =>
-                itemLookupFuture.map {
-                  case Right(item) => Some(item)
-                  case Left(elasticError: ElasticsearchError) =>
-                    warn(
-                      s"Error looking up item ${srcId}. Elasticsearch error: ${elasticError}"
-                    )
-                    None
-                } recover {
-                  case err =>
-                    warn(
-                      s"Error looking up item ${srcId}. Unknown error!",
-                      err
-                    )
-                    None
-                }
-            }
-        )
-        .map(
-          _.flatten.toList
-        )
+      itemLookupResults: Seq[Either[ElasticsearchError, Item[IdState.Identified]]] <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
 
-      itemHoldTuples = itemLookupResults.flatMap { item =>
+      itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
+        case (Right(item), _) => Some(item)
+        case (Left(elasticError: ElasticsearchError), srcId) =>
+          warn(
+            s"Error looking up item ${srcId}. Elasticsearch error: ${elasticError}"
+          )
+          None
+      }
+
+      itemHoldTuples = itemsFound.flatMap { item =>
         holdsMap.get(item.id.sourceIdentifier).map { hold =>
           (hold, item)
         }
       }
 
-    } yield itemHoldTuples
+    } yield itemHoldTuples.toList
 
     onComplete(itemHolds) {
       case Success(value) => complete(DisplayResultsList(value))
