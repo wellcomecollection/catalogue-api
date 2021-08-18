@@ -241,7 +241,8 @@ class WorksErrorsTest extends ApiWorksTestBase {
     //
     it("if the date is too large") {
       assertIsBadRequest(
-        path = s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
+        path =
+          s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
         description = "production.dates.from: year must be less than 9999"
       )
     }
