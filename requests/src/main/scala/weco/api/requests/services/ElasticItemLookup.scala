@@ -1,22 +1,13 @@
-package weco.api.stacks.services.elastic
+package weco.api.requests.services
 
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
 import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  ElasticsearchService
-}
-import weco.api.stacks.services.ItemLookup
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.work.{Item, Work}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.catalogue.internal_model.work.{Item, Work}
 
 import scala.concurrent.{ExecutionContext, Future}
 

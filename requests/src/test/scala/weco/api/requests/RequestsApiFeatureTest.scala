@@ -1,13 +1,6 @@
 package weco.api.requests
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpMethods,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCodes}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

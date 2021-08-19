@@ -1,25 +1,18 @@
-package weco.api.stacks.services
+package weco.api.requests.services
 
 import com.sksamuel.elastic4s.Index
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.stacks.services.elastic.ElasticItemLookup
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
+import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.index.IndexFixtures
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ItemLookupTest
+class ElasticItemLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
@@ -27,7 +20,7 @@ class ItemLookupTest
     with ItemsGenerators
     with WorkGenerators {
 
-  def createLookup(index: Index): ItemLookup =
+  def createLookup(index: Index): ElasticItemLookup =
     ElasticItemLookup(elasticClient, index = index)
 
   describe("byCanonicalId") {

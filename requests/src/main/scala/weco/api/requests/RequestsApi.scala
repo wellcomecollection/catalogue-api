@@ -3,8 +3,8 @@ package weco.api.requests
 import akka.http.scaladsl.server.Route
 import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
+import weco.api.requests.services.RequestsService
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.services.{ItemLookup, SierraService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -12,8 +12,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
 class RequestsApi(
-  val sierraService: SierraService,
-  val itemLookup: ItemLookup
+  val requestsService: RequestsService
 )(
   implicit
   val ec: ExecutionContext,

@@ -2,7 +2,7 @@ package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticError
 
-sealed trait ElasticsearchError
+sealed trait ElasticsearchError extends Exception
 
 case object ElasticsearchError {
   def apply(e: ElasticError): ElasticsearchError =
