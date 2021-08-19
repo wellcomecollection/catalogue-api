@@ -1,12 +1,23 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{SierraItemDataEntries, SierraItemLookupError, SierraSource}
+import weco.api.stacks.http.{
+  SierraItemDataEntries,
+  SierraItemLookupError,
+  SierraSource
+}
 import weco.api.stacks.models.SierraItemIdentifier
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocation}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  PhysicalLocation
+}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
+import weco.catalogue.source_model.sierra.rules.{
+  SierraItemAccess,
+  SierraPhysicalLocationType
+}
 import weco.sierra.models.data.SierraItemData
 import weco.sierra.models.identifiers.{SierraBibNumber, SierraItemNumber}
 
@@ -80,8 +91,8 @@ class SierraItemUpdater(sierraSource: SierraSource)(
   }
 
   def getAccessConditions(
-                           itemNumbers: Seq[SierraItemNumber]
-                         ): Future[Map[SierraItemNumber, AccessCondition]] = {
+    itemNumbers: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, AccessCondition]] = {
     for {
       itemEither <- sierraSource.lookupItemEntries(itemNumbers)
 
@@ -89,8 +100,8 @@ class SierraItemUpdater(sierraSource: SierraSource)(
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries.map(item => item.id -> getAccessCondition(item)).toMap
         case Left(
-        SierraItemLookupError.MissingItems(missingItems, itemsReturned)
-        ) =>
+            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+            ) =>
           warn(s"Item lookup missing items: ${missingItems}")
           itemsReturned.map(item => item.id -> getAccessCondition(item)).toMap
         case Left(itemLookupError) =>
@@ -115,14 +126,18 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       // an Item that is in the Catalogue API (e.g. it's been deleted but the change
       // has not yet propagated. In that case it gets status "NotRequestable")
       missingItemsKeys = itemMap.filterNot {
-        case (sierraItemNumber, _) => accessConditionsMap.keySet.contains(sierraItemNumber)
+        case (sierraItemNumber, _) =>
+          accessConditionsMap.keySet.contains(sierraItemNumber)
       } keySet
 
-      missingItemsMap = missingItemsKeys.map(_ -> AccessCondition(
-        method = AccessMethod.NotRequestable,
-        status = None,
-        note = None
-      )) toMap
+      missingItemsMap = missingItemsKeys
+        .map(
+          _ -> AccessCondition(
+            method = AccessMethod.NotRequestable,
+          status = None,
+          note = None
+        )
+      ) toMap
     } yield accessConditionsMap ++ missingItemsMap
 
     accessConditions.map(updateAccessConditions(itemMap, _))

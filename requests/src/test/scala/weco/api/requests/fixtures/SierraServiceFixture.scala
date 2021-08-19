@@ -11,16 +11,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SierraServiceFixture extends HttpFixtures with Akka {
   def withSierraService[R](
-                            responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-                            holdLimit: Int = 10
-                          )(testWith: TestWith[SierraRequestsService, R]): R =
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    holdLimit: Int = 10
+  )(testWith: TestWith[SierraRequestsService, R]): R =
     withMaterializer { implicit mat =>
       val httpClient = new MemoryHttpClient(responses) with HttpGet
-        with HttpPost {
+      with HttpPost {
         override val baseUri: Uri = Uri("http://sierra:1234")
       }
 
-      val sierraService = SierraRequestsService(httpClient, holdLimit = holdLimit)
+      val sierraService =
+        SierraRequestsService(httpClient, holdLimit = holdLimit)
 
       testWith(sierraService)
     }

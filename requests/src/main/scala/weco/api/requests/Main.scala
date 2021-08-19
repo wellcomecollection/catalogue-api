@@ -3,7 +3,11 @@ package weco.api.requests
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.requests.services.{ElasticItemLookup, RequestsService, SierraRequestsService}
+import weco.api.requests.services.{
+  ElasticItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder

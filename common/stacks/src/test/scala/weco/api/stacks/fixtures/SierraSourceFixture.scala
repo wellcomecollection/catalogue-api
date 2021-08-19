@@ -11,11 +11,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SierraSourceFixture extends HttpFixtures with Akka {
   def withSierraSource[R](
-                           responses: Seq[(HttpRequest, HttpResponse)] = Seq()
-                         )(testWith: TestWith[SierraSource, R]): R =
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[SierraSource, R]): R =
     withMaterializer { implicit mat =>
       val httpClient = new MemoryHttpClient(responses) with HttpGet
-        with HttpPost {
+      with HttpPost {
         override val baseUri: Uri = Uri("http://sierra:1234")
       }
 

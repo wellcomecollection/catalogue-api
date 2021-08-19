@@ -13,10 +13,9 @@ import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class RequestsService(
-                       sierraService: SierraRequestsService,
-                       itemLookup: ItemLookup
+  sierraService: SierraRequestsService,
+  itemLookup: ItemLookup
 )(implicit executionContext: ExecutionContext)
     extends Logging {
 

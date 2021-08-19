@@ -1,7 +1,16 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  RequestEntity,
+  StatusCodes,
+  Uri
+}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.GivenWhenThen
@@ -9,7 +18,11 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.api.requests.services.{
+  ItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
