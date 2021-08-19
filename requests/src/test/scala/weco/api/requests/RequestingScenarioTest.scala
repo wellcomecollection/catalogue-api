@@ -1,7 +1,16 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  RequestEntity,
+  StatusCodes,
+  Uri
+}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.GivenWhenThen

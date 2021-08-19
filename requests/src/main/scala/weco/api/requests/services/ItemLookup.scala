@@ -12,10 +12,10 @@ import scala.concurrent.Future
 
 trait ItemLookup {
   def byCanonicalId(
-                     itemId: CanonicalId
-                   ): Future[Either[ElasticsearchError, Item[IdState.Identified]]]
+    itemId: CanonicalId
+  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]]
 
   def bySourceIdentifier(
-                          sourceIdentifiers: Seq[SourceIdentifier]
-                        ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]]
+    sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]]
 }

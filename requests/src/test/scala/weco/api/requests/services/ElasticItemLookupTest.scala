@@ -6,9 +6,15 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
+import weco.catalogue.internal_model.identifiers.IdentifierType.{
+  MiroImageNumber,
+  SierraSystemNumber
+}
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

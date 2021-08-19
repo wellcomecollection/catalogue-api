@@ -5,7 +5,11 @@ import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.stacks.models.HoldRejected.ItemUnavailableFromSourceSystem
 import weco.api.stacks.models.{HoldAccepted, HoldRejected}
 import weco.api.stacks.services.SierraService
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -13,15 +17,28 @@ import weco.sierra.models.identifiers.SierraPatronNumber
 import scala.concurrent.{ExecutionContext, Future}
 
 class RequestsService(
-                       sierraService: SierraService,
-                       itemLookup: ItemLookup,
-                     )(implicit executionContext: ExecutionContext) extends Logging {
+  sierraService: SierraService,
+  itemLookup: ItemLookup
+)(implicit executionContext: ExecutionContext)
+    extends Logging {
 
-  def makeRequest(itemId: CanonicalId, patronNumber: SierraPatronNumber): Future[Either[HoldRejected, HoldAccepted]] = {
+  def makeRequest(
+    itemId: CanonicalId,
+    patronNumber: SierraPatronNumber
+  ): Future[Either[HoldRejected, HoldAccepted]] = {
     itemLookup.byCanonicalId(itemId).flatMap {
       case Right(
-        Item(IdState.Identified(_, srcId @ SourceIdentifier(SierraSystemNumber, _,_), _), _, _, _)
-      ) =>
+          Item(
+            IdState.Identified(
+              _,
+              srcId @ SourceIdentifier(SierraSystemNumber, _, _),
+              _
+            ),
+            _,
+            _,
+            _
+          )
+          ) =>
         sierraService.placeHold(
           patron = patronNumber,
           sourceIdentifier = srcId
