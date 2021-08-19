@@ -95,11 +95,12 @@ class ElasticItemLookup(
               .flatMap { _.data.items }
               .collect {
                 case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-                  if id.sourceIdentifier == srcId =>
+                    if id.sourceIdentifier == srcId =>
                   // This .asInstanceOf[] is a no-op to help the compiler see what
                   // we can see by reading the code.
                   item.asInstanceOf[Item[IdState.Identified]]
-              }.toList match {
+              }
+              .toList match {
               // TODO: We can return multiple items from multiple works
               // TODO: Apply better logic when picking an item!
               case List(item) => Right(item)

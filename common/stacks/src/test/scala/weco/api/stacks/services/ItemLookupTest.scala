@@ -228,8 +228,12 @@ class ItemLookupTest
             _ shouldBe Seq(Right(item))
           }
 
-          whenReady(lookup.bySourceIdentifier(Seq(item.id.otherIdentifiers.head))) {
-            _ shouldBe Seq(Left(DocumentNotFoundError(item.id.otherIdentifiers.head)))
+          whenReady(
+            lookup.bySourceIdentifier(Seq(item.id.otherIdentifiers.head))
+          ) {
+            _ shouldBe Seq(
+              Left(DocumentNotFoundError(item.id.otherIdentifiers.head))
+            )
           }
         }
       }
