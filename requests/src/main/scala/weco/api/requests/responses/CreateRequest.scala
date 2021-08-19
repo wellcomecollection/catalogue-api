@@ -6,7 +6,7 @@ import grizzled.slf4j.Logging
 import weco.api.requests.services.RequestsService
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
-import weco.api.stacks.models.HoldRejected.ItemUnavailableFromSourceSystem
+import weco.api.stacks.models.HoldRejected.SourceSystemNotSupported
 import weco.api.stacks.models.HoldRejected
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
@@ -29,7 +29,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
         complete(accepted)
 
-      case Left(ItemUnavailableFromSourceSystem) =>
+      case Left(SourceSystemNotSupported) =>
         invalidRequest("You cannot request " + itemId)
 
       case Left(holdRejected) =>
