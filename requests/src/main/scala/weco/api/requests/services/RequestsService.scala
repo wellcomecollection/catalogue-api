@@ -6,7 +6,11 @@ import weco.api.stacks.models.HoldRejected.SourceSystemNotSupported
 import weco.api.stacks.models.{HoldAccepted, HoldRejected, SierraHold}
 import weco.api.stacks.services.SierraService
 import weco.catalogue.internal_model.identifiers.IdState.Identified
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -24,7 +28,8 @@ class RequestsService(
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] = {
     itemLookup.byCanonicalId(itemId).flatMap {
-      case Right(item) if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
+      case Right(item)
+          if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
         sierraService.placeHold(
           patron = patronNumber,
           sourceIdentifier = item.id.sourceIdentifier
@@ -40,7 +45,9 @@ class RequestsService(
     }
   }
 
-  def getRequests(patronNumber: SierraPatronNumber): Future[List[(SierraHold, Item[Identified])]] = {
+  def getRequests(
+    patronNumber: SierraPatronNumber
+  ): Future[List[(SierraHold, Item[Identified])]] = {
     for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
