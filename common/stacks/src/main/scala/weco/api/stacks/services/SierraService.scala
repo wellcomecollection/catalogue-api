@@ -3,14 +3,12 @@ package weco.api.stacks.services
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import weco.api.stacks.http.{
-  SierraItemDataEntries,
   SierraItemLookupError,
   SierraSource
 }
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations.{
-  AccessCondition,
   AccessMethod,
   PhysicalLocationType
 }
@@ -36,27 +34,6 @@ class SierraService(
   holdLimit: Int
 )(implicit ec: ExecutionContext)
     extends Logging {
-
-  def getAccessConditions(
-    itemNumbers: Seq[SierraItemNumber]
-  ): Future[Map[SierraItemNumber, AccessCondition]] = {
-    for {
-      itemEither <- sierraSource.lookupItemEntries(itemNumbers)
-
-      accessConditions = itemEither match {
-        case Right(SierraItemDataEntries(_, _, entries)) =>
-          entries.map(item => item.id -> item.getAccessCondition).toMap
-        case Left(
-            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
-            ) =>
-          warn(s"Item lookup missing items: ${missingItems}")
-          itemsReturned.map(item => item.id -> item.getAccessCondition).toMap
-        case Left(itemLookupError) =>
-          error(s"Item lookup failed: ${itemLookupError}")
-          Map.empty[SierraItemNumber, AccessCondition]
-      }
-    } yield accessConditions
-  }
 
   def placeHold(
     patron: SierraPatronNumber,
@@ -201,8 +178,7 @@ class SierraService(
     }
 
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def getAccessCondition: AccessCondition = {
-
+    def allowsOnlineRequesting: Boolean = {
       val location: Option[PhysicalLocationType] =
         itemData.fixedFields
           .get("79")
@@ -213,18 +189,13 @@ class SierraService(
 
       // The bib ID is used for debugging purposes; the bib status is only used
       // for consistency checking. We can use placeholder data here.
-      val (ac, _) = SierraItemAccess(
+      val (accessCondition, _) = SierraItemAccess(
         bibId = SierraBibNumber("0000000"),
         bibStatus = None,
         location = location,
         itemData = itemData
       )
 
-      ac
-    }
-
-    def allowsOnlineRequesting: Boolean = {
-      val accessCondition = getAccessCondition
       accessCondition.method == AccessMethod.OnlineRequest
     }
   }

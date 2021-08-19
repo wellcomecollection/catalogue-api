@@ -13,6 +13,7 @@ import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}
 
+
 class RequestsService(
   sierraService: SierraService,
   itemLookup: ItemLookup

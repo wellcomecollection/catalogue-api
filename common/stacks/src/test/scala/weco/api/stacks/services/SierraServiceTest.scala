@@ -11,14 +11,9 @@ import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.fields.SierraLocation
-import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.sierra.models.identifiers.SierraPatronNumber
 
 class SierraServiceTest
     extends AnyFunSpec
@@ -30,150 +25,6 @@ class SierraServiceTest
     with SierraServiceFixture {
 
   describe("SierraService") {
-    describe("getAccessConditions") {
-      it("gets AccessConditions") {
-
-        val responses = Seq(
-          (
-            HttpRequest(
-              uri = Uri(
-                "http://sierra:1234/v5/items?id=1601017&fields=deleted,fixedFields,holdCount,suppressed"
-              )
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                """
-                  |{
-                  |  "total": 1,
-                  |  "start": 0,
-                  |  "entries": [
-                  |    {
-                  |      "id": "1601017",
-                  |      "deleted": false,
-                  |      "suppressed": false,
-                  |      "fixedFields": {
-                  |        "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                  |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                  |      },
-                  |      "holdCount": 0
-                  |    }
-                  |  ]
-                  |}
-                  |""".stripMargin
-              )
-            )
-          )
-        )
-
-        val itemNumber = SierraItemNumber("1601017")
-
-        val future = withSierraService(responses) {
-          _.getAccessConditions(Seq(itemNumber))
-        }
-
-        whenReady(future) {
-          _ shouldBe Map(
-            itemNumber ->
-              AccessCondition(
-                method = AccessMethod.OnlineRequest,
-                status = AccessStatus.Open
-              )
-          )
-        }
-      }
-
-      it("if some entries are missing, returns the available AccessConditions") {
-        val responses = Seq(
-          (
-            HttpRequest(
-              uri = Uri(
-                "http://sierra:1234/v5/items?id=1601017,1234567&fields=deleted,fixedFields,holdCount,suppressed"
-              )
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                """
-                  |{
-                  |  "total": 1,
-                  |  "start": 0,
-                  |  "entries": [
-                  |    {
-                  |      "id": "1601017",
-                  |      "deleted": false,
-                  |      "suppressed": false,
-                  |      "fixedFields": {
-                  |        "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                  |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                  |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                  |      },
-                  |      "holdCount": 0
-                  |    }
-                  |  ]
-                  |}
-                  |""".stripMargin
-              )
-            )
-          )
-        )
-
-        val itemNumber = SierraItemNumber("1601017")
-        val missingItemNumber = SierraItemNumber("1234567")
-
-        val future = withSierraService(responses) {
-          _.getAccessConditions(Seq(itemNumber, missingItemNumber))
-        }
-
-        whenReady(future) {
-          _ shouldBe Map(
-            itemNumber ->
-              AccessCondition(
-                method = AccessMethod.OnlineRequest,
-                status = AccessStatus.Open
-              )
-          )
-        }
-      }
-
-      it("if all entries are missing, returns no AccessConditions") {
-        val responses = Seq(
-          (
-            HttpRequest(
-              uri = Uri(
-                "http://sierra:1234/v5/items?id=1601017&fields=deleted,fixedFields,holdCount,suppressed"
-              )
-            ),
-            HttpResponse(
-              status = StatusCodes.NotFound,
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                """
-                  |{
-                  |  "code": 107,
-                  |  "specificCode": 0,
-                  |  "httpStatus": 404,
-                  |  "name": "Record not found"
-                  |}
-                  |""".stripMargin
-              )
-            )
-          )
-        )
-
-        val itemNumber = SierraItemNumber("1601017")
-
-        val future = withSierraService(responses) {
-          _.getAccessConditions(Seq(itemNumber))
-        }
-
-        whenReady(future) {
-          _ shouldBe Map.empty
-        }
-      }
-    }
-
     describe("getHolds") {
       it("wraps a response from the Sierra API") {
         val patron = SierraPatronNumber("1234567")
