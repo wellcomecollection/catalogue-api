@@ -317,8 +317,7 @@ class ElasticsearchServiceTest
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
-
-        val badIndex = Index(randomAlphanumeric(10))
+        val badIndex = createIndex
 
         val searchRequests = searchRequestForThingByName(
           index = badIndex,
@@ -404,7 +403,7 @@ class ElasticsearchServiceTest
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
-        val badIndex = Index(randomAlphanumeric(10))
+        val badIndex = createIndex
 
         val searchRequests = searchRequestForThingByName(
           index = badIndex,
