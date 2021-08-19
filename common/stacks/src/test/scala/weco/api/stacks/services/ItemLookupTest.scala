@@ -44,12 +44,12 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        Seq(item1, item2, item3).foreach { it =>
+        Seq(item1, item2, item3).foreach { item =>
           val future =
-            lookup.bySourceIdentifier(it.id.sourceIdentifier)
+            lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
           whenReady(future) {
-            _ shouldBe Right(it)
+            _ shouldBe Seq(Right(item))
           }
         }
       }
@@ -110,7 +110,7 @@ class ItemLookupTest
   }
 
   describe("bySourceIdentifier") {
-    it("finds an item with the same item ID") {
+    it("finds items with the same item IDs") {
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
@@ -123,13 +123,49 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        Seq(item1, item2, item3).foreach { it =>
-          val future =
-            lookup.bySourceIdentifier(it.id.sourceIdentifier)
+        val future =
+          lookup.bySourceIdentifier(
+            Seq(
+              item1.id.sourceIdentifier,
+              item2.id.sourceIdentifier
+            )
+          )
 
-          whenReady(future) {
-            _ shouldBe Right(it)
-          }
+        whenReady(future) {
+          _ shouldBe List(Right(item1), Right(item2))
+        }
+      }
+    }
+
+    it("returns not found errors where ID matches cannot be found") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createIdentifiedItem
+      val item4 = createIdentifiedItem
+
+      val workA = indexedWork().items(List(item1, item2))
+      val workB = indexedWork().items(List(item2, item3))
+
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, workA, workB)
+
+        val lookup = createLookup(index)
+
+        val future =
+          lookup.bySourceIdentifier(
+            Seq(
+              item1.id.sourceIdentifier,
+              item4.id.sourceIdentifier,
+              item3.id.sourceIdentifier
+            )
+          )
+
+        whenReady(future) {
+          _ shouldBe List(
+            Right(item1),
+            Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
+            Right(item3)
+          )
         }
       }
     }
@@ -158,11 +194,11 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        Seq(item1, item2, item3).foreach { it =>
-          val future = lookup.bySourceIdentifier(it.id.sourceIdentifier)
+        Seq(item1, item2, item3).foreach { item =>
+          val future = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
           whenReady(future) {
-            _ shouldBe Right(it)
+            _ shouldBe Seq(Right(item))
           }
         }
       }
@@ -187,33 +223,24 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        List(item1, item2, item3).foreach { it =>
-          whenReady(lookup.bySourceIdentifier(it.id.sourceIdentifier)) {
-            _ shouldBe Right(it)
+        List(item1, item2, item3).foreach { item =>
+          whenReady(lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))) {
+            _ shouldBe Seq(Right(item))
           }
 
-          whenReady(lookup.bySourceIdentifier(it.id.otherIdentifiers.head)) {
-            _.left.value shouldBe a[DocumentNotFoundError[_]]
+          whenReady(
+            lookup.bySourceIdentifier(Seq(item.id.otherIdentifiers.head))
+          ) {
+            _ shouldBe Seq(
+              Left(DocumentNotFoundError(item.id.otherIdentifiers.head))
+            )
           }
-        }
-      }
-    }
-
-    it("returns a DocumentNotFoundError if there is no such item") {
-      withLocalWorksIndex { index =>
-        val id = createSourceIdentifier
-
-        val lookup = createLookup(index)
-        val future = lookup.bySourceIdentifier(id)
-
-        whenReady(future) {
-          _ shouldBe Left(DocumentNotFoundError(id))
         }
       }
     }
 
     it(
-      "returns a DocumentNotFoundError if there is no visible work with this item"
+      "returns a DocumentNotFoundError if there is no visible work on an item"
     ) {
       val item = createIdentifiedItem
 
@@ -227,20 +254,20 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        val future1 = lookup.bySourceIdentifier(item.id.sourceIdentifier)
+        val future1 = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
         whenReady(future1) {
-          _ shouldBe Left(DocumentNotFoundError(item.id.sourceIdentifier))
+          _ shouldBe Seq(Left(DocumentNotFoundError(item.id.sourceIdentifier)))
         }
 
         // Then we index both works and run the same query, so we know the
         // invisibility of the first work was the reason it was hidden.
         insertIntoElasticsearch(index, workInvisible, workVisible)
 
-        val future2 = lookup.bySourceIdentifier(item.id.sourceIdentifier)
+        val future2 = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
         whenReady(future2) {
-          _ shouldBe Right(item)
+          _ shouldBe Seq(Right(item))
         }
       }
     }
@@ -248,10 +275,11 @@ class ItemLookupTest
     it("returns Left[Error] if Elasticsearch has an error") {
       val lookup = createLookup(index = createIndex)
       val future =
-        lookup.bySourceIdentifier(createSourceIdentifier)
+        lookup.bySourceIdentifier(Seq(createSourceIdentifier))
 
-      whenReady(future) {
-        _.left.value shouldBe a[IndexNotFoundError]
+      whenReady(future) { results =>
+        results should have length (1)
+        results.head.left.value shouldBe a[IndexNotFoundError]
       }
     }
   }

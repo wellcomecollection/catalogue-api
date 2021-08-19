@@ -1,6 +1,7 @@
 package weco.api.stacks.services.elastic
 
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
+import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.{ElasticClient, Index}
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
@@ -64,44 +65,52 @@ class ElasticItemLookup(
     }
   }
 
-  def bySourceIdentifier(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
-    // TODO: What if we get something with the right value but wrong type?
-    // We should be able to filter by ontologyType and IdentifierType.
-    val searchRequest =
-      search(index)
-        .query(
-          boolQuery
-            .must(termQuery(field = "type", value = "Visible"))
-            .should(
-              termQuery(
-                "data.items.id.sourceIdentifier.value",
-                sourceIdentifier.value
+  override def bySourceIdentifier(
+    sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = {
+    val multiSearchRequest = MultiSearchRequest(
+      sourceIdentifiers.map { sourceIdentifier =>
+        search(index)
+          .query(
+            boolQuery
+              .must(termQuery(field = "type", value = "Visible"))
+              .should(
+                termQuery(
+                  "data.items.id.sourceIdentifier.value",
+                  sourceIdentifier.value
+                )
               )
-            )
-        )
-        .size(10)
+          )
+          // TODO: How many things do we need to retrieve here?
+          .size(10)
+      }
+    )
 
-    elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
-      case Left(err) => Left(err)
-      case Right(works) =>
-        val item =
-          works
-            .flatMap { _.data.items }
-            .collectFirst {
-              case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-                  if id.sourceIdentifier == sourceIdentifier =>
-                // This .asInstanceOf[] is a no-op to help the compiler see what
-                // we can see by reading the code.
-                item.asInstanceOf[Item[IdState.Identified]]
+    elasticsearchService
+      .findByMultiSearch[Work[Indexed]](multiSearchRequest)
+      .map {
+        _.zip(sourceIdentifiers).map {
+          case (Right(works), srcId) =>
+            works
+              .flatMap { _.data.items }
+              .collect {
+                case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+                    if id.sourceIdentifier == srcId =>
+                  // This .asInstanceOf[] is a no-op to help the compiler see what
+                  // we can see by reading the code.
+                  item.asInstanceOf[Item[IdState.Identified]]
+              }
+              .toList match {
+              // TODO: We can return multiple items from multiple works
+              // TODO: Apply better logic when picking an item!
+              case List(item) => Right(item)
+              case item :: _  => Right(item)
+              case List()     => Left(DocumentNotFoundError(srcId))
             }
 
-        item match {
-          case Some(it) => Right(it)
-          case None     => Left(DocumentNotFoundError(sourceIdentifier))
+          case (Left(err), _) => Left(err)
         }
-    }
+      }
   }
 }
 

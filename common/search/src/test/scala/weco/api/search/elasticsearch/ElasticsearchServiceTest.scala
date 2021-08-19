@@ -13,12 +13,12 @@ import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.elasticsearch.IndexConfig
+import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.json.JsonUtil.toJson
 import io.circe.generic.auto._
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
 import com.sksamuel.elastic4s.requests.searches.{
   MultiSearchRequest,
@@ -43,6 +43,16 @@ class ElasticsearchServiceTest
     with ElasticsearchFixtures {
 
   case class ExampleThing(id: CanonicalId, name: String)
+  case class DifferentExampleThing(id: CanonicalId, age: Int)
+
+  val badElasticClient: ElasticClient = ElasticClientBuilder.create(
+    hostname = "noresolve",
+    port = 9200,
+    protocol = "http",
+    username = "elastic",
+    password = "changeme",
+    compressionEnabled = false
+  )
 
   def randomThing: ExampleThing = ExampleThing(
     id = createCanonicalId,
@@ -90,7 +100,7 @@ class ElasticsearchServiceTest
 
   describe("findById") {
     it("finds documents by ID") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -105,8 +115,26 @@ class ElasticsearchServiceTest
       }
     }
 
+    it("fails if deserialising to a different type than stored") {
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingToQueryFor = thingsToIndex.head
+
+        val findByIdFuture =
+          elasticsearchService.findById[DifferentExampleThing](
+            thingToQueryFor.id
+          )(index)
+
+        whenReady(findByIdFuture.failed) {
+          _.getMessage should include("Unable to parse JSON")
+        }
+      }
+    }
+
     it("should return an appropriate error if no ID matches") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -133,11 +161,24 @@ class ElasticsearchServiceTest
         _.left.value shouldBe a[IndexNotFoundError]
       }
     }
+
+    it("fails if it cannot connect to Elasticsearch") {
+      val elasticsearchService = new ElasticsearchService(badElasticClient)
+      val badIndex = createIndex
+
+      val findByIdFuture = elasticsearchService.findById[ExampleThing](
+        createCanonicalId
+      )(badIndex)
+
+      whenReady(findByIdFuture.failed) {
+        _.getMessage should include("UnknownHostException")
+      }
+    }
   }
 
   describe("findBySearch") {
     it("finds documents by search") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -153,6 +194,29 @@ class ElasticsearchServiceTest
 
         whenReady(findBySearchFuture) {
           _.right.value shouldBe Seq(thingToQueryFor)
+        }
+      }
+    }
+
+    it("fails if deserialising to a different type than stored") {
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingToQueryFor = thingsToIndex.head
+
+        val searchRequest = searchRequestForThingByName(
+          index = index,
+          name = thingToQueryFor.name
+        )
+
+        val findBySearchFuture =
+          elasticsearchService.findBySearch[DifferentExampleThing](
+            searchRequest
+          )
+
+        whenReady(findBySearchFuture.failed) {
+          _.getMessage should include("Unable to parse JSON")
         }
       }
     }
@@ -173,11 +237,27 @@ class ElasticsearchServiceTest
         _.left.value shouldBe a[IndexNotFoundError]
       }
     }
+
+    it("fails if it cannot connect to Elasticsearch") {
+      val elasticsearchService = new ElasticsearchService(badElasticClient)
+
+      val searchRequest = searchRequestForThingByName(
+        index = createIndex,
+        name = randomAlphanumeric(10)
+      )
+
+      val findByMultiSearchFuture = elasticsearchService
+        .findBySearch[ExampleThing](searchRequest)
+
+      whenReady(findByMultiSearchFuture.failed) {
+        _.getMessage should include("UnknownHostException")
+      }
+    }
   }
 
   describe("findByMultiSearch") {
     it("finds documents by performing a MultiSearch") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -195,53 +275,100 @@ class ElasticsearchServiceTest
         val findByMultiSearchFuture = elasticsearchService
           .findByMultiSearch[ExampleThing](multiSearchRequest)
 
-        whenReady(findByMultiSearchFuture) {
-          case (errors, foundBySearch) =>
-            errors should have length (0)
-            foundBySearch.toSet shouldBe thingsToQueryFor.toSet
+        whenReady(findByMultiSearchFuture) { results =>
+          val (errorEither, foundBySearchEither) = results.partition(_.isLeft)
+          val errors = errorEither.map(_.left.value)
+          val foundBySearch = foundBySearchEither.map(_.right.value)
+
+          errors should have length (0)
+          foundBySearch shouldBe thingsToQueryFor.map(Seq(_))
+        }
+      }
+    }
+
+    it("fails if deserialising to a different type than stored") {
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
+
+      withExampleIndex(thingsToIndex) { index =>
+        val elasticsearchService = new ElasticsearchService(elasticClient)
+        val thingsToQueryFor = thingsToIndex.slice(0, 3)
+
+        val searchRequests = thingsToQueryFor.map { thing =>
+          searchRequestForThingByName(
+            index = index,
+            name = thing.name
+          )
+        }
+
+        val multiSearchRequest = MultiSearchRequest(searchRequests)
+
+        val findByMultiSearchFuture = elasticsearchService
+          .findByMultiSearch[DifferentExampleThing](multiSearchRequest)
+
+        whenReady(findByMultiSearchFuture.failed) {
+          _.getMessage should include("Unable to parse JSON")
         }
       }
     }
 
     it("returns errors for queries that fail") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
+        val badIndex = createIndex
 
-        val badIndex = Index(randomAlphanumeric(10))
-
-        val searchRequests = thingsToQueryFor.map { thing =>
+        val searchRequests = searchRequestForThingByName(
+          index = badIndex,
+          name = randomAlphanumeric(10)
+        ) +: thingsToQueryFor.map { thing =>
           searchRequestForThingByName(
             index = index,
             name = thing.name
           )
-        } :+ searchRequestForThingByName(
-          index = badIndex,
-          name = randomAlphanumeric(10)
-        )
+        }
 
         val multiSearchRequest = MultiSearchRequest(searchRequests)
 
         val findByMultiSearchFuture = elasticsearchService
           .findByMultiSearch[ExampleThing](multiSearchRequest)
 
-        whenReady(findByMultiSearchFuture) {
-          case (errors, foundBySearch) =>
-            foundBySearch.toSet shouldBe thingsToQueryFor.toSet
+        whenReady(findByMultiSearchFuture) { results =>
+          val expectedFailure :: expectedSuccess = results
 
-            errors should have size (1)
-            errors.head shouldBe a[IndexNotFoundError]
+          expectedFailure.left.value shouldBe a[IndexNotFoundError]
+          expectedSuccess.map(_.right.value) shouldBe thingsToQueryFor.map(
+            Seq(_)
+          )
         }
+      }
+    }
+
+    it("fails if it cannot connect to Elasticsearch") {
+      val elasticsearchService = new ElasticsearchService(badElasticClient)
+
+      val searchRequests = Seq(
+        searchRequestForThingByName(
+          index = createIndex,
+          name = randomAlphanumeric(10)
+        )
+      )
+
+      val multiSearchRequest = MultiSearchRequest(searchRequests)
+
+      val findByMultiSearchFuture = elasticsearchService
+        .findByMultiSearch[ExampleThing](multiSearchRequest)
+
+      whenReady(findByMultiSearchFuture.failed) {
+        _.getMessage should include("UnknownHostException")
       }
     }
   }
 
   describe("executeMultiSearchRequest") {
     it("performs a multiSearchRequest") {
-
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -258,47 +385,66 @@ class ElasticsearchServiceTest
         val multiSearchResponseFuture =
           elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
 
-        whenReady(multiSearchResponseFuture) {
-          case (errors, searchResponses) =>
-            errors shouldBe empty
+        whenReady(multiSearchResponseFuture) { results =>
+          val (errorEither, searchResponsesEither) = results.partition(_.isLeft)
+          val errors = errorEither.map(_.left.value)
+          val searchResponses =
+            searchResponsesEither.flatMap(_.right.value.to[ExampleThing])
 
-            val returnedThings = searchResponses.flatMap(_.to[ExampleThing])
-            returnedThings.toSet shouldBe thingsToQueryFor.toSet
+          errors should have length (0)
+          searchResponses shouldBe thingsToQueryFor
         }
       }
     }
 
     it("returns errors for queries that fail") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
-        val badIndex = Index(randomAlphanumeric(10))
+        val badIndex = createIndex
 
-        val searchRequests = thingsToQueryFor.map { thing =>
+        val searchRequests = searchRequestForThingByName(
+          index = badIndex,
+          name = randomAlphanumeric(10)
+        ) +: thingsToQueryFor.map { thing =>
           searchRequestForThingByName(
             index = index,
             name = thing.name
           )
-        } :+ searchRequestForThingByName(
-          index = badIndex,
-          name = randomAlphanumeric(10)
-        )
+        }
 
         val multiSearchRequest = MultiSearchRequest(searchRequests)
         val multiSearchResponseFuture =
           elasticsearchService.executeMultiSearchRequest(multiSearchRequest)
 
-        whenReady(multiSearchResponseFuture) {
-          case (errors, searchResponses) =>
-            val returnedThings = searchResponses.flatMap(_.to[ExampleThing])
+        whenReady(multiSearchResponseFuture) { results =>
+          val expectedFailure :: expectedSuccess = results
 
-            returnedThings.toSet shouldBe thingsToQueryFor.toSet
-
-            errors should have size (1)
-            errors.head shouldBe a[IndexNotFoundError]
+          expectedFailure.left.value shouldBe a[IndexNotFoundError]
+          expectedSuccess.flatMap(_.right.value.to[ExampleThing]) shouldBe thingsToQueryFor
         }
+      }
+    }
+
+    it("fails if it cannot connect to Elasticsearch") {
+      val elasticsearchService = new ElasticsearchService(badElasticClient)
+
+      val searchRequests = Seq(
+        searchRequestForThingByName(
+          index = createIndex,
+          name = randomAlphanumeric(10)
+        )
+      )
+
+      val multiSearchRequest = MultiSearchRequest(searchRequests)
+
+      val findByMultiSearchFuture = elasticsearchService
+        .executeMultiSearchRequest(multiSearchRequest)
+
+      whenReady(findByMultiSearchFuture.failed) {
+        _.getMessage should include("UnknownHostException")
       }
     }
   }
@@ -306,7 +452,7 @@ class ElasticsearchServiceTest
   describe("executeSearchRequest") {
     it("performs a searchRequest") {
 
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -340,6 +486,22 @@ class ElasticsearchServiceTest
 
       whenReady(searchResponseFuture) {
         _.left.value shouldBe a[IndexNotFoundError]
+      }
+    }
+
+    it("fails if it cannot connect to Elasticsearch") {
+      val elasticsearchService = new ElasticsearchService(badElasticClient)
+
+      val searchRequest = searchRequestForThingByName(
+        index = createIndex,
+        name = randomAlphanumeric(10)
+      )
+
+      val findByMultiSearchFuture = elasticsearchService
+        .executeSearchRequest(searchRequest)
+
+      whenReady(findByMultiSearchFuture.failed) {
+        _.getMessage should include("UnknownHostException")
       }
     }
   }
