@@ -24,16 +24,6 @@ class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
     )
 
   override def bySourceIdentifier(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] =
-    Future.successful(
-      items.find(_.id.sourceIdentifier == sourceIdentifier) match {
-        case Some(it) => Right(it)
-        case None     => Left(DocumentNotFoundError(sourceIdentifier))
-      }
-    )
-
-  override def bySourceIdentifiers(
     sourceIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] =
     Future.successful {

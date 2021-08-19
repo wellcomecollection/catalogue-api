@@ -20,13 +20,13 @@ trait LookupPendingRequests extends CustomDirectives {
     val itemHolds = for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
-      itemLookupResults <- itemLookup.bySourceIdentifiers(holdsMap.keys.toSeq)
+      itemLookupResults <- itemLookup.bySourceIdentifier(holdsMap.keys.toSeq)
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
         case (Right(item), _) => Some(item)
         case (Left(elasticError: ElasticsearchError), srcId) =>
           warn(
-            s"Error looking up item ${srcId}. Elasticsearch error: ${elasticError}"
+            s"Error looking up item $srcId. Elasticsearch error: $elasticError"
           )
           None
       }

@@ -65,59 +65,25 @@ class ElasticItemLookup(
     }
   }
 
-  private def buildSourceIdentifierSearchRequest(
-    index: Index
-  )(sourceIdentifier: SourceIdentifier) =
-    search(index)
-      .query(
-        boolQuery
-          .must(termQuery(field = "type", value = "Visible"))
-          .should(
-            termQuery(
-              "data.items.id.sourceIdentifier.value",
-              sourceIdentifier.value
-            )
-          )
-      )
-      // TODO: How many things do we need to retrieve here?
-      .size(10)
-
-  val searchRequestOnIndex = buildSourceIdentifierSearchRequest(index)(_)
-
-  def matchItemsOnWorksBySourceIdentifier(
-    works: Seq[Work[Indexed]],
-    sourceIdentifier: SourceIdentifier
-  ) =
-    works
-      .flatMap { _.data.items }
-      .collect {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-            if id.sourceIdentifier == sourceIdentifier =>
-          // This .asInstanceOf[] is a no-op to help the compiler see what
-          // we can see by reading the code.
-          item.asInstanceOf[Item[IdState.Identified]]
-      }
-
-  def bySourceIdentifier(
-    sourceIdentifier: SourceIdentifier
-  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
-    val searchRequest = searchRequestOnIndex(sourceIdentifier)
-
-    elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
-      case Left(err) => Left(err)
-      case Right(works) =>
-        matchItemsOnWorksBySourceIdentifier(works, sourceIdentifier).toList match {
-          case item :: _ => Right(item)
-          case List()    => Left(DocumentNotFoundError(sourceIdentifier))
-        }
-    }
-  }
-
-  override def bySourceIdentifiers(
+  override def bySourceIdentifier(
     sourceIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = {
     val multiSearchRequest = MultiSearchRequest(
-      sourceIdentifiers.map(searchRequestOnIndex)
+      sourceIdentifiers.map { sourceIdentifier =>
+        search(index)
+          .query(
+            boolQuery
+              .must(termQuery(field = "type", value = "Visible"))
+              .should(
+                termQuery(
+                  "data.items.id.sourceIdentifier.value",
+                  sourceIdentifier.value
+                )
+              )
+          )
+          // TODO: How many things do we need to retrieve here?
+          .size(10)
+      }
     )
 
     elasticsearchService
@@ -125,7 +91,15 @@ class ElasticItemLookup(
       .map {
         _.zip(sourceIdentifiers).map {
           case (Right(works), srcId) =>
-            matchItemsOnWorksBySourceIdentifier(works, srcId).toList match {
+            works
+              .flatMap { _.data.items }
+              .collect {
+                case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+                  if id.sourceIdentifier == srcId =>
+                  // This .asInstanceOf[] is a no-op to help the compiler see what
+                  // we can see by reading the code.
+                  item.asInstanceOf[Item[IdState.Identified]]
+              }.toList match {
               // TODO: We can return multiple items from multiple works
               // TODO: Apply better logic when picking an item!
               case List(item) => Right(item)
