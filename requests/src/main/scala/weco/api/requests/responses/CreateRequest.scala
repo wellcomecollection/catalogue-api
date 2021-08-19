@@ -3,11 +3,11 @@ package weco.api.requests.responses
 import akka.http.scaladsl.model.{HttpEntity, StatusCode, StatusCodes}
 import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
+import weco.api.requests.models.HoldRejected
 import weco.api.requests.services.RequestsService
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.rest.CustomDirectives
-import weco.api.stacks.models.HoldRejected.SourceSystemNotSupported
-import weco.api.stacks.models.HoldRejected
+import HoldRejected.SourceSystemNotSupported
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError

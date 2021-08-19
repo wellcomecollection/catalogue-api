@@ -1,10 +1,10 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
+import weco.api.requests.models.{HoldAccepted, HoldRejected}
 import weco.api.search.elasticsearch.ElasticsearchError
-import weco.api.stacks.models.HoldRejected.SourceSystemNotSupported
-import weco.api.stacks.models.{HoldAccepted, HoldRejected, SierraHold}
-import weco.api.stacks.services.SierraService
+import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
+import weco.api.stacks.models.SierraHold
 import weco.catalogue.internal_model.identifiers.IdState.Identified
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -15,8 +15,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class RequestsService(
-  sierraService: SierraService,
-  itemLookup: ItemLookup
+                       sierraService: SierraRequestsService,
+                       itemLookup: ItemLookup
 )(implicit executionContext: ExecutionContext)
     extends Logging {
 

@@ -1,4 +1,4 @@
-package weco.api.stacks.models
+package weco.api.requests.models
 
 import weco.sierra.models.identifiers.SierraPatronNumber
 

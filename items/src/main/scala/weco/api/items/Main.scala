@@ -3,7 +3,7 @@ package weco.api.items
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.items.services.{ItemUpdateService, SierraItemUpdater}
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater, WorkLookup}
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
@@ -11,7 +11,6 @@ import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.api.stacks.http.SierraSource
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.api.stacks.services.WorkLookup
 import weco.catalogue.display_model.ElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics

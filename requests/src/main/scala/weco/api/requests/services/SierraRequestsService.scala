@@ -1,35 +1,23 @@
-package weco.api.stacks.services
+package weco.api.requests.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{
-  SierraItemLookupError,
-  SierraSource
-}
+import weco.api.requests.models.{HoldAccepted, HoldRejected}
+import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
 import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessMethod,
-  PhysicalLocationType
-}
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
+import weco.catalogue.internal_model.locations.{AccessMethod, PhysicalLocationType}
+import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.models.data.SierraItemData
-import weco.sierra.models.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.sierra.models.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
   *
   */
-class SierraService(
+class SierraRequestsService(
   sierraSource: SierraSource,
   holdLimit: Int
 )(implicit ec: ExecutionContext)
@@ -231,13 +219,13 @@ class SierraService(
     } yield sourceIdentifiers.toMap
 }
 
-object SierraService {
+object SierraRequestsService {
   def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int)(
     implicit
     ec: ExecutionContext,
     mat: Materializer
-  ): SierraService =
-    new SierraService(
+  ): SierraRequestsService =
+    new SierraRequestsService(
       new SierraSource(client),
       holdLimit = holdLimit
     )

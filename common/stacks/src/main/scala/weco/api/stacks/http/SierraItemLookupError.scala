@@ -7,8 +7,6 @@ import weco.sierra.models.identifiers.SierraItemNumber
 sealed trait SierraItemLookupError
 
 object SierraItemLookupError {
-  case class ItemHasNoStatus(t: Throwable) extends SierraItemLookupError
-
   case object ItemNotFound extends SierraItemLookupError
 
   case class MissingItems(

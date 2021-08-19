@@ -4,7 +4,6 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import weco.api.requests.RequestsApi
 import weco.api.requests.services.{ItemLookup, RequestsService}
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
