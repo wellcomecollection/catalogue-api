@@ -18,8 +18,9 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
+import weco.api.requests.services.{ItemLookup, RequestsService}
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
-import weco.api.stacks.services.{ItemLookup, SierraService}
+import weco.api.stacks.services.SierraService
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
@@ -1055,10 +1056,12 @@ class RequestingScenarioTest
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
-    val api: RequestsApi = new RequestsApi(
+    val requestsService = new RequestsService(
       sierraService = SierraService(client, holdLimit = holdLimit),
       itemLookup = itemLookup
     )
+
+    val api: RequestsApi = new RequestsApi(requestsService)
 
     api.routes
   }

@@ -1,4 +1,4 @@
-package weco.api.stacks.services
+package weco.api.requests.services
 
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.catalogue.internal_model.identifiers.{

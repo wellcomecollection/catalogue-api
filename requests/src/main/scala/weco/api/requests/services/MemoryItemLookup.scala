@@ -1,7 +1,7 @@
 package weco.api.stacks.services.memory
 
+import weco.api.requests.services.ItemLookup
 import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError}
-import weco.api.stacks.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
