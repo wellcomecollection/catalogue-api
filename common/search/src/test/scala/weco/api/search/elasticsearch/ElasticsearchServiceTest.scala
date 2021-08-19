@@ -100,7 +100,7 @@ class ElasticsearchServiceTest
 
   describe("findById") {
     it("finds documents by ID") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -116,7 +116,7 @@ class ElasticsearchServiceTest
     }
 
     it("fails if deserialising to a different type than stored") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -134,7 +134,7 @@ class ElasticsearchServiceTest
     }
 
     it("should return an appropriate error if no ID matches") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -178,7 +178,7 @@ class ElasticsearchServiceTest
 
   describe("findBySearch") {
     it("finds documents by search") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -199,7 +199,7 @@ class ElasticsearchServiceTest
     }
 
     it("fails if deserialising to a different type than stored") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -257,7 +257,7 @@ class ElasticsearchServiceTest
 
   describe("findByMultiSearch") {
     it("finds documents by performing a MultiSearch") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -287,7 +287,7 @@ class ElasticsearchServiceTest
     }
 
     it("fails if deserialising to a different type than stored") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -312,7 +312,7 @@ class ElasticsearchServiceTest
     }
 
     it("returns errors for queries that fail") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -368,7 +368,7 @@ class ElasticsearchServiceTest
 
   describe("executeMultiSearchRequest") {
     it("performs a multiSearchRequest") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -398,7 +398,7 @@ class ElasticsearchServiceTest
     }
 
     it("returns errors for queries that fail") {
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -452,7 +452,7 @@ class ElasticsearchServiceTest
   describe("executeSearchRequest") {
     it("performs a searchRequest") {
 
-      val thingsToIndex = 0.to(randomInt(5, 10)).map(_ => randomThing).toList
+      val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
         val elasticsearchService = new ElasticsearchService(elasticClient)
