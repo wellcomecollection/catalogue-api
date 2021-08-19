@@ -105,6 +105,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       withActiveTrace(elasticClient.execute(request))
         .map(_.toEither)
         .map {
+          case Left(err) => throw err.asException
           case Right(multiResponse) =>
             val foldInitial = (
               0L,
@@ -146,8 +147,6 @@ class ElasticsearchService(elasticClient: ElasticClient)(
             transaction.setLabel("elasticTookTotal", finalTotalTimeTaken)
 
             finalResults
-
-          case Left(err) => throw err.asException
         }
     }
 
