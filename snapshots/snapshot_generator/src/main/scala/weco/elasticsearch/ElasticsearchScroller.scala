@@ -1,0 +1,56 @@
+package weco.elasticsearch
+
+import com.sksamuel.elastic4s.ElasticClient
+import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchIterator, SearchRequest}
+import grizzled.slf4j.Logging
+import io.circe.Decoder
+import weco.json.JsonUtil.fromJson
+
+import java.text.NumberFormat
+import scala.concurrent.duration._
+
+/** @param bulkSize
+  *   How many documents should be fetched in a single request?
+  *
+  *   If this value is too small, we have to make extra requests and
+  *   the scroll will take longer.
+  *
+  *   If this value is too big, we may exceed the heap memory on a single
+  *   request -- >100MB in one set of returned works, and we get an error:
+  *
+  *       org.apache.http.ContentTooLongException: entity content is too
+  *       long [167209080] for the configured buffer limit [104857600]
+  *
+  */
+class ElasticsearchScroller()(
+  implicit client: ElasticClient,
+  timeout: FiniteDuration = 5 minutes,
+  bulkSize: Int = 10000
+) extends Logging {
+  def scroll[T](request: SearchRequest)(implicit decoder: Decoder[T]): Iterator[T] =
+    SearchIterator
+      .hits(
+        client,
+        request
+          .scroll(timeout)
+          .size(bulkSize)
+      )
+      .zipWithIndex
+      .map {
+        case (hit, index) =>
+          if (index % 10000 == 0) {
+            info(
+              s"Received another ${intComma(10000)} hits " +
+                s"(${intComma(index)} so far) from $index"
+            )
+          }
+
+          hit
+      }
+      .map { searchHit: SearchHit =>
+        fromJson[T](searchHit.sourceAsString).get
+      }
+
+  private def intComma(number: Long): String =
+    NumberFormat.getInstance().format(number)
+}
