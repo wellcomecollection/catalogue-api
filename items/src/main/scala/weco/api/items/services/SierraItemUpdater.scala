@@ -92,7 +92,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
   def getAccessConditions(
     itemNumbers: Seq[SierraItemNumber]
-  ): Future[Map[SierraItemNumber, AccessCondition]] = {
+  ): Future[Map[SierraItemNumber, AccessCondition]] =
     for {
       itemEither <- sierraSource.lookupItemEntries(itemNumbers)
 
@@ -102,14 +102,13 @@ class SierraItemUpdater(sierraSource: SierraSource)(
         case Left(
             SierraItemLookupError.MissingItems(missingItems, itemsReturned)
             ) =>
-          warn(s"Item lookup missing items: ${missingItems}")
+          warn(s"Item lookup missing items: $missingItems")
           itemsReturned.map(item => item.id -> getAccessCondition(item)).toMap
         case Left(itemLookupError) =>
-          error(s"Item lookup failed: ${itemLookupError}")
+          error(s"Item lookup failed: $itemLookupError")
           Map.empty[SierraItemNumber, AccessCondition]
       }
     } yield accessConditions
-  }
 
   def updateItems(
     items: Seq[Item[IdState.Identified]]

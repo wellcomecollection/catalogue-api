@@ -37,7 +37,7 @@ object DisplayRequest {
   def apply(
     hold: SierraHold,
     item: Item[IdState.Identified]
-  ): DisplayRequest = {
+  ): DisplayRequest =
     DisplayRequest(
       item = DisplayItem(
         item = item,
@@ -53,7 +53,6 @@ object DisplayRequest {
         label = hold.status.name
       )
     )
-  }
 }
 
 case class DisplayLocationDescription(

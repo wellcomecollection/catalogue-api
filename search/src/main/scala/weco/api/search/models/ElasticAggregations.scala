@@ -41,7 +41,7 @@ trait ElasticAggregations extends Logging {
   }
 
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
-    def decodeAgg[T: Decoder](name: String): Option[Aggregation[T]] = {
+    def decodeAgg[T: Decoder](name: String): Option[Aggregation[T]] =
       aggregations
         .getAgg(name)
         .flatMap(
@@ -53,6 +53,5 @@ trait ElasticAggregations extends Logging {
               Failure(err)
           }.toOption
         )
-    }
   }
 }

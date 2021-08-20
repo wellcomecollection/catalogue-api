@@ -23,7 +23,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
   def createRequest(
     itemId: CanonicalId,
     patronNumber: SierraPatronNumber
-  ): Future[Route] = {
+  ): Future[Route] =
     requestsService.makeRequest(itemId, patronNumber) map {
       case Right(_) =>
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
@@ -51,7 +51,6 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
       case err =>
         internalError(err)
     }
-  }
 
   private def handleError(
     reason: HoldRejected,

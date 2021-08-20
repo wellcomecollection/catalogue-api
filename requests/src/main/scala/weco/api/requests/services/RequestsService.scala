@@ -22,7 +22,7 @@ class RequestsService(
   def makeRequest(
     itemId: CanonicalId,
     patronNumber: SierraPatronNumber
-  ): Future[Either[HoldRejected, HoldAccepted]] = {
+  ): Future[Either[HoldRejected, HoldAccepted]] =
     itemLookup.byCanonicalId(itemId).flatMap {
       case Right(item)
           if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
@@ -39,11 +39,10 @@ class RequestsService(
         error(s"Failed to do itemLookup: $itemId", err)
         Future.failed(err)
     }
-  }
 
   def getRequests(
     patronNumber: SierraPatronNumber
-  ): Future[List[(SierraHold, Item[Identified])]] = {
+  ): Future[List[(SierraHold, Item[Identified])]] =
     for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
@@ -63,5 +62,4 @@ class RequestsService(
       }
 
     } yield itemHoldTuples.toList
-  }
 }

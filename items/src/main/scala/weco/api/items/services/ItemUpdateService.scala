@@ -55,7 +55,7 @@ class ItemUpdateService(
       require(
         updatedItemsWithIndex.size == itemsWithIndex.size,
         "Inconsistent results updating items: " +
-          s"Received: ${itemsWithIndex}, updated: ${updatedItemsWithIndex}"
+          s"Received: $itemsWithIndex, updated: $updatedItemsWithIndex"
       )
 
       updatedItemsWithIndex
@@ -95,7 +95,7 @@ class ItemUpdateService(
                 preservedOrderItemsUpdate(
                   itemsWithIndex = itemsWithIndex,
                   updateFunction = updater.updateItems
-                )
+              )
             )
             .getOrElse(Future(itemsWithIndex))
         case (None, itemsWithIndex) =>

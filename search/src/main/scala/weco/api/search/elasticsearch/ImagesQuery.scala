@@ -98,7 +98,7 @@ case object ImagesMultiMatcher {
       )
     )
 
-  def apply(q: String): BoolQuery = {
+  def apply(q: String): BoolQuery =
     boolQuery()
       .should(
         MultiMatchQuery(
@@ -166,10 +166,10 @@ case object ImagesMultiMatcher {
                   .flatMap(
                     language =>
                       Seq(
-                        s"data.title.${language}",
-                        s"data.notes.${language}",
-                        s"data.lettering.${language}"
-                      )
+                        s"data.title.$language",
+                        s"data.notes.$language",
+                        s"data.lettering.$language"
+                    )
                   )
               )
             )
@@ -177,5 +177,4 @@ case object ImagesMultiMatcher {
         )
       )
       .minimumShouldMatch(1)
-  }
 }

@@ -53,7 +53,7 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
     initResponse: InitiateMultipartUploadResult,
     location: S3ObjectLocation,
     bytes: Iterator[Byte]
-  ): List[UploadPartResult] = {
+  ): List[UploadPartResult] =
     bytes
       .grouped(partSize)
       .zipWithIndex
@@ -74,5 +74,4 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
           )
       }
       .toList
-  }
 }

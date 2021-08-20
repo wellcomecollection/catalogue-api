@@ -14,10 +14,9 @@ trait LookupPendingRequests extends CustomDirectives {
 
   implicit val ec: ExecutionContext
 
-  def lookupRequests(patronNumber: SierraPatronNumber): Route = {
+  def lookupRequests(patronNumber: SierraPatronNumber): Route =
     onComplete(requestsService.getRequests(patronNumber)) {
       case Success(value) => complete(DisplayResultsList(value))
       case Failure(err)   => failWith(err)
     }
-  }
 }
