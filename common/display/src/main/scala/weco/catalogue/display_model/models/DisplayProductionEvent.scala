@@ -26,7 +26,7 @@ object DisplayProductionEvent {
   def apply(
     productionEvent: ProductionEvent[IdState.Minted],
     includesIdentifiers: Boolean
-  ): DisplayProductionEvent = {
+  ): DisplayProductionEvent =
     DisplayProductionEvent(
       label = productionEvent.label,
       places = productionEvent.places.map { DisplayPlace(_) },
@@ -38,5 +38,4 @@ object DisplayProductionEvent {
         DisplayConcept(label = concept.label)
       }
     )
-  }
 }

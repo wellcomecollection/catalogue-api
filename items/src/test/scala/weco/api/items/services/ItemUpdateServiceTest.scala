@@ -6,7 +6,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.fixtures.SierraServiceFixture
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{
@@ -17,6 +16,7 @@ import weco.catalogue.internal_model.locations.{
 import weco.catalogue.internal_model.work.Item
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
+import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
 
@@ -31,13 +31,13 @@ class ItemUpdateServiceTest
     with ItemsApiGenerators
     with IntegrationPatience
     with SierraIdentifierGenerators
-    with SierraServiceFixture {
+    with SierraSourceFixture {
 
   def withSierraItemUpdater[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[ItemUpdater, R]): R =
-    withSierraService(responses) { sierraService =>
-      testWith(new SierraItemUpdater(sierraService))
+    withSierraSource(responses) { sierraSource =>
+      testWith(new SierraItemUpdater(sierraSource))
     }
 
   def withItemUpdateService[R](
@@ -46,6 +46,26 @@ class ItemUpdateServiceTest
     testWith(new ItemUpdateService(itemUpdaters))
 
   val dummyDigitalItem = createDigitalItem
+
+  def missingItemResponse(sierraItemNumber: SierraItemNumber) = Seq(
+    (
+      sierraItemRequest(sierraItemNumber),
+      HttpResponse(
+        status = StatusCodes.NotFound,
+        entity = HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          """
+            |{
+            |  "code": 107,
+            |  "specificCode": 0,
+            |  "httpStatus": 404,
+            |  "name": "Record not found"
+            |}
+            |""".stripMargin
+        )
+      )
+    )
+  )
 
   def availableItemResponses(sierraItemNumber: SierraItemNumber) = Seq(
     (
@@ -104,6 +124,10 @@ class ItemUpdateServiceTest
   val onlineRequestAccessCondition = AccessCondition(
     method = AccessMethod.OnlineRequest,
     status = AccessStatus.Open
+  )
+
+  val notRequestableAccessCondition = AccessCondition(
+    method = AccessMethod.NotRequestable
   )
 
   class DummyItemUpdater(
@@ -216,6 +240,11 @@ class ItemUpdateServiceTest
         availableItemResponses(workWithUnavailableItemNumber),
         workWithUnavailableItem,
         onlineRequestAccessCondition
+      ),
+      (
+        missingItemResponse(workWithAvailableItemNumber),
+        workWithAvailableItem,
+        notRequestableAccessCondition
       )
     )
 

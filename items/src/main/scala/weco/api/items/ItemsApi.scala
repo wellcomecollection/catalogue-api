@@ -4,9 +4,8 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
-import weco.api.items.services.ItemUpdateService
+import weco.api.items.services.{ItemUpdateService, WorkLookup}
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.services.WorkLookup
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext

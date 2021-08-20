@@ -3,17 +3,21 @@ package weco.api.items
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.items.services.{ItemUpdateService, SierraItemUpdater}
+import weco.api.items.services.{
+  ItemUpdateService,
+  SierraItemUpdater,
+  WorkLookup
+}
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.api.stacks.services.{SierraService, WorkLookup}
 import weco.catalogue.display_model.ElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
+import weco.sierra.http.SierraSource
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
 
 import scala.concurrent.ExecutionContext
@@ -37,12 +41,12 @@ object Main extends WellcomeTypesafeApp {
 
     // We don't actually care about the hold limit in the items service.
     val client = SierraOauthHttpClientBuilder.build(config)
-    val sierraService = SierraService(client, holdLimit = 10)
+    val sierraSource = new SierraSource(client)
 
     // To add an item updater for a new service:
     // implement ItemUpdater and add it to the list here
     val itemUpdaters = List(
-      new SierraItemUpdater(sierraService)
+      new SierraItemUpdater(sierraSource)
     )
 
     val itemUpdateService = new ItemUpdateService(itemUpdaters)

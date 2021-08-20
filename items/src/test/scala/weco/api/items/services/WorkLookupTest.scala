@@ -1,4 +1,4 @@
-package weco.api.stacks.services
+package weco.api.items.services
 
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec

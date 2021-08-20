@@ -30,7 +30,7 @@ case object WorksMultiMatcher {
   ): Seq[FieldWithOptionalBoost] =
     fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
 
-  def apply(q: String): BoolQuery = {
+  def apply(q: String): BoolQuery =
     boolQuery()
       .should(
         MultiMatchQuery(
@@ -83,7 +83,7 @@ case object WorksMultiMatcher {
               fields = languages.map(
                 language =>
                   FieldWithOptionalBoost(
-                    s"search.titlesAndContributors.${language}",
+                    s"search.titlesAndContributors.$language",
                     None
                   )
               ),
@@ -119,5 +119,4 @@ case object WorksMultiMatcher {
         )
       )
       .minimumShouldMatch(1)
-  }
 }

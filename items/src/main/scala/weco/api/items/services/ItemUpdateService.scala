@@ -55,7 +55,7 @@ class ItemUpdateService(
       require(
         updatedItemsWithIndex.size == itemsWithIndex.size,
         "Inconsistent results updating items: " +
-          s"Received: ${itemsWithIndex}, updated: ${updatedItemsWithIndex}"
+          s"Received: $itemsWithIndex, updated: $updatedItemsWithIndex"
       )
 
       updatedItemsWithIndex

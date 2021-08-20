@@ -3,12 +3,15 @@ package weco.api.requests
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.requests.services.{ElasticItemLookup, RequestsService}
+import weco.api.requests.services.{
+  ElasticItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, CheckModel}
-import weco.api.stacks.services.SierraService
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
 import weco.catalogue.display_model.ElasticConfig
@@ -38,7 +41,7 @@ object Main extends WellcomeTypesafeApp {
 
     val holdLimit = config.requireInt("sierra.holdLimit")
     val client = SierraOauthHttpClientBuilder.build(config)
-    val sierraService = SierraService(client, holdLimit = holdLimit)
+    val sierraService = SierraRequestsService(client, holdLimit = holdLimit)
     val itemLookup = ElasticItemLookup(elasticClient, elasticConfig.worksIndex)
     val requestsService = new RequestsService(sierraService, itemLookup)
 
