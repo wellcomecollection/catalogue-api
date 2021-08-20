@@ -1,7 +1,16 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  RequestEntity,
+  StatusCodes,
+  Uri
+}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import com.sksamuel.elastic4s.Index
@@ -10,8 +19,15 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.api.requests.services.{
+  ItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
@@ -22,15 +38,15 @@ import weco.catalogue.internal_model.Implicits._
 
 class RequestingScenarioTest
     extends AnyFeatureSpec
-      with GivenWhenThen
-      with Matchers
-      with ItemsGenerators
-      with WorkGenerators
-      with IndexFixtures
-      with RequestsApiFixture
-      with IntegrationPatience
-      with ScalatestRouteTest
-      with SierraIdentifierGenerators {
+    with GivenWhenThen
+    with Matchers
+    with ItemsGenerators
+    with WorkGenerators
+    with IndexFixtures
+    with RequestsApiFixture
+    with IntegrationPatience
+    with ScalatestRouteTest
+    with SierraIdentifierGenerators {
 
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
@@ -384,7 +400,6 @@ class RequestingScenarioTest
         )
       )
 
-
       withLocalWorksIndex { index =>
         implicit val route: Route = createRoute(index, responses)
         insertIntoElasticsearch(index, work)
@@ -550,7 +565,8 @@ class RequestingScenarioTest
       )
 
       withLocalWorksIndex { index =>
-        implicit val route: Route = createRoute(index, responses, holdLimit = holdLimit)
+        implicit val route: Route =
+          createRoute(index, responses, holdLimit = holdLimit)
         insertIntoElasticsearch(index, work)
 
         When("the user requests the item")
@@ -1090,7 +1106,7 @@ class RequestingScenarioTest
 
     val requestsService = new RequestsService(
       sierraService = SierraRequestsService(client, holdLimit = holdLimit),
-      itemLookup = ItemLookup(elasticClient, index = index),
+      itemLookup = ItemLookup(elasticClient, index = index)
     )
 
     val api: RequestsApi = new RequestsApi(requestsService)

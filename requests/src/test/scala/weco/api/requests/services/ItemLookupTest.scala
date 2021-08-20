@@ -10,7 +10,10 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -140,8 +143,20 @@ class ItemLookupTest
 
         whenReady(future) {
           _ shouldBe List(
-            Right(RequestedItemWithWork(workA.state.canonicalId, workA.data.title, item1)),
-            Right(RequestedItemWithWork(workA.state.canonicalId, workA.data.title, item2))
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item1
+              )
+            ),
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item2
+              )
+            )
           )
         }
       }
@@ -177,9 +192,21 @@ class ItemLookupTest
 
         whenReady(future) {
           _ shouldBe List(
-            Right(RequestedItemWithWork(workA.state.canonicalId, workA.data.title, item1)),
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item1
+              )
+            ),
             Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
-            Right(RequestedItemWithWork(workB.state.canonicalId, workB.data.title, item3))
+            Right(
+              RequestedItemWithWork(
+                workB.state.canonicalId,
+                workB.data.title,
+                item3
+              )
+            )
           )
         }
       }
@@ -203,14 +230,22 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        Seq((workA, item1), (workA, item2), (workB, item3)).foreach { case (work, item) =>
-          val future = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
+        Seq((workA, item1), (workA, item2), (workB, item3)).foreach {
+          case (work, item) =>
+            val future =
+              lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
-          whenReady(future) {
-            _ shouldBe List(
-              Right(RequestedItemWithWork(work.state.canonicalId, work.data.title, item)),
-            )
-          }
+            whenReady(future) {
+              _ shouldBe List(
+                Right(
+                  RequestedItemWithWork(
+                    work.state.canonicalId,
+                    work.data.title,
+                    item
+                  )
+                )
+              )
+            }
         }
       }
     }
@@ -239,20 +274,27 @@ class ItemLookupTest
 
         val lookup = createLookup(index)
 
-        List((workA, item1), (workA, item2), (workB, item3)).foreach { case (work, item) =>
-          whenReady(lookup.bySourceIdentifier(List(item.id.sourceIdentifier))) {
-            _ shouldBe List(
-              Right(RequestedItemWithWork(work.state.canonicalId, work.data.title, item)),
-            )
-          }
+        List((workA, item1), (workA, item2), (workB, item3)).foreach {
+          case (work, item) =>
+            whenReady(lookup.bySourceIdentifier(List(item.id.sourceIdentifier))) {
+              _ shouldBe List(
+                Right(
+                  RequestedItemWithWork(
+                    work.state.canonicalId,
+                    work.data.title,
+                    item
+                  )
+                )
+              )
+            }
 
-          whenReady(
-            lookup.bySourceIdentifier(List(item.id.otherIdentifiers.head))
-          ) {
-            _ shouldBe List(
-              Left(DocumentNotFoundError(item.id.otherIdentifiers.head)),
-            )
-          }
+            whenReady(
+              lookup.bySourceIdentifier(List(item.id.otherIdentifiers.head))
+            ) {
+              _ shouldBe List(
+                Left(DocumentNotFoundError(item.id.otherIdentifiers.head))
+              )
+            }
         }
       }
     }
@@ -286,7 +328,13 @@ class ItemLookupTest
 
         whenReady(future2) {
           _ shouldBe List(
-            Right(RequestedItemWithWork(workVisible.state.canonicalId, workVisible.data.title, item)),
+            Right(
+              RequestedItemWithWork(
+                workVisible.state.canonicalId,
+                workVisible.data.title,
+                item
+              )
+            )
           )
         }
       }

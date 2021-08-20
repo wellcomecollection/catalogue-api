@@ -6,9 +6,17 @@ import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.requests.searches.sort.SortOrder
 import com.sksamuel.elastic4s.{ElasticClient, Index}
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  ElasticsearchService
+}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.work.WorkState.Indexed
 import weco.catalogue.internal_model.work.{Item, Work}
 
@@ -60,8 +68,8 @@ class ItemLookup(
   }
 
   def bySourceIdentifier(
-                          sourceIdentifiers: Seq[SourceIdentifier]
-                        ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
+    sourceIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
     val multiSearchRequest = MultiSearchRequest(
       sourceIdentifiers.map { sourceIdentifier =>
         search(index)
@@ -94,11 +102,16 @@ class ItemLookup(
           case (Right(works), srcId) =>
             works
               .flatMap { work =>
-                work.data.items.map(item => (work.data.title, work.state.canonicalId, item))
+                work.data.items.map(
+                  item => (work.data.title, work.state.canonicalId, item)
+                )
               }
               .collect {
-                case (title, workId, item @ Item(id @ IdState.Identified(_, _, _), _, _, _))
-                  if id.sourceIdentifier == srcId =>
+                case (
+                    title,
+                    workId,
+                    item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+                    ) if id.sourceIdentifier == srcId =>
                   // This .asInstanceOf[] is a no-op to help the compiler see what
                   // we can see by reading the code.
                   item.asInstanceOf[Item[IdState.Identified]]

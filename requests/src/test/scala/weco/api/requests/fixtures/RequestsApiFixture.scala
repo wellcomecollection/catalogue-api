@@ -22,12 +22,11 @@ trait RequestsApiFixture extends SierraServiceFixture {
     )
 
   def withRequestsApi[R](
-                          elasticClient: ElasticClient,
-                          index: Index,
-                          responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+    elasticClient: ElasticClient,
+    index: Index,
+    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R =
     withSierraService(responses) { sierraService =>
-
       val requestsService = new RequestsService(
         sierraService = sierraService,
         itemLookup = ItemLookup(elasticClient, index = index)
