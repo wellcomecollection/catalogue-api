@@ -59,7 +59,7 @@ class ElasticsearchServiceTest
     name = randomAlphanumeric(10).toLowerCase
   )
 
-  def searchRequestForThingByName(index: Index, name: String): SearchRequest = {
+  def searchRequestForThingByName(index: Index, name: String): SearchRequest =
     search(index)
       .query(
         boolQuery.filter(
@@ -67,7 +67,6 @@ class ElasticsearchServiceTest
         )
       )
       .size(1)
-  }
 
   def withExampleIndex[R](
     thingsToIndex: List[ExampleThing]
