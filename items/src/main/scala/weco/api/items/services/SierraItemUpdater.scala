@@ -122,21 +122,16 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       accessConditionsMap <- getAccessConditions(itemMap.keys.toSeq)
 
       // It is possible for there to be a situation where Sierra does not know about
-      // an Item that is in the Catalogue API (e.g. it's been deleted but the change
-      // has not yet propagated. In that case it gets status "NotRequestable")
+      // an Item that is in the Catalogue API, but this situation should be very rare.
+      // For example an item has been deleted but the change has not yet propagated.
+      // In that case it gets method "NotRequestable".
       missingItemsKeys = itemMap.filterNot {
         case (sierraItemNumber, _) =>
           accessConditionsMap.keySet.contains(sierraItemNumber)
       } keySet
 
       missingItemsMap = missingItemsKeys
-        .map(
-          _ -> AccessCondition(
-            method = AccessMethod.NotRequestable,
-          status = None,
-          note = None
-        )
-      ) toMap
+        .map(_ -> AccessCondition(method = AccessMethod.NotRequestable)) toMap
     } yield accessConditionsMap ++ missingItemsMap
 
     accessConditions.map(updateAccessConditions(itemMap, _))
