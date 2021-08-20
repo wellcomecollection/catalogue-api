@@ -85,7 +85,7 @@ case object WorksMultiMatcher {
                   FieldWithOptionalBoost(
                     s"search.titlesAndContributors.$language",
                     None
-                )
+                  )
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)

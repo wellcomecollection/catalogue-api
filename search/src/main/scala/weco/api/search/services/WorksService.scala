@@ -13,11 +13,7 @@ import scala.concurrent.ExecutionContext
 class WorksService(val elasticsearchService: ElasticsearchService)(
   implicit
   val ec: ExecutionContext
-) extends SearchService[
-      Work[Indexed],
-      Work.Visible[Indexed],
-      WorkAggregations,
-      WorkSearchOptions] {
+) extends SearchService[Work[Indexed], Work.Visible[Indexed], WorkAggregations, WorkSearchOptions] {
 
   // TODO: This isn't ideal, but it's the only way I've been able to get
   // this to compile.  We should move towards named implicits here.

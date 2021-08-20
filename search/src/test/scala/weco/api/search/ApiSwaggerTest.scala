@@ -281,7 +281,7 @@ class ApiSwaggerTest
       checkBoundsOnPagesizeParameters(multipleWorksEndpoint)
     }
 
-    def checkBoundsOnPagesizeParameters(endpointString: String): Unit = {
+    def checkBoundsOnPagesizeParameters(endpointString: String): Unit =
       checkSwaggerJson { json =>
         val endpoint = getEndpoint(json, endpointString = endpointString)
 
@@ -300,7 +300,6 @@ class ApiSwaggerTest
           "integer"
         )
       }
-    }
   }
 
   describe("includes bounds for the page parameter") {
@@ -312,7 +311,7 @@ class ApiSwaggerTest
       checkPageParameter(multipleWorksEndpoint)
     }
 
-    def checkPageParameter(endpointString: String): Unit = {
+    def checkPageParameter(endpointString: String): Unit =
       checkSwaggerJson { json =>
         val endpoint = getEndpoint(json, endpointString = endpointString)
 
@@ -326,7 +325,6 @@ class ApiSwaggerTest
           "integer"
         )
       }
-    }
   }
 
   it("lists the properties on the Aggregations model") {
