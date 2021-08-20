@@ -1,12 +1,9 @@
 package weco.api.stacks.services.memory
 
+import weco.api.requests.models.SourceIdentifierItemLookup
 import weco.api.requests.services.ItemLookup
 import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.Item
 
 import scala.concurrent.Future
@@ -25,16 +22,6 @@ class MemoryItemLookup(items: Seq[Item[IdState.Identified]])
 
   override def bySourceIdentifier(
     sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] =
-    Future.successful {
-      val foldInitial =
-        Seq.empty[Either[ElasticsearchError, Item[IdState.Identified]]]
-
-      sourceIdentifiers.foldLeft(foldInitial) { (acc, sourceIdentifier) =>
-        items.find(_.id.sourceIdentifier == sourceIdentifier) match {
-          case Some(item) => acc :+ Right(item)
-          case None       => acc :+ Left(DocumentNotFoundError(sourceIdentifier))
-        }
-      }
-    }
+  ): Future[Seq[Either[ElasticsearchError, SourceIdentifierItemLookup]]] =
+    ???
 }

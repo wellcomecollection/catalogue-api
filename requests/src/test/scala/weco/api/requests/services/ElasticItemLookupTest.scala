@@ -6,15 +6,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,7 +27,7 @@ class ElasticItemLookupTest
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
-      val item1 = createIdentifiedItem
+      val item1: Item[IdState.Identified] = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
 
@@ -45,10 +41,10 @@ class ElasticItemLookupTest
 
         Seq(item1, item2, item3).foreach { item =>
           val future =
-            lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
+            lookup.byCanonicalId(item.id.canonicalId)
 
           whenReady(future) {
-            _ shouldBe Seq(Right(item))
+            _ shouldBe Right(item)
           }
         }
       }
@@ -109,6 +105,7 @@ class ElasticItemLookupTest
   }
 
   describe("bySourceIdentifier") {
+
     it("finds items with the same item IDs") {
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem

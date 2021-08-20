@@ -1,19 +1,15 @@
 package weco.api.requests.services
 
+import com.sksamuel.elastic4s.ElasticApi.fieldSort
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
 import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
+import com.sksamuel.elastic4s.requests.searches.sort.SortOrder
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  ElasticsearchService
-}
+import grizzled.slf4j.Logging
+import weco.api.requests.models.SourceIdentifierItemLookup
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.WorkState.Indexed
 import weco.catalogue.internal_model.work.{Item, Work}
 
@@ -24,7 +20,7 @@ class ElasticItemLookup(
   index: Index
 )(
   implicit ec: ExecutionContext
-) extends ItemLookup {
+) extends ItemLookup with Logging {
 
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
@@ -66,13 +62,13 @@ class ElasticItemLookup(
 
   override def bySourceIdentifier(
     sourceIdentifiers: Seq[SourceIdentifier]
-  ): Future[Seq[Either[ElasticsearchError, Item[IdState.Identified]]]] = {
+  ): Future[Seq[Either[ElasticsearchError, SourceIdentifierItemLookup]]] = {
     val multiSearchRequest = MultiSearchRequest(
       sourceIdentifiers.map { sourceIdentifier =>
         search(index)
           .query(
             boolQuery
-              .must(termQuery(field = "type", value = "Visible"))
+              .filter(termQuery(field = "type", value = "Visible"))
               .should(
                 termQuery(
                   "data.items.id.sourceIdentifier.value",
@@ -80,8 +76,9 @@ class ElasticItemLookup(
                 )
               )
           )
-          // TODO: How many things do we need to retrieve here?
-          .size(10)
+          .sortBy(
+            fieldSort("state.sourceIdentifier.value").order(SortOrder.Asc)
+          )
       }
     )
 
@@ -91,17 +88,24 @@ class ElasticItemLookup(
         _.zip(sourceIdentifiers).map {
           case (Right(works), srcId) =>
             works
-              .flatMap { _.data.items }
+              .flatMap { work =>
+                work.data.items.map(item => (work.data.title, work.state.canonicalId, item))
+              }
               .collect {
-                case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+                case (title, workId, item @ Item(id @ IdState.Identified(_, _, _), _, _, _))
                     if id.sourceIdentifier == srcId =>
                   // This .asInstanceOf[] is a no-op to help the compiler see what
                   // we can see by reading the code.
                   item.asInstanceOf[Item[IdState.Identified]]
+                  SourceIdentifierItemLookup(
+                    workId = workId,
+                    title = title,
+                    item = item.asInstanceOf[Item[IdState.Identified]]
+                  )
               }
               .toList match {
-              // TODO: We can return multiple items from multiple works
-              // TODO: Apply better logic when picking an item!
+              // We can return multiple items from multiple works
+              // The sortBy above returns us the lowest bibId work association
               case List(item) => Right(item)
               case item :: _  => Right(item)
               case List()     => Left(DocumentNotFoundError(srcId))

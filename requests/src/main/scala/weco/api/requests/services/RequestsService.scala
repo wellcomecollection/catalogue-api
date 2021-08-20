@@ -55,9 +55,9 @@ class RequestsService(
           None
       }
 
-      itemHoldTuples = itemsFound.flatMap { item =>
-        holdsMap.get(item.id.sourceIdentifier).map { hold =>
-          (hold, item)
+      itemHoldTuples = itemsFound.flatMap { itemLookup =>
+        holdsMap.get(itemLookup.item.id.sourceIdentifier).map { hold =>
+          (hold, itemLookup.item)
         }
       }
 

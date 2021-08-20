@@ -1,13 +1,6 @@
 package weco.api.requests
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpMethods,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCodes}
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -17,17 +10,19 @@ import weco.api.requests.fixtures.RequestsApiFixture
 import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
-    with Matchers
-    with RequestsApiFixture
-    with JsonAssertions
-    with IntegrationPatience
-    with ItemsGenerators
-    with SierraIdentifierGenerators {
+      with Matchers
+      with RequestsApiFixture
+      with JsonAssertions
+      with IntegrationPatience
+      with ItemsGenerators
+      with IndexFixtures
+      with SierraIdentifierGenerators {
 
   describe("requests") {
     it("provides information about a users' holds") {
