@@ -1,10 +1,10 @@
 package weco.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticClient
-import com.sksamuel.elastic4s.requests.searches.{SearchHit, SearchIterator, SearchRequest}
+import com.sksamuel.elastic4s.circe._
+import com.sksamuel.elastic4s.requests.searches.{SearchIterator, SearchRequest}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
-import weco.json.JsonUtil.fromJson
 
 import java.text.NumberFormat
 import scala.concurrent.duration._
@@ -47,9 +47,7 @@ class ElasticsearchScroller()(
 
           hit
       }
-      .map { searchHit: SearchHit =>
-        fromJson[T](searchHit.sourceAsString).get
-      }
+      .map { _.safeTo[T].get }
 
   private def intComma(number: Long): String =
     NumberFormat.getInstance().format(number)
