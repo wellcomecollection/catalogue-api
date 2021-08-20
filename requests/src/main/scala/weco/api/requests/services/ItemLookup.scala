@@ -67,17 +67,23 @@ class ItemLookup(
         search(index)
           .query(
             boolQuery
-              .filter(termQuery(field = "type", value = "Visible"))
-              .should(
+              .must(
                 termQuery(
-                  "data.items.id.sourceIdentifier.value",
-                  sourceIdentifier.value
+                  field = "type",
+                  value = "Visible"
+                ),
+                termQuery(
+                  field = "data.items.id.sourceIdentifier.value",
+                  value = sourceIdentifier.value
                 )
               )
           )
           .sortBy(
-            fieldSort("state.sourceIdentifier.value").order(SortOrder.Asc)
+            fieldSort("state.sourceIdentifier.value")
+              .order(SortOrder.Asc)
           )
+          // We are sorting so we're only interested in the top value
+          .size(1)
       }
     )
 
@@ -98,7 +104,7 @@ class ItemLookup(
                   item.asInstanceOf[Item[IdState.Identified]]
                   RequestedItemWithWork(
                     workId = workId,
-                    title = title,
+                    workTitle = title,
                     item = item.asInstanceOf[Item[IdState.Identified]]
                   )
               }

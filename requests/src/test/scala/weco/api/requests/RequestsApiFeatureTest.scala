@@ -100,6 +100,8 @@ class RequestsApiFeatureTest
                |{
                |  "results" : [
                |    {
+               |      "workTitle" : "${work.data.title.get}",
+               |      "workId" : "${work.state.canonicalId}",
                |      "item" : {
                |        "id" : "${item.id.canonicalId}",
                |        "identifiers" : [

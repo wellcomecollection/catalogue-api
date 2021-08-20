@@ -8,7 +8,6 @@ import weco.api.requests.models.RequestedItemWithWork
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.identifiers.IdentifierType.{MiroImageNumber, SierraSystemNumber}
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
@@ -111,7 +110,7 @@ class ItemLookupTest
   }
 
   describe("bySourceIdentifier") {
-    it("finds items with the same item IDs") {
+    it("finds items by source identifier") {
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
@@ -186,21 +185,10 @@ class ItemLookupTest
       }
     }
 
-    it("matches on all parts of the item ID") {
-      val sourceIdentifier1 = createSourceIdentifierWith(
-        identifierType = SierraSystemNumber,
-        ontologyType = "Item"
-      )
-      val sourceIdentifier2 = sourceIdentifier1.copy(
-        ontologyType = "Work"
-      )
-      val sourceIdentifier3 = sourceIdentifier1.copy(
-        identifierType = MiroImageNumber
-      )
-
-      val item1 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier1)
-      val item2 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier2)
-      val item3 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier3)
+    it("chooses work details based on work source id ordering") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createIdentifiedItem
 
       val workSourceIds = List(
         createSourceIdentifier,
