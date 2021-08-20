@@ -1,126 +1,122 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpMethods,
-  HttpRequest,
-  HttpResponse,
-  RequestEntity,
-  StatusCodes,
-  Uri
-}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
+import com.sksamuel.elastic4s.Index
 import org.scalatest.GivenWhenThen
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.requests.services.{
-  ItemLookup,
-  RequestsService,
-  SierraRequestsService
-}
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
-import weco.api.stacks.services.memory.MemoryItemLookup
+import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
+import weco.catalogue.internal_model.Implicits._
 
 class RequestingScenarioTest
     extends AnyFeatureSpec
-    with GivenWhenThen
-    with Matchers
-    with ItemsGenerators
-    with RequestsApiFixture
-    with IntegrationPatience
-    with ScalatestRouteTest
-    with SierraIdentifierGenerators {
+      with GivenWhenThen
+      with Matchers
+      with ItemsGenerators
+      with WorkGenerators
+      with IndexFixtures
+      with RequestsApiFixture
+      with IntegrationPatience
+      with ScalatestRouteTest
+      with SierraIdentifierGenerators {
 
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
       Given("a physical item which is not from Sierra")
       val item = createIdentifiedCalmItem
+      val work = indexedWork().items(List(item))
 
-      val lookup = new MemoryItemLookup(items = Seq(item))
-      implicit val route: Route = createRoute(lookup)
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = "/users/1234567/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        implicit val route: Route = createRoute(index)
+
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = "/users/1234567/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the hold is rejected")
-      response.status shouldBe StatusCodes.BadRequest
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.BadRequest
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 400,
-             |  "label": "Bad Request",
-             |  "description": "You cannot request ${item.id.canonicalId}"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 400,
+               |  "label": "Bad Request",
+               |  "description": "You cannot request ${item.id.canonicalId}"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
     Scenario("An item which does not exist") {
-      val lookup = new MemoryItemLookup(items = Seq.empty)
-      implicit val route: Route = createRoute(lookup)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index)
 
-      Given("an item ID that doesn't exist")
-      val itemId = createCanonicalId
+        Given("an item ID that doesn't exist")
+        val itemId = createCanonicalId
 
-      When("the user requests a non-existent item")
-      val response = makePostRequest(
-        path = "/users/1234567/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "$itemId",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests a non-existent item")
+        val response = makePostRequest(
+          path = "/users/1234567/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "$itemId",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns a 404 error")
-      response.status shouldBe StatusCodes.NotFound
+        Then("the API returns a 404 error")
+        response.status shouldBe StatusCodes.NotFound
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "Item not found for identifier $itemId"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "Item not found for identifier $itemId"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -129,7 +125,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       val responses = Seq(
         (
@@ -138,28 +134,31 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns an Accepted response")
-      response.status shouldBe StatusCodes.Accepted
-      response.status.intValue shouldBe 202
+        Then("the API returns an Accepted response")
+        response.status shouldBe StatusCodes.Accepted
+        response.status.intValue shouldBe 202
 
-      And("an empty body")
-      response.entity shouldBe HttpEntity.Empty
+        And("an empty body")
+        response.entity shouldBe HttpEntity.Empty
+      }
     }
 
     Scenario("An item that exists and cannot be ordered") {
@@ -167,7 +166,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       val responses = Seq(
         (
@@ -250,40 +249,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the hold is rejected")
-      response.status shouldBe StatusCodes.BadRequest
-      response.status.intValue shouldBe 400
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.BadRequest
+        response.status.intValue shouldBe 400
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 400,
-             |  "label": "Bad Request",
-             |  "description": "You cannot request ${item.id.canonicalId}"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 400,
+               |  "label": "Bad Request",
+               |  "description": "You cannot request ${item.id.canonicalId}"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -292,7 +294,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       val responses = Seq(
         (
@@ -319,28 +321,31 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns an Accepted response")
-      response.status shouldBe StatusCodes.Accepted
-      response.status.intValue shouldBe 202
+        Then("the API returns an Accepted response")
+        response.status shouldBe StatusCodes.Accepted
+        response.status.intValue shouldBe 202
 
-      And("an empty body")
-      response.entity shouldBe HttpEntity.Empty
+        And("an empty body")
+        response.entity shouldBe HttpEntity.Empty
+      }
     }
 
     Scenario("An item that is ordered twice in quick succession") {
@@ -351,7 +356,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("which has just been requested in Sierra")
       val responses = Seq(
@@ -379,28 +384,32 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
+
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns an Accepted response")
-      response.status shouldBe StatusCodes.Accepted
-      response.status.intValue shouldBe 202
+        Then("the API returns an Accepted response")
+        response.status shouldBe StatusCodes.Accepted
+        response.status.intValue shouldBe 202
 
-      And("an empty body")
-      response.entity shouldBe HttpEntity.Empty
+        And("an empty body")
+        response.entity shouldBe HttpEntity.Empty
+      }
     }
 
     Scenario("An item that is on hold for another user") {
@@ -408,7 +417,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("which is on hold for another user")
       val responses = Seq(
@@ -462,40 +471,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns a Conflict response")
-      response.status shouldBe StatusCodes.Conflict
-      response.status.intValue shouldBe 409
+        Then("the API returns a Conflict response")
+        response.status shouldBe StatusCodes.Conflict
+        response.status.intValue shouldBe 409
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 409,
-             |  "label": "Conflict",
-             |  "description": "Item ${item.id.canonicalId} is on hold for another reader"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 409,
+               |  "label": "Conflict",
+               |  "description": "Item ${item.id.canonicalId} is on hold for another reader"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -504,7 +516,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("a user who has as many items as they're allowed to request")
       val holdLimit = 10
@@ -537,41 +549,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route =
-        createRoute(lookup, responses, holdLimit = holdLimit)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses, holdLimit = holdLimit)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the API returns an Accepted response")
-      response.status shouldBe StatusCodes.Forbidden
-      response.status.intValue shouldBe 403
+        Then("the API returns an Accepted response")
+        response.status shouldBe StatusCodes.Forbidden
+        response.status.intValue shouldBe 403
 
-      And("the body explains the error")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 403,
-             |  "label": "Forbidden",
-             |  "description": "You are at your account limit and you cannot request more items"
-             |}
-             |""".stripMargin
-        )
+        And("the body explains the error")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 403,
+               |  "label": "Forbidden",
+               |  "description": "You are at your account limit and you cannot request more items"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -589,7 +603,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("which is deleted in Sierra")
       val responses = Seq(
@@ -637,40 +651,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the hold is rejected")
-      response.status shouldBe StatusCodes.BadRequest
-      response.status.intValue shouldBe 400
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.BadRequest
+        response.status.intValue shouldBe 400
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 400,
-             |  "label": "Bad Request",
-             |  "description": "You cannot request ${item.id.canonicalId}"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 400,
+               |  "label": "Bad Request",
+               |  "description": "You cannot request ${item.id.canonicalId}"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -682,7 +699,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("which is suppressed in Sierra")
       val responses = Seq(
@@ -737,40 +754,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("the hold is rejected")
-      response.status shouldBe StatusCodes.BadRequest
-      response.status.intValue shouldBe 400
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.BadRequest
+        response.status.intValue shouldBe 400
 
-      And("the error explains why the hold is rejected")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 400,
-             |  "label": "Bad Request",
-             |  "description": "You cannot request ${item.id.canonicalId}"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 400,
+               |  "label": "Bad Request",
+               |  "description": "You cannot request ${item.id.canonicalId}"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -783,7 +803,7 @@ class RequestingScenarioTest
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("which doesn't exist in Sierra")
       val responses = Seq(
@@ -827,31 +847,34 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("we throw an internal server error")
-      response.status shouldBe StatusCodes.InternalServerError
-      response.status.intValue shouldBe 500
+        Then("we throw an internal server error")
+        response.status shouldBe StatusCodes.InternalServerError
+        response.status.intValue shouldBe 500
 
-      And("we display a generic response")
-      assertIsDisplayError(
-        response,
-        statusCode = StatusCodes.InternalServerError
-      )
+        And("we display a generic response")
+        assertIsDisplayError(
+          response,
+          statusCode = StatusCodes.InternalServerError
+        )
+      }
     }
 
     Scenario("A user that doesn't exist in Sierra") {
@@ -862,7 +885,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("and a user that doesn't exist in Sierra")
       val patronNumber = createSierraPatronNumber
@@ -886,40 +909,43 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("we return a Not Found response")
-      response.status shouldBe StatusCodes.NotFound
-      response.status.intValue shouldBe 404
+        Then("we return a Not Found response")
+        response.status shouldBe StatusCodes.NotFound
+        response.status.intValue shouldBe 404
 
-      And("the error explains the problem")
-      withStringEntity(response.entity) {
-        assertJsonStringsAreEqual(
-          _,
-          s"""
-             |{
-             |  "type": "Error",
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "There is no such user $patronNumber"
-             |}
-             |""".stripMargin
-        )
+        And("the error explains the problem")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "There is no such user $patronNumber"
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
 
@@ -927,7 +953,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
       And("and a user whose account is barred")
       val patronNumber = createSierraPatronNumber
@@ -987,31 +1013,34 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(lookup, responses)
+      withLocalWorksIndex { index =>
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
 
-      When("the user requests the item")
-      val response = makePostRequest(
-        path = s"/users/$patronNumber/item-requests",
-        entity = createJsonHttpEntityWith(
-          s"""
-             |{
-             |  "itemId": "${item.id.canonicalId}",
-             |  "workId": "$createCanonicalId",
-             |  "type": "ItemRequest"
-             |}
-             |""".stripMargin
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
         )
-      )
 
-      Then("we throw an internal server error")
-      response.status shouldBe StatusCodes.InternalServerError
-      response.status.intValue shouldBe 500
+        Then("we throw an internal server error")
+        response.status shouldBe StatusCodes.InternalServerError
+        response.status.intValue shouldBe 500
 
-      And("we display a generic response")
-      assertIsDisplayError(
-        response,
-        statusCode = StatusCodes.InternalServerError
-      )
+        And("we display a generic response")
+        assertIsDisplayError(
+          response,
+          statusCode = StatusCodes.InternalServerError
+        )
+      }
     }
   }
 
@@ -1051,7 +1080,7 @@ class RequestingScenarioTest
     )
 
   def createRoute(
-    itemLookup: ItemLookup,
+    index: Index,
     responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     holdLimit: Int = 10
   ): Route = {
@@ -1061,7 +1090,7 @@ class RequestingScenarioTest
 
     val requestsService = new RequestsService(
       sierraService = SierraRequestsService(client, holdLimit = holdLimit),
-      itemLookup = itemLookup
+      itemLookup = ItemLookup(elasticClient, index = index),
     )
 
     val api: RequestsApi = new RequestsApi(requestsService)

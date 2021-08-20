@@ -14,7 +14,7 @@ import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGener
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ElasticItemLookupTest
+class ItemLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
@@ -22,8 +22,8 @@ class ElasticItemLookupTest
     with ItemsGenerators
     with WorkGenerators {
 
-  def createLookup(index: Index): ElasticItemLookup =
-    ElasticItemLookup(elasticClient, index = index)
+  def createLookup(index: Index): ItemLookup =
+    ItemLookup(elasticClient, index = index)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
@@ -105,7 +105,6 @@ class ElasticItemLookupTest
   }
 
   describe("bySourceIdentifier") {
-
     it("finds items with the same item IDs") {
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem
