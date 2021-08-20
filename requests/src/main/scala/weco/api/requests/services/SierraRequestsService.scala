@@ -3,24 +3,16 @@ package weco.api.requests.services
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
-import weco.api.stacks.http.{SierraItemLookupError, SierraSource}
-import weco.api.stacks.models._
+import weco.api.stacks.models.SierraItemIdentifier
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessMethod,
-  PhysicalLocationType
-}
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
+import weco.catalogue.internal_model.locations.{AccessMethod, PhysicalLocationType}
+import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
+import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData
-import weco.sierra.models.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.sierra.models.errors.{SierraErrorCode, SierraItemLookupError}
+import weco.sierra.models.fields.SierraHold
+import weco.sierra.models.identifiers.{SierraBibNumber, SierraItemNumber, SierraPatronNumber}
 
 import scala.concurrent.{ExecutionContext, Future}
 

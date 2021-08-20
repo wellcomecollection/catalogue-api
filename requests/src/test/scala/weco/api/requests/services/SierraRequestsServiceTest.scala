@@ -9,11 +9,10 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
-import weco.api.stacks.models._
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
-import weco.sierra.models.fields.SierraLocation
+import weco.sierra.models.fields.{SierraHold, SierraHoldStatus, SierraLocation}
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 class SierraRequestsServiceTest

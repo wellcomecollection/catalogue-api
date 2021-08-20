@@ -4,15 +4,11 @@ import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
 import com.sksamuel.elastic4s.Index
 import org.scalatest.Suite
 import weco.api.items.ItemsApi
-import weco.api.items.services.{
-  ItemUpdateService,
-  SierraItemUpdater,
-  WorkLookup
-}
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater, WorkLookup}
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.fixtures.SierraSourceFixture
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.fixtures.TestWith
+import weco.sierra.fixtures.SierraSourceFixture
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

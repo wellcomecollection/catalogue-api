@@ -4,11 +4,11 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
-import weco.api.stacks.models.SierraHold
 import weco.catalogue.internal_model.identifiers.IdState.Identified
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.work.Item
+import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.{ExecutionContext, Future}

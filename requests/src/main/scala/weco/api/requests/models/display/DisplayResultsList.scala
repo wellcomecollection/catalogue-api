@@ -2,10 +2,10 @@ package weco.api.requests.models.display
 
 import java.time.Instant
 
-import weco.api.stacks.models.SierraHold
 import weco.catalogue.display_model.models.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.Item
+import weco.sierra.models.fields.SierraHold
 
 case class DisplayResultsList(
   results: List[DisplayRequest],

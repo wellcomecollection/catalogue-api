@@ -1,24 +1,15 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.http.{
-  SierraItemDataEntries,
-  SierraItemLookupError,
-  SierraSource
-}
+import weco.sierra.http.SierraSource
 import weco.api.stacks.models.SierraItemIdentifier
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  PhysicalLocation
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocation}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
+import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
 import weco.sierra.models.data.SierraItemData
+import weco.sierra.models.errors.SierraItemLookupError
+import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.{SierraBibNumber, SierraItemNumber}
 
 import scala.concurrent.{ExecutionContext, Future}
