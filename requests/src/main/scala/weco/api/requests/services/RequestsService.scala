@@ -1,13 +1,15 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
-import weco.api.requests.models.{HoldAccepted, HoldRejected}
+import weco.api.requests.models.{
+  HoldAccepted,
+  HoldRejected,
+  RequestedItemWithWork
+}
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
-import weco.catalogue.internal_model.identifiers.IdState.Identified
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.work.Item
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -42,7 +44,7 @@ class RequestsService(
 
   def getRequests(
     patronNumber: SierraPatronNumber
-  ): Future[List[(SierraHold, Item[Identified])]] =
+  ): Future[List[(SierraHold, RequestedItemWithWork)]] =
     for {
       holdsMap <- sierraService.getHolds(patronNumber)
 
@@ -55,9 +57,9 @@ class RequestsService(
           None
       }
 
-      itemHoldTuples = itemsFound.flatMap { item =>
-        holdsMap.get(item.id.sourceIdentifier).map { hold =>
-          (hold, item)
+      itemHoldTuples = itemsFound.flatMap { itemLookup =>
+        holdsMap.get(itemLookup.item.id.sourceIdentifier).map { hold =>
+          (hold, itemLookup)
         }
       }
 

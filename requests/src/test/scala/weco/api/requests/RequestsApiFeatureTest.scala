@@ -12,13 +12,17 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.json.utils.JsonAssertions
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.stacks.services.memory.MemoryItemLookup
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.index.IndexFixtures
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
+import weco.catalogue.internal_model.Implicits._
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
@@ -27,6 +31,8 @@ class RequestsApiFeatureTest
     with JsonAssertions
     with IntegrationPatience
     with ItemsGenerators
+    with WorkGenerators
+    with IndexFixtures
     with SierraIdentifierGenerators {
 
   describe("requests") {
@@ -90,56 +96,62 @@ class RequestsApiFeatureTest
         title = Some(titleString)
       )
 
-      val lookup = new MemoryItemLookup(items = Seq(item))
+      val work = indexedWork().items(List(item))
 
-      withRequestsApi(lookup, responses) { _ =>
-        val path = s"/users/$patron/item-requests"
+      withLocalWorksIndex { index =>
+        insertIntoElasticsearch(index, work)
 
-        val expectedJson =
-          s"""
-             |{
-             |  "results" : [
-             |    {
-             |      "item" : {
-             |        "id" : "${item.id.canonicalId}",
-             |        "identifiers" : [
-             |          {
-             |            "identifierType" : {
-             |              "id" : "sierra-system-number",
-             |              "label" : "Sierra system number",
-             |              "type" : "IdentifierType"
-             |            },
-             |            "value" : "${itemNumber1.withCheckDigit}",
-             |            "type" : "Identifier"
-             |          }
-             |        ],
-             |        "title" : "$titleString",
-             |        "locations" : [
-             |        ],
-             |        "type" : "Item"
-             |      },
-             |      "pickupLocation" : {
-             |        "id" : "sotop",
-             |        "label" : "Rare Materials Room",
-             |        "type" : "LocationDescription"
-             |      },
-             |      "status" : {
-             |        "id" : "0",
-             |        "label" : "on hold.",
-             |        "type" : "RequestStatus"
-             |      },
-             |      "type" : "Request"
-             |    }
-             |  ],
-             |  "totalResults" : 1,
-             |  "type" : "ResultList"
-             |}""".stripMargin
+        withRequestsApi(elasticClient, index, responses) { _ =>
+          val path = s"/users/$patron/item-requests"
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+          val expectedJson =
+            s"""
+               |{
+               |  "results" : [
+               |    {
+               |      "workTitle" : "${work.data.title.get}",
+               |      "workId" : "${work.state.canonicalId}",
+               |      "item" : {
+               |        "id" : "${item.id.canonicalId}",
+               |        "identifiers" : [
+               |          {
+               |            "identifierType" : {
+               |              "id" : "sierra-system-number",
+               |              "label" : "Sierra system number",
+               |              "type" : "IdentifierType"
+               |            },
+               |            "value" : "${itemNumber1.withCheckDigit}",
+               |            "type" : "Identifier"
+               |          }
+               |        ],
+               |        "title" : "$titleString",
+               |        "locations" : [
+               |        ],
+               |        "type" : "Item"
+               |      },
+               |      "pickupLocation" : {
+               |        "id" : "sotop",
+               |        "label" : "Rare Materials Room",
+               |        "type" : "LocationDescription"
+               |      },
+               |      "status" : {
+               |        "id" : "0",
+               |        "label" : "on hold.",
+               |        "type" : "RequestStatus"
+               |      },
+               |      "type" : "Request"
+               |    }
+               |  ],
+               |  "totalResults" : 1,
+               |  "type" : "ResultList"
+               |}""".stripMargin
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedJson)
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
           }
         }
       }

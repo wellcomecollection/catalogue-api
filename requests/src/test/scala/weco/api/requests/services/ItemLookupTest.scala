@@ -4,13 +4,12 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.requests.models.RequestedItemWithWork
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdentifierType.{
-  MiroImageNumber,
-  SierraSystemNumber
-}
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.index.IndexFixtures
+import weco.catalogue.internal_model.work.Item
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   WorkGenerators
@@ -18,7 +17,7 @@ import weco.catalogue.internal_model.work.generators.{
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ElasticItemLookupTest
+class ItemLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
@@ -26,17 +25,22 @@ class ElasticItemLookupTest
     with ItemsGenerators
     with WorkGenerators {
 
-  def createLookup(index: Index): ElasticItemLookup =
-    ElasticItemLookup(elasticClient, index = index)
+  def createLookup(index: Index): ItemLookup =
+    ItemLookup(elasticClient, index = index)
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
-      val item1 = createIdentifiedItem
+      val item1: Item[IdState.Identified] = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
 
-      val workA = indexedWork().items(List(item1, item2))
-      val workB = indexedWork().items(List(item2, item3))
+      val workSourceIds = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      ).sortBy(_.value)
+
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
@@ -45,10 +49,10 @@ class ElasticItemLookupTest
 
         Seq(item1, item2, item3).foreach { item =>
           val future =
-            lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
+            lookup.byCanonicalId(item.id.canonicalId)
 
           whenReady(future) {
-            _ shouldBe Seq(Right(item))
+            _ shouldBe Right(item)
           }
         }
       }
@@ -109,13 +113,20 @@ class ElasticItemLookupTest
   }
 
   describe("bySourceIdentifier") {
-    it("finds items with the same item IDs") {
+    it("finds items by source identifier") {
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
 
-      val workA = indexedWork().items(List(item1, item2))
-      val workB = indexedWork().items(List(item2, item3))
+      val workSourceIds = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      ).sortBy(_.value)
+
+      // Enforcing ordering of source identifier value to ensure consistent
+      // results when items appear on multiple works
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
@@ -131,7 +142,22 @@ class ElasticItemLookupTest
           )
 
         whenReady(future) {
-          _ shouldBe List(Right(item1), Right(item2))
+          _ shouldBe List(
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item1
+              )
+            ),
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item2
+              )
+            )
+          )
         }
       }
     }
@@ -142,8 +168,13 @@ class ElasticItemLookupTest
       val item3 = createIdentifiedItem
       val item4 = createIdentifiedItem
 
-      val workA = indexedWork().items(List(item1, item2))
-      val workB = indexedWork().items(List(item2, item3))
+      val workSourceIds = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      ).sortBy(_.value)
+
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
@@ -161,44 +192,60 @@ class ElasticItemLookupTest
 
         whenReady(future) {
           _ shouldBe List(
-            Right(item1),
+            Right(
+              RequestedItemWithWork(
+                workA.state.canonicalId,
+                workA.data.title,
+                item1
+              )
+            ),
             Left(DocumentNotFoundError(item4.id.sourceIdentifier)),
-            Right(item3)
+            Right(
+              RequestedItemWithWork(
+                workB.state.canonicalId,
+                workB.data.title,
+                item3
+              )
+            )
           )
         }
       }
     }
 
-    it("matches on all parts of the item ID") {
-      val sourceIdentifier1 = createSourceIdentifierWith(
-        identifierType = SierraSystemNumber,
-        ontologyType = "Item"
-      )
-      val sourceIdentifier2 = sourceIdentifier1.copy(
-        ontologyType = "Work"
-      )
-      val sourceIdentifier3 = sourceIdentifier1.copy(
-        identifierType = MiroImageNumber
-      )
+    it("chooses work details based on work source id ordering") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createIdentifiedItem
 
-      val item1 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier1)
-      val item2 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier2)
-      val item3 = createIdentifiedItemWith(sourceIdentifier = sourceIdentifier3)
+      val workSourceIds = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      ).sortBy(_.value)
 
-      val workA = indexedWork().items(List(item1, item2))
-      val workB = indexedWork().items(List(item2, item3))
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
         val lookup = createLookup(index)
 
-        Seq(item1, item2, item3).foreach { item =>
-          val future = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
+        Seq((workA, item1), (workA, item2), (workB, item3)).foreach {
+          case (work, item) =>
+            val future =
+              lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
-          whenReady(future) {
-            _ shouldBe Seq(Right(item))
-          }
+            whenReady(future) {
+              _ shouldBe List(
+                Right(
+                  RequestedItemWithWork(
+                    work.state.canonicalId,
+                    work.data.title,
+                    item
+                  )
+                )
+              )
+            }
         }
       }
     }
@@ -214,26 +261,40 @@ class ElasticItemLookupTest
         otherIdentifiers = List(createSourceIdentifier)
       )
 
-      val workA = indexedWork().items(List(item1, item2))
-      val workB = indexedWork().items(List(item2, item3))
+      val workSourceIds = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      ).sortBy(_.value)
+
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, workA, workB)
 
         val lookup = createLookup(index)
 
-        List(item1, item2, item3).foreach { item =>
-          whenReady(lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))) {
-            _ shouldBe Seq(Right(item))
-          }
+        List((workA, item1), (workA, item2), (workB, item3)).foreach {
+          case (work, item) =>
+            whenReady(lookup.bySourceIdentifier(List(item.id.sourceIdentifier))) {
+              _ shouldBe List(
+                Right(
+                  RequestedItemWithWork(
+                    work.state.canonicalId,
+                    work.data.title,
+                    item
+                  )
+                )
+              )
+            }
 
-          whenReady(
-            lookup.bySourceIdentifier(Seq(item.id.otherIdentifiers.head))
-          ) {
-            _ shouldBe Seq(
-              Left(DocumentNotFoundError(item.id.otherIdentifiers.head))
-            )
-          }
+            whenReady(
+              lookup.bySourceIdentifier(List(item.id.otherIdentifiers.head))
+            ) {
+              _ shouldBe List(
+                Left(DocumentNotFoundError(item.id.otherIdentifiers.head))
+              )
+            }
         }
       }
     }
@@ -266,7 +327,15 @@ class ElasticItemLookupTest
         val future2 = lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
 
         whenReady(future2) {
-          _ shouldBe Seq(Right(item))
+          _ shouldBe List(
+            Right(
+              RequestedItemWithWork(
+                workVisible.state.canonicalId,
+                workVisible.data.title,
+                item
+              )
+            )
+          )
         }
       }
     }

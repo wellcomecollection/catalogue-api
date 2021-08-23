@@ -2,9 +2,9 @@ package weco.api.requests.models.display
 
 import java.time.Instant
 
+import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.models.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.identifiers.{CanonicalId}
 import weco.sierra.models.fields.SierraHold
 
 case class DisplayResultsList(
@@ -15,17 +15,19 @@ case class DisplayResultsList(
 
 object DisplayResultsList {
   def apply(
-    itemHolds: List[(SierraHold, Item[IdState.Identified])]
+    itemHolds: List[(SierraHold, RequestedItemWithWork)]
   ): DisplayResultsList =
     DisplayResultsList(
       results = itemHolds.map {
-        case (hold, item) => DisplayRequest(hold, item)
+        case (hold, itemWithWork) => DisplayRequest(hold, itemWithWork)
       },
       totalResults = itemHolds.size
     )
 }
 
 case class DisplayRequest(
+  workTitle: Option[String],
+  workId: CanonicalId,
   item: DisplayItem,
   pickupDate: Option[Instant],
   pickupLocation: DisplayLocationDescription,
@@ -36,11 +38,13 @@ case class DisplayRequest(
 object DisplayRequest {
   def apply(
     hold: SierraHold,
-    item: Item[IdState.Identified]
+    itemWithWork: RequestedItemWithWork
   ): DisplayRequest =
     DisplayRequest(
+      workTitle = itemWithWork.workTitle,
+      workId = itemWithWork.workId,
       item = DisplayItem(
-        item = item,
+        item = itemWithWork.item,
         includesIdentifiers = true
       ),
       pickupDate = hold.pickupByDate,
