@@ -10,8 +10,8 @@ import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 
-class ElasticsearchScrollerTest extends AnyFunSpec with Matchers with ElasticsearchFixtures with WorkGenerators {
-  val scroller = new ElasticsearchScroller()(elasticClient)
+class ElasticsearchScannerTest extends AnyFunSpec with Matchers with ElasticsearchFixtures with WorkGenerators {
+  val scroller = new ElasticsearchScanner()(elasticClient)
 
   case class Shape(sides: Int, colour: String)
 
@@ -62,7 +62,7 @@ class ElasticsearchScrollerTest extends AnyFunSpec with Matchers with Elasticsea
   }
 
   it("fetches more documents than the bulk size") {
-    val miniScroller = new ElasticsearchScroller()(elasticClient, bulkSize = 1)
+    val miniScroller = new ElasticsearchScanner()(elasticClient, bulkSize = 1)
 
     withIndex(shapes) { index =>
       val redShapes =

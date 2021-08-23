@@ -22,7 +22,7 @@ import scala.concurrent.duration._
   *       long [167209080] for the configured buffer limit [104857600]
   *
   */
-class ElasticsearchScroller()(
+class ElasticsearchScanner()(
   implicit client: ElasticClient,
   timeout: FiniteDuration = 5 minutes,
   bulkSize: Int = 10000
@@ -37,10 +37,14 @@ class ElasticsearchScroller()(
       )
       .zipWithIndex
       .map {
+        // 1-index the documents for humans
+        case (hit, index) => (hit, index + 1)
+      }
+      .map {
         case (hit, index) =>
-          if (index % 10000 == 0) {
+          if (index % bulkSize == 0) {
             info(
-              s"Received another ${intComma(10000)} hits " +
+              s"Received another ${intComma(bulkSize)} hits " +
                 s"(${intComma(index)} so far) from $index"
             )
           }

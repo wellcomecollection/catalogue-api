@@ -7,7 +7,7 @@ import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.elasticsearch.ElasticsearchScroller
+import weco.elasticsearch.ElasticsearchScanner
 
 import scala.concurrent.duration._
 
@@ -17,7 +17,7 @@ class ElasticsearchWorksIterator(
   timeout: FiniteDuration = 5 minutes
 ) extends Logging {
   def scroll(config: SnapshotGeneratorConfig): Iterator[Work.Visible[Indexed]] = {
-    val underlying = new ElasticsearchScroller()(
+    val underlying = new ElasticsearchScanner()(
       client, timeout = timeout, bulkSize = config.bulkSize
     )
 
