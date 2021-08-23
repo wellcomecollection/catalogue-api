@@ -68,10 +68,10 @@ class ItemLookup(
   }
 
   def bySourceIdentifier(
-    sourceIdentifiers: Seq[SourceIdentifier]
+    itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
     val multiSearchRequest = MultiSearchRequest(
-      sourceIdentifiers.map { sourceIdentifier =>
+      itemIdentifiers.map { itemSourceIdentifier =>
         search(index)
           .query(
             boolQuery
@@ -82,7 +82,7 @@ class ItemLookup(
                 ),
                 termQuery(
                   field = "data.items.id.sourceIdentifier.value",
-                  value = sourceIdentifier.value
+                  value = itemSourceIdentifier.value
                 )
               )
           )
@@ -98,7 +98,7 @@ class ItemLookup(
     elasticsearchService
       .findByMultiSearch[Work[Indexed]](multiSearchRequest)
       .map {
-        _.zip(sourceIdentifiers).map {
+        _.zip(itemIdentifiers).map {
           case (Right(works), srcId) =>
             works
               .flatMap { work =>
