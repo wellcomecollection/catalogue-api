@@ -10,7 +10,11 @@ import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 
-class ElasticsearchScannerTest extends AnyFunSpec with Matchers with ElasticsearchFixtures with WorkGenerators {
+class ElasticsearchScannerTest
+    extends AnyFunSpec
+    with Matchers
+    with ElasticsearchFixtures
+    with WorkGenerators {
   val scanner = new ElasticsearchScanner()(elasticClient)
 
   case class Shape(sides: Int, colour: String)
@@ -47,7 +51,11 @@ class ElasticsearchScannerTest extends AnyFunSpec with Matchers with Elasticsear
           )
           .toList
 
-      squares should contain theSameElementsAs Seq(redSquare, greenSquare, blueSquare)
+      squares should contain theSameElementsAs Seq(
+        redSquare,
+        greenSquare,
+        blueSquare
+      )
 
       val redShapes =
         scanner

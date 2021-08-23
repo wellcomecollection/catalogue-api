@@ -27,7 +27,9 @@ class ElasticsearchScanner()(
   timeout: FiniteDuration = 5 minutes,
   bulkSize: Int = 10000
 ) extends Logging {
-  def scroll[T](request: SearchRequest)(implicit decoder: Decoder[T]): Iterator[T] =
+  def scroll[T](
+    request: SearchRequest
+  )(implicit decoder: Decoder[T]): Iterator[T] =
     SearchIterator
       .hits(
         client,

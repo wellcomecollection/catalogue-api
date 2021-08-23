@@ -16,9 +16,13 @@ class ElasticsearchWorksIterator(
   client: ElasticClient,
   timeout: FiniteDuration = 5 minutes
 ) extends Logging {
-  def scroll(config: SnapshotGeneratorConfig): Iterator[Work.Visible[Indexed]] = {
+  def scroll(
+    config: SnapshotGeneratorConfig
+  ): Iterator[Work.Visible[Indexed]] = {
     val underlying = new ElasticsearchScanner()(
-      client, timeout = timeout, bulkSize = config.bulkSize
+      client,
+      timeout = timeout,
+      bulkSize = config.bulkSize
     )
 
     underlying
