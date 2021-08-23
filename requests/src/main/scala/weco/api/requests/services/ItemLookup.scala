@@ -5,6 +5,7 @@ import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
 import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.requests.searches.sort.SortOrder
 import com.sksamuel.elastic4s.{ElasticClient, Index}
+import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
@@ -27,7 +28,7 @@ class ItemLookup(
   index: Index
 )(
   implicit ec: ExecutionContext
-) {
+) extends Logging {
 
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
@@ -116,38 +117,44 @@ class ItemLookup(
       .findByMultiSearch[Work.Visible[Indexed]](multiSearchRequest)
       .map {
         _.zip(itemIdentifiers).map {
-          case (Right(works), srcId) => addWorkDataToItem(works, srcId)
-          case (Left(err), _)        => Left(err)
+          case (Right(Seq(work)), itemId) => addWorkDataToItem(work, itemId)
+          case (Right(Nil), itemId)       =>
+            warn(s"No works found matching item identifier $itemId")
+            Left(DocumentNotFoundError(itemId))
+
+          // This should never happen in practice, because we have .size(1) in the query.
+          // We can still return something to the user here, but log a warning so we
+          // know something's gone wrong.
+          case (Right(works), itemId) =>
+            warn(s"Multiple works (${works.size}) found matching item identifier $itemId")
+            addWorkDataToItem(works.head, itemId)
+
+          case (Left(err), _)            => Left(err)
         }
       }
   }
 
-  private def addWorkDataToItem(works: Seq[Work.Visible[Indexed]], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
-    works
-      .flatMap { work =>
-        work.data.items.map(
-          item => (work.data.title, work.state.canonicalId, item)
-        )
+  private def addWorkDataToItem(work: Work.Visible[Indexed], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] = {
+    val matchingItem =
+      work.data.items
+        .collectFirst {
+        case item: Item[IdState.Identified] if item.id.sourceIdentifier == itemIdentifier =>
+          item
       }
-      .collect {
-        case (
-          title,
-          workId,
-          item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-          ) if id.sourceIdentifier == itemIdentifier =>
-          // This .asInstanceOf[] is a no-op to help the compiler see what
-          // we can see by reading the code.
-          item.asInstanceOf[Item[IdState.Identified]]
+
+    matchingItem match {
+      case Some(item) =>
+        Right(
           RequestedItemWithWork(
-            workId = workId,
-            workTitle = title,
+            workId = work.state.canonicalId,
+            workTitle = work.data.title,
             item = item.asInstanceOf[Item[IdState.Identified]]
           )
-      }
-      .toList match {
-        case Nil   => Left(DocumentNotFoundError(itemIdentifier))
-        case items => Right(items.head)
-      }
+        )
+
+      case None => Left(DocumentNotFoundError(itemIdentifier))
+    }
+  }
 }
 
 object ItemLookup {
