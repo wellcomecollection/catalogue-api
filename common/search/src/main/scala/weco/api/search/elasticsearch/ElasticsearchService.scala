@@ -178,7 +178,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   private def isRetryable(t: Throwable): Boolean =
     t match {
-      case JavaClientExceptionWrapper(exc: java.net.ConnectException) if exc.getMessage.startsWith("Timeout connecting to") => true
+      case JavaClientExceptionWrapper(exc: java.net.ConnectException)
+          if exc.getMessage.startsWith("Timeout connecting to") =>
+        true
 
       case _ => false
     }
@@ -186,11 +188,13 @@ class ElasticsearchService(elasticClient: ElasticClient)(
   private def executeRequest[Request, U](request: Request)(
     implicit
     handler: Handler[Request, U],
-    manifest: Manifest[U]): Future[Response[U]] = {
+    manifest: Manifest[U]
+  ): Future[Response[U]] = {
     debug(s"Sending ES request: ${request.show}")
 
-    val retryableFunction = ((r: Request) => withActiveTrace(elasticClient.execute(r)))
-      .retry(maxAttempts = 2, isRetryable = isRetryable)
+    val retryableFunction =
+      ((r: Request) => withActiveTrace(elasticClient.execute(r)))
+        .retry(maxAttempts = 2, isRetryable = isRetryable)
 
     retryableFunction(request)
   }

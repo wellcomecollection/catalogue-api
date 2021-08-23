@@ -14,11 +14,15 @@ import scala.concurrent.{ExecutionContext, Future}
 object FutureRetryOps extends Logging {
   implicit class Retry[In, Out](f: In => Future[Out]) {
 
-    def retry(maxAttempts: Int = 1, isRetryable: Throwable => Boolean)(implicit ec: ExecutionContext): In => Future[Out] =
+    def retry(maxAttempts: Int = 1, isRetryable: Throwable => Boolean)(
+      implicit ec: ExecutionContext
+    ): In => Future[Out] =
       (in: In) => retryInternal(maxAttempts, isRetryable)(in)
 
-    private def retryInternal(remainingAttempts: Int, isRetryable: Throwable => Boolean)(
-      in: In)(implicit ec: ExecutionContext): Future[Out] =
+    private def retryInternal(
+      remainingAttempts: Int,
+      isRetryable: Throwable => Boolean
+    )(in: In)(implicit ec: ExecutionContext): Future[Out] =
       f(in)
         .map { out =>
           debug(s"Success: retryable operation for in=$in succeeded")
@@ -27,7 +31,8 @@ object FutureRetryOps extends Logging {
         .recoverWith {
           case t if isRetryable(t) =>
             debug(
-              s"Retryable error: remaining attempts = $remainingAttempts for in=$in after throwable $t")
+              s"Retryable error: remaining attempts = $remainingAttempts for in=$in after throwable $t"
+            )
             if (remainingAttempts == 1) {
               debug(s"Retryable error: marking operation as failed with $t")
               Future.failed(t)

@@ -29,7 +29,8 @@ class FutureRetryOpsTest extends AnyFunSpec with Matchers with ScalaFutures {
       }
     }
 
-    val retryableFunction = (canOnlyBeCalledOnce _).retry(maxAttempts = 3, isRetryable = neverRetry)
+    val retryableFunction =
+      (canOnlyBeCalledOnce _).retry(maxAttempts = 3, isRetryable = neverRetry)
 
     whenReady(retryableFunction("hello")) {
       _ shouldBe "HELLO"
@@ -51,7 +52,8 @@ class FutureRetryOpsTest extends AnyFunSpec with Matchers with ScalaFutures {
       }
     }
 
-    val retryableFunction = (countCalls _).retry(maxAttempts, isRetryable = alwaysRetry)
+    val retryableFunction =
+      (countCalls _).retry(maxAttempts, isRetryable = alwaysRetry)
 
     whenReady(retryableFunction("hello")) {
       _ shouldBe "HELLO"
@@ -72,7 +74,10 @@ class FutureRetryOpsTest extends AnyFunSpec with Matchers with ScalaFutures {
       }
     }
 
-    val retryableFunction = (failsAfterFirstCall _).retry(maxAttempts = 3, isRetryable = (t: Throwable) => t.getMessage.contains("retryable"))
+    val retryableFunction = (failsAfterFirstCall _).retry(
+      maxAttempts = 3,
+      isRetryable = (t: Throwable) => t.getMessage.contains("retryable")
+    )
 
     whenReady(retryableFunction("hello").failed) {
       _ shouldBe err
@@ -87,7 +92,8 @@ class FutureRetryOpsTest extends AnyFunSpec with Matchers with ScalaFutures {
     def alwaysFails(s: String): Future[String] =
       Future.failed(err)
 
-    val retryableFunction = (alwaysFails _).retry(maxAttempts, isRetryable = alwaysRetry)
+    val retryableFunction =
+      (alwaysFails _).retry(maxAttempts, isRetryable = alwaysRetry)
 
     whenReady(retryableFunction("hello").failed) {
       _ shouldBe err
