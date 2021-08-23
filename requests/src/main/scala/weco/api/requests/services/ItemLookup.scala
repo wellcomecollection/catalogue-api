@@ -113,43 +113,41 @@ class ItemLookup(
     )
 
     elasticsearchService
-      .findByMultiSearch[Work[Indexed]](multiSearchRequest)
+      .findByMultiSearch[Work.Visible[Indexed]](multiSearchRequest)
       .map {
         _.zip(itemIdentifiers).map {
-          case (Right(works), srcId) =>
-            works
-              .flatMap { work =>
-                work.data.items.map(
-                  item => (work.data.title, work.state.canonicalId, item)
-                )
-              }
-              .collect {
-                case (
-                    title,
-                    workId,
-                    item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-                    ) if id.sourceIdentifier == srcId =>
-                  // This .asInstanceOf[] is a no-op to help the compiler see what
-                  // we can see by reading the code.
-                  item.asInstanceOf[Item[IdState.Identified]]
-                  RequestedItemWithWork(
-                    workId = workId,
-                    workTitle = title,
-                    item = item.asInstanceOf[Item[IdState.Identified]]
-                  )
-              }
-              .toList match {
-              // We can return multiple items from multiple works
-              // The sortBy above returns us the lowest bibId work association
-              case List(item) => Right(item)
-              case item :: _  => Right(item)
-              case List()     => Left(DocumentNotFoundError(srcId))
-            }
-
-          case (Left(err), _) => Left(err)
+          case (Right(works), srcId) => addWorkDataToItem(works, srcId)
+          case (Left(err), _)        => Left(err)
         }
       }
   }
+
+  private def addWorkDataToItem(works: Seq[Work.Visible[Indexed]], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
+    works
+      .flatMap { work =>
+        work.data.items.map(
+          item => (work.data.title, work.state.canonicalId, item)
+        )
+      }
+      .collect {
+        case (
+          title,
+          workId,
+          item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+          ) if id.sourceIdentifier == itemIdentifier =>
+          // This .asInstanceOf[] is a no-op to help the compiler see what
+          // we can see by reading the code.
+          item.asInstanceOf[Item[IdState.Identified]]
+          RequestedItemWithWork(
+            workId = workId,
+            workTitle = title,
+            item = item.asInstanceOf[Item[IdState.Identified]]
+          )
+      }
+      .toList match {
+        case Nil   => Left(DocumentNotFoundError(itemIdentifier))
+        case items => Right(items.head)
+      }
 }
 
 object ItemLookup {
