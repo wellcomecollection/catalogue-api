@@ -27,9 +27,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     index: Index
   )(implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
-      response: Response[GetResponse] <- withActiveTrace(executeRequest {
+      response: Response[GetResponse] <- executeRequest {
         get(index, id.underlying)
-      })
+      }
 
       result = response.toEither match {
         case Right(getResponse) if getResponse.exists =>
@@ -79,7 +79,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       action = "query"
     ) {
       val transaction = Tracing.currentTransaction
-      withActiveTrace(executeRequest(request))
+      executeRequest(request)
         .map(_.toEither)
         .map {
           case Right(response) =>
@@ -101,7 +101,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       action = "query"
     ) {
       val transaction = Tracing.currentTransaction
-      withActiveTrace(executeRequest(request))
+      executeRequest(request)
         .map(_.toEither)
         .map {
           case Left(err) => throw err.asException
@@ -189,7 +189,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     manifest: Manifest[U]): Future[Response[U]] = {
     debug(s"Sending ES request: ${request.show}")
 
-    val retryableFunction = ((r: Request) => elasticClient.execute(r))
+    val retryableFunction = ((r: Request) => withActiveTrace(elasticClient.execute(r)))
       .retry(maxAttempts = 2, isRetryable = isRetryable)
 
     retryableFunction(request)
