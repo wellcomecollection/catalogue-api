@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.requests.searches.{
   SearchRequest,
   SearchResponse
 }
-import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
+import com.sksamuel.elastic4s.{ElasticClient, Handler, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import weco.Tracing
@@ -26,7 +26,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     index: Index
   )(implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
-      response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
+      response: Response[GetResponse] <- withActiveTrace(executeRequest {
         get(index, id.underlying)
       })
 
@@ -77,9 +77,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       subType = "elastic",
       action = "query"
     ) {
-      debug(s"Sending ES request: ${request.show}")
       val transaction = Tracing.currentTransaction
-      withActiveTrace(elasticClient.execute(request))
+      withActiveTrace(executeRequest(request))
         .map(_.toEither)
         .map {
           case Right(response) =>
@@ -100,9 +99,8 @@ class ElasticsearchService(elasticClient: ElasticClient)(
       subType = "elastic",
       action = "query"
     ) {
-      debug(s"Sending ES request: ${request.show}")
       val transaction = Tracing.currentTransaction
-      withActiveTrace(elasticClient.execute(request))
+      withActiveTrace(executeRequest(request))
         .map(_.toEither)
         .map {
           case Left(err) => throw err.asException
@@ -158,4 +156,12 @@ class ElasticsearchService(elasticClient: ElasticClient)(
           s"Unable to parse JSON($e): ${hit.sourceAsString}"
         )
     }
+
+  private def executeRequest[Request, U](request: Request)(
+    implicit
+    handler: Handler[Request, U],
+    manifest: Manifest[U]): Future[Response[U]] = {
+    debug(s"Sending ES request: ${request.show}")
+    elasticClient.execute(request)
+  }
 }
