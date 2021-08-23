@@ -47,18 +47,20 @@ class ItemLookup(
         )
         .size(1)
 
-    elasticsearchService.findBySearch[Work.Visible[Indexed]](searchRequest).map {
-      case Left(err) => Left(err)
-      case Right(works) =>
-        val item = works
-          .flatMap(w => w.itemWith(itemId))
-          .headOption
+    elasticsearchService
+      .findBySearch[Work.Visible[Indexed]](searchRequest)
+      .map {
+        case Left(err) => Left(err)
+        case Right(works) =>
+          val item = works
+            .flatMap(w => w.itemWith(itemId))
+            .headOption
 
-        item match {
-          case Some(it) => Right(it)
-          case None     => Left(DocumentNotFoundError(itemId))
-        }
-    }
+          item match {
+            case Some(it) => Right(it)
+            case None     => Left(DocumentNotFoundError(itemId))
+          }
+      }
   }
 
   /** Look up a collection of items and the corresponding Work data.
@@ -111,7 +113,7 @@ class ItemLookup(
       .map {
         _.zip(itemIdentifiers).map {
           case (Right(Seq(work)), itemId) => addWorkDataToItem(work, itemId)
-          case (Right(Nil), itemId)       =>
+          case (Right(Nil), itemId) =>
             warn(s"No works found matching item identifier $itemId")
             Left(DocumentNotFoundError(itemId))
 
@@ -119,15 +121,20 @@ class ItemLookup(
           // We can still return something to the user here, but log a warning so we
           // know something's gone wrong.
           case (Right(works), itemId) =>
-            warn(s"Multiple works (${works.size}) found matching item identifier $itemId")
+            warn(
+              s"Multiple works (${works.size}) found matching item identifier $itemId"
+            )
             addWorkDataToItem(works.head, itemId)
 
-          case (Left(err), _)            => Left(err)
+          case (Left(err), _) => Left(err)
         }
       }
   }
 
-  private def addWorkDataToItem(work: Work.Visible[Indexed], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
+  private def addWorkDataToItem(
+    work: Work.Visible[Indexed],
+    itemIdentifier: SourceIdentifier
+  ): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
     work.itemWith(itemIdentifier) match {
       case Some(item) =>
         Right(
@@ -154,15 +161,19 @@ class ItemLookup(
     //
     // The use of .asInstanceOf is to keep the compiler happy.
 
-    def itemWith(itemSourceId: SourceIdentifier): Option[Item[IdState.Identified]] =
+    def itemWith(
+      itemSourceId: SourceIdentifier
+    ): Option[Item[IdState.Identified]] =
       w.data.items.collectFirst {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _) if id.sourceIdentifier == itemSourceId =>
+        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+            if id.sourceIdentifier == itemSourceId =>
           item.asInstanceOf[Item[IdState.Identified]]
       }
 
     def itemWith(itemId: CanonicalId): Option[Item[IdState.Identified]] =
       w.data.items.collectFirst {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _) if id.canonicalId == itemId =>
+        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
+            if id.canonicalId == itemId =>
           item.asInstanceOf[Item[IdState.Identified]]
       }
   }
