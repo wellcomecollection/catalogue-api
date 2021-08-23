@@ -11,7 +11,7 @@ import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 
 class ElasticsearchScannerTest extends AnyFunSpec with Matchers with ElasticsearchFixtures with WorkGenerators {
-  val scroller = new ElasticsearchScanner()(elasticClient)
+  val scanner = new ElasticsearchScanner()(elasticClient)
 
   case class Shape(sides: Int, colour: String)
 
@@ -40,7 +40,7 @@ class ElasticsearchScannerTest extends AnyFunSpec with Matchers with Elasticsear
   it("finds every document that matches the query") {
     withIndex(shapes) { index =>
       val squares =
-        scroller
+        scanner
           .scroll[Shape](
             search(index)
               .query(termQuery("sides", "4"))
@@ -50,7 +50,7 @@ class ElasticsearchScannerTest extends AnyFunSpec with Matchers with Elasticsear
       squares should contain theSameElementsAs Seq(redSquare, greenSquare, blueSquare)
 
       val redShapes =
-        scroller
+        scanner
           .scroll[Shape](
             search(index)
               .query(termQuery("colour", "red"))
