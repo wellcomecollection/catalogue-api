@@ -2,6 +2,7 @@ package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
+import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import com.sksamuel.elastic4s.requests.get.GetResponse
 import com.sksamuel.elastic4s.requests.searches.{
   MultiSearchRequest,
@@ -155,11 +156,42 @@ class ElasticsearchService(elasticClient: ElasticClient)(
         )
     }
 
+  // We occasionally see HTTP 500 errors from the search API, and looking in the
+  // logs you see a timeout error:
+  //
+  //      com.sksamuel.elastic4s.http.JavaClientExceptionWrapper: java.net.ConnectException:
+  //      Timeout connecting to [{URL of Elasticsearch cluster}]
+  //
+  // There's nothing particularly unusual about the failing request, and it resolves
+  // on a reload -- the cluster just had a momentary flake.  Reloading the page should
+  // fix the error, but it's not a great experience for the user.
+  //
+  // This code will retry a failing request if:
+  //
+  //    - it looks like one of these timeouts
+  //    - if this is the first error we've seen on this request
+  //
+  // This retrying is deliberately conservative: if the cluster is down or this request
+  // causes some persistent failure, we don't want to keep trying the cluster.
+
+  import FutureRetryOps._
+
+  private def isRetryable(t: Throwable): Boolean =
+    t match {
+      case JavaClientExceptionWrapper(exc: java.net.ConnectException) if exc.getMessage.startsWith("Timeout connecting to") => true
+
+      case _ => false
+    }
+
   private def executeRequest[Request, U](request: Request)(
     implicit
     handler: Handler[Request, U],
     manifest: Manifest[U]): Future[Response[U]] = {
     debug(s"Sending ES request: ${request.show}")
-    elasticClient.execute(request)
+
+    val retryableFunction = ((r: Request) => elasticClient.execute(r))
+      .retry(maxAttempts = 2, isRetryable = isRetryable)
+
+    retryableFunction(request)
   }
 }
