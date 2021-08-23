@@ -120,21 +120,19 @@ class ElasticsearchService(elasticClient: ElasticClient)(
                 val (timeTakenTotal, timesTaken, results) = acc
 
                 item.response match {
-                  case Right(itemResponse) => {
+                  case Right(itemResponse) =>
                     (
                       timeTakenTotal + itemResponse.took,
                       timesTaken :+ itemResponse.took,
                       results :+ Right(itemResponse)
                     )
-                  }
 
-                  case Left(error) => {
+                  case Left(error) =>
                     (
                       timeTakenTotal,
                       timesTaken,
                       results :+ Left(ElasticsearchError(error))
                     )
-                  }
                 }
               }
 
