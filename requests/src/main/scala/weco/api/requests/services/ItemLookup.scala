@@ -67,6 +67,23 @@ class ItemLookup(
     }
   }
 
+  /** Look up a collection of items and the corresponding Work data.
+    *
+    * At least within Sierra, i's possible for a single Item to be associated with
+    * multiple Works, e.g. if multiple items are bound/contained together.
+    * For an extreme example, see Item i13000780 / ty6qpt7d, which is on 705 Works.
+    *
+    * We want to return a consistent title/work ID to the user in the list of holds,
+    * so we use the work with the lowest alphabetical source identifier (i.e. lowest bib number).
+    * This mirrors what Encore/OPAC seems to do -- if an item is on multiple bibs,
+    * the list of user holds links to the lowest numbered bib.
+    *
+    * We might want to remember the original request, and which Work the user was looking
+    * at, but that's a bigger piece of work.  It involves UX input on how to best explain
+    * the same item on multiple works.  Making this change is tracked in a separate ticket.
+    * See https://github.com/wellcomecollection/platform/issues/5267
+    *
+    */
   def bySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
