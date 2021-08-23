@@ -47,16 +47,12 @@ class ItemLookup(
         )
         .size(1)
 
-    elasticsearchService.findBySearch[Work[Indexed]](searchRequest).map {
+    elasticsearchService.findBySearch[Work.Visible[Indexed]](searchRequest).map {
       case Left(err) => Left(err)
       case Right(works) =>
-        val item =
-          works
-            .flatMap { _.data.items }
-            .collectFirst {
-              case item: Item[IdState.Identified] if item.id.canonicalId == itemId =>
-                item
-            }
+        val item = works
+          .flatMap(w => w.itemWith(itemId))
+          .headOption
 
         item match {
           case Some(it) => Right(it)
@@ -131,15 +127,8 @@ class ItemLookup(
       }
   }
 
-  private def addWorkDataToItem(work: Work.Visible[Indexed], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] = {
-    val matchingItem =
-      work.data.items
-        .collectFirst {
-        case item: Item[IdState.Identified] if item.id.sourceIdentifier == itemIdentifier =>
-          item
-      }
-
-    matchingItem match {
+  private def addWorkDataToItem(work: Work.Visible[Indexed], itemIdentifier: SourceIdentifier): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
+    work.itemWith(itemIdentifier) match {
       case Some(item) =>
         Right(
           RequestedItemWithWork(
@@ -151,6 +140,31 @@ class ItemLookup(
 
       case None => Left(DocumentNotFoundError(itemIdentifier))
     }
+
+  private implicit class WorkOps(w: Work.Visible[Indexed]) {
+
+    // You might expect you can write these functions as something like:
+    //
+    //      case item: Item[IdState.Identified] if item.id.canonicalId == itemId =>
+    //
+    // but if you do, you get an error from the compiler:
+    //
+    //      non-variable type argument IdState.Identified in type pattern Item[IdState.Identified]
+    //      is unchecked since it is eliminated by erasure
+    //
+    // The use of .asInstanceOf is to keep the compiler happy.
+
+    def itemWith(itemSourceId: SourceIdentifier): Option[Item[IdState.Identified]] =
+      w.data.items.collectFirst {
+        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _) if id.sourceIdentifier == itemSourceId =>
+          item.asInstanceOf[Item[IdState.Identified]]
+      }
+
+    def itemWith(itemId: CanonicalId): Option[Item[IdState.Identified]] =
+      w.data.items.collectFirst {
+        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _) if id.canonicalId == itemId =>
+          item.asInstanceOf[Item[IdState.Identified]]
+      }
   }
 }
 
