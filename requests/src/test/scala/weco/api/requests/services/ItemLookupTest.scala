@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.requests.models.RequestedItemWithWork
 import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.identifiers.{IdState, SourceIdentifier}
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.internal_model.work.generators.{
@@ -217,10 +217,7 @@ class ItemLookupTest
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
 
-      val workSourceIds = List(
-        createSierraSystemSourceIdentifier,
-        createSierraSystemSourceIdentifier
-      ).sortBy(_.value)
+      val workSourceIds = createSortedSourceIdentifiers(count = 2)
 
       val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
       val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
@@ -261,10 +258,7 @@ class ItemLookupTest
         otherIdentifiers = List(createSourceIdentifier)
       )
 
-      val workSourceIds = List(
-        createSierraSystemSourceIdentifier,
-        createSierraSystemSourceIdentifier
-      ).sortBy(_.value)
+      val workSourceIds = createSortedSourceIdentifiers(count = 2)
 
       val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
       val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
@@ -351,4 +345,16 @@ class ItemLookupTest
       }
     }
   }
+
+  // It seems like Elasticsearch and Scala disagree about how source identifiers should
+  // be sorted, especially when the case of two identifiers is different.  This causes
+  // some of the sort-related tests to be flaky.
+  //
+  // Because we're usually doing this with Sierra identifiers which start with a
+  // lowercase 'b', just lowercase all the values we use in these tests.
+  private def createSortedSourceIdentifiers(count: Int): Seq[SourceIdentifier] =
+    (1 to count)
+      .map { _ => createSourceIdentifier }
+      .map { s => s.copy(value = s.value.toLowerCase) }
+      .sortBy { _.value }
 }
