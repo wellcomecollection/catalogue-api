@@ -354,7 +354,11 @@ class ItemLookupTest
   // lowercase 'b', just lowercase all the values we use in these tests.
   private def createSortedSourceIdentifiers(count: Int): Seq[SourceIdentifier] =
     (1 to count)
-      .map { _ => createSourceIdentifier }
-      .map { s => s.copy(value = s.value.toLowerCase) }
+      .map { _ =>
+        createSourceIdentifier
+      }
+      .map { s =>
+        s.copy(value = s.value.toLowerCase)
+      }
       .sortBy { _.value }
 }
