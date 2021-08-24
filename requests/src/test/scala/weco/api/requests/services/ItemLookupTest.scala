@@ -218,8 +218,8 @@ class ItemLookupTest
       val item3 = createIdentifiedItem
 
       val workSourceIds = List(
-        createSourceIdentifier,
-        createSourceIdentifier
+        createSierraSystemSourceIdentifier,
+        createSierraSystemSourceIdentifier
       ).sortBy(_.value)
 
       val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
@@ -262,8 +262,8 @@ class ItemLookupTest
       )
 
       val workSourceIds = List(
-        createSourceIdentifier,
-        createSourceIdentifier
+        createSierraSystemSourceIdentifier,
+        createSierraSystemSourceIdentifier
       ).sortBy(_.value)
 
       val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
