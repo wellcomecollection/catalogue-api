@@ -981,7 +981,7 @@ class SierraItemAccessTest
           itemData = itemData
         )
 
-        ac shouldBe AccessCondition(method = AccessMethod.NotRequestable)
+        ac shouldBe AccessCondition(method = AccessMethod.OpenShelves)
       }
 
       it("gets a display note") {
