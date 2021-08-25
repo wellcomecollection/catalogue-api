@@ -9,7 +9,6 @@ import functools
 import boto3
 import click
 
-import elasticsearch
 from elasticsearch import Elasticsearch
 
 WORK_INDEX_PATTERN = "works-*"
@@ -103,18 +102,3 @@ if __name__ == '__main__':
             role_name,
             body=index_privileges,
         )
-
-    # Configure cluster settings
-    cluster_client = elasticsearch.client.ClusterClient(es)
-
-    cluster_client.put_settings(
-        body={
-            # This setting is a fix for performance problems with an optimisation added in 7.13.1
-            # See: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/release-notes-7.13.2.html
-            # "Add setting to disable aggs optimization #73620 (issue: #73426)"
-            # TODO: A fix is likely in ES 7.14, after which we can remove this setting.
-            "persistent": {
-                "search.aggs.rewrite_to_filter_by_filter": False
-            }
-        }
-    )

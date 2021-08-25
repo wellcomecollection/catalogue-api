@@ -13,6 +13,18 @@ resource "ec_deployment" "catalogue_api" {
       size       = "8g"
       zone_count = 3
     }
+
+    config {
+      user_settings_yaml = yamlencode(
+        {
+          # This setting is a fix for performance problems with an optimisation added in 7.13.1
+          # See: https://www.elastic.co/guide/en/elasticsearch/reference/7.13/release-notes-7.13.2.html
+          # "Add setting to disable aggs optimization #73620 (issue: #73426)"
+          # TODO: A fix is likely in ES 7.14, after which we can remove this setting.
+          "search.aggs.rewrite_to_filter_by_filter" : true
+        }
+      )
+    }
   }
 
   # The catalogue-api cluster gets the pipeline-storage clusters added
@@ -44,7 +56,7 @@ locals {
   catalogue_private_host = "${local.catalogue_elastic_region}.vpce.${local.catalogue_elastic_region}.aws.elastic-cloud.com"
   catalogue_public_host  = "${local.catalogue_api_elastic_id}.${local.catalogue_elastic_region}.aws.found.io"
 
-  # These are used for creating users in scripts/create_elastic_users_catalogue.py
+  # These are used for creating users in scripts/create_elastic_roles.py
   cluster_elastic_user_secrets = {
     "elasticsearch/catalogue_api/username" = local.catalogue_elastic_username
     "elasticsearch/catalogue_api/password" = local.catalogue_elastic_password
