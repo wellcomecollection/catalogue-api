@@ -1,6 +1,6 @@
 import { error, info } from './utils'
 
-import { rankClient } from '../services/elasticsearch'
+import { getRankClient } from '../services/elasticsearch'
 
 async function go() {
   const [indexName] = process.argv.slice(2)
@@ -11,6 +11,7 @@ async function go() {
   }
 
   info(`deleting index ${indexName}`)
+  const rankClient = getRankClient()
   const { body: deleteIndexRes } = await rankClient.indices
     .delete({
       index: indexName,

@@ -1,14 +1,15 @@
-import fs from 'fs'
-import prompts from 'prompts'
-import yargs from 'yargs/yargs'
-import { hideBin } from 'yargs/helpers'
+import {
+  SearchTemplate,
+  getRemoteTemplates,
+} from '../services/search-templates'
 import { error, info, p, pretty } from './utils'
 import { getNamespaceFromIndexName, namespaces } from '../types/namespace'
+
+import fs from 'fs'
 import { getRankClient } from '../services/elasticsearch'
-import {
-  getRemoteTemplates,
-  SearchTemplate,
-} from '../services/search-templates'
+import { hideBin } from 'yargs/helpers'
+import prompts from 'prompts'
+import yargs from 'yargs/yargs'
 
 global.fetch = require('node-fetch')
 

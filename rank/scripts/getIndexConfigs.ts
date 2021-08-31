@@ -1,15 +1,16 @@
-import fs from 'fs'
-import prompts from 'prompts'
-import { code, info, p, pretty, success } from './utils'
 import {
-  getRemoteTemplates,
   SearchTemplate,
+  getRemoteTemplates,
 } from '../services/search-templates'
-import { getRankClient } from '../services/elasticsearch'
+import { code, info, p, pretty, success } from './utils'
+
+import fs from 'fs'
 import { getNamespaceFromIndexName } from '../types/namespace'
-import yargs from 'yargs/yargs'
+import { getRankClient } from '../services/elasticsearch'
 import { hideBin } from 'yargs/helpers'
+import prompts from 'prompts'
 import searchTemplates from '../pages/api/search-templates'
+import yargs from 'yargs/yargs'
 
 global.fetch = require('node-fetch')
 
@@ -54,7 +55,7 @@ async function go(args: typeof argv) {
     success(
       `New config files created. Edit the mappings in ./data/indices/${filename}, then run \n`
     )
-    code(`  yarn createIndex --from ${index} --reindex \n`)
+    code(`  yarn putIndexConfig --from ${index} --reindex \n`)
   }
 }
 
