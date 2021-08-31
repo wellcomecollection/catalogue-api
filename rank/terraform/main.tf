@@ -17,7 +17,7 @@ resource "ec_deployment" "rank_catalogue" {
   elasticsearch {
     topology {
       id         = "hot_content"
-      size       = "1g"
+      size       = "2g"
       zone_count = 2
     }
   }
