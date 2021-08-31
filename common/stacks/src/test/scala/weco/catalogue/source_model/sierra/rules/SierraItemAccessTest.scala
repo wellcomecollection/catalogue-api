@@ -13,12 +13,9 @@ import weco.catalogue.internal_model.locations.{
   AccessCondition,
   AccessMethod,
   AccessStatus,
-  LocationType,
-  PhysicalLocationType
+  LocationType
 }
 import weco.sierra.generators.SierraDataGenerators
-import weco.sierra.models.data.SierraItemData
-import weco.sierra.models.identifiers.SierraBibNumber
 import weco.sierra.models.marc.{FixedField, VarField}
 
 class SierraItemAccessTest
@@ -46,8 +43,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -55,66 +51,6 @@ class SierraItemAccessTest
           ac shouldBe AccessCondition(
             method = AccessMethod.OnlineRequest,
             status = AccessStatus.Open)
-        }
-
-        it("if it has no restrictions and the bib is open") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "scmwf",
-                display = "Closed stores A&MSS Well.Found."),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "-",
-                display = "Available"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "f",
-                display = "Online request"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.Open),
-            location = Some(LocationType.ClosedStores),
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.OnlineRequest,
-              status = AccessStatus.Open)
-        }
-
-        it("if it has no restrictions and the bib is open with advisory") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "scmac",
-                display = "Closed stores Arch. & MSS"),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "-",
-                display = "Available"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "f",
-                display = "Online request"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.OpenWithAdvisory),
-            location = Some(LocationType.ClosedStores),
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.OnlineRequest,
-              status = AccessStatus.OpenWithAdvisory)
         }
 
         it("if it's restricted") {
@@ -135,8 +71,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.Restricted),
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -145,36 +80,6 @@ class SierraItemAccessTest
             AccessCondition(
               method = AccessMethod.OnlineRequest,
               status = AccessStatus.Restricted)
-        }
-
-        it("if the bib is restricted but the item is open") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "scmac",
-                display = "Closed stores Arch. & MSS"),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "-",
-                display = "Available"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "f",
-                display = "Online request"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.Restricted),
-            location = Some(LocationType.ClosedStores),
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.OnlineRequest,
-              status = AccessStatus.Open)
         }
       }
 
@@ -201,8 +106,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -228,8 +132,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = None,
             itemData = itemData
           )
@@ -258,8 +161,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = None,
             itemData = itemData
           )
@@ -288,8 +190,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.Closed),
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -299,36 +200,6 @@ class SierraItemAccessTest
               method = AccessMethod.NotRequestable,
               status = AccessStatus.Closed
             )
-        }
-
-        it("if the bib and the item are closed, and there's no location") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "sc#ac",
-                display = "Unrequestable Arch. & MSS"),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "h",
-                display = "Closed"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "u",
-                display = "Unavailable"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.Closed),
-            location = None,
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.NotRequestable,
-              status = AccessStatus.Closed)
         }
 
         it("if the item is unavailable") {
@@ -349,38 +220,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
-            location = Some(LocationType.ClosedStores),
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.NotRequestable,
-              status = AccessStatus.Unavailable)
-        }
-
-        it("if the item is unavailable and the bib is temporarily unavailable") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "sc#ac",
-                display = "Unrequestable Arch. & MSS"),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "r",
-                display = "Unavailable"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "u",
-                display = "Unavailable"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.TemporarilyUnavailable),
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -409,8 +249,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -449,8 +288,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -464,7 +302,7 @@ class SierraItemAccessTest
             )
         }
 
-        it("if the bib and item are by appointment") {
+        it("if the item is by appointment") {
           val itemData = createSierraItemDataWith(
             fixedFields = Map(
               "79" -> FixedField(
@@ -482,8 +320,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.ByAppointment),
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -494,7 +331,7 @@ class SierraItemAccessTest
               status = AccessStatus.ByAppointment)
         }
 
-        it("if the bib and item need donor permission") {
+        it("if the item needs donor permission") {
           val itemData = createSierraItemDataWith(
             fixedFields = Map(
               "79" -> FixedField(
@@ -512,38 +349,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = Some(AccessStatus.PermissionRequired),
-            location = Some(LocationType.ClosedStores),
-            itemData = itemData
-          )
-
-          ac shouldBe
-            AccessCondition(
-              method = AccessMethod.ManualRequest,
-              status = AccessStatus.PermissionRequired)
-        }
-
-        it("if the bib and item needs donor permission") {
-          val itemData = createSierraItemDataWith(
-            fixedFields = Map(
-              "79" -> FixedField(
-                label = "LOCATION",
-                value = "sicon",
-                display = "Closed stores Visual"),
-              "88" -> FixedField(
-                label = "STATUS",
-                value = "y",
-                display = "Permission required"),
-              "108" -> FixedField(
-                label = "OPACMSG",
-                value = "q",
-                display = "Donor permission"),
-            )
-          )
-
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -572,8 +378,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -604,8 +409,7 @@ class SierraItemAccessTest
             )
           )
 
-          val (ac, _) = getItemAccess(
-            bibStatus = None,
+          val (ac, _) = SierraItemAccess(
             location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
@@ -640,8 +444,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -675,8 +478,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -713,8 +515,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -747,43 +548,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
-          location = Some(LocationType.ClosedStores),
-          itemData = itemData
-        )
-
-        ac shouldBe
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
-            note = Some(
-              "Item is in use by another reader. Please ask at Enquiry Desk.")
-          )
-      }
-
-      it("if there's a status on the bib") {
-        // This is based on b32204887 / i19379778, as retrieved 13 August 2021
-        val itemData = createSierraItemDataWith(
-          holdCount = Some(1),
-          fixedFields = Map(
-            "79" -> FixedField(
-              label = "scmac",
-              value = "swms4",
-              display = "Closed stores Arch. & MSS"),
-            "88" -> FixedField(
-              label = "STATUS",
-              value = "!",
-              display = "On holdshelf"),
-            "108" -> FixedField(
-              label = "OPACMSG",
-              value = "a",
-              display = "By appointment"),
-          )
-        )
-
-        val (ac, _) = getItemAccess(
-          bibStatus = Some(AccessStatus.ByAppointment),
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -828,8 +593,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, note) = getItemAccess(
-          bibStatus = None,
+        val (ac, note) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -869,8 +633,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, note) = getItemAccess(
-          bibStatus = None,
+        val (ac, note) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -910,8 +673,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -944,8 +706,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (_, Some(note)) = getItemAccess(
-          bibStatus = None,
+        val (_, Some(note)) = SierraItemAccess(
           location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
@@ -975,8 +736,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.OpenShelves),
           itemData = itemData
         )
@@ -1009,8 +769,7 @@ class SierraItemAccessTest
           )
         )
 
-        val (ac, _) = getItemAccess(
-          bibStatus = None,
+        val (ac, _) = SierraItemAccess(
           location = Some(LocationType.OpenShelves),
           itemData = itemData
         )
@@ -1038,8 +797,7 @@ class SierraItemAccessTest
         )
       )
 
-      val (ac, _) = getItemAccess(
-        bibStatus = None,
+      val (ac, _) = SierraItemAccess(
         location = Some(LocationType.OpenShelves),
         itemData = itemData
       )
@@ -1054,7 +812,6 @@ class SierraItemAccessTest
   }
 
   it("handles the case where we can't map the access data") {
-    val bibId = createSierraBibNumber
     val itemData = createSierraItemDataWith(
       fixedFields = Map(
         "79" -> FixedField(
@@ -1069,9 +826,7 @@ class SierraItemAccessTest
       )
     )
 
-    val (ac, _) = getItemAccess(
-      bibId = bibId,
-      bibStatus = None,
+    val (ac, _) = SierraItemAccess(
       location = Some(LocationType.ClosedStores),
       itemData = itemData
     )
@@ -1082,17 +837,4 @@ class SierraItemAccessTest
         s"""This item cannot be requested online. Please contact <a href="mailto:library@wellcomecollection.org">library@wellcomecollection.org</a> for more information.""")
     )
   }
-
-  private def getItemAccess(
-    bibId: SierraBibNumber = createSierraBibNumber,
-    bibStatus: Option[AccessStatus],
-    location: Option[PhysicalLocationType],
-    itemData: SierraItemData
-  ): (AccessCondition, Option[String]) =
-    SierraItemAccess(
-      bibId = bibId,
-      bibStatus = bibStatus,
-      location = location,
-      itemData = itemData
-    )
 }
