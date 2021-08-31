@@ -17,6 +17,12 @@ locals {
   }
 }
 
+module "gateway_responses" {
+  source = "github.com/wellcomecollection/terraform-aws-api-gateway-responses.git?ref=v1.1.1"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+}
+
 module "v1_root_gone" {
   source = "../static_response"
 
