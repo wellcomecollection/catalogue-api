@@ -3,6 +3,8 @@
 All the services that make up the Catalogue API
 
 [![Build status](https://badge.buildkite.com/1d9006a0f151dd00522ff3ed59a247997016288b6b7ba30efa.svg?branch=main)](https://buildkite.com/wellcomecollection/catalogue-api)
+[![Deploy stage](https://img.shields.io/buildkite/41057eb74a0e2c22d2f78c325bfa6b90458b9529b2bb532b85/main.svg?label=deploy%20stage)](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage)
+[![Deploy prod](https://img.shields.io/buildkite/b7212f6ddcd97f0888e7e7c9064648100a66b54df7e00d5f97/main.svg?label=deploy%20prod)](https://buildkite.com/wellcomecollection/catalogue-api-deploy-prod)
 
 ## Overview
 
