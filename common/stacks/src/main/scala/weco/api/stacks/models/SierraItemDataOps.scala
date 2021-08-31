@@ -1,7 +1,14 @@
 package weco.api.stacks.models
 
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, PhysicalLocationType}
-import weco.catalogue.source_model.sierra.rules.{SierraItemAccess, SierraPhysicalLocationType}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  PhysicalLocationType
+}
+import weco.catalogue.source_model.sierra.rules.{
+  SierraItemAccess,
+  SierraPhysicalLocationType
+}
 import weco.sierra.models.data.SierraItemData
 
 object SierraItemDataOps {
