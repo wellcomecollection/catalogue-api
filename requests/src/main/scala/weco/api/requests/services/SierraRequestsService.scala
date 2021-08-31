@@ -5,24 +5,12 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
 import weco.api.stacks.models.SierraItemIdentifier
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.locations.{
-  AccessMethod,
-  PhysicalLocationType
-}
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData
 import weco.sierra.models.errors.{SierraErrorCode, SierraItemLookupError}
 import weco.sierra.models.fields.SierraHold
-import weco.sierra.models.identifiers.{
-  SierraBibNumber,
-  SierraItemNumber,
-  SierraPatronNumber
-}
+import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,6 +22,8 @@ class SierraRequestsService(
   holdLimit: Int
 )(implicit ec: ExecutionContext)
     extends Logging {
+
+  import weco.api.stacks.models.SierraItemDataOps._
 
   def placeHold(
     patron: SierraPatronNumber,
@@ -176,29 +166,6 @@ class SierraRequestsService(
         )
         Left(HoldRejected.UnknownReason)
     }
-
-  implicit class ItemDataOps(itemData: SierraItemData) {
-    def allowsOnlineRequesting: Boolean = {
-      val location: Option[PhysicalLocationType] =
-        itemData.fixedFields
-          .get("79")
-          .flatMap(_.display)
-          .flatMap(
-            name => SierraPhysicalLocationType.fromName(itemData.id, name)
-          )
-
-      // The bib ID is used for debugging purposes; the bib status is only used
-      // for consistency checking. We can use placeholder data here.
-      val (accessCondition, _) = SierraItemAccess(
-        bibId = SierraBibNumber("0000000"),
-        bibStatus = None,
-        location = location,
-        itemData = itemData
-      )
-
-      accessCondition.method == AccessMethod.OnlineRequest
-    }
-  }
 
   def getHolds(
     patronNumber: SierraPatronNumber

@@ -10,11 +10,6 @@ import weco.catalogue.internal_model.locations.{
   PhysicalLocation
 }
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.source_model.sierra.rules.{
-  SierraItemAccess,
-  SierraPhysicalLocationType
-}
-import weco.sierra.models.data.SierraItemData
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -31,6 +26,8 @@ class SierraItemUpdater(sierraSource: SierraSource)(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
     with Logging {
+
+  import weco.api.stacks.models.SierraItemDataOps._
 
   val identifierType = IdentifierType.SierraSystemNumber
 
@@ -70,20 +67,6 @@ class SierraItemUpdater(sierraSource: SierraSource)(
           .getOrElse(item)
     } toSeq
 
-  private def getAccessCondition(itemData: SierraItemData): AccessCondition = {
-    val (accessCondition, _) = SierraItemAccess(
-      location = itemData.fixedFields
-        .get("79")
-        .flatMap(_.display)
-        .flatMap(
-          name => SierraPhysicalLocationType.fromName(itemData.id, name)
-        ),
-      itemData = itemData
-    )
-
-    accessCondition
-  }
-
   def getAccessConditions(
     itemNumbers: Seq[SierraItemNumber]
   ): Future[Map[SierraItemNumber, AccessCondition]] =
@@ -92,12 +75,12 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
       accessConditions = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
-          entries.map(item => item.id -> getAccessCondition(item)).toMap
+          entries.map(item => item.id -> item.accessCondition).toMap
         case Left(
             SierraItemLookupError.MissingItems(missingItems, itemsReturned)
             ) =>
           warn(s"Item lookup missing items: $missingItems")
-          itemsReturned.map(item => item.id -> getAccessCondition(item)).toMap
+          itemsReturned.map(item => item.id -> item.accessCondition).toMap
         case Left(itemLookupError) =>
           error(s"Item lookup failed: $itemLookupError")
           Map.empty[SierraItemNumber, AccessCondition]
