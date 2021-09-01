@@ -1,12 +1,10 @@
-type Namespace = 'works' | 'images'
-
-type Env = 'local' | 'remote'
+import { Env } from './env'
+import { Namespace } from './namespace'
 
 type Query = string
-
 type Index = string
 
-class SearchTemplate {
+export class SearchTemplate {
   namespace: Namespace
   env: Env
   index: string
