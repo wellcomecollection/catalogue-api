@@ -22,9 +22,9 @@ resource "aws_ecr_repository" "requests" {
 resource "aws_ecr_repository" "requests-new" {
   name = "uk.ac.wellcome/requests"
 
-//  lifecycle {
-//    prevent_destroy = true
-//  }
+  //  lifecycle {
+  //    prevent_destroy = true
+  //  }
 }
 
 
