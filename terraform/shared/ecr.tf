@@ -7,6 +7,7 @@ resource "aws_ecr_repository" "items" {
 }
 
 # This is in the identity account as it is deployed there
+# TODO: Remove this when we are deploying it from identity
 resource "aws_ecr_repository" "requests" {
   provider = aws.identity
 
@@ -16,6 +17,16 @@ resource "aws_ecr_repository" "requests" {
     prevent_destroy = true
   }
 }
+
+# TODO: Rename this (remove -new) by removing and importing state
+resource "aws_ecr_repository" "requests-new" {
+  name = "uk.ac.wellcome/requests"
+
+//  lifecycle {
+//    prevent_destroy = true
+//  }
+}
+
 
 resource "aws_ecr_repository" "search" {
   name = "uk.ac.wellcome/search"

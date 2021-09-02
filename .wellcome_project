@@ -14,22 +14,26 @@ catalogue_api:
     - id: snapshot_generator
       services:
         - id: snapshot-generator
+    # TODO: Add note about this being deployed elsewhere
+    # TODO: It has no service, as we do not wish to deploy it in ECS
+    - id: requests
   name: Catalogue API
   account_id: '756629837203'
   role_arn: arn:aws:iam::756629837203:role/catalogue-ci
   region_name: eu-west-1
 
-requests_api:
-   environments:
-     - id: stage
-       name: Staging
-     - id: prod
-       name: Production
-   image_repositories:
-     - id: requests
-       services:
-         - id: requests
-   name: Requests API
-   account_id: '770700576653'
-   role_arn: 'arn:aws:iam::770700576653:role/identity-ci'
-   region_name: eu-west-1
+# TODO: remove this when we know the new deployment works
+#requests_api:
+#   environments:
+#     - id: stage
+#       name: Staging
+#     - id: prod
+#       name: Production
+#   image_repositories:
+#     - id: requests
+#       services:
+#         - id: requests
+#   name: Requests API
+#   account_id: '770700576653'
+#   role_arn: 'arn:aws:iam::770700576653:role/identity-ci'
+#   region_name: eu-west-1
