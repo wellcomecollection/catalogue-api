@@ -10,19 +10,6 @@ WECO_DEPLOY_IMAGE="wellcome/weco-deploy:5.6.11"
 ROOT=$(git rev-parse --show-toplevel)
 
 IMAGE_ID="$1"
-
-# TODO: This is working out the weco-project project ID, which we could
-# derive programatically from .wellcome_project.
-#case "$IMAGE_ID" in
-#  "search" | "items" | "snapshot_generator")
-#    PROJECT_ID="catalogue_api"
-#    ;;
-#
-#  "requests")
-#    PROJECT_ID="requests_api"
-#    ;;
-#esac
-
 PROJECT_ID="catalogue_api"
 
 docker run --tty --rm \
