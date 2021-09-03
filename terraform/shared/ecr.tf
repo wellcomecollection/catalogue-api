@@ -14,7 +14,6 @@ resource "aws_ecr_repository" "requests" {
   }
 }
 
-
 resource "aws_ecr_repository" "search" {
   name = "uk.ac.wellcome/search"
 
