@@ -20,6 +20,8 @@ else
 fi
 
 docker run --tty --rm \
+  --env AWS_PROFILE \
+  --volume ~/.aws:/root/.aws \
   --volume ~/.sbt:/root/.sbt \
   --volume ~/.ivy2:/root/.ivy2 \
   --volume "$HOST_COURSIER_CACHE:/root/$LINUX_COURSIER_CACHE" \
