@@ -14,22 +14,10 @@ catalogue_api:
     - id: snapshot_generator
       services:
         - id: snapshot-generator
+    # This service is deployed from the Identity AWS Account
+    # See: https://github.com/wellcomecollection/identity
+    - id: requests
   name: Catalogue API
   account_id: '756629837203'
   role_arn: arn:aws:iam::756629837203:role/catalogue-ci
   region_name: eu-west-1
-
-requests_api:
-   environments:
-     - id: stage
-       name: Staging
-     - id: prod
-       name: Production
-   image_repositories:
-     - id: requests
-       services:
-         - id: requests
-   name: Requests API
-   account_id: '770700576653'
-   role_arn: 'arn:aws:iam::770700576653:role/identity-ci'
-   region_name: eu-west-1

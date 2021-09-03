@@ -39,3 +39,30 @@ resource "aws_ecr_repository_policy" "catalogue_access_policy" {
   repository = "uk.ac.wellcome/${local.service_repositories[count.index]}"
   policy     = data.aws_iam_policy_document.allow_catalogue_access.json
 }
+
+# Allow the identity account to read requests ECR image
+
+data "aws_iam_policy_document" "allow_identity_access" {
+  statement {
+    principals {
+      identifiers = [
+        "arn:aws:iam::770700576653:root"
+      ]
+
+      type = "AWS"
+    }
+
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+    ]
+  }
+}
+
+resource "aws_ecr_repository_policy" "identity_access_policy" {
+  count      = length(local.service_repositories)
+  repository = "uk.ac.wellcome/requests"
+  policy     = data.aws_iam_policy_document.allow_identity_access.json
+}
+

@@ -6,10 +6,7 @@ resource "aws_ecr_repository" "items" {
   }
 }
 
-# This is in the identity account as it is deployed there
 resource "aws_ecr_repository" "requests" {
-  provider = aws.identity
-
   name = "uk.ac.wellcome/requests"
 
   lifecycle {
