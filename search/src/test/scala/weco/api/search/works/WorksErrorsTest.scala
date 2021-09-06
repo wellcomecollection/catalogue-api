@@ -1,6 +1,7 @@
 package weco.api.search.works
 
 import org.scalatest.Assertion
+import weco.elasticsearch.IndexConfig
 
 class WorksErrorsTest extends ApiWorksTestBase {
 
@@ -299,7 +300,7 @@ class WorksErrorsTest extends ApiWorksTestBase {
     // to sort on.  Trying to query this index of these will trigger one such exception!
     withWorksApi {
       case (_, routes) =>
-        withEmptyIndex { index =>
+        withLocalElasticsearchIndex(config = IndexConfig.empty) { index =>
           val path = s"$rootPath/works?_index=${index.name}"
           assertJsonResponse(routes, path)(
             Status.InternalServerError ->
