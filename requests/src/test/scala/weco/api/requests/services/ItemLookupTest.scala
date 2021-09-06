@@ -118,10 +118,7 @@ class ItemLookupTest
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
 
-      val workSourceIds = List(
-        createSourceIdentifier,
-        createSourceIdentifier
-      ).sortBy(_.value)
+      val workSourceIds = createSortedSourceIdentifiers(count = 2)
 
       // Enforcing ordering of source identifier value to ensure consistent
       // results when items appear on multiple works
