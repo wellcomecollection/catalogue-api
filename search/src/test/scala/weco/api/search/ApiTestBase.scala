@@ -1,12 +1,9 @@
 package weco.api.search
 
-import com.sksamuel.elastic4s.{ElasticDsl, Index}
-import com.sksamuel.elastic4s.ElasticDsl._
 import org.scalatest.Assertion
-import weco.fixtures.{fixture, Fixture, RandomGenerators}
 import weco.api.search.fixtures.ApiFixture
 
-trait ApiTestBase extends ApiFixture with RandomGenerators {
+trait ApiTestBase extends ApiFixture {
   val publicRootUri = "https://api-testing.local/catalogue/v2"
 
   // This is the path relative to which requests are made on the host,
@@ -68,20 +65,6 @@ trait ApiTestBase extends ApiFixture with RandomGenerators {
       "label": "Gone",
       "description": "This work has been deleted"
     }"""
-
-  def withEmptyIndex[R]: Fixture[Index, R] =
-    fixture[Index, R](
-      create = {
-        val index = createIndex
-        elasticClient
-          .execute {
-            ElasticDsl.createIndex(index.name)
-          }
-        eventuallyIndexExists(index)
-        index
-      },
-      destroy = eventuallyDeleteIndex
-    )
 
   def assertIsBadRequest(path: String, description: String): Assertion =
     withWorksApi {
