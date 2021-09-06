@@ -28,7 +28,15 @@ class ElasticsearchScannerTest
 
   def withIndex[R](shapes: Seq[Shape])(testWith: TestWith[Index, R]): R =
     withLocalElasticsearchIndex(config = IndexConfig.empty) { index =>
-      shapes.foreach { indexObject(index, _).await }
+      shapes.foreach { s =>
+        val resp = elasticClient
+          .execute {
+            indexInto(index.name).doc(toJson(s).get)
+          }
+          .await
+
+        resp.isSuccess shouldBe true
+      }
 
       eventually {
         val response: Response[SearchResponse] = elasticClient.execute {
