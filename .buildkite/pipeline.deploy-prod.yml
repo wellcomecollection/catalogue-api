@@ -11,6 +11,8 @@ steps:
             - AWS_SECRET_ACCESS_KEY
             - AWS_SESSION_TOKEN
             - AWS_REGION=eu-west-1
+    agents:
+      queue: nano
 
   - wait
 
@@ -32,6 +34,8 @@ steps:
               "--environment-id", "prod",
               "--description", $BUILDKITE_BUILD_URL,
               "--confirmation-wait-for", 3600 ]
+    agents:
+      queue: nano
 
   - wait
 
