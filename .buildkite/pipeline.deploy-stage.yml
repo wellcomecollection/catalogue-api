@@ -14,6 +14,8 @@ steps:
               "--environment-id", "stage",
               "--description", $BUILDKITE_BUILD_URL,
               "--confirmation-wait-for", 3600]
+    agents:
+      queue: nano
 
   - wait
 

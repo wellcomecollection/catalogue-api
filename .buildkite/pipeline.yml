@@ -15,6 +15,8 @@ steps:
             - AWS_DEFAULT_REGION=eu-west-1
   - command: .buildkite/scripts/check_vendored_code.py
     label: "check vendored code"
+    agents:
+      queue: nano
   - wait
   - command: .buildkite/scripts/run_job.py display
     label: "display"
