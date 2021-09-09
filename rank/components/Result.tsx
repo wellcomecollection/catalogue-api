@@ -20,7 +20,6 @@ function resultEmoji(pass: boolean): string {
 }
 
 const Result: FC<Props> = ({ pass }) => {
-  const color = pass ? 'green' : 'red'
   return (
     <div
       className={`font-mono bg-${resultColor(

@@ -1,19 +1,17 @@
-import React, { FC, useEffect, useState } from 'react'
-import absoluteUrl from 'next-absolute-url'
-import { namespaces } from '../types/namespace'
-import tests from '../data/tests'
-import { Test, TestResult } from '../types/test'
-import { SearchTemplate } from '../services/search-templates'
-import { groupBy, removeEmpty } from '../utils'
-import Result, { resultColor } from './Result'
-import { Meta } from './Text'
+import { FC, useEffect, useState } from 'react'
 import { H2, H3 } from './H'
+import Result, { resultColor } from './Result'
+import { SearchTemplate, namespaces } from '../types/searchTemplate'
+import { Test, TestResult } from '../types/test'
+import { groupBy, removeEmpty } from '../services/utils'
 
-type NewType = SearchTemplate
+import { Meta } from './Text'
+import absoluteUrl from 'next-absolute-url'
+import tests from '../data/tests'
 
 type TestResultsProps = {
   test: Test
-  templates: NewType[]
+  templates: SearchTemplate[]
 }
 const TestResults: FC<TestResultsProps> = ({ templates, test }) => {
   const [results, setResults] = useState<TestResult[]>([])
@@ -23,8 +21,9 @@ const TestResults: FC<TestResultsProps> = ({ templates, test }) => {
       const resultsReq = templates.map(async (template) => {
         const params = new URLSearchParams(
           removeEmpty({
+            env: template.env,
+            index: template.index,
             testId: test.id,
-            templateId: template.id,
           })
         )
         const data: TestResult = await fetch(
@@ -36,7 +35,7 @@ const TestResults: FC<TestResultsProps> = ({ templates, test }) => {
       setResults(results)
     }
     fetchData()
-  }, [])
+  })
 
   const groupedResults = groupBy(
     // concatenate only the results
@@ -102,7 +101,7 @@ const SearchTemplateTests: FC<Props> = ({ searchTemplates }) => {
               <H2>{namespace}</H2>
               {tests[namespace].map((test) => {
                 return (
-                  <div key={`works-${test.id}`} className="mb-8">
+                  <div key={`${namespace}-${test.id}`} className="mb-8">
                     <H3>{test.label}</H3>
                     <TestResults test={test} templates={namespacedTemplates} />
                   </div>

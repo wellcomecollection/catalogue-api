@@ -1,5 +1,4 @@
-import { Env, isEnv } from '../types/env'
-import { Namespace, isNamespace } from '../types/namespace'
+import { Env, Namespace, isEnv, isNamespace } from '../types/searchTemplate'
 
 import { ParsedUrlQuery } from 'querystring'
 
@@ -20,4 +19,3 @@ export function decodeEnv(v: QueryValue): Env {
   if (!isEnv(v)) throw Error(`${v} is not a valid Env`)
   return v
 }
-

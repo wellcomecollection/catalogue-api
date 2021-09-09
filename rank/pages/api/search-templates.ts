@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+
 import { apiRes } from '../../services/api'
 import service from '../../services/search-templates'
 
