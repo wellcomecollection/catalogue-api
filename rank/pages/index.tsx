@@ -31,13 +31,6 @@ export const Index: NextPage<Props> = ({ searchTemplates }) => {
           Rank is a tool help ensure the continued quality of our search ranking
           whilst helping us iterate to improve it.
         </p>
-        <p className="mb-2">
-          You can examine the performance of candidate algorithms at{' '}
-          <Link href="/dev">
-            <a>/dev</a>
-          </Link>
-          .
-        </p>
       </div>
       <SearchTemplateTests searchTemplates={searchTemplates} />
     </>
