@@ -78,10 +78,9 @@ export async function getTemplates(
     )
 
   const queries = await getQueries()
-
   const templates = ids.map((id) => {
     const [env, index] = id.split('/')
-    const query = queries[getNamespaceFromIndexName(index)]
+    const query = queries[env][getNamespaceFromIndexName(index)]
     return new SearchTemplate(env as Env, index as Index, query)
   })
 
@@ -93,7 +92,7 @@ export async function getTemplate(
   index: Index
 ): Promise<SearchTemplate> {
   const queries = await getQueries()
-  const query = queries[getNamespaceFromIndexName(index)]
+  const query = queries[env][getNamespaceFromIndexName(index)]
   return new SearchTemplate(env, index, query)
 }
 
