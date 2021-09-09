@@ -1,61 +1,46 @@
-import {
-  SearchTemplate,
-  getRemoteTemplates,
-} from '../services/search-templates'
-import { error, info, p, pretty } from './utils'
-import { getNamespaceFromIndexName, namespaces } from '../types/namespace'
+import { error, info } from './utils'
 
-import fs from 'fs'
 import { getRankClient } from '../services/elasticsearch'
 import { hideBin } from 'yargs/helpers'
+import { listIndices } from '../services/search-templates'
+import { parse } from 'path'
 import prompts from 'prompts'
+import { readdirSync } from 'fs'
 import yargs from 'yargs/yargs'
 
 global.fetch = require('node-fetch')
 
 async function go(args: typeof argv) {
   const client = getRankClient()
-  const from =
-    args.from ??
-    (await prompts({
-      type: 'text',
-      name: 'value',
-      message: 'From which file in /data/indices?',
-    }).then(({ value }) => value))
+  const sourceIndices = await listIndices()
 
-  const indexConfig = await import(`../data/indices/${from}.json`)
-    .then((mod) => mod.default)
-    .catch(() =>
-      error(`index config file "/data/indices/${from}.json" does not exist.`)
-    )
+  const configFiles = readdirSync('./data/indices/').filter((fileName) =>
+    fileName.includes('.json')
+  )
+  const from = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'From which config file?',
+    choices: configFiles.map((choice) => ({ title: choice, value: choice })),
+  }).then(({ value }) => value)
 
-  const hasNamespace = Boolean(getNamespaceFromIndexName(from))
-  const namespace = hasNamespace
-    ? getNamespaceFromIndexName(from)
-    : await prompts({
-        type: 'select',
-        name: 'value',
-        message: 'which namespace are you creating this in?',
-        choices: namespaces.map((namespace) => ({
-          title: namespace,
-          value: namespace,
-        })),
-      }).then(({ value }) => value)
+  const destIndex = parse(from).name
+  const indexConfig = await import(`../data/indices/${from}`).then(
+    (mod) => mod.default
+  )
 
-  const index = hasNamespace ? from : `${namespace}-${from}`
-
-  info(`creating index ${from}`)
+  info(`creating index ${destIndex}`)
   const { body: putIndexRes } = await client.indices
     .create({
-      index,
+      index: destIndex,
       body: {
         ...indexConfig,
         settings: {
           ...indexConfig.settings,
           index: {
             ...indexConfig.settings.index,
-            number_of_shards: 1,
-            number_of_replicas: 0,
+            number_of_shards: 2,
+            number_of_replicas: 1,
           },
         },
       },
@@ -64,30 +49,23 @@ async function go(args: typeof argv) {
       return err
     })
 
-  if (putIndexRes.acknowledged) info(`created index ${index}`)
+  if (putIndexRes.acknowledged) info(`created index ${destIndex}`)
   if (!putIndexRes.acknowledged) {
     if (putIndexRes.error.type === 'resource_already_exists_exception') {
-      info(`${index} already exists, moving on...`)
+      info(`${destIndex} already exists, moving on...`)
     } else {
-      error(`couldn't create ${index} with error`)
+      error(`couldn't create ${destIndex} with error`)
       console.info(putIndexRes.error)
     }
   }
 
-  const reindex =
-    args.reindex === undefined
-      ? await prompts({
-          type: 'text',
-          name: 'value',
-          message: `Reindex into ${index}`,
-        }).then(({ value }) => value)
-      : args.reindex
-
-  if (reindex) {
-    const templates = await getRemoteTemplates('prod')
-    const sourceIndex = templates.find(
-      (template) => getNamespaceFromIndexName(template.index) === namespace
-    )?.index
+  if (args.reindex) {
+    const sourceIndex = await prompts({
+      type: 'select',
+      name: 'value',
+      message: 'From which source index?',
+      choices: sourceIndices.map((index) => ({ title: index, value: index })),
+    }).then(({ value }) => value)
 
     if (sourceIndex) {
       const { body: reindexResp } = await client.reindex({
@@ -97,7 +75,7 @@ async function go(args: typeof argv) {
             index: sourceIndex,
           },
           dest: {
-            index,
+            index: destIndex,
           },
         },
       })
@@ -105,7 +83,7 @@ async function go(args: typeof argv) {
       info(`reindex started`)
     } else {
       error(
-        `reindex failed as we couldn't find a source index for ${index} with namespace ${namespace}`
+        `reindex failed as we couldn't find a source index for ${destIndex}`
       )
     }
   }
@@ -113,7 +91,6 @@ async function go(args: typeof argv) {
 
 const argv = yargs(hideBin(process.argv))
   .options({
-    from: { type: 'string' },
     reindex: { type: 'boolean' },
   })
   .parseSync()

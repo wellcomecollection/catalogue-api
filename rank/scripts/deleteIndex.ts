@@ -1,21 +1,23 @@
 import { error, info } from './utils'
 
 import { getRankClient } from '../services/elasticsearch'
+import { listIndices } from '../services/search-templates'
+import prompts from 'prompts'
 
 async function go() {
-  const [indexName] = process.argv.slice(2)
-  if (!indexName) {
-    error(
-      'Please specifiy an `indexName` e.g. yarn deleteIndex works-with-secret-sauce'
-    )
-  }
+  const sourceIndices = await listIndices()
 
-  info(`deleting index ${indexName}`)
+  const index = await prompts({
+    type: 'select',
+    name: 'value',
+    message: 'Which index do you want to delete?',
+    choices: sourceIndices.map((choice) => ({ title: choice, value: choice })),
+  }).then(({ value }) => value)
+
+  info(`deleting index ${index}`)
   const rankClient = getRankClient()
   const { body: deleteIndexRes } = await rankClient.indices
-    .delete({
-      index: indexName,
-    })
+    .delete({ index })
     .catch((err) => {
       error(err.meta.body)
       return err
