@@ -1,9 +1,8 @@
-import { GetStaticProps, NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import { SearchTemplate, SearchTemplateString } from '../types/searchTemplate'
 import { getTemplates, listIndices } from '../services/search-templates'
 
 import { H1 } from '../components/H'
-import Link from 'next/link'
 import SearchTemplateTests from '../components/SearchTemplateTests'
 import { removeEmpty } from '../services/utils'
 
@@ -11,7 +10,7 @@ type Props = {
   searchTemplates: SearchTemplate[]
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const indices = await listIndices()
   const templateStrings = indices.map(
     (index) => `remote/${index}` as SearchTemplateString
