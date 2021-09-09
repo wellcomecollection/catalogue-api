@@ -2,7 +2,7 @@ import { code, info, p, pretty, success } from './utils'
 
 import fs from 'fs'
 import { getRankClient } from '../services/elasticsearch'
-import { getRemoteTemplates } from '../services/search-templates'
+import { getTemplates } from '../services/search-templates'
 import { hideBin } from 'yargs/helpers'
 import yargs from 'yargs/yargs'
 
@@ -11,7 +11,7 @@ global.fetch = require('node-fetch')
 async function go(args: typeof argv) {
   const { name } = args
   const client = getRankClient()
-  const templates = await getRemoteTemplates()
+  const templates = await getTemplates()
   const indices = templates.map((template) => template.index)
 
   info(`Getting settings for index config for ${indices}`)
