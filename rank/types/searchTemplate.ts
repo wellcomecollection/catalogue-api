@@ -21,10 +21,10 @@ export class SearchTemplate {
   query: Query
   string: SearchTemplateString
 
-  constructor(str: SearchTemplateString) {
-    const [env, index] = str.split('/')
-    this.env = env as Env
-    this.index = index as Index
+  constructor(env: Env, index: Index, query: Query) {
+    this.env = env
+    this.index = index
+    this.query = query
     this.namespace = getNamespaceFromIndexName(index)
     this.string = `${this.env}/${this.index}`
   }

@@ -2,6 +2,7 @@ import {
   ApiSearchTemplateRes,
   Env,
   Index,
+  Query,
   SearchTemplate,
   SearchTemplateString,
   envs,
@@ -67,21 +68,23 @@ export async function getQueries() {
 }
 
 export async function getTemplates(
-  ids?: SearchTemplateString[]
+  filterIds?: SearchTemplateString[]
 ): Promise<SearchTemplate[]> {
-  if (!ids) {
-    const indices = await listIndices()
-    ids = envs.flatMap((env) =>
+  const indices = await listIndices()
+  const ids =
+    filterIds ??
+    envs.flatMap((env) =>
       indices.map((index) => `${env}/${index}` as SearchTemplateString)
     )
-  }
+
   const queries = await getQueries()
-  const templates = ids
-    .map((id) => new SearchTemplate(id))
-    .map((template) => {
-      template.query = queries[template.env][template.namespace]
-      return template
-    })
+
+  const templates = ids.map((id) => {
+    const [env, index] = id.split('/')
+    const query = queries[getNamespaceFromIndexName(index)]
+    return new SearchTemplate(env as Env, index as Index, query)
+  })
+
   return templates
 }
 
@@ -90,9 +93,8 @@ export async function getTemplate(
   index: Index
 ): Promise<SearchTemplate> {
   const queries = await getQueries()
-  const template = new SearchTemplate(`${env}/${index}`)
-  template.query = queries[template.env][template.namespace]
-  return template
+  const query = queries[getNamespaceFromIndexName(index)]
+  return new SearchTemplate(env, index, query)
 }
 
 export default getTemplates
