@@ -28,10 +28,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const env = qs.env ? qs.env.toString() : 'local'
   const index = qs.env ? qs.index.toString() : indices[0]
 
-  let data: SearchResponse = {
-    took: 0,
-    hits: { total: { value: 0, relation: 'eq' }, hits: [], max_score: 0 },
-  }
+  let data: SearchResponse = null
   if (query) {
     const { origin } = absoluteUrl(req)
     const reqQs = Object.entries({ query, index, env })
@@ -68,11 +65,13 @@ const Search: NextPage<Props> = ({ data, search, indices }) => {
       />
       <div className="mt-2 flex-grow border-t border-gray-500" />
       <ul className="mt-3 space-y-6">
-        {data.hits.hits.map((hit) => (
-          <li key={hit._id}>
-            <Hit hit={hit} />
-          </li>
-        ))}
+        {data
+          ? data.hits.hits.map((hit) => (
+              <li key={hit._id}>
+                <Hit hit={hit} />
+              </li>
+            ))
+          : null}
       </ul>
     </>
   )
