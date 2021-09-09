@@ -1,11 +1,6 @@
-import { Children, FC, HTMLProps } from 'react'
+import { FC, HTMLProps } from 'react'
 
 type FormProps = HTMLProps<HTMLFormElement>
-type LabelProps = HTMLProps<HTMLLabelElement>
-type SelectProps = HTMLProps<HTMLSelectElement>
-type ButtonProps = HTMLProps<HTMLButtonElement>
-type InputProps = HTMLProps<HTMLInputElement>
-
 const Form: FC<FormProps> = ({ children, ...formProps }) => {
   return (
     <form className="pt-2 pb-2 border-b border-gray-500" {...formProps}>
@@ -14,6 +9,7 @@ const Form: FC<FormProps> = ({ children, ...formProps }) => {
   )
 }
 
+type LabelProps = HTMLProps<HTMLLabelElement>
 const Label: FC<LabelProps> = ({ children, ...labelProps }) => {
   return (
     <label className="inline-block font-bold flex-1" {...labelProps}>
@@ -22,6 +18,7 @@ const Label: FC<LabelProps> = ({ children, ...labelProps }) => {
   )
 }
 
+type SelectProps = HTMLProps<HTMLSelectElement>
 const Select: FC<SelectProps> = ({ children, ...selectProps }) => {
   return (
     <select className="block" {...selectProps}>
@@ -30,6 +27,7 @@ const Select: FC<SelectProps> = ({ children, ...selectProps }) => {
   )
 }
 
+type InputProps = HTMLProps<HTMLInputElement>
 const TextInput: FC<InputProps> = ({ children, ...inputProps }) => {
   return (
     <input
@@ -40,6 +38,7 @@ const TextInput: FC<InputProps> = ({ children, ...inputProps }) => {
   )
 }
 
+type ButtonProps = HTMLProps<HTMLButtonElement>
 const Button: FC<ButtonProps> = ({ children }) => {
   return (
     <button className="bg-pink-500 flex items-center justify-center px-3 py-1 text-white">
