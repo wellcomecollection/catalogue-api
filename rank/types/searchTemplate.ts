@@ -1,4 +1,4 @@
-export const querySources = ['remote', 'local'] as const
+export const querySources = ['production', 'candidate'] as const
 export type QuerySource = typeof querySources[number]
 
 export const namespaces = ['works', 'images'] as const

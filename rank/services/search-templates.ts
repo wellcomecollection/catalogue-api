@@ -21,7 +21,7 @@ export async function listIndices(): Promise<Index[]> {
   return indices
 }
 
-export async function getRemoteQueries() {
+export async function getProductionQueries() {
   const res = await fetch(
     'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
   )
@@ -36,7 +36,7 @@ export async function getRemoteQueries() {
   return queries
 }
 
-export async function getLocalQueries() {
+export async function getCandidateQueries() {
   const imports =
     process.env.NODE_ENV === 'development'
       ? [
@@ -60,8 +60,8 @@ export async function getLocalQueries() {
 
 export async function getQueries() {
   const queries = {
-    local: await getLocalQueries(),
-    remote: await getRemoteQueries(),
+    candidate: await getCandidateQueries(),
+    production: await getProductionQueries(),
   }
   return queries
 }

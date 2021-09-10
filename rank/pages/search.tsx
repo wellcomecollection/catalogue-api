@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const indices = await listIndices()
 
   const query = qs.query ? qs.query.toString() : ''
-  const querySource = qs.querySource ? qs.querySource.toString() : 'local'
+  const querySource = qs.querySource ? qs.querySource.toString() : 'candidate'
   const index = qs.index ? qs.index.toString() : indices[0]
 
   let data: SearchResponse = null
