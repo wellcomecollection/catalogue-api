@@ -1,4 +1,4 @@
-import { Env, Index } from '../types/searchTemplate'
+import { Env, Index, SearchTemplate } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
 
 import { Decoder } from '../types/decoder'
@@ -16,15 +16,22 @@ type Props = {
 }
 
 async function service({ env, index, testId }: Props): Promise<TestResult> {
-  const template = await getTemplate(env, index)
-  const test = tests[template.namespace].find((test) => test.id === testId)
+  const notAugmentedTemplate = await getTemplate(env, index)
+
+  const test = tests[notAugmentedTemplate.namespace].find(
+    (test) => test.id === testId
+  )
   if (!test) throw Error(`No such test ${testId}`)
 
   const { cases, metric, searchTemplateAugmentation } = test
 
-  template.query = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, template.query)
-    : template.query
+  const template = searchTemplateAugmentation
+    ? new SearchTemplate(
+        env,
+        index,
+        searchTemplateAugmentation(test, notAugmentedTemplate.query)
+      )
+    : notAugmentedTemplate
 
   const requests = cases.map((testCase: TestCase) => {
     return {

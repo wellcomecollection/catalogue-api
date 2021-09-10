@@ -2,7 +2,6 @@ import {
   ApiSearchTemplateRes,
   Env,
   Index,
-  Query,
   SearchTemplate,
   SearchTemplateString,
   envs,
