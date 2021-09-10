@@ -88,7 +88,7 @@ class ItemLookup(
         search(index)
           .query(
             boolQuery
-              .must(
+              .filter(
                 termQuery(
                   field = "type",
                   value = "Visible"

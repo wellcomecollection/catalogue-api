@@ -2,7 +2,7 @@ resource "ec_deployment" "catalogue_api" {
   name = "catalogue-api"
 
   region                 = "eu-west-1"
-  version                = "7.14.0"
+  version                = "7.14.1"
   deployment_template_id = "aws-io-optimized-v2"
 
   traffic_filter = local.catalogue_ec_traffic_filter

@@ -29,3 +29,7 @@ output "es_requests_secret_config" {
 output "es_search_secret_config" {
   value = local.es_search_secret_config
 }
+
+output "catalogue_api_ec_version" {
+  value = ec_deployment.catalogue_api.version
+}
