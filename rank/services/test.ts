@@ -36,7 +36,7 @@ async function service({ env, index, testId }: Props): Promise<TestResult> {
   const requests = cases.map((testCase: TestCase) => {
     return {
       id: testCase.query,
-      template_id: template.string,
+      template_id: template.id,
       params: {
         query: testCase.query,
       },
@@ -57,7 +57,7 @@ async function service({ env, index, testId }: Props): Promise<TestResult> {
       metric,
       templates: [
         {
-          id: template.string,
+          id: template.id,
           template: { source: { query: template.query } },
         },
       ],
