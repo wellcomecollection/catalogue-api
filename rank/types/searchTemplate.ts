@@ -1,14 +1,8 @@
 export const envs = ['remote', 'local'] as const
 export type Env = typeof envs[number]
-export function isEnv(v: any): v is Env {
-  return v && envs.includes(v.toString())
-}
 
 export const namespaces = ['works', 'images'] as const
 export type Namespace = typeof namespaces[number]
-export function isNamespace(v: any): v is Namespace {
-  return v && namespaces.includes(v.toString())
-}
 
 export type Query = string | unknown
 export type Index = string

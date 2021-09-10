@@ -1,6 +1,6 @@
 import { Env, Index } from '../types/searchTemplate'
 
-import { Decoder } from '../types/decoder'
+import { Decoder } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
 import { SearchResponse } from '../types/elasticsearch'
 import { decodeString } from './decoder'

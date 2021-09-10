@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-import { Decoder } from '../types/decoder'
+import { Decoder } from './decoder'
 
 export function ok(res: NextApiResponse, content: unknown): void {
   res.statusCode = 200
