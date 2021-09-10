@@ -1,5 +1,5 @@
-import { Env, Query } from './searchTemplate'
 import { Eval, Pass } from '../data/tests/pass'
+import { Query, QuerySource } from './searchTemplate'
 
 import { Metric } from './elasticsearch'
 
@@ -22,7 +22,7 @@ export type Test = {
 
 export type TestResult = {
   index: string
-  env: Env
+  querySource: QuerySource
   label: string
   description: string
   pass: boolean

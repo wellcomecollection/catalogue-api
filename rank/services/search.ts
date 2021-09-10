@@ -1,4 +1,4 @@
-import { Env, Index } from '../types/searchTemplate'
+import { Index, QuerySource } from '../types/searchTemplate'
 
 import { Decoder } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
@@ -9,18 +9,18 @@ import { getTemplate } from './search-templates'
 
 type Props = {
   query: string
-  env: Env
+  querySource: QuerySource
   index: Index
 }
 
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   query: decodeString(q, 'query'),
-  env: decodeString(q, 'env') as Env,
+  querySource: decodeString(q, 'querySource') as QuerySource,
   index: decodeString(q, 'index') as Index,
 })
 
-async function service({ env, index, query }: Props): Promise<SearchResponse> {
-  const template = await getTemplate(env, index)
+async function service({ querySource, index, query }: Props): Promise<SearchResponse> {
+  const template = await getTemplate(querySource, index)
   const searchResp = await getRankClient()
     .searchTemplate<SearchResponse>({
       index: template.index,

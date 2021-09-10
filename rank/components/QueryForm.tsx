@@ -1,16 +1,16 @@
-import { Env, Index, envs } from '../types/searchTemplate'
 import { FC, useEffect, useState } from 'react'
+import { Index, QuerySource, querySources } from '../types/searchTemplate'
 
 type Props = {
   query?: string
   index?: Index
-  env?: Env
+  querySource?: QuerySource
   indices: Index[]
 }
 
 const QueryForm: FC<Props> = (props) => {
   const [query, setQuery] = useState(props.query)
-  const [env, setEnv] = useState<Env>(props.env)
+  const [querySource, setQuerySource] = useState<QuerySource>(props.querySource)
   const [index, setIndex] = useState<Index>(props.index)
 
   useEffect(() => {
@@ -39,16 +39,18 @@ const QueryForm: FC<Props> = (props) => {
 
       <div className="space-x-6 pt-2 pl-1">
         <label className="inline-block font-bold">
-          Env
+          Query
           <select
             className="ml-1"
-            name="env"
-            onChange={(event) => setEnv(event.currentTarget.value as Env)}
-            value={env}
+            name="querySource"
+            onChange={(event) =>
+              setQuerySource(event.currentTarget.value as QuerySource)
+            }
+            value={querySource}
           >
-            {envs.map((env) => (
-              <option key={env} value={env}>
-                {env}
+            {querySources.map((querySource) => (
+              <option key={querySource} value={querySource}>
+                {querySource}
               </option>
             ))}
           </select>
