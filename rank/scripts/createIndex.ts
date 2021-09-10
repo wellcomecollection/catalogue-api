@@ -1,4 +1,4 @@
-import { error, info, success } from './utils'
+import { code, error, info, success } from './utils'
 
 import { getNamespaceFromIndexName } from '../types/searchTemplate'
 import { getRankClient } from '../services/elasticsearch'
@@ -40,7 +40,6 @@ async function go() {
   }).then(({ value }) => value)
 
   const client = getRankClient()
-  info(`Creating index ${destIndex}`)
   const { body: putIndexRes } = await client.indices
     .create({
       index: destIndex,
@@ -90,8 +89,14 @@ async function go() {
         },
       },
     })
-    console.info(reindexResp)
-    info(`reindex started`)
+    if (reindexResp.acknowledged) {
+      success('Reindex started successfully')
+      info('You can monitor the reindex task by running:')
+      code(`  yarn checkTask ${reindexResp.task}`)
+    } else {
+      error('Failed to start reindex with error:')
+      console.info(reindexResp.error)
+    }
   }
 }
 
