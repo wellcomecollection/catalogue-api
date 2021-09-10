@@ -9,7 +9,7 @@ const Hit: FC<Props> = ({ hit }) => {
   const title =
     hit._source.source?.canonicalWork.data.title ?? hit._source.data?.title
   return (
-    <div>
+    <div className="text-black">
       <h2 className="text-2xl font-semibold leading-tight">{title}</h2>
       <div className="text-sm font-semibold">{hit._id}</div>
       <div className="text-sm text-gray-600 pt-0.5">
@@ -29,7 +29,12 @@ const Hit: FC<Props> = ({ hit }) => {
                 <div key={key} className="leading-tight pb-1">
                   <h3 className="font-bold">{key}</h3>
                   {highlight.map((text) => (
-                    <div key={key} dangerouslySetInnerHTML={{ __html: text }} />
+                    <div
+                      key={key}
+                      dangerouslySetInnerHTML={{
+                        __html: text,
+                      }}
+                    />
                   ))}
                 </div>
               )

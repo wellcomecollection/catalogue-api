@@ -1,5 +1,5 @@
 import { error } from 'console'
-import { rankClient } from '../services/elasticsearch'
+import { getRankClient } from '../services/elasticsearch'
 
 async function go() {
   const [indexName] = process.argv.slice(2)
@@ -12,6 +12,8 @@ async function go() {
   const indexConfig = await import(`../data/indices/${indexName}.json`).then(
     (mod) => mod.default
   )
+
+  const rankClient = getRankClient()
 
   const { body: closeIndedxRes } = await rankClient.indices.close({
     index: indexName,

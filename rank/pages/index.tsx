@@ -1,30 +1,23 @@
 import { GetServerSideProps, NextPage } from 'next'
-import { SearchTemplate, getTemplates } from '../services/search-templates'
-import { removeEmpty } from '../utils'
-import SearchTemplateTests from '../components/SearchTemplateTests'
+import { SearchTemplate, SearchTemplateString } from '../types/searchTemplate'
+import { getTemplates, listIndices } from '../services/search-templates'
+
 import { H1 } from '../components/H'
+import SearchTemplateTests from '../components/SearchTemplateTests'
+import { removeEmpty } from '../services/utils'
 
 type Props = {
   searchTemplates: SearchTemplate[]
 }
 
-function get(str: string) {
-  const [env, namespace, index] = str.split('/')
-  return { env, namespace, index }
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  query,
-}) => {
-  const tests = (
-    Array.isArray(query.test) ? query.test : query.test ? [query.test] : []
-  ).map((test) => get(test))
-
-  const searchTemplates = await getTemplates({ prod: true })
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const indices = await listIndices()
+  const templateStrings = indices.map(
+    (index) => `remote/${index}` as SearchTemplateString
+  )
+  const searchTemplates = await getTemplates(templateStrings)
   return {
-    props: removeEmpty({
-      searchTemplates: searchTemplates,
-    }),
+    props: removeEmpty({ searchTemplates }),
   }
 }
 

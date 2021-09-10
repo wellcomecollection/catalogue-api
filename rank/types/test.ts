@@ -1,8 +1,7 @@
+import { Env, Query } from './searchTemplate'
 import { Eval, Pass } from '../data/tests/pass'
 
-import { Env } from './env'
 import { Metric } from './elasticsearch'
-import { SearchTemplateSource } from '../services/search-templates'
 
 export type TestCase = {
   query: string
@@ -18,10 +17,7 @@ export type Test = {
   eval: Eval
   cases: TestCase[]
   metric: Metric
-  searchTemplateAugmentation?: (
-    test: Test,
-    source: SearchTemplateSource
-  ) => SearchTemplateSource
+  searchTemplateAugmentation?: (test: Test, query: Query) => Query
 }
 
 export type TestResult = {

@@ -94,7 +94,7 @@ export type Hit<DocType = Record<string, any>> = {
   matched_queries: string[]
 }
 
-export type SearchResponse = {
+export class SearchResponse {
   took: number
   hits: {
     total: {

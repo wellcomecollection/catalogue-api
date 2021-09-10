@@ -1,41 +1,42 @@
+import { Env, Index, SearchTemplate } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
-import { decodeString } from './decoder'
+
 import { Decoder } from '../types/decoder'
 import { ParsedUrlQuery } from 'querystring'
 import { RankEvalResponse } from '../types/elasticsearch'
+import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
-import getTemplates from './search-templates'
+import { getTemplate } from './search-templates'
 import tests from '../data/tests'
 
 type Props = {
   testId: string
-  templateId: string
+  env: Env
+  index: Index
 }
 
-/**
- * This service takes fetches a test from a `namespace`
- * looks up the query from our local or remote search-templates
- * and generates results from a rank_eval requst
- */
-async function service({ templateId, testId }: Props): Promise<TestResult> {
-  const templates = await getTemplates({ prod: true, local: true })
+async function service({ env, index, testId }: Props): Promise<TestResult> {
+  const notAugmentedTemplate = await getTemplate(env, index)
 
-  const template = templates.find((template) => template.id === templateId)
-  if (!template) throw Error(`Missing template ${templateId}`)
-
-  const test = tests[template.namespace].find((test) => test.id === testId)
+  const test = tests[notAugmentedTemplate.namespace].find(
+    (test) => test.id === testId
+  )
   if (!test) throw Error(`No such test ${testId}`)
 
   const { cases, metric, searchTemplateAugmentation } = test
 
-  const searchTemplate = searchTemplateAugmentation
-    ? searchTemplateAugmentation(test, { ...template.source })
-    : { ...template.source }
+  const template = searchTemplateAugmentation
+    ? new SearchTemplate(
+        env,
+        index,
+        searchTemplateAugmentation(test, notAugmentedTemplate.query)
+      )
+    : notAugmentedTemplate
 
   const requests = cases.map((testCase: TestCase) => {
     return {
       id: testCase.query,
-      template_id: template.id,
+      template_id: template.string,
       params: {
         query: testCase.query,
       },
@@ -49,19 +50,21 @@ async function service({ templateId, testId }: Props): Promise<TestResult> {
     }
   })
 
-  const reqBody = {
-    requests,
-    metric,
-    templates: [{ id: template.id, template: { inline: searchTemplate } }],
-  }
+  const res = await getRankClient().rankEval<RankEvalResponse>({
+    index: template.index,
+    body: {
+      requests,
+      metric,
+      templates: [
+        {
+          id: template.string,
+          template: { source: { query: template.query } },
+        },
+      ],
+    },
+  })
 
-  const { body: rankEvalRes } =
-    await getRankClient().rankEval<RankEvalResponse>({
-      index: template.index,
-      body: reqBody,
-    })
-
-  const results = Object.entries(rankEvalRes.details).map(([query, detail]) => {
+  const results = Object.entries(res.body.details).map(([query, detail]) => {
     const testCase = test.cases.find((c) => c.query === query)
     return {
       query,
@@ -84,7 +87,8 @@ async function service({ templateId, testId }: Props): Promise<TestResult> {
 
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   testId: decodeString(q, 'testId'),
-  templateId: decodeString(q, 'templateId'),
+  env: decodeString(q, 'env') as Env,
+  index: decodeString(q, 'index') as Index,
 })
 
 export default service

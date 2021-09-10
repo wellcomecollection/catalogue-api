@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import service, { decoder } from '../../services/test'
+
 import { apiRes } from '../../services/api'
 
 export default async (
