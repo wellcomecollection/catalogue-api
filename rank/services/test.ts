@@ -1,7 +1,7 @@
 import { Env, Index, SearchTemplate } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
 
-import { Decoder } from '../types/decoder'
+import { Decoder } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
 import { RankEvalResponse } from '../types/elasticsearch'
 import { decodeString } from './decoder'
