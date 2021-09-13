@@ -20,7 +20,7 @@ object SnapshotGeneratorElasticClientBuilder {
     implicit val secretsClient: SecretsManagerClient =
       SecretsManagerClient.builder().build()
 
-    val pipelineDate = ElasticConfig.indexDate
+    val pipelineDate = ElasticConfig.pipelineDate
 
     val hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/private_host"
