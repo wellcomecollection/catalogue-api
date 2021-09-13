@@ -10,10 +10,7 @@ import weco.api.snapshot_generator.services.{
   SnapshotGeneratorWorkerService,
   SnapshotService
 }
-import weco.catalogue.display_model.{
-  ElasticConfig,
-  PipelineClusterElasticConfig
-}
+import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.messaging.sns.NotificationMessage
 import weco.messaging.typesafe.{SNSBuilder, SQSBuilder}
 import weco.storage.typesafe.S3Builder
