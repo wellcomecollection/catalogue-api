@@ -9,7 +9,7 @@ async function go() {
 
   const client = getRankClient()
   const taskResponse = await client.tasks.get({ task_id })
-  console.log(taskResponse.body)
+  console.info(taskResponse.body)
 }
 
 go()

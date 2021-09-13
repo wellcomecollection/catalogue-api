@@ -55,10 +55,6 @@ async function go() {
         },
       },
     })
-    .catch((err) => {
-      return err
-    })
-
   if (putIndexRes.acknowledged) {
     success(`Created index ${destIndex}`)
   } else {
