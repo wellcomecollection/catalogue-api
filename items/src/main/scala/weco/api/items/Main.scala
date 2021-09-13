@@ -54,7 +54,7 @@ object Main extends WellcomeTypesafeApp {
     val router = new ItemsApi(
       itemUpdateService = itemUpdateService,
       workLookup = WorkLookup(elasticClient),
-      index = ElasticConfig.apply().worksIndex
+      index = elasticConfig.worksIndex
     )
 
     val appName = "ItemsApi"
