@@ -14,7 +14,7 @@ import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.display_model.ApiClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
@@ -35,7 +35,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
-    val elasticConfig = ElasticConfig()
+    val elasticConfig = ApiClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
@@ -54,7 +54,7 @@ object Main extends WellcomeTypesafeApp {
     val router = new ItemsApi(
       itemUpdateService = itemUpdateService,
       workLookup = WorkLookup(elasticClient),
-      index = ElasticConfig.apply().worksIndex
+      index = elasticConfig.worksIndex
     )
 
     val appName = "ItemsApi"

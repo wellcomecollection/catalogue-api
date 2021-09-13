@@ -3,7 +3,7 @@ package weco.api.snapshot_generator.config.builders
 import com.sksamuel.elastic4s.ElasticClient
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.elasticsearch.ElasticClientBuilder
 
 object SnapshotGeneratorElasticClientBuilder {
@@ -20,7 +20,7 @@ object SnapshotGeneratorElasticClientBuilder {
     implicit val secretsClient: SecretsManagerClient =
       SecretsManagerClient.builder().build()
 
-    val pipelineDate = ElasticConfig.indexDate
+    val pipelineDate = PipelineClusterElasticConfig.pipelineDate
 
     val hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/private_host"

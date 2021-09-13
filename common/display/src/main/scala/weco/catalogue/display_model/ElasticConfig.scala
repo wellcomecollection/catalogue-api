@@ -9,14 +9,48 @@ case class ElasticConfig(
   imagesIndex: Index
 )
 
-object ElasticConfig {
+trait ElasticConfigBase {
   // We use this to share config across API applications
   // i.e. The API and the snapshot generator.
-  val indexDate = "2021-08-16a"
+  //
+  // We have two Elasticsearch clusters we use:
+  //
+  //    - the pipeline cluster.  We create a new cluster per-pipeline, and this is
+  //      where new documents are written by the ingestor.
+  //    - the API cluster.  We have a single such cluster, and it gets updates from
+  //      the pipeline cluster using cross-cluster-replication (CCR).
+  //
+  // Generally we use the same index name in the pipeline cluster and the API cluster,
+  // e.g.
+  //
+  //      pipeline: works-indexed-2021-08-16
+  //      api:      works-indexed-2021-08-16
+  //
+  // But sometimes we need to create new indexes within an existing pipeline,
+  // e.g. if cross-cluster replication breaks.  Then we append a suffix to the name
+  // in the API cluster, but keep the existing name in the pipeline cluster, e.g.
+  //
+  //      pipeline: works-indexed-2021-08-16
+  //      api:      works-indexed-2021-08-16a
+  //
+  // The different config allows applications to choose whether they want to read
+  // from the pipeline cluster or the API cluster.
+  val pipelineDate = "2021-08-16"
+  val suffix = "a"
+}
 
+object PipelineClusterElasticConfig extends ElasticConfigBase {
   def apply(): ElasticConfig =
     ElasticConfig(
-      worksIndex = Index(s"works-indexed-$indexDate"),
-      imagesIndex = Index(s"images-indexed-$indexDate")
+      worksIndex = Index(s"works-indexed-$pipelineDate"),
+      imagesIndex = Index(s"images-indexed-$pipelineDate")
+    )
+}
+
+object ApiClusterElasticConfig extends ElasticConfigBase {
+  def apply(): ElasticConfig =
+    ElasticConfig(
+      worksIndex = Index(s"works-indexed-$pipelineDate$suffix"),
+      imagesIndex = Index(s"images-indexed-$pipelineDate$suffix")
     )
 }
