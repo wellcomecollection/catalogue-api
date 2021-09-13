@@ -25,8 +25,9 @@ def get_local_date():
     )
     config_text = config_file.read()
     config_file.close()
-    date = re.findall('val indexDate = "(.*)"', config_text)[0]
-    return date
+    date = re.findall('val pipelineDate = "(.*)"', config_text)[0]
+    suffix = re.findall('val suffix = "(.*)"', config_text)[0]
+    return date + suffix
 
 
 def get_remote_latest_internal_model(session, date):
