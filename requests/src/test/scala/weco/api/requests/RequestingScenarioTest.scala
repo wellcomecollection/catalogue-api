@@ -208,11 +208,7 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(
-            uri = Uri(
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-            )
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -459,10 +455,7 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(
-            uri =
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -642,10 +635,7 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(
-            uri =
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -742,10 +732,7 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(
-            uri =
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
@@ -842,10 +829,7 @@ class RequestingScenarioTest
           )
         ),
         (
-          HttpRequest(
-            uri =
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -997,10 +981,7 @@ class RequestingScenarioTest
           createListHoldsResponse(patronNumber, items = Seq())
         ),
         (
-          HttpRequest(
-            uri =
-              s"http://sierra:1234/v5/items?id=$itemNumber&fields=deleted,fixedFields,holdCount,suppressed"
-          ),
+          createItemRequest(itemNumber),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
