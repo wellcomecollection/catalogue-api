@@ -16,8 +16,7 @@ trait SierraServiceFixture extends HttpFixtures with Akka {
     val fieldList = SierraSource.requiredItemFields.mkString(",")
 
     HttpRequest(
-      uri =
-        s"http://sierra:1234/v5/items?id=$itemNumber&fields=$fieldList"
+      uri = s"http://sierra:1234/v5/items?id=$itemNumber&fields=$fieldList"
     )
   }
 
