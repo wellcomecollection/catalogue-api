@@ -200,11 +200,11 @@ class SierraRequestsServiceTest
 
       it("rejects a hold when the Sierra API errors indicating such") {
         val patron = SierraPatronNumber("1234567")
-        val item = createSierraItemNumber
+        val itemNumber = createSierraItemNumber
         val sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
           ontologyType = "Item",
-          value = item.withCheckDigit
+          value = itemNumber.withCheckDigit
         )
 
         val responses = Seq(
@@ -217,7 +217,7 @@ class SierraRequestsServiceTest
                 s"""
                    |{
                    |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
+                   |  "recordNumber": ${itemNumber.withoutCheckDigit},
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -258,11 +258,7 @@ class SierraRequestsServiceTest
             )
           ),
           (
-            HttpRequest(
-              uri = Uri(
-                f"http://sierra:1234/v5/items?id=$item&fields=deleted,fixedFields,holdCount,suppressed"
-              )
-            ),
+            createItemRequest(itemNumber),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -272,7 +268,7 @@ class SierraRequestsServiceTest
                   |  "start": 0,
                   |  "entries": [
                   |    {
-                  |      "id": "$item",
+                  |      "id": "$itemNumber",
                   |      "deletedDate": "2001-01-01",
                   |      "deleted": false,
                   |      "suppressed": true,

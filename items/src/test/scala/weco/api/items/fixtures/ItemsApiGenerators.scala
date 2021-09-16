@@ -2,16 +2,10 @@ package weco.api.items.fixtures
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, Uri}
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  LocationType,
-  PhysicalLocation
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.sierra.http.SierraSource
 import weco.sierra.models.identifiers.SierraItemNumber
 
 trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
@@ -34,12 +28,17 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
                         |}
                         |""".stripMargin
 
-  def sierraItemRequest(itemNumber: SierraItemNumber): HttpRequest =
+
+
+  def sierraItemRequest(itemNumber: SierraItemNumber): HttpRequest = {
+    val fieldList = SierraSource.requiredItemFields.mkString(",")
+
     HttpRequest(
       uri = Uri(
-        f"http://sierra:1234/v5/items?id=${itemNumber.withoutCheckDigit}&fields=deleted,fixedFields,holdCount,suppressed"
+        f"http://sierra:1234/v5/items?id=${itemNumber.withoutCheckDigit}&fields=$fieldList"
       )
     )
+  }
 
   def sierraItemResponse(
     sierraItemNumber: SierraItemNumber,
