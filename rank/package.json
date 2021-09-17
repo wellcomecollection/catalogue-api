@@ -4,6 +4,7 @@
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
+    "test": "jest --detectOpenHandles",
     "getIndexConfigs": "ts-node -r dotenv/config ./scripts/getIndexConfigs",
     "putIndexConfig": "ts-node -r dotenv/config ./scripts/putIndexConfig",
     "publishQuery": "ts-node -r dotenv/config ./scripts/publishQuery",
