@@ -33,7 +33,7 @@ async function go() {
 
   const namespace = getNamespaceFromIndexName(sourceIndex)
   info(`Your new index should start with it's namespace "works-" or "images-"`)
-  const destIndex = await prompts({
+  const remoteIndex = await prompts({
     type: 'text',
     name: 'value',
     message: `What should your new index be called?`,
