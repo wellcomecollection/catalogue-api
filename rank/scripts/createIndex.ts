@@ -32,7 +32,7 @@ async function go() {
   )
 
   const namespace = getNamespaceFromIndexName(sourceIndex)
-  info(`Your new index should have a name like ${namespace}-with-secret-sauce`)
+  info(`Your new index should start with it's namespace "works-" or "images-"`)
   const destIndex = await prompts({
     type: 'text',
     name: 'value',
