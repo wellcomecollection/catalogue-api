@@ -24,7 +24,7 @@ async function go() {
     type: 'select',
     name: 'value',
     message: 'Which index config are you working from?',
-    choices: validIndices.map((choice) => ({ title: choice, value: choice })),
+    choices: validIndices.map((index) => ({ title: index, value: index })),
   }).then(({ value }) => value)
 
   const indexConfig = await import(`../data/indices/${sourceIndex}.json`).then(
