@@ -8,7 +8,7 @@ import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
 import weco.api.search.swagger.SwaggerDocs
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.display_model.ApiClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
@@ -29,7 +29,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     val elasticClient = ElasticBuilder.buildElasticClient(config)
-    val elasticConfig = ElasticConfig()
+    val elasticConfig = ApiClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
     CheckModel.checkModel(elasticConfig.imagesIndex.name)(elasticClient)

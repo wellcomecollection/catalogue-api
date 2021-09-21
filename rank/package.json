@@ -4,9 +4,11 @@
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
+
     "checkTask": "ts-node -r dotenv/config ./scripts/checkTask",
     "getConfig": "ts-node -r dotenv/config ./scripts/getConfig",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
+    "test": "jest --detectOpenHandles",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
     "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
   },

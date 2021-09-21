@@ -32,7 +32,7 @@ export const Dev: NextPage<Props> = ({ searchTemplates }) => {
             <H3>{namespace}</H3>
             <ol key={namespace} className="list-decimal list-inside ml-5">
               {namespacedTemplates.map((template) => {
-                return <li key={template.string}>{template.string}</li>
+                return <li key={template.id}>{template.id}</li>
               })}
             </ol>
           </div>
