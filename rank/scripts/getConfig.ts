@@ -13,7 +13,7 @@ async function go() {
     type: 'multiselect',
     name: 'value',
     message: 'Which index configs do you want to fetch?',
-    choices: allIndices.map((index) => ({ title: index, value: index })),
+    choices: remoteIndices.map((index) => ({ title: index, value: index })),
   }).then(({ value }) => value)
 
   if (indices.length > 0) {

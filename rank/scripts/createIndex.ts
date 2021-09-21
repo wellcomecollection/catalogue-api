@@ -27,11 +27,11 @@ async function go() {
     choices: validIndices.map((index) => ({ title: index, value: index })),
   }).then(({ value }) => value)
 
-  const indexConfig = await import(`../data/indices/${sourceIndex}.json`).then(
+  const indexConfig = await import(`../data/indices/${localIndex}.json`).then(
     (mod) => mod.default
   )
 
-  const namespace = getNamespaceFromIndexName(sourceIndex)
+  const namespace = getNamespaceFromIndexName(localIndex)
   info(`Your new index should start with it's namespace "works-" or "images-"`)
   const remoteIndex = await prompts({
     type: 'text',
@@ -40,28 +40,27 @@ async function go() {
   }).then(({ value }) => value)
 
   const client = getRankClient()
-  const { body: putIndexRes } = await client.indices
-    .create({
-      index: destIndex,
-      body: {
-        ...indexConfig,
-        settings: {
-          ...indexConfig.settings,
-          index: {
-            ...indexConfig.settings.index,
-            number_of_shards: 1,
-            number_of_replicas: 1,
-          },
+  const { body: putIndexRes } = await client.indices.create({
+    index: remoteIndex,
+    body: {
+      ...indexConfig,
+      settings: {
+        ...indexConfig.settings,
+        index: {
+          ...indexConfig.settings.index,
+          number_of_shards: 1,
+          number_of_replicas: 1,
         },
       },
-    })
+    },
+  })
   if (putIndexRes.acknowledged) {
-    success(`Created index ${destIndex}`)
+    success(`Created index ${remoteIndex}`)
   } else {
     if (putIndexRes.error.type === 'resource_already_exists_exception') {
-      error(`${destIndex} already exists!`)
+      error(`${remoteIndex} already exists!`)
     } else {
-      error(`Couldn't create ${destIndex} with error:`)
+      error(`Couldn't create ${remoteIndex} with error:`)
       console.info(putIndexRes.error)
     }
   }
@@ -69,7 +68,7 @@ async function go() {
   const reindex = await prompts({
     type: 'confirm',
     name: 'value',
-    message: `Do you want to start a reindex from ${sourceIndex} into ${destIndex}?`,
+    message: `Do you want to start a reindex from ${localIndex} into ${remoteIndex}?`,
     initial: true,
   }).then(({ value }) => value)
 
@@ -78,10 +77,10 @@ async function go() {
       wait_for_completion: false,
       body: {
         source: {
-          index: sourceIndex,
+          index: localIndex,
         },
         dest: {
-          index: destIndex,
+          index: remoteIndex,
         },
       },
     })
