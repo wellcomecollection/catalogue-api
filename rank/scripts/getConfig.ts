@@ -8,7 +8,7 @@ import prompts from 'prompts'
 global.fetch = require('node-fetch')
 
 async function go() {
-  const allIndices = await listIndices()
+  const remoteIndices = await listIndices()
   const indices: string[] = await prompts({
     type: 'multiselect',
     name: 'value',
