@@ -20,7 +20,7 @@ async function go() {
     configFiles.includes(value)
   )
 
-  const sourceIndex = await prompts({
+  const localIndex = await prompts({
     type: 'select',
     name: 'value',
     message: 'Which index config are you working from?',
