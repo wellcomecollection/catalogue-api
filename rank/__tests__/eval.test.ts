@@ -1,18 +1,23 @@
-import tests from '../data/tests'
 import {
-  getRemoteTemplates,
   SearchTemplate,
-} from '../services/search-templates'
-import testService from '../services/test'
-import { getNamespaceFromIndexName } from '../types/namespace'
+  SearchTemplateString,
+  getNamespaceFromIndexName,
+} from '../types/searchTemplate'
+import { getTemplates, listIndices } from '../services/search-templates'
+
 import { TestResult } from '../types/test'
+import testService from '../services/test'
+import tests from '../data/tests'
 
 global.fetch = require('node-fetch')
 const { works, images } = tests
 
 let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
-  searchTemplates = await getRemoteTemplates('prod')
+  const indices = await listIndices()
+  searchTemplates = await getTemplates(
+    indices.map((i) => `remote/${i}` as SearchTemplateString)
+  )
 })
 
 declare global {
@@ -53,8 +58,9 @@ test.each(works)('works.$id', async ({ id }) => {
   )
 
   const result = await testService({
+    env: template.env,
+    index: template.index,
     testId: id,
-    templateId: template.id,
   })
 
   result.results.forEach((result) => {
@@ -68,8 +74,9 @@ test.each(images)('images.$id', async ({ id }) => {
   )
 
   const result = await testService({
+    env: template.env,
+    index: template.index,
     testId: id,
-    templateId: template.id,
   })
 
   result.results.forEach((result) => {
