@@ -13,14 +13,14 @@ export class SearchTemplate {
   namespace: Namespace
   queryEnv: QueryEnv
   query: Query
-  string: SearchTemplateString
+  id: SearchTemplateString
 
   constructor(queryEnv: QueryEnv, index: Index, query: Query) {
     this.queryEnv = queryEnv
     this.index = index
     this.query = query
     this.namespace = getNamespaceFromIndexName(index)
-    this.string = `${this.queryEnv}/${this.index}`
+    this.id = `${this.queryEnv}/${this.index}`
   }
 }
 

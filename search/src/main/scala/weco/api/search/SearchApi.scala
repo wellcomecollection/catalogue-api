@@ -150,8 +150,8 @@ class SearchApi(
     get {
       complete(
         Map(
-          "worksIndex" -> ElasticConfig().worksIndex.name,
-          "imagesIndex" -> ElasticConfig().imagesIndex.name
+          "worksIndex" -> elasticConfig.worksIndex.name,
+          "imagesIndex" -> elasticConfig.imagesIndex.name
         )
       )
     }

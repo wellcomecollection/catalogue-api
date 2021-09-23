@@ -40,7 +40,7 @@ async function service({
   const requests = cases.map((testCase: TestCase) => {
     return {
       id: testCase.query,
-      template_id: template.string,
+      template_id: template.id,
       params: {
         query: testCase.query,
       },
@@ -61,7 +61,7 @@ async function service({
       metric,
       templates: [
         {
-          id: template.string,
+          id: template.id,
           template: { source: { query: template.query } },
         },
       ],

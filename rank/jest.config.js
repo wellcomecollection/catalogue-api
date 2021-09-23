@@ -3,4 +3,5 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.test.ts'],
   setupFiles: ['dotenv/config'],
+  setupFilesAfterEnv: ['./jest.setup.js'],
 }

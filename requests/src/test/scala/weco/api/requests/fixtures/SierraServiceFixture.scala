@@ -6,10 +6,20 @@ import weco.api.requests.services.SierraRequestsService
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
+import weco.sierra.http.SierraSource
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SierraServiceFixture extends HttpFixtures with Akka {
+  def createItemRequest(itemNumber: SierraItemNumber): HttpRequest = {
+    val fieldList = SierraSource.requiredItemFields.mkString(",")
+
+    HttpRequest(
+      uri = s"http://sierra:1234/v5/items?id=$itemNumber&fields=$fieldList"
+    )
+  }
+
   def withSierraService[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     holdLimit: Int = 10

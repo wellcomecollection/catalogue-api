@@ -35,6 +35,7 @@ steps:
     label: "snapshot generator"
   - wait
   - command: .buildkite/scripts/tag_commit_as_latest.py
+    if: build.branch == "main"
     label: "tag commit as latest"
     agents:
       queue: nano
