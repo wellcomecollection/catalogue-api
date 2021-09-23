@@ -1,5 +1,5 @@
-import path from 'path'
 import chalk from 'chalk'
+import path from 'path'
 
 const info = (message: string) => {
   console.log(chalk.blue(message))
@@ -10,11 +10,11 @@ const code = (message: string) => {
 }
 
 const success = (message: string) => {
-  console.log(chalk.green(message))
+  console.log(chalk.green('✔ ' + message))
 }
 
 const error = (message: string) => {
-  console.error(chalk.red(message))
+  console.error('✘ ' + chalk.red(message))
   process.exit(1)
 }
 
