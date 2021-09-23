@@ -1,26 +1,26 @@
-export const querySources = ['production', 'candidate'] as const
-export type QuerySource = typeof querySources[number]
+export const queryEnvs = ['production', 'candidate'] as const
+export type QueryEnv = typeof queryEnvs[number]
 
 export const namespaces = ['works', 'images'] as const
 export type Namespace = typeof namespaces[number]
 
 export type Query = string | unknown
 export type Index = string
-export type SearchTemplateString = `${QuerySource}/${Index}`
+export type SearchTemplateString = `${QueryEnv}/${Index}`
 
 export class SearchTemplate {
   index: Index
   namespace: Namespace
-  querySource: QuerySource
+  queryEnv: QueryEnv
   query: Query
   string: SearchTemplateString
 
-  constructor(querySource: QuerySource, index: Index, query: Query) {
-    this.querySource = querySource
+  constructor(queryEnv: QueryEnv, index: Index, query: Query) {
+    this.queryEnv = queryEnv
     this.index = index
     this.query = query
     this.namespace = getNamespaceFromIndexName(index)
-    this.string = `${this.querySource}/${this.index}`
+    this.string = `${this.queryEnv}/${this.index}`
   }
 }
 

@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next'
-import { Index, Namespace, QuerySource } from '../types/searchTemplate'
+import { Index, Namespace, QueryEnv } from '../types/searchTemplate'
 
 import Hit from '../components/Hit'
 import QueryForm from '../components/QueryForm'
@@ -13,7 +13,7 @@ type Props = {
     query?: string
     namespace?: Namespace
     index?: Index
-    querySource: QuerySource
+    queryEnv: QueryEnv
   }
   indices: Index[]
 }
@@ -25,13 +25,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const indices = await listIndices()
 
   const query = qs.query ? qs.query.toString() : ''
-  const querySource = qs.querySource ? qs.querySource.toString() : 'candidate'
+  const queryEnv = qs.queryEnv ? qs.queryEnv.toString() : 'candidate'
   const index = qs.index ? qs.index.toString() : indices[0]
 
   let data: SearchResponse = null
   if (query) {
     const { origin } = absoluteUrl(req)
-    const reqQs = Object.entries({ query, index, querySource })
+    const reqQs = Object.entries({ query, index, queryEnv })
       .filter(([, v]) => Boolean(v))
       .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
       .join('&')
@@ -46,7 +46,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       search: JSON.parse(
         JSON.stringify({
           query,
-          querySource,
+          queryEnv,
           index,
         })
       ),
@@ -59,7 +59,7 @@ const Search: NextPage<Props> = ({ data, search, indices }) => {
     <>
       <QueryForm
         query={search.query}
-        querySource={search.querySource}
+        queryEnv={search.queryEnv}
         index={search.index}
         indices={indices}
       />

@@ -1,16 +1,16 @@
 import { FC, useEffect, useState } from 'react'
-import { Index, QuerySource, querySources } from '../types/searchTemplate'
+import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
 
 type Props = {
   query?: string
   index?: Index
-  querySource?: QuerySource
+  queryEnv?: QueryEnv
   indices: Index[]
 }
 
 const QueryForm: FC<Props> = (props) => {
   const [query, setQuery] = useState(props.query)
-  const [querySource, setQuerySource] = useState<QuerySource>(props.querySource)
+  const [queryEnv, setQueryEnv] = useState<QueryEnv>(props.queryEnv)
   const [index, setIndex] = useState<Index>(props.index)
 
   useEffect(() => {
@@ -42,15 +42,15 @@ const QueryForm: FC<Props> = (props) => {
           Query
           <select
             className="ml-1"
-            name="querySource"
+            name="queryEnv"
             onChange={(event) =>
-              setQuerySource(event.currentTarget.value as QuerySource)
+              setQueryEnv(event.currentTarget.value as QueryEnv)
             }
-            value={querySource}
+            value={queryEnv}
           >
-            {querySources.map((querySource) => (
-              <option key={querySource} value={querySource}>
-                {querySource}
+            {queryEnvs.map((queryEnv) => (
+              <option key={queryEnv} value={queryEnv}>
+                {queryEnv}
               </option>
             ))}
           </select>

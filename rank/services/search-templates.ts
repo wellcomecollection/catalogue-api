@@ -1,11 +1,11 @@
 import {
   ApiSearchTemplateRes,
   Index,
-  QuerySource,
+  QueryEnv,
   SearchTemplate,
   SearchTemplateString,
   getNamespaceFromIndexName,
-  querySources,
+  queryEnvs,
 } from '../types/searchTemplate'
 
 import { getRankClient } from './elasticsearch'
@@ -72,27 +72,27 @@ export async function getTemplates(
   const indices = await listIndices()
   const ids =
     filterIds ??
-    querySources.flatMap((querySource) =>
-      indices.map((index) => `${querySource}/${index}` as SearchTemplateString)
+    queryEnvs.flatMap((queryEnv) =>
+      indices.map((index) => `${queryEnv}/${index}` as SearchTemplateString)
     )
 
   const queries = await getQueries()
   const templates = ids.map((id) => {
-    const [querySource, index] = id.split('/')
-    const query = queries[querySource][getNamespaceFromIndexName(index)]
-    return new SearchTemplate(querySource as QuerySource, index as Index, query)
+    const [queryEnv, index] = id.split('/')
+    const query = queries[queryEnv][getNamespaceFromIndexName(index)]
+    return new SearchTemplate(queryEnv as QueryEnv, index as Index, query)
   })
 
   return templates
 }
 
 export async function getTemplate(
-  querySource: QuerySource,
+  queryEnv: QueryEnv,
   index: Index
 ): Promise<SearchTemplate> {
   const queries = await getQueries()
-  const query = queries[querySource][getNamespaceFromIndexName(index)]
-  return new SearchTemplate(querySource, index, query)
+  const query = queries[queryEnv][getNamespaceFromIndexName(index)]
+  return new SearchTemplate(queryEnv, index, query)
 }
 
 export default getTemplates
