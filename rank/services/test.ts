@@ -1,4 +1,4 @@
-import { Env, Index, SearchTemplate } from '../types/searchTemplate'
+import { Index, QueryEnv, SearchTemplate } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
 
 import { Decoder } from './decoder'
@@ -11,12 +11,16 @@ import tests from '../data/tests'
 
 type Props = {
   testId: string
-  env: Env
+  queryEnv: QueryEnv
   index: Index
 }
 
-async function service({ env, index, testId }: Props): Promise<TestResult> {
-  const notAugmentedTemplate = await getTemplate(env, index)
+async function service({
+  queryEnv,
+  index,
+  testId,
+}: Props): Promise<TestResult> {
+  const notAugmentedTemplate = await getTemplate(queryEnv, index)
 
   const test = tests[notAugmentedTemplate.namespace].find(
     (test) => test.id === testId
@@ -27,7 +31,7 @@ async function service({ env, index, testId }: Props): Promise<TestResult> {
 
   const template = searchTemplateAugmentation
     ? new SearchTemplate(
-        env,
+        queryEnv,
         index,
         searchTemplateAugmentation(test, notAugmentedTemplate.query)
       )
@@ -76,7 +80,7 @@ async function service({ env, index, testId }: Props): Promise<TestResult> {
 
   return {
     index: template.index,
-    env: template.env,
+    queryEnv: template.queryEnv,
     label: test.label,
     description: test.description,
     namespace: template.namespace,
@@ -87,7 +91,7 @@ async function service({ env, index, testId }: Props): Promise<TestResult> {
 
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   testId: decodeString(q, 'testId'),
-  env: decodeString(q, 'env') as Env,
+  queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
   index: decodeString(q, 'index') as Index,
 })
 

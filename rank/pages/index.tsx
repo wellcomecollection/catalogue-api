@@ -13,7 +13,7 @@ type Props = {
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const indices = await listIndices()
   const templateStrings = indices.map(
-    (index) => `remote/${index}` as SearchTemplateString
+    (index) => `production/${index}` as SearchTemplateString
   )
   const searchTemplates = await getTemplates(templateStrings)
   return {

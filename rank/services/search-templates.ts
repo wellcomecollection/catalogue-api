@@ -1,11 +1,11 @@
 import {
   ApiSearchTemplateRes,
-  Env,
   Index,
+  QueryEnv,
   SearchTemplate,
   SearchTemplateString,
-  envs,
   getNamespaceFromIndexName,
+  queryEnvs,
 } from '../types/searchTemplate'
 
 import { getRankClient } from './elasticsearch'
@@ -21,7 +21,7 @@ export async function listIndices(): Promise<Index[]> {
   return indices
 }
 
-export async function getRemoteQueries() {
+export async function getProductionQueries() {
   const res = await fetch(
     'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
   )
@@ -36,7 +36,7 @@ export async function getRemoteQueries() {
   return queries
 }
 
-export async function getLocalQueries() {
+export async function getCandidateQueries() {
   const imports =
     process.env.NODE_ENV === 'development'
       ? [
@@ -60,8 +60,8 @@ export async function getLocalQueries() {
 
 export async function getQueries() {
   const queries = {
-    local: await getLocalQueries(),
-    remote: await getRemoteQueries(),
+    candidate: await getCandidateQueries(),
+    production: await getProductionQueries(),
   }
   return queries
 }
@@ -72,27 +72,27 @@ export async function getTemplates(
   const indices = await listIndices()
   const ids =
     filterIds ??
-    envs.flatMap((env) =>
-      indices.map((index) => `${env}/${index}` as SearchTemplateString)
+    queryEnvs.flatMap((queryEnv) =>
+      indices.map((index) => `${queryEnv}/${index}` as SearchTemplateString)
     )
 
   const queries = await getQueries()
   const templates = ids.map((id) => {
-    const [env, index] = id.split('/')
-    const query = queries[env][getNamespaceFromIndexName(index)]
-    return new SearchTemplate(env as Env, index as Index, query)
+    const [queryEnv, index] = id.split('/')
+    const query = queries[queryEnv][getNamespaceFromIndexName(index)]
+    return new SearchTemplate(queryEnv as QueryEnv, index as Index, query)
   })
 
   return templates
 }
 
 export async function getTemplate(
-  env: Env,
+  queryEnv: QueryEnv,
   index: Index
 ): Promise<SearchTemplate> {
   const queries = await getQueries()
-  const query = queries[env][getNamespaceFromIndexName(index)]
-  return new SearchTemplate(env, index, query)
+  const query = queries[queryEnv][getNamespaceFromIndexName(index)]
+  return new SearchTemplate(queryEnv, index, query)
 }
 
 export default getTemplates
