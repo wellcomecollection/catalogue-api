@@ -525,9 +525,19 @@ class WorksIncludesTest
       withWorksApi {
         case (worksIndex, routes) =>
           val work1 = indexedWork(canonicalId = canonicalId1)
-            .notes(List(GeneralNote("GN1"), FundingInformation("FI1")))
+            .notes(
+              List(
+                Note(contents = "GN1", noteType = NoteType.GeneralNote),
+                Note(contents = "FI1", noteType = NoteType.FundingInformation),
+              )
+            )
           val work2 = indexedWork(canonicalId = canonicalId2)
-            .notes(List(GeneralNote("GN2.1"), GeneralNote("GN2.2")))
+            .notes(
+              List(
+                Note(contents = "GN2.1", noteType = NoteType.GeneralNote),
+                Note(contents = "GN2.2", noteType = NoteType.GeneralNote),
+              )
+            )
 
           insertIntoElasticsearch(worksIndex, work1, work2)
           assertJsonResponse(routes, s"$rootPath/works?include=notes") {
@@ -595,7 +605,12 @@ class WorksIncludesTest
       withWorksApi {
         case (worksIndex, routes) =>
           val work =
-            indexedWork().notes(List(GeneralNote("A"), GeneralNote("B")))
+            indexedWork().notes(
+              List(
+                Note(contents = "A", noteType = NoteType.GeneralNote),
+                Note(contents = "B", noteType = NoteType.GeneralNote),
+              )
+            )
           insertIntoElasticsearch(worksIndex, work)
           assertJsonResponse(
             routes,
