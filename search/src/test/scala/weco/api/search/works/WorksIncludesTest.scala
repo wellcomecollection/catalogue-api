@@ -528,14 +528,14 @@ class WorksIncludesTest
             .notes(
               List(
                 Note(contents = "GN1", noteType = NoteType.GeneralNote),
-                Note(contents = "FI1", noteType = NoteType.FundingInformation),
+                Note(contents = "FI1", noteType = NoteType.FundingInformation)
               )
             )
           val work2 = indexedWork(canonicalId = canonicalId2)
             .notes(
               List(
                 Note(contents = "GN2.1", noteType = NoteType.GeneralNote),
-                Note(contents = "GN2.2", noteType = NoteType.GeneralNote),
+                Note(contents = "GN2.2", noteType = NoteType.GeneralNote)
               )
             )
 
@@ -608,7 +608,7 @@ class WorksIncludesTest
             indexedWork().notes(
               List(
                 Note(contents = "A", noteType = NoteType.GeneralNote),
-                Note(contents = "B", noteType = NoteType.GeneralNote),
+                Note(contents = "B", noteType = NoteType.GeneralNote)
               )
             )
           insertIntoElasticsearch(worksIndex, work)

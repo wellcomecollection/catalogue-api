@@ -262,7 +262,7 @@ class DisplayWorkSerialisationTest
       List(
         Note(contents = "A", noteType = NoteType.GeneralNote),
         Note(contents = "B", noteType = NoteType.FundingInformation),
-        Note(contents = "C", noteType = NoteType.GeneralNote),
+        Note(contents = "C", noteType = NoteType.GeneralNote)
       )
     )
 

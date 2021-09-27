@@ -20,8 +20,10 @@ class ImagesService(
 
   private val nVisuallySimilarImages = 5
 
-  implicit val decoder: Decoder[Image[ImageState.Indexed]] = Implicits._decImageIndexed
-  implicit val decoderV: Decoder[Image[ImageState.Indexed]] = Implicits._decImageIndexed
+  implicit val decoder: Decoder[Image[ImageState.Indexed]] =
+    Implicits._decImageIndexed
+  implicit val decoderV: Decoder[Image[ImageState.Indexed]] =
+    Implicits._decImageIndexed
 
   override protected def createAggregations(
     searchResponse: SearchResponse
