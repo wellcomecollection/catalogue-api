@@ -77,7 +77,7 @@ class ElasticsearchServiceTest
     val analysis = Analysis(analyzers = List.empty)
     val indexConfig = IndexConfig(mapping, analysis)
 
-    withLocalIndex(indexConfig) { index =>
+    withLocalElasticsearchIndex(config = indexConfig) { index =>
       val result = elasticClient.execute(
         bulk(
           thingsToIndex.map { thing =>

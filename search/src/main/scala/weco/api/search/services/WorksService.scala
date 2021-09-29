@@ -15,12 +15,10 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
   val ec: ExecutionContext
 ) extends SearchService[Work[Indexed], Work.Visible[Indexed], WorkAggregations, WorkSearchOptions] {
 
-  // TODO: This isn't ideal, but it's the only way I've been able to get
-  // this to compile.  We should move towards named implicits here.
   implicit val decoder: Decoder[Work[Indexed]] =
-    Implicits._dec68
+    Implicits._decWorkIndexed
   implicit val decoderV: Decoder[Work.Visible[Indexed]] =
-    Implicits._dec69
+    Implicits._decWorkVisibleIndexed
 
   override protected val requestBuilder
     : ElasticsearchRequestBuilder[WorkSearchOptions] =
