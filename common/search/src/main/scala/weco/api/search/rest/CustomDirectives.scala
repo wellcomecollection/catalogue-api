@@ -25,7 +25,7 @@ trait CustomDirectives extends FutureDirectives {
         )
     }
 
-  def elasticError(documentType: String, err: ElasticsearchError, usingDefaultIndex: Boolean): Route = {
+  def elasticError(documentType: String, err: ElasticsearchError, usingDefaultIndex: Boolean = true): Route = {
     val displayError =
       err match {
 
