@@ -36,7 +36,7 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
   // of times we have to create it.
   lazy val swaggerDocs = new SwaggerDocs(apiConfig)
 
-  private def withRouter[R](
+  def withRouter[R](
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
     val router = new SearchApi(

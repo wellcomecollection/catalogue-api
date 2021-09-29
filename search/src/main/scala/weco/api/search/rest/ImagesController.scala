@@ -32,8 +32,9 @@ class ImagesController(
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
-          val index =
-            params._index.map(Index(_)).getOrElse(imagesIndex)
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(imagesIndex)
+
           imagesService
             .findById(id)(index)
             .flatMap {
@@ -61,7 +62,14 @@ class ImagesController(
                     )
                   }
 
-              case Left(err) => Future.successful(elasticError("Image", err))
+              case Left(err) =>
+                Future.successful(
+                  elasticError(
+                    documentType = "Image",
+                    err = err,
+                    usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+                  )
+                )
             }
         }
       }
@@ -72,12 +80,20 @@ class ImagesController(
       withFuture {
         transactFuture("GET /images") {
           val searchOptions = params.searchOptions(apiConfig)
-          val index =
-            params._index.map(Index(_)).getOrElse(imagesIndex)
+
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(imagesIndex)
+
           imagesService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError("Image", err)
+              case Left(err) =>
+                elasticError(
+                  documentType = "Image",
+                  err = err,
+                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+                )
+
               case Right(resultList) =>
                 extractPublicUri { uri =>
                   complete(

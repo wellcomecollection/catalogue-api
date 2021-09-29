@@ -1,6 +1,5 @@
 package weco.api.search.models
 
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.display_model.models.{
   ImageAggregationRequest,
   SortRequest,
