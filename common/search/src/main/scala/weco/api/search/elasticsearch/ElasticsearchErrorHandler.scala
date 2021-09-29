@@ -64,7 +64,7 @@ object ElasticsearchErrorHandler extends Logging {
   //
   // If a user doesn't specify an index, e.g. /works, and the default index doesn't exist,
   // we want to return a 500 error -- something is wrong with our defaults.
-  implicit class RouteOps[T](result: Either[ElasticsearchError, T]) {
+  implicit class ErrorRouteOps[T](result: Either[ElasticsearchError, T]) {
     def mapNotFound(usingDefaultIndex: Boolean): Either[ElasticsearchError, T] =
       result match {
         case Left(IndexNotFoundError(elasticError)) if usingDefaultIndex =>
