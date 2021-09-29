@@ -27,15 +27,18 @@ class ImagesController(
     with Tracing {
 
   import DisplayResultList.encoder
+  import weco.api.search.elasticsearch.ElasticsearchErrorHandler._
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
-          val index =
-            params._index.map(Index(_)).getOrElse(imagesIndex)
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(imagesIndex)
+
           imagesService
             .findById(id)(index)
+            .map(_.mapNotFound(usingDefaultIndex = userSpecifiedIndex.isEmpty))
             .flatMap {
               case Right(image) =>
                 getSimilarityMetrics(params.include)
@@ -72,10 +75,13 @@ class ImagesController(
       withFuture {
         transactFuture("GET /images") {
           val searchOptions = params.searchOptions(apiConfig)
-          val index =
-            params._index.map(Index(_)).getOrElse(imagesIndex)
+
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(imagesIndex)
+
           imagesService
             .listOrSearch(index, searchOptions)
+            .map(_.mapNotFound(usingDefaultIndex = userSpecifiedIndex.isEmpty))
             .map {
               case Left(err) => elasticError("Image", err)
               case Right(resultList) =>
