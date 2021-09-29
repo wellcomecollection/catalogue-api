@@ -62,13 +62,14 @@ class ImagesController(
                     )
                   }
 
-              case Left(err) => Future.successful(
-                elasticError(
-                  documentType = "Image",
-                  err = err,
-                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+              case Left(err) =>
+                Future.successful(
+                  elasticError(
+                    documentType = "Image",
+                    err = err,
+                    usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+                  )
                 )
-              )
             }
         }
       }

@@ -2,7 +2,12 @@ package weco.api.search.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
-import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchErrorHandler, IndexNotFoundError, UnknownError}
+import weco.api.search.elasticsearch.{
+  ElasticsearchError,
+  ElasticsearchErrorHandler,
+  IndexNotFoundError,
+  UnknownError
+}
 import weco.api.search.models.ApiConfig
 import weco.http.FutureDirectives
 
@@ -25,7 +30,11 @@ trait CustomDirectives extends FutureDirectives {
         )
     }
 
-  def elasticError(documentType: String, err: ElasticsearchError, usingUserSpecifiedIndex: Boolean = false): Route = {
+  def elasticError(
+    documentType: String,
+    err: ElasticsearchError,
+    usingUserSpecifiedIndex: Boolean = false
+  ): Route = {
     val displayError =
       err match {
 
@@ -36,10 +45,16 @@ trait CustomDirectives extends FutureDirectives {
         // If a user doesn't specify an index, e.g. /works, and the default index doesn't exist,
         // we want to return a 500 error -- something is wrong with our defaults.
         case IndexNotFoundError(underlying) if !usingUserSpecifiedIndex =>
-          ElasticsearchErrorHandler.buildDisplayError(documentType, e = UnknownError(underlying))
+          ElasticsearchErrorHandler.buildDisplayError(
+            documentType,
+            e = UnknownError(underlying)
+          )
 
         case otherError =>
-          ElasticsearchErrorHandler.buildDisplayError(documentType, e = otherError)
+          ElasticsearchErrorHandler.buildDisplayError(
+            documentType,
+            e = otherError
+          )
       }
 
     complete(displayError.httpStatus -> displayError)

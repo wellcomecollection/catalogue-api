@@ -4,7 +4,9 @@ import org.scalatest.Assertion
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.catalogue.display_model.ElasticConfig
 
-class ImagesErrorsTest extends ApiImagesTestBase with TableDrivenPropertyChecks {
+class ImagesErrorsTest
+    extends ApiImagesTestBase
+    with TableDrivenPropertyChecks {
   describe("returns a 404 for missing resources") {
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
@@ -16,19 +18,20 @@ class ImagesErrorsTest extends ApiImagesTestBase with TableDrivenPropertyChecks 
   }
 
   it("returns a 404 error if the user asks for a non-existent index") {
-    withImagesApi { case (_, routes) =>
-      val indexName = createIndexName
+    withImagesApi {
+      case (_, routes) =>
+        val indexName = createIndexName
 
-      val testPaths = Table(
-        "path",
-        s"$rootPath/images?_index=$indexName",
-        s"$rootPath/images?_index=$indexName&query=fish",
-        s"$rootPath/images/$createCanonicalId?_index=$indexName"
-      )
+        val testPaths = Table(
+          "path",
+          s"$rootPath/images?_index=$indexName",
+          s"$rootPath/images?_index=$indexName&query=fish",
+          s"$rootPath/images/$createCanonicalId?_index=$indexName"
+        )
 
-      forAll(testPaths) { path =>
-        assertIsNotFound(path, description = s"There is no index $indexName")
-      }
+        forAll(testPaths) { path =>
+          assertIsNotFound(path, description = s"There is no index $indexName")
+        }
     }
   }
 

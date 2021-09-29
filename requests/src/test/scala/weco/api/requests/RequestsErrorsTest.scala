@@ -7,7 +7,12 @@ import weco.api.requests.fixtures.RequestsApiFixture
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 
-class RequestsErrorsTest extends AnyFunSpec with Matchers with RequestsApiFixture with ElasticsearchFixtures with IdentifiersGenerators {
+class RequestsErrorsTest
+    extends AnyFunSpec
+    with Matchers
+    with RequestsApiFixture
+    with ElasticsearchFixtures
+    with IdentifiersGenerators {
   it("returns a 500 error if the catalogue index doesn't exist") {
     withRequestsApi(elasticClient, index = createIndex) { _ =>
       val path = "/users/1234567/item-requests"
