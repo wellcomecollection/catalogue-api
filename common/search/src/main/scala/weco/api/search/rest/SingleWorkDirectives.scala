@@ -16,7 +16,7 @@ trait SingleWorkDirectives extends CustomDirectives {
   ) {
     def mapVisible(
       f: Work.Visible[WorkState.Indexed] => Future[Route],
-      usingDefaultIndex: Boolean
+      usingUserSpecifiedIndex: Boolean = false
     ): Future[Route] =
       work.map {
         case Right(work: Work.Visible[Indexed]) =>
@@ -31,7 +31,7 @@ trait SingleWorkDirectives extends CustomDirectives {
           elasticError(
             documentType = "Work",
             err = err,
-            usingDefaultIndex = usingDefaultIndex
+            usingUserSpecifiedIndex = usingUserSpecifiedIndex
           )
       }
   }

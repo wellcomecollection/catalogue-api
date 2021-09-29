@@ -66,7 +66,7 @@ class ImagesController(
                 elasticError(
                   documentType = "Image",
                   err = err,
-                  usingDefaultIndex = userSpecifiedIndex.isEmpty
+                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
                 )
               )
             }
@@ -90,7 +90,7 @@ class ImagesController(
                 elasticError(
                   documentType = "Image",
                   err = err,
-                  usingDefaultIndex = userSpecifiedIndex.isEmpty
+                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
                 )
 
               case Right(resultList) =>

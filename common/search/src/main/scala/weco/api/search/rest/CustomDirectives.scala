@@ -25,7 +25,7 @@ trait CustomDirectives extends FutureDirectives {
         )
     }
 
-  def elasticError(documentType: String, err: ElasticsearchError, usingDefaultIndex: Boolean = true): Route = {
+  def elasticError(documentType: String, err: ElasticsearchError, usingUserSpecifiedIndex: Boolean = false): Route = {
     val displayError =
       err match {
 
@@ -35,7 +35,7 @@ trait CustomDirectives extends FutureDirectives {
         //
         // If a user doesn't specify an index, e.g. /works, and the default index doesn't exist,
         // we want to return a 500 error -- something is wrong with our defaults.
-        case IndexNotFoundError(underlying) if usingDefaultIndex =>
+        case IndexNotFoundError(underlying) if !usingUserSpecifiedIndex =>
           ElasticsearchErrorHandler.buildDisplayError(documentType, e = UnknownError(underlying))
 
         case otherError =>

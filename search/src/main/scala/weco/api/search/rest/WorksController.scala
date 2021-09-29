@@ -39,7 +39,7 @@ class WorksController(
                 elasticError(
                   documentType = "Work",
                   err = err,
-                  usingDefaultIndex = userSpecifiedIndex.isEmpty
+                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
                 )
 
               case Right(resultList) =>
@@ -74,7 +74,7 @@ class WorksController(
                 Future.successful(
                   complete(DisplayWork(work, includes))
                 ),
-              usingDefaultIndex = userSpecifiedIndex.isEmpty
+              usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
             )
         }
       }
