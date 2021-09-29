@@ -22,7 +22,6 @@ class WorksController(
     extends Tracing
     with SingleWorkDirectives {
   import DisplayResultList.encoder
-  import weco.api.search.elasticsearch.ElasticsearchErrorHandler._
 
   def multipleWorks(params: MultipleWorksParams): Route =
     get {
@@ -35,9 +34,14 @@ class WorksController(
 
           worksService
             .listOrSearch(index, searchOptions)
-            .map(_.mapNotFound(usingDefaultIndex = userSpecifiedIndex.isEmpty))
             .map {
-              case Left(err) => elasticError("Work", err)
+              case Left(err) =>
+                elasticError(
+                  documentType = "Work",
+                  err = err,
+                  usingDefaultIndex = userSpecifiedIndex.isEmpty
+                )
+
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(
@@ -65,12 +69,13 @@ class WorksController(
 
           worksService
             .findById(id)(index)
-            .map(_.mapNotFound(usingDefaultIndex = userSpecifiedIndex.isEmpty))
-            .mapVisible { work: Work.Visible[Indexed] =>
-              Future.successful(
-                complete(DisplayWork(work, includes))
-              )
-            }
+            .mapVisible(
+              (work: Work.Visible[Indexed]) =>
+                Future.successful(
+                  complete(DisplayWork(work, includes))
+                ),
+              usingDefaultIndex = userSpecifiedIndex.isEmpty
+            )
         }
       }
     }

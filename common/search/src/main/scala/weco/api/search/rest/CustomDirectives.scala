@@ -2,13 +2,9 @@ package weco.api.search.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
-import weco.api.search.elasticsearch.{
-  ElasticsearchError,
-  ElasticsearchErrorHandler
-}
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchErrorHandler, IndexNotFoundError, UnknownError}
 import weco.api.search.models.ApiConfig
 import weco.http.FutureDirectives
-import weco.http.models.DisplayError
 
 trait CustomDirectives extends FutureDirectives {
   implicit val apiConfig: ApiConfig
@@ -29,11 +25,23 @@ trait CustomDirectives extends FutureDirectives {
         )
     }
 
-  def elasticError(documentType: String, err: ElasticsearchError): Route =
-    error(
-      ElasticsearchErrorHandler.buildDisplayError(documentType, err)
-    )
+  def elasticError(documentType: String, err: ElasticsearchError, usingDefaultIndex: Boolean): Route = {
+    val displayError =
+      err match {
 
-  private def error(err: DisplayError): Route =
-    complete(err.httpStatus -> err)
+        // If a user specifies an index explicitly, e.g. /works?_index=my-great-index, and
+        // that index doesn't exist, we want to return a 404 error -- they've asked for
+        // something that can't be found.
+        //
+        // If a user doesn't specify an index, e.g. /works, and the default index doesn't exist,
+        // we want to return a 500 error -- something is wrong with our defaults.
+        case IndexNotFoundError(underlying) if usingDefaultIndex =>
+          ElasticsearchErrorHandler.buildDisplayError(documentType, e = UnknownError(underlying))
+
+        case otherError =>
+          ElasticsearchErrorHandler.buildDisplayError(documentType, e = otherError)
+      }
+
+    complete(displayError.httpStatus -> displayError)
+  }
 }
