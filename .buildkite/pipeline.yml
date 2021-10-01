@@ -20,13 +20,13 @@ steps:
     agents:
       queue: nano
   - wait
+
   - command: .buildkite/scripts/run_job.py display
     label: "display"
   - command: .buildkite/scripts/run_job.py search_common
     label: "search_common"
   - command: .buildkite/scripts/run_job.py stacks
     label: "stacks_common"
-  - wait
   - command: .buildkite/scripts/run_job.py search
     label: "Search API (Works & Images)"
   - command: .buildkite/scripts/run_job.py items
@@ -35,7 +35,9 @@ steps:
     label: "Stacks: Requests API"
   - command: .buildkite/scripts/run_job.py snapshot_generator
     label: "snapshot generator"
+
   - wait
+
   - command: .buildkite/scripts/tag_commit_as_latest.py
     if: build.branch == "main"
     label: "tag commit as latest"
