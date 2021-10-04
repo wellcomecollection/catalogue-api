@@ -50,8 +50,7 @@ class ElasticsearchServiceTest
     port = 9200,
     protocol = "http",
     username = "elastic",
-    password = "changeme",
-    compressionEnabled = false
+    password = "changeme"
   )
 
   def randomThing: ExampleThing = ExampleThing(
