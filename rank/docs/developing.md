@@ -25,7 +25,7 @@ We often want to test against indices that have new or altered analyzers, mappin
 
 To see the results of your changes, select your new index on `/dev` or `/search`.
 
-You might need to edit the query to fit the new mapping, following [these instructions](./queries.md).
+You might need to edit the query to fit the new mapping, following [these instructions](#queries).
 
 Before deploying your changes, you'll need to make sure the scala version of the mapping used by the pipeline matches the JSON version you've been testing. You should copy your JSON mapping over to [the catalogue pipeline repo](catalogue-pipeline-mappings), and edit the scala until [the tests](search-tests) pass.
 
