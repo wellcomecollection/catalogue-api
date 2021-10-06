@@ -1,9 +1,11 @@
 package weco.api.search.works
 
 import org.scalatest.Assertion
+import org.scalatest.prop.TableDrivenPropertyChecks
+import weco.catalogue.display_model.ElasticConfig
 import weco.elasticsearch.IndexConfig
 
-class WorksErrorsTest extends ApiWorksTestBase {
+class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
   val includesString =
     "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
@@ -287,6 +289,36 @@ class WorksErrorsTest extends ApiWorksTestBase {
         assertIsNotFound(
           s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
           description = s"There is no index $indexName"
+        )
+      }
+    }
+  }
+
+  it("returns a 500 error if the default index doesn't exist") {
+    val elasticConfig = ElasticConfig(
+      worksIndex = createIndex,
+      imagesIndex = createIndex
+    )
+
+    val testPaths = Table(
+      "path",
+      s"$rootPath/works",
+      s"$rootPath/works?query=fish",
+      s"$rootPath/works/$createCanonicalId"
+    )
+
+    withRouter(elasticConfig) { routes =>
+      forAll(testPaths) { path =>
+        assertJsonResponse(routes, path)(
+          Status.InternalServerError ->
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 500,
+               |  "label": "Internal Server Error"
+               |}
+            """.stripMargin
         )
       }
     }

@@ -21,7 +21,7 @@ const TestResults: FC<TestResultsProps> = ({ templates, test }) => {
       const resultsReq = templates.map(async (template) => {
         const params = new URLSearchParams(
           removeEmpty({
-            env: template.env,
+            queryEnv: template.queryEnv,
             index: template.index,
             testId: test.id,
           })
@@ -51,7 +51,7 @@ const TestResults: FC<TestResultsProps> = ({ templates, test }) => {
     <table className="table-auto w-full max-w-lg bg-pink-50">
       <thead className="sr-only">
         <tr>
-          {['query', results.map(({ env }) => env)].map((label) => {
+          {['query', results.map(({ queryEnv }) => queryEnv)].map((label) => {
             return (
               <th key={`${label}`} className="text-left font-normal">
                 <Meta>{label}</Meta>

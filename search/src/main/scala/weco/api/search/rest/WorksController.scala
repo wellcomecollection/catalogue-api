@@ -2,11 +2,11 @@ package weco.api.search.rest
 
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
-import weco.catalogue.display_model.models.Implicits._
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models.ApiConfig
 import weco.api.search.services.WorksService
+import weco.catalogue.display_model.models.Implicits._
 import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
@@ -28,12 +28,20 @@ class WorksController(
       withFuture {
         transactFuture("GET /works") {
           val searchOptions = params.searchOptions(apiConfig)
-          val index =
-            params._index.map(Index(_)).getOrElse(worksIndex)
+
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(worksIndex)
+
           worksService
             .listOrSearch(index, searchOptions)
             .map {
-              case Left(err) => elasticError("Work", err)
+              case Left(err) =>
+                elasticError(
+                  documentType = "Work",
+                  err = err,
+                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+                )
+
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
                   complete(
@@ -54,18 +62,20 @@ class WorksController(
     get {
       withFuture {
         transactFuture("GET /works/{workId}") {
-          val index =
-            params._index.map(Index(_)).getOrElse(worksIndex)
+          val userSpecifiedIndex = params._index.map(Index(_))
+          val index = userSpecifiedIndex.getOrElse(worksIndex)
 
           val includes = params.include.getOrElse(WorksIncludes.none)
 
           worksService
             .findById(id)(index)
-            .mapVisible { work: Work.Visible[Indexed] =>
-              Future.successful(
-                complete(DisplayWork(work, includes))
-              )
-            }
+            .mapVisible(
+              (work: Work.Visible[Indexed]) =>
+                Future.successful(
+                  complete(DisplayWork(work, includes))
+                ),
+              usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+            )
         }
       }
     }

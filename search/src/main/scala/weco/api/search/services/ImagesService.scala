@@ -20,10 +20,10 @@ class ImagesService(
 
   private val nVisuallySimilarImages = 5
 
-  // TODO: This isn't ideal, but it's the only way I've been able to get
-  // this to compile.  We should move towards named implicits here.
-  implicit val decoder: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
-  implicit val decoderV: Decoder[Image[ImageState.Indexed]] = Implicits._dec67
+  implicit val decoder: Decoder[Image[ImageState.Indexed]] =
+    Implicits._decImageIndexed
+  implicit val decoderV: Decoder[Image[ImageState.Indexed]] =
+    Implicits._decImageIndexed
 
   override protected def createAggregations(
     searchResponse: SearchResponse

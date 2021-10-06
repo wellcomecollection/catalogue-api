@@ -259,7 +259,11 @@ class DisplayWorkSerialisationTest
     "includes 'notes' if the notes include is present, with similar notes grouped together"
   ) {
     val work = indexedWork().notes(
-      List(GeneralNote("A"), FundingInformation("B"), GeneralNote("C"))
+      List(
+        Note(contents = "A", noteType = NoteType.GeneralNote),
+        Note(contents = "B", noteType = NoteType.FundingInformation),
+        Note(contents = "C", noteType = NoteType.GeneralNote)
+      )
     )
 
     val expectedJson = s"""

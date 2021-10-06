@@ -50,8 +50,7 @@ class ElasticsearchServiceTest
     port = 9200,
     protocol = "http",
     username = "elastic",
-    password = "changeme",
-    compressionEnabled = false
+    password = "changeme"
   )
 
   def randomThing: ExampleThing = ExampleThing(
@@ -77,7 +76,7 @@ class ElasticsearchServiceTest
     val analysis = Analysis(analyzers = List.empty)
     val indexConfig = IndexConfig(mapping, analysis)
 
-    withLocalIndex(indexConfig) { index =>
+    withLocalElasticsearchIndex(config = indexConfig) { index =>
       val result = elasticClient.execute(
         bulk(
           thingsToIndex.map { thing =>

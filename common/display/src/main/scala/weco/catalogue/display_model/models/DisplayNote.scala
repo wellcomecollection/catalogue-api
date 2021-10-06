@@ -31,7 +31,10 @@ case class DisplayNoteType(
 object DisplayNote {
 
   def apply(note: Note): DisplayNote =
-    DisplayNote(List(note.content), DisplayNoteType(note))
+    DisplayNote(
+      contents = List(note.contents),
+      noteType = DisplayNoteType(note)
+    )
 
   def merge(notes: List[DisplayNote]): List[DisplayNote] =
     notes
@@ -46,62 +49,5 @@ object DisplayNote {
 object DisplayNoteType {
 
   def apply(note: Note): DisplayNoteType =
-    note match {
-      case GeneralNote(_) =>
-        DisplayNoteType("general-note", "Notes")
-      case BibliographicalInformation(_) =>
-        DisplayNoteType("bibliographic-info", "Bibliographic information")
-      case FundingInformation(_) =>
-        DisplayNoteType("funding-info", "Funding information")
-      case TimeAndPlaceNote(_) =>
-        DisplayNoteType("time-and-place-note", "Time and place note")
-      case CreditsNote(_) =>
-        DisplayNoteType("credits", "Creator/production credits")
-      case ContentsNote(_) =>
-        DisplayNoteType("contents", "Contents")
-      case CiteAsNote(_) =>
-        DisplayNoteType("reference", "Reference")
-      case DissertationNote(_) =>
-        DisplayNoteType("dissertation-note", "Dissertation note")
-      case LocationOfOriginalNote(_) =>
-        DisplayNoteType("location-of-original", "Location of original")
-      case LocationOfDuplicatesNote(_) =>
-        DisplayNoteType("location-of-duplicates", "Location of duplicates")
-      case BindingInformation(_) =>
-        DisplayNoteType("binding-detail", "Binding detail")
-      case BiographicalNote(_) =>
-        DisplayNoteType("biographical-note", "Biographical note")
-      case ReproductionNote(_) =>
-        DisplayNoteType("reproduction-note", "Reproduction note")
-      case TermsOfUse(_) =>
-        DisplayNoteType("terms-of-use", "Terms of use")
-      case CopyrightNote(_) =>
-        DisplayNoteType("copyright-note", "Copyright note")
-      case PublicationsNote(_) =>
-        DisplayNoteType("publication-note", "Publications note")
-      case ExhibitionsNote(_) =>
-        DisplayNoteType("exhibitions-note", "Exhibitions note")
-      case AwardsNote(_) =>
-        DisplayNoteType("awards-note", "Awards note")
-      case OwnershipNote(_) =>
-        DisplayNoteType("ownership-note", "Ownership note")
-      case AcquisitionNote(_) =>
-        DisplayNoteType("acquisition-note", "Acquisition note")
-      case AppraisalNote(_) =>
-        DisplayNoteType("appraisal-note", "Appraisal note")
-      case AccrualsNote(_) =>
-        DisplayNoteType("accruals-note", "Accruals note")
-      case RelatedMaterial(_) =>
-        DisplayNoteType("related-material", "Related material")
-      case FindingAids(_) =>
-        DisplayNoteType("finding-aids", "Finding aids")
-      case ArrangementNote(_) =>
-        DisplayNoteType("arrangement-note", "Arrangement")
-      case LetteringNote(_) =>
-        DisplayNoteType("lettering-note", "Lettering note")
-      case LanguageNote(_) =>
-        DisplayNoteType("language-note", "Language note")
-      case ReferencesNote(_) =>
-        DisplayNoteType("references-note", "References note")
-    }
+    DisplayNoteType(id = note.noteType.id, label = note.noteType.label)
 }
