@@ -17,6 +17,6 @@ It uses [elasticsearch's `rank_eval` API](https://www.elastic.co/guide/en/elasti
 
 To improve search relevance, you might want to
 
-- [develop the queries](./docs/developing.md#query)
-- [develop the mappings](./docs/developing.md#mapping)
-- [create new tests](./docs/developing.md#tests)
+- [develop the queries](./docs/developing.md#queries)
+- [develop the mappings](./docs/developing.md#mappings)
+- [create new tests](./docs/developing.md#test-cases)
