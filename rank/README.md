@@ -1,4 +1,4 @@
-# Rank :dart:
+# Rank 🎯
 
 Rank allows us to confidently test incremental changes to search relevance on [wellcomecollection.org/collections](https://wellcomecollection.org/collections), without degrading the existing experience.
 
