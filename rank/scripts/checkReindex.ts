@@ -1,8 +1,7 @@
 import { info, success } from './utils'
 
+import cliProgress from 'cli-progress'
 import { getRankClient } from '../services/elasticsearch'
-
-const cliProgress = require('cli-progress')
 
 async function go() {
   const client = getRankClient()
@@ -11,11 +10,11 @@ async function go() {
   })
 
   const task_id = reindexTasks.body.split(' ')[1]
-  const taskResponse = await client.tasks.get({ task_id })
+  var taskResponse = await client.tasks.get({ task_id })
   if (taskResponse.body.completed) {
-    success('Complete!')
+    success('Reindex complete!')
   } else {
-    info('Still working!\n')
+    info(`Still working on ${taskResponse.body.task.description}\n`)
 
     const progress = new cliProgress.SingleBar(
       {},
@@ -25,8 +24,18 @@ async function go() {
       taskResponse.body.task.status.total,
       taskResponse.body.task.status.created
     )
-    progress.stop()
-    info('')
+
+    const timer = setInterval(async function () {
+      taskResponse = await client.tasks.get({ task_id })
+      progress.increment()
+      progress.update(taskResponse.body.task.status.created)
+      if (taskResponse.body.task.status.created >= progress.getTotal()) {
+        clearInterval(timer)
+        progress.stop()
+        info('')
+        success('Reindex complete!')
+      }
+    }, 10000) // refresh progress every 10s
   }
 }
 
