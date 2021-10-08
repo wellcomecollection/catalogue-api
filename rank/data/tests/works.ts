@@ -12,6 +12,16 @@ const tests: Test[] = [
     eval: equalTo1,
     cases: [
       {
+        query: '2013i',
+        ratings: ['djmjw2cu'],
+        description: 'Reference number as ID',
+      },
+      {
+        query: '2599i',
+        ratings: ['xxskepr5'],
+        description: 'Reference number as ID',
+      },
+      {
         query: 'Cassils Time lapse',
         ratings: ['ftqy78zj'],
         description: 'Contributor and title in the same query',
@@ -123,7 +133,7 @@ const tests: Test[] = [
         query: 'عرف',
         ratings: ['a9w79fzj'],
         description: 'Matches stemmed arabic text',
-      }
+      },
     ],
     metric: {
       recall: {
