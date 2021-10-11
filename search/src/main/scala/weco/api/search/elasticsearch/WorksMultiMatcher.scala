@@ -113,7 +113,7 @@ case object WorksMultiMatcher {
             (None, "data.physicalDescription"),
             (None, "data.language.label"),
             (None, "data.edition"),
-            (None, "data.notes.content"),
+            (None, "data.notes.contents"),
             (None, "data.lettering")
           ).map(f => FieldWithOptionalBoost(f._2, f._1.map(_.toDouble)))
         )
