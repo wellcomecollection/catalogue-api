@@ -9,7 +9,12 @@ async function go() {
     actions: 'indices:data/write/reindex',
   })
 
+  // the task response comes back as a whitespace delimeted string like:
+  //   action  task_id  parent_task_id  type  start_time  timestamp  running_time  ip  node
+  // from which we extract the task_id
+  // see https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-tasks.html
   const task_id = reindexTasks.body.split(' ')[1]
+
   var taskResponse = await client.tasks.get({ task_id })
   if (taskResponse.body.completed) {
     success('Reindex complete!')
