@@ -93,7 +93,7 @@
             "data.physicalDescription",
             "data.language.label",
             "data.edition",
-            "data.notes.content",
+            "data.notes.contents",
             "data.lettering"
           ],
           "type": "cross_fields",
