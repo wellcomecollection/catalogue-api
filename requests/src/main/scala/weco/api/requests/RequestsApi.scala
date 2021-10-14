@@ -1,11 +1,14 @@
 package weco.api.requests
 
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.server.{Directive, PathMatcher, Route}
 import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.requests.services.RequestsService
 import weco.api.search.models.ApiConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.http.ErrorDirectives
+import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
@@ -20,9 +23,7 @@ class RequestsApi(
 ) extends CreateRequest
     with LookupPendingRequests {
   val routes: Route = concat(
-    pathPrefix("users" / Segment / "item-requests") { userId: String =>
-      val userIdentifier = SierraPatronNumber(userId)
-
+    RequestsApi.withUserId("users" / Segment / "item-requests") { userIdentifier: SierraPatronNumber =>
       post {
         entity(as[ItemRequest]) {
           itemRequest: ItemRequest =>
@@ -44,4 +45,16 @@ class RequestsApi(
       }
     }
   )
+}
+
+object RequestsApi extends ErrorDirectives {
+  def withUserId(pathMatcher: PathMatcher[Tuple1[String]]): Directive[Tuple1[SierraPatronNumber]] = pathPrefix(pathMatcher).flatMap { pathId: String =>
+    optionalHeaderValueByName("X-Wellcome-Caller-ID").flatMap { contextId: Option[String] =>
+      (pathId, contextId) match {
+        case ("me", Some(userId)) => provide(SierraPatronNumber(userId))
+        case ("me", None) => complete(StatusCodes.Unauthorized -> DisplayError(StatusCodes.Unauthorized, "Caller attempted to operate on themselves, but request was not authorised"))
+        case (userId, _) => provide(SierraPatronNumber(userId))
+      }
+    }
+  }
 }
