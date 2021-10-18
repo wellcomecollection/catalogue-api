@@ -1,5 +1,6 @@
 package weco.api.requests
 
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{
   ContentTypes,
   HttpEntity,
@@ -8,6 +9,8 @@ import akka.http.scaladsl.model.{
   HttpResponse,
   StatusCodes
 }
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -33,7 +36,35 @@ class RequestsApiFeatureTest
     with ItemsGenerators
     with WorkGenerators
     with IndexFixtures
-    with SierraIdentifierGenerators {
+    with SierraIdentifierGenerators
+    with ScalatestRouteTest {
+
+  describe("withUserId directive") {
+    def userIdRoute =
+      RequestsApi.withUserId("a" / Segment / "b")(
+        patron => complete(patron.recordNumber)
+      )
+
+    it("extracts a user ID from a path") {
+      Get("/a/1234567/b") ~> userIdRoute ~> check {
+        responseAs[String] shouldBe "1234567"
+      }
+    }
+    it(
+      "extracts a user ID from the X-Wellcome-Caller-ID header when the path ID is 'me'"
+    ) {
+      Get("/a/me/b").withHeaders(RawHeader("X-Wellcome-Caller-ID", "1234567")) ~> userIdRoute ~> check {
+        responseAs[String] shouldBe "1234567"
+      }
+    }
+    it(
+      "rejects as unauthorized if the X-Wellcome-Caller-ID header is not present when the path ID is 'me'"
+    ) {
+      Get("/a/me/b") ~> userIdRoute ~> check {
+        response.status shouldEqual StatusCodes.Unauthorized
+      }
+    }
+  }
 
   describe("requests") {
     it("provides information about a users' holds") {
