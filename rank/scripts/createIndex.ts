@@ -87,7 +87,7 @@ async function go() {
     if (reindexResp.acknowledged) {
       success('Reindex started successfully')
       info('You can monitor the reindex task by running:')
-      code(`  yarn checkTask ${reindexResp.task}`)
+      code('yarn checkReindex')
     } else {
       error('Failed to start reindex with error:')
       console.info(reindexResp.error)
