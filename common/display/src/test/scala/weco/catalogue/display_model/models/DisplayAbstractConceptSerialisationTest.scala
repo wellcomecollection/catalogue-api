@@ -91,7 +91,11 @@ class DisplayAbstractConceptSerialisationTest
 
   it("serialises AbstractDisplayConcepts constructed from AbstractConcepts") {
     val concepts =
-      List(Concept("conceptLabel"), Place("placeLabel"), Period("periodLabel", InstantRange(Instant.now, Instant.now)))
+      List(
+        Concept("conceptLabel"),
+        Place("placeLabel"),
+        Period("periodLabel", InstantRange(Instant.now, Instant.now))
+      )
     assertObjectMapsToJson(
       concepts.map(DisplayAbstractConcept(_, includesIdentifiers = false)),
       expectedJson = s"""

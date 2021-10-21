@@ -26,7 +26,8 @@ class DisplayConceptTest
 
   it("reads an unidentified Period as a DisplayPeriod") {
     assertDisplayConceptIsCorrect(
-      concept = Period(label = "darkness", InstantRange(Instant.now, Instant.now)),
+      concept =
+        Period(label = "darkness", InstantRange(Instant.now, Instant.now)),
       expectedDisplayConcept = DisplayPeriod(
         id = None,
         identifiers = None,
