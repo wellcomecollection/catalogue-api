@@ -5,6 +5,8 @@ import org.scalatest.matchers.should.Matchers
 import weco.catalogue.internal_model.work.generators.ProductionEventGenerators
 import weco.catalogue.internal_model.work._
 
+import java.time.Instant
+
 class DisplayProductionEventTest
     extends AnyFunSpec
     with Matchers
@@ -14,7 +16,7 @@ class DisplayProductionEventTest
       label = "London, Macmillan, 2005",
       places = List(Place("London")),
       agents = List(Agent("Macmillan")),
-      dates = List(Period("2005")),
+      dates = List(Period("2005", InstantRange(Instant.now, Instant.now))),
       function = Some(Concept("Manufacture"))
     )
 
