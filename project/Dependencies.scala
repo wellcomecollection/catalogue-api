@@ -140,7 +140,7 @@ object ExternalDependencies {
 }
 
 object CatalogueDependencies {
-  val displayModelDependencies: Seq[sbt.ModuleID] =
+  val displayModelDependencies: Seq[ModuleID] =
     WellcomeDependencies.internalModel ++
       WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
