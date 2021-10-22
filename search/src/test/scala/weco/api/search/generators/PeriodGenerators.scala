@@ -42,7 +42,9 @@ trait PeriodGenerators extends WorkGenerators {
       )
     )
 
-  def createWorkWithProductionEventFor(year: String): Work.Visible[WorkState.Indexed] =
+  def createWorkWithProductionEventFor(
+    year: String
+  ): Work.Visible[WorkState.Indexed] =
     indexedWork().production(
       List(
         ProductionEvent(
