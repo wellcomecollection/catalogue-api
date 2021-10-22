@@ -2,7 +2,6 @@
   "id" : "stacks",
   "folder" : "common/stacks",
   "dependencyIds" : [
-    "display",
-    "search_common"
+    "display"
   ]
 }
