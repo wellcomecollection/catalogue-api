@@ -71,7 +71,14 @@ object DateAggregationMerger {
               to = LocalDate.of(endYear, Month.DECEMBER, 31),
               label = label
             )
-          AggregationBucket(Period[IdState.Minted](label, Some(range)), count)
+          AggregationBucket(
+            data = Period[IdState.Minted](
+              id = IdState.Unidentifiable,
+              label = label,
+              range = Some(range)
+            ),
+            count = count
+          )
       }
 
   private def yearFromPeriod(period: Period[IdState.Minted]): Option[Int] =
