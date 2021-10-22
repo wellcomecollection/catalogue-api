@@ -2,11 +2,9 @@ package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  ProductionEventGenerators
-}
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
+import weco.api.search.generators.PeriodGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
@@ -20,7 +18,7 @@ import java.net.URLEncoder
 class WorksFiltersTest
     extends ApiWorksTestBase
     with ItemsGenerators
-    with ProductionEventGenerators
+    with PeriodGenerators
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
@@ -261,15 +259,9 @@ class WorksFiltersTest
   }
 
   describe("filtering works by date range") {
-    def createDatedWork(dateLabel: String): Work.Visible[WorkState.Indexed] =
-      indexedWork()
-        .production(
-          List(createProductionEventWith(dateLabel = Some(dateLabel)))
-        )
-
-    val work1709 = createDatedWork(dateLabel = "1709")
-    val work1950 = createDatedWork(dateLabel = "1950")
-    val work2000 = createDatedWork(dateLabel = "2000")
+    val work1709 = createWorkWithProductionEventFor(year = "1709")
+    val work1950 = createWorkWithProductionEventFor(year = "1950")
+    val work2000 = createWorkWithProductionEventFor(year = "2000")
 
     it("filters by date range") {
       withWorksApi {

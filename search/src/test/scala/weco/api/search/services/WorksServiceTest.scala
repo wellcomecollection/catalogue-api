@@ -4,14 +4,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
-  ProductionEventGenerators,
   WorkGenerators
 }
 import weco.catalogue.internal_model.Implicits._
@@ -22,7 +20,7 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
-import weco.api.search.generators.SearchOptionsGenerators
+import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.{
   Aggregation,
   AggregationBucket,
@@ -54,7 +52,7 @@ class WorksServiceTest
     with SearchOptionsGenerators
     with ItemsGenerators
     with WorkGenerators
-    with ProductionEventGenerators {
+    with PeriodGenerators {
 
   val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)
@@ -450,15 +448,9 @@ class WorksServiceTest
   }
 
   describe("filter works by date") {
-    def createDatedWork(dateLabel: String): Work.Visible[Indexed] =
-      indexedWork()
-        .production(
-          List(createProductionEventWith(dateLabel = Some(dateLabel)))
-        )
-
-    val work1709 = createDatedWork("1709")
-    val work1950 = createDatedWork("1950")
-    val work2000 = createDatedWork("2000")
+    val work1709 = createWorkWithProductionEventFor(year = "1709")
+    val work1950 = createWorkWithProductionEventFor(year = "1950")
+    val work2000 = createWorkWithProductionEventFor(year = "2000")
 
     val allWorks = Seq(work1709, work1950, work2000)
 

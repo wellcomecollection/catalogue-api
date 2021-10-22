@@ -66,19 +66,19 @@ class AggregationsTest
   }
 
   it("aggregate over filtered dates, using only 'from' date") {
-    val dates = Seq(
-      "1850",
-      "1850-2000",
-      "1860-1960",
-      "1960",
-      "1960-1964",
-      "1962"
+    val periods = List(
+      createPeriodForYear("1850"),
+      createPeriodForYearRange("1850", "2000"),
+      createPeriodForYearRange("1860", "1960"),
+      createPeriodForYear("1960"),
+      createPeriodForYearRange("1960", "1964"),
+      createPeriodForYear("1962")
     )
 
-    val works = dates.map { dateLabel =>
+    val works = periods.map { p =>
       indexedWork()
         .production(
-          List(createProductionEventWith(dateLabel = Some(dateLabel)))
+          List(createProductionEvent.copy(dates = List(p)))
         )
     }
 

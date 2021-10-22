@@ -1,17 +1,14 @@
 package weco.api.search.works
 
+import weco.api.search.generators.PeriodGenerators
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  ProductionEventGenerators
-}
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 class WorksTest
     extends ApiWorksTestBase
-    with ProductionEventGenerators
-    with ItemsGenerators {
+    with ItemsGenerators
+    with PeriodGenerators {
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
@@ -250,19 +247,14 @@ class WorksTest
     }
   }
 
-  def createDatedWork(dateLabel: String): Work.Visible[WorkState.Indexed] =
-    indexedWork().production(
-      List(createProductionEventWith(dateLabel = Some(dateLabel)))
-    )
-
   it("supports sorting by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work1900 = createDatedWork(dateLabel = "1900")
-        val work1976 = createDatedWork(dateLabel = "1976")
-        val work1904 = createDatedWork(dateLabel = "1904")
-        val work2020 = createDatedWork(dateLabel = "2020")
-        val work1098 = createDatedWork(dateLabel = "1098")
+        val work1900 = createWorkWithProductionEventFor(year = "1900")
+        val work1976 = createWorkWithProductionEventFor(year = "1976")
+        val work1904 = createWorkWithProductionEventFor(year = "1904")
+        val work2020 = createWorkWithProductionEventFor(year = "2020")
+        val work1098 = createWorkWithProductionEventFor(year = "1098")
         insertIntoElasticsearch(
           worksIndex,
           work1900,
@@ -283,9 +275,9 @@ class WorksTest
   it("supports sorting of dates in descending order") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work1900 = createDatedWork(dateLabel = "1900")
-        val work1976 = createDatedWork(dateLabel = "1976")
-        val work1904 = createDatedWork(dateLabel = "1904")
+        val work1900 = createWorkWithProductionEventFor(year = "1900")
+        val work1976 = createWorkWithProductionEventFor(year = "1976")
+        val work1904 = createWorkWithProductionEventFor(year = "1904")
         insertIntoElasticsearch(worksIndex, work1900, work1976, work1904)
 
         assertJsonResponse(
