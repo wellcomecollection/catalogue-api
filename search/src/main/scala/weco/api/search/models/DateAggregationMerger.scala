@@ -1,8 +1,6 @@
 package weco.api.search.models
 
-import java.time.{LocalDateTime, ZoneOffset}
-
-import weco.catalogue.internal_model.parse.DateHelpers
+import java.time.{LocalDate, LocalDateTime, Month, ZoneOffset}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{InstantRange, Period}
 
@@ -14,7 +12,7 @@ object DateBucketRange {
   object Century extends DateBucketRange
 }
 
-object DateAggregationMerger extends DateHelpers {
+object DateAggregationMerger {
 
   import DateBucketRange._
 
@@ -68,7 +66,11 @@ object DateAggregationMerger extends DateHelpers {
           val endYear = startYear + yearRange - 1
           val label = s"$startYear-$endYear"
           val range =
-            InstantRange(yearStart(startYear), yearEnd(endYear), label)
+            InstantRange(
+              from = LocalDate.of(startYear, Month.JANUARY, 1),
+              to = LocalDate.of(endYear, Month.DECEMBER, 31),
+              label = label
+            )
           AggregationBucket(Period[IdState.Minted](label, Some(range)), count)
       }
 
