@@ -4,7 +4,10 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.generators.PeriodGenerators
 
-class DateAggregationMergerTest extends AnyFunSpec with Matchers with PeriodGenerators {
+class DateAggregationMergerTest
+    extends AnyFunSpec
+    with Matchers
+    with PeriodGenerators {
 
   it("aggregates by decade when too many buckets") {
     val aggregation = Aggregation(
