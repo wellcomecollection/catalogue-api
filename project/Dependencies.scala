@@ -165,6 +165,8 @@ object CatalogueDependencies {
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
+      WellcomeDependencies.elasticsearchLibrary ++
+      WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       ExternalDependencies.secretsDependencies
