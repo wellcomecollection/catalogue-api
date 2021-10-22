@@ -142,8 +142,6 @@ object ExternalDependencies {
 object CatalogueDependencies {
   val displayModelDependencies: Seq[sbt.ModuleID] =
     WellcomeDependencies.internalModel ++
-      WellcomeDependencies.elasticsearchLibrary ++
-      WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
       ExternalDependencies.scalacheckDependencies ++
