@@ -13,7 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "5686.de7c4539bea61b7f2d715da5f6c3ac7b0e948be7"
+    val internalModel = "5853.ad1d6b8606b1d92509c427176f676cf489aa3f01"
   }
 
   val internalModel: Seq[ModuleID] = library(
@@ -108,6 +108,7 @@ object ExternalDependencies {
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.6"
+    val scalacsv = "1.3.5"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
@@ -129,6 +130,7 @@ object ExternalDependencies {
     "org.scalatest" %% "scalatest" % versions.scalatest % "test"
   )
 
+  // TODO: Do we need these???
   val akkaHttpDependencies = Seq(
     "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
@@ -136,6 +138,10 @@ object ExternalDependencies {
 
   val secretsDependencies = Seq(
     "software.amazon.awssdk" % "secretsmanager" % versions.aws2
+  )
+
+  val scalacsvDependencies = Seq(
+    "com.github.tototoshi" %% "scala-csv" % versions.scalacsv
   )
 }
 
@@ -156,7 +162,8 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
-      ExternalDependencies.akkaHttpDependencies
+      ExternalDependencies.akkaHttpDependencies ++
+      ExternalDependencies.scalacsvDependencies
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++

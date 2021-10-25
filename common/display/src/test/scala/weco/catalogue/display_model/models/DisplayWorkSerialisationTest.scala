@@ -11,6 +11,8 @@ import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
 
+import java.time.Instant
+
 class DisplayWorkSerialisationTest
     extends AnyFunSpec
     with DisplaySerialisationTestBase
@@ -24,7 +26,7 @@ class DisplayWorkSerialisationTest
       .format(Format.Books)
       .description(randomAlphanumeric(100))
       .lettering(randomAlphanumeric(100))
-      .createdDate(Period("1901"))
+      .createdDate(Period("1901", InstantRange(Instant.now, Instant.now)))
 
     val expectedJson = s"""
       |{
@@ -198,7 +200,7 @@ class DisplayWorkSerialisationTest
       .format(Format.EBooks)
       .description(randomAlphanumeric(100))
       .lettering(randomAlphanumeric(100))
-      .createdDate(Period("1901"))
+      .createdDate(Period("1901", InstantRange(Instant.now, Instant.now)))
       .contributors(
         List(
           Contributor(agent = Agent(randomAlphanumeric(25)), roles = Nil)

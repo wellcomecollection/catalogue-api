@@ -4,8 +4,10 @@ import org.scalatest.funspec.AnyFunSpec
 import weco.catalogue.display_model.test.util.JsonMapperTestUtil
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.{Concept, Period, Place}
+import weco.catalogue.internal_model.work.{Concept, InstantRange, Period, Place}
 import weco.http.json.DisplayJsonUtil._
+
+import java.time.Instant
 
 class DisplayAbstractConceptSerialisationTest
     extends AnyFunSpec
@@ -89,7 +91,11 @@ class DisplayAbstractConceptSerialisationTest
 
   it("serialises AbstractDisplayConcepts constructed from AbstractConcepts") {
     val concepts =
-      List(Concept("conceptLabel"), Place("placeLabel"), Period("periodLabel"))
+      List(
+        Concept("conceptLabel"),
+        Place("placeLabel"),
+        Period("periodLabel", InstantRange(Instant.now, Instant.now))
+      )
     assertObjectMapsToJson(
       concepts.map(DisplayAbstractConcept(_, includesIdentifiers = false)),
       expectedJson = s"""

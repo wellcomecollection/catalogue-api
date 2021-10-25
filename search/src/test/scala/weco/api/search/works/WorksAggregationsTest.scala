@@ -1,20 +1,24 @@
 package weco.api.search.works
 
+import weco.api.search.generators.PeriodGenerators
 import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.languages.Language
+import weco.catalogue.internal_model.locations.{AccessStatus, License}
+import weco.catalogue.internal_model.work.Format._
+import weco.catalogue.internal_model.work._
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   ProductionEventGenerators
 }
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.languages.Language
-import weco.catalogue.internal_model.locations.{AccessStatus, License}
-import weco.catalogue.internal_model.work._
-import weco.catalogue.internal_model.work.Format._
+
+import java.time.{LocalDate, Month}
 
 class WorksAggregationsTest
     extends ApiWorksTestBase
     with ItemsGenerators
-    with ProductionEventGenerators {
+    with ProductionEventGenerators
+    with PeriodGenerators {
 
   it("supports fetching the format aggregation") {
     withWorksApi {
@@ -157,13 +161,28 @@ class WorksAggregationsTest
   it("supports aggregating on dates by from year") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val dates = List("1st May 1970", "1970", "1976", "1970-1979")
+        val periods = List(
+          Period(
+            id = IdState.Unidentifiable,
+            label = "1st May 1970",
+            range = Some(
+              InstantRange(
+                from = LocalDate.of(1970, Month.MAY, 1),
+                to = LocalDate.of(1970, Month.MAY, 1),
+                label = "1st May 1970"
+              )
+            )
+          ),
+          createPeriodForYear("1970"),
+          createPeriodForYear("1976"),
+          createPeriodForYearRange("1970", "1979")
+        )
 
-        val works = dates
-          .map { dateLabel =>
+        val works = periods
+          .map { p =>
             indexedWork()
               .production(
-                List(createProductionEventWith(dateLabel = Some(dateLabel)))
+                List(createProductionEvent.copy(dates = List(p)))
               )
           }
           .sortBy { _.state.canonicalId }

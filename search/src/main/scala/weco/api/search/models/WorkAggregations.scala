@@ -2,12 +2,13 @@ package weco.api.search.models
 
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.languages.{Language, MarcLanguageCodeList}
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
 
-import java.time.{Instant, LocalDateTime, ZoneOffset}
+import java.time.{Instant, LocalDate, LocalDateTime, Month, ZoneOffset}
 import scala.util.Try
 
 case class WorkAggregations(
@@ -49,14 +50,25 @@ object WorkAggregations extends ElasticAggregations {
   }
 
   // Elasticsearch encodes the date key as milliseconds since the epoch
-  implicit val decodePeriodFromEpochMilli: Decoder[Period[Minted]] =
+  implicit val decodePeriodFromEpochMilli: Decoder[Period[IdState.Minted]] =
     Decoder.decodeLong.emap { epochMilli =>
       Try { Instant.ofEpochMilli(epochMilli) }
         .map { instant =>
           LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
         }
         .map { date =>
-          Right(Period(date.getYear.toString))
+          val range = InstantRange(
+            from = LocalDate.of(date.getYear, Month.JANUARY, 1),
+            to = LocalDate.of(date.getYear, Month.DECEMBER, 31),
+            label = date.getYear.toString
+          )
+
+          Right(
+            Period(
+              label = range.label,
+              range = range
+            )
+          )
         }
         .getOrElse { Left("Error decoding") }
     }

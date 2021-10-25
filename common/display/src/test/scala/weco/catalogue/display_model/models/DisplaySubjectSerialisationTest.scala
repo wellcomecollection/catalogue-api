@@ -8,6 +8,8 @@ import weco.catalogue.internal_model.work._
 import Implicits._
 import weco.catalogue.display_model.test.util.JsonMapperTestUtil
 
+import java.time.Instant
+
 class DisplaySubjectSerialisationTest
     extends AnyFunSpec
     with DisplaySerialisationTestBase
@@ -19,7 +21,8 @@ class DisplaySubjectSerialisationTest
     val canonicalId2 = createCanonicalId
 
     val concept0 = Concept(label = "conceptLabel")
-    val concept1 = Period(label = "periodLabel")
+    val concept1 =
+      Period(label = "periodLabel", InstantRange(Instant.now, Instant.now))
     val concept2 = Place(
       label = "placeLabel",
       id = IdState.Identified(

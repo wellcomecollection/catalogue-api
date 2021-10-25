@@ -16,7 +16,7 @@ import weco.catalogue.internal_model.work.generators.{
   WorkGenerators
 }
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.generators.SearchOptionsGenerators
+import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.{
   Aggregation,
   AggregationBucket,
@@ -27,7 +27,7 @@ import weco.api.search.models.{
 }
 import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.{Format, Period, Subject}
+import weco.catalogue.internal_model.work.{Format, Subject}
 
 class AggregationsTest
     extends AnyFunSpec
@@ -37,6 +37,7 @@ class AggregationsTest
     with SubjectGenerators
     with GenreGenerators
     with ProductionEventGenerators
+    with PeriodGenerators
     with SearchOptionsGenerators
     with WorkGenerators {
 
@@ -65,19 +66,19 @@ class AggregationsTest
   }
 
   it("aggregate over filtered dates, using only 'from' date") {
-    val dates = Seq(
-      "1850",
-      "1850-2000",
-      "1860-1960",
-      "1960",
-      "1960-1964",
-      "1962"
+    val periods = List(
+      createPeriodForYear("1850"),
+      createPeriodForYearRange("1850", "2000"),
+      createPeriodForYearRange("1860", "1960"),
+      createPeriodForYear("1960"),
+      createPeriodForYearRange("1960", "1964"),
+      createPeriodForYear("1962")
     )
 
-    val works = dates.map { dateLabel =>
+    val works = periods.map { p =>
       indexedWork()
         .production(
-          List(createProductionEventWith(dateLabel = Some(dateLabel)))
+          List(createProductionEvent.copy(dates = List(p)))
         )
     }
 
@@ -93,8 +94,8 @@ class AggregationsTest
         aggs.productionDates shouldBe Some(
           Aggregation(
             List(
-              AggregationBucket(Period("1960"), 2),
-              AggregationBucket(Period("1962"), 1)
+              AggregationBucket(createPeriodForYear("1960"), 2),
+              AggregationBucket(createPeriodForYear("1962"), 1)
             )
           )
         )

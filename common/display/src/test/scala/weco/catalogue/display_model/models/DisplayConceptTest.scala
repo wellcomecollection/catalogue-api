@@ -6,6 +6,8 @@ import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work._
 
+import java.time.Instant
+
 class DisplayConceptTest
     extends AnyFunSpec
     with Matchers
@@ -24,7 +26,8 @@ class DisplayConceptTest
 
   it("reads an unidentified Period as a DisplayPeriod") {
     assertDisplayConceptIsCorrect(
-      concept = Period(label = "darkness"),
+      concept =
+        Period(label = "darkness", InstantRange(Instant.now, Instant.now)),
       expectedDisplayConcept = DisplayPeriod(
         id = None,
         identifiers = None,
