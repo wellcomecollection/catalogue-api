@@ -146,17 +146,15 @@ object ExternalDependencies {
 }
 
 object CatalogueDependencies {
-  val displayModelDependencies: Seq[sbt.ModuleID] =
+  val displayModelDependencies: Seq[ModuleID] =
     WellcomeDependencies.internalModel ++
-      WellcomeDependencies.elasticsearchLibrary ++
-      WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
       ExternalDependencies.scalacheckDependencies ++
       WellcomeDependencies.httpLibrary
 
-  val searchDependencies: Seq[ModuleID] =
-    ExternalDependencies.circeOpticsDependencies ++
+  val searchCommonDependencies: Seq[ModuleID] =
+    WellcomeDependencies.elasticsearchLibrary ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.monitoringTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
@@ -165,17 +163,17 @@ object CatalogueDependencies {
       ExternalDependencies.akkaHttpDependencies ++
       ExternalDependencies.scalacsvDependencies
 
+  val searchDependencies: Seq[ModuleID] =
+    ExternalDependencies.circeOpticsDependencies
+
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
-      WellcomeDependencies.jsonLibrary ++
-      WellcomeDependencies.monitoringTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary ++
-      WellcomeDependencies.monitoringLibrary ++
-      WellcomeDependencies.httpTypesafeLibrary ++
       WellcomeDependencies.sierraLibrary
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
+      WellcomeDependencies.elasticsearchLibrary ++
+      WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
       WellcomeDependencies.typesafeLibrary ++
       ExternalDependencies.secretsDependencies

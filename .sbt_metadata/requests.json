@@ -2,6 +2,7 @@
   "id" : "requests",
   "folder" : "requests",
   "dependencyIds" : [
-    "stacks"
+    "stacks",
+    "search_common"
   ]
 }
