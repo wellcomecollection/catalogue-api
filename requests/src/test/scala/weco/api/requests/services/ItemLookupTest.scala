@@ -354,7 +354,9 @@ class ItemLookupTest
       var calls = 0
 
       val spyService = new ElasticsearchService(elasticClient) {
-        override def findByMultiSearch[T](request: MultiSearchRequest)(implicit decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] = {
+        override def findByMultiSearch[T](request: MultiSearchRequest)(
+          implicit decoder: Decoder[T]
+        ): Future[Seq[Either[ElasticsearchError, Seq[T]]]] = {
           calls += 1
           super.findByMultiSearch[T](request)
         }

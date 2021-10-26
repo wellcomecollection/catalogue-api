@@ -95,7 +95,7 @@ class ItemLookup(
       //
       case Nil => Future.successful(Seq())
 
-      case _   => searchBySourceIdentifier(itemIdentifiers)
+      case _ => searchBySourceIdentifier(itemIdentifiers)
     }
 
   private case class WorkDataStub(
