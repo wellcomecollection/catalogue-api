@@ -18,8 +18,8 @@ import weco.catalogue.internal_model.identifiers.{
   IdState,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.catalogue.internal_model.work.{Item, Work}
+import weco.catalogue.internal_model.work.Item
+import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,10 +45,11 @@ class ItemLookup(
             termQuery(field = "type", value = "Visible")
           )
         )
+        .sourceInclude("data.items", "data.title", "state.canonicalId")
         .size(1)
 
     elasticsearchService
-      .findBySearch[Work.Visible[Indexed]](searchRequest)
+      .findBySearch[WorkStub](searchRequest)
       .map {
         case Left(err) => Left(err)
         case Right(works) =>
@@ -97,6 +98,15 @@ class ItemLookup(
       case _   => searchBySourceIdentifier(itemIdentifiers)
     }
 
+  private case class WorkDataStub(
+    title: Option[String],
+    items: List[Item[IdState.Minted]]
+  )
+
+  private case class WorkStateStub(canonicalId: CanonicalId)
+
+  private case class WorkStub(data: WorkDataStub, state: WorkStateStub)
+
   private def searchBySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
@@ -118,6 +128,7 @@ class ItemLookup(
                 )
               )
           )
+          .sourceInclude("data.items", "data.title", "state.canonicalId")
           .sortBy(
             fieldSort("state.sourceIdentifier.value")
               .order(SortOrder.Asc)
@@ -128,7 +139,7 @@ class ItemLookup(
     )
 
     elasticsearchService
-      .findByMultiSearch[Work.Visible[Indexed]](multiSearchRequest)
+      .findByMultiSearch[WorkStub](multiSearchRequest)
       .map {
         _.zip(itemIdentifiers).map {
           case (Right(Seq(work)), itemId) => addWorkDataToItem(work, itemId)
@@ -151,7 +162,7 @@ class ItemLookup(
   }
 
   private def addWorkDataToItem(
-    work: Work.Visible[Indexed],
+    work: WorkStub,
     itemIdentifier: SourceIdentifier
   ): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
     work.itemWith(itemIdentifier) match {
@@ -167,7 +178,7 @@ class ItemLookup(
       case None => Left(DocumentNotFoundError(itemIdentifier))
     }
 
-  private implicit class WorkOps(w: Work.Visible[Indexed]) {
+  private implicit class WorkOps(w: WorkStub) {
 
     // You might expect you can write these functions as something like:
     //
