@@ -187,5 +187,53 @@ class RequestsApiFeatureTest
         }
       }
     }
+
+    it("returns an empty list if a user has no holds") {
+      val patron = SierraPatronNumber("1234567")
+
+      val responses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.GET,
+            uri =
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 0,
+                 |  "start": 0,
+                 |  "entries": []
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withLocalWorksIndex { index =>
+        withRequestsApi(elasticClient, index, responses) { _ =>
+          val path = s"/users/$patron/item-requests"
+
+          val expectedJson =
+            s"""
+               |{
+               |  "results" : [],
+               |  "totalResults" : 0,
+               |  "type" : "ResultList"
+               |}""".stripMargin
+
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
+
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
+          }
+        }
+      }
+    }
   }
 }

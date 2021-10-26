@@ -1,11 +1,18 @@
 package weco.api.requests.services
 
 import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
+import io.circe.Decoder
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.search.elasticsearch.{DocumentNotFoundError, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.{IdState, SourceIdentifier}
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -16,6 +23,7 @@ import weco.catalogue.internal_model.work.generators.{
 }
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ItemLookupTest
     extends AnyFunSpec
@@ -340,6 +348,30 @@ class ItemLookupTest
         results should have length (1)
         results.head.left.value shouldBe a[IndexNotFoundError]
       }
+    }
+
+    it("skips calling Elasticsearch if there aren't any items") {
+      var calls = 0
+
+      val spyService = new ElasticsearchService(elasticClient) {
+        override def findByMultiSearch[T](request: MultiSearchRequest)(implicit decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] = {
+          calls += 1
+          super.findByMultiSearch[T](request)
+        }
+      }
+
+      val lookup = new ItemLookup(
+        elasticsearchService = spyService,
+        index = createIndex
+      )
+
+      val future = lookup.bySourceIdentifier(itemIdentifiers = Seq())
+
+      whenReady(future) {
+        _ shouldBe empty
+      }
+
+      calls shouldBe 0
     }
   }
 

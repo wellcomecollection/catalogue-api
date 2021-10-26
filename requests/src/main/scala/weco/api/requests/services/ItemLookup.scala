@@ -82,7 +82,26 @@ class ItemLookup(
     */
   def bySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] =
+    itemIdentifiers match {
+      // If there are no identifiers, return the result immediately.  This will be
+      // reasonably common in practice (new users, or users who haven't ordered items
+      // recently), and if you actually try to search an empty list of identifiers in
+      // Elasticsearch you get a warning:
+      //
+      //      support for empty first line before any action metadata in msearch API
+      //      is deprecated and will be removed in the next major version
+      //
+      case Nil => Future.successful(Seq())
+
+      case _   => searchBySourceIdentifier(itemIdentifiers)
+    }
+
+  private def searchBySourceIdentifier(
+    itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
+    require(itemIdentifiers.nonEmpty)
+
     val multiSearchRequest = MultiSearchRequest(
       itemIdentifiers.map { itemSourceIdentifier =>
         search(index)
