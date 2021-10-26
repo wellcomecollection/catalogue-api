@@ -65,7 +65,7 @@ class ItemLookup(
 
   /** Look up a collection of items and the corresponding Work data.
     *
-    * At least within Sierra, i's possible for a single Item to be associated with
+    * At least within Sierra, it's possible for a single Item to be associated with
     * multiple Works, e.g. if multiple items are bound/contained together.
     * For an extreme example, see Item i13000780 / ty6qpt7d, which is on 705 Works.
     *
