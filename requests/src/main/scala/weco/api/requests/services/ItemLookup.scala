@@ -98,14 +98,14 @@ class ItemLookup(
       case _ => searchBySourceIdentifier(itemIdentifiers)
     }
 
-  private case class WorkDataStub(
+  private case class WorkStubData(
     title: Option[String],
     items: List[Item[IdState.Minted]]
   )
 
-  private case class WorkStateStub(canonicalId: CanonicalId)
+  private case class WorkStubState(canonicalId: CanonicalId)
 
-  private case class WorkStub(data: WorkDataStub, state: WorkStateStub)
+  private case class WorkStub(data: WorkStubData, state: WorkStubState)
 
   private def searchBySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
