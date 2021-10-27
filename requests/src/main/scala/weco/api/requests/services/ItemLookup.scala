@@ -18,8 +18,8 @@ import weco.catalogue.internal_model.identifiers.{
   IdState,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.catalogue.internal_model.work.{Item, Work}
+import weco.catalogue.internal_model.work.Item
+import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,10 +45,11 @@ class ItemLookup(
             termQuery(field = "type", value = "Visible")
           )
         )
+        .sourceInclude("data.items", "data.title", "state.canonicalId")
         .size(1)
 
     elasticsearchService
-      .findBySearch[Work.Visible[Indexed]](searchRequest)
+      .findBySearch[WorkStub](searchRequest)
       .map {
         case Left(err) => Left(err)
         case Right(works) =>
@@ -65,7 +66,7 @@ class ItemLookup(
 
   /** Look up a collection of items and the corresponding Work data.
     *
-    * At least within Sierra, i's possible for a single Item to be associated with
+    * At least within Sierra, it's possible for a single Item to be associated with
     * multiple Works, e.g. if multiple items are bound/contained together.
     * For an extreme example, see Item i13000780 / ty6qpt7d, which is on 705 Works.
     *
@@ -82,7 +83,35 @@ class ItemLookup(
     */
   def bySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
+  ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] =
+    itemIdentifiers match {
+      // If there are no identifiers, return the result immediately.  This will be
+      // reasonably common in practice (new users, or users who haven't ordered items
+      // recently), and if you actually try to search an empty list of identifiers in
+      // Elasticsearch you get a warning:
+      //
+      //      support for empty first line before any action metadata in msearch API
+      //      is deprecated and will be removed in the next major version
+      //
+      case Nil => Future.successful(Seq())
+
+      case _ => searchBySourceIdentifier(itemIdentifiers)
+    }
+
+  private case class WorkStubData(
+    title: Option[String],
+    items: List[Item[IdState.Minted]]
+  )
+
+  private case class WorkStubState(canonicalId: CanonicalId)
+
+  private case class WorkStub(data: WorkStubData, state: WorkStubState)
+
+  private def searchBySourceIdentifier(
+    itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
+    require(itemIdentifiers.nonEmpty)
+
     val multiSearchRequest = MultiSearchRequest(
       itemIdentifiers.map { itemSourceIdentifier =>
         search(index)
@@ -99,6 +128,7 @@ class ItemLookup(
                 )
               )
           )
+          .sourceInclude("data.items", "data.title", "state.canonicalId")
           .sortBy(
             fieldSort("state.sourceIdentifier.value")
               .order(SortOrder.Asc)
@@ -109,7 +139,7 @@ class ItemLookup(
     )
 
     elasticsearchService
-      .findByMultiSearch[Work.Visible[Indexed]](multiSearchRequest)
+      .findByMultiSearch[WorkStub](multiSearchRequest)
       .map {
         _.zip(itemIdentifiers).map {
           case (Right(Seq(work)), itemId) => addWorkDataToItem(work, itemId)
@@ -132,7 +162,7 @@ class ItemLookup(
   }
 
   private def addWorkDataToItem(
-    work: Work.Visible[Indexed],
+    work: WorkStub,
     itemIdentifier: SourceIdentifier
   ): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
     work.itemWith(itemIdentifier) match {
@@ -148,7 +178,7 @@ class ItemLookup(
       case None => Left(DocumentNotFoundError(itemIdentifier))
     }
 
-  private implicit class WorkOps(w: Work.Visible[Indexed]) {
+  private implicit class WorkOps(w: WorkStub) {
 
     // You might expect you can write these functions as something like:
     //
