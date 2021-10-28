@@ -9,7 +9,9 @@
     "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
-    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
+    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex",
+    "getSearchTerms": "ts-node -r dotenv/config ./scripts/getSearchTerms",
+    "compareQuerySpeed": "ts-node -r dotenv/config ./scripts/compareQuerySpeed"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",
