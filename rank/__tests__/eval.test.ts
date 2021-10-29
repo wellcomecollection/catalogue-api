@@ -14,10 +14,7 @@ const { works, images } = tests
 
 let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
-  const indices = await listIndices()
-  searchTemplates = await getTemplates(
-    indices.map((i) => `remote/${i}` as SearchTemplateString)
-  )
+  searchTemplates = await getTemplates()
 })
 
 declare global {
@@ -32,7 +29,6 @@ expect.extend({
     if (result.knownFailure) {
       return {
         message: () => {
-          console.info(result.query)
           return `"${result.query}" is a known failure`
         },
         pass: true,
@@ -58,7 +54,7 @@ test.each(works)('works.$id', async ({ id }) => {
   )
 
   const result = await testService({
-    env: template.env,
+    queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
   })
@@ -74,7 +70,7 @@ test.each(images)('images.$id', async ({ id }) => {
   )
 
   const result = await testService({
-    env: template.env,
+    queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
   })
