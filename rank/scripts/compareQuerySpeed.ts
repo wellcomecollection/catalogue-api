@@ -58,7 +58,12 @@ async function go() {
     terms.map(async (term) => {
       const body = searchTemplates.flatMap(({ index, query }) => [
         { index },
-        { query },
+        {
+          // replace {{query}} with the actual search term
+          query: JSON.parse(
+            JSON.stringify(query).replace('{{query}}', encodeURIComponent(term))
+          ),
+        },
       ])
       const client = await getRankClient()
       const { body: searchResp } = await client.msearch({ body })
