@@ -6,7 +6,7 @@ import {
 import { getTemplates, listIndices } from '../services/search-templates'
 
 import { TestResult } from '../types/test'
-import testService from '../services/test'
+import service from '../services/test'
 import tests from '../data/tests'
 
 global.fetch = require('node-fetch')
@@ -53,7 +53,7 @@ test.each(works)('works.$id', async ({ id }) => {
     (template) => getNamespaceFromIndexName(template.index) === 'works'
   )
 
-  const result = await testService({
+  const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
@@ -69,7 +69,7 @@ test.each(images)('images.$id', async ({ id }) => {
     (template) => getNamespaceFromIndexName(template.index) === 'images'
   )
 
-  const result = await testService({
+  const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
