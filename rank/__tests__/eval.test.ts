@@ -17,6 +17,8 @@ beforeAll(async () => {
   searchTemplates = await getTemplates()
 })
 
+const queryEnv = process.env.RANK_QUERY_ENVIRONMENT || 'production'
+
 declare global {
   namespace jest {
     interface Matchers<R> {
@@ -50,7 +52,9 @@ expect.extend({
 
 test.each(works)('works.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'works'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'works' &&
+        template.queryEnv === queryEnv
   )
 
   const result = await service({
@@ -66,7 +70,9 @@ test.each(works)('works.$id', async ({ id }) => {
 
 test.each(images)('images.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'images'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'images' &&
+        template.queryEnv === queryEnv
   )
 
   const result = await service({

@@ -1,4 +1,4 @@
-export const queryEnvs = ['production', 'candidate'] as const
+export const queryEnvs = ['production', 'staging', 'candidate'] as const
 export type QueryEnv = typeof queryEnvs[number]
 
 export const namespaces = ['works', 'images'] as const

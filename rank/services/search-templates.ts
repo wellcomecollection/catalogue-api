@@ -21,10 +21,12 @@ export async function listIndices(): Promise<Index[]> {
   return indices
 }
 
-export async function getProductionQueries() {
-  const res = await fetch(
-    'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
-  )
+async function getLiveQueries(environment) {
+  const apiUrl = environment === 'prod'
+    ? 'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
+    : 'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json'
+  
+  const res = await fetch(apiUrl)
   const json: ApiSearchTemplateRes = await res.json()
   const queries = Object.fromEntries(
     json.templates.map((template) => {
@@ -61,7 +63,8 @@ export async function getCandidateQueries() {
 export async function getQueries() {
   const queries = {
     candidate: await getCandidateQueries(),
-    production: await getProductionQueries(),
+    production: await getLiveQueries('production'),
+    staging: await getLiveQueries('staging'),
   }
   return queries
 }
