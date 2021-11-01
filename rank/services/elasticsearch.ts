@@ -11,7 +11,9 @@ const {
 
 let rankClient
 export function getRankClient(): Client {
-  if (!ES_RANK_CLOUD_ID) throw Error(`Missing variable ES_RANK_CLOUD_ID`)
+  if (!ES_RANK_CLOUD_ID) throw Error(`Missing variable ES_RANK_CLOUD_ID`);
+  if (!ES_RANK_USER)     throw Error(`Missing variable ES_RANK_USER`);
+  if (!ES_RANK_PASSWORD) throw Error(`Missing variable ES_RANK_PASSWORD`);
   
   if (!rankClient) {
     rankClient = new Client({
