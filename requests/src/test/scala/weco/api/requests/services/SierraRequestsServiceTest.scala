@@ -222,7 +222,7 @@ class SierraRequestsServiceTest
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
                 pickupByDate = None,
                 status = SierraHoldStatus("i", "item hold ready for pickup")
-              ),
+              )
             )
           }
         }
