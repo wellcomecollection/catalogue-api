@@ -4,7 +4,7 @@
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
-    "test": "jest --detectOpenHandles",
+    "test": "jest",
     "checkReindex": "ts-node -r dotenv/config ./scripts/checkReindex",
     "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",

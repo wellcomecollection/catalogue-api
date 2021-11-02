@@ -6,17 +6,20 @@ It uses [elasticsearch's `rank_eval` API](https://www.elastic.co/guide/en/elasti
 
 ## Getting started
 
-### Running the app
+Clone this repo and run:
 
-- Clone this repo and run:
 - `yarn` to install packages
-- `yarn env` to populate a `.env` file with secrets
-- `yarn dev` to get the local server running
+- `yarn env` to populate a local `.env` file.  
+   This assumes you're part of the Wellcome Collection team on Vercel. You'll be asked to link your local repo to the project in order to fetch the necessary secrets. The project name is `rank`.
 
 ### Developing
 
-To improve search relevance, you might want to
+To start affecting search relevance, you might want to
 
 - [develop the queries](./docs/developing.md#queries)
 - [develop the mappings](./docs/developing.md#mappings)
 - [create new tests](./docs/developing.md#test-cases)
+
+### Evaluating relevance
+
+See [the docs](./docs/testing.md) for instructions on running the rank tests.
