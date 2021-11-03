@@ -188,13 +188,33 @@ class SierraRequestsService(
             )
         }
 
-      sourceIdentifiers = holds.entries.map { hold =>
-        val identifier = SierraItemIdentifier.toSourceIdentifier(
-          SierraItemIdentifier.fromUrl(hold.record)
-        )
+      sourceIdentifiers = holds.entries
+        .filterNot {
+          // When somebody requests an item on Inter-Library Loan (ILL), a virtual record
+          // is created in Sierra that tracks this request.  The record only exists for
+          // as long as the loan request.
+          //
+          // To distinguish virtual records from regular Sierra records, they get a
+          // different type of identifier: a virtual record followed by the ILL department code,
+          // which in our case is "illd".  e.g. a virtual record might be 101339@illd
+          //
+          // There's nothing useful we can do with these items for requesting, so ignore
+          // them for now.  If we don't, we get an error trying to create a Sierra identifier
+          // for these records, because the ID isn't seven-digital numeric.
+          //
+          // See: https://documentation.iii.com/sierrahelp/Default.htm#sgcir/sgcir_ill_virtualrecs.html
+          //
+          // See also: https://github.com/wellcomecollection/platform/issues/5354,
+          // which tracks doing something more sensible with these records.
+          _.record.getPath.endsWith("@illd")
+        }
+        .map { hold =>
+          val identifier = SierraItemIdentifier.toSourceIdentifier(
+            SierraItemIdentifier.fromUrl(hold.record)
+          )
 
-        identifier -> hold
-      }
+          identifier -> hold
+        }
     } yield sourceIdentifiers.toMap
 }
 
