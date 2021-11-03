@@ -1,7 +1,11 @@
+import yargs from 'yargs'
+
 import {
+  QueryEnv,
   SearchTemplate,
   SearchTemplateString,
   getNamespaceFromIndexName,
+  queryEnvs,
 } from '../types/searchTemplate'
 import { getTemplates, listIndices } from '../services/search-templates'
 
@@ -17,7 +21,23 @@ beforeAll(async () => {
   searchTemplates = await getTemplates()
 })
 
-const queryEnv = process.env.RANK_QUERY_ENVIRONMENT || 'production'
+const { queryEnv } = yargs(process.argv)
+  .options({
+    'queryEnv': { type: "string", demandOption: true, choices: queryEnvs }
+  })
+  // Passing .exitProcess(false) means we get helpful error messages
+  // from jest/yargs if the CLI parsing fails.
+  //
+  // Compare:
+  //
+  //      process.exit called with "1"
+  //
+  // and:
+  //
+  //      Missing required argument: queryEnv
+  //
+  .exitProcess(false)
+  .parseSync()
 
 declare global {
   namespace jest {
