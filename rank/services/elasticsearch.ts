@@ -30,8 +30,8 @@ export function getRankClient(): Client {
 
 let reportingClient
 export function getReportingClient(): Client {
-  if (!rankClient) {
-    rankClient = new Client({
+  if (!reportingClient) {
+    reportingClient = new Client({
       cloud: {
         id: ES_REPORTING_CLOUD_ID!,
       },
@@ -41,7 +41,7 @@ export function getReportingClient(): Client {
       },
     })
   }
-  return rankClient
+  return reportingClient
 }
 
 let ratingClient
