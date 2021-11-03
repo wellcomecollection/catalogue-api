@@ -22,7 +22,7 @@ export async function listIndices(): Promise<Index[]> {
 }
 
 async function getLiveQueries(environment) {
-  const apiUrl = environment === 'prod'
+  const apiUrl = environment === 'production'
     ? 'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
     : 'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json'
   
