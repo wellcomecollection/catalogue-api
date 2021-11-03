@@ -1,12 +1,16 @@
+import yargs from 'yargs'
+
 import {
+  QueryEnv,
   SearchTemplate,
   SearchTemplateString,
   getNamespaceFromIndexName,
+  queryEnvs,
 } from '../types/searchTemplate'
 import { getTemplates, listIndices } from '../services/search-templates'
 
 import { TestResult } from '../types/test'
-import testService from '../services/test'
+import service from '../services/test'
 import tests from '../data/tests'
 
 global.fetch = require('node-fetch')
@@ -16,6 +20,24 @@ let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
   searchTemplates = await getTemplates()
 })
+
+const { queryEnv } = yargs(process.argv)
+  .options({
+    'queryEnv': { type: "string", demandOption: true, choices: queryEnvs }
+  })
+  // Passing .exitProcess(false) means we get helpful error messages
+  // from jest/yargs if the CLI parsing fails.
+  //
+  // Compare:
+  //
+  //      process.exit called with "1"
+  //
+  // and:
+  //
+  //      Missing required argument: queryEnv
+  //
+  .exitProcess(false)
+  .parseSync()
 
 declare global {
   namespace jest {
@@ -50,10 +72,12 @@ expect.extend({
 
 test.each(works)('works.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'works'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'works' &&
+        template.queryEnv === queryEnv
   )
 
-  const result = await testService({
+  const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
@@ -66,10 +90,12 @@ test.each(works)('works.$id', async ({ id }) => {
 
 test.each(images)('images.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'images'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'images' &&
+        template.queryEnv === queryEnv
   )
 
-  const result = await testService({
+  const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
