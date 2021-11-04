@@ -1,5 +1,7 @@
 steps:
-  - command: echo "Hello world!"
-    label: "👋"
+  - commands:
+    - cd rank
+    - yarn
+    - yarn test
     agents:
       queue: nano
