@@ -18,7 +18,6 @@ const { works, images } = tests
 let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
   searchTemplates = await getTemplates()
-  console.log('got search templates')
 })
 
 const { queryEnv } = yargs(process.argv)
@@ -38,7 +37,6 @@ const { queryEnv } = yargs(process.argv)
   //
   .exitProcess(false)
   .parseSync()
-console.log('got the query env')
 
 declare global {
   namespace jest {
@@ -78,7 +76,6 @@ test.each(works)('works.$id', async ({ id }) => {
       template.queryEnv === queryEnv
   )
 
-  console.log(`running a test for ${template.queryEnv} ${template.index} ${id}`)
   const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
@@ -97,7 +94,6 @@ test.each(images)('images.$id', async ({ id }) => {
       template.queryEnv === queryEnv
   )
 
-  console.log(`running a test for ${template.queryEnv} ${template.index} ${id}`)
   const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
