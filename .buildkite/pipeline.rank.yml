@@ -1,4 +1,3 @@
 steps:
   - command: ./.buildkite/scripts/test_rank.sh
-    agents:
-      queue: nano
+
