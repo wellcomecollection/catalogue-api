@@ -1,9 +1,12 @@
 {
   "scripts": {
-    "build": "ts-node ./scripts/build && next build",
+    "prebuild": "yarn copyQueries",
+    "build": "next build",
+    "copyQueries": "ts-node ./scripts/copyQueries",
     "dev": "next dev",
     "env": "vercel link && vercel env pull",
     "lint": "next lint --fix",
+    "pretest": "yarn copyQueries",
     "test": "jest",
     "checkReindex": "ts-node -r dotenv/config ./scripts/checkReindex",
     "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
