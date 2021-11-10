@@ -33,8 +33,8 @@ docker run \
 docker run \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    --env ES_RANK_USER \
-    --env ES_RANK_PASSWORD \
-    --env ES_RANK_CLOUD_ID \
+    --env ES_RANK_USER=$ES_RANK_USER \
+    --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
+    --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
     yarn test --queryEnv=production
