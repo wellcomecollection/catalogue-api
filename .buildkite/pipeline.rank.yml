@@ -1,6 +1,4 @@
 steps:
-  - commands:
-    - docker run -v $(pwd)/rank:/rank --workdir /rank 760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine yarn
-    - docker run -v $(pwd)/rank:/rank --workdir /rank 760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine yarn test --queryEnv=production
+  - command: ./.buildkite/scripts/test_rank.sh
     agents:
       queue: nano
