@@ -1,5 +1,3 @@
-import yargs from 'yargs'
-
 import {
   QueryEnv,
   SearchTemplate,
@@ -12,6 +10,7 @@ import { getTemplates, listIndices } from '../services/search-templates'
 import { TestResult } from '../types/test'
 import service from '../services/test'
 import tests from '../data/tests'
+import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
 const { works, images } = tests
@@ -19,11 +18,12 @@ const { works, images } = tests
 let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
   searchTemplates = await getTemplates()
+  console.log('got search templates')
 })
 
 const { queryEnv } = yargs(process.argv)
   .options({
-    'queryEnv': { type: "string", demandOption: true, choices: queryEnvs }
+    queryEnv: { type: 'string', demandOption: true, choices: queryEnvs },
   })
   // Passing .exitProcess(false) means we get helpful error messages
   // from jest/yargs if the CLI parsing fails.
@@ -38,6 +38,7 @@ const { queryEnv } = yargs(process.argv)
   //
   .exitProcess(false)
   .parseSync()
+console.log('got the query env')
 
 declare global {
   namespace jest {
@@ -74,9 +75,10 @@ test.each(works)('works.$id', async ({ id }) => {
   const template = searchTemplates.find(
     (template) =>
       getNamespaceFromIndexName(template.index) === 'works' &&
-        template.queryEnv === queryEnv
+      template.queryEnv === queryEnv
   )
 
+  console.log(`running a test for ${template.queryEnv} ${template.index} ${id}`)
   const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
@@ -92,9 +94,10 @@ test.each(images)('images.$id', async ({ id }) => {
   const template = searchTemplates.find(
     (template) =>
       getNamespaceFromIndexName(template.index) === 'images' &&
-        template.queryEnv === queryEnv
+      template.queryEnv === queryEnv
   )
 
+  console.log(`running a test for ${template.queryEnv} ${template.index} ${id}`)
   const result = await service({
     queryEnv: template.queryEnv,
     index: template.index,
