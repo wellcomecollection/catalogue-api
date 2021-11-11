@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -13,12 +13,12 @@ ES_RANK_USER=$(aws secretsmanager get-secret-value \
 ES_RANK_PASSWORD=$(aws secretsmanager get-secret-value \
         --secret-id elasticsearch/rank/buildkite_password \
         --query SecretString \
-        --output text 
+        --output text
 )
 ES_RANK_CLOUD_ID=$(aws secretsmanager get-secret-value \
         --secret-id elasticsearch/rank/cloud_id \
         --query SecretString \
-        --output text 
+        --output text
 )
 echo "ES_RANK_USER: $ES_RANK_USER"
 

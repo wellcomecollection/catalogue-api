@@ -61,11 +61,19 @@ export async function getCandidateQueries() {
   return queries
 }
 
-export async function getQueries() {
+async function getQueryFor(queryEnv: QueryEnv) {
+  switch (queryEnv) {
+    case 'candidate': return await getCandidateQueries()
+    case 'production': return await getEnvironmentQueries('production')
+    case 'staging': return await getEnvironmentQueries('staging')
+  }
+}
+
+async function getQueries() {
   const queries = {
-    candidate: await getCandidateQueries(),
-    production: await getEnvironmentQueries('production'),
-    staging: await getEnvironmentQueries('staging'),
+    candidate: await getQueryFor('candidate'),
+    production: await getQueryFor('production'),
+    staging: await getQueryFor('staging'),
   }
   return queries
 }
@@ -94,9 +102,9 @@ export async function getTemplate(
   queryEnv: QueryEnv,
   index: Index
 ): Promise<SearchTemplate> {
-  const queries = await getQueries()
-  const query = queries[queryEnv][getNamespaceFromIndexName(index)]
-  return new SearchTemplate(queryEnv, index, query)
+  const query = await getQueryFor(queryEnv)
+  const namespacedQuery = query[getNamespaceFromIndexName(index)]
+  return new SearchTemplate(queryEnv, index, namespacedQuery)
 }
 
 export default getTemplates
