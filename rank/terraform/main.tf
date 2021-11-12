@@ -8,8 +8,8 @@ data "ec_stack" "latest" {
 }
 
 
-resource "ec_deployment" "rank_catalogue" {
-  name                   = "rank-catalogue"
+resource "ec_deployment" "rank" {
+  name                   = "rank"
   region                 = "eu-west-1"
   version                = data.ec_stack.latest.version
   deployment_template_id = "aws-io-optimized-v2"
