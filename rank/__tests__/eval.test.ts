@@ -10,6 +10,7 @@ import {
 import { TestResult } from '../types/test'
 import { gatherArgs } from '../scripts/utils'
 import { getTemplates } from '../services/search-templates'
+import { info } from 'console'
 import service from '../services/test'
 import tests from '../data/tests'
 
@@ -19,25 +20,25 @@ const { works, images } = tests
 let searchTemplates: SearchTemplate[]
 let queryEnv: QueryEnv
 let namespace: Namespace
-let testId: string
-
-const testIds = tests.works
-  .map(({ id }) => id)
-  .concat(tests.images.map(({ id }) => id))
-  .filter((v, i, a) => a.indexOf(v) === i)
+let testsToRun: string[]
 
 beforeAll(async () => {
   searchTemplates = await getTemplates()
 
+  const testIds = tests.works
+    .map(({ id }) => id)
+    .concat(tests.images.map(({ id }) => id))
+    .filter((v, i, a) => a.indexOf(v) === i)
+
   const args = await gatherArgs({
     queryEnv: { type: 'string', choices: queryEnvs },
     namespace: { type: 'string', choices: namespaces },
-    testId: { type: 'string', choices: testIds },
+    testsToRun: { type: 'array', choices: testIds, default: testIds },
   })
 
   queryEnv = args.queryEnv as QueryEnv
   namespace = args.namespace as Namespace
-  testId = args.testId as string
+  testsToRun = args.testsToRun as string[]
 })
 
 declare global {
