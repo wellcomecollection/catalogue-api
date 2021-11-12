@@ -1,24 +1,42 @@
 import {
+  QueryEnv,
   SearchTemplate,
   SearchTemplateString,
   getNamespaceFromIndexName,
+  queryEnvs,
 } from '../types/searchTemplate'
 import { getTemplates, listIndices } from '../services/search-templates'
 
 import { TestResult } from '../types/test'
-import testService from '../services/test'
+import service from '../services/test'
 import tests from '../data/tests'
+import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
 const { works, images } = tests
 
 let searchTemplates: SearchTemplate[]
 beforeAll(async () => {
-  const indices = await listIndices()
-  searchTemplates = await getTemplates(
-    indices.map((i) => `remote/${i}` as SearchTemplateString)
-  )
+  searchTemplates = await getTemplates()
 })
+
+const { queryEnv } = yargs(process.argv)
+  .options({
+    queryEnv: { type: 'string', demandOption: true, choices: queryEnvs },
+  })
+  // Passing .exitProcess(false) means we get helpful error messages
+  // from jest/yargs if the CLI parsing fails.
+  //
+  // Compare:
+  //
+  //      process.exit called with "1"
+  //
+  // and:
+  //
+  //      Missing required argument: queryEnv
+  //
+  .exitProcess(false)
+  .parseSync()
 
 declare global {
   namespace jest {
@@ -32,7 +50,6 @@ expect.extend({
     if (result.knownFailure) {
       return {
         message: () => {
-          console.info(result.query)
           return `"${result.query}" is a known failure`
         },
         pass: true,
@@ -54,11 +71,13 @@ expect.extend({
 
 test.each(works)('works.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'works'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'works' &&
+      template.queryEnv === queryEnv
   )
 
-  const result = await testService({
-    env: template.env,
+  const result = await service({
+    queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
   })
@@ -70,11 +89,13 @@ test.each(works)('works.$id', async ({ id }) => {
 
 test.each(images)('images.$id', async ({ id }) => {
   const template = searchTemplates.find(
-    (template) => getNamespaceFromIndexName(template.index) === 'images'
+    (template) =>
+      getNamespaceFromIndexName(template.index) === 'images' &&
+      template.queryEnv === queryEnv
   )
 
-  const result = await testService({
-    env: template.env,
+  const result = await service({
+    queryEnv: template.queryEnv,
     index: template.index,
     testId: id,
   })

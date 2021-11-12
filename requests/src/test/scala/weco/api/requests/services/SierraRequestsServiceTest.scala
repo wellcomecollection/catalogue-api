@@ -153,6 +153,80 @@ class SierraRequestsServiceTest
           }
         }
       }
+
+      it("ignores holds that correspond to inter-library-records") {
+        val patron = createSierraPatronNumber
+
+        val item = createSierraItemNumber
+
+        val responses = Seq(
+          (
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+            ),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "total": 2,
+                   |  "start": 0,
+                   |  "entries": [
+                   |    {
+                   |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                   |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/101339@illd",
+                   |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                   |      "frozen": false,
+                   |      "placed": "2021-01-12",
+                   |      "notWantedBeforeDate": "2021-01-12",
+                   |      "pickupLocation": {"code": "illd", "name": "ILL Department"},
+                   |      "status": {"code": "0", "name": "on hold."}
+                   |    },
+                   |    {
+                   |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
+                   |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}",
+                   |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
+                   |      "frozen": false,
+                   |      "placed": "2021-05-07",
+                   |      "notWantedBeforeDate": "2021-05-07",
+                   |      "pickupLocation": {"code": "sotop", "name": "Rare Materials Room"},
+                   |      "status": {"code": "i", "name": "item hold ready for pickup"}
+                   |    }
+                   |  ]
+                   |}
+                   |""".stripMargin
+              )
+            )
+          )
+        )
+
+        withSierraService(responses) { service =>
+          val future = service.getHolds(patron)
+
+          whenReady(future) { result =>
+            val itemSrcId = SourceIdentifier(
+              identifierType = SierraSystemNumber,
+              ontologyType = "Item",
+              value = item.withCheckDigit
+            )
+
+            result shouldBe Map(
+              itemSrcId -> SierraHold(
+                id = new URI(
+                  "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222"
+                ),
+                record = new URI(
+                  s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}"
+                ),
+                pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
+                pickupByDate = None,
+                status = SierraHoldStatus("i", "item hold ready for pickup")
+              )
+            )
+          }
+        }
+      }
     }
 
     describe("placeHold") {

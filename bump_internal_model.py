@@ -33,7 +33,7 @@ def get_date_from_elastic_config():
     )
     config_text = config_file.read()
     config_file.close()
-    date = re.findall('val indexDate = "(.*)"', config_text)[0]
+    date = re.findall('val pipelineDate = "(.*)"', config_text)[0]
     return date
 
 

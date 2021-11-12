@@ -21,10 +21,13 @@ export async function listIndices(): Promise<Index[]> {
   return indices
 }
 
-export async function getProductionQueries() {
-  const res = await fetch(
-    'https://api.wellcomecollection.org/catalogue/v2/search-templates.json'
-  )
+async function getEnvironmentQueries(env: QueryEnv) {
+  const apiUrl = {
+    'production': 'https://api.wellcomecollection.org/catalogue/v2/search-templates.json',
+    'staging': 'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json',
+  }[env]
+
+  const res = await fetch(apiUrl)
   const json: ApiSearchTemplateRes = await res.json()
   const queries = Object.fromEntries(
     json.templates.map((template) => {
@@ -58,10 +61,19 @@ export async function getCandidateQueries() {
   return queries
 }
 
-export async function getQueries() {
+async function getQueryFor(queryEnv: QueryEnv) {
+  switch (queryEnv) {
+    case 'candidate': return await getCandidateQueries()
+    case 'production': return await getEnvironmentQueries('production')
+    case 'staging': return await getEnvironmentQueries('staging')
+  }
+}
+
+async function getQueries() {
   const queries = {
-    candidate: await getCandidateQueries(),
-    production: await getProductionQueries(),
+    candidate: await getQueryFor('candidate'),
+    production: await getQueryFor('production'),
+    staging: await getQueryFor('staging'),
   }
   return queries
 }
@@ -90,9 +102,9 @@ export async function getTemplate(
   queryEnv: QueryEnv,
   index: Index
 ): Promise<SearchTemplate> {
-  const queries = await getQueries()
-  const query = queries[queryEnv][getNamespaceFromIndexName(index)]
-  return new SearchTemplate(queryEnv, index, query)
+  const query = await getQueryFor(queryEnv)
+  const namespacedQuery = query[getNamespaceFromIndexName(index)]
+  return new SearchTemplate(queryEnv, index, namespacedQuery)
 }
 
 export default getTemplates
