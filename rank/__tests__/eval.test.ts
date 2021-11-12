@@ -1,42 +1,44 @@
 import {
+  Namespace,
   QueryEnv,
   SearchTemplate,
-  SearchTemplateString,
   getNamespaceFromIndexName,
+  namespaces,
   queryEnvs,
 } from '../types/searchTemplate'
-import { getTemplates, listIndices } from '../services/search-templates'
 
 import { TestResult } from '../types/test'
+import { gatherArgs } from '../scripts/utils'
+import { getTemplates } from '../services/search-templates'
 import service from '../services/test'
 import tests from '../data/tests'
-import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
 const { works, images } = tests
 
 let searchTemplates: SearchTemplate[]
+let queryEnv: QueryEnv
+let namespace: Namespace
+let testId: string
+
+const testIds = tests.works
+  .map(({ id }) => id)
+  .concat(tests.images.map(({ id }) => id))
+  .filter((v, i, a) => a.indexOf(v) === i)
+
 beforeAll(async () => {
   searchTemplates = await getTemplates()
-})
 
-const { queryEnv } = yargs(process.argv)
-  .options({
-    queryEnv: { type: 'string', demandOption: true, choices: queryEnvs },
+  const args = await gatherArgs({
+    queryEnv: { type: 'string', choices: queryEnvs },
+    namespace: { type: 'string', choices: namespaces },
+    testId: { type: 'string', choices: testIds },
   })
-  // Passing .exitProcess(false) means we get helpful error messages
-  // from jest/yargs if the CLI parsing fails.
-  //
-  // Compare:
-  //
-  //      process.exit called with "1"
-  //
-  // and:
-  //
-  //      Missing required argument: queryEnv
-  //
-  .exitProcess(false)
-  .parseSync()
+
+  queryEnv = args.queryEnv as QueryEnv
+  namespace = args.namespace as Namespace
+  testId = args.testId as string
+})
 
 declare global {
   namespace jest {

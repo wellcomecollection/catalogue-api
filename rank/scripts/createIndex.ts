@@ -1,4 +1,4 @@
-import { code, error, info, success } from './utils'
+import { code, error, info, pretty, success } from './utils'
 
 import { getNamespaceFromIndexName } from '../types/searchTemplate'
 import { getRankClient } from '../services/elasticsearch'
@@ -31,13 +31,7 @@ async function go() {
     (mod) => mod.default
   )
 
-  const namespace = getNamespaceFromIndexName(localIndex)
-  info(`Your new index should start with it's namespace "works-" or "images-"`)
-  const remoteIndex = await prompts({
-    type: 'text',
-    name: 'value',
-    message: `What should your new index be called?`,
-  }).then(({ value }) => value)
+  const remoteIndex = `${getNamespaceFromIndexName(localIndex)}-candidate`
 
   const client = getRankClient()
   const { body: putIndexRes } = await client.indices.create({
@@ -78,20 +72,17 @@ async function go() {
       body: {
         source: {
           index: localIndex,
+          size: 100, // batch size reduced to avoid memory issues
         },
         dest: {
           index: remoteIndex,
         },
       },
     })
-    if (reindexResp.acknowledged) {
-      success('Reindex started successfully')
-      info('You can monitor the reindex task by running:')
-      code('yarn checkReindex')
-    } else {
-      error('Failed to start reindex with error:')
-      console.info(reindexResp.error)
-    }
+
+    success('Reindex started successfully')
+    info('You can monitor the reindex task by running:')
+    code('yarn checkReindex')
   }
 }
 
