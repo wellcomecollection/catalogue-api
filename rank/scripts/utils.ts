@@ -37,10 +37,22 @@ async function gatherArgs(options) {
   // if the values aren't in the provided args, prompt the user to supply them
   for (const [key, value] of Object.entries(options)) {
     if (!(key in args)) {
-      // if there's a default value, don't prompt the user
+      // if there's a default value, use it, and don't prompt the user at all
       args[key] = value['default']
         ? value['default']
-        : await prompts({
+        : // if the arg type is an array, prompt the user to select multiple options
+        value['type'] === 'array'
+        ? await prompts({
+            type: 'multiselect',
+            name: 'value',
+            message: key,
+            choices: value['choices'].map((choice) => ({
+              title: choice,
+              value: choice,
+            })),
+          }).then(({ value }) => value)
+        : // otherwise, only allow them to choose a single option from the list
+          await prompts({
             type: 'select',
             name: 'value',
             message: key,

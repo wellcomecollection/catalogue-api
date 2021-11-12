@@ -3,42 +3,44 @@ import {
   QueryEnv,
   SearchTemplate,
   getNamespaceFromIndexName,
-  namespaces,
+  namespaces as possibleNamespaces,
   queryEnvs,
 } from '../types/searchTemplate'
+import { gatherArgs, info, pretty } from '../scripts/utils'
+import { images as imageTests, works as workTests } from '../data/tests'
 
 import { TestResult } from '../types/test'
-import { gatherArgs } from '../scripts/utils'
 import { getTemplates } from '../services/search-templates'
-import { info } from 'console'
 import service from '../services/test'
-import tests from '../data/tests'
 
 global.fetch = require('node-fetch')
-const { works, images } = tests
 
 let searchTemplates: SearchTemplate[]
 let queryEnv: QueryEnv
-let namespace: Namespace
-let testsToRun: string[]
+let namespaces: Namespace[]
+let testIds: string[]
 
 beforeAll(async () => {
   searchTemplates = await getTemplates()
 
-  const testIds = tests.works
+  const possibleTestIds = workTests
     .map(({ id }) => id)
-    .concat(tests.images.map(({ id }) => id))
+    .concat(imageTests.map(({ id }) => id))
     .filter((v, i, a) => a.indexOf(v) === i)
 
   const args = await gatherArgs({
     queryEnv: { type: 'string', choices: queryEnvs },
-    namespace: { type: 'string', choices: namespaces },
-    testsToRun: { type: 'array', choices: testIds, default: testIds },
+    namespaces: { type: 'array', choices: possibleNamespaces },
+    testIds: {
+      type: 'array',
+      choices: possibleTestIds,
+      default: possibleTestIds,
+    },
   })
 
   queryEnv = args.queryEnv as QueryEnv
-  namespace = args.namespace as Namespace
-  testsToRun = args.testsToRun as string[]
+  namespaces = args.namespaces as Namespace[]
+  testIds = args.testIds as string[]
 })
 
 declare global {
@@ -72,7 +74,7 @@ expect.extend({
   },
 })
 
-test.each(works)('works.$id', async ({ id }) => {
+test.each(workTests)('works.$id', async ({ id }) => {
   const template = searchTemplates.find(
     (template) =>
       getNamespaceFromIndexName(template.index) === 'works' &&
@@ -90,7 +92,7 @@ test.each(works)('works.$id', async ({ id }) => {
   })
 })
 
-test.each(images)('images.$id', async ({ id }) => {
+test.each(imageTests)('images.$id', async ({ id }) => {
   const template = searchTemplates.find(
     (template) =>
       getNamespaceFromIndexName(template.index) === 'images' &&

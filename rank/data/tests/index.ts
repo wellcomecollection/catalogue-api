@@ -5,4 +5,5 @@ const tests = {
   works,
   images,
 }
+export { images, works }
 export default tests
