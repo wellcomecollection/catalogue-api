@@ -7,6 +7,9 @@ const {
   ES_RATINGS_USER,
   ES_RATINGS_PASSWORD,
   ES_RATINGS_CLOUD_ID,
+  ES_REPORTING_USER,
+  ES_REPORTING_PASSWORD,
+  ES_REPORTING_CLOUD_ID,
 } = process.env
 
 let rankClient
@@ -29,6 +32,22 @@ export function getRankClient(): Client {
   return rankClient
 }
 
+let reportingClient
+export function getReportingClient(): Client {
+  if (!reportingClient) {
+    reportingClient = new Client({
+      cloud: {
+        id: ES_REPORTING_CLOUD_ID!,
+      },
+      auth: {
+        username: ES_REPORTING_USER!,
+        password: ES_REPORTING_PASSWORD!,
+      },
+    })
+  }
+  return reportingClient
+}
+
 let ratingClient
 export function getRatingClient(): Client {
   if (!ratingClient) {
@@ -45,4 +64,4 @@ export function getRatingClient(): Client {
   return ratingClient
 }
 
-export { rankClient, ratingClient }
+export { rankClient, reportingClient, ratingClient }
