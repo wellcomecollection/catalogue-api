@@ -1,47 +1,23 @@
-import {
-  Namespace,
-  QueryEnv,
-  SearchTemplate,
-  getNamespaceFromIndexName,
-  namespaces as possibleNamespaces,
-  queryEnvs,
-} from '../types/searchTemplate'
-import { gatherArgs, info, pretty } from '../scripts/utils'
-import { images as imageTests, works as workTests } from '../data/tests'
+import { Index, QueryEnv } from '../types/searchTemplate'
 
 import { TestResult } from '../types/test'
-import { getTemplates } from '../services/search-templates'
 import service from '../services/test'
+import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
 
-let searchTemplates: SearchTemplate[]
-let queryEnv: QueryEnv
-let namespaces: Namespace[]
-let testIds: string[]
-
-beforeAll(async () => {
-  searchTemplates = await getTemplates()
-
-  const possibleTestIds = workTests
-    .map(({ id }) => id)
-    .concat(imageTests.map(({ id }) => id))
-    .filter((v, i, a) => a.indexOf(v) === i)
-
-  const args = await gatherArgs({
-    queryEnv: { type: 'string', choices: queryEnvs },
-    namespaces: { type: 'array', choices: possibleNamespaces },
-    testIds: {
-      type: 'array',
-      choices: possibleTestIds,
-      default: possibleTestIds,
-    },
+const args = yargs(process.argv)
+  .options({
+    queryEnv: { type: 'string', demandOption: true },
+    index: { type: 'string', demandOption: true },
+    testId: { type: 'array', demandOption: true },
   })
+  .exitProcess(false)
+  .parseSync()
 
-  queryEnv = args.queryEnv as QueryEnv
-  namespaces = args.namespaces as Namespace[]
-  testIds = args.testIds as string[]
-})
+const queryEnv = args.queryEnv as QueryEnv
+const index = args.index as Index
+const testIds = args.testId as string[]
 
 declare global {
   namespace jest {
@@ -74,37 +50,8 @@ expect.extend({
   },
 })
 
-test.each(workTests)('works.$id', async ({ id }) => {
-  const template = searchTemplates.find(
-    (template) =>
-      getNamespaceFromIndexName(template.index) === 'works' &&
-      template.queryEnv === queryEnv
-  )
-
-  const result = await service({
-    queryEnv: template.queryEnv,
-    index: template.index,
-    testId: id,
-  })
-
-  result.results.forEach((result) => {
-    expect(result).toPass()
-  })
-})
-
-test.each(imageTests)('images.$id', async ({ id }) => {
-  const template = searchTemplates.find(
-    (template) =>
-      getNamespaceFromIndexName(template.index) === 'images' &&
-      template.queryEnv === queryEnv
-  )
-
-  const result = await service({
-    queryEnv: template.queryEnv,
-    index: template.index,
-    testId: id,
-  })
-
+test.each(testIds)(`${index} ${queryEnv} %s`, async (testId) => {
+  const result = await service({ queryEnv, index, testId })
   result.results.forEach((result) => {
     expect(result).toPass()
   })

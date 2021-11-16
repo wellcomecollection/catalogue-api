@@ -7,7 +7,7 @@ import { RankEvalResponse } from '../types/elasticsearch'
 import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
-import tests from '../data/tests'
+import { tests } from '../data/tests'
 
 type Props = {
   testId: string

@@ -8,7 +8,7 @@ const info = (message: string) => {
 }
 
 const code = (message: string) => {
-  console.log(`\n  ${chalk.bold.cyan(message)}\n`)
+  console.log(`  ${chalk.bold.cyan(message)}\n`)
 }
 
 const success = (message: string) => {
