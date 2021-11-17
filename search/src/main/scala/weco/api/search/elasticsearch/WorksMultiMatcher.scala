@@ -14,7 +14,6 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
 }
 import weco.catalogue.internal_model.index.WorksAnalysis.{
   languages,
-  whitespaceAnalyzer
 }
 
 case object WorksMultiMatcher {
@@ -33,26 +32,12 @@ case object WorksMultiMatcher {
   def apply(q: String): BoolQuery =
     boolQuery()
       .should(
-        MultiMatchQuery(
-          q,
+        MatchQuery(
           queryName = Some("identifiers"),
-          `type` = Some(BEST_FIELDS),
+          field = "search.identifiers",
+          value = q,
           operator = Some(OR),
-          analyzer = Some(whitespaceAnalyzer.name),
-          fields = fieldsWithBoost(
-            boost = 1000,
-            Seq(
-              "state.canonicalId",
-              "state.sourceIdentifier.value",
-              "data.otherIdentifiers.value",
-              "data.items.id.canonicalId",
-              "data.items.id.sourceIdentifier.value",
-              "data.items.id.otherIdentifiers.value",
-              "data.imageData.id.canonicalId",
-              "data.imageData.id.sourceIdentifier.value",
-              "data.imageData.id.otherIdentifiers.value"
-            )
-          )
+          boost = Some(1000)
         ),
         /**
           * This is the different ways we can match on the title fields
