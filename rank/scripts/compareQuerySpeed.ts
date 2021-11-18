@@ -4,7 +4,7 @@ import {
   namespaces,
   queryEnvs,
 } from '../types/searchTemplate'
-import { getQueries, listIndices } from '../services/search-templates'
+import {getQueries, listIndices} from '../services/search-templates'
 import { histogram, info } from './utils'
 
 import bars from 'bars'

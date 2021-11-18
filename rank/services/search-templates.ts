@@ -23,8 +23,10 @@ export async function listIndices(): Promise<Index[]> {
 
 async function getEnvironmentQueries(env: QueryEnv) {
   const apiUrl = {
-    'production': 'https://api.wellcomecollection.org/catalogue/v2/search-templates.json',
-    'staging': 'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json',
+    production:
+      'https://api.wellcomecollection.org/catalogue/v2/search-templates.json',
+    staging:
+      'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json',
   }[env]
 
   const res = await fetch(apiUrl)
@@ -63,13 +65,16 @@ export async function getCandidateQueries() {
 
 async function getQueryFor(queryEnv: QueryEnv) {
   switch (queryEnv) {
-    case 'candidate': return await getCandidateQueries()
-    case 'production': return await getEnvironmentQueries('production')
-    case 'staging': return await getEnvironmentQueries('staging')
+    case 'candidate':
+      return await getCandidateQueries()
+    case 'production':
+      return await getEnvironmentQueries('production')
+    case 'staging':
+      return await getEnvironmentQueries('staging')
   }
 }
 
-async function getQueries() {
+export async function getQueries() {
   const queries = {
     candidate: await getQueryFor('candidate'),
     production: await getQueryFor('production'),
