@@ -12,7 +12,9 @@
     "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
-    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
+    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex",
+    "getSearchTerms": "ts-node -r dotenv/config ./scripts/getSearchTerms",
+    "compareQuerySpeed": "ts-node -r dotenv/config ./scripts/compareQuerySpeed"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.13.0",
@@ -37,6 +39,7 @@
     "@types/yargs": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
+    "bars": "jstrace/bars",
     "cli-progress": "^3.9.1",
     "dotenv": "^10.0.0",
     "eslint": "^7.29.0",
