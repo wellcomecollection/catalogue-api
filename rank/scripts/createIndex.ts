@@ -1,4 +1,4 @@
-import { code, error, info, pretty, success } from './utils'
+import { code, error, info, success } from './utils'
 
 import { getNamespaceFromIndexName } from '../types/searchTemplate'
 import { getRankClient } from '../services/elasticsearch'
@@ -81,7 +81,7 @@ async function go() {
     })
 
     success('Reindex started successfully')
-    info('You can monitor the reindex task by running:')
+    info('You can monitor the reindex by running:')
     code('yarn checkReindex')
   }
 }

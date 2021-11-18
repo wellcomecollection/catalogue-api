@@ -17,7 +17,7 @@ async function go() {
   const args = await gatherArgs({
     index: { type: 'string', choices: indices },
     query: { type: 'string', choices: queryEnvs },
-    testIds: {
+    testId: {
       type: 'array',
       choices: possibleTestIds,
       default: possibleTestIds,
@@ -26,7 +26,7 @@ async function go() {
 
   const index = args.index as Index
   const queryEnv = args.query as QueryEnv
-  const testIds = args.testIds as string[]
+  const testIds = args.testId as string[]
 
   // run the rank tests using the collected arguments
   const command =
@@ -36,12 +36,13 @@ async function go() {
   info('Running:')
   code(command)
 
-  exec(command, (err, stdout, stderr) => {
-    if (err) {
-      console.error(err)
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(error)
       return
     }
     console.log(stdout)
+    console.error(stderr)
   })
 }
 

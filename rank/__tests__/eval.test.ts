@@ -43,7 +43,7 @@ expect.extend({
       }
     } else {
       return {
-        message: () => `"${result.query}" fails`,
+        message: () => `"${result.query}" fails but should pass`,
         pass: false,
       }
     }
