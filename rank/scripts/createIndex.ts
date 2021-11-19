@@ -72,7 +72,7 @@ async function go() {
       body: {
         source: {
           index: localIndex,
-          size: 100, // batch size reduced to avoid memory issues
+          size: 100, // batch size reduced from 1000 to avoid memory issues during reindex
         },
         dest: {
           index: remoteIndex,

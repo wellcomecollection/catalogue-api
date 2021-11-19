@@ -12,7 +12,9 @@ async function go() {
 
   const possibleTestIds = Object.values(possibleTests)
     .flatMap((testSet) => testSet.map((test) => test.id))
-    .filter((v, i, a) => a.indexOf(v) == i) // keep unique
+    // Some test IDs are common across suites - we don't want to display
+    // duplicates, so we filter here to keep only the unique values
+    .filter((v, i, a) => a.indexOf(v) == i)
 
   const args = await gatherArgs({
     index: { type: 'string', choices: indices },
