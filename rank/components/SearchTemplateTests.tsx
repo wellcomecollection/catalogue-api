@@ -7,7 +7,7 @@ import { groupBy, removeEmpty } from '../services/utils'
 
 import { Meta } from './Text'
 import absoluteUrl from 'next-absolute-url'
-import tests from '../data/tests'
+import { tests } from '../data/tests'
 
 type TestResultsProps = {
   test: Test

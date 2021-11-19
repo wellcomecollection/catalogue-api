@@ -1,42 +1,23 @@
-import {
-  QueryEnv,
-  SearchTemplate,
-  SearchTemplateString,
-  getNamespaceFromIndexName,
-  queryEnvs,
-} from '../types/searchTemplate'
-import { getTemplates, listIndices } from '../services/search-templates'
+import { Index, QueryEnv } from '../types/searchTemplate'
 
 import { TestResult } from '../types/test'
 import service from '../services/test'
-import tests from '../data/tests'
 import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
-const { works, images } = tests
 
-let searchTemplates: SearchTemplate[]
-beforeAll(async () => {
-  searchTemplates = await getTemplates()
-})
-
-const { queryEnv } = yargs(process.argv)
+const args = yargs(process.argv)
   .options({
-    queryEnv: { type: 'string', demandOption: true, choices: queryEnvs },
+    queryEnv: { type: 'string', demandOption: true },
+    index: { type: 'string', demandOption: true },
+    testId: { type: 'array', demandOption: true },
   })
-  // Passing .exitProcess(false) means we get helpful error messages
-  // from jest/yargs if the CLI parsing fails.
-  //
-  // Compare:
-  //
-  //      process.exit called with "1"
-  //
-  // and:
-  //
-  //      Missing required argument: queryEnv
-  //
   .exitProcess(false)
   .parseSync()
+
+const queryEnv = args.queryEnv as QueryEnv
+const index = args.index as Index
+const testIds = args.testId as string[]
 
 declare global {
   namespace jest {
@@ -62,44 +43,15 @@ expect.extend({
       }
     } else {
       return {
-        message: () => `"${result.query}" fails`,
+        message: () => `"${result.query}" fails but should pass`,
         pass: false,
       }
     }
   },
 })
 
-test.each(works)('works.$id', async ({ id }) => {
-  const template = searchTemplates.find(
-    (template) =>
-      getNamespaceFromIndexName(template.index) === 'works' &&
-      template.queryEnv === queryEnv
-  )
-
-  const result = await service({
-    queryEnv: template.queryEnv,
-    index: template.index,
-    testId: id,
-  })
-
-  result.results.forEach((result) => {
-    expect(result).toPass()
-  })
-})
-
-test.each(images)('images.$id', async ({ id }) => {
-  const template = searchTemplates.find(
-    (template) =>
-      getNamespaceFromIndexName(template.index) === 'images' &&
-      template.queryEnv === queryEnv
-  )
-
-  const result = await service({
-    queryEnv: template.queryEnv,
-    index: template.index,
-    testId: id,
-  })
-
+test.each(testIds)(`${index} ${queryEnv} %s`, async (testId) => {
+  const result = await service({ queryEnv, index, testId })
   result.results.forEach((result) => {
     expect(result).toPass()
   })

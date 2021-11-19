@@ -40,7 +40,7 @@ async function go() {
         info('')
         success('Reindex complete!')
       }
-    }, 10000) // refresh progress every 10s
+    }, 1000) // refresh progress every 1s
   }
 }
 

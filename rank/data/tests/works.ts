@@ -15,13 +15,11 @@ const tests: Test[] = [
         query: '2013i',
         ratings: ['djmjw2cu'],
         description: 'Reference number as ID',
-        knownFailure: true,
       },
       {
         query: '2599i',
         ratings: ['xxskepr5'],
         description: 'Reference number as ID',
-        knownFailure: true,
       },
       {
         query: 'Cassils Time lapse',
