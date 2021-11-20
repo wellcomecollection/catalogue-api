@@ -50,7 +50,8 @@ case object WorksMultiMatcher {
               "data.items.id.otherIdentifiers.value",
               "data.imageData.id.canonicalId",
               "data.imageData.id.sourceIdentifier.value",
-              "data.imageData.id.otherIdentifiers.value"
+              "data.imageData.id.otherIdentifiers.value",
+              "data.referenceNumber"
             )
           )
         ),

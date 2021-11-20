@@ -13,7 +13,8 @@
             "data.items.id.otherIdentifiers.value^1000.0",
             "data.imageData.id.canonicalId^1000.0",
             "data.imageData.id.sourceIdentifier.value^1000.0",
-            "data.imageData.id.otherIdentifiers.value^1000.0"
+            "data.imageData.id.otherIdentifiers.value^1000.0",
+            "data.referenceNumber^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
