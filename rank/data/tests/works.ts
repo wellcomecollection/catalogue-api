@@ -12,6 +12,11 @@ const tests: Test[] = [
     eval: equalTo1,
     cases: [
       {
+        query: 'DJmjW2cU',
+        ratings: ['djmjw2cu'],
+        description: 'Case insensitive IDs',
+      },
+      {
         query: '2013i',
         ratings: ['djmjw2cu'],
         description: 'Reference number as ID',
@@ -98,6 +103,11 @@ const tests: Test[] = [
         query: 'Atherosclerosis : an introduction to atherosclerosis',
         ratings: ['bcwvtknn', 'rty8296y'],
         description: 'Two works with matching titles',
+      },
+      {
+        query: '2013i 2599i',
+        ratings: ['djmjw2cu', 'xxskepr5'],
+        description: 'Multiple IDs',
       },
       {
         query: 'wa/hmm durham',
