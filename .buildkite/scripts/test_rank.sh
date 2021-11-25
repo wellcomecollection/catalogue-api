@@ -29,6 +29,13 @@ docker run \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
     yarn
 
+# Copy candidate queries into place.
+# TODO: This is a short-term fix to unbreak the build, find a better
+# way to do this.
+ROOT=$(git rev-parse --show-toplevel)
+cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/public/WorksMultiMatcherQuery.json"
+cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
+
 # run tests
 docker run \
     -v $(pwd):/catalogue-api \
