@@ -58,12 +58,12 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
   ): (StatusCode, Option[String]) =
     reason match {
       case HoldRejected.ItemCannotBeRequested =>
-        (StatusCodes.BadRequest, Some(s"You cannot request $itemId"))
+        (StatusCodes.BadRequest, Some(s"You can't request $itemId"))
 
       case HoldRejected.ItemIsOnHoldForAnotherUser =>
         (
           StatusCodes.Conflict,
-          Some(s"Item $itemId is on hold for another reader")
+          Some(s"Item $itemId is on hold for another library member")
         )
 
       case HoldRejected.UserDoesNotExist(patron) =>
@@ -73,7 +73,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         (
           StatusCodes.Forbidden,
           Some(
-            "You are at your account limit and you cannot request more items"
+            "You're at your account limit and you cannot request more items"
           )
         )
 
