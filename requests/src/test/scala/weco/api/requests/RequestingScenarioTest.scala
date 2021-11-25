@@ -293,7 +293,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 400,
                |  "label": "Bad Request",
-               |  "description": "You cannot request ${item.id.canonicalId}"
+               |  "description": "You can't request ${item.id.canonicalId}"
                |}
                |""".stripMargin
           )
@@ -511,7 +511,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 409,
                |  "label": "Conflict",
-               |  "description": "Item ${item.id.canonicalId} is on hold for another reader"
+               |  "description": "Item ${item.id.canonicalId} is on hold for another library member"
                |}
                |""".stripMargin
           )
@@ -590,7 +590,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 403,
                |  "label": "Forbidden",
-               |  "description": "You are at your account limit and you cannot request more items"
+               |  "description": "You're at your account limit and you cannot request more items"
                |}
                |""".stripMargin
           )
@@ -689,7 +689,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 400,
                |  "label": "Bad Request",
-               |  "description": "You cannot request ${item.id.canonicalId}"
+               |  "description": "You can't request ${item.id.canonicalId}"
                |}
                |""".stripMargin
           )
@@ -789,7 +789,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 400,
                |  "label": "Bad Request",
-               |  "description": "You cannot request ${item.id.canonicalId}"
+               |  "description": "You can't request ${item.id.canonicalId}"
                |}
                |""".stripMargin
           )
