@@ -36,6 +36,8 @@ ROOT=$(git rev-parse --show-toplevel)
 cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/public/WorksMultiMatcherQuery.json"
 cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
 
+INDEX=$(curl "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig" | jq -r .worksIndex)
+
 # run tests
 docker run \
     -v $(pwd):/catalogue-api \
@@ -44,4 +46,4 @@ docker run \
     --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
     --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
-    yarn test --queryEnv=production
+    yarn test --queryEnv=production --index="$INDEX" --testId="alternative-spellings,precision,recall,false-positives"
