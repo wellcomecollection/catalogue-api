@@ -46,4 +46,10 @@ docker run \
     --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
     --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
-    yarn test --queryEnv=production --index="$INDEX" --testId="alternative-spellings,precision,recall,false-positives"
+    yarn test \
+        --queryEnv=production \
+        --index="$INDEX" \
+        --testId=alternative-spellings \
+        --testId=precision \
+        --testId=recall \
+        --testId=false-positives
