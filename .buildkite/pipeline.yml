@@ -1,6 +1,4 @@
 steps:
-  - command: .buildkite/scripts/run_autoformat.py
-    label: "autoformat"
   - label: "Internal model tool: check compatibility"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -19,8 +17,11 @@ steps:
     label: "check vendored code"
     agents:
       queue: nano
+
   - wait
 
+  - command: .buildkite/scripts/run_autoformat.py
+    label: "autoformat"
   - command: .buildkite/scripts/run_job.py display
     label: "display"
   - command: .buildkite/scripts/run_job.py search_common
