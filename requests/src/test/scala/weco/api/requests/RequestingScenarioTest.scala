@@ -1153,7 +1153,7 @@ class RequestingScenarioTest
                |  "errorType": "http",
                |  "httpStatus": 403,
                |  "label": "Forbidden",
-               |  "description": "Your account has expired, and you're no longer able to request items. To renew your account, please get in touch with the library team."
+               |  "description": "Your account has expired, and you're no longer able to request items. To renew your account, please <a href=\"library@wellcomecollection.org\">contact the library team</a>."
                |}
                |""".stripMargin
           )
