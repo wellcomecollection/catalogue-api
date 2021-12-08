@@ -20,5 +20,6 @@ object HoldRejected {
   case object SourceSystemNotSupported extends HoldRejected
   case object UserIsAtHoldLimit extends HoldRejected
   case class UserDoesNotExist(patron: SierraPatronNumber) extends HoldRejected
+  case object UserAccountHasExpired extends HoldRejected
   case object UnknownReason extends HoldRejected
 }

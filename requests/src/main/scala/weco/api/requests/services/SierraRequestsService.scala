@@ -12,6 +12,7 @@ import weco.sierra.models.errors.{SierraErrorCode, SierraItemLookupError}
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
@@ -67,6 +68,7 @@ class SierraRequestsService(
       //      of whether this particular item can be requested)
       //    - They're not at their hold limit and they don't have a hold on this item --
       //      so we look to see if this item can be requested.
+      //    - The user's patron record has expired and they can no longer make requests.
       //
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
@@ -75,7 +77,16 @@ class SierraRequestsService(
             Future.successful(Right(HoldAccepted.HoldAlreadyExists))
           case holds if holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
-          case _ => checkIfItemCanBeRequested(item).map(Left(_))
+          case _ =>
+            checkIfItemCanBeRequested(item)
+              .flatMap {
+                case None     => checkIfUserCanMakeRequests(patron)
+                case rejected => Future.successful(rejected)
+              }
+              .map {
+                case Some(rejected) => Left(rejected)
+                case None           => Left(HoldRejected.UnknownReason)
+              }
         }
 
       // If the hold fails because the bib record couldn't be loaded, that's a strong
@@ -88,7 +99,10 @@ class SierraRequestsService(
       // If the item really doesn't exist, we'll find out pretty quickly.
       //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-        checkIfItemCanBeRequested(item).map(Left(_))
+        checkIfItemCanBeRequested(item).map {
+          case Some(rejected) => Left(rejected)
+          case None           => Left(HoldRejected.UnknownReason)
+        }
 
       // A 404 response from the Sierra API means the patron record doesn't exist.
       //
@@ -106,7 +120,7 @@ class SierraRequestsService(
 
   private def checkIfItemCanBeRequested(
     item: SierraItemNumber
-  ): Future[HoldRejected] =
+  ): Future[Option[HoldRejected]] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -119,7 +133,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra"
         )
-        HoldRejected.ItemCannotBeRequested
+        Some(HoldRejected.ItemCannotBeRequested)
 
       // If the holdCount is non-zero, that means another user has a hold on this item,
       // and only a single user can have an item requested at a time.
@@ -128,7 +142,7 @@ class SierraRequestsService(
       // don't have it, this item must be on hold for another user.
       case Right(SierraItemData(_, _, _, _, Some(holdCount), _, _, _))
           if holdCount > 0 =>
-        HoldRejected.ItemIsOnHoldForAnotherUser
+        Some(HoldRejected.ItemIsOnHoldForAnotherUser)
 
       // This would be extremely unusual in practice -- when items are deleted
       // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
@@ -141,7 +155,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which does not exist in Sierra"
         )
-        HoldRejected.ItemMissingFromSourceSystem
+        Some(HoldRejected.ItemMissingFromSourceSystem)
 
       // If the rules for requesting prevent an item from being requested, we can
       // explain this to the user.
@@ -153,7 +167,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which is blocked by rules for requesting"
         )
-        HoldRejected.ItemCannotBeRequested
+        Some(HoldRejected.ItemCannotBeRequested)
 
       // At this point, we've run out of reasons why Sierra didn't let us place a hold on
       // this item.
@@ -164,8 +178,27 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which failed for an unknown reason"
         )
-        HoldRejected.UnknownReason
+        None
     }
+
+  private def checkIfUserCanMakeRequests(patron: SierraPatronNumber): Future[Option[HoldRejected]] =
+    sierraSource.lookupPatronExpirationDate(patron)
+      .map {
+        // I'm being a bit vague about the exact expiration date here, because I don't know
+        // exactly how strict Sierra is and it's not worth finding out in detail.
+        //
+        // e.g. if your expiration date is 2001-01-01, can you make holds until the end of
+        // that day, or is the last day you can make holds 2000-12-31?  I don't know.
+        //
+        // We just assume that an item is available, not on hold for another user, and
+        // you get an otherwise unexplained hold rejection within a day or so of your
+        // account expiring, that's probably the reason.
+        case Right(Some(localDate)) if localDate.isBefore(LocalDate.now().minusDays(1L)) =>
+          Some(HoldRejected.UserAccountHasExpired)
+
+        case _ => None
+      }
+      .recover { case _: Throwable => None }
 
   def getHolds(
     patronNumber: SierraPatronNumber
