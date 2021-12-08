@@ -181,8 +181,11 @@ class SierraRequestsService(
         None
     }
 
-  private def checkIfUserCanMakeRequests(patron: SierraPatronNumber): Future[Option[HoldRejected]] =
-    sierraSource.lookupPatronExpirationDate(patron)
+  private def checkIfUserCanMakeRequests(
+    patron: SierraPatronNumber
+  ): Future[Option[HoldRejected]] =
+    sierraSource
+      .lookupPatronExpirationDate(patron)
       .map {
         // I'm being a bit vague about the exact expiration date here, because I don't know
         // exactly how strict Sierra is and it's not worth finding out in detail.
@@ -193,7 +196,8 @@ class SierraRequestsService(
         // We just assume that an item is available, not on hold for another user, and
         // you get an otherwise unexplained hold rejection within a day or so of your
         // account expiring, that's probably the reason.
-        case Right(Some(localDate)) if localDate.isBefore(LocalDate.now().minusDays(1L)) =>
+        case Right(Some(localDate))
+            if localDate.isBefore(LocalDate.now().minusDays(1L)) =>
           Some(HoldRejected.UserAccountHasExpired)
 
         case _ => None

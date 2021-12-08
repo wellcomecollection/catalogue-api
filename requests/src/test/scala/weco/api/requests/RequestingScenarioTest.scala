@@ -1106,7 +1106,8 @@ class RequestingScenarioTest
           ),
           (
             HttpRequest(
-              uri = s"http://sierra:1234/v5/patrons/$patronNumber?fields=expirationDate"
+              uri =
+                s"http://sierra:1234/v5/patrons/$patronNumber?fields=expirationDate"
             ),
             HttpResponse(
               entity = HttpEntity(
