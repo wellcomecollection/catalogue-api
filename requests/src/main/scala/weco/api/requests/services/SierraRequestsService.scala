@@ -75,7 +75,7 @@ class SierraRequestsService(
             Future.successful(Right(HoldAccepted.HoldAlreadyExists))
           case holds if holds.size >= holdLimit =>
             Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
-          case _ => checkIfItemCanBeRequested(item)
+          case _ => checkIfItemCanBeRequested(item).map(Left(_))
         }
 
       // If the hold fails because the bib record couldn't be loaded, that's a strong
@@ -88,7 +88,7 @@ class SierraRequestsService(
       // If the item really doesn't exist, we'll find out pretty quickly.
       //
       case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-        checkIfItemCanBeRequested(item)
+        checkIfItemCanBeRequested(item).map(Left(_))
 
       // A 404 response from the Sierra API means the patron record doesn't exist.
       //
@@ -106,7 +106,7 @@ class SierraRequestsService(
 
   private def checkIfItemCanBeRequested(
     item: SierraItemNumber
-  ): Future[Either[HoldRejected, HoldAccepted]] =
+  ): Future[HoldRejected] =
     sierraSource.lookupItem(item).map {
 
       // This could occur if the item has been deleted/suppressed in Sierra,
@@ -119,7 +119,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which has been deleted/suppressed in Sierra"
         )
-        Left(HoldRejected.ItemCannotBeRequested)
+        HoldRejected.ItemCannotBeRequested
 
       // If the holdCount is non-zero, that means another user has a hold on this item,
       // and only a single user can have an item requested at a time.
@@ -128,7 +128,7 @@ class SierraRequestsService(
       // don't have it, this item must be on hold for another user.
       case Right(SierraItemData(_, _, _, _, Some(holdCount), _, _, _))
           if holdCount > 0 =>
-        Left(HoldRejected.ItemIsOnHoldForAnotherUser)
+        HoldRejected.ItemIsOnHoldForAnotherUser
 
       // This would be extremely unusual in practice -- when items are deleted
       // in Sierra, it's a soft delete.  The item still exists, but with "deleted: true".
@@ -141,7 +141,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which does not exist in Sierra"
         )
-        Left(HoldRejected.ItemMissingFromSourceSystem)
+        HoldRejected.ItemMissingFromSourceSystem
 
       // If the rules for requesting prevent an item from being requested, we can
       // explain this to the user.
@@ -153,7 +153,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which is blocked by rules for requesting"
         )
-        Left(HoldRejected.ItemCannotBeRequested)
+        HoldRejected.ItemCannotBeRequested
 
       // At this point, we've run out of reasons why Sierra didn't let us place a hold on
       // this item.
@@ -164,7 +164,7 @@ class SierraRequestsService(
         warn(
           s"User tried to place a hold on item $item, which failed for an unknown reason"
         )
-        Left(HoldRejected.UnknownReason)
+        HoldRejected.UnknownReason
     }
 
   def getHolds(
