@@ -77,6 +77,14 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
           )
         )
 
+      case HoldRejected.UserAccountHasExpired =>
+        (
+          StatusCodes.Forbidden,
+          Some(
+            "Your account has expired, and you're no longer able to request items. To renew your account, please <a href=\"library@wellcomecollection.org\">contact the library team</a>."
+          )
+        )
+
       case _ =>
         (StatusCodes.InternalServerError, None)
     }

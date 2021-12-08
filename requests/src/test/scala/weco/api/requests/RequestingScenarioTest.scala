@@ -576,7 +576,7 @@ class RequestingScenarioTest
           )
         )
 
-        Then("the API returns an Accepted response")
+        Then("the API returns a Forbidden response")
         response.status shouldBe StatusCodes.Forbidden
         response.status.intValue shouldBe 403
 
@@ -1037,6 +1037,128 @@ class RequestingScenarioTest
           response,
           statusCode = StatusCodes.InternalServerError
         )
+      }
+    }
+
+    Scenario("A user whose account has expired") {
+      withLocalWorksIndex { index =>
+        // This should be quite unlikely in practice -- we're going to block users from
+        // logging in when their account is expired -- but if they do get a request off,
+        // we can provide a useful error message.
+
+        Given("a physical item from Sierra in the catalogue API")
+        val itemNumber = createSierraItemNumber
+        val item = createIdentifiedSierraItemWith(itemNumber)
+        val work = indexedWork().items(List(item))
+
+        And("and a user whose account has expired")
+        val patronNumber = createSierraPatronNumber
+        val responses = Seq(
+          (
+            createHoldRequest(patronNumber, itemNumber),
+            HttpResponse(
+              status = StatusCodes.NotFound,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 132,
+                  |  "specificCode": 2,
+                  |  "httpStatus": 500,
+                  |  "name": "XCirc error",
+                  |  "description": "XCirc error : There is a problem with your library record.  Please see a librarian."
+                  |}
+                  |""".stripMargin
+              )
+            )
+          ),
+          (
+            createListHoldsRequest(patronNumber),
+            createListHoldsResponse(patronNumber, items = Seq())
+          ),
+          (
+            createItemRequest(itemNumber),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "total": 1,
+                   |  "start": 0,
+                   |  "entries": [
+                   |    {
+                   |      "id": "$itemNumber",
+                   |      "deletedDate": "2001-01-01",
+                   |      "deleted": false,
+                   |      "suppressed": false,
+                   |      "holdCount": 0,
+                   |      "fixedFields": {
+                   |        "79": {"label": "LOCATION", "value": "scmac", "display": "Closed stores Arch. & MSS"},
+                   |        "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                   |        "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                   |      }
+                   |    }
+                   |  ]
+                   |}
+                   |""".stripMargin
+              )
+            )
+          ),
+          (
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patronNumber?fields=expirationDate"
+            ),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "id": ${patronNumber.withoutCheckDigit},
+                   |  "expirationDate": "2001-01-01"
+                   |}
+                   |""".stripMargin
+              )
+            )
+          )
+        )
+
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
+
+        When("the user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
+        )
+
+        Then("the API returns a Forbidden response")
+        response.status shouldBe StatusCodes.Forbidden
+        response.status.intValue shouldBe 403
+
+        And("the body explains the error")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 403,
+               |  "label": "Forbidden",
+               |  "description": "Your account has expired, and you're no longer able to request items. To renew your account, please <a href=\\\"library@wellcomecollection.org\\\">contact the library team</a>."
+               |}
+               |""".stripMargin
+          )
+        }
       }
     }
   }
