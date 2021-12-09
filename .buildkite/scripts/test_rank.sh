@@ -36,7 +36,6 @@ ROOT=$(git rev-parse --show-toplevel)
 cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/public/WorksMultiMatcherQuery.json"
 cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
 
-# case statement to choose the correct index
 case $QUERY_ENV in
     candidate | stage)
         SUBDOMAIN="api-stage"
