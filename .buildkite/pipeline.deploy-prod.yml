@@ -76,3 +76,8 @@ steps:
     build:
       env:
         PLAYWRIGHT_BASE_URL: https://wellcomecollection.org
+
+  - label: "Rank tests: Catalogue API (prod)"
+    command: ./.buildkite/scripts/test_rank.sh 
+    env:
+      QUERY_ENV: prod
