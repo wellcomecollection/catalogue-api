@@ -30,6 +30,11 @@ steps:
     label: "stacks_common"
   - command: .buildkite/scripts/run_job.py search
     label: "Search API (Works & Images)"
+  - command: .buildkite/scripts/test_rank.sh
+    label: "rank"
+    env:
+      QUERY_ENV: "candidate"
+
   - command: .buildkite/scripts/run_job.py items
     label: "Stacks: Items API"
   - command: .buildkite/scripts/run_job.py requests
