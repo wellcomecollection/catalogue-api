@@ -37,10 +37,10 @@ cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/pub
 cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
 
 case $QUERY_ENV in
-    candidate | stage)
+    candidate | staging)
         SUBDOMAIN="api-stage"
         ;;
-    prod)
+    production)
         SUBDOMAIN="api"
         ;;
     *)
