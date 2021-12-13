@@ -58,6 +58,11 @@ steps:
         PLAYWRIGHT_BASE_URL: https://wellcomecollection.org
         USE_STAGE_APIS: true
 
+  - label: "Rank tests: Catalogue API (stage)"
+    command: ./.buildkite/scripts/test_rank.sh 
+    env:
+      QUERY_ENV: stage
+
   - wait
 
   - label: trigger prod deploy

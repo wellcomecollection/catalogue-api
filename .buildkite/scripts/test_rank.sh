@@ -36,7 +36,21 @@ ROOT=$(git rev-parse --show-toplevel)
 cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/public/WorksMultiMatcherQuery.json"
 cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
 
-INDEX=$(curl "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig" | jq -r .worksIndex)
+case $QUERY_ENV in
+    candidate | stage)
+        SUBDOMAIN="api-stage"
+        ;;
+    prod)
+        SUBDOMAIN="api"
+        ;;
+    *)
+        echo "Invalid QUERY_ENV: $QUERY_ENV"
+        exit 1
+        ;;
+esac
+
+URL="https://${SUBDOMAIN}.wellcomecollection.org/catalogue/v2/_elasticConfig"
+INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 
 # run tests
 docker run \
@@ -47,7 +61,7 @@ docker run \
     --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
     yarn test \
-        --queryEnv=production \
+        --queryEnv=$QUERY_ENV \
         --index="$INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
