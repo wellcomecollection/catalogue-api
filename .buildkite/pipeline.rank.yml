@@ -1,4 +1,4 @@
 steps:
   - command: ./.buildkite/scripts/test_rank.sh
     env:
-      QUERY_ENV: "prod"
+      QUERY_ENV: "production"

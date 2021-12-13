@@ -61,7 +61,7 @@ steps:
   - label: "Rank tests: Catalogue API (stage)"
     command: ./.buildkite/scripts/test_rank.sh 
     env:
-      QUERY_ENV: stage
+      QUERY_ENV: "staging"
 
   - wait
 
