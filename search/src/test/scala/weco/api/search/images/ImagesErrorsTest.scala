@@ -23,23 +23,20 @@ class ImagesErrorsTest
         description = s"Image not found for identifier $badId"
       )
     }
-  }
 
-  it("returns a 404 error if the user asks for a non-existent index") {
-    withImagesApi {
-      case (_, routes) =>
-        val indexName = createIndexName
+    it("looking for a non-existent index") {
+      val indexName = createIndexName
 
-        val testPaths = Table(
-          "path",
-          s"$rootPath/images?_index=$indexName",
-          s"$rootPath/images?_index=$indexName&query=fish",
-          s"$rootPath/images/$createCanonicalId?_index=$indexName"
-        )
+      val testPaths = Table(
+        "path",
+        s"$rootPath/images?_index=$indexName",
+        s"$rootPath/images?_index=$indexName&query=fish",
+        s"$rootPath/images/$createCanonicalId?_index=$indexName"
+      )
 
-        forAll(testPaths) { path =>
-          assertIsNotFound(path, description = s"There is no index $indexName")
-        }
+      forAll(testPaths) { path =>
+        assertIsNotFound(path, description = s"There is no index $indexName")
+      }
     }
   }
 
