@@ -15,6 +15,14 @@ class ImagesErrorsTest
         description = s"Image not found for identifier $id"
       )
     }
+
+    it("looking up an image with a malformed identifier") {
+      val badId = "zd224ncv]"
+      assertIsNotFound(
+        s"$rootPath/images/$badId",
+        description = s"Image not found for identifier $badId"
+      )
+    }
   }
 
   it("returns a 404 error if the user asks for a non-existent index") {
