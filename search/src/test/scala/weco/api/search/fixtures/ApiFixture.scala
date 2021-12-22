@@ -129,7 +129,7 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
         )
     }
 
-  def sortedJson(unordered: Boolean)(json: Json): Json =
+  private def sortedJson(unordered: Boolean)(json: Json): Json =
     json.arrayOrObject(
       json,
       array => {
