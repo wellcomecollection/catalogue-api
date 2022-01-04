@@ -50,9 +50,9 @@ case $QUERY_ENV in
 esac
 
 URL="https://${SUBDOMAIN}.wellcomecollection.org/catalogue/v2/_elasticConfig"
-INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 
-# run tests
+# run works tests
+WORKS_INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 docker run \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
@@ -62,7 +62,25 @@ docker run \
     760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
     yarn test \
         --queryEnv=$QUERY_ENV \
-        --index="$INDEX" \
+        --index="$WORKS_INDEX" \
+        --testId=alternative-spellings \
+        --testId=precision \
+        --testId=recall \
+        --testId=false-positives
+
+
+# run images tests
+IMAGES_INDEX=$(curl -s "${URL}" | jq -r .imagesIndex)
+docker run \
+    -v $(pwd):/catalogue-api \
+    --workdir /catalogue-api/rank \
+    --env ES_RANK_USER=$ES_RANK_USER \
+    --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
+    --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
+    760097843905.dkr.ecr.eu-west-1.amazonaws.com/node:14-alpine \
+    yarn test \
+        --queryEnv=$QUERY_ENV \
+        --index="$IMAGES_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
         --testId=recall \
