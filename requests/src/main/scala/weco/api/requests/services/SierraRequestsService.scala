@@ -174,9 +174,9 @@ class SierraRequestsService(
       //
       // We log a warning so we have a bit of useful debugging information to go on, and
       // then we bubble up the failure.
-      case _ =>
+      case Left(SierraItemLookupError.UnknownError(code)) =>
         warn(
-          s"User tried to place a hold on item $item, which failed for an unknown reason"
+          s"User tried to place a hold on item $item, which failed with $code"
         )
         None
     }
