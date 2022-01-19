@@ -19,7 +19,7 @@ import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.{FixedField, VarField}
 
 class SierraItemAccessTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with SierraDataGenerators {
   describe("an item in the closed stores") {
@@ -454,7 +454,7 @@ class SierraItemAccessTest
             method = AccessMethod.NotRequestable,
             status = Some(AccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Enquiry Desk.")
           )
       }
 
@@ -488,7 +488,7 @@ class SierraItemAccessTest
             method = AccessMethod.NotRequestable,
             status = Some(AccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Enquiry Desk.")
           )
       }
 
@@ -525,7 +525,7 @@ class SierraItemAccessTest
             method = AccessMethod.NotRequestable,
             status = Some(AccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Enquiry Desk.")
           )
       }
 
@@ -558,7 +558,7 @@ class SierraItemAccessTest
             method = AccessMethod.NotRequestable,
             status = Some(AccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Enquiry Desk.")
           )
       }
     }
@@ -639,7 +639,7 @@ class SierraItemAccessTest
         )
 
         ac.note shouldBe Some(
-          "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+          "Item is in use by another reader. Please ask at Enquiry Desk.")
         note shouldBe None
       }
 
