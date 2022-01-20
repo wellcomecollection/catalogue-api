@@ -118,7 +118,9 @@ class ItemUpdateServiceTest
   val onHoldAccessCondition = AccessCondition(
     method = AccessMethod.NotRequestable,
     status = Some(TemporarilyUnavailable),
-    note = Some("Item is in use by another reader. Please ask at Library Enquiry Desk.")
+    note = Some(
+      "Item is in use by another reader. Please ask at Library Enquiry Desk."
+    )
   )
 
   val onlineRequestAccessCondition = AccessCondition(
