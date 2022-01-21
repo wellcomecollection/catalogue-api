@@ -9,7 +9,7 @@ import weco.messaging.sqs.SQSStream
 import weco.typesafe.Runnable
 
 import scala.concurrent.Future
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 class SnapshotGeneratorWorkerService(
   snapshotService: SnapshotService,
@@ -26,7 +26,12 @@ class SnapshotGeneratorWorkerService(
   private def processMessage(message: NotificationMessage): Try[Unit] =
     for {
       snapshotJob <- fromJson[SnapshotJob](message.body)
+
       completedSnapshotJob <- snapshotService.generateSnapshot(snapshotJob)
-      _ <- messageSender.sendT(completedSnapshotJob)
+
+      _ <- messageSender.sendT(completedSnapshotJob) match {
+        case Right(_)  => Success(())
+        case Left(err) => Failure(err.e)
+      }
     } yield ()
 }
