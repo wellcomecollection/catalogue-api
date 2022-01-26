@@ -21,12 +21,10 @@ object SingleWorkParams extends QueryParamsUtils {
   // parameter is not correctly parsed. More info on custom directives is
   // available here:
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
-  def parse =
-    parameter(
-      (
-        "include".as[WorksIncludes].?,
-        "_index".as[String].?
-      )
+  def parse: Directive[Tuple1[SingleWorkParams]] =
+    parameters(
+      "include".as[WorksIncludes].?,
+      "_index".as[String].?
     ).tmap((SingleWorkParams.apply _).tupled(_))
 
   implicit val decodePaths: Decoder[List[String]] =
@@ -125,29 +123,27 @@ object MultipleWorksParams extends QueryParamsUtils {
   // available here:
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
   def parse: Directive[Tuple1[MultipleWorksParams]] =
-    parameter(
-      (
-        "page".as[Int].?,
-        "pageSize".as[Int].?,
-        "workType".as[FormatFilter] ?,
-        "production.dates.from".as[LocalDate].?,
-        "production.dates.to".as[LocalDate].?,
-        "languages".as[LanguagesFilter].?,
-        "genres.label".as[GenreFilter].?,
-        "subjects.label".as[SubjectFilter].?,
-        "contributors.agent.label".as[ContributorsFilter].?,
-        "items.locations.license".as[LicenseFilter].?,
-        "include".as[WorksIncludes].?,
-        "aggregations".as[List[WorkAggregationRequest]].?,
-        "sort".as[List[SortRequest]].?,
-        "sortOrder".as[SortingOrder].?,
-        "query".as[String].?,
-        "identifiers".as[IdentifiersFilter].?,
-        "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
-        "items.locations.accessConditions.status".as[AccessStatusFilter].?,
-        "type".as[WorkTypeFilter].?,
-        "partOf".as[PartOfFilter].?
-      )
+    parameters(
+      "page".as[Int].?,
+      "pageSize".as[Int].?,
+      "workType".as[FormatFilter] ?,
+      "production.dates.from".as[LocalDate].?,
+      "production.dates.to".as[LocalDate].?,
+      "languages".as[LanguagesFilter].?,
+      "genres.label".as[GenreFilter].?,
+      "subjects.label".as[SubjectFilter].?,
+      "contributors.agent.label".as[ContributorsFilter].?,
+      "items.locations.license".as[LicenseFilter].?,
+      "include".as[WorksIncludes].?,
+      "aggregations".as[List[WorkAggregationRequest]].?,
+      "sort".as[List[SortRequest]].?,
+      "sortOrder".as[SortingOrder].?,
+      "query".as[String].?,
+      "identifiers".as[IdentifiersFilter].?,
+      "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
+      "items.locations.accessConditions.status".as[AccessStatusFilter].?,
+      "type".as[WorkTypeFilter].?,
+      "partOf".as[PartOfFilter].?
     ).tflatMap {
       case (
           page,
@@ -172,12 +168,10 @@ object MultipleWorksParams extends QueryParamsUtils {
           partOf
           ) =>
         // Scala has a max tuple size of 22 so this is nested to get around this limit
-        parameter(
-          (
-            "availabilities".as[AvailabilitiesFilter].?,
-            "_queryType".as[SearchQueryType].?,
-            "_index".as[String].?
-          )
+        parameters(
+          "availabilities".as[AvailabilitiesFilter].?,
+          "_queryType".as[SearchQueryType].?,
+          "_index".as[String].?
         ).tflatMap {
           case (availabilities, queryType, index) =>
             val params = MultipleWorksParams(
