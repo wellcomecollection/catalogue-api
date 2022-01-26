@@ -13,10 +13,8 @@ case class SingleImageParams(
 object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
-      (
-        "include".as[SingleImageIncludes].?,
-        "_index".as[String].?
-      )
+      "include".as[SingleImageIncludes].?,
+      "_index".as[String].?
     ).tmap((SingleImageParams.apply _).tupled(_))
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
@@ -69,19 +67,17 @@ object MultipleImagesParams extends QueryParamsUtils {
   import CommonDecoders._
 
   def parse =
-    parameter(
-      (
-        "page".as[Int].?,
-        "pageSize".as[Int].?,
-        "query".as[String].?,
-        "locations.license".as[LicenseFilter].?,
-        "source.contributors.agent.label".as[ContributorsFilter].?,
-        "source.genres.label".as[GenreFilter].?,
-        "color".as[ColorMustQuery].?,
-        "include".as[MultipleImagesIncludes].?,
-        "aggregations".as[List[ImageAggregationRequest]].?,
-        "_index".as[String].?
-      )
+    parameters(
+      "page".as[Int].?,
+      "pageSize".as[Int].?,
+      "query".as[String].?,
+      "locations.license".as[LicenseFilter].?,
+      "source.contributors.agent.label".as[ContributorsFilter].?,
+      "source.genres.label".as[GenreFilter].?,
+      "color".as[ColorMustQuery].?,
+      "include".as[MultipleImagesIncludes].?,
+      "aggregations".as[List[ImageAggregationRequest]].?,
+      "_index".as[String].?
     ).tflatMap { args =>
       val params = (MultipleImagesParams.apply _).tupled(args)
       validated(params.paginationErrors, params)
