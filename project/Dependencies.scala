@@ -113,7 +113,7 @@ object ExternalDependencies {
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val akka = "2.6.14"
-    val akkaHttp = "10.1.11"
+    val akkaHttp = "10.2.4"
     val aws2 = "2.11.14"
   }
 
@@ -130,7 +130,6 @@ object ExternalDependencies {
     "org.scalatest" %% "scalatest" % versions.scalatest % "test"
   )
 
-  // TODO: Do we need these???
   val akkaHttpDependencies = Seq(
     "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
     "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
