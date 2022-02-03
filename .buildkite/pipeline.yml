@@ -22,14 +22,29 @@ steps:
 
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py display
     label: "display"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py search_common
     label: "search_common"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py stacks
     label: "stacks_common"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py search
     label: "Search API (Works & Images)"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/test_rank.sh
     label: "rank"
     env:
@@ -37,10 +52,18 @@ steps:
 
   - command: .buildkite/scripts/run_job.py items
     label: "Stacks: Items API"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py requests
     label: "Stacks: Requests API"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py snapshot_generator
     label: "snapshot generator"
+    agents:
+      queue: "scala"
 
   - wait
 
