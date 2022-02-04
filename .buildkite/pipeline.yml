@@ -1,5 +1,5 @@
 steps:
-  - label: "Internal model tool: check compatibility"
+  - label: "check internal model compatibility"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
@@ -13,12 +13,11 @@ steps:
             - AWS_DEFAULT_REGION=eu-west-1
     agents:
       queue: nano
+
   - command: .buildkite/scripts/check_vendored_code.py
     label: "check vendored code"
     agents:
       queue: nano
-
-  - wait
 
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
