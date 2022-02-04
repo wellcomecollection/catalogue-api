@@ -24,6 +24,10 @@ steps:
     agents:
       queue: "scala"
 
+    # We increase the priority of this task because it may push a commit
+    # and trigger a new build; if so, we want that to happen ASAP.
+    priority: 1
+
   - command: .buildkite/scripts/run_job.py display
     label: "display"
     agents:
@@ -44,10 +48,11 @@ steps:
     agents:
       queue: "scala"
 
-  - command: .buildkite/scripts/test_rank.sh
-    label: "rank"
-    env:
-      QUERY_ENV: "candidate"
+    # We increase the priority of this task because it's the longest
+    # running task in this pipeline.  Increasing the priority means it
+    # will be assigned to the first available instance, rather than waiting
+    # for other, faster tasks to be started and new instances created.
+    priority: 1
 
   - command: .buildkite/scripts/run_job.py items
     label: "Stacks: Items API"
@@ -60,9 +65,14 @@ steps:
       queue: "scala"
 
   - command: .buildkite/scripts/run_job.py snapshot_generator
-    label: "snapshot generator"
+    label: "Snapshot generator"
     agents:
       queue: "scala"
+
+  - command: .buildkite/scripts/test_rank.sh
+    label: "rank"
+    env:
+      QUERY_ENV: "candidate"
 
   - wait
 
