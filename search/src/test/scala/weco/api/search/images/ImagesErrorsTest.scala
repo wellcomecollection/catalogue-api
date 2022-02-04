@@ -10,11 +10,12 @@ class ImagesErrorsTest
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
 
-      withImagesApi { case (_, route) =>
-        assertNotFound(route)(
-          path = s"$rootPath/images/$id",
-          description = s"Image not found for identifier $id"
-        )
+      withImagesApi {
+        case (_, route) =>
+          assertNotFound(route)(
+            path = s"$rootPath/images/$id",
+            description = s"Image not found for identifier $id"
+          )
       }
     }
 
@@ -41,7 +42,10 @@ class ImagesErrorsTest
 
       withApi { route =>
         forAll(testPaths) { path =>
-          assertNotFound(route)(path, description = s"There is no index $indexName")
+          assertNotFound(route)(
+            path,
+            description = s"There is no index $indexName"
+          )
         }
       }
     }

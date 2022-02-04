@@ -428,7 +428,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }
@@ -503,7 +503,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }
@@ -580,7 +580,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }

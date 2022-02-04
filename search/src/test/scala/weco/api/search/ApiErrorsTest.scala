@@ -7,7 +7,8 @@ class ApiErrorsTest extends ApiWorksTestBase {
     withApi { route =>
       assertNotFound(route)(
         path = s"$rootPath/foo/bar",
-        description = s"Page not found for URL ${apiConfig.publicRootPath}/foo/bar"
+        description =
+          s"Page not found for URL ${apiConfig.publicRootPath}/foo/bar"
       )
     }
   }

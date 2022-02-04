@@ -137,7 +137,8 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         case (_, route) =>
           assertJsonResponse(
             route,
-            path = s"$rootPath/works?_queryType=athingwewouldneverusebutmightbecausewesaidwewouldnot"
+            path =
+              s"$rootPath/works?_queryType=athingwewouldneverusebutmightbecausewesaidwewouldnot"
           ) {
             Status.OK -> emptyJsonResult
           }
@@ -224,11 +225,12 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         "https://developers.wellcomecollection.org/datasets"
 
       it("a very large page") {
-        withWorksApi { case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/works?page=10000",
-            description = description
-          )
+        withWorksApi {
+          case (_, route) =>
+            assertBadRequest(route)(
+              path = s"$rootPath/works?page=10000",
+              description = description
+            )
         }
       }
 
@@ -237,20 +239,22 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       // We saw real requests like this, which we traced to an overflow in the
       // page offset we were requesting in Elasticsearch.
       it("so many pages that a naive (page * pageSize) would overflow") {
-        withWorksApi { case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/works?page=2000000000&pageSize=100",
-            description = description
-          )
+        withWorksApi {
+          case (_, route) =>
+            assertBadRequest(route)(
+              path = s"$rootPath/works?page=2000000000&pageSize=100",
+              description = description
+            )
         }
       }
 
       it("the 101th page with 100 results per page") {
-        withWorksApi { case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/works?page=101&pageSize=100",
-            description = description
-          )
+        withWorksApi {
+          case (_, route) =>
+            assertBadRequest(route)(
+              path = s"$rootPath/works?page=101&pageSize=100",
+              description = description
+            )
         }
       }
     }
@@ -286,12 +290,13 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     // could arise which we aren't covering.
     //
     it("if the date is too large") {
-      withWorksApi { case (_, route) =>
-        assertBadRequest(route)(
-          path =
-            s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
-          description = "production.dates.from: year must be less than 9999"
-        )
+      withWorksApi {
+        case (_, route) =>
+          assertBadRequest(route)(
+            path =
+              s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
+            description = "production.dates.from: year must be less than 9999"
+          )
       }
     }
   }
@@ -299,21 +304,23 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
   describe("returns a 404 Not Found for missing resources") {
     it("looking up a work that doesn't exist") {
       val badId = "doesnotexist"
-      withWorksApi { case (_, route) =>
-        assertNotFound(route)(
-          path = s"$rootPath/works/$badId",
-          description = s"Work not found for identifier $badId"
-        )
+      withWorksApi {
+        case (_, route) =>
+          assertNotFound(route)(
+            path = s"$rootPath/works/$badId",
+            description = s"Work not found for identifier $badId"
+          )
       }
     }
 
     it("looking up a work with a malformed identifier") {
       val badId = "zd224ncv]"
-      withWorksApi { case (_, route) =>
-        assertNotFound(route)(
-          path = s"$rootPath/works/$badId",
-          description = s"Work not found for identifier $badId"
-        )
+      withWorksApi {
+        case (_, route) =>
+          assertNotFound(route)(
+            path = s"$rootPath/works/$badId",
+            description = s"Work not found for identifier $badId"
+          )
       }
     }
 
@@ -341,7 +348,8 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       it("searching") {
         withApi { route =>
           assertNotFound(route)(
-            path = s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
+            path =
+              s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
             description = s"There is no index $indexName"
           )
         }
