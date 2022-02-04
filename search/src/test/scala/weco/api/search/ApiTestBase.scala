@@ -76,6 +76,11 @@ trait ApiTestBase extends ApiFixture {
         )
     }
 
+  def assertBadRequest(route: Route)(path: String, description: String): Assertion =
+    assertJsonResponse(route, path)(
+      Status.BadRequest -> badRequest(description = description)
+    )
+
   def assertNotFound(route: Route)(path: String, description: String): Assertion =
     assertJsonResponse(route, path)(
       Status.NotFound -> notFound(description = description)
