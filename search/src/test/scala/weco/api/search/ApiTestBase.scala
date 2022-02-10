@@ -1,5 +1,6 @@
 package weco.api.search
 
+import akka.http.scaladsl.server.Route
 import org.scalatest.Assertion
 import weco.api.search.fixtures.ApiFixture
 
@@ -74,4 +75,18 @@ trait ApiTestBase extends ApiFixture {
             badRequest(description = description)
         )
     }
+
+  def assertBadRequest(
+    route: Route
+  )(path: String, description: String): Assertion =
+    assertJsonResponse(route, path)(
+      Status.BadRequest -> badRequest(description = description)
+    )
+
+  def assertNotFound(
+    route: Route
+  )(path: String, description: String): Assertion =
+    assertJsonResponse(route, path)(
+      Status.NotFound -> notFound(description = description)
+    )
 }
