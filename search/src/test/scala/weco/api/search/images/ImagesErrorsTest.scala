@@ -1,7 +1,7 @@
 package weco.api.search.images
 
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.config.ElasticConfig
 
 class ImagesErrorsTest
     extends ApiImagesTestBase

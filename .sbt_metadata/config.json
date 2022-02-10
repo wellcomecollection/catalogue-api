@@ -1,0 +1,7 @@
+{
+  "id" : "config",
+  "folder" : "common/config",
+  "dependencyIds" : [
+    "display"
+  ]
+}

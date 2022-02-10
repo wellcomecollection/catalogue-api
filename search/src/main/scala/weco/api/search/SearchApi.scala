@@ -22,7 +22,7 @@ import weco.api.search.models.{
 }
 import weco.api.search.rest._
 import weco.api.search.swagger.SwaggerDocs
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.config.ElasticConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext

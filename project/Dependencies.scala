@@ -152,6 +152,11 @@ object CatalogueDependencies {
       ExternalDependencies.scalacheckDependencies ++
       WellcomeDependencies.httpLibrary
 
+  val configDependencies: Seq[ModuleID] =
+    WellcomeDependencies.elasticsearchLibrary ++
+      WellcomeDependencies.elasticsearchTypesafeLibrary ++
+      ExternalDependencies.secretsDependencies
+
   val searchCommonDependencies: Seq[ModuleID] =
     WellcomeDependencies.elasticsearchLibrary ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
@@ -171,11 +176,8 @@ object CatalogueDependencies {
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++
-      WellcomeDependencies.elasticsearchLibrary ++
-      WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary ++
-      ExternalDependencies.secretsDependencies
+      WellcomeDependencies.typesafeLibrary
 
   val itemsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary

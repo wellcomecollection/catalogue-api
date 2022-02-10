@@ -8,13 +8,15 @@ import weco.api.requests.services.{
   RequestsService,
   SierraRequestsService
 }
-import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, CheckModel}
+import weco.catalogue.config.{
+  PipelineClusterElasticConfig,
+  PipelineElasticClientBuilder
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.ApiClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
@@ -34,8 +36,8 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = ElasticBuilder.buildElasticClient(config)
-    val elasticConfig = ApiClusterElasticConfig()
+    val elasticClient = PipelineElasticClientBuilder(name = "catalogue_api")
+    val elasticConfig = PipelineClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 

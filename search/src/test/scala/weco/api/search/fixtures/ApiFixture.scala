@@ -13,7 +13,7 @@ import weco.fixtures.TestWith
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.search.models.{ApiConfig, QueryConfig}
 import weco.api.search.swagger.SwaggerDocs
-import weco.catalogue.display_model.ElasticConfig
+import weco.catalogue.config.ElasticConfig
 
 trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 

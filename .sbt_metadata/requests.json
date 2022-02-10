@@ -3,6 +3,7 @@
   "folder" : "requests",
   "dependencyIds" : [
     "stacks",
-    "search_common"
+    "search_common",
+    "config"
   ]
 }

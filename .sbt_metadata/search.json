@@ -3,6 +3,7 @@
   "folder" : "search",
   "dependencyIds" : [
     "display",
-    "search_common"
+    "search_common",
+    "config"
   ]
 }

@@ -28,6 +28,13 @@ def setupProject(
     .settings(libraryDependencies ++= externalDependencies)
 }
 
+lazy val config = setupProject(
+  project,
+  "common/config",
+  localDependencies = Seq(display),
+  externalDependencies = CatalogueDependencies.configDependencies
+)
+
 lazy val display = setupProject(
   project,
   "common/display",
@@ -51,28 +58,28 @@ lazy val stacks = setupProject(
 lazy val search = setupProject(
   project,
   "search",
-  localDependencies = Seq(display, search_common),
+  localDependencies = Seq(display, search_common, config),
   externalDependencies = CatalogueDependencies.searchDependencies
 )
 
 lazy val items = setupProject(
   project,
   "items",
-  localDependencies = Seq(stacks, search_common),
+  localDependencies = Seq(stacks, search_common, config),
   externalDependencies = CatalogueDependencies.itemsDependencies
 )
 
 lazy val requests = setupProject(
   project,
   "requests",
-  localDependencies = Seq(stacks, search_common),
+  localDependencies = Seq(stacks, search_common, config),
   externalDependencies = CatalogueDependencies.requestsDependencies
 )
 
 lazy val snapshot_generator = setupProject(
   project,
   "snapshots/snapshot_generator",
-  localDependencies = Seq(display),
+  localDependencies = Seq(display, config),
   externalDependencies = CatalogueDependencies.snapshotGeneratorDependencies
 )
 
