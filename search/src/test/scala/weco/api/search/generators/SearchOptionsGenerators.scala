@@ -1,7 +1,5 @@
 package weco.api.search.generators
 
-import weco.catalogue.display_model.models.WorkAggregationRequest
-import weco.api.search.models.WorkFilter
 import weco.api.search.models
 import weco.api.search.models.{SearchQuery, WorkFilter, WorkSearchOptions}
 import weco.catalogue.display_model.models.{
