@@ -1,29 +1,7 @@
-# Internal model tool
+# internal_model_tool
 
-Tooling to help with the versioning of our internal model.
+We want to make sure the API only ever reads from an index with a compatible version of `internal_model`.
+If it reads from an incompatible index, it may be unable to deserialise the index as Works, and the public API will start crashing.
 
-
-## Installation
-
-```text
-virtualenv venv
-. venv/bin/activate
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Bump to the compatible version
-
-```bash
-./bump.py
-```
-
-### Check compatibility
-
-Check if the `internalModel` in `Dependencies` is compatible with `catalogue-api.mappings._meta`
-
-```bash
-./check_compatibility.py
-```
-
+The API checks the internal model version at startup; this additionally checks for compatibility in CI.
+This means we're less likely to try to deploy an API with an incompatible version, because it won't pass Buildkite.
