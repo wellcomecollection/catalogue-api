@@ -19,15 +19,10 @@ def get_session(*, role_arn):
 
 
 def get_local_date():
-    config_file = open(
-        "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala",
-        "r",
-    )
-    config_text = config_file.read()
-    config_file.close()
-    date = re.findall('val pipelineDate = "(.*)"', config_text)[0]
-    suffix = re.findall('val suffix = "(.*)"', config_text)[0]
-    return date + suffix
+    with open("../common/config/src/main/scala/weco/catalogue/config/ElasticConfig.scala") as config_file:
+        config_text = config_file.read()
+
+    return re.search('val pipelineDate = "(.*)"', config_text).group(1)
 
 
 def get_remote_latest_internal_model(session, date):
@@ -48,13 +43,13 @@ def get_secret_string(session, *, secret_id):
 
 def get_remote_meta(session, date):
     host = get_secret_string(
-        session, secret_id="elasticsearch/catalogue_api/public_host"
+        session, secret_id=f"elasticsearch/pipeline_storage_{date}/public_host"
     )
     username = get_secret_string(
-        session, secret_id="elasticsearch/catalogue_api/internal_model_tool/username"
+        session, secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_username"
     )
     password = get_secret_string(
-        session, secret_id="elasticsearch/catalogue_api/internal_model_tool/password"
+        session, secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_password"
     )
 
     index = f"works-indexed-{date}"
