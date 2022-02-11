@@ -1,5 +1,5 @@
 steps:
-  - label: "Internal model tool: check compatibility"
+  - label: "check internal model compatibility"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
@@ -13,34 +13,66 @@ steps:
             - AWS_DEFAULT_REGION=eu-west-1
     agents:
       queue: nano
+
   - command: .buildkite/scripts/check_vendored_code.py
     label: "check vendored code"
     agents:
       queue: nano
 
-  - wait
-
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
+    agents:
+      queue: "scala"
+
+    # We increase the priority of this task because it may push a commit
+    # and trigger a new build; if so, we want that to happen ASAP.
+    priority: 1
+
   - command: .buildkite/scripts/run_job.py display
     label: "display"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py search_common
     label: "search_common"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py stacks
     label: "stacks_common"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/run_job.py search
     label: "Search API (Works & Images)"
+    agents:
+      queue: "scala"
+
+    # We increase the priority of this task because it's the longest
+    # running task in this pipeline.  Increasing the priority means it
+    # will be assigned to the first available instance, rather than waiting
+    # for other, faster tasks to be started and new instances created.
+    priority: 1
+
+  - command: .buildkite/scripts/run_job.py items
+    label: "Stacks: Items API"
+    agents:
+      queue: "scala"
+
+  - command: .buildkite/scripts/run_job.py requests
+    label: "Stacks: Requests API"
+    agents:
+      queue: "scala"
+
+  - command: .buildkite/scripts/run_job.py snapshot_generator
+    label: "Snapshot generator"
+    agents:
+      queue: "scala"
+
   - command: .buildkite/scripts/test_rank.sh
     label: "rank"
     env:
       QUERY_ENV: "candidate"
-
-  - command: .buildkite/scripts/run_job.py items
-    label: "Stacks: Items API"
-  - command: .buildkite/scripts/run_job.py requests
-    label: "Stacks: Requests API"
-  - command: .buildkite/scripts/run_job.py snapshot_generator
-    label: "snapshot generator"
 
   - wait
 

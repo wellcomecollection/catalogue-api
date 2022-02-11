@@ -35,7 +35,7 @@ trait ElasticConfigBase {
   //
   // The different config allows applications to choose whether they want to read
   // from the pipeline cluster or the API cluster.
-  val pipelineDate = "2021-12-21"
+  val pipelineDate = "2022-02-03"
   val suffix = ""
 }
 

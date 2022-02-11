@@ -409,16 +409,17 @@ class WorksFiltersTest
     )
 
     it("filters by genres as a comma separated list") {
-      forAll(testCases) {
-        (
-          query: String,
-          results: Seq[Work.Visible[WorkState.Indexed]],
-          clue: String
-        ) =>
-          withClue(clue) {
-            withWorksApi {
-              case (worksIndex, routes) =>
-                insertIntoElasticsearch(worksIndex, works: _*)
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(worksIndex, works: _*)
+
+          forAll(testCases) {
+            (
+              query: String,
+              results: Seq[Work.Visible[WorkState.Indexed]],
+              clue: String
+            ) =>
+              withClue(clue) {
                 assertJsonResponse(
                   routes,
                   s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
@@ -427,7 +428,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }
@@ -484,16 +485,16 @@ class WorksFiltersTest
     )
 
     it("filters by subjects as a comma separated list") {
-      forAll(testCases) {
-        (
-          query: String,
-          results: Seq[Work.Visible[WorkState.Indexed]],
-          clue: String
-        ) =>
-          withClue(clue) {
-            withWorksApi {
-              case (worksIndex, routes) =>
-                insertIntoElasticsearch(worksIndex, works: _*)
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(worksIndex, works: _*)
+          forAll(testCases) {
+            (
+              query: String,
+              results: Seq[Work.Visible[WorkState.Indexed]],
+              clue: String
+            ) =>
+              withClue(clue) {
                 assertJsonResponse(
                   routes,
                   s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
@@ -502,7 +503,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }
@@ -560,16 +561,16 @@ class WorksFiltersTest
     )
 
     it("filters by contributors as a comma separated list") {
-      forAll(testCases) {
-        (
-          query: String,
-          results: Seq[Work.Visible[WorkState.Indexed]],
-          clue: String
-        ) =>
-          withClue(clue) {
-            withWorksApi {
-              case (worksIndex, routes) =>
-                insertIntoElasticsearch(worksIndex, works: _*)
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(worksIndex, works: _*)
+          forAll(testCases) {
+            (
+              query: String,
+              results: Seq[Work.Visible[WorkState.Indexed]],
+              clue: String
+            ) =>
+              withClue(clue) {
                 assertJsonResponse(
                   routes,
                   s"$rootPath/works?contributors.agent.label=${URLEncoder
@@ -579,7 +580,7 @@ class WorksFiltersTest
                     _.state.canonicalId
                   })
                 }
-            }
+              }
           }
       }
     }

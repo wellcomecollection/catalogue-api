@@ -1,6 +1,5 @@
 package weco.api.search.images
 
-import org.scalatest.Assertion
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.catalogue.display_model.ElasticConfig
 
@@ -10,18 +9,25 @@ class ImagesErrorsTest
   describe("returns a 404 for missing resources") {
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
-      assertIsNotFound(
-        s"$rootPath/images/$id",
-        description = s"Image not found for identifier $id"
-      )
+
+      withImagesApi {
+        case (_, route) =>
+          assertNotFound(route)(
+            path = s"$rootPath/images/$id",
+            description = s"Image not found for identifier $id"
+          )
+      }
     }
 
     it("looking up an image with a malformed identifier") {
       val badId = "zd224ncv]"
-      assertIsNotFound(
-        s"$rootPath/images/$badId",
-        description = s"Image not found for identifier $badId"
-      )
+
+      withApi { route =>
+        assertNotFound(route)(
+          path = s"$rootPath/images/$badId",
+          description = s"Image not found for identifier $badId"
+        )
+      }
     }
 
     it("looking for a non-existent index") {
@@ -34,8 +40,13 @@ class ImagesErrorsTest
         s"$rootPath/images/$createCanonicalId?_index=$indexName"
       )
 
-      forAll(testPaths) { path =>
-        assertIsNotFound(path, description = s"There is no index $indexName")
+      withApi { route =>
+        forAll(testPaths) { path =>
+          assertNotFound(route)(
+            path,
+            description = s"There is no index $indexName"
+          )
+        }
       }
     }
   }
@@ -69,15 +80,4 @@ class ImagesErrorsTest
       }
     }
   }
-
-  def assertIsNotFound(path: String, description: String): Assertion =
-    withImagesApi {
-      case (_, routes) =>
-        assertJsonResponse(routes, path)(
-          Status.NotFound ->
-            notFound(
-              description = description
-            )
-        )
-    }
 }
