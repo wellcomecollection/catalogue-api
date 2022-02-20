@@ -1,7 +1,6 @@
 package weco.api.requests.services
 
 import java.net.URI
-
 import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -14,6 +13,8 @@ import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.fields.{SierraHold, SierraHoldStatus, SierraLocation}
 import weco.sierra.models.identifiers.SierraPatronNumber
+
+import java.time.LocalDate
 
 class SierraRequestsServiceTest
     extends AnyFunSpec
@@ -53,6 +54,7 @@ class SierraRequestsServiceTest
                    |      "frozen": false,
                    |      "placed": "2021-05-07",
                    |      "notWantedBeforeDate": "2021-05-07",
+                   |      "notNeededAfterDate": "2022-02-18",
                    |      "pickupLocation": {"code":"sepbb", "name":"Rare Materials Room"},
                    |      "status": {"code": "0", "name": "on hold."}
                    |    },
@@ -63,6 +65,7 @@ class SierraRequestsServiceTest
                    |      "frozen": false,
                    |      "placed": "2021-05-07",
                    |      "notWantedBeforeDate": "2021-05-07",
+                   |       "notNeededAfterDate": "2022-02-19",
                    |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                    |      "status": {"code": "i", "name": "item hold ready for pickup"}
                    |    }
@@ -99,7 +102,7 @@ class SierraRequestsServiceTest
                   s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}"
                 ),
                 pickupLocation = SierraLocation("sepbb", "Rare Materials Room"),
-                pickupByDate = None,
+                notNeededAfterDate = Some(LocalDate.parse("2022-02-18")),
                 status = SierraHoldStatus("0", "on hold.")
               ),
               item2SrcId -> SierraHold(
@@ -110,7 +113,7 @@ class SierraRequestsServiceTest
                   s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}"
                 ),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
-                pickupByDate = None,
+                notNeededAfterDate = Some(LocalDate.parse("2022-02-19")),
                 status = SierraHoldStatus("i", "item hold ready for pickup")
               )
             )
@@ -220,7 +223,7 @@ class SierraRequestsServiceTest
                   s"https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}"
                 ),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
-                pickupByDate = None,
+                notNeededAfterDate = None,
                 status = SierraHoldStatus("i", "item hold ready for pickup")
               )
             )
@@ -233,6 +236,7 @@ class SierraRequestsServiceTest
       it("requests a hold from the Sierra API") {
         val patron = SierraPatronNumber("1234567")
         val item = createSierraItemNumber
+        val neededBy = LocalDate.parse("2022-02-18")
 
         val sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
@@ -251,6 +255,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${item.withoutCheckDigit},
+                   |  "neededBy": "$neededBy",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -263,7 +268,8 @@ class SierraRequestsServiceTest
         val future = withSierraService(responses) {
           _.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier
+            sourceIdentifier = sourceIdentifier,
+            neededBy = neededBy
           )
         }
 
@@ -275,6 +281,7 @@ class SierraRequestsServiceTest
       it("rejects a hold when the Sierra API errors indicating such") {
         val patron = SierraPatronNumber("1234567")
         val itemNumber = createSierraItemNumber
+        val neededBy = LocalDate.parse("2022-02-18")
         val sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
           ontologyType = "Item",
@@ -292,6 +299,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${itemNumber.withoutCheckDigit},
+                   |  "neededBy": "$neededBy",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -362,7 +370,8 @@ class SierraRequestsServiceTest
         val future = withSierraService(responses) {
           _.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier
+            sourceIdentifier = sourceIdentifier,
+            neededBy = neededBy
           )
         }
 
