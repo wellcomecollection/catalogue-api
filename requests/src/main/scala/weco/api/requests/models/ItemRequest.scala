@@ -1,5 +1,7 @@
 package weco.api.requests.models
 
+import java.time.LocalDate
+
 case class ItemRequest(
   // Note: there isn't a 1:1 mapping between works and items, so given
   // only an item ID you can't necessarily take a user back to the work page
@@ -9,5 +11,6 @@ case class ItemRequest(
   // so we can do that redirection properly.  It isn't currently used.
   workId: String,
   itemId: String,
+  neededBy: LocalDate,
   `type`: String = "ItemRequest"
 )

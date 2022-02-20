@@ -1,10 +1,9 @@
 package weco.api.requests.models.display
 
-import java.time.Instant
-
+import java.time.LocalDate
 import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.models.DisplayItem
-import weco.catalogue.internal_model.identifiers.{CanonicalId}
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
 
 case class DisplayResultsList(
@@ -29,7 +28,7 @@ case class DisplayRequest(
   workTitle: Option[String],
   workId: CanonicalId,
   item: DisplayItem,
-  pickupDate: Option[Instant],
+  pickupDate: Option[LocalDate],
   pickupLocation: DisplayLocationDescription,
   status: DisplayRequestStatus,
   `type`: String = "Request"
@@ -47,7 +46,7 @@ object DisplayRequest {
         item = itemWithWork.item,
         includesIdentifiers = true
       ),
-      pickupDate = hold.pickupByDate,
+      pickupDate = hold.notNeededAfterDate,
       pickupLocation = DisplayLocationDescription(
         id = hold.pickupLocation.code,
         label = hold.pickupLocation.name
