@@ -36,6 +36,7 @@ class RequestsApi(
                   withFuture {
                     createRequest(
                       itemId = itemId,
+                      neededBy = itemRequest.neededBy,
                       patronNumber = userIdentifier
                     )
                   }

@@ -28,11 +28,12 @@ class SierraRequestsService(
 
   def placeHold(
     patron: SierraPatronNumber,
+    neededBy: LocalDate,
     sourceIdentifier: SourceIdentifier
   ): Future[Either[HoldRejected, HoldAccepted]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
-    sierraSource.createHold(patron, item).flatMap {
+    sierraSource.createHold(patron, item, neededBy).flatMap {
       case Right(_) => Future.successful(Right(HoldAccepted.HoldCreated))
 
       // API error code "132" means "Request denied by XCirc".  This is listed in

@@ -12,7 +12,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
-
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
@@ -22,9 +22,10 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
 
   def createRequest(
     itemId: CanonicalId,
+    neededBy: LocalDate,
     patronNumber: SierraPatronNumber
   ): Future[Route] =
-    requestsService.makeRequest(itemId, patronNumber) map {
+    requestsService.makeRequest(itemId, neededBy, patronNumber) map {
       case Right(_) =>
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
         complete(accepted)
