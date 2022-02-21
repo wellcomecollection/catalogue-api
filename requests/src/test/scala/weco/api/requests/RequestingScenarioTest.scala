@@ -70,7 +70,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
-               |  "neededBy": $neededBy,
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -114,7 +114,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "$itemId",
                |  "workId": "$createCanonicalId",
-               |   "neededBy": $neededBy,
+               |   "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -169,7 +169,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
-               |  "neededBy": $neededBy,
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -282,7 +282,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
-               |  "neededBy": $neededBy,
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -357,7 +357,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
-               |  "neededBy": $neededBy,
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
