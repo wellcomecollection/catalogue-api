@@ -934,7 +934,7 @@ class WorksFiltersTest
     def work(path: String): Work.Visible[Indexed] =
       indexedWork(sourceIdentifier = createSourceIdentifierWith(value = path))
         .collectionPath(CollectionPath(path = path))
-        .title(path)
+        .title(s"The title is {path}")
 
     val workA = work("A")
     val workB = work("A/B").ancestors(workA)
@@ -946,7 +946,7 @@ class WorksFiltersTest
     def storeWorks(index: Index) =
       insertIntoElasticsearch(index, workA, workB, workC, workD, workE, workX)
 
-    it("filters partOf from root position") {
+    it("filters partOf by id from root position") {
       withWorksApi {
         case (worksIndex, routes) =>
           storeWorks(worksIndex)
@@ -958,8 +958,20 @@ class WorksFiltersTest
           }
       }
     }
+    it("filters partOf by title from root position") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          storeWorks(worksIndex)
+          assertJsonResponse(routes, s"$rootPath/works?partOf=the title is ${workA.id}") {
+            Status.OK -> worksListResponse(
+              works =
+                Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
+            )
+          }
+      }
+    }
 
-    it("filters partOf from non root position") {
+    it("filters partOf by id from non root position") {
       withWorksApi {
         case (worksIndex, routes) =>
           storeWorks(worksIndex)
