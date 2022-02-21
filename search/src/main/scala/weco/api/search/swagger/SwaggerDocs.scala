@@ -567,8 +567,7 @@ trait MultipleWorksSwagger {
       new Parameter(
         name = "query",
         in = ParameterIn.QUERY,
-        description =
-          "Full-text search query, which will AND supplied terms",
+        description = "Full-text search query, which will AND supplied terms",
         required = false
       ),
       new Parameter(
