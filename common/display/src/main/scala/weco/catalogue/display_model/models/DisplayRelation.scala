@@ -9,7 +9,7 @@ case class DisplayRelation(
   @Schema(
     accessMode = Schema.AccessMode.READ_ONLY,
     description = "The canonical identifier given to a thing."
-  ) id: String,
+  ) id: Option[String],
   @Schema(
     description =
       "The title or other short label of a work, including labels not present in the actual work or item but applied by the cataloguer for the purposes of search or description."
@@ -38,7 +38,7 @@ object DisplayRelation {
 
   def apply(relation: Relation): DisplayRelation =
     DisplayRelation(
-      id = relation.id.underlying,
+      id = relation.id.map {_.underlying},
       title = relation.title,
       referenceNumber = relation.collectionPath.flatMap(_.label),
       ontologyType = DisplayWork.displayWorkType(relation.workType),

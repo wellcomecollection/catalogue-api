@@ -462,6 +462,75 @@ class DisplayWorkTest
     }
   }
 
+  describe("works in a series") {
+
+    it("includes a series in partOf"){
+      val work = indexedWork(
+        relations = Relations(
+          ancestors = List(Relation("Series A")),
+          children = List(),
+          siblingsPreceding = List(),
+          siblingsSucceeding = List()
+        )
+      )
+      val displayWork =
+        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
+      displayWork.partOf.isEmpty shouldBe false
+      val partOf = displayWork.partOf.get
+      partOf.map(_.id) shouldBe List(None)
+      partOf.map(_.title) shouldBe List("Series A")
+
+    }
+
+    it("can include multiple series"){
+      val work = indexedWork(
+        relations = Relations(
+          ancestors = List(Relation("Series A"), Relation("Series B")),
+          children = List(),
+          siblingsPreceding = List(),
+          siblingsSucceeding = List()
+        )
+      )
+      val displayWork =
+        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
+      displayWork.partOf.isEmpty shouldBe false
+      val partOf = displayWork.partOf.get
+      partOf.flatMap(_.title) shouldBe List("Series B", "Series A")
+      // series partOfs have no id.
+      partOf.flatMap(_.id) shouldBe List()
+
+    }
+
+    it("includes both series and related works if both are present"){
+      val workA = indexedWork()
+      val workB = indexedWork()
+      val relationA = Relation(workA, 2, 0, 0)
+      val work = indexedWork(
+        relations = Relations(
+          ancestors = List(
+            Relation("Series A"), relationA,
+            Relation(workB, 2, 0, 0), Relation("Series B")
+        ),
+          children = List(),
+          siblingsPreceding = List(),
+          siblingsSucceeding = List()
+        )
+      )
+      val displayWork =
+        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
+      displayWork.partOf.isEmpty shouldBe false
+      val partOf = displayWork.partOf.get
+      partOf.flatMap(_.id) shouldBe List(workB.id)
+      partOf.flatMap(_.title) shouldBe List(workB.data.title.get, "Series B", "Series A")
+      partOf.head.partOf shouldBe Some(
+        List(
+          DisplayRelation(relationA)
+        )
+      )
+    }
+
+  }
+
   describe("related works") {
     val workA = indexedWork()
     val workB = indexedWork()
@@ -491,12 +560,10 @@ class DisplayWorkTest
         DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
       displayWork.partOf.isEmpty shouldBe false
       val partOf = displayWork.partOf.get
-      partOf.map(_.id) shouldBe List(workB.state.canonicalId.underlying)
-      partOf(0).partOf shouldBe Some(
+      partOf.flatMap(_.id) shouldBe List(workB.state.canonicalId.underlying)
+      partOf.head.partOf shouldBe Some(
         List(
-          DisplayRelation(relationA).copy(
-            partOf = Some(Nil)
-          )
+          DisplayRelation(relationA)
         )
       )
     }
