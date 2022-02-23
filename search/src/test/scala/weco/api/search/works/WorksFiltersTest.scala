@@ -934,7 +934,7 @@ class WorksFiltersTest
     def work(path: String): Work.Visible[Indexed] =
       indexedWork(sourceIdentifier = createSourceIdentifierWith(value = path))
         .collectionPath(CollectionPath(path = path))
-        .title(s"The title is {path}")
+        .title(s"The title is ${path}")
 
     val workA = work("A")
     val workB = work("A/B").ancestors(workA)
@@ -962,7 +962,7 @@ class WorksFiltersTest
       withWorksApi {
         case (worksIndex, routes) =>
           storeWorks(worksIndex)
-          assertJsonResponse(routes, s"$rootPath/works?partOf=the title is ${workA.id}") {
+          assertJsonResponse(routes, s"$rootPath/works?partOf=${URLEncoder.encode(workA.data.title.get, "UTF-8")}") {
             Status.OK -> worksListResponse(
               works =
                 Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
