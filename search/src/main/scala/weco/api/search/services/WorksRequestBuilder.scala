@@ -201,8 +201,14 @@ object WorksRequestBuilder
              If this does cause unwanted results in "real life", then we can consider storing a
              separate non-analysed version of title for term matching.
              */
-            matchPhraseQuery(field = "state.relations.ancestors.title", value = search_term),
-            termQuery(field = "state.relations.ancestors.id", value = search_term)
+            matchPhraseQuery(
+              field = "state.relations.ancestors.title",
+              value = search_term
+            ),
+            termQuery(
+              field = "state.relations.ancestors.id",
+              value = search_term
+            )
           ),
           Seq.empty
         )
