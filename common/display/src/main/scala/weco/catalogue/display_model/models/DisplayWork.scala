@@ -225,7 +225,6 @@ object DisplayWork {
           )
         else None
     )
-
   def apply(work: Work.Visible[WorkState.Indexed]): DisplayWork =
     DisplayWork(work = work, includes = WorksIncludes.none)
 

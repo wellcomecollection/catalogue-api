@@ -179,8 +179,28 @@ object WorksRequestBuilder
           field = "data.items.locations.locationType.id",
           values = itemLocationTypeIds
         )
-      case PartOfFilter(id) =>
-        termQuery(field = "state.relations.ancestors.id", value = id)
+      case PartOfFilter(search_term) =>
+        /*
+         The partOf filter matches on either the id or the title of any ancestor.
+         As it is vanishingly unlikely that an id_minter canonical id will coincidentally
+         match the title of a Work or Series, this query can be a simple OR (i.e. bool.should),
+         rather than have to introduce a new filter to the API to cover it.
+         */
+        bool(
+          Nil,
+          Seq(
+            termQuery(
+              field = "state.relations.ancestors.title.keyword",
+              value = search_term
+            ),
+            termQuery(
+              field = "state.relations.ancestors.id",
+              value = search_term
+            )
+          ),
+          Nil
+        )
+
       case AvailabilitiesFilter(availabilityIds) =>
         termsQuery(
           field = "state.availabilities.id",
