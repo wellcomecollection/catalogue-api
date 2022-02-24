@@ -187,7 +187,7 @@ object WorksRequestBuilder
          rather than have to introduce a new filter to the API to cover it.
          */
         bool(
-          Seq(),
+          Nil,
           Seq(
             termQuery(
               field = "state.relations.ancestors.title.keyword",
@@ -198,7 +198,7 @@ object WorksRequestBuilder
               value = search_term
             )
           ),
-          Seq()
+          Nil
         )
 
       case AvailabilitiesFilter(availabilityIds) =>
