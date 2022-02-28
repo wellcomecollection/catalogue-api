@@ -24,34 +24,36 @@ class RequestsApi(
 ) extends CreateRequest
     with LookupPendingRequests {
   val routes: Route = concat(
-    RequestsApi.withUserId("users" / Segment / "item-requests") {
-      userIdentifier: SierraPatronNumber =>
-        post {
-          entity(as[ItemRequest]) {
-            itemRequest: ItemRequest =>
-              // TODO: We get the work ID as part of the item request, although right now
-              // it's only for future-proofing, in case it's useful later.
-              // Should we query based on the work ID?
-              Try { CanonicalId(itemRequest.itemId) } match {
-                case Success(itemId) =>
-                  withFuture {
-                    createRequest(
-                      itemId = itemId,
-                      neededBy = itemRequest.neededBy.getOrElse(LocalDate.now()),
-                      patronNumber = userIdentifier
-                    )
-                  }
+    RequestsApi
+      .withUserId("users" / Segment / "item-requests") {
+        userIdentifier: SierraPatronNumber =>
+          post {
+            entity(as[ItemRequest]) {
+              itemRequest: ItemRequest =>
+                // TODO: We get the work ID as part of the item request, although right now
+                // it's only for future-proofing, in case it's useful later.
+                // Should we query based on the work ID?
+                Try { CanonicalId(itemRequest.itemId) } match {
+                  case Success(itemId) =>
+                    withFuture {
+                      createRequest(
+                        itemId = itemId,
+                        neededBy =
+                          itemRequest.neededBy.getOrElse(LocalDate.now()),
+                        patronNumber = userIdentifier
+                      )
+                    }
 
-                case _ =>
-                  notFound(
-                    s"Item not found for identifier ${itemRequest.itemId}"
-                  )
-              }
+                  case _ =>
+                    notFound(
+                      s"Item not found for identifier ${itemRequest.itemId}"
+                    )
+                }
+            }
+          } ~ get {
+            lookupRequests(userIdentifier)
           }
-        } ~ get {
-          lookupRequests(userIdentifier)
-        }
-    }
+      }
   )
 }
 
