@@ -11,6 +11,6 @@ case class ItemRequest(
   // so we can do that redirection properly.  It isn't currently used.
   workId: String,
   itemId: String,
-  neededBy: LocalDate,
+  neededBy: Option[LocalDate],
   `type`: String = "ItemRequest"
 )

@@ -11,6 +11,7 @@ import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
@@ -36,7 +37,7 @@ class RequestsApi(
                   withFuture {
                     createRequest(
                       itemId = itemId,
-                      neededBy = itemRequest.neededBy,
+                      neededBy = itemRequest.neededBy.getOrElse(LocalDate.now()),
                       patronNumber = userIdentifier
                     )
                   }
