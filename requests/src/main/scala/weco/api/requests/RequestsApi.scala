@@ -38,6 +38,8 @@ class RequestsApi(
                     withFuture {
                       createRequest(
                         itemId = itemId,
+                        // TODO: We've temporarily made neededBy optional, so as to not break the front end
+                        // Will remove this once the front end is sending neededBy as part of the request body
                         neededBy =
                           itemRequest.neededBy.getOrElse(LocalDate.now()),
                         patronNumber = userIdentifier
