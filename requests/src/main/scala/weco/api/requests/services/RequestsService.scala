@@ -13,6 +13,7 @@ import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumb
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class RequestsService(
@@ -23,6 +24,7 @@ class RequestsService(
 
   def makeRequest(
     itemId: CanonicalId,
+    neededBy: LocalDate,
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =
     itemLookup.byCanonicalId(itemId).flatMap {
@@ -30,7 +32,8 @@ class RequestsService(
           if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
         sierraService.placeHold(
           patron = patronNumber,
-          sourceIdentifier = item.id.sourceIdentifier
+          sourceIdentifier = item.id.sourceIdentifier,
+          neededBy = neededBy
         )
 
       case Right(sourceIdentifier) =>
