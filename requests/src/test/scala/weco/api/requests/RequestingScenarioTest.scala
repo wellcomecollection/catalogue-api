@@ -36,6 +36,8 @@ import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.catalogue.internal_model.Implicits._
 
+import java.time.LocalDate
+
 class RequestingScenarioTest
     extends AnyFeatureSpec
     with GivenWhenThen
@@ -53,6 +55,7 @@ class RequestingScenarioTest
       Given("a physical item which is not from Sierra")
       val item = createIdentifiedCalmItem
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       withLocalWorksIndex { index =>
         insertIntoElasticsearch(index, work)
@@ -67,6 +70,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -100,6 +104,7 @@ class RequestingScenarioTest
 
         Given("an item ID that doesn't exist")
         val itemId = createCanonicalId
+        val neededBy = LocalDate.parse("2022-02-18")
 
         When("the user requests a non-existent item")
         val response = makePostRequest(
@@ -109,6 +114,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "$itemId",
                |  "workId": "$createCanonicalId",
+               |   "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -142,10 +148,11 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(status = StatusCodes.NoContent)
         )
       )
@@ -162,6 +169,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -183,10 +191,11 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -273,6 +282,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -307,10 +317,11 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -338,6 +349,7 @@ class RequestingScenarioTest
         insertIntoElasticsearch(index, work)
 
         When("the user requests the item")
+        val neededBy = LocalDate.parse("2022-02-18")
         val response = makePostRequest(
           path = s"/users/$patronNumber/item-requests",
           entity = createJsonHttpEntityWith(
@@ -345,6 +357,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -369,11 +382,12 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("which has just been requested in Sierra")
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -408,6 +422,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -429,11 +444,12 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("which is on hold for another user")
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -491,6 +507,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -525,13 +542,13 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
-
+      val neededBy = LocalDate.parse("2022-02-18")
       And("a user who has as many items as they're allowed to request")
       val holdLimit = 10
 
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -570,6 +587,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -613,11 +631,12 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("which is deleted in Sierra")
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -669,6 +688,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -706,11 +726,12 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("which is suppressed in Sierra")
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -769,6 +790,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -807,11 +829,12 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("which doesn't exist in Sierra")
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.InternalServerError,
             entity = HttpEntity(
@@ -859,6 +882,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -886,12 +910,13 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("and a user that doesn't exist in Sierra")
       val patronNumber = createSierraPatronNumber
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -921,6 +946,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -954,12 +980,13 @@ class RequestingScenarioTest
       val itemNumber = createSierraItemNumber
       val item = createIdentifiedSierraItemWith(itemNumber)
       val work = indexedWork().items(List(item))
+      val neededBy = LocalDate.parse("2022-02-18")
 
       And("and a user whose account is barred")
       val patronNumber = createSierraPatronNumber
       val responses = Seq(
         (
-          createHoldRequest(patronNumber, itemNumber),
+          createHoldRequest(patronNumber, itemNumber, neededBy),
           HttpResponse(
             status = StatusCodes.NotFound,
             entity = HttpEntity(
@@ -1022,6 +1049,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -1050,12 +1078,13 @@ class RequestingScenarioTest
         val itemNumber = createSierraItemNumber
         val item = createIdentifiedSierraItemWith(itemNumber)
         val work = indexedWork().items(List(item))
+        val neededBy = LocalDate.parse("2022-02-18")
 
         And("and a user whose account has expired")
         val patronNumber = createSierraPatronNumber
         val responses = Seq(
           (
-            createHoldRequest(patronNumber, itemNumber),
+            createHoldRequest(patronNumber, itemNumber, neededBy),
             HttpResponse(
               status = StatusCodes.NotFound,
               entity = HttpEntity(
@@ -1134,6 +1163,7 @@ class RequestingScenarioTest
                |{
                |  "itemId": "${item.id.canonicalId}",
                |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
                |  "type": "ItemRequest"
                |}
                |""".stripMargin
@@ -1266,7 +1296,8 @@ class RequestingScenarioTest
 
   def createHoldRequest(
     patron: SierraPatronNumber,
-    item: SierraItemNumber
+    item: SierraItemNumber,
+    neededBy: LocalDate
   ): HttpRequest =
     HttpRequest(
       method = HttpMethods.POST,
@@ -1277,6 +1308,7 @@ class RequestingScenarioTest
            |{
            |  "recordType": "i",
            |  "recordNumber": ${item.withoutCheckDigit},
+           |  "neededBy": "$neededBy",
            |  "pickupLocation": "unspecified"
            |}
            |""".stripMargin

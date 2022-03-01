@@ -94,6 +94,7 @@ class RequestsApiFeatureTest
                  |      "frozen": false,
                  |      "placed": "2021-05-07",
                  |      "notWantedBeforeDate": "2021-05-07",
+                 |      "notNeededAfterDate": "2021-05-07",
                  |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                  |      "status": {"code": "0", "name": "on hold."}
                  |    },
@@ -160,6 +161,7 @@ class RequestsApiFeatureTest
                |        ],
                |        "type" : "Item"
                |      },
+               |      "pickupDate" : "2021-05-07",
                |      "pickupLocation" : {
                |        "id" : "sotop",
                |        "label" : "Rare Materials Room",

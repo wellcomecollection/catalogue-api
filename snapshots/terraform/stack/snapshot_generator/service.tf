@@ -34,9 +34,14 @@ module "snapshot_generator" {
 }
 
 module "snapshot_generator_scaling_alarm" {
-  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//autoscaling?ref=v1.2.1"
+  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//autoscaling?ref=v1.3.0"
   queue_name = module.snapshot_generator_input_queue.name
 
   queue_high_actions = [module.snapshot_generator.scale_up_arn]
   queue_low_actions  = [module.snapshot_generator.scale_down_arn]
+
+  # We've seen cases where the snapshot generator got scaled away before
+  # it could complete; hopefully bumping the cooldown period will fix
+  # those issues.
+  cooldown_period = "15m"
 }

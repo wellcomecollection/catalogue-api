@@ -11,6 +11,7 @@ import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
@@ -23,33 +24,38 @@ class RequestsApi(
 ) extends CreateRequest
     with LookupPendingRequests {
   val routes: Route = concat(
-    RequestsApi.withUserId("users" / Segment / "item-requests") {
-      userIdentifier: SierraPatronNumber =>
-        post {
-          entity(as[ItemRequest]) {
-            itemRequest: ItemRequest =>
-              // TODO: We get the work ID as part of the item request, although right now
-              // it's only for future-proofing, in case it's useful later.
-              // Should we query based on the work ID?
-              Try { CanonicalId(itemRequest.itemId) } match {
-                case Success(itemId) =>
-                  withFuture {
-                    createRequest(
-                      itemId = itemId,
-                      patronNumber = userIdentifier
-                    )
-                  }
+    RequestsApi
+      .withUserId("users" / Segment / "item-requests") {
+        userIdentifier: SierraPatronNumber =>
+          post {
+            entity(as[ItemRequest]) {
+              itemRequest: ItemRequest =>
+                // TODO: We get the work ID as part of the item request, although right now
+                // it's only for future-proofing, in case it's useful later.
+                // Should we query based on the work ID?
+                Try { CanonicalId(itemRequest.itemId) } match {
+                  case Success(itemId) =>
+                    withFuture {
+                      createRequest(
+                        itemId = itemId,
+                        // TODO: We've temporarily made neededBy optional, so as to not break the front end
+                        // Will remove this once the front end is sending neededBy as part of the request body
+                        neededBy =
+                          itemRequest.neededBy.getOrElse(LocalDate.now()),
+                        patronNumber = userIdentifier
+                      )
+                    }
 
-                case _ =>
-                  notFound(
-                    s"Item not found for identifier ${itemRequest.itemId}"
-                  )
-              }
+                  case _ =>
+                    notFound(
+                      s"Item not found for identifier ${itemRequest.itemId}"
+                    )
+                }
+            }
+          } ~ get {
+            lookupRequests(userIdentifier)
           }
-        } ~ get {
-          lookupRequests(userIdentifier)
-        }
-    }
+      }
   )
 }
 

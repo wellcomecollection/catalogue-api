@@ -567,8 +567,7 @@ trait MultipleWorksSwagger {
       new Parameter(
         name = "query",
         in = ParameterIn.QUERY,
-        description =
-          """Full-text search query, which will OR supplied terms by default.\n\nThe following special characters can be used to change the search behaviour:\n\n- \" wraps a number of tokens to signify a phrase for searching\n\nTo search for any of these special characters, they should be escaped with \.""",
+        description = "Full-text search query, which will AND supplied terms",
         required = false
       ),
       new Parameter(

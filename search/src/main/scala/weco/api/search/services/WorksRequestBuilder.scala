@@ -187,22 +187,10 @@ object WorksRequestBuilder
          rather than have to introduce a new filter to the API to cover it.
          */
         bool(
-          Seq.empty,
+          Nil,
           Seq(
-            /*
-             title is an analysed field, so cannot be matched by a term query.
-             Instead, a matchPhrase is used. This will match a contiguous substring within
-             the title as well as the whole title
-             (e.g. search for Wellcome Malay and you will get Wellcome Malay 7 and Wellcome Malay 8).
-             In most situations, this is likely to be the desired result anyway.  However for Series
-             linking, this may provide some incorrect results.
-             e.g. 'The Journal of Philosophy' is the title of a philosophy journal, but so is
-             'The journal of philosophy, psychology and scientific methods'.
-             If this does cause unwanted results in "real life", then we can consider storing a
-             separate non-analysed version of title for term matching.
-             */
-            matchPhraseQuery(
-              field = "state.relations.ancestors.title",
+            termQuery(
+              field = "state.relations.ancestors.title.keyword",
               value = search_term
             ),
             termQuery(
@@ -210,7 +198,7 @@ object WorksRequestBuilder
               value = search_term
             )
           ),
-          Seq.empty
+          Nil
         )
 
       case AvailabilitiesFilter(availabilityIds) =>

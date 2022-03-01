@@ -216,7 +216,7 @@ object DisplayWork {
           )
         else None
     )
-
+  
   /**
     *  The partOf hierarchy of DisplayRelations is constructed from a flat list of Relation objects
     *  coming from the record in the database.
