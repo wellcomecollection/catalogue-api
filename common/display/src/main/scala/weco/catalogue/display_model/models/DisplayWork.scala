@@ -195,7 +195,7 @@ object DisplayWork {
         else None,
       ontologyType = displayWorkType(work.data.workType),
       partOf = if (includes.partOf) {
-        Some(DisplayRelations(work.state.relations.ancestors))
+        Some(DisplayPartOf(work.state.relations.ancestors))
       } else None,
       parts =
         if (includes.parts)

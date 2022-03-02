@@ -3,7 +3,7 @@ package weco.catalogue.display_model.models
 import weco.catalogue.internal_model.work.Relation
 
 
-object DisplayRelations {
+object DisplayPartOf {
   /**
    *  The partOf hierarchy of DisplayRelations is constructed from a flat list of Relation objects
    *  coming from the record in the database.
