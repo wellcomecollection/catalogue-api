@@ -485,7 +485,8 @@ class DisplayWorkTest
     it("can include multiple series") {
       val work = indexedWork(
         relations = Relations(
-          ancestors = List(SeriesRelation("Series A"), SeriesRelation("Series B")),
+          ancestors =
+            List(SeriesRelation("Series A"), SeriesRelation("Series B")),
           children = List(),
           siblingsPreceding = List(),
           siblingsSucceeding = List()
@@ -504,13 +505,19 @@ class DisplayWorkTest
     it("includes both series and related works if both are present") {
       val workA = indexedWork()
       val workB = indexedWork()
-      val relationA = Relation(work = workA, depth = 2, numChildren = 0, numDescendents = 0)
+      val relationA =
+        Relation(work = workA, depth = 2, numChildren = 0, numDescendents = 0)
       val work = indexedWork(
         relations = Relations(
           ancestors = List(
             SeriesRelation("Series A"),
             relationA,
-            Relation(work = workB, depth = 2, numChildren = 0, numDescendents = 0),
+            Relation(
+              work = workB,
+              depth = 2,
+              numChildren = 0,
+              numDescendents = 0
+            ),
             SeriesRelation("Series B")
           ),
           children = List(),
