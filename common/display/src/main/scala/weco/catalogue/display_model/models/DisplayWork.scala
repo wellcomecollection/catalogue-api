@@ -222,7 +222,7 @@ object DisplayWork {
     *  coming from the record in the database.
     *
     *  There are effectively two distinct behaviours involved here (which is what makes this necessary).
-    *  1. There is a strict single-parent hierarchy defining an objects position within a Collection
+    *  1. There is a strict single-parent hierarchy defining an object's position within a Collection
     *  2. An object can also be in a Series.
     *
     *  A Series is a flat, unordered bag of Works, represented by a relation with no ID.
