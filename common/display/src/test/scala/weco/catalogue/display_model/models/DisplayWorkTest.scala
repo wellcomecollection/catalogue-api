@@ -504,13 +504,13 @@ class DisplayWorkTest
     it("includes both series and related works if both are present") {
       val workA = indexedWork()
       val workB = indexedWork()
-      val relationA = Relation(workA, 2, 0, 0)
+      val relationA = Relation(work = workA, depth = 2, numChildren = 0, numDescendents = 0)
       val work = indexedWork(
         relations = Relations(
           ancestors = List(
             SeriesRelation("Series A"),
             relationA,
-            Relation(workB, 2, 0, 0),
+            Relation(work = workB, depth = 2, numChildren = 0, numDescendents = 0),
             SeriesRelation("Series B")
           ),
           children = List(),

@@ -15,7 +15,7 @@ object DisplayPartOf {
    *  A Series is a flat, unordered bag of Works, represented by a relation with no ID.
    *  A Work may be in zero or more Series and in zero or one hierarchical position within a Collection.
    *
-   *  @param flatAncestors a list of all the ancestors of a relation with any hierarchy ordered from furthest to nearest.
+   *  @param flatAncestors a list of all the ancestors of a relation with any hierarchy represented as a list ordered from furthest to nearest.
    *  @return The result of reconstituting flatAncestors into any hierarchy that exists, alongside its Series Relations
    */
 
