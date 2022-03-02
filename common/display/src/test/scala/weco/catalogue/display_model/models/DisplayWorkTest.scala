@@ -467,7 +467,7 @@ class DisplayWorkTest
     it("includes a series in partOf") {
       val work = indexedWork(
         relations = Relations(
-          ancestors = List(Relation("Series A")),
+          ancestors = List(SeriesRelation("Series A")),
           children = List(),
           siblingsPreceding = List(),
           siblingsSucceeding = List()
@@ -477,15 +477,15 @@ class DisplayWorkTest
         DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
       displayWork.partOf.isEmpty shouldBe false
       val partOf = displayWork.partOf.get
-      partOf.map(_.id) shouldBe List(None)
-      partOf.map(_.title) shouldBe List("Series A")
+      partOf.flatMap(_.id) shouldBe List()
+      partOf.flatMap(_.title) shouldBe List("Series A")
 
     }
 
     it("can include multiple series") {
       val work = indexedWork(
         relations = Relations(
-          ancestors = List(Relation("Series A"), Relation("Series B")),
+          ancestors = List(SeriesRelation("Series A"), SeriesRelation("Series B")),
           children = List(),
           siblingsPreceding = List(),
           siblingsSucceeding = List()
@@ -508,10 +508,10 @@ class DisplayWorkTest
       val work = indexedWork(
         relations = Relations(
           ancestors = List(
-            Relation("Series A"),
+            SeriesRelation("Series A"),
             relationA,
             Relation(workB, 2, 0, 0),
-            Relation("Series B")
+            SeriesRelation("Series B")
           ),
           children = List(),
           siblingsPreceding = List(),
