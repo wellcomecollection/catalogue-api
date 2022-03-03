@@ -727,15 +727,16 @@ class WorksIncludesTest
   }
 
   describe("relation includes") {
-    def seriesWork(seriesTitle: String, title: String): Work.Visible[WorkState.Indexed] = {
+    def seriesWork(
+      seriesTitle: String,
+      title: String
+    ): Work.Visible[WorkState.Indexed] =
       indexedWork(
-        sourceIdentifier = createSourceIdentifierWith(
-          value = s"$seriesTitle-$title"),
+        sourceIdentifier =
+          createSourceIdentifierWith(value = s"$seriesTitle-$title"),
         relations = Relations(ancestors = List(SeriesRelation(seriesTitle)))
-      )
-        .title(title)
+      ).title(title)
         .workType(WorkType.Standard)
-    }
     def work(
       path: String,
       workType: WorkType
@@ -836,7 +837,10 @@ class WorksIncludesTest
       }
     }
     it("includes partOf representing membership of a Series") {
-      val workInSeries = seriesWork(seriesTitle = "I am a series", title = "I am part of a series")
+      val workInSeries = seriesWork(
+        seriesTitle = "I am a series",
+        title = "I am part of a series"
+      )
       withWorksApi {
         case (worksIndex, routes) =>
           insertIntoElasticsearch(
@@ -853,7 +857,9 @@ class WorksIncludesTest
               "id": "${workInSeries.state.canonicalId}",
               "title": "I am part of a series",
               "alternativeTitles": [],
-              "availabilities": [${availabilities(workInSeries.state.availabilities)}],
+              "availabilities": [${availabilities(
+              workInSeries.state.availabilities
+            )}],
               "partOf": [
                 {
                   "title":  "I am a series",
