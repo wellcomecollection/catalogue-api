@@ -727,6 +727,15 @@ class WorksIncludesTest
   }
 
   describe("relation includes") {
+    def seriesWork(seriesTitle: String, title: String): Work.Visible[WorkState.Indexed] = {
+      indexedWork(
+        sourceIdentifier = createSourceIdentifierWith(
+          value = s"$seriesTitle-$title"),
+        relations = Relations(ancestors = List(SeriesRelation(seriesTitle)))
+      )
+        .title(title)
+        .workType(WorkType.Standard)
+    }
     def work(
       path: String,
       workType: WorkType
@@ -790,6 +799,7 @@ class WorksIncludesTest
     }
 
     it("includes partOf") {
+      // TODO: Create a test here that copes with SeriesRelations.
       withWorksApi {
         case (worksIndex, routes) =>
           storeWorks(worksIndex)
@@ -816,8 +826,7 @@ class WorksIncludesTest
                     "title": "0",
                     "totalParts": 1,
                     "totalDescendentParts": 5,
-                    "type": "Collection",
-                    "partOf": []
+                    "type": "Collection"
                   }
                 ]
               }]
@@ -826,7 +835,38 @@ class WorksIncludesTest
           }
       }
     }
-
+    it("includes partOf representing membership of a Series") {
+      val workInSeries = seriesWork(seriesTitle = "I am a series", title = "I am part of a series")
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(
+            index = worksIndex,
+            workInSeries
+          )
+          assertJsonResponse(
+            routes,
+            s"$rootPath/works/${workInSeries.state.canonicalId}?include=partOf"
+          ) {
+            Status.OK -> s"""
+            {
+              ${singleWorkResult("Work")},
+              "id": "${workInSeries.state.canonicalId}",
+              "title": "I am part of a series",
+              "alternativeTitles": [],
+              "availabilities": [${availabilities(workInSeries.state.availabilities)}],
+              "partOf": [
+                {
+                  "title":  "I am a series",
+                  "totalParts": 0,
+                  "totalDescendentParts": 0,
+                  "type": "Series"
+                }
+              ]
+            }
+          """
+          }
+      }
+    }
     it("includes precededBy") {
       withWorksApi {
         case (worksIndex, routes) =>
