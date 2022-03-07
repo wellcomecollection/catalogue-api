@@ -90,6 +90,14 @@ class SierraRequestsService(
               }
         }
 
+      case Left(SierraErrorCode(132, specificCode, 500, _, description))
+//        println(s"Hello, $description")
+        if description.contains("You may not make requests")  =>
+          checkIfUserIsSelfRegistered(patron)
+          .map {
+            case Some(rejected) => Left(rejected)
+            case None => Left(HoldRejected.UserIsSelfRegistered)
+          }
       // If the hold fails because the bib record couldn't be loaded, that's a strong
       // suggestion that the item doesn't exist.
       //
@@ -180,6 +188,16 @@ class SierraRequestsService(
           s"User tried to place a hold on item $item, which failed for an unknown reason"
         )
         None
+    }
+
+  private def checkIfUserIsSelfRegistered(patron: SierraPatronNumber) : Future[Option[HoldRejected]] = sierraSource
+    .lookupPatronType(patron)
+    .map {
+      case Right(patron) if patron.patronType == 29 =>
+        warn(
+          s"Your account needs to be upgraded before you can make requests. Please contact library enquiries for assistance"
+        )
+        Some(HoldRejected.UserIsSelfRegistered)
     }
 
   private def checkIfUserCanMakeRequests(

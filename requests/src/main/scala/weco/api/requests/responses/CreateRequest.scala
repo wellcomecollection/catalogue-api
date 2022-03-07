@@ -58,6 +58,9 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
     itemId: CanonicalId
   ): (StatusCode, Option[String]) =
     reason match {
+      case HoldRejected.UserIsSelfRegistered =>
+        (StatusCodes.BadRequest, Some(s"Your account needs to be upgraded before you can make requests. Please contact library enquiries for assistance"))
+
       case HoldRejected.ItemCannotBeRequested =>
         (StatusCodes.BadRequest, Some(s"You can't request $itemId"))
 

@@ -379,6 +379,9 @@ class SierraRequestsServiceTest
           _.left.value shouldBe HoldRejected.ItemCannotBeRequested
         }
       }
+
+      //      more tests
+
     }
   }
 }
