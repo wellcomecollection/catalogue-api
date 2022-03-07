@@ -4,7 +4,6 @@ import akka.http.scaladsl.model.Uri
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
 import io.circe.Encoder
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.api.search.models._
 import weco.api.search.rest
 import weco.catalogue.display_model.models._
@@ -12,12 +11,8 @@ import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.http.json.DisplayJsonUtil._
 
-@Schema(
-  name = "ResultList",
-  description = "A paginated list of results."
-)
 case class DisplayResultList[DisplayResult, DisplayAggs](
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "ResultList",
+  @JsonKey("type") ontologyType: String = "ResultList",
   pageSize: Int,
   totalPages: Int,
   totalResults: Int,

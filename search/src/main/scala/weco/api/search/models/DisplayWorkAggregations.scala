@@ -3,7 +3,6 @@ package weco.api.search.models
 import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,
@@ -20,45 +19,18 @@ import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
 import weco.http.json.DisplayJsonUtil._
 
-@Schema(
-  name = "Aggregations",
-  description = "A map containing the requested aggregations."
-)
 case class DisplayWorkAggregations(
-  @Schema(
-    description = "Format aggregation on a set of results."
-  ) workType: Option[DisplayAggregation[DisplayFormat]],
-  @Schema(
-    name = "production.dates",
-    description = "Date aggregation on a set of results."
-  ) @JsonKey("production.dates") `production.dates`: Option[
+  workType: Option[DisplayAggregation[DisplayFormat]],
+  @JsonKey("production.dates") `production.dates`: Option[
     DisplayAggregation[DisplayPeriod]
   ],
-  @Schema(
-    name = "genres.label",
-    description = "Genre aggregation on a set of results."
-  ) `genres.label`: Option[DisplayAggregation[DisplayGenre]],
-  @Schema(
-    name = "subjects.label",
-    description = "Subject aggregation on a set of results."
-  ) `subjects.label`: Option[DisplayAggregation[DisplaySubject]],
-  @Schema(
-    name = "contributors.agent.label",
-    description = "Contributor aggregation on a set of results."
-  ) `contributors.agent.label`: Option[
-    DisplayAggregation[DisplayAbstractAgent]
-  ],
-  @Schema(
-    description = "Language aggregation on a set of results."
-  ) languages: Option[DisplayAggregation[DisplayLanguage]],
-  @Schema(
-    name = "items.locations.license",
-    description = "License aggregation on a set of results."
-  ) `items.locations.license`: Option[DisplayAggregation[DisplayLicense]],
-  @Schema(
-    description = "Availabilities aggregation on a set of results."
-  ) availabilities: Option[DisplayAggregation[DisplayAvailability]],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations"
+  `genres.label`: Option[DisplayAggregation[DisplayGenre]],
+  `subjects.label`: Option[DisplayAggregation[DisplaySubject]],
+  `contributors.agent.label`: Option[DisplayAggregation[DisplayAbstractAgent]],
+  languages: Option[DisplayAggregation[DisplayLanguage]],
+  `items.locations.license`: Option[DisplayAggregation[DisplayLicense]],
+  availabilities: Option[DisplayAggregation[DisplayAvailability]],
+  @JsonKey("type") ontologyType: String = "Aggregations"
 )
 
 object DisplayWorkAggregations {

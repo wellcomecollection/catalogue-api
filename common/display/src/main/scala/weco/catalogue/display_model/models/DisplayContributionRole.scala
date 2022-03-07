@@ -1,19 +1,11 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.work.ContributionRole
 
-@Schema(
-  name = "ContributionRole",
-  description = "A contribution role"
-)
 case class DisplayContributionRole(
-  @Schema(
-    name = "The name of the agent"
-  ) label: String,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "ContributionRole"
+  label: String,
+  @JsonKey("type") ontologyType: String = "ContributionRole"
 )
 
 object DisplayContributionRole {
