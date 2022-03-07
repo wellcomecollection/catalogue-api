@@ -1,19 +1,14 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.locations.AccessCondition
 
-@Schema(
-  name = "AccessCondition"
-)
 case class DisplayAccessCondition(
   method: DisplayAccessMethod,
   status: Option[DisplayAccessStatus],
   terms: Option[String],
   note: Option[String],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "AccessCondition"
+  @JsonKey("type") ontologyType: String = "AccessCondition"
 )
 
 object DisplayAccessCondition {

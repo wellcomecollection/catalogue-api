@@ -1,17 +1,12 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.identifiers.IdentifierType
 
-@Schema(
-  name = "IdentifierType"
-)
 case class DisplayIdentifierType(
-  @Schema id: String,
-  @Schema label: String,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "IdentifierType"
+  id: String,
+  label: String,
+  @JsonKey("type") ontologyType: String = "IdentifierType"
 )
 
 object DisplayIdentifierType {

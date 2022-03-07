@@ -1,20 +1,13 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.Genre
 
-@Schema(
-  name = "Genre",
-  description = "A genre"
-)
 case class DisplayGenre(
-  @Schema(description = "A label given to a thing.") label: String,
-  @Schema(description = "Relates a genre to a list of concepts.") concepts: List[
-    DisplayAbstractConcept
-  ],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Genre"
+  label: String,
+  concepts: List[DisplayAbstractConcept],
+  @JsonKey("type") ontologyType: String = "Genre"
 )
 
 object DisplayGenre {

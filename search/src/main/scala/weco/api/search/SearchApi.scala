@@ -1,6 +1,5 @@
 package weco.api.search
 
-import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.server.{
   MalformedQueryParamRejection,
   RejectionHandler,
@@ -21,7 +20,6 @@ import weco.api.search.models.{
   SearchTemplateResponse
 }
 import weco.api.search.rest._
-import weco.api.search.swagger.SwaggerDocs
 import weco.catalogue.display_model.ElasticConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
@@ -32,7 +30,6 @@ class SearchApi(
   elasticClient: ElasticClient,
   elasticConfig: ElasticConfig,
   queryConfig: QueryConfig,
-  swaggerDocs: SwaggerDocs,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives {
@@ -65,9 +62,6 @@ class SearchApi(
 
             case _ => notFound(s"Image not found for identifier $id")
           }
-        },
-        path("swagger.json") {
-          swagger
         },
         path("search-templates.json") {
           getSearchTemplates
@@ -107,12 +101,6 @@ class SearchApi(
       imagesIndex = elasticConfig.imagesIndex,
       queryConfig
     )
-
-  def swagger: Route = get {
-    complete(
-      HttpEntity(MediaTypes.`application/json`, swaggerDocs.json)
-    )
-  }
 
   def getClusterHealth: Route =
     get {

@@ -1,22 +1,17 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.Subject
 
-@Schema(
-  name = "Subject",
-  description = "A subject"
-)
 case class DisplaySubject(
   id: Option[String] = None,
   identifiers: Option[List[DisplayIdentifier]] = None,
-  @Schema(description = "A label given to a thing.") label: String,
-  @Schema(description = "Relates a subject to a list of concepts.") concepts: List[
+  label: String,
+  concepts: List[
     DisplayAbstractRootConcept
   ],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Subject"
+  @JsonKey("type") ontologyType: String = "Subject"
 )
 
 object DisplaySubject extends GetIdentifiers {
