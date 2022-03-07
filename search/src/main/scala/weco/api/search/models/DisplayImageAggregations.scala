@@ -3,7 +3,6 @@ package weco.api.search.models
 import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.display_model.models.DisplayAbstractAgent
 import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,
@@ -14,23 +13,13 @@ import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
 import weco.http.json.DisplayJsonUtil._
 
-@Schema(
-  name = "Aggregations",
-  description = "A map containing the requested aggregations."
-)
 case class DisplayImageAggregations(
-  @Schema(
-    description = "License aggregation on a set of results."
-  ) license: Option[DisplayAggregation[DisplayLicense]],
-  @Schema(
-    description = "Contributor agent aggregation on a set of results."
-  ) `source.contributors.agent.label`: Option[
+  license: Option[DisplayAggregation[DisplayLicense]],
+  `source.contributors.agent.label`: Option[
     DisplayAggregation[DisplayAbstractAgent]
   ] = None,
-  @Schema(
-    description = "Genre aggregation on a set of results."
-  ) `source.genres.label`: Option[DisplayAggregation[DisplayGenre]],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Aggregations"
+  `source.genres.label`: Option[DisplayAggregation[DisplayGenre]],
+  @JsonKey("type") ontologyType: String = "Aggregations"
 )
 
 object DisplayImageAggregations {

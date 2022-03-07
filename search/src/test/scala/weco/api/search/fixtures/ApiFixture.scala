@@ -12,7 +12,6 @@ import weco.api.search.SearchApi
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.search.models.{ApiConfig, QueryConfig}
-import weco.api.search.swagger.SwaggerDocs
 import weco.catalogue.display_model.ElasticConfig
 
 trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
@@ -31,11 +30,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
     defaultPageSize = 10
   )
 
-  // Note: creating new instances of the SwaggerDocs class is expensive, so
-  // we cache it and reuse it between test instances to reduce the number
-  // of times we have to create it.
-  lazy val swaggerDocs = new SwaggerDocs(apiConfig)
-
   def withRouter[R](
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
@@ -46,7 +40,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
         paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),
         paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
       ),
-      swaggerDocs = swaggerDocs,
       apiConfig = apiConfig
     )
 

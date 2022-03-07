@@ -1,44 +1,17 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.image.{Image, ImageState}
 
-@Schema(
-  name = "Image",
-  description = "An image"
-)
 case class DisplayImage(
-  @Schema(
-    accessMode = Schema.AccessMode.READ_ONLY,
-    description = "The canonical identifier given to a thing."
-  ) id: String,
-  @Schema(
-    `type` = "uk.ac.wellcome.Display.models.DisplayDigitalLocation",
-    description =
-      "The location which provides access to an image that can be displayed directly as a thumbnnail"
-  ) thumbnail: DisplayDigitalLocation,
-  @Schema(
-    `type` = "uk.ac.wellcome.Display.models.DisplayDigitalLocation",
-    description = "The locations which provide access to the image"
-  ) locations: Seq[DisplayDigitalLocation],
-  @Schema(
-    `type` = "uk.ac.wellcome.Display.models.DisplayImageSource",
-    description = "A description of the image's source"
-  ) source: DisplayImageSource,
-  @Schema(
-    `type` = "Image",
-    description = "A list of visually similar images"
-  ) visuallySimilar: Option[Seq[DisplayImage]],
-  @Schema(
-    `type` = "Image",
-    description = "A list of images with similar color palettes"
-  ) withSimilarColors: Option[Seq[DisplayImage]],
-  @Schema(
-    `type` = "Image",
-    description = "A list of images with similar features"
-  ) withSimilarFeatures: Option[Seq[DisplayImage]],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String = "Image"
+  id: String,
+  thumbnail: DisplayDigitalLocation,
+  locations: Seq[DisplayDigitalLocation],
+  source: DisplayImageSource,
+  visuallySimilar: Option[Seq[DisplayImage]],
+  withSimilarColors: Option[Seq[DisplayImage]],
+  withSimilarFeatures: Option[Seq[DisplayImage]],
+  @JsonKey("type") ontologyType: String = "Image"
 )
 
 object DisplayImage {

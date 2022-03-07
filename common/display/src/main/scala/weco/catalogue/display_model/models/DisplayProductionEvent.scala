@@ -1,25 +1,16 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.ProductionEvent
 
-@Schema(
-  name = "ProductionEvent",
-  description =
-    "An event contributing to the production, publishing or distribution of a work."
-)
 case class DisplayProductionEvent(
-  @Schema label: String,
-  @Schema places: List[DisplayPlace],
-  @Schema agents: List[DisplayAbstractAgent],
-  @Schema dates: List[DisplayPeriod],
-  @Schema(
-    `type` = "uk.ac.wellcome.display.models.DisplayAbstractConcept"
-  ) function: Option[DisplayAbstractConcept],
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "ProductionEvent"
+  label: String,
+  places: List[DisplayPlace],
+  agents: List[DisplayAbstractAgent],
+  dates: List[DisplayPeriod],
+  function: Option[DisplayAbstractConcept],
+  @JsonKey("type") ontologyType: String = "ProductionEvent"
 )
 
 object DisplayProductionEvent {
