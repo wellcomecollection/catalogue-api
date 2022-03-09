@@ -5,7 +5,6 @@ import com.typesafe.config.Config
 import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.Tracing
 import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
-import weco.api.search.swagger.SwaggerDocs
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
 import weco.catalogue.display_model.ApiClusterElasticConfig
@@ -37,13 +36,10 @@ object Main extends WellcomeTypesafeApp {
     val queryConfig =
       QueryConfig.fetchFromIndex(elasticClient, elasticConfig.imagesIndex)
 
-    val swaggerDocs = new SwaggerDocs(apiConfig)
-
     val router = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
       queryConfig = queryConfig,
-      swaggerDocs = swaggerDocs,
       apiConfig = apiConfig
     )
 

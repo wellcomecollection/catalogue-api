@@ -1,20 +1,12 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.JsonKey
-import io.swagger.v3.oas.annotations.media.Schema
 import weco.catalogue.internal_model.locations.{
   DigitalLocation,
   Location,
   PhysicalLocation
 }
 
-@Schema(
-  name = "Location",
-  description = "A location that provides access to an item",
-  discriminatorProperty = "type",
-  allOf =
-    Array(classOf[DisplayDigitalLocation], classOf[DisplayPhysicalLocation])
-)
 sealed trait DisplayLocation
 
 object DisplayLocation {
@@ -27,37 +19,14 @@ object DisplayLocation {
     }
 }
 
-@Schema(
-  name = "DigitalLocation",
-  description = "A digital location that provides access to an item"
-)
 case class DisplayDigitalLocation(
-  @Schema(
-    description = "The type of location that an item is accessible from.",
-    allowableValues = Array("thumbnail-image", "iiif-image")
-  ) locationType: DisplayLocationType,
-  @Schema(
-    `type` = "String",
-    description = "The URL of the digital asset."
-  ) url: String,
-  @Schema(
-    `type` = "String",
-    description = "Who to credit the image to"
-  ) credit: Option[String] = None,
-  @Schema(
-    `type` = "String",
-    description =
-      "Text that can be used when linking to the item - for example, 'View this journal' rather than the raw URL"
-  ) linkText: Option[String] = None,
-  @Schema(
-    description =
-      "The specific license under which the work in question is released to the public - for example, one of the forms of Creative Commons - if it is a precise license to which a link can be made."
-  ) license: Option[DisplayLicense] = None,
-  @Schema(
-    description = "Information about any access restrictions placed on the work"
-  ) accessConditions: List[DisplayAccessCondition] = Nil,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "DigitalLocation"
+  locationType: DisplayLocationType,
+  url: String,
+  credit: Option[String] = None,
+  linkText: Option[String] = None,
+  license: Option[DisplayLicense] = None,
+  accessConditions: List[DisplayAccessCondition] = Nil,
+  @JsonKey("type") ontologyType: String = "DigitalLocation"
 ) extends DisplayLocation
 
 object DisplayDigitalLocation {
@@ -73,30 +42,13 @@ object DisplayDigitalLocation {
     )
 }
 
-@Schema(
-  name = "PhysicalLocation",
-  description = "A physical location that provides access to an item"
-)
 case class DisplayPhysicalLocation(
-  @Schema(
-    description = "The type of location that an item is accessible from."
-  ) locationType: DisplayLocationType,
-  @Schema(
-    `type` = "String",
-    description = "The title or other short name of the location."
-  ) label: String,
-  @Schema(
-    description =
-      "The specific license under which the work in question is released to the public - for example, one of the forms of Creative Commons - if it is a precise license to which a link can be made."
-  ) license: Option[DisplayLicense] = None,
-  @Schema(
-    description = "The specific shelf where this item can be found"
-  ) shelfmark: Option[String] = None,
-  @Schema(
-    description = "Information about any access restrictions placed on the work"
-  ) accessConditions: List[DisplayAccessCondition] = Nil,
-  @JsonKey("type") @Schema(name = "type") ontologyType: String =
-    "PhysicalLocation"
+  locationType: DisplayLocationType,
+  label: String,
+  license: Option[DisplayLicense] = None,
+  shelfmark: Option[String] = None,
+  accessConditions: List[DisplayAccessCondition] = Nil,
+  @JsonKey("type") ontologyType: String = "PhysicalLocation"
 ) extends DisplayLocation
 
 object DisplayPhysicalLocation {
