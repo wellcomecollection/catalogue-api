@@ -103,18 +103,9 @@ object DisplayWork {
           Some(work.data.imageData.map(DisplayWorkImageInclude(_)))
         else None,
       ontologyType = displayWorkType(work.data.workType),
-      partOf =
-        if (includes.partOf)
-          Some(
-            work.state.relations.ancestors
-              .foldLeft(List.empty[DisplayRelation]) {
-                case (partOf, relation) =>
-                  List(
-                    DisplayRelation(relation).copy(partOf = Some(partOf))
-                  )
-              }
-          )
-        else None,
+      partOf = if (includes.partOf) {
+        Some(DisplayPartOf(work.state.relations.ancestors))
+      } else None,
       parts =
         if (includes.parts)
           Some(
@@ -134,6 +125,7 @@ object DisplayWork {
           )
         else None
     )
+
   def apply(work: Work.Visible[WorkState.Indexed]): DisplayWork =
     DisplayWork(work = work, includes = WorksIncludes.none)
 
