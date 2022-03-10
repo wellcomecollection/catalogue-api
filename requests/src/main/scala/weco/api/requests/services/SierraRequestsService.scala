@@ -47,6 +47,10 @@ class SierraRequestsService(
       //        This can mean the item is already on hold, possibly by this user.
       //        It may also mean you're not allowed to request this item.
       //
+      //    132 = "You may not make requests.  Please consult Enquiry Desk staff for help."
+      //          This can mean you are a self registered user, or don't have a patron type,
+      //          as a result you can't make requests
+      //
       //    433 = "Bib record cannot be loaded"
       //        This can mean you tried to request an item that doesn't exist in
       //        Sierra.
@@ -71,6 +75,14 @@ class SierraRequestsService(
       //      so we look to see if this item can be requested.
       //    - The user's patron record has expired and they can no longer make requests.
       //
+      case Left(SierraErrorCode(132, 2, 500, _, Some(description)))
+        if description.contains("You may not make requests")  =>
+        checkIfUserIsSelfRegistered(patron)
+          .map {
+            case Some(rejected) => Left(rejected)
+            case None => Left(HoldRejected.UserIsSelfRegistered)
+          }
+
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
         getHolds(patron).flatMap {
@@ -90,14 +102,8 @@ class SierraRequestsService(
               }
         }
 
-      case Left(SierraErrorCode(132, specificCode, 500, _, description))
-//        println(s"Hello, $description")
-        if description.contains("You may not make requests")  =>
-          checkIfUserIsSelfRegistered(patron)
-          .map {
-            case Some(rejected) => Left(rejected)
-            case None => Left(HoldRejected.UserIsSelfRegistered)
-          }
+
+
       // If the hold fails because the bib record couldn't be loaded, that's a strong
       // suggestion that the item doesn't exist.
       //
@@ -193,11 +199,10 @@ class SierraRequestsService(
   private def checkIfUserIsSelfRegistered(patron: SierraPatronNumber) : Future[Option[HoldRejected]] = sierraSource
     .lookupPatronType(patron)
     .map {
-      case Right(patron) if patron.patronType == 29 =>
-        warn(
-          s"Your account needs to be upgraded before you can make requests. Please contact library enquiries for assistance"
-        )
+      case Right(Some(int))
+        if int == 29 =>
         Some(HoldRejected.UserIsSelfRegistered)
+      case _ => None
     }
 
   private def checkIfUserCanMakeRequests(
