@@ -1194,7 +1194,6 @@ class RequestingScenarioTest
 
     Scenario("A self registered user can't request items") {
       withLocalWorksIndex { index =>
-
         Given("a physical item from Sierra in the catalogue API")
         val itemNumber = createSierraItemNumber
         val item = createIdentifiedSierraItemWith(itemNumber)

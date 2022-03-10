@@ -76,11 +76,11 @@ class SierraRequestsService(
       //    - The user's patron record has expired and they can no longer make requests.
       //
       case Left(SierraErrorCode(132, 2, 500, _, Some(description)))
-        if description.contains("You may not make requests")  =>
+          if description.contains("You may not make requests") =>
         checkIfUserIsSelfRegistered(patron)
           .map {
             case Some(rejected) => Left(rejected)
-            case None => Left(HoldRejected.UserIsSelfRegistered)
+            case None           => Left(HoldRejected.UserIsSelfRegistered)
           }
 
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
@@ -101,8 +101,6 @@ class SierraRequestsService(
                 case None           => Left(HoldRejected.UnknownReason)
               }
         }
-
-
 
       // If the hold fails because the bib record couldn't be loaded, that's a strong
       // suggestion that the item doesn't exist.
@@ -196,14 +194,16 @@ class SierraRequestsService(
         None
     }
 
-  private def checkIfUserIsSelfRegistered(patron: SierraPatronNumber) : Future[Option[HoldRejected]] = sierraSource
-    .lookupPatronType(patron)
-    .map {
-      case Right(Some(int))
-        if int == 29 =>
-        Some(HoldRejected.UserIsSelfRegistered)
-      case _ => None
-    }
+  private def checkIfUserIsSelfRegistered(
+    patron: SierraPatronNumber
+  ): Future[Option[HoldRejected]] =
+    sierraSource
+      .lookupPatronType(patron)
+      .map {
+        case Right(Some(int)) if int == 29 =>
+          Some(HoldRejected.UserIsSelfRegistered)
+        case _ => None
+      }
 
   private def checkIfUserCanMakeRequests(
     patron: SierraPatronNumber
