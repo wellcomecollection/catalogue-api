@@ -79,7 +79,7 @@ class SierraRequestsService(
           if description.contains("You may not make requests") =>
         userIsSelfRegistered(patron)
           .map {
-            case true => Left(HoldRejected.UserIsSelfRegistered)
+            case true  => Left(HoldRejected.UserIsSelfRegistered)
             case false => Left(HoldRejected.UnknownReason)
           }
 
@@ -201,7 +201,7 @@ class SierraRequestsService(
       .lookupPatronType(patron)
       .map {
         case Right(Some(29)) => true
-        case _ => false
+        case _               => false
       }
 
   private def checkIfUserCanMakeRequests(
