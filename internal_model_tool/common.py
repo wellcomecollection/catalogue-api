@@ -73,7 +73,7 @@ def get_remote_meta(session, date):
 
 
 def get_local_internal_model():
-    with open(os.path.join(HERE, "../project/Dependencies.scala", "r")) as deps_file:
+    with open(os.path.join(HERE, "../project/Dependencies.scala"), "r") as deps_file:
         config_text = deps_file.read()
     model_version = re.findall('val internalModel = "(.*)"', config_text)[0]
     return model_version
