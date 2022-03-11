@@ -1191,6 +1191,94 @@ class RequestingScenarioTest
         }
       }
     }
+
+    Scenario("A self registered user can't request items") {
+      withLocalWorksIndex { index =>
+        Given("a physical item from Sierra in the catalogue API")
+        val itemNumber = createSierraItemNumber
+        val item = createIdentifiedSierraItemWith(itemNumber)
+        val work = indexedWork().items(List(item))
+        val neededBy = LocalDate.parse("2022-02-18")
+
+        And("and a user who is self registered")
+        val patronNumber = createSierraPatronNumber
+        val responses = Seq(
+          (
+            createHoldRequest(patronNumber, itemNumber, neededBy),
+            HttpResponse(
+              status = StatusCodes.InternalServerError,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                """
+                  |{
+                  |  "code": 132,
+                  |  "specificCode": 2,
+                  |  "httpStatus": 500,
+                  |  "name": "XCirc error",
+                  |  "description": "XCirc error : You may not make requests.  Please consult Enquiry Desk staff for help."
+                  |}
+                  |""".stripMargin
+              )
+            )
+          ),
+          (
+            HttpRequest(
+              uri =
+                s"http://sierra:1234/v5/patrons/$patronNumber?fields=patronType"
+            ),
+            HttpResponse(
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "id": ${patronNumber.withoutCheckDigit},
+                   |  "patronType": 29
+                   |}
+                   |""".stripMargin
+              )
+            )
+          )
+        )
+
+        implicit val route: Route = createRoute(index, responses)
+        insertIntoElasticsearch(index, work)
+
+        When("the self registered user requests the item")
+        val response = makePostRequest(
+          path = s"/users/$patronNumber/item-requests",
+          entity = createJsonHttpEntityWith(
+            s"""
+               |{
+               |  "itemId": "${item.id.canonicalId}",
+               |  "workId": "$createCanonicalId",
+               |  "neededBy": "$neededBy",
+               |  "type": "ItemRequest"
+               |}
+               |""".stripMargin
+          )
+        )
+
+        Then("the hold is rejected")
+        response.status shouldBe StatusCodes.Forbidden
+        response.status.intValue shouldBe 403
+
+        And("the error explains why the hold is rejected")
+        withStringEntity(response.entity) {
+          assertJsonStringsAreEqual(
+            _,
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 403,
+               |  "label": "Forbidden",
+               |  "description": "Your account needs to be upgraded before you can make requests. Please contact library enquiries for assistance"
+               |}
+               |""".stripMargin
+          )
+        }
+      }
+    }
   }
 
   def makePostRequest(path: String, entity: RequestEntity)(

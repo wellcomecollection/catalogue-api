@@ -47,6 +47,10 @@ class SierraRequestsService(
       //        This can mean the item is already on hold, possibly by this user.
       //        It may also mean you're not allowed to request this item.
       //
+      //    132 = "You may not make requests.  Please consult Enquiry Desk staff for help."
+      //          This can mean you are a self registered user, or don't have a patron type,
+      //          as a result you can't make requests
+      //
       //    433 = "Bib record cannot be loaded"
       //        This can mean you tried to request an item that doesn't exist in
       //        Sierra.
@@ -71,6 +75,14 @@ class SierraRequestsService(
       //      so we look to see if this item can be requested.
       //    - The user's patron record has expired and they can no longer make requests.
       //
+      case Left(SierraErrorCode(132, 2, 500, _, Some(description)))
+          if description.contains("You may not make requests") =>
+        userIsSelfRegistered(patron)
+          .map {
+            case true  => Left(HoldRejected.UserIsSelfRegistered)
+            case false => Left(HoldRejected.UnknownReason)
+          }
+
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
           if specificCode == 2 || specificCode == 929 =>
         getHolds(patron).flatMap {
@@ -181,6 +193,16 @@ class SierraRequestsService(
         )
         None
     }
+
+  private def userIsSelfRegistered(
+    patron: SierraPatronNumber
+  ): Future[Boolean] =
+    sierraSource
+      .lookupPatronType(patron)
+      .map {
+        case Right(Some(29)) => true
+        case _               => false
+      }
 
   private def checkIfUserCanMakeRequests(
     patron: SierraPatronNumber

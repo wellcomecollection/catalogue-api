@@ -22,4 +22,5 @@ object HoldRejected {
   case class UserDoesNotExist(patron: SierraPatronNumber) extends HoldRejected
   case object UserAccountHasExpired extends HoldRejected
   case object UnknownReason extends HoldRejected
+  case object UserIsSelfRegistered extends HoldRejected
 }
