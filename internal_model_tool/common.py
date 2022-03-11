@@ -7,6 +7,7 @@ from urllib.request import Request, urlopen
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+
 def get_session(*, role_arn):
     sts_client = boto3.client("sts")
     assumed_role_object = sts_client.assume_role(
@@ -22,7 +23,10 @@ def get_session(*, role_arn):
 
 def get_local_date():
     with open(
-        os.path.join(HERE, "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala"),
+        os.path.join(
+            HERE,
+            "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala",
+        ),
         "r",
     ) as config_file:
         config_text = config_file.read()
@@ -89,4 +93,6 @@ def set_local_internal_model(latest_version):
             else:
                 out_file.write(line)
     if not line_set:
-        raise ValueError(f"{dependencies_path} did not contain an internalModel line as expected")
+        raise ValueError(
+            f"{dependencies_path} did not contain an internalModel line as expected"
+        )
