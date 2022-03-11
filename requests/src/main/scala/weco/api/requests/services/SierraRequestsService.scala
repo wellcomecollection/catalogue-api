@@ -77,10 +77,10 @@ class SierraRequestsService(
       //
       case Left(SierraErrorCode(132, 2, 500, _, Some(description)))
           if description.contains("You may not make requests") =>
-        checkIfUserIsSelfRegistered(patron)
+        userIsSelfRegistered(patron)
           .map {
-            case Some(rejected) => Left(rejected)
-            case None           => Left(HoldRejected.UserIsSelfRegistered)
+            case true => Left(HoldRejected.UserIsSelfRegistered)
+            case false => Left(HoldRejected.UnknownReason)
           }
 
       case Left(SierraErrorCode(132, specificCode, 500, _, _))
@@ -194,15 +194,14 @@ class SierraRequestsService(
         None
     }
 
-  private def checkIfUserIsSelfRegistered(
+  private def userIsSelfRegistered(
     patron: SierraPatronNumber
-  ): Future[Option[HoldRejected]] =
+  ): Future[Boolean] =
     sierraSource
       .lookupPatronType(patron)
       .map {
-        case Right(Some(int)) if int == 29 =>
-          Some(HoldRejected.UserIsSelfRegistered)
-        case _ => None
+        case Right(Some(29)) => true
+        case _ => false
       }
 
   private def checkIfUserCanMakeRequests(
