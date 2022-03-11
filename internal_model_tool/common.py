@@ -1,9 +1,11 @@
 import boto3
 import base64
 import json
+import os
 import re
 from urllib.request import Request, urlopen
 
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 def get_session(*, role_arn):
     sts_client = boto3.client("sts")
@@ -19,12 +21,11 @@ def get_session(*, role_arn):
 
 
 def get_local_date():
-    config_file = open(
-        "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala",
+    with open(
+        os.path.join(HERE, "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala"),
         "r",
-    )
-    config_text = config_file.read()
-    config_file.close()
+    ) as config_file:
+        config_text = config_file.read()
     date = re.findall('val pipelineDate = "(.*)"', config_text)[0]
     suffix = re.findall('val suffix = "(.*)"', config_text)[0]
     return date + suffix
@@ -68,19 +69,24 @@ def get_remote_meta(session, date):
 
 
 def get_local_internal_model():
-    deps_file = open("../project/Dependencies.scala", "r")
-    config_text = deps_file.read()
-    deps_file.close()
+    with open(os.path.join(HERE, "../project/Dependencies.scala", "r")) as deps_file:
+        config_text = deps_file.read()
     model_version = re.findall('val internalModel = "(.*)"', config_text)[0]
     return model_version
 
 
 def set_local_internal_model(latest_version):
-    old_lines = list(open("../project/Dependencies.scala"))
+    dependencies_path = os.path.join(HERE, "../project/Dependencies.scala")
+    with open(dependencies_path, "r") as in_file:
+        old_lines = in_file.readlines()
 
-    with open("../project/Dependencies.scala", "w") as out_file:
+    line_set = False
+    with open(dependencies_path, "w") as out_file:
         for line in old_lines:
             if line.startswith("    val internalModel"):
                 out_file.write(f'    val internalModel = "{latest_version}"\n')
+                line_set = True
             else:
                 out_file.write(line)
+    if not line_set:
+        raise ValueError(f"{dependencies_path} did not contain an internalModel line as expected")
