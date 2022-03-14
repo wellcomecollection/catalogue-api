@@ -62,7 +62,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         (
           StatusCodes.Forbidden,
           Some(
-            s"Your account needs to be upgraded before you can make requests. Please contact library enquiries for assistance"
+            s"Your account needs to be upgraded before you can make requests. Please contact Library Enquiries (library@wellcomecollection.org)."
           )
         )
 
@@ -90,7 +90,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
         (
           StatusCodes.Forbidden,
           Some(
-            "Your account has expired, and you're no longer able to request items. To renew your account, please <a href=\"library@wellcomecollection.org\">contact the library team</a>."
+            "Your account has expired, and you're no longer able to request items. To renew your account, please contact Library Enquiries (library@wellcomecollection.org)."
           )
         )
 
