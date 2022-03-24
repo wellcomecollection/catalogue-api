@@ -23,6 +23,9 @@ class RequestsApi(
   val apiConfig: ApiConfig
 ) extends CreateRequest
     with LookupPendingRequests {
+
+  def defaultNeededBy: LocalDate = LocalDate.now().plusWeeks(2)
+
   val routes: Route = concat(
     RequestsApi
       .withUserId("users" / Segment / "item-requests") {
@@ -41,7 +44,7 @@ class RequestsApi(
                         // TODO: We've temporarily made neededBy optional, so as to not break the front end
                         // Will remove this once the front end is sending neededBy as part of the request body
                         neededBy =
-                          itemRequest.neededBy.getOrElse(LocalDate.now()),
+                          itemRequest.neededBy.getOrElse(defaultNeededBy),
                         patronNumber = userIdentifier
                       )
                     }
