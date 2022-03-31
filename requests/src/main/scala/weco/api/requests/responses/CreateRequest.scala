@@ -22,10 +22,10 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
 
   def createRequest(
     itemId: CanonicalId,
-    neededBy: LocalDate,
+    pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
   ): Future[Route] =
-    requestsService.makeRequest(itemId, neededBy, patronNumber) map {
+    requestsService.makeRequest(itemId, pickupDate, patronNumber) map {
       case Right(_) =>
         val accepted = (StatusCodes.Accepted, HttpEntity.Empty)
         complete(accepted)
