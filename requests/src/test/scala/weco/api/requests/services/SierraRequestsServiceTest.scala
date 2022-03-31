@@ -236,7 +236,8 @@ class SierraRequestsServiceTest
       it("requests a hold from the Sierra API") {
         val patron = SierraPatronNumber("1234567")
         val item = createSierraItemNumber
-        val neededBy = LocalDate.parse("2022-02-18")
+        val pickupDateString = "2022-02-18"
+        val pickupDate = LocalDate.parse(pickupDateString)
 
         val sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
@@ -255,7 +256,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "neededBy": "$neededBy",
+                   |  "note": "Requested for: $pickupDateString",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -269,7 +270,7 @@ class SierraRequestsServiceTest
           _.placeHold(
             patron = patron,
             sourceIdentifier = sourceIdentifier,
-            neededBy = neededBy
+            pickupDate = Some(pickupDate)
           )
         }
 
@@ -281,7 +282,8 @@ class SierraRequestsServiceTest
       it("rejects a hold when the Sierra API errors indicating such") {
         val patron = SierraPatronNumber("1234567")
         val itemNumber = createSierraItemNumber
-        val neededBy = LocalDate.parse("2022-02-18")
+        val pickupDateString = "2022-02-18"
+        val pickupDate = LocalDate.parse(pickupDateString)
         val sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
           ontologyType = "Item",
@@ -299,7 +301,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${itemNumber.withoutCheckDigit},
-                   |  "neededBy": "$neededBy",
+                   |  "note": "Requested for: $pickupDateString",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -371,7 +373,7 @@ class SierraRequestsServiceTest
           _.placeHold(
             patron = patron,
             sourceIdentifier = sourceIdentifier,
-            neededBy = neededBy
+            pickupDate = Some(pickupDate)
           )
         }
 

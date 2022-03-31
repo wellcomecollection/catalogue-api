@@ -24,7 +24,7 @@ class RequestsService(
 
   def makeRequest(
     itemId: CanonicalId,
-    neededBy: LocalDate,
+    pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =
     itemLookup.byCanonicalId(itemId).flatMap {
@@ -33,7 +33,7 @@ class RequestsService(
         sierraService.placeHold(
           patron = patronNumber,
           sourceIdentifier = item.id.sourceIdentifier,
-          neededBy = neededBy
+          pickupDate = pickupDate
         )
 
       case Right(sourceIdentifier) =>

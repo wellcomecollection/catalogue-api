@@ -11,7 +11,6 @@ import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
 
@@ -23,8 +22,6 @@ class RequestsApi(
   val apiConfig: ApiConfig
 ) extends CreateRequest
     with LookupPendingRequests {
-
-  def defaultNeededBy: LocalDate = LocalDate.now().plusWeeks(2)
 
   val routes: Route = concat(
     RequestsApi
@@ -41,10 +38,7 @@ class RequestsApi(
                     withFuture {
                       createRequest(
                         itemId = itemId,
-                        // TODO: We've temporarily made neededBy optional, so as to not break the front end
-                        // Will remove this once the front end is sending neededBy as part of the request body
-                        neededBy =
-                          itemRequest.neededBy.getOrElse(defaultNeededBy),
+                        pickupDate = itemRequest.pickupDate,
                         patronNumber = userIdentifier
                       )
                     }
