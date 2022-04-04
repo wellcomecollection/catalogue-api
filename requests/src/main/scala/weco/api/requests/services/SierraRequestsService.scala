@@ -2,7 +2,7 @@ package weco.api.requests.services
 
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
-import weco.api.requests.models.{HoldAccepted, HoldRejected}
+import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
 import weco.api.stacks.models.SierraItemIdentifier
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
@@ -38,7 +38,7 @@ class SierraRequestsService(
       .createHold(
         patron = patron,
         item = item,
-        note = pickupDate.map(pickupDateHoldNote)
+        note = pickupDate.map(HoldNote.createPickupDate)
       )
       .flatMap {
         case Right(_) => Future.successful(Right(HoldAccepted.HoldCreated))
@@ -283,9 +283,6 @@ class SierraRequestsService(
           identifier -> hold
         }
     } yield sourceIdentifiers.toMap
-
-  private def pickupDateHoldNote(pickupDate: LocalDate): String =
-    s"Requested for: ${DateTimeFormatter.ofPattern("yyyy-MM-dd").format(pickupDate)}"
 }
 
 object SierraRequestsService {
