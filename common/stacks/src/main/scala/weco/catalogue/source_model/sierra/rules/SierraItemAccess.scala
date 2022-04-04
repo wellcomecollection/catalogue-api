@@ -172,6 +172,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           status = AccessStatus.Closed)
 
       // Handle any cases where the item is explicitly unavailable.
+
       case (
           _,
           Some(Status.Unavailable),
@@ -180,7 +181,12 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           _) =>
         AccessCondition(
           method = AccessMethod.NotRequestable,
-          status = AccessStatus.Unavailable)
+          status = Some(AccessStatus.TemporarilyUnavailable),
+          // Asked for by Victoria Sloyan in an email to Alex dated 17 Jan 2022.
+          note = Some(
+            "This item is undergoing internal assessment or conservation work."
+          )
+        )
 
       case (
           _,
