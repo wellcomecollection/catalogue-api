@@ -6,8 +6,6 @@ import weco.catalogue.display_model.models.DisplayItem
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
 
-import scala.util.Try
-
 case class DisplayResultsList(
   results: List[DisplayRequest],
   totalResults: Int,

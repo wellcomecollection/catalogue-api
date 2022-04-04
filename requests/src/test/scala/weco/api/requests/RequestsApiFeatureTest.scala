@@ -77,7 +77,7 @@ class RequestsApiFeatureTest
           HttpRequest(
             method = HttpMethods.GET,
             uri =
-              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
           ),
           HttpResponse(
             entity = HttpEntity(
@@ -90,21 +90,13 @@ class RequestsApiFeatureTest
                  |    {
                  |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
                  |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber1.withoutCheckDigit}",
-                 |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
-                 |      "frozen": false,
-                 |      "placed": "2021-05-07",
-                 |      "notWantedBeforeDate": "2021-05-07",
-                 |      "notNeededAfterDate": "2021-05-07",
+                 |      "note": "Requested for: 2021-05-07",
                  |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                  |      "status": {"code": "0", "name": "on hold."}
                  |    },
                  |    {
                  |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
                  |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber2.withoutCheckDigit}",
-                 |      "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
-                 |      "frozen": false,
-                 |      "placed": "2021-05-07",
-                 |      "notWantedBeforeDate": "2021-05-07",
                  |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                  |      "status": {"code": "0", "name": "on hold."}
                  |    }
@@ -198,7 +190,7 @@ class RequestsApiFeatureTest
           HttpRequest(
             method = HttpMethods.GET,
             uri =
-              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
           ),
           HttpResponse(
             entity = HttpEntity(

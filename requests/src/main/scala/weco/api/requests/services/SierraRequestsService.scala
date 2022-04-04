@@ -13,7 +13,6 @@ import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?

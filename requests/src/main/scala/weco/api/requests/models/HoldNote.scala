@@ -6,7 +6,7 @@ import scala.util.Try
 
 object HoldNote {
   val pickupDateLabel = "Requested for"
-  val pickupDateFormat = "yyyy-MM-DD" // Format as per https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+  val pickupDateFormat = "yyyy-MM-dd" // Format as per https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
 
   private lazy val formatter = DateTimeFormatter.ofPattern(pickupDateFormat)
   def createPickupDate(pickupDate: LocalDate): String =

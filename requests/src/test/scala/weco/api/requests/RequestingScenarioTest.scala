@@ -1339,7 +1339,8 @@ class RequestingScenarioTest
   def createListHoldsRequest(patron: SierraPatronNumber): HttpRequest =
     HttpRequest(
       method = HttpMethods.GET,
-      uri = s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0"
+      uri =
+        s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
     )
 
   def createListHoldsResponse(
