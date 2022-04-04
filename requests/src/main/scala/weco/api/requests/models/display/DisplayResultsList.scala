@@ -1,7 +1,7 @@
 package weco.api.requests.models.display
 
 import java.time.LocalDate
-import weco.api.requests.models.RequestedItemWithWork
+import weco.api.requests.models.{HoldNote, RequestedItemWithWork}
 import weco.catalogue.display_model.models.DisplayItem
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
@@ -46,7 +46,7 @@ object DisplayRequest {
         item = itemWithWork.item,
         includesIdentifiers = true
       ),
-      pickupDate = hold.notNeededAfterDate,
+      pickupDate = hold.note.flatMap(HoldNote.parsePickupDate),
       pickupLocation = DisplayLocationDescription(
         id = hold.pickupLocation.code,
         label = hold.pickupLocation.name
