@@ -1,4 +1,4 @@
-package weco.api.snapshot_generator.config.builders
+package weco.api.search.config.builders
 
 import com.sksamuel.elastic4s.ElasticClient
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
@@ -6,17 +6,17 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.elasticsearch.ElasticClientBuilder
 
-object SnapshotGeneratorElasticClientBuilder {
+object PipelineElasticClientBuilder {
 
   // We create a new pipeline cluster for every pipeline, and we want the
-  // snapshot generator to read from that cluster.
+  // services to read from that cluster.
   //
   // We don't want to require a Terraform plan/apply to pick up the change --
   // ElasticConfig is the single source of truth for the API index -- so instead
-  // we let the snapshot generator decide which set of secrets to read, which
-  // in turn sets which cluster it reads from.
+  // we let the services decide which set of secrets to read, which in turn sets
+  // which cluster they readd from.
 
-  def apply(): ElasticClient = {
+  def apply(serviceName: String): ElasticClient = {
     implicit val secretsClient: SecretsManagerClient =
       SecretsManagerClient.builder().build()
 
@@ -32,10 +32,10 @@ object SnapshotGeneratorElasticClientBuilder {
       s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
     )
     val username = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_username"
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_username"
     )
     val password = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_password"
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_password"
     )
 
     ElasticClientBuilder.create(

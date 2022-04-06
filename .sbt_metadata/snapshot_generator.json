@@ -2,6 +2,7 @@
   "id" : "snapshot_generator",
   "folder" : "snapshots/snapshot_generator",
   "dependencyIds" : [
-    "display"
+    "display",
+    "search_common"
   ]
 }

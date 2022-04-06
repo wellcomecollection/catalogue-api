@@ -72,7 +72,7 @@ lazy val requests = setupProject(
 lazy val snapshot_generator = setupProject(
   project,
   "snapshots/snapshot_generator",
-  localDependencies = Seq(display),
+  localDependencies = Seq(display, search_common),
   externalDependencies = CatalogueDependencies.snapshotGeneratorDependencies
 )
 
