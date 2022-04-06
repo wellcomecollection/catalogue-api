@@ -9,7 +9,7 @@ import weco.elasticsearch.ElasticClientBuilder
 object PipelineElasticClientBuilder {
 
   // We create a new pipeline cluster for every pipeline, and we want the
-  // to read from that cluster.
+  // services to read from that cluster.
   //
   // We don't want to require a Terraform plan/apply to pick up the change --
   // ElasticConfig is the single source of truth for the API index -- so instead
