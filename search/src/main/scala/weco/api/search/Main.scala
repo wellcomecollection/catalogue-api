@@ -2,8 +2,8 @@ package weco.api.search
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
-import weco.elasticsearch.typesafe.ElasticBuilder
 import weco.Tracing
+import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
@@ -27,7 +27,7 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = ElasticBuilder.buildElasticClient(config)
+    val elasticClient = PipelineElasticClientBuilder()
     val elasticConfig = ApiClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)

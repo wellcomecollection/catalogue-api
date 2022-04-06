@@ -4,12 +4,9 @@ import akka.actor.ActorSystem
 import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
-import weco.api.snapshot_generator.config.builders.SnapshotGeneratorElasticClientBuilder
+import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
-import weco.api.snapshot_generator.services.{
-  SnapshotGeneratorWorkerService,
-  SnapshotService
-}
+import weco.api.snapshot_generator.services.{SnapshotGeneratorWorkerService, SnapshotService}
 import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.messaging.sns.NotificationMessage
 import weco.messaging.typesafe.{SNSBuilder, SQSBuilder}
@@ -34,7 +31,7 @@ object Main extends WellcomeTypesafeApp {
     )
 
     implicit val elasticClient: ElasticClient =
-      SnapshotGeneratorElasticClientBuilder()
+      PipelineElasticClientBuilder()
 
     implicit val s3Client: AmazonS3 = S3Builder.buildS3Client
 

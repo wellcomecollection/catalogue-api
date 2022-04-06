@@ -160,7 +160,8 @@ object CatalogueDependencies {
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
       ExternalDependencies.akkaHttpDependencies ++
-      ExternalDependencies.scalacsvDependencies
+      ExternalDependencies.scalacsvDependencies ++
+      ExternalDependencies.secretsDependencies
 
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies
@@ -174,8 +175,7 @@ object CatalogueDependencies {
       WellcomeDependencies.elasticsearchLibrary ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
       WellcomeDependencies.storageTypesafeLibrary ++
-      WellcomeDependencies.typesafeLibrary ++
-      ExternalDependencies.secretsDependencies
+      WellcomeDependencies.typesafeLibrary
 
   val itemsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary
