@@ -27,7 +27,7 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = PipelineElasticClientBuilder()
+    val elasticClient = PipelineElasticClientBuilder("catalogue_api")
     val elasticConfig = PipelineClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)

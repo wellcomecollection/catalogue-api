@@ -16,7 +16,7 @@ object PipelineElasticClientBuilder {
   // we let the services decide which set of secrets to read, which in turn sets
   // which cluster they readd from.
 
-  def apply(): ElasticClient = {
+  def apply(serviceName: String): ElasticClient = {
     implicit val secretsClient: SecretsManagerClient =
       SecretsManagerClient.builder().build()
 
@@ -32,10 +32,10 @@ object PipelineElasticClientBuilder {
       s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
     )
     val username = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_username"
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_username"
     )
     val password = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/snapshot_generator/es_password"
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_password"
     )
 
     ElasticClientBuilder.create(
