@@ -48,8 +48,8 @@ object PipelineElasticClientBuilder {
   }
 
   private def getSecretString(
-                               id: String
-                             )(implicit secretsClient: SecretsManagerClient) = {
+    id: String
+  )(implicit secretsClient: SecretsManagerClient) = {
     val request =
       GetSecretValueRequest
         .builder()

@@ -54,10 +54,12 @@ def get_remote_meta(session, date):
         session, secret_id=f"elasticsearch/pipeline_storage_{date}/public_host"
     )
     username = get_secret_string(
-        session, secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_username"
+        session,
+        secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_username",
     )
     password = get_secret_string(
-        session, secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_password"
+        session,
+        secret_id=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_password",
     )
 
     index = f"works-indexed-{date}"

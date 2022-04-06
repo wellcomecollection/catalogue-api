@@ -39,9 +39,9 @@ def get_date_from_elastic_config():
 
 def get_version_from_es_pipeline(session, date):
     sm = session.client("secretsmanager")
-    host = sm.get_secret_value(SecretId=f"elasticsearch/pipeline_storage_{date}/public_host")[
-        "SecretString"
-    ]
+    host = sm.get_secret_value(
+        SecretId=f"elasticsearch/pipeline_storage_{date}/public_host"
+    )["SecretString"]
     username = sm.get_secret_value(
         SecretId=f"elasticsearch/pipeline_storage_{date}/catalogue_api/es_username"
     )["SecretString"]
