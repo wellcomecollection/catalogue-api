@@ -3,18 +3,14 @@ package weco.api.requests
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.requests.services.{
-  ItemLookup,
-  RequestsService,
-  SierraRequestsService
-}
-import weco.elasticsearch.typesafe.ElasticBuilder
+import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, CheckModel}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.ApiClusterElasticConfig
+import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
@@ -34,8 +30,8 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = ElasticBuilder.buildElasticClient(config)
-    val elasticConfig = ApiClusterElasticConfig()
+    val elasticClient = PipelineElasticClientBuilder("stacks_api")
+    val elasticConfig = PipelineClusterElasticConfig()
 
     CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
 
