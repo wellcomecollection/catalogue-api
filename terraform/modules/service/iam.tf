@@ -1,5 +1,5 @@
-resource "aws_iam_role_policy" "search_get_secrets" {
-  role   = module.search_api.task_role_name
+resource "aws_iam_role_policy" "service_get_secrets" {
+  role   = module.task_definition.task_role_name
   policy = data.aws_iam_policy_document.get_secrets.json
 }
 
