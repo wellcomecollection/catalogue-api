@@ -1,30 +1,58 @@
 package weco.api.items.services
 
-import com.sksamuel.elastic4s.{ElasticClient, Index}
-import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
-import weco.catalogue.internal_model.Implicits._
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.Uri.Path
+import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
+import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
+import grizzled.slf4j.Logging
+import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.Work
-import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.http.client.{HttpClient, HttpGet}
+import weco.http.json.CirceMarshalling
+import weco.http.json.DisplayJsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WorkLookup(elasticsearchService: ElasticsearchService) {
+sealed trait WorkLookupError
+
+case class WorkNotFoundError(id: CanonicalId) extends WorkLookupError
+case class UnknownWorkError(id: CanonicalId, err: Throwable)
+  extends WorkLookupError
+
+class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: ExecutionContext) extends Logging {
+
+  implicit val um: Unmarshaller[HttpEntity, DisplayWork] =
+    CirceMarshalling.fromDecoder[DisplayWork]
 
   /** Returns the Work that corresponds to this canonical ID.
     *
     */
-  def byCanonicalId(
-    id: CanonicalId
-  )(index: Index): Future[Either[ElasticsearchError, Work[Indexed]]] =
-    elasticsearchService.findById[Work[Indexed]](id)(index)
-}
+  def byCanonicalId(id: CanonicalId): Future[Either[WorkLookupError, DisplayWork]] = {
+    val path = Path(s"/works/$id")
+    val params = Map("include" -> "identifiers,items")
 
-object WorkLookup {
-  def apply(
-    elasticClient: ElasticClient
-  )(implicit ec: ExecutionContext): WorkLookup =
-    new WorkLookup(
-      elasticsearchService = new ElasticsearchService(elasticClient)
-    )
+    val httpResult = for {
+      response <- client.get(path = path, params = params)
+
+      result <- response.status match {
+        case StatusCodes.OK =>
+          info(s"OK for GET to $path with $params")
+          Unmarshal(response.entity).to[DisplayWork].map { Right(_) }
+
+        case StatusCodes.NotFound =>
+          info(s"Not Found for GET to $path with $params")
+          Future(Left(WorkNotFoundError(id)))
+
+        case status =>
+          val err = new Throwable(s"$status from bag tracker API")
+          error(
+            s"Unexpected status from GET to $path with $params: $status",
+            err
+          )
+          Future(Left(UnknownWorkError(id, err)))
+      }
+    } yield result
+
+    httpResult.recover { case e => Left(UnknownWorkError(id, e)) }
+  }
 }

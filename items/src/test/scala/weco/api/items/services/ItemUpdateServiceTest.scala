@@ -6,6 +6,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
+import weco.catalogue.display_model.models.{
+  DisplayItem,
+  DisplayPhysicalLocation,
+  DisplayWork
+}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{
@@ -133,16 +138,12 @@ class ItemUpdateServiceTest
   )
 
   class DummyItemUpdater(
-    itemTransform: Seq[Item[IdState.Identified]] => Seq[
-      Item[IdState.Identified]
-    ] = identity
+    itemTransform: Seq[DisplayItem] => Seq[DisplayItem] = identity
   ) extends ItemUpdater {
     override val identifierType: IdentifierType =
       IdentifierType.SierraSystemNumber
 
-    override def updateItems(
-      items: Seq[Item[IdState.Identified]]
-    ): Future[Seq[Item[IdState.Identified]]] = Future {
+    override def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = Future {
       itemTransform(items)
     }
   }
@@ -167,18 +168,18 @@ class ItemUpdateServiceTest
     val workWithItemsBackward = indexedWork().items(reversedItems)
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItemsForward)) { items =>
-        items shouldBe orderedItems
+      whenReady(itemUpdateService.updateItems(DisplayWork(workWithItemsForward))) {
+        _ shouldBe orderedItems
       }
 
-      whenReady(itemUpdateService.updateItems(workWithItemsBackward)) { items =>
-        items shouldBe reversedItems
+      whenReady(itemUpdateService.updateItems(DisplayWork(workWithItemsBackward))) {
+        _ shouldBe reversedItems
       }
     }
   }
 
   it("detects if the item updater returns items with differing IDs") {
-    def badUpdate(items: Seq[Item[IdState.Identified]]) = items.tail
+    def badUpdate(items: Seq[DisplayItem]) = items.tail
 
     val itemUpdater = new DummyItemUpdater(badUpdate)
 
@@ -193,7 +194,7 @@ class ItemUpdateServiceTest
     val workWithItems = indexedWork().items(startingItems)
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+      whenReady(itemUpdateService.updateItems(DisplayWork(workWithItems)).failed) {
         failure =>
           failure shouldBe a[IllegalArgumentException]
           failure.getMessage should include(
@@ -255,14 +256,14 @@ class ItemUpdateServiceTest
         (sierraResponses, catalogueWork, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              whenReady(itemUpdateService.updateItems(catalogueWork)) {
+              whenReady(itemUpdateService.updateItems(DisplayWork(catalogueWork))) {
                 updatedItems =>
                   updatedItems.length shouldBe 2
 
                   val physicalItem = updatedItems(0)
                   val digitalItem = updatedItems(1)
 
-                  physicalItem.locations.head.accessConditions.head shouldBe expectedAccessCondition
+                  physicalItem.locations.head.asInstanceOf[DisplayPhysicalLocation].accessConditions.head shouldBe expectedAccessCondition
                   digitalItem shouldBe dummyDigitalItem
               }
             }

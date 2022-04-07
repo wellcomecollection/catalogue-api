@@ -1,30 +1,40 @@
 package weco.api.items.responses
 
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
 import weco.api.items.models.DisplayItemsList
-import weco.api.items.services.{ItemUpdateService, WorkLookup}
+import weco.api.items.services.{
+  ItemUpdateService,
+  UnknownWorkError,
+  WorkLookup,
+  WorkNotFoundError
+}
 import weco.api.search.rest.SingleWorkDirectives
+import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 import scala.concurrent.Future
 
 trait LookupItemStatus extends SingleWorkDirectives {
-  import weco.catalogue.display_model.models.Implicits._
-
   val itemUpdateService: ItemUpdateService
 
   val workLookup: WorkLookup
-  val index: Index
 
   def lookupStatus(workId: CanonicalId): Future[Route] =
-    workLookup
-      .byCanonicalId(workId)(index)
-      .mapVisible { work: Work.Visible[WorkState.Indexed] =>
+    workLookup.byCanonicalId(workId).flatMap {
+      case Right(work: DisplayWork) =>
         itemUpdateService
           .updateItems(work)
-          .map(DisplayItemsList(_))
-          .map(complete(_))
-      }
+          .map { items =>
+            complete(DisplayItemsList(
+              totalResults = items.length,
+              results = items
+            ))
+          }
+
+      case Left(WorkNotFoundError(id)) =>
+        Future(notFound(s"There is no work with id $id"))
+
+      case Left(UnknownWorkError(id, err)) =>
+        Future(internalError(err))
+    }
 }

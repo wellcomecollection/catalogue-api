@@ -1,6 +1,7 @@
 package weco.api.items
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.items.services.{
@@ -8,14 +9,13 @@ import weco.api.items.services.{
   SierraItemUpdater,
   WorkLookup
 }
-import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
-import weco.api.search.models.{ApiConfig, CheckModel}
+import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
+import weco.http.client.{AkkaHttpClient, HttpGet}
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
@@ -34,11 +34,6 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = PipelineElasticClientBuilder("stacks_api")
-    val elasticConfig = PipelineClusterElasticConfig()
-
-    CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
-
     // We don't actually care about the hold limit in the items service.
     val client = SierraOauthHttpClientBuilder.build(config)
     val sierraSource = new SierraSource(client)
@@ -51,10 +46,13 @@ object Main extends WellcomeTypesafeApp {
 
     val itemUpdateService = new ItemUpdateService(itemUpdaters)
 
+    val httpClient = new AkkaHttpClient() with HttpGet {
+      override val baseUri: Uri = config.getString("api.baseUrl")
+    }
+
     val router = new ItemsApi(
       itemUpdateService = itemUpdateService,
-      workLookup = WorkLookup(elasticClient),
-      index = elasticConfig.worksIndex
+      workLookup = new WorkLookup(httpClient),
     )
 
     val appName = "ItemsApi"

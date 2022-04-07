@@ -1,5 +1,6 @@
 package weco.api.stacks.models
 
+import weco.catalogue.display_model.models.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
@@ -29,10 +30,10 @@ object SierraItemIdentifier {
     )
 
   def fromSourceIdentifier(
-    sourceIdentifier: SourceIdentifier
+    sourceIdentifier: DisplayIdentifier
   ): SierraItemNumber = {
     require(
-      sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
+      sourceIdentifier.identifierType.id == IdentifierType.SierraSystemNumber.id
     )
     require(sourceIdentifier.ontologyType == "Item")
 

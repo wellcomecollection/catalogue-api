@@ -1,7 +1,6 @@
 package weco.api.items
 
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
 import weco.api.items.services.{ItemUpdateService, WorkLookup}
@@ -14,7 +13,6 @@ import scala.util.{Success, Try}
 class ItemsApi(
   val itemUpdateService: ItemUpdateService,
   val workLookup: WorkLookup,
-  val index: Index
 )(
   implicit
   val ec: ExecutionContext,

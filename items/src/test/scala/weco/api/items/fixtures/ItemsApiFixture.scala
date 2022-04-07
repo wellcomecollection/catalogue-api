@@ -1,7 +1,6 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
-import com.sksamuel.elastic4s.Index
+import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import org.scalatest.Suite
 import weco.api.items.ItemsApi
 import weco.api.items.services.{
@@ -10,13 +9,13 @@ import weco.api.items.services.{
   WorkLookup
 }
 import weco.api.search.models.ApiConfig
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.fixtures.TestWith
+import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemsApiFixture extends SierraSourceFixture with IndexFixtures {
+trait ItemsApiFixture extends SierraSourceFixture {
   this: Suite =>
 
   val metricsName = "ItemsApiFixture"
@@ -30,22 +29,27 @@ trait ItemsApiFixture extends SierraSourceFixture with IndexFixtures {
     )
 
   def withItemsApi[R](
-    index: Index,
-    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+    catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R =
-    withSierraSource(responses) { sierraSource =>
-      val itemsUpdaters = List(
-        new SierraItemUpdater(sierraSource)
-      )
+    withActorSystem { implicit actorSystem =>
+      withSierraSource(sierraResponses) { sierraSource =>
+        val itemsUpdaters = List(
+          new SierraItemUpdater(sierraSource)
+        )
 
-      val api: ItemsApi = new ItemsApi(
-        itemUpdateService = new ItemUpdateService(itemsUpdaters),
-        workLookup = WorkLookup(elasticClient),
-        index = index
-      )
+        val catalogueApiClient = new MemoryHttpClient(catalogueResponses) with HttpGet {
+          override val baseUri: Uri = Uri("http://catalogue:9001")
+        }
 
-      withApp(api.routes) { _ =>
-        testWith(())
+        val api: ItemsApi = new ItemsApi(
+          itemUpdateService = new ItemUpdateService(itemsUpdaters),
+          workLookup = new WorkLookup(catalogueApiClient),
+        )
+
+        withApp(api.routes) { _ =>
+          testWith(())
+        }
       }
     }
 }
