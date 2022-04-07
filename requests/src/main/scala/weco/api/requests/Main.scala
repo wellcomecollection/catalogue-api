@@ -4,7 +4,11 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.api.requests.services.{
+  ItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.api.search.models.ApiConfig
 import weco.http.WellcomeHttpApp
 import weco.http.client.{AkkaHttpClient, HttpGet}

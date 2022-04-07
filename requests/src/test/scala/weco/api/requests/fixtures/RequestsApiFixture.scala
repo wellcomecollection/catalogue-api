@@ -24,7 +24,7 @@ trait RequestsApiFixture extends SierraServiceFixture with ItemLookupFixture {
 
   def withRequestsApi[R](
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R =
     withSierraService(sierraResponses) { sierraService =>
       withItemLookup(catalogueResponses) { itemLookup =>

@@ -133,12 +133,18 @@ class RequestsApiFeatureTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemsRequest(createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit), createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)),
+          catalogueItemsRequest(
+            createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit),
+            createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)
+          ),
           catalogueWorkResponse(Seq(work1, work2))
-        ),
+        )
       )
 
-      withRequestsApi(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses) { _ =>
+      withRequestsApi(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      ) { _ =>
         val path = s"/users/$patron/item-requests"
 
         val expectedJson =

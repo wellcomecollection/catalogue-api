@@ -14,7 +14,9 @@ import weco.json.JsonUtil._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait ItemLookupFixture extends Akka {
-  def withItemLookup[R](responses: Seq[(HttpRequest, HttpResponse)])(testWith: TestWith[ItemLookup, R]): R =
+  def withItemLookup[R](
+    responses: Seq[(HttpRequest, HttpResponse)]
+  )(testWith: TestWith[ItemLookup, R]): R =
     withActorSystem { implicit actorSystem =>
       val client = new MemoryHttpClient(responses) with HttpGet with HttpPost {
         override val baseUri: Uri = Uri("http://catalogue:9001")
@@ -25,22 +27,31 @@ trait ItemLookupFixture extends Akka {
 
   def catalogueItemRequest(id: CanonicalId): HttpRequest =
     HttpRequest(
-      uri = Uri(s"http://catalogue:9001/works?include=identifiers,items&identifiers=$id&pageSize=1")
+      uri = Uri(
+        s"http://catalogue:9001/works?include=identifiers,items&identifiers=$id&pageSize=1"
+      )
     )
 
   def catalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
     HttpRequest(
-      uri = Uri(s"http://catalogue:9001/works?include=identifiers,items&identifiers=${ids.map(_.value).mkString(",")}&pageSize=100")
+      uri = Uri(
+        s"http://catalogue:9001/works?include=identifiers,items&identifiers=${ids.map(_.value).mkString(",")}&pageSize=100"
+      )
     )
 
   import weco.catalogue.display_model.models.Implicits._
 
-  def catalogueWorkResponse(works: Seq[Work.Visible[WorkState.Indexed]]): HttpResponse =
+  def catalogueWorkResponse(
+    works: Seq[Work.Visible[WorkState.Indexed]]
+  ): HttpResponse =
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
         DisplayJsonUtil.toJson(
-          DisplayWorkResults(works.map(w => DisplayWork(w, includes = WorksIncludes.all)))
-      ))
+          DisplayWorkResults(
+            works.map(w => DisplayWork(w, includes = WorksIncludes.all))
+          )
+        )
+      )
     )
 }

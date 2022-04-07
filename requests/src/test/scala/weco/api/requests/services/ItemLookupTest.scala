@@ -9,7 +9,10 @@ import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -51,7 +54,7 @@ class ItemLookupTest
         (
           catalogueItemRequest(item3.id.canonicalId),
           catalogueWorkResponse(Seq(workB))
-        ),
+        )
       )
 
       withItemLookup(responses) { lookup =>
@@ -73,7 +76,7 @@ class ItemLookupTest
         (
           catalogueItemRequest(id),
           catalogueWorkResponse(Seq())
-        ),
+        )
       )
 
       val future = withItemLookup(responses) {
@@ -89,7 +92,10 @@ class ItemLookupTest
       val brokenClient = new MemoryHttpClient(responses = Seq()) with HttpGet {
         override val baseUri: Uri = Uri("http://catalogue:9001")
 
-        override def get(path: Uri.Path, params: Map[String, String]): Future[HttpResponse] =
+        override def get(
+          path: Uri.Path,
+          params: Map[String, String]
+        ): Future[HttpResponse] =
           Future.failed(new Throwable("BOOM!"))
       }
 
@@ -120,9 +126,12 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier, item2.id.sourceIdentifier),
+          catalogueItemsRequest(
+            item1.id.sourceIdentifier,
+            item2.id.sourceIdentifier
+          ),
           catalogueWorkResponse(Seq(workA, workB))
-        ),
+        )
       )
 
       val future = withItemLookup(responses) {
@@ -170,15 +179,21 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier, item4.id.sourceIdentifier, item3.id.sourceIdentifier),
+          catalogueItemsRequest(
+            item1.id.sourceIdentifier,
+            item4.id.sourceIdentifier,
+            item3.id.sourceIdentifier
+          ),
           catalogueWorkResponse(Seq(workA, workB))
-        ),
+        )
       )
 
       val future = withItemLookup(responses) {
         _.bySourceIdentifier(
           Seq(
-            item1.id.sourceIdentifier, item4.id.sourceIdentifier, item3.id.sourceIdentifier
+            item1.id.sourceIdentifier,
+            item4.id.sourceIdentifier,
+            item3.id.sourceIdentifier
           )
         )
       }
@@ -222,7 +237,7 @@ class ItemLookupTest
         (
           catalogueItemsRequest(item3.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
-        ),
+        )
       )
 
       withItemLookup(responses) { lookup =>
@@ -286,7 +301,7 @@ class ItemLookupTest
         (
           catalogueItemsRequest(item3.id.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workB))
-        ),
+        )
       )
 
       withItemLookup(responses) { lookup =>
@@ -318,7 +333,10 @@ class ItemLookupTest
       val brokenClient = new MemoryHttpClient(responses = Seq()) with HttpGet {
         override val baseUri: Uri = Uri("http://catalogue:9001")
 
-        override def get(path: Uri.Path, params: Map[String, String]): Future[HttpResponse] =
+        override def get(
+          path: Uri.Path,
+          params: Map[String, String]
+        ): Future[HttpResponse] =
           Future.failed(new Throwable("BOOM!"))
       }
 

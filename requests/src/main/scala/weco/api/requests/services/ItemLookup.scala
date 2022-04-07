@@ -6,8 +6,16 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem, DisplayWork}
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
+import weco.catalogue.display_model.models.{
+  DisplayIdentifier,
+  DisplayItem,
+  DisplayWork
+}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.work.Item
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
@@ -20,8 +28,7 @@ sealed trait ItemLookupError {
 }
 
 case class ItemNotFoundError(id: Any, err: Throwable) extends ItemLookupError
-case class UnknownItemError(id: Any, err: Throwable)
-  extends ItemLookupError
+case class UnknownItemError(id: Any, err: Throwable) extends ItemLookupError
 
 case class DisplayWorkResults(
   results: Seq[DisplayWork]
@@ -46,7 +53,11 @@ class ItemLookup(client: HttpClient with HttpGet)(
     itemId: CanonicalId
   ): Future[Either[ItemLookupError, DisplayIdentifier]] = {
     val path = Path("works")
-    val params = Map("include" -> "identifiers,items", "identifiers" -> itemId.underlying, "pageSize" -> "1")
+    val params = Map(
+      "include" -> "identifiers,items",
+      "identifiers" -> itemId.underlying,
+      "pageSize" -> "1"
+    )
 
     val httpResult = for {
       response <- client.get(path = path, params = params)
@@ -57,9 +68,17 @@ class ItemLookup(client: HttpClient with HttpGet)(
           Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
             val items = results.results.flatMap(_.items).flatten
 
-            items.find(_.id.contains(itemId.underlying)).flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
+            items
+              .find(_.id.contains(itemId.underlying))
+              .flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
               case Some(identifier) => Right(identifier)
-              case None             => Left(ItemNotFoundError(itemId, err = new Throwable(s"Could not find item $itemId")))
+              case None =>
+                Left(
+                  ItemNotFoundError(
+                    itemId,
+                    err = new Throwable(s"Could not find item $itemId")
+                  )
+                )
             }
           }
 
@@ -141,10 +160,11 @@ class ItemLookup(client: HttpClient with HttpGet)(
               }
 
             itemIdentifiers.map { itemId =>
-              val matchingWorks = items.filter { case (_, item) =>
-                val sourceIdentifier = item.identifiers.getOrElse(List()).head
+              val matchingWorks = items.filter {
+                case (_, item) =>
+                  val sourceIdentifier = item.identifiers.getOrElse(List()).head
 
-                sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
+                  sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
               }
 
               matchingWorks.headOption match {
@@ -158,7 +178,12 @@ class ItemLookup(client: HttpClient with HttpGet)(
                   )
 
                 case None =>
-                  Left(ItemNotFoundError(itemId.value, err = new Throwable(s"Could not find item $itemId")))
+                  Left(
+                    ItemNotFoundError(
+                      itemId.value,
+                      err = new Throwable(s"Could not find item $itemId")
+                    )
+                  )
               }
             }
           }
@@ -173,6 +198,8 @@ class ItemLookup(client: HttpClient with HttpGet)(
       }
     } yield result
 
-    httpResult.recover { case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e))) }
+    httpResult.recover {
+      case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
+    }
   }
 }

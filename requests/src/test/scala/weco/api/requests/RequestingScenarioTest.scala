@@ -9,10 +9,17 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.api.requests.services.{
+  ItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
@@ -42,10 +49,11 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(catalogueResponses = catalogueResponses)
+      implicit val route: Route =
+        createRoute(catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -90,10 +98,11 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(itemId),
           catalogueWorkResponse(Seq())
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(catalogueResponses = catalogueResponses)
+      implicit val route: Route =
+        createRoute(catalogueResponses = catalogueResponses)
 
       val pickupDate = LocalDate.parse("2022-02-18")
 
@@ -151,10 +160,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -268,10 +280,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -346,10 +361,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val pickupDate = LocalDate.parse("2022-02-18")
@@ -416,10 +434,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -505,10 +526,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -588,10 +612,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -693,10 +720,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -799,10 +829,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -856,7 +889,7 @@ class RequestingScenarioTest
         (
           catalogueItemsRequest(item.id.sourceIdentifier),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       );
 
       And("which doesn't exist in Sierra")
@@ -898,7 +931,10 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -963,10 +999,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -1015,7 +1054,7 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
       And("and a user whose account is barred")
@@ -1073,7 +1112,10 @@ class RequestingScenarioTest
         )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -1188,10 +1230,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -1280,10 +1325,13 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(item.id.canonicalId),
           catalogueWorkResponse(Seq(work))
-        ),
+        )
       )
 
-      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      )
 
       When("the self registered user requests the item")
       val response = makePostRequest(
@@ -1362,11 +1410,13 @@ class RequestingScenarioTest
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     holdLimit: Int = 10
   ): Route = {
-    val sierraClient = new MemoryHttpClient(sierraResponses) with HttpGet with HttpPost {
+    val sierraClient = new MemoryHttpClient(sierraResponses) with HttpGet
+    with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
-    val catalogueClient = new MemoryHttpClient(catalogueResponses) with HttpGet with HttpPost {
+    val catalogueClient = new MemoryHttpClient(catalogueResponses) with HttpGet
+    with HttpPost {
       override val baseUri: Uri = Uri("http://catalogue:9001")
     }
 

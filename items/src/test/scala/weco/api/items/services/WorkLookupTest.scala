@@ -1,14 +1,30 @@
 package weco.api.items.services
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes,
+  Uri
+}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.catalogue.display_model.models.{DisplayWork, WorkInclude, WorksIncludes}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, PhysicalLocation}
+import weco.catalogue.display_model.models.{
+  DisplayWork,
+  WorkInclude,
+  WorksIncludes
+}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus,
+  PhysicalLocation
+}
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
@@ -100,7 +116,9 @@ class WorkLookupTest
                         "label": "${physicalItem.locations.head.locationType.label}",
                         "type": "LocationType"
                       },
-                      "label": "${physicalItem.locations.head.asInstanceOf[PhysicalLocation].label}",
+                      "label": "${physicalItem.locations.head
+              .asInstanceOf[PhysicalLocation]
+              .label}",
                       "accessConditions": [
                         {
                           "method": {
@@ -141,7 +159,12 @@ class WorkLookupTest
     }
 
     whenReady(future) {
-      _ shouldBe Right(DisplayWork(work, includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)))
+      _ shouldBe Right(
+        DisplayWork(
+          work,
+          includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)
+        )
+      )
     }
   }
 
