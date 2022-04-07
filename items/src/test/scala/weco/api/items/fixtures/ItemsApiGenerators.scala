@@ -1,17 +1,21 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, Uri}
-import weco.catalogue.internal_model.identifiers.IdState
+import akka.http.scaladsl.model._
+import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
   LocationType,
   PhysicalLocation
 }
-import weco.catalogue.internal_model.work.Item
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   WorkGenerators
 }
+import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+import weco.http.json.DisplayJsonUtil
+import weco.http.json.DisplayJsonUtil._
+import weco.http.models.DisplayError
 import weco.sierra.http.SierraSource
 import weco.sierra.models.identifiers.SierraItemNumber
 
@@ -69,6 +73,30 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
         |""".stripMargin
     )
   }
+
+  def catalogueWorkRequest(id: CanonicalId): HttpRequest =
+    HttpRequest(
+      uri = Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
+    )
+
+  def catalogueWorkResponse(
+    work: Work.Visible[WorkState.Indexed]
+  ): HttpResponse =
+    HttpResponse(
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        DisplayJsonUtil.toJson(DisplayWork(work, includes = WorksIncludes.all))
+      )
+    )
+
+  def catalogueErrorResponse(status: StatusCode): HttpResponse =
+    HttpResponse(
+      status = status,
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        DisplayJsonUtil.toJson(DisplayError(statusCode = status))
+      )
+    )
 
   def createPhysicalItemWith(
     sierraItemNumber: SierraItemNumber,

@@ -1,7 +1,10 @@
 package weco.api.items.services
 
-import weco.catalogue.internal_model.identifiers.{IdState, SourceIdentifier}
-import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+import weco.catalogue.display_model.models.{
+  DisplayIdentifier,
+  DisplayItem,
+  DisplayWork
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -13,16 +16,14 @@ class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
 )(implicit executionContext: ExecutionContext) {
 
-  type ItemsWithIndex = Seq[(Item[IdState.Identified], Int)]
+  type ItemsWithIndex = Seq[(DisplayItem, Int)]
 
   private final val itemUpdatesMap = itemUpdaters
-    .map(updater => updater.identifierType -> updater)
+    .map(updater => updater.identifierType.id -> updater)
     .toMap
 
-  def getSrcId(item: Item[IdState.Identified]): SourceIdentifier =
-    item match {
-      case Item(IdState.Identified(_, srcId, _), _, _, _) => srcId
-    }
+  def getSrcId(item: DisplayItem): Option[DisplayIdentifier] =
+    item.identifiers.flatMap(_.headOption)
 
   /** Updates a tuple of Item and index preserving the original index
     *
@@ -30,9 +31,7 @@ class ItemUpdateService(
     */
   private def preservedOrderItemsUpdate(
     itemsWithIndex: ItemsWithIndex,
-    updateFunction: Seq[Item[IdState.Identified]] => Future[
-      Seq[Item[IdState.Identified]]
-    ]
+    updateFunction: Seq[DisplayItem] => Future[Seq[DisplayItem]]
   ): Future[ItemsWithIndex] = {
     val items = itemsWithIndex.map(_._1)
 
@@ -45,9 +44,8 @@ class ItemUpdateService(
         .flatMap {
           // Add the correct index for an item by SourceIdentifier
           case (srcId, index) =>
-            updatedItems.find(_.id.sourceIdentifier == srcId).map {
-              updatedItem =>
-                (updatedItem, index)
+            updatedItems.find(getSrcId(_) == srcId).map { updatedItem =>
+              (updatedItem, index)
             }
         }
 
@@ -70,24 +68,17 @@ class ItemUpdateService(
     *  @return a sequence of updated items
     */
   def updateItems(
-    work: Work.Visible[WorkState.Indexed]
-  ): Future[Seq[Item[IdState.Minted]]] =
+    work: DisplayWork
+  ): Future[Seq[DisplayItem]] = {
+    val items = work.items.getOrElse(List())
+
+    val groupedItems = items.zipWithIndex.groupBy {
+      case (item, _) => getSrcId(item).map(_.identifierType.id)
+    }
+
     Future.sequence {
-      // Group our results by IdentifierType or where Unidentifiable
-      work.data.items.zipWithIndex.groupBy {
-        case (Item(IdState.Identified(_, srcId, _), _, _, _), _) =>
-          Some(srcId.identifierType)
-        case (Item(IdState.Unidentifiable, _, _, _), _) => None
-      } map {
-        /* To satisfy the compiler when calling preserveOrder we need to add a type for itemsWithIndex
-         * The above groupBy ensures ONLY IdState.Identified is handed here, unknown to the compiler
-         * A further complication of type erasure means that we must acknowledge that Seq[_] is unchecked
-         */
-        case (
-            Some(identifierType),
-            itemsWithIndex: Seq[(Item[IdState.Identified], Int) @unchecked]
-            ) =>
-          // Look for an ItemUpdater for this IdentifierType and update
+      groupedItems.map {
+        case (Some(identifierType), itemsWithIndex) =>
           itemUpdatesMap
             .get(identifierType)
             .map(
@@ -98,6 +89,7 @@ class ItemUpdateService(
                 )
             )
             .getOrElse(Future(itemsWithIndex))
+
         case (None, itemsWithIndex) =>
           Future(itemsWithIndex)
       }
@@ -107,4 +99,5 @@ class ItemUpdateService(
     } map {
       case (item, _) => item
     })
+  }
 }

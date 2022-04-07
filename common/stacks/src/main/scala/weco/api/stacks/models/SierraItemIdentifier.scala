@@ -1,5 +1,6 @@
 package weco.api.stacks.models
 
+import weco.catalogue.display_model.models.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
@@ -28,13 +29,29 @@ object SierraItemIdentifier {
       ontologyType = "Item"
     )
 
-  def fromSourceIdentifier(
+  def fromOldSourceIdentifier(
     sourceIdentifier: SourceIdentifier
   ): SierraItemNumber = {
     require(
       sourceIdentifier.identifierType == IdentifierType.SierraSystemNumber
     )
     require(sourceIdentifier.ontologyType == "Item")
+
+    // We expect the SourceIdentifier to have a Sierra ID with a prefix
+    // and a check digit, e.g. i18234495
+    require(sourceIdentifier.value.length == 9)
+    val itemNumber = SierraItemNumber(sourceIdentifier.value.slice(1, 8))
+
+    require(itemNumber.withCheckDigit == sourceIdentifier.value)
+    itemNumber
+  }
+
+  def fromSourceIdentifier(
+    sourceIdentifier: DisplayIdentifier
+  ): SierraItemNumber = {
+    require(
+      sourceIdentifier.identifierType.id == IdentifierType.SierraSystemNumber.id
+    )
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix
     // and a check digit, e.g. i18234495

@@ -3,13 +3,13 @@ package weco.api.items.services
 import grizzled.slf4j.Logging
 import weco.sierra.http.SierraSource
 import weco.api.stacks.models.SierraItemIdentifier
-import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  PhysicalLocation
+import weco.catalogue.display_model.models.{
+  DisplayAccessCondition,
+  DisplayItem,
+  DisplayPhysicalLocation
 }
-import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.identifiers.IdentifierType
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -41,13 +41,13 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     *
     */
   private def updateAccessCondition(
-    item: Item[IdState.Identified],
+    item: DisplayItem,
     accessCondition: AccessCondition
-  ): Item[IdState.Identified] = {
+  ): DisplayItem = {
     val updatedItemLocations = item.locations.map {
-      case physicalLocation: PhysicalLocation =>
+      case physicalLocation: DisplayPhysicalLocation =>
         physicalLocation.copy(
-          accessConditions = List(accessCondition)
+          accessConditions = List(DisplayAccessCondition(accessCondition))
         )
       case location => location
     }
@@ -56,9 +56,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
   }
 
   private def updateAccessConditions(
-    itemMap: Map[SierraItemNumber, Item[IdState.Identified]],
+    itemMap: Map[SierraItemNumber, DisplayItem],
     accessConditionMap: Map[SierraItemNumber, AccessCondition]
-  ): Seq[Item[IdState.Identified]] =
+  ): Seq[DisplayItem] =
     itemMap.map {
       case (itemNumber, item) =>
         accessConditionMap
@@ -87,12 +87,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       }
     } yield accessConditions
 
-  def updateItems(
-    items: Seq[Item[IdState.Identified]]
-  ): Future[Seq[Item[IdState.Identified]]] = {
-    val itemMap = items.map {
-      case item @ Item(IdState.Identified(_, srcId, _), _, _, _) =>
-        SierraItemIdentifier.fromSourceIdentifier(srcId) -> item
+  def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
+    val itemMap = items.map { item =>
+      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.get.head) -> item
     } toMap
 
     val accessConditions = for {

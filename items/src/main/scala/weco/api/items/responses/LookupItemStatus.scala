@@ -1,12 +1,12 @@
 package weco.api.items.responses
 
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Route
-import com.sksamuel.elastic4s.Index
 import weco.api.items.models.DisplayItemsList
-import weco.api.items.services.{ItemUpdateService, WorkLookup}
+import weco.api.items.services._
 import weco.api.search.rest.SingleWorkDirectives
+import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 import scala.concurrent.Future
 
@@ -16,15 +16,35 @@ trait LookupItemStatus extends SingleWorkDirectives {
   val itemUpdateService: ItemUpdateService
 
   val workLookup: WorkLookup
-  val index: Index
 
   def lookupStatus(workId: CanonicalId): Future[Route] =
-    workLookup
-      .byCanonicalId(workId)(index)
-      .mapVisible { work: Work.Visible[WorkState.Indexed] =>
+    workLookup.byCanonicalId(workId).flatMap {
+      case Right(work: DisplayWork) =>
         itemUpdateService
           .updateItems(work)
-          .map(DisplayItemsList(_))
-          .map(complete(_))
-      }
+          .map { items =>
+            complete(
+              HttpResponse(
+                entity = HttpEntity(
+                  contentType = ContentTypes.`application/json`,
+                  toJson(
+                    DisplayItemsList(
+                      totalResults = items.length,
+                      results = items
+                    )
+                  )
+                )
+              )
+            )
+          }
+
+      case Left(WorkNotFoundError(id)) =>
+        Future(notFound(s"Work not found for identifier $id"))
+
+      case Left(WorkGoneError(id)) =>
+        Future(gone("This work has been deleted"))
+
+      case Left(UnknownWorkError(id, err)) =>
+        Future(internalError(err))
+    }
 }
