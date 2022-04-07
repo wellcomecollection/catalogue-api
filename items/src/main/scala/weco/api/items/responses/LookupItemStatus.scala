@@ -11,6 +11,8 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import scala.concurrent.Future
 
 trait LookupItemStatus extends SingleWorkDirectives {
+  import weco.catalogue.display_model.models.Implicits._
+
   val itemUpdateService: ItemUpdateService
 
   val workLookup: WorkLookup
