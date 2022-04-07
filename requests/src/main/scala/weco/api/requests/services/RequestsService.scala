@@ -6,7 +6,6 @@ import weco.api.requests.models.{
   HoldRejected,
   RequestedItemWithWork
 }
-import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
@@ -59,8 +58,8 @@ class RequestsService(
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
         case (Right(item), _) => Some(item)
-        case (Left(elasticError: ElasticsearchError), srcId) =>
-          error(s"Error looking up item $srcId.", elasticError)
+        case (Left(itemLookupError: ItemLookupError), srcId) =>
+          error(s"Error looking up item $srcId.", itemLookupError.err)
           None
       }
 
