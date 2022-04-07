@@ -42,15 +42,19 @@ object Implicits {
   }
 
   implicit val locationDecoder: Decoder[DisplayLocation] =
-    (c: HCursor) => for {
-      ontologyType <- c.downField("type").as[String]
+    (c: HCursor) =>
+      for {
+        ontologyType <- c.downField("type").as[String]
 
-      location <- ontologyType match {
-        case "PhysicalLocation" => c.as[DisplayPhysicalLocation]
-        case "DigitalLocation" => c.as[DisplayDigitalLocation]
-        case _ => throw new IllegalArgumentException(s"Unexpected location type: $ontologyType")
-      }
-    } yield location
+        location <- ontologyType match {
+          case "PhysicalLocation" => c.as[DisplayPhysicalLocation]
+          case "DigitalLocation"  => c.as[DisplayDigitalLocation]
+          case _ =>
+            throw new IllegalArgumentException(
+              s"Unexpected location type: $ontologyType"
+            )
+        }
+      } yield location
 
   // Cache these here to improve compilation times (otherwise they are
   // re-derived every time they are required).
