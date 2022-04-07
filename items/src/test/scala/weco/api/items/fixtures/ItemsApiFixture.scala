@@ -38,13 +38,14 @@ trait ItemsApiFixture extends SierraSourceFixture {
           new SierraItemUpdater(sierraSource)
         )
 
-        val catalogueApiClient = new MemoryHttpClient(catalogueResponses) with HttpGet {
+        val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
+        with HttpGet {
           override val baseUri: Uri = Uri("http://catalogue:9001")
         }
 
         val api: ItemsApi = new ItemsApi(
           itemUpdateService = new ItemUpdateService(itemsUpdaters),
-          workLookup = new WorkLookup(catalogueApiClient),
+          workLookup = new WorkLookup(catalogueApiClient)
         )
 
         withApp(api.routes) { _ =>

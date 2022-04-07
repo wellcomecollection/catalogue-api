@@ -25,7 +25,9 @@ class WorkLookupTest
     with IntegrationPatience
     with ItemsApiGenerators {
 
-  def withLookup[R](responses: Seq[(HttpRequest, HttpResponse)])(testWith: TestWith[WorkLookup, R]): R =
+  def withLookup[R](
+    responses: Seq[(HttpRequest, HttpResponse)]
+  )(testWith: TestWith[WorkLookup, R]): R =
     withActorSystem { implicit actorSystem =>
       val catalogueApiClient = new MemoryHttpClient(responses) with HttpGet {
         override val baseUri: Uri = Uri("http://catalogue:9001")
@@ -97,7 +99,10 @@ class WorkLookupTest
     val brokenClient = new MemoryHttpClient(responses = Seq()) with HttpGet {
       override val baseUri: Uri = Uri("http://catalogue:9001")
 
-      override def get(path: Uri.Path, params: Map[String, String]): Future[HttpResponse] =
+      override def get(
+        path: Uri.Path,
+        params: Map[String, String]
+      ): Future[HttpResponse] =
         Future.failed(err)
     }
 

@@ -12,7 +12,7 @@ import scala.util.{Success, Try}
 
 class ItemsApi(
   val itemUpdateService: ItemUpdateService,
-  val workLookup: WorkLookup,
+  val workLookup: WorkLookup
 )(
   implicit
   val ec: ExecutionContext,

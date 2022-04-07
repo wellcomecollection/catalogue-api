@@ -6,10 +6,20 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.catalogue.display_model.models.{DisplayAccessCondition, DisplayItem, DisplayPhysicalLocation, DisplayWork, WorksIncludes}
+import weco.catalogue.display_model.models.{
+  DisplayAccessCondition,
+  DisplayItem,
+  DisplayPhysicalLocation,
+  DisplayWork,
+  WorksIncludes
+}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus
+}
 import weco.catalogue.internal_model.work.Item
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
@@ -135,7 +145,9 @@ class ItemUpdateServiceTest
     override val identifierType: IdentifierType =
       IdentifierType.SierraSystemNumber
 
-    override def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = Future {
+    override def updateItems(
+      items: Seq[DisplayItem]
+    ): Future[Seq[DisplayItem]] = Future {
       itemTransform(items)
     }
   }
@@ -156,16 +168,26 @@ class ItemUpdateServiceTest
 
     val reversedItems = orderedItems.reverse
 
-    val workWithItemsForward = DisplayWork(indexedWork().items(orderedItems), includes = WorksIncludes.all)
-    val workWithItemsBackward = DisplayWork(indexedWork().items(reversedItems), includes = WorksIncludes.all)
+    val workWithItemsForward = DisplayWork(
+      indexedWork().items(orderedItems),
+      includes = WorksIncludes.all
+    )
+    val workWithItemsBackward = DisplayWork(
+      indexedWork().items(reversedItems),
+      includes = WorksIncludes.all
+    )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(it => DisplayItem(it, includesIdentifiers = true))
+        _ shouldBe orderedItems.map(
+          it => DisplayItem(it, includesIdentifiers = true)
+        )
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(it => DisplayItem(it, includesIdentifiers = true))
+        _ shouldBe reversedItems.map(
+          it => DisplayItem(it, includesIdentifiers = true)
+        )
       }
     }
   }
@@ -183,7 +205,10 @@ class ItemUpdateServiceTest
       createDigitalItem
     )
 
-    val workWithItems = DisplayWork(indexedWork().items(startingItems), includes = WorksIncludes.all)
+    val workWithItems = DisplayWork(
+      indexedWork().items(startingItems),
+      includes = WorksIncludes.all
+    )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItems).failed) {
@@ -248,19 +273,27 @@ class ItemUpdateServiceTest
         (sierraResponses, catalogueWork, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work = DisplayWork(catalogueWork, includes = WorksIncludes.all)
+              val work =
+                DisplayWork(catalogueWork, includes = WorksIncludes.all)
 
-              whenReady(itemUpdateService.updateItems(work)) {
-                updatedItems =>
-                  updatedItems.length shouldBe 2
+              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+                updatedItems.length shouldBe 2
 
-                  val physicalItem = updatedItems(0)
-                  val digitalItem = updatedItems(1)
+                val physicalItem = updatedItems(0)
+                val digitalItem = updatedItems(1)
 
-                  val updatedAccessCondition = physicalItem.locations.head.asInstanceOf[DisplayPhysicalLocation].accessConditions.head
-                  updatedAccessCondition shouldBe DisplayAccessCondition(expectedAccessCondition)
+                val updatedAccessCondition = physicalItem.locations.head
+                  .asInstanceOf[DisplayPhysicalLocation]
+                  .accessConditions
+                  .head
+                updatedAccessCondition shouldBe DisplayAccessCondition(
+                  expectedAccessCondition
+                )
 
-                  digitalItem shouldBe DisplayItem(dummyDigitalItem, includesIdentifiers = true)
+                digitalItem shouldBe DisplayItem(
+                  dummyDigitalItem,
+                  includesIdentifiers = true
+                )
               }
             }
           }

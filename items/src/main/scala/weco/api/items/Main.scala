@@ -52,7 +52,7 @@ object Main extends WellcomeTypesafeApp {
 
     val router = new ItemsApi(
       itemUpdateService = itemUpdateService,
-      workLookup = new WorkLookup(httpClient),
+      workLookup = new WorkLookup(httpClient)
     )
 
     val appName = "ItemsApi"

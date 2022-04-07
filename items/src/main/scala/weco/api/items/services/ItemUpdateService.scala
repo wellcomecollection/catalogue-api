@@ -44,8 +44,8 @@ class ItemUpdateService(
         .flatMap {
           // Add the correct index for an item by SourceIdentifier
           case (srcId, index) =>
-            updatedItems.find(getSrcId(_) == srcId).map {
-              updatedItem => (updatedItem, index)
+            updatedItems.find(getSrcId(_) == srcId).map { updatedItem =>
+              (updatedItem, index)
             }
         }
 

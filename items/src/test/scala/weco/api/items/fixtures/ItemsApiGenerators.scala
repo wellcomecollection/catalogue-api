@@ -79,7 +79,9 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
       uri = Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
     )
 
-  def catalogueWorkResponse(work: Work.Visible[WorkState.Indexed]): HttpResponse =
+  def catalogueWorkResponse(
+    work: Work.Visible[WorkState.Indexed]
+  ): HttpResponse =
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,

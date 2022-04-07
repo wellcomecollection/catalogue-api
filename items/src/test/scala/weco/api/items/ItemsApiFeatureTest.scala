@@ -197,7 +197,8 @@ class ItemsApiFeatureTest
       val catalogueResponses = Seq(
         (
           HttpRequest(
-            uri = Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
+            uri =
+              Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
           ),
           catalogueErrorResponse(status = StatusCodes.NotFound)
         )

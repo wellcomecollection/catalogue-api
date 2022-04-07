@@ -18,9 +18,12 @@ sealed trait WorkLookupError
 case class WorkNotFoundError(id: CanonicalId) extends WorkLookupError
 case class WorkGoneError(id: CanonicalId) extends WorkLookupError
 case class UnknownWorkError(id: CanonicalId, err: Throwable)
-  extends WorkLookupError
+    extends WorkLookupError
 
-class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: ExecutionContext) extends Logging {
+class WorkLookup(client: HttpClient with HttpGet)(
+  implicit as: ActorSystem,
+  ec: ExecutionContext
+) extends Logging {
 
   implicit val um: Unmarshaller[HttpEntity, DisplayWork] =
     CirceMarshalling.fromDecoder[DisplayWork]
@@ -28,7 +31,9 @@ class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: 
   /** Returns the Work that corresponds to this canonical ID.
     *
     */
-  def byCanonicalId(id: CanonicalId): Future[Either[WorkLookupError, DisplayWork]] = {
+  def byCanonicalId(
+    id: CanonicalId
+  ): Future[Either[WorkLookupError, DisplayWork]] = {
     val path = Path(s"works/$id")
     val params = Map("include" -> "identifiers,items")
 
