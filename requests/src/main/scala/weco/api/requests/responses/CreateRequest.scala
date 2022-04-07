@@ -94,6 +94,12 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
           )
         )
 
+      case HoldRejected.ItemDoesNotExist =>
+        (
+          StatusCodes.NotFound,
+          Some(s"Item not found for identifier $itemId")
+        )
+
       case _ =>
         (StatusCodes.InternalServerError, None)
     }

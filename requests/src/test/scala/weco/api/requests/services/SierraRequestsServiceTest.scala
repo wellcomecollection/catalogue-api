@@ -8,6 +8,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
+import weco.catalogue.display_model.models.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -264,7 +265,7 @@ class SierraRequestsServiceTest
         val future = withSierraService(responses) {
           _.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier,
+            sourceIdentifier = DisplayIdentifier(sourceIdentifier),
             pickupDate = Some(pickupDate)
           )
         }
@@ -367,7 +368,7 @@ class SierraRequestsServiceTest
         val future = withSierraService(responses) {
           _.placeHold(
             patron = patron,
-            sourceIdentifier = sourceIdentifier,
+            sourceIdentifier = DisplayIdentifier(sourceIdentifier),
             pickupDate = Some(pickupDate)
           )
         }

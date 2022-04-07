@@ -6,9 +6,12 @@ import weco.api.requests.models.{
   HoldRejected,
   RequestedItemWithWork
 }
-import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdentifierType,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -28,11 +31,11 @@ class RequestsService(
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =
     itemLookup.byCanonicalId(itemId).flatMap {
-      case Right(item)
-          if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
+      case Right(sourceIdentifier)
+          if sourceIdentifier.identifierType.id == SierraSystemNumber.id =>
         sierraService.placeHold(
           patron = patronNumber,
-          sourceIdentifier = item.id.sourceIdentifier,
+          sourceIdentifier = sourceIdentifier,
           pickupDate = pickupDate
         )
 
@@ -40,9 +43,13 @@ class RequestsService(
         warn(s"Cannot request from source: $itemId / $sourceIdentifier")
         Future.successful(Left(SourceSystemNotSupported))
 
-      case Left(err: ElasticsearchError) =>
-        error(s"Failed to do itemLookup: $itemId", err)
-        Future.failed(err)
+      case Left(e: ItemNotFoundError) =>
+        error(s"Could not find item: $itemId", e.err)
+        Future.successful(Left(HoldRejected.ItemDoesNotExist))
+
+      case Left(e: ItemLookupError) =>
+        error(s"Failed to do itemLookup: $itemId", e.err)
+        Future.failed(e.err)
     }
 
   def getRequests(
@@ -55,13 +62,21 @@ class RequestsService(
 
       itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
         case (Right(item), _) => Some(item)
-        case (Left(elasticError: ElasticsearchError), srcId) =>
-          error(s"Error looking up item $srcId.", elasticError)
+        case (Left(itemLookupError: ItemLookupError), srcId) =>
+          error(s"Error looking up item $srcId.", itemLookupError.err)
           None
       }
 
       itemHoldTuples = itemsFound.flatMap { itemLookup =>
-        holdsMap.get(itemLookup.item.id.sourceIdentifier).map { hold =>
+        val itemId = itemLookup.item.identifiers.get.head
+
+        val sierraId = SourceIdentifier(
+          identifierType = IdentifierType(itemId.identifierType.id),
+          value = itemId.value,
+          ontologyType = "Item"
+        )
+
+        holdsMap.get(sierraId).map { hold =>
           (hold, itemLookup)
         }
       }

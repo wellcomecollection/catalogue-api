@@ -15,6 +15,7 @@ sealed trait HoldRejected extends HoldResponse
 
 object HoldRejected {
   case object ItemCannotBeRequested extends HoldRejected
+  case object ItemDoesNotExist extends HoldRejected
   case object ItemIsOnHoldForAnotherUser extends HoldRejected
   case object ItemMissingFromSourceSystem extends HoldRejected
   case object SourceSystemNotSupported extends HoldRejected
