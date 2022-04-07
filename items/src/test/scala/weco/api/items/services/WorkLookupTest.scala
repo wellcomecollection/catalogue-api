@@ -1,16 +1,18 @@
 package weco.api.items.services
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse, StatusCodes, Uri}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpRequest, HttpResponse, StatusCodes, Uri}
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.catalogue.display_model.models.{DisplayWork, WorkInclude, WorksIncludes}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, PhysicalLocation}
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
+import weco.sierra.generators.SierraIdentifierGenerators
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -23,7 +25,8 @@ class WorkLookupTest
     with Akka
     with ScalaFutures
     with IntegrationPatience
-    with ItemsApiGenerators {
+    with ItemsApiGenerators
+    with SierraIdentifierGenerators {
 
   def withLookup[R](
     responses: Seq[(HttpRequest, HttpResponse)]
@@ -37,12 +40,99 @@ class WorkLookupTest
     }
 
   it("returns a work with matching ID") {
-    val work = indexedWork()
+    val sierraItemNumber = createSierraItemNumber
 
+    val temporarilyUnavailableOnline = AccessCondition(
+      method = AccessMethod.NotRequestable,
+      status = AccessStatus.TemporarilyUnavailable
+    )
+
+    val physicalItem = createPhysicalItemWith(
+      sierraItemNumber = sierraItemNumber,
+      accessCondition = temporarilyUnavailableOnline
+    )
+
+    val work = indexedWork().items(List(physicalItem))
+
+    // Note: this is deliberately a hard-coded JSON string rather than the
+    // helpers we use in other tests so we can be sure we really can decode
+    // the catalogue API JSON, and avoid any encoding bugs in the tests themselves.
     val responses = Seq(
       (
         catalogueWorkRequest(work.state.canonicalId),
-        catalogueWorkResponse(work)
+        HttpResponse(
+          entity = HttpEntity(
+            contentType = ContentTypes.`application/json`,
+            s"""
+            {
+              "id": "${work.state.canonicalId}",
+              "title": "${work.data.title.get}",
+              "alternativeTitles": [],
+              "identifiers": [
+                {
+                  "identifierType": {
+                    "id": "${work.state.sourceIdentifier.identifierType.id}",
+                    "label": "${work.state.sourceIdentifier.identifierType.label}",
+                    "type": "IdentifierType"
+                  },
+                  "value": "${work.state.sourceIdentifier.value}",
+                  "type": "Identifier"
+                }
+              ],
+              "items": [
+                {
+                  "id": "${physicalItem.id.canonicalId}",
+                  "identifiers": [
+                    {
+                      "identifierType": {
+                        "id": "${physicalItem.id.sourceIdentifier.identifierType.id}",
+                        "label": "${physicalItem.id.sourceIdentifier.identifierType.label}",
+                        "type": "IdentifierType"
+                      },
+                      "value": "${physicalItem.id.sourceIdentifier.value}",
+                      "type": "Identifier"
+                    }
+                  ],
+                  "locations": [
+                    {
+                      "locationType": {
+                        "id": "${physicalItem.locations.head.locationType.id}",
+                        "label": "${physicalItem.locations.head.locationType.label}",
+                        "type": "LocationType"
+                      },
+                      "label": "${physicalItem.locations.head.asInstanceOf[PhysicalLocation].label}",
+                      "accessConditions": [
+                        {
+                          "method": {
+                            "id": "not-requestable",
+                            "label": "Not requestable",
+                            "type": "AccessMethod"
+                          },
+                          "status": {
+                            "id": "temporarily-unavailable",
+                            "label": "Temporarily unavailable",
+                            "type": "AccessStatus"
+                          },
+                          "type": "AccessCondition"
+                        }
+                      ],
+                      "type": "PhysicalLocation"
+                    }
+                  ],
+                  "type": "Item"
+                }
+              ],
+              "availabilities": [
+                {
+                  "id": "in-library",
+                  "label": "In the library",
+                  "type": "Availability"
+                }
+              ]
+            }
+          """
+          )
+        )
       )
     )
 
@@ -51,7 +141,7 @@ class WorkLookupTest
     }
 
     whenReady(future) {
-      _ shouldBe Right(DisplayWork(work, includes = WorksIncludes.all))
+      _ shouldBe Right(DisplayWork(work, includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)))
     }
   }
 

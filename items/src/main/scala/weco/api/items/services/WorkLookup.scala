@@ -9,7 +9,6 @@ import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
-import weco.http.json.DisplayJsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,6 +23,8 @@ class WorkLookup(client: HttpClient with HttpGet)(
   implicit as: ActorSystem,
   ec: ExecutionContext
 ) extends Logging {
+
+  import weco.catalogue.display_model.models.Implicits._
 
   implicit val um: Unmarshaller[HttpEntity, DisplayWork] =
     CirceMarshalling.fromDecoder[DisplayWork]
