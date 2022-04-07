@@ -35,7 +35,6 @@ object SierraItemIdentifier {
     require(
       sourceIdentifier.identifierType.id == IdentifierType.SierraSystemNumber.id
     )
-    require(sourceIdentifier.ontologyType == "Item")
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix
     // and a check digit, e.g. i18234495

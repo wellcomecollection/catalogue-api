@@ -16,6 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 sealed trait WorkLookupError
 
 case class WorkNotFoundError(id: CanonicalId) extends WorkLookupError
+case class WorkGoneError(id: CanonicalId) extends WorkLookupError
 case class UnknownWorkError(id: CanonicalId, err: Throwable)
   extends WorkLookupError
 
@@ -28,7 +29,7 @@ class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: 
     *
     */
   def byCanonicalId(id: CanonicalId): Future[Either[WorkLookupError, DisplayWork]] = {
-    val path = Path(s"/works/$id")
+    val path = Path(s"works/$id")
     val params = Map("include" -> "identifiers,items")
 
     val httpResult = for {
@@ -42,6 +43,10 @@ class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: 
         case StatusCodes.NotFound =>
           info(s"Not Found for GET to $path with $params")
           Future(Left(WorkNotFoundError(id)))
+
+        case StatusCodes.Gone =>
+          info(s"Gone for GET to $path with $params")
+          Future(Left(WorkGoneError(id)))
 
         case status =>
           val err = new Throwable(s"$status from bag tracker API")
