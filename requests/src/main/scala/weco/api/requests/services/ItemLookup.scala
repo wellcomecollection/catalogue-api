@@ -1,34 +1,52 @@
 package weco.api.requests.services
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.Uri.Path
+import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
+import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import com.sksamuel.elastic4s.ElasticApi.fieldSort
 import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
+import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
 import com.sksamuel.elastic4s.requests.searches.sort.SortOrder
-import com.sksamuel.elastic4s.{ElasticClient, Index}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  ElasticsearchService
-}
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchError, ElasticsearchService}
+import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayWork}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.Item
+import weco.http.client.{HttpClient, HttpGet}
+import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
+sealed trait ItemLookupError {
+  val err: Throwable
+}
+
+case class ItemNotFoundError(id: CanonicalId, err: Throwable) extends ItemLookupError
+case class UnknownItemError(id: CanonicalId, err: Throwable)
+  extends ItemLookupError
+
+case class DisplayWorkResults(
+  results: Seq[DisplayWork]
+)
+
 class ItemLookup(
+  client: HttpClient with HttpGet,
   elasticsearchService: ElasticsearchService,
   index: Index
 )(
-  implicit ec: ExecutionContext
+  implicit
+  as: ActorSystem,
+  ec: ExecutionContext
 ) extends Logging {
+
+  import weco.catalogue.display_model.models.Implicits._
+
+  implicit val um: Unmarshaller[HttpEntity, DisplayWorkResults] =
+    CirceMarshalling.fromDecoder[DisplayWorkResults]
 
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
@@ -36,32 +54,36 @@ class ItemLookup(
     */
   def byCanonicalId(
     itemId: CanonicalId
-  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
-    val searchRequest =
-      search(index)
-        .query(
-          boolQuery.filter(
-            termQuery("data.items.id.canonicalId", itemId.underlying),
-            termQuery(field = "type", value = "Visible")
-          )
-        )
-        .sourceInclude("data.items", "data.title", "state.canonicalId")
-        .size(1)
+  ): Future[Either[ItemLookupError, DisplayIdentifier]] = {
+    val path = Path("works")
+    val params = Map("include" -> "identifiers,items", "identifiers" -> itemId.underlying, "pageSize" -> "1")
 
-    elasticsearchService
-      .findBySearch[WorkStub](searchRequest)
-      .map {
-        case Left(err) => Left(err)
-        case Right(works) =>
-          val item = works
-            .flatMap(w => w.itemWith(itemId))
-            .headOption
+    val httpResult = for {
+      response <- client.get(path = path, params = params)
 
-          item match {
-            case Some(it) => Right(it)
-            case None     => Left(DocumentNotFoundError(itemId))
+      result <- response.status match {
+        case StatusCodes.OK =>
+          info(s"OK for GET to $path with $params")
+          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
+            val items = results.results.flatMap(_.items).flatten
+
+            items.find(_.id.contains(itemId.underlying)).flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
+              case Some(identifier) => Right(identifier)
+              case None             => Left(ItemNotFoundError(itemId, err = new Throwable(s"Could not find item $itemId")))
+            }
           }
+
+        case status =>
+          val err = new Throwable(s"$status from the catalogue API")
+          error(
+            s"Unexpected status from GET to $path with $params: $status",
+            err
+          )
+          Future(Left(UnknownItemError(itemId, err)))
       }
+    } yield result
+
+    httpResult.recover { case e => Left(UnknownItemError(itemId, e)) }
   }
 
   /** Look up a collection of items and the corresponding Work data.
@@ -199,22 +221,5 @@ class ItemLookup(
             if id.sourceIdentifier == itemSourceId =>
           item.asInstanceOf[Item[IdState.Identified]]
       }
-
-    def itemWith(itemId: CanonicalId): Option[Item[IdState.Identified]] =
-      w.data.items.collectFirst {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-            if id.canonicalId == itemId =>
-          item.asInstanceOf[Item[IdState.Identified]]
-      }
   }
-}
-
-object ItemLookup {
-  def apply(elasticClient: ElasticClient, index: Index)(
-    implicit ec: ExecutionContext
-  ): ItemLookup =
-    new ItemLookup(
-      elasticsearchService = new ElasticsearchService(elasticClient),
-      index = index
-    )
 }

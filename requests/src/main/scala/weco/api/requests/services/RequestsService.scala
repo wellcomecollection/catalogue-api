@@ -28,11 +28,11 @@ class RequestsService(
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =
     itemLookup.byCanonicalId(itemId).flatMap {
-      case Right(item)
-          if item.id.sourceIdentifier.identifierType == SierraSystemNumber =>
+      case Right(sourceIdentifier)
+          if sourceIdentifier.identifierType.id == SierraSystemNumber.id =>
         sierraService.placeHold(
           patron = patronNumber,
-          sourceIdentifier = item.id.sourceIdentifier,
+          sourceIdentifier = sourceIdentifier,
           pickupDate = pickupDate
         )
 
@@ -40,9 +40,13 @@ class RequestsService(
         warn(s"Cannot request from source: $itemId / $sourceIdentifier")
         Future.successful(Left(SourceSystemNotSupported))
 
-      case Left(err: ElasticsearchError) =>
-        error(s"Failed to do itemLookup: $itemId", err)
-        Future.failed(err)
+      case Left(e: ItemNotFoundError) =>
+        error(s"Could not find item: $itemId", e.err)
+        Future.successful(Left(HoldRejected.ItemDoesNotExist))
+
+      case Left(e: ItemLookupError) =>
+        error(s"Failed to do itemLookup: $itemId", e.err)
+        Future.failed(e.err)
     }
 
   def getRequests(
