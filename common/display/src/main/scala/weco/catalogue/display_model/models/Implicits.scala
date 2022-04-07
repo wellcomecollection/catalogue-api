@@ -1,7 +1,7 @@
 package weco.catalogue.display_model.models
 
 import io.circe.generic.extras.semiauto._
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, HCursor}
 import io.circe.syntax._
 import weco.http.json.DisplayJsonUtil._
 
@@ -40,6 +40,21 @@ object Implicits {
     case physicalLocation: DisplayPhysicalLocation =>
       physicalLocation.asJson
   }
+
+  implicit val locationDecoder: Decoder[DisplayLocation] =
+    (c: HCursor) =>
+      for {
+        ontologyType <- c.downField("type").as[String]
+
+        location <- ontologyType match {
+          case "PhysicalLocation" => c.as[DisplayPhysicalLocation]
+          case "DigitalLocation"  => c.as[DisplayDigitalLocation]
+          case _ =>
+            throw new IllegalArgumentException(
+              s"Unexpected location type: $ontologyType"
+            )
+        }
+      } yield location
 
   // Cache these here to improve compilation times (otherwise they are
   // re-derived every time they are required).

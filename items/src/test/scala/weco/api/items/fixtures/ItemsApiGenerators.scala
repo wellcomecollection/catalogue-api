@@ -79,6 +79,13 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
       uri = Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
     )
 
+  // This is to make sure our locations look like locations from the catalogue API,
+  // and not some other serialisation, e.g.
+  //
+  //    "locations": [ { "displayPhysicalLocation": { … } }, … ]
+  //
+  import weco.catalogue.display_model.models.Implicits._
+
   def catalogueWorkResponse(
     work: Work.Visible[WorkState.Indexed]
   ): HttpResponse =

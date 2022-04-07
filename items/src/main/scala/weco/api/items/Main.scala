@@ -47,7 +47,7 @@ object Main extends WellcomeTypesafeApp {
     val itemUpdateService = new ItemUpdateService(itemUpdaters)
 
     val httpClient = new AkkaHttpClient() with HttpGet {
-      override val baseUri: Uri = config.getString("api.baseUrl")
+      override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
     }
 
     val router = new ItemsApi(
