@@ -49,7 +49,7 @@ class WorkLookup(client: HttpClient with HttpGet)(implicit as: ActorSystem, ec: 
           Future(Left(WorkGoneError(id)))
 
         case status =>
-          val err = new Throwable(s"$status from bag tracker API")
+          val err = new Throwable(s"$status from the catalogue API")
           error(
             s"Unexpected status from GET to $path with $params: $status",
             err
