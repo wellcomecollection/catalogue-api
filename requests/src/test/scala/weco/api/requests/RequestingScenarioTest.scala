@@ -1,7 +1,7 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.HttpMethods.POST
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.GivenWhenThen
@@ -10,14 +10,12 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
 import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
-import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
-import weco.catalogue.internal_model.Implicits._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,7 +26,6 @@ class RequestingScenarioTest
     with Matchers
     with ItemsGenerators
     with WorkGenerators
-    with IndexFixtures
     with RequestsApiFixture
     with IntegrationPatience
     with ScalatestRouteTest
@@ -1014,9 +1011,16 @@ class RequestingScenarioTest
       val work = indexedWork().items(List(item))
       val pickupDate = LocalDate.parse("2022-02-18")
 
+      val catalogueResponses = Seq(
+        (
+          catalogueItemRequest(item.id.canonicalId),
+          catalogueWorkResponse(Seq(work))
+        ),
+      )
+
       And("and a user whose account is barred")
       val patronNumber = createSierraPatronNumber
-      val responses = Seq(
+      val sierraResponses = Seq(
         (
           createHoldRequest(patronNumber, itemNumber, pickupDate),
           HttpResponse(
@@ -1069,35 +1073,32 @@ class RequestingScenarioTest
         )
       )
 
-      withLocalWorksIndex { index =>
-        implicit val route: Route = createRoute(responses)
-        insertIntoElasticsearch(index, work)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
-        When("the user requests the item")
-        val response = makePostRequest(
-          path = s"/users/$patronNumber/item-requests",
-          entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "$createCanonicalId",
-               |  "pickupDate": "$pickupDate",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
         )
+      )
 
-        Then("we throw an internal server error")
-        response.status shouldBe StatusCodes.InternalServerError
-        response.status.intValue shouldBe 500
+      Then("we throw an internal server error")
+      response.status shouldBe StatusCodes.InternalServerError
+      response.status.intValue shouldBe 500
 
-        And("we display a generic response")
-        assertIsDisplayError(
-          response,
-          statusCode = StatusCodes.InternalServerError
-        )
-      }
+      And("we display a generic response")
+      assertIsDisplayError(
+        response,
+        statusCode = StatusCodes.InternalServerError
+      )
     }
 
     Scenario("A user whose account has expired") {

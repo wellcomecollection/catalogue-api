@@ -22,7 +22,6 @@ import weco.catalogue.internal_model.work.generators.{
 import weco.api.requests.fixtures.RequestsApiFixture
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -34,7 +33,6 @@ class RequestsApiFeatureTest
     with IntegrationPatience
     with ItemsGenerators
     with WorkGenerators
-    with IndexFixtures
     with SierraIdentifierGenerators
     with ScalatestRouteTest {
 
