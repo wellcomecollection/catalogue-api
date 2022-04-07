@@ -958,6 +958,7 @@ class WorksFiltersTest
           }
       }
     }
+
     it("filters partOf by title from root position") {
       withWorksApi {
         case (worksIndex, routes) =>
@@ -965,6 +966,22 @@ class WorksFiltersTest
           assertJsonResponse(
             routes,
             s"$rootPath/works?partOf=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
+          ) {
+            Status.OK -> worksListResponse(
+              works =
+                Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
+            )
+          }
+      }
+    }
+
+    it("filters partOf explicitly by title from root position") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          storeWorks(worksIndex)
+          assertJsonResponse(
+            routes,
+            s"$rootPath/works?partOf.label=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
           ) {
             Status.OK -> worksListResponse(
               works =

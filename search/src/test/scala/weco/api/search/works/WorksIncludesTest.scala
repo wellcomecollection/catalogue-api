@@ -800,7 +800,6 @@ class WorksIncludesTest
     }
 
     it("includes partOf") {
-      // TODO: Create a test here that copes with SeriesRelations.
       withWorksApi {
         case (worksIndex, routes) =>
           storeWorks(worksIndex)
