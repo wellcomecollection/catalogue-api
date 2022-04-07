@@ -4,10 +4,8 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
-import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem, DisplayWork}
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState, SourceIdentifier}
 import weco.catalogue.internal_model.work.Item
@@ -29,15 +27,13 @@ case class DisplayWorkResults(
   results: Seq[DisplayWork]
 )
 
-class ItemLookup(
-  client: HttpClient with HttpGet,
-  elasticsearchService: ElasticsearchService,
-  index: Index
-)(
+class ItemLookup(client: HttpClient with HttpGet)(
   implicit
   as: ActorSystem,
   ec: ExecutionContext
 ) extends Logging {
+
+  import weco.catalogue.display_model.models.Implicits._
 
   implicit val um: Unmarshaller[HttpEntity, DisplayWorkResults] =
     CirceMarshalling.fromDecoder[DisplayWorkResults]
@@ -145,14 +141,10 @@ class ItemLookup(
               }
 
             itemIdentifiers.map { itemId =>
-              val matchingWorks = items.flatMap { case (work, item) =>
-                val identifiers = item.identifiers.getOrElse(List())
+              val matchingWorks = items.filter { case (_, item) =>
+                val sourceIdentifier = item.identifiers.getOrElse(List()).head
 
-                val isMatchingItem = identifiers.exists(id =>
-                  id.value == itemId.value && id.identifierType.id == itemId.identifierType.id
-                )
-
-                if (isMatchingItem) Some((work, item)) else None
+                sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
               }
 
               matchingWorks.headOption match {
@@ -161,7 +153,7 @@ class ItemLookup(
                     RequestedItemWithWork(
                       workId = CanonicalId(work.id),
                       workTitle = work.title,
-                      item = item.asInstanceOf[Item[IdState.Identified]]
+                      item = item
                     )
                   )
 

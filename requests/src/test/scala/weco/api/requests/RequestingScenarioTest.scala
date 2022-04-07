@@ -4,14 +4,12 @@ import akka.http.scaladsl.model.HttpMethods.POST
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, RequestEntity, StatusCodes, Uri}
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.sksamuel.elastic4s.Index
 import org.scalatest.GivenWhenThen
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
 import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
-import weco.api.search.elasticsearch.ElasticsearchService
 import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -50,7 +48,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -98,7 +96,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(catalogueResponses = catalogueResponses)
 
       val pickupDate = LocalDate.parse("2022-02-18")
 
@@ -159,7 +157,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -276,7 +274,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -354,33 +352,30 @@ class RequestingScenarioTest
         ),
       )
 
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
-        implicit val route: Route = createRoute(index, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
-        When("the user requests the item")
-        val pickupDate = LocalDate.parse("2022-02-18")
-        val response = makePostRequest(
-          path = s"/users/$patronNumber/item-requests",
-          entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "$createCanonicalId",
-               |  "pickupDate": "$pickupDate",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
+      When("the user requests the item")
+      val pickupDate = LocalDate.parse("2022-02-18")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
         )
+      )
 
-        Then("the API returns an Accepted response")
-        response.status shouldBe StatusCodes.Accepted
-        response.status.intValue shouldBe 202
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
 
-        And("an empty body")
-        response.entity shouldBe HttpEntity.Empty
-      }
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
     }
 
     Scenario("An item that is ordered twice in quick succession") {
@@ -427,32 +422,29 @@ class RequestingScenarioTest
         ),
       )
 
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
-        implicit val route: Route = createRoute(index, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
-        When("the user requests the item")
-        val response = makePostRequest(
-          path = s"/users/$patronNumber/item-requests",
-          entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "$createCanonicalId",
-               |  "pickupDate": "$pickupDate",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
         )
+      )
 
-        Then("the API returns an Accepted response")
-        response.status shouldBe StatusCodes.Accepted
-        response.status.intValue shouldBe 202
+      Then("the API returns an Accepted response")
+      response.status shouldBe StatusCodes.Accepted
+      response.status.intValue shouldBe 202
 
-        And("an empty body")
-        response.entity shouldBe HttpEntity.Empty
-      }
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
     }
 
     Scenario("An item that is on hold for another user") {
@@ -519,7 +511,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -602,7 +594,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -707,7 +699,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -813,7 +805,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -863,8 +855,15 @@ class RequestingScenarioTest
       val work = indexedWork().items(List(item))
       val pickupDate = LocalDate.parse("2022-02-18")
 
+      val catalogueResponses = Seq(
+        (
+          catalogueItemsRequest(item.id.sourceIdentifier),
+          catalogueWorkResponse(Seq(work))
+        ),
+      );
+
       And("which doesn't exist in Sierra")
-      val responses = Seq(
+      val sierraResponses = Seq(
         (
           createHoldRequest(patronNumber, itemNumber, pickupDate),
           HttpResponse(
@@ -902,35 +901,32 @@ class RequestingScenarioTest
         )
       )
 
-      withLocalWorksIndex { index =>
-        implicit val route: Route = createRoute(index, responses)
-        insertIntoElasticsearch(index, work)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
-        When("the user requests the item")
-        val response = makePostRequest(
-          path = s"/users/$patronNumber/item-requests",
-          entity = createJsonHttpEntityWith(
-            s"""
-               |{
-               |  "itemId": "${item.id.canonicalId}",
-               |  "workId": "$createCanonicalId",
-               |  "pickupDate": "$pickupDate",
-               |  "type": "ItemRequest"
-               |}
-               |""".stripMargin
-          )
+      When("the user requests the item")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "${item.id.canonicalId}",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
         )
+      )
 
-        Then("we throw an internal server error")
-        response.status shouldBe StatusCodes.InternalServerError
-        response.status.intValue shouldBe 500
+      Then("we throw an internal server error")
+      response.status shouldBe StatusCodes.InternalServerError
+      response.status.intValue shouldBe 500
 
-        And("we display a generic response")
-        assertIsDisplayError(
-          response,
-          statusCode = StatusCodes.InternalServerError
-        )
-      }
+      And("we display a generic response")
+      assertIsDisplayError(
+        response,
+        statusCode = StatusCodes.InternalServerError
+      )
     }
 
     Scenario("A user that doesn't exist in Sierra") {
@@ -973,7 +969,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -1074,7 +1070,7 @@ class RequestingScenarioTest
       )
 
       withLocalWorksIndex { index =>
-        implicit val route: Route = createRoute(index, responses)
+        implicit val route: Route = createRoute(responses)
         insertIntoElasticsearch(index, work)
 
         When("the user requests the item")
@@ -1194,7 +1190,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the user requests the item")
       val response = makePostRequest(
@@ -1286,7 +1282,7 @@ class RequestingScenarioTest
         ),
       )
 
-      implicit val route: Route = createRoute(createIndex, sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
+      implicit val route: Route = createRoute(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses)
 
       When("the self registered user requests the item")
       val response = makePostRequest(
@@ -1361,7 +1357,6 @@ class RequestingScenarioTest
     )
 
   def createRoute(
-    index: Index,
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     holdLimit: Int = 10
@@ -1376,7 +1371,7 @@ class RequestingScenarioTest
 
     val requestsService = new RequestsService(
       sierraService = SierraRequestsService(sierraClient, holdLimit = holdLimit),
-      itemLookup = new ItemLookup(catalogueClient, new ElasticsearchService(elasticClient), index = index)
+      itemLookup = new ItemLookup(catalogueClient)
     )
 
     val api: RequestsApi = new RequestsApi(requestsService)

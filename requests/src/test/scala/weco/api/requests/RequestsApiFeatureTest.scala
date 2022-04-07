@@ -25,7 +25,6 @@ import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
-import weco.catalogue.internal_model.Implicits._
 
 class RequestsApiFeatureTest
     extends AnyFunSpec
@@ -72,7 +71,7 @@ class RequestsApiFeatureTest
       val itemNumber1 = createSierraItemNumber
       val itemNumber2 = createSierraItemNumber
 
-      val responses = Seq(
+      val sierraResponses = Seq(
         (
           HttpRequest(
             method = HttpMethods.GET,
@@ -95,7 +94,7 @@ class RequestsApiFeatureTest
                  |      "status": {"code": "0", "name": "on hold."}
                  |    },
                  |    {
-                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
                  |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber2.withoutCheckDigit}",
                  |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                  |      "status": {"code": "0", "name": "on hold."}
@@ -110,7 +109,7 @@ class RequestsApiFeatureTest
 
       val titleString = randomAlphanumeric(length = 20)
 
-      val item = createIdentifiedItemWith(
+      val item1 = createIdentifiedItemWith(
         sourceIdentifier = SourceIdentifier(
           identifierType = SierraSystemNumber,
           value = itemNumber1.withCheckDigit,
@@ -120,63 +119,111 @@ class RequestsApiFeatureTest
         title = Some(titleString)
       )
 
-      val work = indexedWork().items(List(item))
+      val work1 = indexedWork().items(List(item1))
 
-      withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, work)
+      val item2 = createIdentifiedItemWith(
+        sourceIdentifier = SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          value = itemNumber2.withCheckDigit,
+          ontologyType = "Item"
+        ),
+        locations = List.empty,
+        title = Some(titleString)
+      )
 
-        withRequestsApi(elasticClient, index, responses) { _ =>
-          val path = s"/users/$patron/item-requests"
+      val work2 = indexedWork().items(List(item2))
 
-          val expectedJson =
-            s"""
-               |{
-               |  "results" : [
-               |    {
-               |      "workTitle" : "${work.data.title.get}",
-               |      "workId" : "${work.state.canonicalId}",
-               |      "item" : {
-               |        "id" : "${item.id.canonicalId}",
-               |        "identifiers" : [
-               |          {
-               |            "identifierType" : {
-               |              "id" : "sierra-system-number",
-               |              "label" : "Sierra system number",
-               |              "type" : "IdentifierType"
-               |            },
-               |            "value" : "${itemNumber1.withCheckDigit}",
-               |            "type" : "Identifier"
-               |          }
-               |        ],
-               |        "title" : "$titleString",
-               |        "locations" : [
-               |        ],
-               |        "type" : "Item"
-               |      },
-               |      "pickupDate" : "2021-05-07",
-               |      "pickupLocation" : {
-               |        "id" : "sotop",
-               |        "label" : "Rare Materials Room",
-               |        "type" : "LocationDescription"
-               |      },
-               |      "status" : {
-               |        "id" : "0",
-               |        "label" : "on hold.",
-               |        "type" : "RequestStatus"
-               |      },
-               |      "type" : "Request"
-               |    }
-               |  ],
-               |  "totalResults" : 1,
-               |  "type" : "ResultList"
-               |}""".stripMargin
+      val catalogueResponses = Seq(
+        (
+          catalogueItemsRequest(createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit), createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)),
+          catalogueWorkResponse(Seq(work1, work2))
+        ),
+      )
 
-          whenGetRequestReady(path) { response =>
-            response.status shouldBe StatusCodes.OK
+      withRequestsApi(sierraResponses = sierraResponses, catalogueResponses = catalogueResponses) { _ =>
+        val path = s"/users/$patron/item-requests"
 
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedJson)
-            }
+        val expectedJson =
+          s"""
+             |{
+             |  "results" : [
+             |    {
+             |      "workTitle" : "${work1.data.title.get}",
+             |      "workId" : "${work1.state.canonicalId}",
+             |      "item" : {
+             |        "id" : "${item1.id.canonicalId}",
+             |        "identifiers" : [
+             |          {
+             |            "identifierType" : {
+             |              "id" : "sierra-system-number",
+             |              "label" : "Sierra system number",
+             |              "type" : "IdentifierType"
+             |            },
+             |            "value" : "${itemNumber1.withCheckDigit}",
+             |            "type" : "Identifier"
+             |          }
+             |        ],
+             |        "title" : "$titleString",
+             |        "locations" : [
+             |        ],
+             |        "type" : "Item"
+             |      },
+             |      "pickupDate" : "2021-05-07",
+             |      "pickupLocation" : {
+             |        "id" : "sotop",
+             |        "label" : "Rare Materials Room",
+             |        "type" : "LocationDescription"
+             |      },
+             |      "status" : {
+             |        "id" : "0",
+             |        "label" : "on hold.",
+             |        "type" : "RequestStatus"
+             |      },
+             |      "type" : "Request"
+             |    },
+             |    {
+             |      "workTitle" : "${work2.data.title.get}",
+             |      "workId" : "${work2.state.canonicalId}",
+             |      "item" : {
+             |        "id" : "${item2.id.canonicalId}",
+             |        "identifiers" : [
+             |          {
+             |            "identifierType" : {
+             |              "id" : "sierra-system-number",
+             |              "label" : "Sierra system number",
+             |              "type" : "IdentifierType"
+             |            },
+             |            "value" : "${itemNumber2.withCheckDigit}",
+             |            "type" : "Identifier"
+             |          }
+             |        ],
+             |        "title" : "$titleString",
+             |        "locations" : [
+             |        ],
+             |        "type" : "Item"
+             |      },
+             |      "pickupLocation" : {
+             |        "id" : "sotop",
+             |        "label" : "Rare Materials Room",
+             |        "type" : "LocationDescription"
+             |      },
+             |      "status" : {
+             |        "id" : "0",
+             |        "label" : "on hold.",
+             |        "type" : "RequestStatus"
+             |      },
+             |      "type" : "Request"
+             |    }
+             |  ],
+             |  "totalResults" : 2,
+             |  "type" : "ResultList"
+             |}""".stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedJson)
           }
         }
       }
@@ -207,24 +254,22 @@ class RequestsApiFeatureTest
         )
       )
 
-      withLocalWorksIndex { index =>
-        withRequestsApi(elasticClient, index, responses) { _ =>
-          val path = s"/users/$patron/item-requests"
+      withRequestsApi(responses) { _ =>
+        val path = s"/users/$patron/item-requests"
 
-          val expectedJson =
-            s"""
-               |{
-               |  "results" : [],
-               |  "totalResults" : 0,
-               |  "type" : "ResultList"
-               |}""".stripMargin
+        val expectedJson =
+          s"""
+             |{
+             |  "results" : [],
+             |  "totalResults" : 0,
+             |  "type" : "ResultList"
+             |}""".stripMargin
 
-          whenGetRequestReady(path) { response =>
-            response.status shouldBe StatusCodes.OK
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
 
-            withStringEntity(response.entity) {
-              assertJsonStringsAreEqual(_, expectedJson)
-            }
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedJson)
           }
         }
       }
