@@ -31,7 +31,7 @@ class SierraRequestsService(
     pickupDate: Option[LocalDate],
     sourceIdentifier: SourceIdentifier
   ): Future[Either[HoldRejected, HoldAccepted]] = {
-    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
+    val item = SierraItemIdentifier.fromOldSourceIdentifier(sourceIdentifier)
 
     sierraSource
       .createHold(
