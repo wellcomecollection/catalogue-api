@@ -21,11 +21,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class WorksService(val elasticsearchService: ElasticsearchService)(
   implicit
   val ec: ExecutionContext
-) extends SearchService[
-      Work[Indexed],
-      Work.Visible[Indexed],
-      WorkAggregations,
-      WorkSearchOptions]
+) extends SearchService[Work[Indexed], Work.Visible[Indexed], WorkAggregations, WorkSearchOptions]
     with ElasticAggregations {
 
   implicit val decoder: Decoder[Work[Indexed]] =
@@ -44,7 +40,8 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
 
   /** Returns a tally of all the work types in an index (e.g. Visible, Deleted). */
   def countWorkTypes(
-    index: Index): Future[Either[ElasticsearchError, Map[String, Int]]] = {
+    index: Index
+  ): Future[Either[ElasticsearchError, Map[String, Int]]] = {
     val searchResponse = elasticsearchService.executeSearchRequest(
       search(index)
         .size(0)

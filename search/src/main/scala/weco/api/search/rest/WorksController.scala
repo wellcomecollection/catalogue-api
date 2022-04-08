@@ -73,7 +73,7 @@ class WorksController(
               (work: Work.Visible[Indexed]) =>
                 Future.successful(
                   complete(DisplayWork(work, includes))
-              ),
+                ),
               usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
             )
         }
@@ -81,7 +81,8 @@ class WorksController(
     }
 
   def countWorkTypes(
-    index: Index): Future[Either[ElasticsearchError, Map[String, Int]]] =
+    index: Index
+  ): Future[Either[ElasticsearchError, Map[String, Int]]] =
     worksService.countWorkTypes(index)
 
   private lazy val worksService = new WorksService(elasticsearchService)
