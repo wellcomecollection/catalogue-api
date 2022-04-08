@@ -3,7 +3,7 @@ steps:
     branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
-          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+          role: "arn:aws:iam::756629837203:role/platform-ci"
       - docker-compose#v3.5.0:
           run: diff_tool
           env:
@@ -78,6 +78,6 @@ steps:
         PLAYWRIGHT_BASE_URL: https://wellcomecollection.org
 
   - label: "Rank tests: Catalogue API (prod)"
-    command: ./.buildkite/scripts/test_rank.sh 
+    command: ./.buildkite/scripts/test_rank.sh
     env:
       QUERY_ENV: "production"
