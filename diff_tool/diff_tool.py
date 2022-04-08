@@ -99,7 +99,7 @@ class ApiDiffer:
 
     def call_api(self, api_base):
         url = f"https://{api_base}{self.path}"
-        response = httpx.get(url, params=self.params)
+        response = httpx.get(url, params=self.params, follow_redirects=True)
         try:
             return (response.status_code, response.json())
         except json.JSONDecodeError:
