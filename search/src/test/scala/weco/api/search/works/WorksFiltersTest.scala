@@ -991,8 +991,15 @@ class WorksFiltersTest
   describe("item filters") {
     val item1 = createIdentifiedPhysicalItem
     val item2 = createIdentifiedPhysicalItem
-    val item3 = createIdentifiedPhysicalItem
-    val item4 = createIdentifiedPhysicalItem
+    val item3 = createIdentifiedItemWith(
+      otherIdentifiers = List(createSourceIdentifier)
+    )
+    val item4 = createIdentifiedItemWith(
+      otherIdentifiers = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      )
+    )
 
     val workA = indexedWork().items(List(item1, item2))
     val workB = indexedWork().items(List(item1))
