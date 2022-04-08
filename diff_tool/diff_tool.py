@@ -6,6 +6,7 @@ import datetime
 import difflib
 import json
 import os
+import sys
 import tempfile
 import urllib.parse
 
@@ -99,7 +100,11 @@ class ApiDiffer:
     def call_api(self, api_base):
         url = f"https://{api_base}{self.path}"
         response = httpx.get(url, params=self.params)
-        return (response.status_code, response.json())
+        try:
+            return (response.status_code, response.json())
+        except json.JSONDecodeError:
+            print(f"Non-JSON response received from {url}:\n---\n{response.text}\n---\n", file=sys.stderr)
+            sys.exit(1)
 
 
 def _display_in_console(stats, diffs):
