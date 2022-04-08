@@ -1075,7 +1075,7 @@ class WorksFiltersTest
     def assertItemsFilterWorks(path: String, expectedWorks: Seq[Work.Visible[Indexed]]): Assertion =
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, workA, workB, workC)
+          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD)
 
           assertJsonResponse(routes, path) {
             Status.OK -> worksListResponse(works = expectedWorks.sortBy(_.state.canonicalId))
