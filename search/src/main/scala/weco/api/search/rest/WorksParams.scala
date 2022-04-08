@@ -66,6 +66,8 @@ case class MultipleWorksParams(
   sortOrder: Option[SortingOrder],
   query: Option[String],
   identifiers: Option[IdentifiersFilter],
+  `items`: Option[ItemsFilter],
+  `items.identifiers`: Option[ItemsIdentifiersFilter],
   `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
   `items.locations.accessConditions.status`: Option[AccessStatusFilter],
   `type`: Option[WorkTypeFilter],
@@ -98,6 +100,8 @@ case class MultipleWorksParams(
       `subjects.label`,
       `contributors.agent.label`,
       identifiers,
+      `items`,
+      `items.identifiers`,
       `items.locations.locationType`,
       `items.locations.accessConditions.status`,
       `items.locations.license`,
@@ -140,10 +144,10 @@ object MultipleWorksParams extends QueryParamsUtils {
       "sortOrder".as[SortingOrder].?,
       "query".as[String].?,
       "identifiers".as[IdentifiersFilter].?,
+      "items".as[ItemsFilter].?,
+      "items.identifiers".as[ItemsIdentifiersFilter].?,
       "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
-      "type".as[WorkTypeFilter].?,
-      "partOf".as[PartOfFilter].?
     ).tflatMap {
       case (
           page,
@@ -162,18 +166,20 @@ object MultipleWorksParams extends QueryParamsUtils {
           sortOrder,
           query,
           identifiers,
+          items,
+          itemsIdentifiers,
           itemLocationTypeId,
           accessStatus,
-          workType,
-          partOf
           ) =>
         // Scala has a max tuple size of 22 so this is nested to get around this limit
         parameters(
+          "type".as[WorkTypeFilter].?,
+          "partOf".as[PartOfFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
           "_queryType".as[SearchQueryType].?,
           "_index".as[String].?
         ).tflatMap {
-          case (availabilities, queryType, index) =>
+          case (workType, partOf, availabilities, queryType, index) =>
             val params = MultipleWorksParams(
               page,
               pageSize,
@@ -191,6 +197,8 @@ object MultipleWorksParams extends QueryParamsUtils {
               sortOrder,
               query,
               identifiers,
+              items,
+              itemsIdentifiers,
               itemLocationTypeId,
               accessStatus,
               workType,
@@ -224,6 +232,12 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
+
+  implicit val itemsFilter: Decoder[ItemsFilter] =
+    stringListFilter(ItemsFilter)
+
+  implicit val itemsIdentifiersFilter: Decoder[ItemsIdentifiersFilter] =
+    stringListFilter(ItemsIdentifiersFilter)
 
   implicit val partOf: Decoder[PartOfFilter] =
     Decoder.decodeString.map(PartOfFilter)
