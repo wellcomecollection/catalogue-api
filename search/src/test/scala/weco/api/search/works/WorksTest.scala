@@ -299,12 +299,15 @@ class WorksTest
           (1 to 5).map(_ => indexedWork()) ++
             (1 to 3).map(_ => indexedWork().invisible()) ++
             (1 to 2).map(_ => indexedWork().deleted()) ++
-            (1 to 4).map(_ => indexedWork().redirected(
-              IdState.Identified(
-                canonicalId = createCanonicalId,
-                sourceIdentifier = createSourceIdentifier
-              )
-            ))
+            (1 to 4).map(
+              _ =>
+                indexedWork().redirected(
+                  IdState.Identified(
+                    canonicalId = createCanonicalId,
+                    sourceIdentifier = createSourceIdentifier
+                  )
+                )
+            )
 
         insertIntoElasticsearch(worksIndex, works: _*)
 
