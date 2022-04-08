@@ -55,7 +55,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
     val path = Path("works")
     val params = Map(
       "include" -> "identifiers,items",
-      "identifiers" -> itemId.underlying,
+      "items" -> itemId.underlying,
       "pageSize" -> "1"
     )
 
@@ -140,7 +140,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
     val path = Path("works")
     val params = Map(
       "include" -> "identifiers,items",
-      "identifiers" -> itemIdentifiers.map(_.value).mkString(","),
+      "items.identifiers" -> itemIdentifiers.map(_.value).mkString(","),
       "pageSize" -> "100"
     )
 

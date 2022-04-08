@@ -174,6 +174,24 @@ object WorksRequestBuilder
           includes = includes.map(_.name),
           excludes = excludes.map(_.name)
         )
+      case ItemsFilter(itemIds) =>
+        should(
+          termsQuery(
+            field = "data.items.id.canonicalId",
+            values = itemIds
+          )
+        )
+      case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
+        should(
+          termsQuery(
+            field = "data.items.id.sourceIdentifier.value",
+            values = itemSourceIdentifiers
+          ),
+          termsQuery(
+            field = "data.items.id.otherIdentifiers.value",
+            values = itemSourceIdentifiers
+          )
+        )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
         termsQuery(
           field = "data.items.locations.locationType.id",

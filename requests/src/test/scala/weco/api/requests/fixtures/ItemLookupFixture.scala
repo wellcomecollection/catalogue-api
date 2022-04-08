@@ -28,14 +28,14 @@ trait ItemLookupFixture extends Akka {
   def catalogueItemRequest(id: CanonicalId): HttpRequest =
     HttpRequest(
       uri = Uri(
-        s"http://catalogue:9001/works?include=identifiers,items&identifiers=$id&pageSize=1"
+        s"http://catalogue:9001/works?include=identifiers,items&items=$id&pageSize=1"
       )
     )
 
   def catalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
     HttpRequest(
       uri = Uri(
-        s"http://catalogue:9001/works?include=identifiers,items&identifiers=${ids.map(_.value).mkString(",")}&pageSize=100"
+        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.map(_.value).mkString(",")}&pageSize=100"
       )
     )
 
