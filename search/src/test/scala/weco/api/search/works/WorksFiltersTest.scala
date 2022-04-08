@@ -989,26 +989,22 @@ class WorksFiltersTest
   }
 
   describe("item filters") {
-    val item1 = createIdentifiedItemWith(canonicalId = CanonicalId("11111111"))
-    val item2 = createIdentifiedItemWith(canonicalId = CanonicalId("22222222"))
+    val item1 = createIdentifiedItem
+    val item2 = createIdentifiedItem
     val item3 = createIdentifiedItemWith(
-      canonicalId = CanonicalId("33333333"),
       otherIdentifiers = List(createSourceIdentifier)
     )
     val item4 = createIdentifiedItemWith(
-      canonicalId = CanonicalId("44444444"),
       otherIdentifiers = List(
         createSourceIdentifier,
         createSourceIdentifier
       )
     )
 
-    val workA = indexedWork(
-      canonicalId = CanonicalId("AAAAAAAA")
-    ).items(List(item1, item2))
-    val workB = indexedWork(canonicalId = CanonicalId("BBBBBBBB")).items(List(item1))
-    val workC = indexedWork(canonicalId = CanonicalId("CCCCCCCC")).items(List(item2, item3))
-    val workD = indexedWork(canonicalId = CanonicalId("DDDDDDDD")).items(List(item3, item4))
+    val workA = indexedWork().items(List(item1, item2))
+    val workB = indexedWork().items(List(item1))
+    val workC = indexedWork().items(List(item2, item3))
+    val workD = indexedWork().items(List(item3, item4))
 
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
