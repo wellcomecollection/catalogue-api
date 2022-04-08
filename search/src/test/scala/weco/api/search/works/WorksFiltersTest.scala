@@ -6,7 +6,7 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.generators.PeriodGenerators
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
