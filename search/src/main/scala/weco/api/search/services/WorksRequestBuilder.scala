@@ -212,7 +212,7 @@ object WorksRequestBuilder
           ),
           notQueries = Nil
         )
-      case PartOfLabelFilter(search_term) =>
+      case PartOfTitleFilter(search_term) =>
         termQuery(
           field = "state.relations.ancestors.title.keyword",
           value = search_term

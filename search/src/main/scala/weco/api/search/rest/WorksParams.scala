@@ -70,7 +70,7 @@ case class MultipleWorksParams(
   `items.locations.accessConditions.status`: Option[AccessStatusFilter],
   `type`: Option[WorkTypeFilter],
   partOf: Option[PartOfFilter],
-  `partOf.label`: Option[PartOfLabelFilter],
+  `partOf.title`: Option[PartOfTitleFilter],
   availabilities: Option[AvailabilitiesFilter],
   _queryType: Option[SearchQueryType],
   _index: Option[String]
@@ -104,7 +104,7 @@ case class MultipleWorksParams(
       `items.locations.license`,
       `type`,
       partOf,
-      `partOf.label`,
+      `partOf.title`,
       availabilities
     ).flatten
 
@@ -146,7 +146,7 @@ object MultipleWorksParams extends QueryParamsUtils {
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
       "type".as[WorkTypeFilter].?,
       "partOf".as[PartOfFilter].?,
-      "partOf.label".as[PartOfLabelFilter].?
+      "partOf.title".as[PartOfTitleFilter].?
     ).tflatMap {
       case (
           page,
@@ -169,7 +169,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           accessStatus,
           workType,
           partOf,
-          partOfLabel
+          partOfTitle
           ) =>
         // Scala has a max tuple size of 22 so this is nested to get around this limit
         parameters(
@@ -199,7 +199,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               accessStatus,
               workType,
               partOf,
-              partOfLabel,
+              partOfTitle,
               availabilities,
               queryType,
               index
@@ -233,8 +233,8 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val partOf: Decoder[PartOfFilter] =
     Decoder.decodeString.map(PartOfFilter)
 
-  implicit val partOfLabel: Decoder[PartOfLabelFilter] =
-    Decoder.decodeString.map(PartOfLabelFilter)
+  implicit val partOfTitle: Decoder[PartOfTitleFilter] =
+    Decoder.decodeString.map(PartOfTitleFilter)
 
   implicit val availabilitiesFilter: Decoder[AvailabilitiesFilter] =
     stringListFilter(AvailabilitiesFilter)

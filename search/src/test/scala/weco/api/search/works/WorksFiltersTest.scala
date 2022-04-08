@@ -981,7 +981,7 @@ class WorksFiltersTest
           storeWorks(worksIndex)
           assertJsonResponse(
             routes,
-            s"$rootPath/works?partOf.label=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
+            s"$rootPath/works?partOf.title=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
           ) {
             Status.OK -> worksListResponse(
               works =
