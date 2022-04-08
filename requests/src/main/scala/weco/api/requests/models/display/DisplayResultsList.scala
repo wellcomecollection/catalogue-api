@@ -42,10 +42,7 @@ object DisplayRequest {
     DisplayRequest(
       workTitle = itemWithWork.workTitle,
       workId = itemWithWork.workId,
-      item = DisplayItem(
-        item = itemWithWork.item,
-        includesIdentifiers = true
-      ),
+      item = itemWithWork.item,
       pickupDate = hold.note.flatMap(HoldNote.parsePickupDate),
       pickupLocation = DisplayLocationDescription(
         id = hold.pickupLocation.code,

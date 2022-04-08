@@ -1,34 +1,49 @@
 package weco.api.requests.services
 
-import com.sksamuel.elastic4s.ElasticApi.fieldSort
-import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, search, termQuery}
-import com.sksamuel.elastic4s.requests.searches.MultiSearchRequest
-import com.sksamuel.elastic4s.requests.searches.sort.SortOrder
-import com.sksamuel.elastic4s.{ElasticClient, Index}
+import akka.actor.ActorSystem
+import akka.http.scaladsl.model.Uri.Path
+import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
+import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchError,
-  ElasticsearchService
+import weco.catalogue.display_model.models.{
+  DisplayIdentifier,
+  DisplayItem,
+  DisplayWork
 }
-import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
   SourceIdentifier
 }
 import weco.catalogue.internal_model.work.Item
+import weco.http.client.{HttpClient, HttpGet}
+import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ItemLookup(
-  elasticsearchService: ElasticsearchService,
-  index: Index
-)(
-  implicit ec: ExecutionContext
+sealed trait ItemLookupError {
+  val err: Throwable
+}
+
+case class ItemNotFoundError(id: Any, err: Throwable) extends ItemLookupError
+case class UnknownItemError(id: Any, err: Throwable) extends ItemLookupError
+
+case class DisplayWorkResults(
+  results: Seq[DisplayWork]
+)
+
+class ItemLookup(client: HttpClient with HttpGet)(
+  implicit
+  as: ActorSystem,
+  ec: ExecutionContext
 ) extends Logging {
+
+  import weco.catalogue.display_model.models.Implicits._
+
+  implicit val um: Unmarshaller[HttpEntity, DisplayWorkResults] =
+    CirceMarshalling.fromDecoder[DisplayWorkResults]
 
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
@@ -36,32 +51,48 @@ class ItemLookup(
     */
   def byCanonicalId(
     itemId: CanonicalId
-  ): Future[Either[ElasticsearchError, Item[IdState.Identified]]] = {
-    val searchRequest =
-      search(index)
-        .query(
-          boolQuery.filter(
-            termQuery("data.items.id.canonicalId", itemId.underlying),
-            termQuery(field = "type", value = "Visible")
-          )
-        )
-        .sourceInclude("data.items", "data.title", "state.canonicalId")
-        .size(1)
+  ): Future[Either[ItemLookupError, DisplayIdentifier]] = {
+    val path = Path("works")
+    val params = Map(
+      "include" -> "identifiers,items",
+      "identifiers" -> itemId.underlying,
+      "pageSize" -> "1"
+    )
 
-    elasticsearchService
-      .findBySearch[WorkStub](searchRequest)
-      .map {
-        case Left(err) => Left(err)
-        case Right(works) =>
-          val item = works
-            .flatMap(w => w.itemWith(itemId))
-            .headOption
+    val httpResult = for {
+      response <- client.get(path = path, params = params)
 
-          item match {
-            case Some(it) => Right(it)
-            case None     => Left(DocumentNotFoundError(itemId))
+      result <- response.status match {
+        case StatusCodes.OK =>
+          info(s"OK for GET to $path with $params")
+          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
+            val items = results.results.flatMap(_.items).flatten
+
+            items
+              .find(_.id.contains(itemId.underlying))
+              .flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
+              case Some(identifier) => Right(identifier)
+              case None =>
+                Left(
+                  ItemNotFoundError(
+                    itemId,
+                    err = new Throwable(s"Could not find item $itemId")
+                  )
+                )
+            }
           }
+
+        case status =>
+          val err = new Throwable(s"$status from the catalogue API")
+          error(
+            s"Unexpected status from GET to $path with $params: $status",
+            err
+          )
+          Future(Left(UnknownItemError(itemId, err)))
       }
+    } yield result
+
+    httpResult.recover { case e => Left(UnknownItemError(itemId, e)) }
   }
 
   /** Look up a collection of items and the corresponding Work data.
@@ -83,16 +114,10 @@ class ItemLookup(
     */
   def bySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
-  ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] =
+  ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] =
     itemIdentifiers match {
-      // If there are no identifiers, return the result immediately.  This will be
-      // reasonably common in practice (new users, or users who haven't ordered items
-      // recently), and if you actually try to search an empty list of identifiers in
-      // Elasticsearch you get a warning:
-      //
-      //      support for empty first line before any action metadata in msearch API
-      //      is deprecated and will be removed in the next major version
-      //
+      // If there are no identifiers, return the result immediately.  This is quite
+      // common in practice (new users, or users who haven't ordered items recently).
       case Nil => Future.successful(Seq())
 
       case _ => searchBySourceIdentifier(itemIdentifiers)
@@ -109,112 +134,72 @@ class ItemLookup(
 
   private def searchBySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
-  ): Future[Seq[Either[ElasticsearchError, RequestedItemWithWork]]] = {
+  ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] = {
     require(itemIdentifiers.nonEmpty)
 
-    val multiSearchRequest = MultiSearchRequest(
-      itemIdentifiers.map { itemSourceIdentifier =>
-        search(index)
-          .query(
-            boolQuery
-              .filter(
-                termQuery(
-                  field = "type",
-                  value = "Visible"
-                ),
-                termQuery(
-                  field = "data.items.id.sourceIdentifier.value",
-                  value = itemSourceIdentifier.value
-                )
-              )
-          )
-          .sourceInclude("data.items", "data.title", "state.canonicalId")
-          .sortBy(
-            fieldSort("state.sourceIdentifier.value")
-              .order(SortOrder.Asc)
-          )
-          // We are sorting so we're only interested in the top value
-          .size(1)
-      }
+    val path = Path("works")
+    val params = Map(
+      "include" -> "identifiers,items",
+      "identifiers" -> itemIdentifiers.map(_.value).mkString(","),
+      "pageSize" -> "100"
     )
 
-    elasticsearchService
-      .findByMultiSearch[WorkStub](multiSearchRequest)
-      .map {
-        _.zip(itemIdentifiers).map {
-          case (Right(Seq(work)), itemId) => addWorkDataToItem(work, itemId)
-          case (Right(Nil), itemId) =>
-            warn(s"No works found matching item identifier $itemId")
-            Left(DocumentNotFoundError(itemId))
+    val httpResult = for {
+      response <- client.get(path = path, params = params)
 
-          // This should never happen in practice, because we have .size(1) in the query.
-          // We can still return something to the user here, but log a warning so we
-          // know something's gone wrong.
-          case (Right(works), itemId) =>
-            warn(
-              s"Multiple works (${works.size}) found matching item identifier $itemId"
-            )
-            addWorkDataToItem(works.head, itemId)
+      result <- response.status match {
+        case StatusCodes.OK =>
+          info(s"OK for GET to $path with $params")
+          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
+            // Sort by source identifier value
+            val works = results.results.sortBy(_.identifiers.get.head.value)
 
-          case (Left(err), _) => Left(err)
-        }
-      }
-  }
+            val items: Seq[(DisplayWork, DisplayItem)] = works
+              .flatMap { w =>
+                w.items.getOrElse(List()).map(item => (w, item))
+              }
 
-  private def addWorkDataToItem(
-    work: WorkStub,
-    itemIdentifier: SourceIdentifier
-  ): Either[DocumentNotFoundError[SourceIdentifier], RequestedItemWithWork] =
-    work.itemWith(itemIdentifier) match {
-      case Some(item) =>
-        Right(
-          RequestedItemWithWork(
-            workId = work.state.canonicalId,
-            workTitle = work.data.title,
-            item = item.asInstanceOf[Item[IdState.Identified]]
+            itemIdentifiers.map { itemId =>
+              val matchingWorks = items.filter {
+                case (_, item) =>
+                  val sourceIdentifier = item.identifiers.getOrElse(List()).head
+
+                  sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
+              }
+
+              matchingWorks.headOption match {
+                case Some((work, item)) =>
+                  Right(
+                    RequestedItemWithWork(
+                      workId = CanonicalId(work.id),
+                      workTitle = work.title,
+                      item = item
+                    )
+                  )
+
+                case None =>
+                  Left(
+                    ItemNotFoundError(
+                      itemId.value,
+                      err = new Throwable(s"Could not find item $itemId")
+                    )
+                  )
+              }
+            }
+          }
+
+        case status =>
+          val err = new Throwable(s"$status from the catalogue API")
+          error(
+            s"Unexpected status from GET to $path with $params: $status",
+            err
           )
-        )
+          Future(itemIdentifiers.map(id => Left(UnknownItemError(id, err))))
+      }
+    } yield result
 
-      case None => Left(DocumentNotFoundError(itemIdentifier))
+    httpResult.recover {
+      case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
     }
-
-  private implicit class WorkOps(w: WorkStub) {
-
-    // You might expect you can write these functions as something like:
-    //
-    //      case item: Item[IdState.Identified] if item.id.canonicalId == itemId =>
-    //
-    // but if you do, you get an error from the compiler:
-    //
-    //      non-variable type argument IdState.Identified in type pattern Item[IdState.Identified]
-    //      is unchecked since it is eliminated by erasure
-    //
-    // The use of .asInstanceOf is to keep the compiler happy.
-
-    def itemWith(
-      itemSourceId: SourceIdentifier
-    ): Option[Item[IdState.Identified]] =
-      w.data.items.collectFirst {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-            if id.sourceIdentifier == itemSourceId =>
-          item.asInstanceOf[Item[IdState.Identified]]
-      }
-
-    def itemWith(itemId: CanonicalId): Option[Item[IdState.Identified]] =
-      w.data.items.collectFirst {
-        case item @ Item(id @ IdState.Identified(_, _, _), _, _, _)
-            if id.canonicalId == itemId =>
-          item.asInstanceOf[Item[IdState.Identified]]
-      }
   }
-}
-
-object ItemLookup {
-  def apply(elasticClient: ElasticClient, index: Index)(
-    implicit ec: ExecutionContext
-  ): ItemLookup =
-    new ItemLookup(
-      elasticsearchService = new ElasticsearchService(elasticClient),
-      index = index
-    )
 }

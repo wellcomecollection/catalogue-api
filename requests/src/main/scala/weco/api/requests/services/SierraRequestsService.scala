@@ -4,6 +4,7 @@ import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
 import weco.api.stacks.models.SierraItemIdentifier
+import weco.catalogue.display_model.models.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
@@ -29,9 +30,9 @@ class SierraRequestsService(
   def placeHold(
     patron: SierraPatronNumber,
     pickupDate: Option[LocalDate],
-    sourceIdentifier: SourceIdentifier
+    sourceIdentifier: DisplayIdentifier
   ): Future[Either[HoldRejected, HoldAccepted]] = {
-    val item = SierraItemIdentifier.fromOldSourceIdentifier(sourceIdentifier)
+    val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
     sierraSource
       .createHold(
@@ -92,7 +93,11 @@ class SierraRequestsService(
         case Left(SierraErrorCode(132, specificCode, 500, _, _))
             if specificCode == 2 || specificCode == 929 =>
           getHolds(patron).flatMap {
-            case holds if holds.keys.toList.contains(sourceIdentifier) =>
+            case holds
+                if holds.keys
+                  .map(_.value)
+                  .toList
+                  .contains(sourceIdentifier.value) =>
               Future.successful(Right(HoldAccepted.HoldAlreadyExists))
             case holds if holds.size >= holdLimit =>
               Future.successful(Left(HoldRejected.UserIsAtHoldLimit))

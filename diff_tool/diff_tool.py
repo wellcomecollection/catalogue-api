@@ -6,6 +6,7 @@ import datetime
 import difflib
 import json
 import os
+import sys
 import tempfile
 import urllib.parse
 
@@ -98,8 +99,15 @@ class ApiDiffer:
 
     def call_api(self, api_base):
         url = f"https://{api_base}{self.path}"
-        response = httpx.get(url, params=self.params)
-        return (response.status_code, response.json())
+        response = httpx.get(url, params=self.params, follow_redirects=True)
+        try:
+            return (response.status_code, response.json())
+        except json.JSONDecodeError:
+            print(
+                f"Non-JSON response received from {url}:\n---\n{response.text}\n---\n",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
 
 def _display_in_console(stats, diffs):
@@ -148,7 +156,7 @@ def _display_in_console(stats, diffs):
 @click.option("--console", is_flag=True, help="Print results in console")
 def main(routes_file, console):
     session = api_stats.get_session_with_role(
-        role_arn="arn:aws:iam::756629837203:role/catalogue-ci"
+        role_arn="arn:aws:iam::760097843905:role/platform-ci"
     )
 
     with open(routes_file) as f:
