@@ -4,34 +4,40 @@
 #
 #    pip-compile
 #
-certifi==2019.9.11
+anyio==3.5.0
+    # via httpcore
+certifi==2021.10.8
+    # via
+    #   httpcore
+    #   httpx
+charset-normalizer==2.0.12
     # via httpx
-click==7.0
+click==8.1.2
     # via -r requirements.in
 h11==0.12.0
     # via httpcore
-httpcore==0.12.3
+httpcore==0.14.7
     # via httpx
-httpx==0.16.1
+httpx==0.22.0
     # via -r requirements.in
-humanize==3.2.0
+humanize==4.0.0
     # via -r requirements.in
-idna==2.8
-    # via rfc3986
-jinja2==2.11.3
+idna==3.3
+    # via
+    #   anyio
+    #   rfc3986
+jinja2==3.1.1
     # via -r requirements.in
-markupsafe==1.1.1
+markupsafe==2.1.1
     # via jinja2
-rfc3986[idna2008]==1.4.0
+rfc3986[idna2008]==1.5.0
     # via httpx
 sniffio==1.2.0
     # via
+    #   anyio
     #   httpcore
     #   httpx
 tabulate==0.8.9
     # via -r requirements.in
-tqdm==4.59.0
+tqdm==4.64.0
     # via -r requirements.in
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
