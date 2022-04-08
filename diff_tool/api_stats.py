@@ -1,4 +1,5 @@
 import boto3
+from elasticsearch import Elasticsearch
 import httpx
 
 
@@ -20,34 +21,30 @@ def get_session_with_role(role_arn, region_name="eu-west-1"):
     )
 
 
-def get_secret_string(secrets_client, *, secret_id):
+def get_secret_string(session, *, secret_id):
     """
     Look up the value of a SecretString in Secrets Manager.
     """
+    secrets_client = session.client("secretsmanager")
     return secrets_client.get_secret_value(SecretId=secret_id)["SecretString"]
 
 
-def get_api_es_url(session):
+def get_pipeline_storage_es_client(session, *, pipeline_date):
     """
-    Returns the Elasticsearch URL for the catalogue cluster.
+    Returns an Elasticsearch client for the pipeline-storage cluster.
     """
-    secrets = session.client("secretsmanager")
+    secret_prefix = f"elasticsearch/pipeline_storage_{pipeline_date}"
 
-    host = get_secret_string(
-        secrets, secret_id="elasticsearch/catalogue_api/public_host"
-    )
-    port = get_secret_string(secrets, secret_id="elasticsearch/catalogue_api/port")
-    protocol = get_secret_string(
-        secrets, secret_id="elasticsearch/catalogue_api/protocol"
-    )
+    host = get_secret_string(session, secret_id=f"{secret_prefix}/public_host")
+    port = get_secret_string(session, secret_id=f"{secret_prefix}/port")
+    protocol = get_secret_string(session, secret_id=f"{secret_prefix}/protocol")
     username = get_secret_string(
-        secrets, secret_id="elasticsearch/catalogue_api/search/username"
+        session, secret_id=f"{secret_prefix}/read_only/es_username"
     )
     password = get_secret_string(
-        secrets, secret_id="elasticsearch/catalogue_api/search/password"
+        session, secret_id=f"{secret_prefix}/read_only/es_password"
     )
-
-    return f"{protocol}://{username}:{password}@{host}:{port}"
+    return Elasticsearch(f"{protocol}://{username}:{password}@{host}:{port}")
 
 
 def get_index_name(api_url):
@@ -65,19 +62,21 @@ def get_api_stats(session, *, api_url):
     Returns some index stats about the API, including the index name and a breakdown
     of work types in the index.
     """
-    es_url = get_api_es_url(session)
-
     index_name = get_index_name(api_url)
+    pipeline_date = index_name.replace("works-indexed-", "")
 
-    search_resp = httpx.request(
-        "GET",
-        es_url + f"/{index_name}/_search",
-        json={"size": 0, "aggs": {"work_type": {"terms": {"field": "type"}}}},
+    es_client = get_pipeline_storage_es_client(session, pipeline_date=pipeline_date)
+
+    search_resp = es_client.search(
+        index=index_name,
+        body={"size": 0, "aggs": {"work_type": {"terms": {"field": "type"}}}}
     )
+
+    aggregations = search_resp["aggregations"]
 
     work_types = {
         bucket["key"]: bucket["doc_count"]
-        for bucket in search_resp.json()["aggregations"]["work_type"]["buckets"]
+        for bucket in aggregations["work_type"]["buckets"]
     }
 
     work_types["TOTAL"] = sum(work_types.values())
