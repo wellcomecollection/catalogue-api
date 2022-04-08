@@ -3,7 +3,7 @@ package weco.api.search.rest
 import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.models.ApiConfig
 import weco.api.search.services.WorksService
 import weco.catalogue.display_model.models.Implicits._
@@ -79,6 +79,9 @@ class WorksController(
         }
       }
     }
+
+  def countWorkTypes(index: Index): Future[Either[ElasticsearchError, Map[String, Int]]] =
+    worksService.countWorkTypes(index)
 
   private lazy val worksService = new WorksService(elasticsearchService)
 }
