@@ -90,7 +90,9 @@ class SearchApi(
                 withFuture {
                   worksController.countWorkTypes(elasticConfig.worksIndex).map {
                     case Right(tally) => complete(tally)
-                    case Left(err) => internalError(new Throwable(s"Error counting work types: $err"))
+                    case Left(err) =>
+                      internalError(
+                        new Throwable(s"Error counting work types: $err"))
                   }
                 }
               }
