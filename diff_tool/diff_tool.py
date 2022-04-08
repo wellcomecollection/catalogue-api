@@ -180,7 +180,7 @@ def main(routes_file, console):
         diffs = [fut.result() for fut in futures]
 
     stats = {
-        label: api_stats.get_api_stats(session, api_url=api_url)
+        label: api_stats.get_api_stats(api_url=api_url)
         for (label, api_url) in [("prod", PROD_URL), ("staging", STAGING_URL)]
     }
 
