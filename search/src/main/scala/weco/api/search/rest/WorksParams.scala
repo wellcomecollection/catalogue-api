@@ -58,14 +58,14 @@ case class ItemsParams(
   `items.identifiers`: Option[ItemsIdentifiersFilter],
   `items.locations.license`: Option[LicenseFilter],
   `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
-  `items.locations.accessConditions.status`: Option[AccessStatusFilter],
+  `items.locations.accessConditions.status`: Option[AccessStatusFilter]
 )
 
 case class PaginationParams(
   page: Option[Int],
   pageSize: Option[Int],
   sort: Option[List[SortRequest]],
-  sortOrder: Option[SortingOrder],
+  sortOrder: Option[SortingOrder]
 )
 
 case class WorkFilterParams(
@@ -79,7 +79,7 @@ case class WorkFilterParams(
   identifiers: Option[IdentifiersFilter],
   partOf: Option[PartOfFilter],
   availabilities: Option[AvailabilitiesFilter],
-  `type`: Option[WorkTypeFilter],
+  `type`: Option[WorkTypeFilter]
 )
 
 case class MultipleWorksParams(
@@ -155,21 +155,38 @@ object MultipleWorksParams extends QueryParamsUtils {
       "items.identifiers".as[ItemsIdentifiersFilter].?,
       "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
-
       "page".as[Int].?,
       "pageSize".as[Int].?,
       "sort".as[List[SortRequest]].?,
       "sortOrder".as[SortingOrder].?,
-
       "_queryType".as[SearchQueryType].?,
       "_index".as[String].?,
       "query".as[String].?,
       "include".as[WorksIncludes].?,
-      "aggregations".as[List[WorkAggregationRequest]].?,
+      "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
-      case (items, license, identifiers, locationType, accessStatus, page, pageSize, sort, sortOrder, queryType, index, query, includes, aggregations) =>
+      case (
+          items,
+          license,
+          identifiers,
+          locationType,
+          accessStatus,
+          page,
+          pageSize,
+          sort,
+          sortOrder,
+          queryType,
+          index,
+          query,
+          includes,
+          aggregations
+          ) =>
         val itemsParams = ItemsParams(
-          items, identifiers, license, locationType, accessStatus
+          items,
+          identifiers,
+          license,
+          locationType,
+          accessStatus
         )
 
         val paginationParams = PaginationParams(page, pageSize, sort, sortOrder)
@@ -183,26 +200,35 @@ object MultipleWorksParams extends QueryParamsUtils {
           "subjects.label".as[SubjectFilter].?,
           "contributors.agent.label".as[ContributorsFilter].?,
           "identifiers".as[IdentifiersFilter].?,
-
           "partOf".as[PartOfFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
-          "type".as[WorkTypeFilter].?,
+          "type".as[WorkTypeFilter].?
         ).tflatMap {
           case (
-            format,
-            dateFrom,
-            dateTo,
-            languages,
-            genres,
-            subjects,
-            contributors,
-            identifiers,
-            partOf,
-            availabilities,
-            workType,
-           ) =>
+              format,
+              dateFrom,
+              dateTo,
+              languages,
+              genres,
+              subjects,
+              contributors,
+              identifiers,
+              partOf,
+              availabilities,
+              workType
+              ) =>
             val filterParams = WorkFilterParams(
-              format, dateFrom, dateTo, languages, genres, subjects, contributors, identifiers, partOf, availabilities, workType
+              format,
+              dateFrom,
+              dateTo,
+              languages,
+              genres,
+              subjects,
+              contributors,
+              identifiers,
+              partOf,
+              availabilities,
+              workType
             )
 
             val params = MultipleWorksParams(
