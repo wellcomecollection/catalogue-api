@@ -6,7 +6,7 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.generators.PeriodGenerators
-import weco.catalogue.internal_model.identifiers.IdState
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
@@ -989,34 +989,53 @@ class WorksFiltersTest
   }
 
   describe("item filters") {
-    val item1 = createIdentifiedPhysicalItem
-    val item2 = createIdentifiedPhysicalItem
+    val item1 = createIdentifiedItemWith(canonicalId = CanonicalId("11111111"))
+    val item2 = createIdentifiedItemWith(canonicalId = CanonicalId("22222222"))
     val item3 = createIdentifiedItemWith(
+      canonicalId = CanonicalId("33333333"),
       otherIdentifiers = List(createSourceIdentifier)
     )
     val item4 = createIdentifiedItemWith(
+      canonicalId = CanonicalId("44444444"),
       otherIdentifiers = List(
         createSourceIdentifier,
         createSourceIdentifier
       )
     )
 
-    val workA = indexedWork().items(List(item1, item2))
-    val workB = indexedWork().items(List(item1))
-    val workC = indexedWork().items(List(item2, item3))
-    val workD = indexedWork().items(List(item3, item4))
+    val workA = indexedWork(
+      canonicalId = CanonicalId("AAAAAAAA")
+    ).items(List(item1, item2))
+    val workB = indexedWork(canonicalId = CanonicalId("BBBBBBBB")).items(List(item1))
+    val workC = indexedWork(canonicalId = CanonicalId("CCCCCCCC")).items(List(item2, item3))
+    val workD = indexedWork(canonicalId = CanonicalId("DDDDDDDD")).items(List(item3, item4))
 
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
         path = s"$rootPath/works?items=${item1.id.canonicalId}",
         expectedWorks = Seq(workA, workB)
       )
+
+      assertItemsFilterWorks(
+        path = s"$rootPath/works?items=${item3.id.canonicalId}",
+        expectedWorks = Seq(workC, workD)
+      )
     }
 
     it("looks up multiple canonical IDs") {
       assertItemsFilterWorks(
         path = s"$rootPath/works?items=${item1.id.canonicalId},${item3.id.canonicalId}",
+        expectedWorks = Seq(workA, workB, workC, workD)
+      )
+
+      assertItemsFilterWorks(
+        path = s"$rootPath/works?items=${item2.id.canonicalId},${item3.id.canonicalId}",
         expectedWorks = Seq(workA, workC, workD)
+      )
+
+      assertItemsFilterWorks(
+        path = s"$rootPath/works?items=${item3.id.canonicalId},${item4.id.canonicalId}",
+        expectedWorks = Seq(workC, workD)
       )
     }
 
