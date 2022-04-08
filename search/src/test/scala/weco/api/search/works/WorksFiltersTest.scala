@@ -1,6 +1,7 @@
 package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
+import org.scalatest.Assertion
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
@@ -1002,5 +1003,109 @@ class WorksFiltersTest
           }
       }
     }
+  }
+
+  describe("item filters") {
+    val item1 = createIdentifiedItem
+    val item2 = createIdentifiedItem
+    val item3 = createIdentifiedItemWith(
+      otherIdentifiers = List(createSourceIdentifier)
+    )
+    val item4 = createIdentifiedItemWith(
+      otherIdentifiers = List(
+        createSourceIdentifier,
+        createSourceIdentifier
+      )
+    )
+
+    val workA = indexedWork().items(List(item1, item2))
+    val workB = indexedWork().items(List(item1))
+    val workC = indexedWork().items(List(item2, item3))
+    val workD = indexedWork().items(List(item3, item4))
+
+    it("filters by canonical ID on items") {
+      assertItemsFilterWorks(
+        path = s"$rootPath/works?items=${item1.id.canonicalId}",
+        expectedWorks = Seq(workA, workB)
+      )
+
+      assertItemsFilterWorks(
+        path = s"$rootPath/works?items=${item3.id.canonicalId}",
+        expectedWorks = Seq(workC, workD)
+      )
+    }
+
+    it("looks up multiple canonical IDs") {
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items=${item1.id.canonicalId},${item3.id.canonicalId}",
+        expectedWorks = Seq(workA, workB, workC, workD)
+      )
+
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items=${item2.id.canonicalId},${item3.id.canonicalId}",
+        expectedWorks = Seq(workA, workC, workD)
+      )
+
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items=${item3.id.canonicalId},${item4.id.canonicalId}",
+        expectedWorks = Seq(workC, workD)
+      )
+    }
+
+    it("looks up source identifiers") {
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items.identifiers=${item3.id.sourceIdentifier.value}",
+        expectedWorks = Seq(workC, workD)
+      )
+
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items.identifiers=${item1.id.sourceIdentifier.value}",
+        expectedWorks = Seq(workA, workB)
+      )
+    }
+
+    it("looks up multiple source identifiers") {
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items.identifiers=${item2.id.sourceIdentifier.value},${item3.id.sourceIdentifier.value}",
+        expectedWorks = Seq(workA, workC, workD)
+      )
+    }
+
+    it("looks up other identifiers") {
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value}",
+        expectedWorks = Seq(workD)
+      )
+    }
+
+    it("looks up multiple other identifiers") {
+      assertItemsFilterWorks(
+        path =
+          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value},${item3.id.otherIdentifiers.head.value}",
+        expectedWorks = Seq(workC, workD)
+      )
+    }
+
+    def assertItemsFilterWorks(
+      path: String,
+      expectedWorks: Seq[Work.Visible[Indexed]]
+    ): Assertion =
+      withWorksApi {
+        case (worksIndex, routes) =>
+          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD)
+
+          assertJsonResponse(routes, path) {
+            Status.OK -> worksListResponse(
+              works = expectedWorks.sortBy(_.state.canonicalId)
+            )
+          }
+      }
   }
 }

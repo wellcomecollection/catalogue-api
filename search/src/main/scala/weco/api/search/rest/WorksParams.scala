@@ -49,9 +49,26 @@ object SingleWorkParams extends QueryParamsUtils {
     ).emap(values => Right(WorksIncludes(values: _*)))
 }
 
-case class MultipleWorksParams(
+// We break up MultipleWorksParams into sub case-classes to avoid it getting too large --
+// we're not sure of the exact limits on Scala case classes, but somewhere around
+// 23 parameters weird stuff starts happening, e.g. values passed to the apply() method
+// don't get reflected in the new case class.
+case class ItemsParams(
+  `items`: Option[ItemsFilter],
+  `items.identifiers`: Option[ItemsIdentifiersFilter],
+  `items.locations.license`: Option[LicenseFilter],
+  `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
+  `items.locations.accessConditions.status`: Option[AccessStatusFilter]
+)
+
+case class PaginationParams(
   page: Option[Int],
   pageSize: Option[Int],
+  sort: Option[List[SortRequest]],
+  sortOrder: Option[SortingOrder]
+)
+
+case class WorkFilterParams(
   workType: Option[FormatFilter],
   `production.dates.from`: Option[LocalDate],
   `production.dates.to`: Option[LocalDate],
@@ -59,23 +76,27 @@ case class MultipleWorksParams(
   `genres.label`: Option[GenreFilter],
   `subjects.label`: Option[SubjectFilter],
   `contributors.agent.label`: Option[ContributorsFilter],
-  `items.locations.license`: Option[LicenseFilter],
-  include: Option[WorksIncludes],
-  aggregations: Option[List[WorkAggregationRequest]],
-  sort: Option[List[SortRequest]],
-  sortOrder: Option[SortingOrder],
-  query: Option[String],
   identifiers: Option[IdentifiersFilter],
-  `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
-  `items.locations.accessConditions.status`: Option[AccessStatusFilter],
-  `type`: Option[WorkTypeFilter],
   partOf: Option[PartOfFilter],
   `partOf.title`: Option[PartOfTitleFilter],
   availabilities: Option[AvailabilitiesFilter],
+  `type`: Option[WorkTypeFilter]
+)
+
+case class MultipleWorksParams(
+  paginationParams: PaginationParams,
+  itemsParams: ItemsParams,
+  filterParams: WorkFilterParams,
+  include: Option[WorksIncludes],
+  aggregations: Option[List[WorkAggregationRequest]],
+  query: Option[String],
   _queryType: Option[SearchQueryType],
   _index: Option[String]
 ) extends QueryParams
     with Paginated {
+
+  lazy val page = paginationParams.page
+  lazy val pageSize = paginationParams.pageSize
 
   def searchOptions(apiConfig: ApiConfig): WorkSearchOptions =
     WorkSearchOptions(
@@ -86,30 +107,33 @@ case class MultipleWorksParams(
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
       pageNumber = page.getOrElse(1),
       aggregations = aggregations.getOrElse(Nil),
-      sortBy = sort.getOrElse(Nil),
-      sortOrder = sortOrder.getOrElse(SortingOrder.Ascending)
+      sortBy = paginationParams.sort.getOrElse(Nil),
+      sortOrder = paginationParams.sortOrder.getOrElse(SortingOrder.Ascending)
     )
 
   private def filters: List[WorkFilter] =
     List(
-      workType,
+      filterParams.workType,
       dateFilter,
-      languages,
-      `genres.label`,
-      `subjects.label`,
-      `contributors.agent.label`,
-      identifiers,
-      `items.locations.locationType`,
-      `items.locations.accessConditions.status`,
-      `items.locations.license`,
-      `type`,
-      partOf,
-      `partOf.title`,
-      availabilities
+
+      filterParams.languages,
+      filterParams.`genres.label`,
+      filterParams.`subjects.label`,
+      filterParams.`contributors.agent.label`,
+      filterParams.identifiers,
+      itemsParams.`items`,
+      itemsParams.`items.identifiers`,
+      itemsParams.`items.locations.accessConditions.status`,
+      itemsParams.`items.locations.license`,
+      itemsParams.`items.locations.locationType`,
+      filterParams.`type`,
+      filterParams.partOf,
+      filterParams.`partOf.title`,
+      filterParams.availabilities
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
-    (`production.dates.from`, `production.dates.to`) match {
+    (filterParams.`production.dates.from`, filterParams.`production.dates.to`) match {
       case (None, None)       => None
       case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
     }
@@ -124,85 +148,104 @@ object MultipleWorksParams extends QueryParamsUtils {
   // parameter is not correctly parsed. More info on custom directives is
   // available here:
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
+  //
+  // Scala has a max tuple size of about 22, so we break these up into nested
+  // blocks to avoid hitting the limit.
   def parse: Directive[Tuple1[MultipleWorksParams]] =
     parameters(
-      "page".as[Int].?,
-      "pageSize".as[Int].?,
-      "workType".as[FormatFilter] ?,
-      "production.dates.from".as[LocalDate].?,
-      "production.dates.to".as[LocalDate].?,
-      "languages".as[LanguagesFilter].?,
-      "genres.label".as[GenreFilter].?,
-      "subjects.label".as[SubjectFilter].?,
-      "contributors.agent.label".as[ContributorsFilter].?,
+      "items".as[ItemsFilter].?,
       "items.locations.license".as[LicenseFilter].?,
-      "include".as[WorksIncludes].?,
-      "aggregations".as[List[WorkAggregationRequest]].?,
-      "sort".as[List[SortRequest]].?,
-      "sortOrder".as[SortingOrder].?,
-      "query".as[String].?,
-      "identifiers".as[IdentifiersFilter].?,
+      "items.identifiers".as[ItemsIdentifiersFilter].?,
       "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
-      "type".as[WorkTypeFilter].?,
-      "partOf".as[PartOfFilter].?,
-      "partOf.title".as[PartOfTitleFilter].?
+      "page".as[Int].?,
+      "pageSize".as[Int].?,
+      "sort".as[List[SortRequest]].?,
+      "sortOrder".as[SortingOrder].?,
+      "_queryType".as[SearchQueryType].?,
+      "_index".as[String].?,
+      "query".as[String].?,
+      "include".as[WorksIncludes].?,
+      "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
       case (
+          items,
+          license,
+          identifiers,
+          locationType,
+          accessStatus,
           page,
           pageSize,
-          format,
-          dateFrom,
-          dateTo,
-          languages,
-          genre,
-          subjects,
-          contributors,
-          itemsLocationsLicense,
-          includes,
-          aggregations,
           sort,
           sortOrder,
+          queryType,
+          index,
           query,
-          identifiers,
-          itemLocationTypeId,
-          accessStatus,
-          workType,
-          partOf,
-          partOfTitle
+          includes,
+          aggregations
           ) =>
-        // Scala has a max tuple size of 22 so this is nested to get around this limit
+        val itemsParams = ItemsParams(
+          items,
+          identifiers,
+          license,
+          locationType,
+          accessStatus
+        )
+
+        val paginationParams = PaginationParams(page, pageSize, sort, sortOrder)
+
         parameters(
+          "workType".as[FormatFilter] ?,
+          "production.dates.from".as[LocalDate].?,
+          "production.dates.to".as[LocalDate].?,
+          "languages".as[LanguagesFilter].?,
+          "genres.label".as[GenreFilter].?,
+          "subjects.label".as[SubjectFilter].?,
+          "contributors.agent.label".as[ContributorsFilter].?,
+          "identifiers".as[IdentifiersFilter].?,
+          "partOf".as[PartOfFilter].?,
+          "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
-          "_queryType".as[SearchQueryType].?,
-          "_index".as[String].?
+          "type".as[WorkTypeFilter].?
         ).tflatMap {
-          case (availabilities, queryType, index) =>
-            val params = MultipleWorksParams(
-              page,
-              pageSize,
+          case (
               format,
               dateFrom,
               dateTo,
               languages,
-              genre,
+              genres,
               subjects,
               contributors,
-              itemsLocationsLicense,
-              includes,
-              aggregations,
-              sort,
-              sortOrder,
-              query,
               identifiers,
-              itemLocationTypeId,
-              accessStatus,
-              workType,
               partOf,
               partOfTitle,
               availabilities,
-              queryType,
-              index
+              workType
+              ) =>
+            val filterParams = WorkFilterParams(
+              format,
+              dateFrom,
+              dateTo,
+              languages,
+              genres,
+              subjects,
+              contributors,
+              identifiers,
+              partOf,
+              partOfTitle,
+              availabilities,
+              workType
+            )
+
+            val params = MultipleWorksParams(
+              paginationParams = paginationParams,
+              itemsParams = itemsParams,
+              filterParams = filterParams,
+              include = includes,
+              aggregations = aggregations,
+              query = query,
+              _queryType = queryType,
+              _index = index
             )
             validated(params.paginationErrors, params)
         }
@@ -229,6 +272,12 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
+
+  implicit val itemsFilter: Decoder[ItemsFilter] =
+    stringListFilter(ItemsFilter)
+
+  implicit val itemsIdentifiersFilter: Decoder[ItemsIdentifiersFilter] =
+    stringListFilter(ItemsIdentifiersFilter)
 
   implicit val partOf: Decoder[PartOfFilter] =
     Decoder.decodeString.map(PartOfFilter)

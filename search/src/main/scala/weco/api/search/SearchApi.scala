@@ -78,6 +78,25 @@ class SearchApi(
             },
             path("clusterhealth") {
               getClusterHealth
+            },
+            // This endpoint is meant for the diff tool; it gives a breakdown of the
+            // different work types (e.g. Visible, Redirected, Deleted) in the index
+            // the API is using.
+            //
+            // It allows the diff tool to get stats about the API without knowing
+            // which ES cluster the API is connecting to or which index it's using.
+            path("_workTypes") {
+              get {
+                withFuture {
+                  worksController.countWorkTypes(elasticConfig.worksIndex).map {
+                    case Right(tally) => complete(tally)
+                    case Left(err) =>
+                      internalError(
+                        new Throwable(s"Error counting work types: $err")
+                      )
+                  }
+                }
+              }
             }
           )
         }

@@ -2,6 +2,7 @@ package weco.api.search.works
 
 import weco.api.search.generators.PeriodGenerators
 import weco.catalogue.internal_model.Implicits._
+import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import weco.catalogue.internal_model.locations._
 
@@ -287,6 +288,39 @@ class WorksTest
           Status.OK -> worksListResponse(
             works = Seq(work1976, work1904, work1900)
           )
+        }
+    }
+  }
+
+  it("returns a tally of work types") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        val works =
+          (1 to 5).map(_ => indexedWork()) ++
+            (1 to 3).map(_ => indexedWork().invisible()) ++
+            (1 to 2).map(_ => indexedWork().deleted()) ++
+            (1 to 4).map(
+              _ =>
+                indexedWork().redirected(
+                  IdState.Identified(
+                    canonicalId = createCanonicalId,
+                    sourceIdentifier = createSourceIdentifier
+                  )
+                )
+            )
+
+        insertIntoElasticsearch(worksIndex, works: _*)
+
+        assertJsonResponse(routes, s"$rootPath/management/_workTypes") {
+          Status.OK ->
+            """
+              |{
+              |  "Visible": 5,
+              |  "Invisible": 3,
+              |  "Deleted": 2,
+              |  "Redirected": 4
+              |}
+              |""".stripMargin
         }
     }
   }
