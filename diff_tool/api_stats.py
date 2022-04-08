@@ -24,4 +24,6 @@ def get_api_stats(*, api_url):
         f"https://{api_url}/catalogue/v2/management/_workTypes"
     ).json()
 
+    work_types["TOTAL"] = sum(work_types.values())
+
     return {"index_name": index_name, "work_types": work_types}

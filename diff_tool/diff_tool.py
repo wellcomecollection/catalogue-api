@@ -155,10 +155,6 @@ def _display_in_console(stats, diffs):
 )
 @click.option("--console", is_flag=True, help="Print results in console")
 def main(routes_file, console):
-    session = api_stats.get_session_with_role(
-        role_arn="arn:aws:iam::760097843905:role/platform-ci"
-    )
-
     with open(routes_file) as f:
         routes = json.load(f)
 
