@@ -69,7 +69,7 @@ def get_api_stats(session, *, api_url):
 
     search_resp = es_client.search(
         index=index_name,
-        body={"size": 0, "aggs": {"work_type": {"terms": {"field": "type"}}}}
+        body={"size": 0, "aggs": {"work_type": {"terms": {"field": "type"}}}},
     )
 
     aggregations = search_resp["aggregations"]

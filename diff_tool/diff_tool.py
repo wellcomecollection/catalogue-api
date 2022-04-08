@@ -103,7 +103,10 @@ class ApiDiffer:
         try:
             return (response.status_code, response.json())
         except json.JSONDecodeError:
-            print(f"Non-JSON response received from {url}:\n---\n{response.text}\n---\n", file=sys.stderr)
+            print(
+                f"Non-JSON response received from {url}:\n---\n{response.text}\n---\n",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
 
