@@ -115,7 +115,6 @@ case class MultipleWorksParams(
     List(
       filterParams.workType,
       dateFilter,
-
       filterParams.languages,
       filterParams.`genres.label`,
       filterParams.`subjects.label`,
