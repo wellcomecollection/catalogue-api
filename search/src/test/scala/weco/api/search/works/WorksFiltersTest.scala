@@ -1041,6 +1041,11 @@ class WorksFiltersTest
 
     it("looks up source identifiers") {
       assertItemsFilterWorks(
+        path = s"$rootPath/works?items.identifiers=${item3.id.sourceIdentifier.value}",
+        expectedWorks = Seq(workC, workD)
+      )
+
+      assertItemsFilterWorks(
         path = s"$rootPath/works?items.identifiers=${item1.id.sourceIdentifier.value}",
         expectedWorks = Seq(workA, workB)
       )
