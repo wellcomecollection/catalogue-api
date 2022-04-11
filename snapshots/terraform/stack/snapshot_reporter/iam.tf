@@ -5,7 +5,9 @@ data "aws_iam_policy_document" "read_secrets" {
     ]
 
     resources = [
-      for _, secret in data.aws_secretsmanager_secret_version.secrets : secret.arn
+      "arn:aws:secretsmanager:eu-west-1:756629837203:secret:${local.elastic_secret_id}*",
+      "arn:aws:secretsmanager:eu-west-1:756629837203:secret:${local.slack_secret_id}*",
+      "arn:aws:secretsmanager:eu-west-1:756629837203:secret:elasticsearch/*",
     ]
   }
 }
