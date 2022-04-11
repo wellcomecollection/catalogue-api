@@ -167,25 +167,28 @@ def post_to_slack(session, *, slack_secret_id, payload):
 
 
 def get_recent_update_stats(session, *, hours):
+    works_index_name = httpx.get(
+        "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig"
+    ).json()["worksIndex"]
+
+    index_date = works_index_name.replace("works-indexed-", "")
+    secret_prefix = f"elasticsearch/pipeline_storage_{index_date}"
+
     username = get_secret(
-        session, secret_id="elasticsearch/catalogue_api/search/username"
+        session, secret_id=f"{secret_prefix}/snapshot_generator/es_username"
     )
     password = get_secret(
-        session, secret_id="elasticsearch/catalogue_api/search/password"
+        session, secret_id=f"{secret_prefix}/snapshot_generator/es_password"
     )
-    host = get_secret(session, secret_id="elasticsearch/catalogue_api/public_host")
+    host = get_secret(session, secret_id=f"{secret_prefix}/public_host")
 
-    api_es_client = Elasticsearch(
+    pipeline_es_client = Elasticsearch(
         f"https://{host}:9243", http_auth=(username, password)
     )
 
-    works_index_name = httpx.get(
-        "https://api.wellcomecollection.org/catalogue/v2/search-templates.json"
-    ).json()["templates"][0]["index"]
-
     indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
 
-    count_resp = api_es_client.count(
+    count_resp = pipeline_es_client.count(
         index=works_index_name,
         body={
             "query": {
@@ -204,7 +207,7 @@ def get_recent_update_stats(session, *, hours):
         },
     )
 
-    search_resp = api_es_client.search(
+    search_resp = pipeline_es_client.search(
         index=works_index_name,
         body={
             "sort": [{"state.indexedTime": {"order": "desc"}}],
