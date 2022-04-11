@@ -78,6 +78,7 @@ case class WorkFilterParams(
   `contributors.agent.label`: Option[ContributorsFilter],
   identifiers: Option[IdentifiersFilter],
   partOf: Option[PartOfFilter],
+  `partOf.title`: Option[PartOfTitleFilter],
   availabilities: Option[AvailabilitiesFilter],
   `type`: Option[WorkTypeFilter]
 )
@@ -126,6 +127,7 @@ case class MultipleWorksParams(
       itemsParams.`items.locations.locationType`,
       filterParams.`type`,
       filterParams.partOf,
+      filterParams.`partOf.title`,
       filterParams.availabilities
     ).flatten
 
@@ -201,6 +203,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           "contributors.agent.label".as[ContributorsFilter].?,
           "identifiers".as[IdentifiersFilter].?,
           "partOf".as[PartOfFilter].?,
+          "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
           "type".as[WorkTypeFilter].?
         ).tflatMap {
@@ -214,6 +217,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               contributors,
               identifiers,
               partOf,
+              partOfTitle,
               availabilities,
               workType
               ) =>
@@ -227,6 +231,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               contributors,
               identifiers,
               partOf,
+              partOfTitle,
               availabilities,
               workType
             )
@@ -275,6 +280,9 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val partOf: Decoder[PartOfFilter] =
     Decoder.decodeString.map(PartOfFilter)
+
+  implicit val partOfTitle: Decoder[PartOfTitleFilter] =
+    Decoder.decodeString.map(PartOfTitleFilter)
 
   implicit val availabilitiesFilter: Decoder[AvailabilitiesFilter] =
     stringListFilter(AvailabilitiesFilter)
