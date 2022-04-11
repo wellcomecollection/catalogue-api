@@ -17,19 +17,3 @@ output "ecr_items_repository_url" {
 output "ecr_requests_repository_url" {
   value = aws_ecr_repository.requests.repository_url
 }
-
-output "es_items_secret_config" {
-  value = local.es_items_secret_config
-}
-
-output "es_requests_secret_config" {
-  value = local.es_requests_secret_config
-}
-
-output "es_search_secret_config" {
-  value = local.es_search_secret_config
-}
-
-output "catalogue_api_ec_version" {
-  value = ec_deployment.catalogue_api.version
-}
