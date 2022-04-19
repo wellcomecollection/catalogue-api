@@ -42,21 +42,6 @@
               "multi_match": {
                 "query": "{{query}}",
                 "fields": [
-                  "search.titlesAndContributors^80.0",
-                  "search.titlesAndContributors.english^80.0",
-                  "search.titlesAndContributors.shingles^80.0"
-                ],
-                "type": "best_fields",
-                "fuzziness": "AUTO",
-                "operator": "And",
-                "prefix_length": "2",
-                "_name": "title and contributor alternative spellings"
-              }
-            },
-            {
-              "multi_match": {
-                "query": "{{query}}",
-                "fields": [
                   "search.titlesAndContributors.arabic",
                   "search.titlesAndContributors.bengali",
                   "search.titlesAndContributors.french",

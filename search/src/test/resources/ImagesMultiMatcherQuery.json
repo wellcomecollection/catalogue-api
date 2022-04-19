@@ -114,25 +114,6 @@
              },
              {
                "multi_match": {
-                 "_name": "title alternative spellings",
-                 "fields": [
-                   "source.canonicalWork.data.alternativeTitles^80.0",
-                   "source.redirectedWork.data.alternativeTitles^80.0",
-                   "source.canonicalWork.data.title.english^80.0",
-                   "source.redirectedWork.data.title.english^80.0",
-                   "source.canonicalWork.data.title.shingles^80.0",
-                   "source.redirectedWork.data.title.shingles^80.0",
-                   "source.canonicalWork.data.title^80.0",
-                   "source.redirectedWork.data.title^80.0"
-                 ],
-                 "fuzziness": "AUTO",
-                 "operator": "And",
-                 "query": "{{query}}",
-                 "type": "best_fields"
-               }
-             },
-             {
-               "multi_match": {
                  "_name": "non-english text",
                  "fields": [
                    "source.canonicalWork.data.title.arabic^100.0",
