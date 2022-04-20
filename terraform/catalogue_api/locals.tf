@@ -14,9 +14,6 @@ locals {
     apm_secret     = "catalogue/api/apm_secret"
   }
 
-  es_search_secret_config = data.terraform_remote_state.catalogue_api_shared.outputs.es_search_secret_config
-  es_items_secret_config  = data.terraform_remote_state.catalogue_api_shared.outputs.es_items_secret_config
-
   // TODO: Requests & Items APIs have different security profile
   // TODO: Requests will access PII - and must have a different set of credentials!
   // See: https://github.com/wellcomecollection/catalogue-api/issues/95
