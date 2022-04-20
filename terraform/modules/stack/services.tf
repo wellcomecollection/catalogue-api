@@ -36,7 +36,7 @@ module "search_api" {
     metrics_namespace = "search-api"
   }
 
-  secrets = merge(var.es_search_secret_config, var.apm_secret_config)
+  secrets = var.apm_secret_config
 
   subnets                = local.routable_private_subnets
   cluster_arn            = var.cluster_arn
@@ -72,7 +72,7 @@ module "items_api" {
     metrics_namespace = "items-api"
   }
 
-  secrets = merge(var.es_items_secret_config, var.apm_secret_config, var.sierra_secret_config)
+  secrets = merge(var.apm_secret_config, var.sierra_secret_config)
 
   subnets                = local.routable_private_subnets
   cluster_arn            = var.cluster_arn

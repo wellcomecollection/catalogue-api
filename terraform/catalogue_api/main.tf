@@ -19,10 +19,8 @@ module "catalogue_api_prod" {
   elastic_cloud_vpce_sg_id = local.elastic_cloud_vpce_sg_id
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
-  apm_secret_config       = local.apm_secret_config
-  es_items_secret_config  = local.es_items_secret_config
-  es_search_secret_config = local.es_search_secret_config
-  sierra_secret_config    = local.sierra_secret_config
+  apm_secret_config    = local.apm_secret_config
+  sierra_secret_config = local.sierra_secret_config
 
   api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
 
@@ -53,10 +51,8 @@ module "catalogue_api_stage" {
   elastic_cloud_vpce_sg_id = local.elastic_cloud_vpce_sg_id
   cluster_arn              = aws_ecs_cluster.catalogue_api.arn
 
-  apm_secret_config       = local.apm_secret_config
-  es_items_secret_config  = local.es_items_secret_config
-  es_search_secret_config = local.es_search_secret_config
-  sierra_secret_config    = local.sierra_secret_config
+  apm_secret_config    = local.apm_secret_config
+  sierra_secret_config = local.sierra_secret_config
 
   api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
 
