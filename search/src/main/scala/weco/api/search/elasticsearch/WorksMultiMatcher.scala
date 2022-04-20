@@ -71,15 +71,6 @@ case object WorksMultiMatcher {
             ),
             MultiMatchQuery(
               q,
-              queryName = Some("title and contributor alternative spellings"),
-              fields = fieldsWithBoost(boost = 80, fields = titleFields),
-              `type` = Some(BEST_FIELDS),
-              operator = Some(AND),
-              fuzziness = Some("AUTO"),
-              prefixLength = Some(2)
-            ),
-            MultiMatchQuery(
-              q,
               queryName = Some("non-english titles and contributors"),
               fields = languages.map(
                 language =>

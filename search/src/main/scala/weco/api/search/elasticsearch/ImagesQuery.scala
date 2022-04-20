@@ -146,17 +146,6 @@ case object ImagesMultiMatcher {
             ),
             MultiMatchQuery(
               q,
-              queryName = Some("title alternative spellings"),
-              fields = boostedWorkFields(
-                boost = Some(80.0),
-                fields = titleFields
-              ),
-              `type` = Some(BEST_FIELDS),
-              operator = Some(AND),
-              fuzziness = Some("AUTO")
-            ),
-            MultiMatchQuery(
-              q,
               queryName = Some("non-english text"),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND),

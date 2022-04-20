@@ -186,67 +186,6 @@ const tests: Test[] = [
       },
     },
   },
-  {
-    id: 'false-positives',
-    label: 'False positives',
-    description:
-      "Ensure that the query doesn't return results which we know are irrelevant. Due to fuzzy matching on alternative spellings, we need to ensure we aren't too fuzzy.",
-    eval: equalTo0,
-    searchTemplateAugmentation: filterCaseRatings,
-    cases: [
-      {
-        query: 'Deptford',
-        ratings: ['pb4rbujd', 'g2awspp9'],
-        description: "Shouldn't match 'dartford' or 'hertford'",
-      },
-      {
-        query: 'Sahagún',
-        ratings: ['neumfv84', 'dzhxzxcr'],
-        description: "Shouldn't match 'gahagan'",
-      },
-      {
-        query: 'posters',
-        ratings: ['z85jd9f4', 'qpkfxsst'],
-        description: "Shouldn't match 'porter'",
-        knownFailure: true,
-      },
-      {
-        query: 'gout',
-        ratings: ['t67v2y55'],
-        description: "Shouldn't match 'out'",
-      },
-      {
-        query: 'L0062541',
-        ratings: ['wsqmrqfj'],
-        description: "Shouldn't match 'L0032741' in the title",
-        knownFailure: true,
-      },
-      {
-        query: 'Maori',
-        ratings: ['h464szg9', 'y48zg6af', 'uf2ds6qs'],
-        description: "shouldn't match 'mary' or 'amoris' or 'maris'",
-        knownFailure: true,
-      },
-      {
-        query: 'monsters',
-        ratings: ['uyueynsp', 'd592f8ff'],
-        description: "Should not match 'Monastery' or 'Ministers'",
-        knownFailure: true,
-      },
-      {
-        query: 'Maclise',
-        ratings: ['kft2kzec'],
-        description: "Should not match 'machine'",
-        knownFailure: true,
-      },
-    ],
-    metric: {
-      recall: {
-        relevant_rating_threshold: 3,
-        k: 100,
-      },
-    },
-  },
 ]
 
 export default tests
