@@ -65,9 +65,7 @@ docker run \
         --index="$WORKS_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
-        --testId=recall \
-        --testId=false-positives
-
+        --testId=recall
 
 # run images tests
 IMAGES_INDEX=$(curl -s "${URL}" | jq -r .imagesIndex)
@@ -83,5 +81,4 @@ docker run \
         --index="$IMAGES_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
-        --testId=recall \
-        --testId=false-positives
+        --testId=recall
