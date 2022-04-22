@@ -9,27 +9,27 @@ import weco.elasticsearch.ElasticClientBuilder
 import scala.util.Try
 
 /**
- * Build an ElasticClient that will connect to the appropriate database
- * as specified for this environment.
- *
- * The settings may come either from environment variables
- * (if API_ELASTIC_SETTINGS_FROM_ENVIRONMENT is true)
- * or from the AWS Secrets Manager
- */
+  * Build an ElasticClient that will connect to the appropriate database
+  * as specified for this environment.
+  *
+  * The settings may come either from environment variables
+  * (if API_ELASTIC_SETTINGS_FROM_ENVIRONMENT is true)
+  * or from the AWS Secrets Manager
+  */
 object PipelineElasticClientBuilder {
-  def apply(serviceName: String): ElasticClient = {
+  def apply(serviceName: String): ElasticClient =
     sys.env.get("API_ELASTIC_SETTINGS_FROM_ENVIRONMENT") match {
-      case Some(value) if Try(value.toBoolean).getOrElse(false) => EnvElasticClientBuilder(serviceName)
-      case _ => SecretsElasticClientBuilder (serviceName)
+      case Some(value) if Try(value.toBoolean).getOrElse(false) =>
+        EnvElasticClientBuilder(serviceName)
+      case _ => SecretsElasticClientBuilder(serviceName)
     }
-  }
 }
 
 /**
- * Build an ElasticClient from Environment Variables
- * Use this to run the API without accessing the AWS Secrets Manager.
- * For example, to run against a non-pipeline database such as a local copy.
- */
+  * Build an ElasticClient from Environment Variables
+  * Use this to run the API without accessing the AWS Secrets Manager.
+  * For example, to run against a non-pipeline database such as a local copy.
+  */
 object EnvElasticClientBuilder {
   def apply(serviceName: String): ElasticClient = {
     val hostname = sys.env("API_ELASTIC_HOST")
@@ -47,7 +47,6 @@ object EnvElasticClientBuilder {
     )
   }
 }
-
 
 object SecretsElasticClientBuilder {
 

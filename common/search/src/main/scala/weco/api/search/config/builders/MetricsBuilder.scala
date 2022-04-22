@@ -12,19 +12,20 @@ import scala.util.Try
 import scala.concurrent.ExecutionContext
 
 /**
- * Build an appropriate Metrics object for use by weco.http.monitoring.HttpMetrics
- * For a "Real" instance, publish metrics on CloudWatch,
- * For a local or experimental instance, simply store them in memory.
- */
+  * Build an appropriate Metrics object for use by weco.http.monitoring.HttpMetrics
+  * For a "Real" instance, publish metrics on CloudWatch,
+  * For a local or experimental instance, simply store them in memory.
+  */
 object MetricsBuilder {
   def apply(config: Config)(
     implicit
     materializer: Materializer,
-    ec: ExecutionContext): Metrics[Future] = {
+    ec: ExecutionContext
+  ): Metrics[Future] =
     sys.env.get("API_USE_MEMORY_METRICS") match {
-      case Some(value) if Try(value.toBoolean).getOrElse(false) => new MemoryMetrics
+      case Some(value) if Try(value.toBoolean).getOrElse(false) =>
+        new MemoryMetrics
       case _ => CloudWatchBuilder.buildCloudWatchMetrics(config)
 
     }
-  }
 }

@@ -3,7 +3,10 @@ package weco.api.search
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.search.config.builders.{MetricsBuilder, PipelineElasticClientBuilder}
+import weco.api.search.config.builders.{
+  MetricsBuilder,
+  PipelineElasticClientBuilder
+}
 import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
