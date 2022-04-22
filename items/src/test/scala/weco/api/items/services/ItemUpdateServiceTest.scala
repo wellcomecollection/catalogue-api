@@ -176,15 +176,11 @@ class ItemUpdateServiceTest
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe orderedItems.map(it => DisplayItem(it))
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe reversedItems.map(it => DisplayItem(it))
       }
     }
   }
@@ -283,10 +279,7 @@ class ItemUpdateServiceTest
                   expectedAccessCondition
                 )
 
-                digitalItem shouldBe DisplayItem(
-                  dummyDigitalItem,
-                  includesIdentifiers = true
-                )
+                digitalItem shouldBe DisplayItem(dummyDigitalItem)
               }
             }
           }

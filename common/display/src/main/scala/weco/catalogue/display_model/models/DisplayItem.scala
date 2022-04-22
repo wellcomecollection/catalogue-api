@@ -6,7 +6,7 @@ import weco.catalogue.internal_model.work.Item
 
 case class DisplayItem(
   id: Option[String],
-  identifiers: Option[List[DisplayIdentifier]] = None,
+  identifiers: List[DisplayIdentifier],
   title: Option[String] = None,
   note: Option[String] = None,
   locations: List[DisplayLocation] = List(),
@@ -16,15 +16,12 @@ case class DisplayItem(
 
 object DisplayItem extends GetIdentifiers {
 
-  def apply(
-    item: Item[IdState.Minted],
-    includesIdentifiers: Boolean
-  ): DisplayItem =
+  def apply(item: Item[IdState.Minted]): DisplayItem =
     item match {
       case Item(id, title, note, locations) =>
         DisplayItem(
           id = id.maybeCanonicalId.map { _.underlying },
-          identifiers = getIdentifiers(id, includesIdentifiers),
+          identifiers = getIdentifiers(id),
           title = title,
           note = note,
           locations = locations.map(DisplayLocation(_)),

@@ -46,7 +46,7 @@ class DisplayWorkTest
     val displayItem = displayWork.items.head
     displayItem shouldBe DisplayItem(
       id = None,
-      identifiers = None,
+      identifiers = List(),
       locations = List(
         DisplayDigitalLocation(
           DisplayLocationType(location.locationType),
@@ -311,9 +311,7 @@ class DisplayWorkTest
       val item = displayWork.items.head
       val identifiedItem =
         work.data.items.head.asInstanceOf[Item[IdState.Identified]]
-      item.identifiers shouldBe Some(
-        List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
-      )
+      item.identifiers shouldBe List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
     }
 
     it("subjects") {

@@ -58,9 +58,7 @@ object DisplayWork {
         DisplayGenre(_, includesIdentifiers = true)
       },
       thumbnail = work.data.thumbnail.map { DisplayLocation(_) },
-      items = work.data.items.map {
-        DisplayItem(_, includesIdentifiers = true)
-      },
+      items = work.data.items.map { DisplayItem(_) },
       holdings = work.data.holdings.map { DisplayHoldings(_) },
       availabilities = work.state.availabilities.toList.map {
         DisplayAvailability(_)
