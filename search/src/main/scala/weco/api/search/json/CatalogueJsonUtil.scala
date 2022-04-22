@@ -17,7 +17,7 @@ trait CatalogueJsonUtil {
 
   implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
     def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w, includes = WorksIncludes.all).asJson
+      DisplayWork(w).asJson
         .removeKeyRecursivelyIf(includes.identifiers, "identifiers")
         .removeKeyIf(includes.items, "items")
         .removeKeyIf(includes.holdings, "holdings")

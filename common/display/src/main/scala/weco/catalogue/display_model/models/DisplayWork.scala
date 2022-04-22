@@ -7,39 +7,36 @@ case class DisplayWork(
   id: String,
   title: Option[String],
   alternativeTitles: List[String],
-  referenceNumber: Option[String] = None,
-  description: Option[String] = None,
-  physicalDescription: Option[String] = None,
-  workType: Option[DisplayFormat] = None,
-  lettering: Option[String] = None,
-  createdDate: Option[DisplayPeriod] = None,
-  contributors: Option[List[DisplayContributor]] = None,
-  identifiers: Option[List[DisplayIdentifier]] = None,
-  subjects: Option[List[DisplaySubject]] = None,
-  genres: Option[List[DisplayGenre]] = None,
+  referenceNumber: Option[String],
+  description: Option[String],
+  physicalDescription: Option[String],
+  workType: Option[DisplayFormat],
+  lettering: Option[String],
+  createdDate: Option[DisplayPeriod],
+  contributors: List[DisplayContributor],
+  identifiers: List[DisplayIdentifier],
+  subjects: List[DisplaySubject],
+  genres: List[DisplayGenre],
   thumbnail: Option[DisplayLocation] = None,
-  items: Option[List[DisplayItem]] = None,
-  holdings: Option[List[DisplayHoldings]] = None,
-  availabilities: List[DisplayAvailability] = Nil,
-  production: Option[List[DisplayProductionEvent]] = None,
-  languages: Option[List[DisplayLanguage]] = None,
+  items: List[DisplayItem],
+  holdings: List[DisplayHoldings],
+  availabilities: List[DisplayAvailability],
+  production: List[DisplayProductionEvent],
+  languages: List[DisplayLanguage],
   edition: Option[String] = None,
-  notes: Option[List[DisplayNote]] = None,
-  duration: Option[Int] = None,
-  images: Option[List[DisplayWorkImageInclude]] = None,
-  parts: Option[List[DisplayRelation]] = None,
-  partOf: Option[List[DisplayRelation]] = None,
-  precededBy: Option[List[DisplayRelation]] = None,
-  succeededBy: Option[List[DisplayRelation]] = None,
+  notes: List[DisplayNote],
+  duration: Option[Int],
+  images: List[DisplayWorkImageInclude],
+  parts: List[DisplayRelation],
+  partOf: List[DisplayRelation],
+  precededBy: List[DisplayRelation],
+  succeededBy: List[DisplayRelation],
   @JsonKey("type") ontologyType: String = "Work"
 )
 
 object DisplayWork {
 
-  def apply(
-    work: Work.Visible[WorkState.Indexed],
-    includes: WorksIncludes
-  ): DisplayWork =
+  def apply(work: Work.Visible[WorkState.Indexed]): DisplayWork =
     DisplayWork(
       id = work.state.canonicalId.underlying,
       title = work.data.title,
@@ -47,87 +44,41 @@ object DisplayWork {
       referenceNumber = work.data.referenceNumber.map { _.underlying },
       description = work.data.description,
       physicalDescription = work.data.physicalDescription,
+      workType = work.data.format.map { DisplayFormat(_) },
       lettering = work.data.lettering,
       createdDate = work.data.createdDate.map { DisplayPeriod(_) },
-      contributors = if (includes.contributors) {
-        Some(work.data.contributors.map {
-          DisplayContributor(_, includesIdentifiers = includes.identifiers)
-        })
-      } else None,
-      subjects = if (includes.subjects) {
-        Some(work.data.subjects.map {
-          DisplaySubject(_, includesIdentifiers = includes.identifiers)
-        })
-      } else None,
-      genres = if (includes.genres) {
-        Some(work.data.genres.map {
-          DisplayGenre(_, includesIdentifiers = includes.identifiers)
-        })
-      } else None,
-      identifiers =
-        if (includes.identifiers)
-          Some(work.identifiers.map { DisplayIdentifier(_) })
-        else None,
-      workType = work.data.format.map { DisplayFormat(_) },
+      contributors = work.data.contributors.map {
+        DisplayContributor(_, includesIdentifiers = true)
+      },
+      identifiers = work.identifiers.map { DisplayIdentifier(_) },
+      subjects = work.data.subjects.map {
+        DisplaySubject(_, includesIdentifiers = true)
+      },
+      genres = work.data.genres.map {
+        DisplayGenre(_, includesIdentifiers = true)
+      },
       thumbnail = work.data.thumbnail.map { DisplayLocation(_) },
-      items =
-        if (includes.items)
-          Some(work.data.items.map {
-            DisplayItem(_, includesIdentifiers = includes.identifiers)
-          })
-        else None,
-      holdings =
-        if (includes.holdings)
-          Some(work.data.holdings.map { DisplayHoldings(_) })
-        else None,
+      items = work.data.items.map {
+        DisplayItem(_, includesIdentifiers = true)
+      },
+      holdings = work.data.holdings.map { DisplayHoldings(_) },
       availabilities = work.state.availabilities.toList.map {
         DisplayAvailability(_)
       },
-      production =
-        if (includes.production) Some(work.data.production.map {
-          DisplayProductionEvent(_, includesIdentifiers = includes.identifiers)
-        })
-        else None,
-      languages =
-        if (includes.languages)
-          Some(work.data.languages.map { DisplayLanguage(_) })
-        else None,
+      production = work.data.production.map {
+        DisplayProductionEvent(_, includesIdentifiers = true)
+      },
+      languages = work.data.languages.map { DisplayLanguage(_) },
       edition = work.data.edition,
-      notes =
-        if (includes.notes)
-          Some(DisplayNote.merge(work.data.notes.map(DisplayNote(_))))
-        else None,
+      notes = DisplayNote.merge(work.data.notes.map(DisplayNote(_))),
       duration = work.data.duration,
-      images =
-        if (includes.images)
-          Some(work.data.imageData.map(DisplayWorkImageInclude(_)))
-        else None,
-      ontologyType = displayWorkType(work.data.workType),
-      partOf = if (includes.partOf) {
-        Some(DisplayPartOf(work.state.relations.ancestors))
-      } else None,
-      parts =
-        if (includes.parts)
-          Some(
-            work.state.relations.children.map(DisplayRelation(_))
-          )
-        else None,
-      precededBy =
-        if (includes.precededBy)
-          Some(
-            work.state.relations.siblingsPreceding.map(DisplayRelation(_))
-          )
-        else None,
-      succeededBy =
-        if (includes.succeededBy)
-          Some(
-            work.state.relations.siblingsSucceeding.map(DisplayRelation(_))
-          )
-        else None
+      images = work.data.imageData.map(DisplayWorkImageInclude(_)),
+      partOf = DisplayPartOf(work.state.relations.ancestors),
+      parts = work.state.relations.children.map(DisplayRelation(_)),
+      precededBy = work.state.relations.siblingsPreceding.map(DisplayRelation(_)),
+      succeededBy = work.state.relations.siblingsSucceeding.map(DisplayRelation(_)),
+      ontologyType = displayWorkType(work.data.workType)
     )
-
-  def apply(work: Work.Visible[WorkState.Indexed]): DisplayWork =
-    DisplayWork(work = work, includes = WorksIncludes.none)
 
   def displayWorkType(workType: WorkType): String = workType match {
     case WorkType.Standard   => "Work"

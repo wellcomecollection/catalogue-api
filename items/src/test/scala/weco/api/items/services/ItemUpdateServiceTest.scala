@@ -10,8 +10,7 @@ import weco.catalogue.display_model.models.{
   DisplayAccessCondition,
   DisplayItem,
   DisplayPhysicalLocation,
-  DisplayWork,
-  WorksIncludes
+  DisplayWork
 }
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
@@ -169,12 +168,10 @@ class ItemUpdateServiceTest
     val reversedItems = orderedItems.reverse
 
     val workWithItemsForward = DisplayWork(
-      indexedWork().items(orderedItems),
-      includes = WorksIncludes.all
+      indexedWork().items(orderedItems)
     )
     val workWithItemsBackward = DisplayWork(
-      indexedWork().items(reversedItems),
-      includes = WorksIncludes.all
+      indexedWork().items(reversedItems)
     )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
@@ -205,10 +202,7 @@ class ItemUpdateServiceTest
       createDigitalItem
     )
 
-    val workWithItems = DisplayWork(
-      indexedWork().items(startingItems),
-      includes = WorksIncludes.all
-    )
+    val workWithItems = DisplayWork(indexedWork().items(startingItems))
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItems).failed) {
@@ -273,8 +267,7 @@ class ItemUpdateServiceTest
         (sierraResponses, catalogueWork, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work =
-                DisplayWork(catalogueWork, includes = WorksIncludes.all)
+              val work = DisplayWork(catalogueWork)
 
               whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
                 updatedItems.length shouldBe 2

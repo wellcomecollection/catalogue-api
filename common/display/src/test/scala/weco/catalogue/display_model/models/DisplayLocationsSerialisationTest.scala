@@ -2,94 +2,45 @@ package weco.catalogue.display_model.models
 
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
-import weco.catalogue.internal_model.work.generators._
 import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work.{Work, WorkState}
 import Implicits._
 import weco.catalogue.display_model.test.util.JsonMapperTestUtil
 
 class DisplayLocationsSerialisationTest
     extends AnyFunSpec
     with DisplaySerialisationTestBase
-    with JsonMapperTestUtil
-    with WorkGenerators
-    with ItemsGenerators {
+    with JsonMapperTestUtil {
 
   it("serialises a physical location") {
-    val physicalLocation = PhysicalLocation(
+    val location = PhysicalLocation(
       locationType = LocationType.ClosedStores,
       label = LocationType.ClosedStores.label
     )
 
-    val work = indexedWork().items(
-      List(createIdentifiedItemWith(locations = List(physicalLocation)))
-    )
-
-    val expectedJson = s"""
-      |{
-      | "type": "Work",
-      | "id": "${work.state.canonicalId}",
-      | "title": "${work.data.title.get}",
-      | "alternativeTitles": [],
-      | "items": [ ${items(work.data.items)} ],
-      | "availabilities": [${availabilities(work.state.availabilities)}]
-      |}
-    """.stripMargin
-
-    assertWorkMapsToJson(work, expectedJson = expectedJson)
+    assertLocationMapsToJson(location, physicalLocation(location))
   }
 
   it("serialises a digital location") {
-    val digitalLocation = DigitalLocation(
+    val location = DigitalLocation(
       url = "https://wellcomelibrary.org/iiif/b22015085/manifest",
       locationType = LocationType.IIIFPresentationAPI
     )
 
-    val work = indexedWork().items(
-      List(createIdentifiedItemWith(locations = List(digitalLocation)))
-    )
-
-    val expectedJson = s"""
-      |{
-      | "type": "Work",
-      | "id": "${work.state.canonicalId}",
-      | "title": "${work.data.title.get}",
-      | "alternativeTitles": [],
-      | "items": [ ${items(work.data.items)} ],
-      | "availabilities": [${availabilities(work.state.availabilities)}]
-      |}
-    """.stripMargin
-
-    assertWorkMapsToJson(work, expectedJson = expectedJson)
+    assertLocationMapsToJson(location, digitalLocation(location))
   }
 
   it("serialises a digital location with a license") {
-    val digitalLocation = DigitalLocation(
+    val location = DigitalLocation(
       url = "https://wellcomelibrary.org/iiif/b22015085/manifest",
       locationType = LocationType.IIIFPresentationAPI,
       license = Some(License.CC0)
     )
 
-    val work = indexedWork().items(
-      List(createIdentifiedItemWith(locations = List(digitalLocation)))
-    )
-
-    val expectedJson = s"""
-      |{
-      | "type": "Work",
-      | "id": "${work.state.canonicalId}",
-      | "title": "${work.data.title.get}",
-      | "alternativeTitles": [],
-      | "items": [ ${items(work.data.items)} ],
-      | "availabilities": [${availabilities(work.state.availabilities)}]
-      |}
-    """.stripMargin
-
-    assertWorkMapsToJson(work, expectedJson = expectedJson)
+    assertLocationMapsToJson(location, digitalLocation(location))
   }
 
   it("serialises a digital location with an access condition") {
-    val digitalLocation = DigitalLocation(
+    val location = DigitalLocation(
       url = "https://wellcomelibrary.org/iiif/b22015085/manifest",
       locationType = LocationType.IIIFPresentationAPI,
       accessConditions = List(
@@ -101,30 +52,9 @@ class DisplayLocationsSerialisationTest
       )
     )
 
-    val work = indexedWork().items(
-      List(createIdentifiedItemWith(locations = List(digitalLocation)))
-    )
-
-    val expectedJson = s"""
-      |{
-      | "type": "Work",
-      | "id": "${work.state.canonicalId}",
-      | "title": "${work.data.title.get}",
-      | "alternativeTitles": [],
-      | "items": [ ${items(work.data.items)} ],
-      | "availabilities": [${availabilities(work.state.availabilities)}]
-      |}
-    """.stripMargin
-
-    assertWorkMapsToJson(work, expectedJson = expectedJson)
+    assertLocationMapsToJson(location, digitalLocation(location))
   }
 
-  private def assertWorkMapsToJson(
-    work: Work.Visible[WorkState.Indexed],
-    expectedJson: String
-  ): Assertion =
-    assertObjectMapsToJson(
-      DisplayWork(work, includes = WorksIncludes(WorkInclude.Items)),
-      expectedJson = expectedJson
-    )
+  private def assertLocationMapsToJson(location: Location, expectedJson: String): Assertion =
+    assertObjectMapsToJson(DisplayLocation(location), expectedJson = expectedJson)
 }

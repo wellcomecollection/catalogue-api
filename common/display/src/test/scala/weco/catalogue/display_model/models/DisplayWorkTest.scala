@@ -1,9 +1,7 @@
 package weco.catalogue.display_model.models
 
-import org.scalacheck.ScalacheckShapeless._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
@@ -19,28 +17,22 @@ class DisplayWorkTest
     with Matchers
     with ProductionEventGenerators
     with WorkGenerators
-    with ImageGenerators
-    with ScalaCheckPropertyChecks {
+    with ImageGenerators {
 
   it("parses a Work without any items") {
     val work = indexedWork().items(Nil)
 
-    val displayWork = DisplayWork(
-      work = work,
-      includes = WorksIncludes(WorkInclude.Items)
-    )
-    displayWork.items shouldBe Some(List())
+    val displayWork = DisplayWork(work)
+    displayWork.items shouldBe List()
   }
 
   it("parses identified items on a work") {
     val items = createIdentifiedItems(count = 1)
     val work = indexedWork().items(items)
 
-    val displayWork = DisplayWork(
-      work = work,
-      includes = WorksIncludes(WorkInclude.Items)
-    )
-    val displayItem = displayWork.items.get.head
+    val displayWork = DisplayWork(work)
+
+    val displayItem = displayWork.items.head
     displayItem.id shouldBe Some(items.head.id.canonicalId.underlying)
   }
 
@@ -49,12 +41,9 @@ class DisplayWorkTest
     val location = item.locations.head.asInstanceOf[DigitalLocation]
     val work = indexedWork().items(List(item))
 
-    val displayWork = DisplayWork(
-      work = work,
-      includes = WorksIncludes(WorkInclude.Items)
-    )
+    val displayWork = DisplayWork(work)
 
-    val displayItem = displayWork.items.get.head
+    val displayItem = displayWork.items.head
     displayItem shouldBe DisplayItem(
       id = None,
       identifiers = None,
@@ -75,13 +64,9 @@ class DisplayWorkTest
   it("parses a work without any extra identifiers") {
     val work = indexedWork().otherIdentifiers(Nil)
 
-    val displayWork = DisplayWork(
-      work = work,
-      includes = WorksIncludes(WorkInclude.Identifiers)
-    )
-    displayWork.identifiers shouldBe Some(
-      List(DisplayIdentifier(work.sourceIdentifier))
-    )
+    val displayWork = DisplayWork(work)
+
+    displayWork.identifiers shouldBe List(DisplayIdentifier(work.sourceIdentifier))
   }
 
   it("gets the physicalDescription from a Work") {
@@ -122,22 +107,15 @@ class DisplayWorkTest
 
     val work = indexedWork().languages(languages)
 
-    val noLanguagesInclude = WorksIncludes.none.copy(languages = false)
-    val languagesInclude = WorksIncludes.none.copy(languages = true)
+    val displayWork = DisplayWork(work)
 
-    DisplayWork(work, includes = noLanguagesInclude).languages shouldBe None
-
-    val displayWork = DisplayWork(work, includes = languagesInclude)
-
-    displayWork.languages shouldBe Some(
-      List(
-        DisplayLanguage(id = "bsl", label = "British Sign Language"),
-        DisplayLanguage(id = "ger", label = "German")
-      )
+    displayWork.languages shouldBe List(
+      DisplayLanguage(id = "bsl", label = "British Sign Language"),
+      DisplayLanguage(id = "ger", label = "German")
     )
   }
 
-  it("extracts contributors from a Work with the contributors include") {
+  it("extracts contributors from a Work") {
     val canonicalId = createCanonicalId
     val sourceIdentifier = createSourceIdentifierWith(
       ontologyType = "Person"
@@ -164,14 +142,9 @@ class DisplayWorkTest
       )
     )
 
-    val displayWork =
-      DisplayWork(
-        work,
-        includes =
-          WorksIncludes(WorkInclude.Identifiers, WorkInclude.Contributors)
-      )
+    val displayWork = DisplayWork(work)
 
-    displayWork.contributors.get shouldBe List(
+    displayWork.contributors shouldBe List(
       DisplayContributor(
         agent = DisplayPerson(
           id = Some(canonicalId.underlying),
@@ -193,32 +166,18 @@ class DisplayWorkTest
     )
   }
 
-  it("extracts production events from a work with the production include") {
+  it("extracts production events from a work") {
     val productionEvent = createProductionEvent
 
     val work = indexedWork().production(List(productionEvent))
 
-    val displayWork =
-      DisplayWork(work, includes = WorksIncludes(WorkInclude.Production))
-    displayWork.production.get shouldBe List(
-      DisplayProductionEvent(productionEvent, includesIdentifiers = false)
+    val displayWork = DisplayWork(work)
+    displayWork.production shouldBe List(
+      DisplayProductionEvent(productionEvent, includesIdentifiers = true)
     )
   }
 
-  it("does not extract includes set to false") {
-    forAll { work: Work.Visible[WorkState.Indexed] =>
-      val displayWork = DisplayWork(work, includes = WorksIncludes.none)
-
-      displayWork.production shouldNot be(defined)
-      displayWork.subjects shouldNot be(defined)
-      displayWork.genres shouldNot be(defined)
-      displayWork.contributors shouldNot be(defined)
-      displayWork.items shouldNot be(defined)
-      displayWork.identifiers shouldNot be(defined)
-    }
-  }
-
-  describe("uses the WorksIncludes.identifiers include") {
+  describe("copies nested identifiers") {
     val contributorAgentSourceIdentifier = createSourceIdentifierWith(
       ontologyType = "Agent"
     )
@@ -329,141 +288,67 @@ class DisplayWorkTest
         (1 to 5).map(_ => createImageData.toIdentified).toList
       )
 
-    describe("omits identifiers if WorksIncludes.identifiers is false") {
-      val displayWork = DisplayWork(work, includes = WorksIncludes.none)
+    val displayWork = DisplayWork(work)
 
-      it("the top-level Work") {
-        displayWork.identifiers shouldBe None
-      }
-
-      it("contributors") {
-        val displayWork =
-          DisplayWork(work, includes = WorksIncludes(WorkInclude.Contributors))
-        val agents: List[DisplayAbstractAgent] =
-          displayWork.contributors.get.map { _.agent }
-        agents.map { _.identifiers } shouldBe List(None, None, None)
-      }
-
-      it("items") {
-        val displayWork =
-          DisplayWork(work, includes = WorksIncludes(WorkInclude.Items))
-        val item: DisplayItem = displayWork.items.get.head
-        item.identifiers shouldBe None
-      }
-
-      it("subjects") {
-        val displayWork =
-          DisplayWork(work, includes = WorksIncludes(WorkInclude.Subjects))
-        val subject = displayWork.subjects.get.head
-        subject.identifiers shouldBe None
-
-        val concepts = subject.concepts
-        concepts.map { _.identifiers } shouldBe List(None, None, None)
-      }
-
-      it("genres") {
-        val displayWork =
-          DisplayWork(work, includes = WorksIncludes(WorkInclude.Genres))
-        displayWork.genres.get.head.concepts.head.identifiers shouldBe None
-      }
+    it("on the top-level Work") {
+      displayWork.identifiers shouldBe List(DisplayIdentifier(work.sourceIdentifier))
     }
 
-    describe("includes identifiers if WorksIncludes.identifiers is true") {
-      val displayWork =
-        DisplayWork(work, includes = WorksIncludes(WorkInclude.Identifiers))
-
-      it("on the top-level Work") {
-        displayWork.identifiers shouldBe Some(
-          List(DisplayIdentifier(work.sourceIdentifier))
-        )
+    it("contributors") {
+      val expectedIdentifiers = List(
+        contributorAgentSourceIdentifier,
+        contributorOrganisationSourceIdentifier,
+        contributorPersonSourceIdentifier
+      ).map { identifier =>
+        Some(List(DisplayIdentifier(identifier)))
       }
 
-      it("contributors") {
-        val displayWork =
-          DisplayWork(
-            work,
-            includes =
-              WorksIncludes(WorkInclude.Contributors, WorkInclude.Identifiers)
-          )
+      val agents = displayWork.contributors.map { _.agent }
+      agents.map { _.identifiers } shouldBe expectedIdentifiers
+    }
 
-        val expectedIdentifiers = List(
-          contributorAgentSourceIdentifier,
-          contributorOrganisationSourceIdentifier,
-          contributorPersonSourceIdentifier
-        ).map { identifier =>
-          Some(List(DisplayIdentifier(identifier)))
-        }
+    it("items") {
+      val item = displayWork.items.head
+      val identifiedItem =
+        work.data.items.head.asInstanceOf[Item[IdState.Identified]]
+      item.identifiers shouldBe Some(
+        List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
+      )
+    }
 
-        val agents: List[DisplayAbstractAgent] =
-          displayWork.contributors.get.map { _.agent }
-        agents.map { _.identifiers } shouldBe expectedIdentifiers
-      }
+    it("subjects") {
+      val expectedIdentifiers = List(
+        conceptSourceIdentifier,
+        periodSourceIdentifier,
+        placeSourceIdentifier
+      ).map { DisplayIdentifier(_) }
+        .map { List(_) }
+        .map { Some(_) }
 
-      it("items") {
-        val displayWork = DisplayWork(
-          work,
-          includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)
-        )
-        val item: DisplayItem = displayWork.items.get.head
-        val identifiedItem =
-          work.data.items.head.asInstanceOf[Item[IdState.Identified]]
-        item.identifiers shouldBe Some(
-          List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
-        )
-      }
+      val subject = displayWork.subjects.head
+      subject.identifiers shouldBe Some(
+        List(DisplayIdentifier(subjectSourceIdentifier))
+      )
 
-      it("subjects") {
-        val displayWork =
-          DisplayWork(
-            work,
-            includes =
-              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Subjects)
-          )
-        val expectedIdentifiers = List(
-          conceptSourceIdentifier,
-          periodSourceIdentifier,
-          placeSourceIdentifier
-        ).map { DisplayIdentifier(_) }
-          .map { List(_) }
-          .map { Some(_) }
+      val concepts = subject.concepts
+      concepts.map { _.identifiers } shouldBe expectedIdentifiers
+    }
 
-        val subject = displayWork.subjects.get.head
-        subject.identifiers shouldBe Some(
-          List(DisplayIdentifier(subjectSourceIdentifier))
-        )
+    it("genres") {
+      displayWork.genres.head.concepts.head.identifiers shouldBe Some(
+        List(DisplayIdentifier(conceptSourceIdentifier))
+      )
+    }
 
-        val concepts = subject.concepts
-        concepts.map { _.identifiers } shouldBe expectedIdentifiers
-      }
+    it("images") {
+      val displayIds = displayWork.images.map(_.id)
+      val expectedIds = work.data.imageData.map(_.id.canonicalId.underlying)
 
-      it("genres") {
-        val displayWork =
-          DisplayWork(
-            work,
-            includes =
-              WorksIncludes(WorkInclude.Identifiers, WorkInclude.Genres)
-          )
-        displayWork.genres.get.head.concepts.head.identifiers shouldBe Some(
-          List(DisplayIdentifier(conceptSourceIdentifier))
-        )
-      }
-
-      it("images") {
-        val displayWork = DisplayWork(
-          work,
-          includes = WorksIncludes(WorkInclude.Images)
-        )
-
-        val displayIds = displayWork.images.get.map(_.id)
-        val expectedIds = work.data.imageData.map(_.id.canonicalId.underlying)
-
-        displayIds should contain theSameElementsAs expectedIds
-      }
+      displayIds should contain theSameElementsAs expectedIds
     }
   }
 
   describe("works in a series") {
-
     it("includes a series in partOf") {
       val work = indexedWork(
         relations = Relations(
@@ -473,10 +358,10 @@ class DisplayWorkTest
           siblingsSucceeding = List()
         )
       )
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
+      val displayWork = DisplayWork(work)
+
       displayWork.partOf.isEmpty shouldBe false
-      val partOf = displayWork.partOf.get
+      val partOf = displayWork.partOf
       partOf.flatMap(_.id) shouldBe List()
       partOf.flatMap(_.title) shouldBe List("Series A")
 
@@ -492,10 +377,10 @@ class DisplayWorkTest
           siblingsSucceeding = List()
         )
       )
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
+      val displayWork = DisplayWork(work)
+
       displayWork.partOf.isEmpty shouldBe false
-      val partOf = displayWork.partOf.get
+      val partOf = displayWork.partOf
       partOf.flatMap(_.title) shouldBe List("Series B", "Series A")
       // series partOfs have no id.
       partOf.flatMap(_.id) shouldBe List()
@@ -525,10 +410,9 @@ class DisplayWorkTest
           siblingsSucceeding = List()
         )
       )
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
-      displayWork.partOf.isEmpty shouldBe false
-      val partOf = displayWork.partOf.get
+      val displayWork = DisplayWork(work)
+
+      val partOf = displayWork.partOf
       partOf.flatMap(_.id) shouldBe List(workB.id)
       partOf.flatMap(_.title) shouldBe List(
         workB.data.title.get,
@@ -569,10 +453,9 @@ class DisplayWorkTest
     )
 
     it("includes nested partOf") {
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.PartOf))
-      displayWork.partOf.isEmpty shouldBe false
-      val partOf = displayWork.partOf.get
+      val displayWork = DisplayWork(work)
+
+      val partOf = displayWork.partOf
       partOf.flatMap(_.id) shouldBe List(workB.state.canonicalId.underlying)
       partOf.head.partOf shouldBe Some(
         List(
@@ -582,38 +465,24 @@ class DisplayWorkTest
     }
 
     it("includes parts") {
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.Parts))
-      displayWork.parts shouldBe Some(
-        List(
-          DisplayRelation(relationE),
-          DisplayRelation(relationF)
-        )
+      val displayWork = DisplayWork(work)
+
+      displayWork.parts shouldBe List(
+        DisplayRelation(relationE),
+        DisplayRelation(relationF)
       )
     }
 
     it("includes precededBy") {
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.PrecededBy))
-      displayWork.precededBy shouldBe Some(
-        List(DisplayRelation(relationC))
-      )
+      val displayWork = DisplayWork(work)
+
+      displayWork.precededBy shouldBe List(DisplayRelation(relationC))
     }
 
     it("includes succeededBy") {
-      val displayWork =
-        DisplayWork(work, WorksIncludes(WorkInclude.SucceededBy))
-      displayWork.succeededBy shouldBe Some(
-        List(DisplayRelation(relationD))
-      )
-    }
+      val displayWork = DisplayWork(work)
 
-    it("does not include relations when not requested") {
-      val displayWork = DisplayWork(work, WorksIncludes())
-      displayWork.parts shouldBe None
-      displayWork.partOf shouldBe None
-      displayWork.precededBy shouldBe None
-      displayWork.succeededBy shouldBe None
+      displayWork.succeededBy shouldBe List(DisplayRelation(relationD))
     }
   }
 }
