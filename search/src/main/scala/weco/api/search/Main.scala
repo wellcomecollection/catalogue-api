@@ -14,7 +14,6 @@ import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
-import weco.monitoring.typesafe.CloudWatchBuilder
 
 import scala.concurrent.ExecutionContext
 
