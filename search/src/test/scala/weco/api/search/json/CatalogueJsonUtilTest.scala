@@ -144,6 +144,55 @@ class CatalogueJsonUtilTest
 
       json shouldBe equivalentTo(expectedJson)
     }
+
+    it("includes items without identifiers") {
+      val location = createDigitalLocation
+      val item = createIdentifiedItemWith(locations = List(location))
+      val w = indexedWork().items(List(item))
+      val includes = WorksIncludes(WorkInclude.Items)
+
+      val json = w.asJson(includes)
+
+      val expectedJson =
+        s"""
+           |{
+           |  "id" : "${w.id}",
+           |  "title" : "${w.data.title.get}",
+           |  "items": [
+           |    {
+           |      "id": "${item.id.canonicalId}",
+           |      "locations" : [
+           |        {
+           |          "locationType" : {
+           |            "id" : "${item.locations.head.locationType.id}",
+           |            "label" : "${item.locations.head.locationType.label}",
+           |            "type" : "LocationType"
+           |          },
+           |          "url" : "${location.url}",
+           |          ${location.credit.map(c => s""""credit": "$c",""").getOrElse("")}
+           |          ${location.linkText.map(c => s""""linkText": "$c",""").getOrElse("")}
+           |          "license" : {
+           |            "id" : "${location.license.get.id}",
+           |            "label" : "${location.license.get.label}",
+           |            "url" : "${location.license.get.url}",
+           |            "type" : "License"
+           |          },
+           |          "accessConditions" : [
+           |          ],
+           |          "type" : "DigitalLocation"
+           |        }
+           |      ],
+           |      "type": "Item"
+           |    }
+           |  ],
+           |  "alternativeTitles" : [],
+           |  "availabilities" : [],
+           |  "type" : "Work"
+           |}
+           |""".stripMargin
+
+      json shouldBe equivalentTo(expectedJson)
+    }
   }
 
   class JsonMatcher(right: String) extends BeMatcher[Json] {

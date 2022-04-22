@@ -136,6 +136,34 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
 
       json.removeKeyRecursively("saturation") shouldBe expectedJson
     }
+
+    it("removes keys nested in arrays") {
+      val json = parseObject(
+        """
+          |{
+          |  "name": "hexagon",
+          |  "colours": [
+          |    { "hue": 22, "saturation": 100, "lightness": 1 },
+          |    { "hue": 92, "saturation": 100, "lightness": 1 },
+          |    { "hue": 162, "saturation": 100, "lightness": 1 }
+          |  ]
+          |}"""
+      )
+
+      val expectedJson = parseObject(
+        """
+          |{
+          |  "name": "hexagon",
+          |  "colours": [
+          |    { "hue": 22, "lightness": 1 },
+          |    { "hue": 92, "lightness": 1 },
+          |    { "hue": 162, "lightness": 1 }
+          |  ]
+          |}"""
+      )
+
+      json.removeKeyRecursively("saturation") shouldBe expectedJson
+    }
   }
 
   def parseJson(s: String): Json =

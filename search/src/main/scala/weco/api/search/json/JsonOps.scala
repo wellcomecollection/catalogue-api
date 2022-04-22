@@ -36,6 +36,9 @@ object JsonOps {
     def removeKeyRecursively(key: String): Json =
       j
         .removeKey(key)
+        .mapArray(jsonArr =>
+          jsonArr.map(v => v.removeKeyRecursively(key))
+        )
         .mapObject(jsonObj =>
           jsonObj.mapValues(
             v => v.removeKeyRecursively(key)

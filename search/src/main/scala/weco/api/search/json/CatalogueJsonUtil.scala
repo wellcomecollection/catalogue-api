@@ -13,13 +13,37 @@ import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 
 trait CatalogueJsonUtil {
+  import JsonOps._
+
   implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
     def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w, includes).asJson
+      DisplayWork(w, includes = WorksIncludes.all).asJson
+        .removeKeyRecursivelyIf(includes.identifiers, "identifiers")
+        .removeKeyIf(includes.items, "items")
+        .removeKeyIf(includes.holdings, "holdings")
+        .removeKeyIf(includes.subjects, "subjects")
+        .removeKeyIf(includes.genres, "genres")
+        .removeKeyIf(includes.contributors, "contributors")
+        .removeKeyIf(includes.production, "production")
+        .removeKeyIf(includes.languages, "languages")
+        .removeKeyIf(includes.notes, "notes")
+        .removeKeyIf(includes.images, "images")
+        .removeKeyIf(includes.parts, "parts")
+        .removeKeyIf(includes.partOf, "partOf")
+        .removeKeyIf(includes.precededBy, "precededBy")
+        .removeKeyIf(includes.succeededBy, "succeededBy")
   }
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {
     def asJson(includes: MultipleImagesIncludes): Json =
       DisplayImage(im, includes).asJson
+  }
+
+  implicit class ImplicitCatalogueJsonOps(j: Json) {
+    def removeKeyRecursivelyIf(b: Boolean, key: String): Json =
+      if (!b) j.removeKeyRecursively(key) else j
+
+    def removeKeyIf(b: Boolean, key: String): Json =
+      if (!b) j.removeKey(key) else j
   }
 }
