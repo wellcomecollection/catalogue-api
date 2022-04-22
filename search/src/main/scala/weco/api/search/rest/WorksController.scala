@@ -4,10 +4,10 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
+import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
 import weco.api.search.services.WorksService
-import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.catalogue.display_model.models.WorksIncludes
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -20,6 +20,7 @@ class WorksController(
   worksIndex: Index
 )(implicit val ec: ExecutionContext)
     extends Tracing
+    with CatalogueJsonUtil
     with SingleWorkDirectives {
 
   def multipleWorks(params: MultipleWorksParams): Route =
@@ -70,9 +71,7 @@ class WorksController(
             .findById(id)(index)
             .mapVisible(
               (work: Work.Visible[Indexed]) =>
-                Future.successful(
-                  complete(DisplayWork(work, includes))
-                ),
+                Future.successful(complete(work.asJson(includes))),
               usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
             )
         }
