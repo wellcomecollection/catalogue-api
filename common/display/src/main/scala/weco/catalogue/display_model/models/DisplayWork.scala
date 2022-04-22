@@ -63,9 +63,7 @@ object DisplayWork {
       availabilities = work.state.availabilities.toList.map {
         DisplayAvailability(_)
       },
-      production = work.data.production.map {
-        DisplayProductionEvent(_, includesIdentifiers = true)
-      },
+      production = work.data.production.map { DisplayProductionEvent(_) },
       languages = work.data.languages.map { DisplayLanguage(_) },
       edition = work.data.edition,
       notes = DisplayNote.merge(work.data.notes.map(DisplayNote(_))),

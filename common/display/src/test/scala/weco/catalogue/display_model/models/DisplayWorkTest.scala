@@ -173,7 +173,7 @@ class DisplayWorkTest
 
     val displayWork = DisplayWork(work)
     displayWork.production shouldBe List(
-      DisplayProductionEvent(productionEvent, includesIdentifiers = true)
+      DisplayProductionEvent(productionEvent)
     )
   }
 

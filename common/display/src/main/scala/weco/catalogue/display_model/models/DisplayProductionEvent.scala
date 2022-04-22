@@ -14,15 +14,12 @@ case class DisplayProductionEvent(
 )
 
 object DisplayProductionEvent {
-  def apply(
-    productionEvent: ProductionEvent[IdState.Minted],
-    includesIdentifiers: Boolean
-  ): DisplayProductionEvent =
+  def apply(productionEvent: ProductionEvent[IdState.Minted]): DisplayProductionEvent =
     DisplayProductionEvent(
       label = productionEvent.label,
       places = productionEvent.places.map { DisplayPlace(_) },
       agents = productionEvent.agents.map {
-        DisplayAbstractAgent(_, includesIdentifiers = includesIdentifiers)
+        DisplayAbstractAgent(_, includesIdentifiers = true)
       },
       dates = productionEvent.dates.map { DisplayPeriod(_) },
       function = productionEvent.function.map { concept =>
