@@ -71,8 +71,10 @@ object DisplayWork {
       images = work.data.imageData.map(DisplayWorkImageInclude(_)),
       partOf = DisplayPartOf(work.state.relations.ancestors),
       parts = work.state.relations.children.map(DisplayRelation(_)),
-      precededBy = work.state.relations.siblingsPreceding.map(DisplayRelation(_)),
-      succeededBy = work.state.relations.siblingsSucceeding.map(DisplayRelation(_)),
+      precededBy =
+        work.state.relations.siblingsPreceding.map(DisplayRelation(_)),
+      succeededBy =
+        work.state.relations.siblingsSucceeding.map(DisplayRelation(_)),
       ontologyType = displayWorkType(work.data.workType)
     )
 

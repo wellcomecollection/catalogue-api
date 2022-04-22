@@ -66,7 +66,9 @@ class DisplayWorkTest
 
     val displayWork = DisplayWork(work)
 
-    displayWork.identifiers shouldBe List(DisplayIdentifier(work.sourceIdentifier))
+    displayWork.identifiers shouldBe List(
+      DisplayIdentifier(work.sourceIdentifier)
+    )
   }
 
   it("gets the physicalDescription from a Work") {
@@ -291,7 +293,9 @@ class DisplayWorkTest
     val displayWork = DisplayWork(work)
 
     it("on the top-level Work") {
-      displayWork.identifiers shouldBe List(DisplayIdentifier(work.sourceIdentifier))
+      displayWork.identifiers shouldBe List(
+        DisplayIdentifier(work.sourceIdentifier)
+      )
     }
 
     it("contributors") {
@@ -311,7 +315,9 @@ class DisplayWorkTest
       val item = displayWork.items.head
       val identifiedItem =
         work.data.items.head.asInstanceOf[Item[IdState.Identified]]
-      item.identifiers shouldBe List(DisplayIdentifier(identifiedItem.id.sourceIdentifier))
+      item.identifiers shouldBe List(
+        DisplayIdentifier(identifiedItem.id.sourceIdentifier)
+      )
     }
 
     it("subjects") {

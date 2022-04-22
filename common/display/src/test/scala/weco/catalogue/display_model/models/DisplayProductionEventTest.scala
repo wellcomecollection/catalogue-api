@@ -43,7 +43,7 @@ class DisplayProductionEventTest
     )
 
     val displayProductionEvent = DisplayProductionEvent(productionEvent)
-    
+
     displayProductionEvent.function shouldBe None
   }
 }

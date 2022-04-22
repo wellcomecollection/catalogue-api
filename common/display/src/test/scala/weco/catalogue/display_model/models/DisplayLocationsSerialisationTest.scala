@@ -55,6 +55,12 @@ class DisplayLocationsSerialisationTest
     assertLocationMapsToJson(location, digitalLocation(location))
   }
 
-  private def assertLocationMapsToJson(location: Location, expectedJson: String): Assertion =
-    assertObjectMapsToJson(DisplayLocation(location), expectedJson = expectedJson)
+  private def assertLocationMapsToJson(
+    location: Location,
+    expectedJson: String
+  ): Assertion =
+    assertObjectMapsToJson(
+      DisplayLocation(location),
+      expectedJson = expectedJson
+    )
 }

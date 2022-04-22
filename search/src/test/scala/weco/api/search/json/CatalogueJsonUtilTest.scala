@@ -6,17 +6,46 @@ import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.{BeMatcher, MatchResult}
-import weco.catalogue.display_model.models.{DisplaySerialisationTestBase, WorkInclude, WorksIncludes}
+import weco.catalogue.display_model.models.{
+  DisplaySerialisationTestBase,
+  WorkInclude,
+  WorksIncludes
+}
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
-import weco.catalogue.internal_model.work.{Agent, Concept, Contributor, Format, Genre, InstantRange, Note, NoteType, Period}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  ProductionEventGenerators,
+  SubjectGenerators,
+  WorkGenerators
+}
+import weco.catalogue.internal_model.work.{
+  Agent,
+  Concept,
+  Contributor,
+  Format,
+  Genre,
+  InstantRange,
+  Note,
+  NoteType,
+  Period
+}
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
   WorkGenerators
 }
 import java.time.Instant
 
-class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues with CatalogueJsonUtil with WorkGenerators with ItemsGenerators with SubjectGenerators with ProductionEventGenerators with DisplaySerialisationTestBase with ImageGenerators {
+class CatalogueJsonUtilTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with CatalogueJsonUtil
+    with WorkGenerators
+    with ItemsGenerators
+    with SubjectGenerators
+    with ProductionEventGenerators
+    with DisplaySerialisationTestBase
+    with ImageGenerators {
   describe("WorkOps") {
     it("serialises a work as JSON") {
       val w = indexedWork()
@@ -146,8 +175,12 @@ class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues w
              |            "type" : "LocationType"
              |          },
              |          "url" : "${location.url}",
-             |          ${location.credit.map(c => s""""credit": "$c",""").getOrElse("")}
-             |          ${location.linkText.map(c => s""""linkText": "$c",""").getOrElse("")}
+             |          ${location.credit
+               .map(c => s""""credit": "$c",""")
+               .getOrElse("")}
+             |          ${location.linkText
+               .map(c => s""""linkText": "$c",""")
+               .getOrElse("")}
              |          "license" : {
              |            "id" : "${location.license.get.id}",
              |            "label" : "${location.license.get.label}",
@@ -191,8 +224,12 @@ class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues w
              |            "type" : "LocationType"
              |          },
              |          "url" : "${location.url}",
-             |          ${location.credit.map(c => s""""credit": "$c",""").getOrElse("")}
-             |          ${location.linkText.map(c => s""""linkText": "$c",""").getOrElse("")}
+             |          ${location.credit
+               .map(c => s""""credit": "$c",""")
+               .getOrElse("")}
+             |          ${location.linkText
+               .map(c => s""""linkText": "$c",""")
+               .getOrElse("")}
              |          "license" : {
              |            "id" : "${location.license.get.id}",
              |            "label" : "${location.license.get.label}",
@@ -242,8 +279,12 @@ class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues w
              |            "type" : "LocationType"
              |          },
              |          "url" : "${location.url}",
-             |          ${location.credit.map(c => s""""credit": "$c",""").getOrElse("")}
-             |          ${location.linkText.map(c => s""""linkText": "$c",""").getOrElse("")}
+             |          ${location.credit
+               .map(c => s""""credit": "$c",""")
+               .getOrElse("")}
+             |          ${location.linkText
+               .map(c => s""""linkText": "$c",""")
+               .getOrElse("")}
              |          "license" : {
              |            "id" : "${location.license.get.id}",
              |            "label" : "${location.license.get.label}",

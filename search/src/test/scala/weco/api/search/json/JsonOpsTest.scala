@@ -11,16 +11,14 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
 
   describe("removeKey") {
     it("removes a key if the JSON is an object and the key is present") {
-      val json = parseObject(
-        """
+      val json = parseObject("""
           |{
           |  "name": "square",
           |  "colour": "red"
           |}
           |""")
 
-      val expectedJson = parseObject(
-        """
+      val expectedJson = parseObject("""
           |{
           |  "name": "square"
           |}
@@ -29,9 +27,10 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
       json.removeKey("colour") shouldBe expectedJson
     }
 
-    it("leaves the JSON as-is if the JSON is an object and the key is not present") {
-      val json = parseObject(
-        """
+    it(
+      "leaves the JSON as-is if the JSON is an object and the key is not present"
+    ) {
+      val json = parseObject("""
           |{
           |  "name": "square",
           |  "colour": "red"
@@ -42,8 +41,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
     }
 
     it("leaves the JSON as-is if the JSON is not an object") {
-      val json = parseJson(
-        """
+      val json = parseJson("""
           |"blue triangle"
           |""")
 
@@ -51,8 +49,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
     }
 
     it("does not remove keys nested below the top level") {
-      val json = parseObject(
-        """
+      val json = parseObject("""
           |{
           |  "name": "hexagon",
           |  "colour": {
@@ -69,16 +66,14 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
 
   describe("removeKeyRecursively") {
     it("removes a key if the JSON is an object and the key is present") {
-      val json = parseObject(
-        """
+      val json = parseObject("""
           |{
           |  "name": "square",
           |  "colour": "red"
           |}
           |""")
 
-      val expectedJson = parseObject(
-        """
+      val expectedJson = parseObject("""
           |{
           |  "name": "square"
           |}
@@ -87,9 +82,10 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
       json.removeKeyRecursively("colour") shouldBe expectedJson
     }
 
-    it("leaves the JSON as-is if the JSON is an object and the key is not present") {
-      val json = parseObject(
-        """
+    it(
+      "leaves the JSON as-is if the JSON is an object and the key is not present"
+    ) {
+      val json = parseObject("""
           |{
           |  "name": "square",
           |  "colour": "red"
@@ -100,8 +96,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
     }
 
     it("leaves the JSON as-is if the JSON is not an object") {
-      val json = parseJson(
-        """
+      val json = parseJson("""
           |"blue triangle"
           |""")
 
@@ -109,8 +104,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
     }
 
     it("removes keys nested below the top level") {
-      val json = parseObject(
-        """
+      val json = parseObject("""
           |{
           |  "name": "hexagon",
           |  "colour": {
@@ -122,8 +116,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with EitherValues {
           |}
           |""")
 
-      val expectedJson = parseObject(
-        """
+      val expectedJson = parseObject("""
           {
           |  "name": "hexagon",
           |  "colour": {
