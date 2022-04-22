@@ -7,9 +7,18 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import weco.catalogue.display_model.models.{WorkInclude, WorksIncludes}
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 
-class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues with CatalogueJsonUtil with WorkGenerators with ItemsGenerators {
+class CatalogueJsonUtilTest
+    extends AnyFunSpec
+    with Matchers
+    with EitherValues
+    with CatalogueJsonUtil
+    with WorkGenerators
+    with ItemsGenerators {
   describe("WorkOps") {
     it("serialises a work as JSON") {
       val w = indexedWork()
@@ -107,8 +116,12 @@ class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues w
            |            "type" : "LocationType"
            |          },
            |          "url" : "${location.url}",
-           |          ${location.credit.map(c => s""""credit": "$c",""").getOrElse("")}
-           |          ${location.linkText.map(c => s""""linkText": "$c",""").getOrElse("")}
+           |          ${location.credit
+             .map(c => s""""credit": "$c",""")
+             .getOrElse("")}
+           |          ${location.linkText
+             .map(c => s""""linkText": "$c",""")
+             .getOrElse("")}
            |          "license" : {
            |            "id" : "${location.license.get.id}",
            |            "label" : "${location.license.get.label}",
@@ -138,7 +151,7 @@ class CatalogueJsonUtilTest extends AnyFunSpec with Matchers with EitherValues w
       MatchResult(
         left.deepDropNullValues == parseObject(right).deepDropNullValues,
         s"$left is not equivalent to $right",
-        s"$left is equivalent to $right",
+        s"$left is equivalent to $right"
       )
   }
 
