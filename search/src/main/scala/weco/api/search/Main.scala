@@ -11,6 +11,7 @@ import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
+import weco.monitoring.memory.MemoryMetrics
 import weco.monitoring.typesafe.CloudWatchBuilder
 
 import scala.concurrent.ExecutionContext
@@ -44,12 +45,11 @@ object Main extends WellcomeTypesafeApp {
     )
 
     val appName = "SearchApi"
-
     new WellcomeHttpApp(
       routes = router.routes,
       httpMetrics = new HttpMetrics(
         name = appName,
-        metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
+        metrics = if(true) new MemoryMetrics else CloudWatchBuilder.buildCloudWatchMetrics(config)
       ),
       httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
       appName = appName

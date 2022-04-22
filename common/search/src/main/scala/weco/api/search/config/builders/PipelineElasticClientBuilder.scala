@@ -6,7 +6,50 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.elasticsearch.ElasticClientBuilder
 
+import scala.util.Try
+
+/**
+ * Build an ElasticClient that will connect to the appropriate database
+ * as specified for this environment.
+ *
+ * The settings may come either from environment variables
+ * (if API_ELASTIC_SETTINGS_FROM_ENVIRONMENT is true)
+ * or from the AWS Secrets Manager
+ */
 object PipelineElasticClientBuilder {
+  def apply(serviceName: String): ElasticClient = {
+    sys.env.get("API_ELASTIC_SETTINGS_FROM_ENVIRONMENT") match {
+      case Some(value) if Try(value.toBoolean).getOrElse(false) => EnvElasticClientBuilder(serviceName)
+      case _ => SecretsElasticClientBuilder (serviceName)
+    }
+  }
+}
+
+/**
+ * Build an ElasticClient from Environment Variables
+ * Use this to run the API without accessing the AWS Secrets Manager.
+ * For example, to run against a non-pipeline database such as a local copy.
+ */
+object EnvElasticClientBuilder {
+  def apply(serviceName: String): ElasticClient = {
+    val hostname = sys.env("API_ELASTIC_HOST")
+    val port = sys.env("API_ELASTIC_PORT").toInt
+    val protocol = sys.env("API_ELASTIC_PROTOCOL")
+    val username = sys.env("API_ELASTIC_USERNAME")
+    val password = sys.env("API_ELASTIC_PASSWORD")
+
+    ElasticClientBuilder.create(
+      hostname = hostname,
+      port = port,
+      protocol = protocol,
+      username = username,
+      password = password
+    )
+  }
+}
+
+
+object SecretsElasticClientBuilder {
 
   // We create a new pipeline cluster for every pipeline, and we want the
   // services to read from that cluster.
@@ -14,7 +57,7 @@ object PipelineElasticClientBuilder {
   // We don't want to require a Terraform plan/apply to pick up the change --
   // ElasticConfig is the single source of truth for the API index -- so instead
   // we let the services decide which set of secrets to read, which in turn sets
-  // which cluster they readd from.
+  // which cluster they read from.
 
   def apply(serviceName: String): ElasticClient = {
     implicit val secretsClient: SecretsManagerClient =
