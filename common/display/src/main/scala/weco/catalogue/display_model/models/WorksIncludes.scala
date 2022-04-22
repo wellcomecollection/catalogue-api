@@ -34,9 +34,7 @@ case class WorksIncludes(
   partOf: Boolean,
   precededBy: Boolean,
   succeededBy: Boolean
-) {
-  def anyRelation: Boolean = parts || partOf || precededBy || succeededBy
-}
+)
 
 case object WorksIncludes {
   def apply(includes: WorkInclude*): WorksIncludes =
