@@ -21,7 +21,6 @@ class WorksController(
 )(implicit val ec: ExecutionContext)
     extends Tracing
     with SingleWorkDirectives {
-  import DisplayResultList.encoder
 
   def multipleWorks(params: MultipleWorksParams): Route =
     get {

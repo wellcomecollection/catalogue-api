@@ -26,8 +26,6 @@ class ImagesController(
     extends CustomDirectives
     with Tracing {
 
-  import DisplayResultList.encoder
-
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
     get {
       withFuture {
