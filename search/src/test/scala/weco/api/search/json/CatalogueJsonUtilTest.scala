@@ -638,7 +638,7 @@ class CatalogueJsonUtilTest
   class JsonMatcher(right: String) extends BeMatcher[Json] {
     def apply(left: Json): MatchResult =
       MatchResult(
-        left.deepDropNullValues == parseObject(right).deepDropNullValues,
+        left == parseObject(right),
         s"$left is not equivalent to $right",
         s"$left is equivalent to $right"
       )

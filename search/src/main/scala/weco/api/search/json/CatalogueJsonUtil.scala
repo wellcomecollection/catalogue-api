@@ -32,6 +32,7 @@ trait CatalogueJsonUtil {
         .removeKeyIf(includes.partOf, "partOf")
         .removeKeyIf(includes.precededBy, "precededBy")
         .removeKeyIf(includes.succeededBy, "succeededBy")
+        .deepDropNullValues
   }
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {
