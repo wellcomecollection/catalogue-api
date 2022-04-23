@@ -6,7 +6,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.items.models.CatalogueWork
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.models.{
   DisplayAccessCondition,
   DisplayItem,

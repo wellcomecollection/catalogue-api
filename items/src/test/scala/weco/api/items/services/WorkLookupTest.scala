@@ -14,7 +14,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.items.models.CatalogueWork
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
   AccessMethod,

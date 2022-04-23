@@ -2,9 +2,10 @@ package weco.api.items.responses
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Route
-import weco.api.items.models.{CatalogueWork, DisplayItemsList}
+import weco.api.items.models.DisplayItemsList
 import weco.api.items.services._
 import weco.api.search.rest.SingleWorkDirectives
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.Future

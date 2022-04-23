@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
-import weco.api.items.models.CatalogueWork
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling

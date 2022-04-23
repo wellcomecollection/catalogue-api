@@ -1,4 +1,4 @@
-package weco.api.items.models
+package weco.api.stacks.models
 
 import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
 import weco.catalogue.internal_model.work.{Work, WorkState}
