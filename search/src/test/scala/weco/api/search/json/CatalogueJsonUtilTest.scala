@@ -5,7 +5,6 @@ import io.circe.parser.parse
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.matchers.{BeMatcher, MatchResult}
 import weco.catalogue.display_model.models.{
   DisplaySerialisationTestBase,
   WorkInclude,
@@ -18,21 +17,7 @@ import weco.catalogue.internal_model.work.generators.{
   SubjectGenerators,
   WorkGenerators
 }
-import weco.catalogue.internal_model.work.{
-  Agent,
-  Concept,
-  Contributor,
-  Format,
-  Genre,
-  InstantRange,
-  Note,
-  NoteType,
-  Period
-}
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work._
 import java.time.Instant
 
 class CatalogueJsonUtilTest
@@ -78,7 +63,7 @@ class CatalogueJsonUtilTest
            |}
            |""".stripMargin
 
-      json shouldBe equivalentTo(expectedJson)
+      json shouldBe parseObject(expectedJson)
     }
 
     describe("identifiers") {
@@ -112,7 +97,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits identifiers without WorkInclude.Identifiers") {
@@ -130,7 +115,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("includes identifiers on nested objects with WorkInclude.Identifiers") {
@@ -201,7 +186,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits identifiers on nested objects without WorkInclude.Identifiers") {
@@ -250,7 +235,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -305,7 +290,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits items without WorkInclude.Items") {
@@ -323,7 +308,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("includes an empty list of items with WorkInclude.Items") {
@@ -344,7 +329,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -369,7 +354,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits subjects without WorkInclude.Subjects") {
@@ -387,7 +372,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -410,7 +395,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits production with WorkInclude.Production") {
@@ -428,7 +413,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -455,7 +440,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits contributors with WorkInclude.Contributors") {
@@ -473,7 +458,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -503,7 +488,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits genres with WorkInclude.Genre") {
@@ -521,7 +506,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -569,7 +554,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits notes with WorkInclude.Notes") {
@@ -587,7 +572,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
 
@@ -612,7 +597,7 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
 
       it("omits images with WorkInclude.Images") {
@@ -630,22 +615,10 @@ class CatalogueJsonUtilTest
              |}
              |""".stripMargin
 
-        json shouldBe equivalentTo(expectedJson)
+        json shouldBe parseObject(expectedJson)
       }
     }
   }
-
-  class JsonMatcher(right: String) extends BeMatcher[Json] {
-    def apply(left: Json): MatchResult =
-      MatchResult(
-        left == parseObject(right),
-        s"$left is not equivalent to $right",
-        s"$left is equivalent to $right"
-      )
-  }
-
-  def equivalentTo(right: String) =
-    new JsonMatcher(right)
 
   def parseJson(s: String): Json =
     parse(s.stripMargin).right.value
