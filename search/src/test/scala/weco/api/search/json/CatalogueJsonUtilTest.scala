@@ -620,11 +620,8 @@ class CatalogueJsonUtilTest
     }
   }
 
-  def parseJson(s: String): Json =
-    parse(s.stripMargin).right.value
-
   def parseObject(s: String): Json = {
-    val j = parseJson(s)
+    val j = parse(s.stripMargin).right.value
     j.isObject shouldBe true
     j
   }
