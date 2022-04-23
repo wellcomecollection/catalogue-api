@@ -9,7 +9,7 @@ case class CatalogueWork(
   id: String,
   title: Option[String],
   identifiers: List[DisplayIdentifier],
-  items: List[DisplayItem],
+  items: List[DisplayItem]
 )
 
 object CatalogueWork {
@@ -18,6 +18,6 @@ object CatalogueWork {
       id = work.state.canonicalId.underlying,
       title = work.data.title,
       identifiers = work.identifiers.map { DisplayIdentifier(_) },
-      items = work.data.items.map { DisplayItem(_) },
+      items = work.data.items.map { DisplayItem(_) }
     )
 }
