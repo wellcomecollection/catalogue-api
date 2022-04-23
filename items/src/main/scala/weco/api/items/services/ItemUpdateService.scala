@@ -1,10 +1,7 @@
 package weco.api.items.services
 
-import weco.catalogue.display_model.models.{
-  DisplayIdentifier,
-  DisplayItem,
-  DisplayWork
-}
+import weco.api.items.models.CatalogueWork
+import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -23,7 +20,7 @@ class ItemUpdateService(
     .toMap
 
   def getSrcId(item: DisplayItem): Option[DisplayIdentifier] =
-    item.identifiers.flatMap(_.headOption)
+    item.identifiers.headOption
 
   /** Updates a tuple of Item and index preserving the original index
     *
@@ -68,9 +65,9 @@ class ItemUpdateService(
     *  @return a sequence of updated items
     */
   def updateItems(
-    work: DisplayWork
+    work: CatalogueWork
   ): Future[Seq[DisplayItem]] = {
-    val items = work.items.getOrElse(List())
+    val items = work.items
 
     val groupedItems = items.zipWithIndex.groupBy {
       case (item, _) => getSrcId(item).map(_.identifierType.id)

@@ -6,11 +6,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
+import weco.api.items.models.CatalogueWork
 import weco.catalogue.display_model.models.{
   DisplayAccessCondition,
   DisplayItem,
-  DisplayPhysicalLocation,
-  DisplayWork
+  DisplayPhysicalLocation
 }
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
@@ -167,10 +167,10 @@ class ItemUpdateServiceTest
 
     val reversedItems = orderedItems.reverse
 
-    val workWithItemsForward = DisplayWork(
+    val workWithItemsForward = CatalogueWork(
       indexedWork().items(orderedItems)
     )
-    val workWithItemsBackward = DisplayWork(
+    val workWithItemsBackward = CatalogueWork(
       indexedWork().items(reversedItems)
     )
 
@@ -198,7 +198,7 @@ class ItemUpdateServiceTest
       createDigitalItem
     )
 
-    val workWithItems = DisplayWork(indexedWork().items(startingItems))
+    val workWithItems = CatalogueWork(indexedWork().items(startingItems))
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItems).failed) {
@@ -263,7 +263,7 @@ class ItemUpdateServiceTest
         (sierraResponses, catalogueWork, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work = DisplayWork(catalogueWork)
+              val work = CatalogueWork(catalogueWork)
 
               whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
                 updatedItems.length shouldBe 2

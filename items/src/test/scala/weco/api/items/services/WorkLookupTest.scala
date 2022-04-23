@@ -14,11 +14,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.catalogue.display_model.models.{
-  DisplayWork,
-  WorkInclude,
-  WorksIncludes
-}
+import weco.api.items.models.CatalogueWork
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
   AccessMethod,
@@ -159,12 +155,7 @@ class WorkLookupTest
     }
 
     whenReady(future) {
-      _ shouldBe Right(
-        DisplayWork(
-          work,
-          includes = WorksIncludes(WorkInclude.Identifiers, WorkInclude.Items)
-        )
-      )
+      _ shouldBe Right(CatalogueWork(work))
     }
   }
 
