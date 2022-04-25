@@ -5,11 +5,11 @@ import cats.implicits._
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
 import weco.catalogue.display_model.models.Implicits._
 import weco.catalogue.display_model.models.{
-  DisplayImage,
   MultipleImagesIncludes,
   SingleImageIncludes
 }
@@ -24,6 +24,7 @@ class ImagesController(
   queryConfig: QueryConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
+    with CatalogueJsonUtil
     with Tracing {
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
@@ -46,8 +47,7 @@ class ImagesController(
                   .map(_.toMap)
                   .map { similarImages =>
                     complete(
-                      DisplayImage(
-                        image = image,
+                      image.asJson(
                         includes =
                           params.include.getOrElse(SingleImageIncludes.none),
                         visuallySimilar =

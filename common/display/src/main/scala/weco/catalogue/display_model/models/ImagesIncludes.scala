@@ -42,6 +42,16 @@ object SingleImageIncludes {
       `source.genres` = includes.contains(SourceGenres)
     )
 
+  def all: SingleImageIncludes =
+    SingleImageIncludes(
+      visuallySimilar = true,
+      withSimilarFeatures = true,
+      withSimilarColors = true,
+      `source.contributors` = true,
+      `source.languages` = true,
+      `source.genres` = true
+    )
+
   def none: SingleImageIncludes = SingleImageIncludes()
 }
 
@@ -63,6 +73,13 @@ object MultipleImagesIncludes {
       `source.contributors` = includes.contains(SourceContributors),
       `source.languages` = includes.contains(SourceLanguages),
       `source.genres` = includes.contains(SourceGenres)
+    )
+
+  def all: MultipleImagesIncludes =
+    MultipleImagesIncludes(
+      `source.contributors` = true,
+      `source.languages` = true,
+      `source.genres` = true
     )
 
   def none: MultipleImagesIncludes = MultipleImagesIncludes()
