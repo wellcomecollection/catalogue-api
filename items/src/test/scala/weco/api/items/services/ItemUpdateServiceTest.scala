@@ -6,12 +6,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.models.{
   DisplayAccessCondition,
   DisplayItem,
-  DisplayPhysicalLocation,
-  DisplayWork,
-  WorksIncludes
+  DisplayPhysicalLocation
 }
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
@@ -168,26 +167,20 @@ class ItemUpdateServiceTest
 
     val reversedItems = orderedItems.reverse
 
-    val workWithItemsForward = DisplayWork(
-      indexedWork().items(orderedItems),
-      includes = WorksIncludes.all
+    val workWithItemsForward = CatalogueWork(
+      indexedWork().items(orderedItems)
     )
-    val workWithItemsBackward = DisplayWork(
-      indexedWork().items(reversedItems),
-      includes = WorksIncludes.all
+    val workWithItemsBackward = CatalogueWork(
+      indexedWork().items(reversedItems)
     )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe orderedItems.map(it => DisplayItem(it))
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe reversedItems.map(it => DisplayItem(it))
       }
     }
   }
@@ -205,10 +198,7 @@ class ItemUpdateServiceTest
       createDigitalItem
     )
 
-    val workWithItems = DisplayWork(
-      indexedWork().items(startingItems),
-      includes = WorksIncludes.all
-    )
+    val workWithItems = CatalogueWork(indexedWork().items(startingItems))
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItems).failed) {
@@ -273,8 +263,7 @@ class ItemUpdateServiceTest
         (sierraResponses, catalogueWork, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work =
-                DisplayWork(catalogueWork, includes = WorksIncludes.all)
+              val work = CatalogueWork(catalogueWork)
 
               whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
                 updatedItems.length shouldBe 2
@@ -290,10 +279,7 @@ class ItemUpdateServiceTest
                   expectedAccessCondition
                 )
 
-                digitalItem shouldBe DisplayItem(
-                  dummyDigitalItem,
-                  includesIdentifiers = true
-                )
+                digitalItem shouldBe DisplayItem(dummyDigitalItem)
               }
             }
           }

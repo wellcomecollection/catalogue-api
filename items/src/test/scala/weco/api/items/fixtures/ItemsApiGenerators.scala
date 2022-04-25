@@ -1,7 +1,7 @@
 package weco.api.items.fixtures
 
 import akka.http.scaladsl.model._
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.catalogue.display_model.models.DisplayWork
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
@@ -92,7 +92,7 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
-        DisplayJsonUtil.toJson(DisplayWork(work, includes = WorksIncludes.all))
+        DisplayJsonUtil.toJson(DisplayWork(work))
       )
     )
 

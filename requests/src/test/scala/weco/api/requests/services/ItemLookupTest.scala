@@ -149,14 +149,14 @@ class ItemLookupTest
             RequestedItemWithWork(
               workA.state.canonicalId,
               workA.data.title,
-              DisplayItem(item1, includesIdentifiers = true)
+              DisplayItem(item1)
             )
           ),
           Right(
             RequestedItemWithWork(
               workA.state.canonicalId,
               workA.data.title,
-              DisplayItem(item2, includesIdentifiers = true)
+              DisplayItem(item2)
             )
           )
         )
@@ -204,13 +204,13 @@ class ItemLookupTest
         result(0).value shouldBe RequestedItemWithWork(
           workA.state.canonicalId,
           workA.data.title,
-          DisplayItem(item1, includesIdentifiers = true)
+          DisplayItem(item1)
         )
         result(1).left.value shouldBe a[ItemNotFoundError]
         result(2).value shouldBe RequestedItemWithWork(
           workB.state.canonicalId,
           workB.data.title,
-          DisplayItem(item3, includesIdentifiers = true)
+          DisplayItem(item3)
         )
       }
     }
@@ -252,7 +252,7 @@ class ItemLookupTest
                   RequestedItemWithWork(
                     work.state.canonicalId,
                     work.data.title,
-                    DisplayItem(item, includesIdentifiers = true)
+                    DisplayItem(item)
                   )
                 )
               )
@@ -313,7 +313,7 @@ class ItemLookupTest
                   RequestedItemWithWork(
                     work.state.canonicalId,
                     work.data.title,
-                    DisplayItem(item, includesIdentifiers = true)
+                    DisplayItem(item)
                   )
                 )
               )

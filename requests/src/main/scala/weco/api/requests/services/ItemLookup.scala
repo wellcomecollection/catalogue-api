@@ -6,11 +6,9 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.models.{
-  DisplayIdentifier,
-  DisplayItem,
-  DisplayWork
-}
+import weco.api.stacks.models.CatalogueWork
+import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.models.Implicits._
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,
@@ -30,8 +28,8 @@ sealed trait ItemLookupError {
 case class ItemNotFoundError(id: Any, err: Throwable) extends ItemLookupError
 case class UnknownItemError(id: Any, err: Throwable) extends ItemLookupError
 
-case class DisplayWorkResults(
-  results: Seq[DisplayWork]
+case class CatalogueWorkResults(
+  results: Seq[CatalogueWork]
 )
 
 class ItemLookup(client: HttpClient with HttpGet)(
@@ -40,10 +38,8 @@ class ItemLookup(client: HttpClient with HttpGet)(
   ec: ExecutionContext
 ) extends Logging {
 
-  import weco.catalogue.display_model.models.Implicits._
-
-  implicit val um: Unmarshaller[HttpEntity, DisplayWorkResults] =
-    CirceMarshalling.fromDecoder[DisplayWorkResults]
+  implicit val um: Unmarshaller[HttpEntity, CatalogueWorkResults] =
+    CirceMarshalling.fromDecoder[CatalogueWorkResults]
 
   /** Returns the SourceIdentifier of the item that corresponds to this
     * canonical ID.
@@ -65,12 +61,12 @@ class ItemLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
-            val items = results.results.flatMap(_.items).flatten
+          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
+            val items = results.results.flatMap(_.items)
 
             items
               .find(_.id.contains(itemId.underlying))
-              .flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
+              .flatMap(item => item.identifiers.headOption) match {
               case Some(identifier) => Right(identifier)
               case None =>
                 Left(
@@ -150,19 +146,19 @@ class ItemLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
+          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
             // Sort by source identifier value
-            val works = results.results.sortBy(_.identifiers.get.head.value)
+            val works = results.results.sortBy(_.identifiers.head.value)
 
-            val items: Seq[(DisplayWork, DisplayItem)] = works
+            val items: Seq[(CatalogueWork, DisplayItem)] = works
               .flatMap { w =>
-                w.items.getOrElse(List()).map(item => (w, item))
+                w.items.map(item => (w, item))
               }
 
             itemIdentifiers.map { itemId =>
               val matchingWorks = items.filter {
                 case (_, item) =>
-                  val sourceIdentifier = item.identifiers.getOrElse(List()).head
+                  val sourceIdentifier = item.identifiers.head
 
                   sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
               }

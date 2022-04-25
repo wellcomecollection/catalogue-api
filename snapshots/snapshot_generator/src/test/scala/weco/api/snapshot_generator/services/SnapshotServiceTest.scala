@@ -9,18 +9,13 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
-import weco.catalogue.display_model.models.DisplayWork
 import weco.elasticsearch.ElasticClientBuilder
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.catalogue.display_model.models.{
-  ApiVersions,
-  DisplayWork,
-  WorksIncludes
-}
+import weco.catalogue.display_model.models.{ApiVersions, DisplayWork}
 import weco.http.json.DisplayJsonUtil.toJson
 
 import java.time.Instant
@@ -75,9 +70,7 @@ class SnapshotServiceTest
         val s3Size = objectMetadata.getContentLength
 
         val expectedContents = visibleWorks
-          .map {
-            DisplayWork(_, includes = WorksIncludes.all)
-          }
+          .map { DisplayWork(_) }
           .map(toJson[DisplayWork])
           .mkString("\n") + "\n"
 
@@ -128,9 +121,7 @@ class SnapshotServiceTest
         val s3Size = objectMetadata.getContentLength
 
         val expectedContents = works
-          .map {
-            DisplayWork(_, includes = WorksIncludes.all)
-          }
+          .map { DisplayWork(_) }
           .map(toJson[DisplayWork])
           .mkString("\n") + "\n"
 

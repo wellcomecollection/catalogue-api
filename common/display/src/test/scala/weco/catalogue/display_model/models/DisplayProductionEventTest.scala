@@ -20,10 +20,8 @@ class DisplayProductionEventTest
       function = Some(Concept("Manufacture"))
     )
 
-    val displayProductionEvent = DisplayProductionEvent(
-      productionEvent,
-      includesIdentifiers = false
-    )
+    val displayProductionEvent = DisplayProductionEvent(productionEvent)
+
     displayProductionEvent shouldBe DisplayProductionEvent(
       label = "London, Macmillan, 2005",
       places = List(DisplayPlace(label = "London")),
@@ -44,10 +42,8 @@ class DisplayProductionEventTest
       function = None
     )
 
-    val displayProductionEvent = DisplayProductionEvent(
-      productionEvent,
-      includesIdentifiers = false
-    )
+    val displayProductionEvent = DisplayProductionEvent(productionEvent)
+
     displayProductionEvent.function shouldBe None
   }
 }

@@ -89,7 +89,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     val itemMap = items.map { item =>
-      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.get.head) -> item
+      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
     } toMap
 
     val accessConditions = for {

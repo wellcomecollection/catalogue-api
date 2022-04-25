@@ -68,7 +68,7 @@ class RequestsService(
       }
 
       itemHoldTuples = itemsFound.flatMap { itemLookup =>
-        val itemId = itemLookup.item.identifiers.get.head
+        val itemId = itemLookup.item.identifiers.head
 
         val sierraId = SourceIdentifier(
           identifierType = IdentifierType(itemId.identifierType.id),

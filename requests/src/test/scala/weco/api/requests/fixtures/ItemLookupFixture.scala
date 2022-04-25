@@ -2,8 +2,8 @@ package weco.api.requests.fixtures
 
 import akka.http.scaladsl.model._
 import weco.akka.fixtures.Akka
-import weco.api.requests.services.{DisplayWorkResults, ItemLookup}
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.api.requests.services.{CatalogueWorkResults, ItemLookup}
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.fixtures.TestWith
@@ -48,8 +48,8 @@ trait ItemLookupFixture extends Akka {
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
         DisplayJsonUtil.toJson(
-          DisplayWorkResults(
-            works.map(w => DisplayWork(w, includes = WorksIncludes.all))
+          CatalogueWorkResults(
+            works.map { CatalogueWork(_) }
           )
         )
       )
