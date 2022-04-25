@@ -82,12 +82,7 @@ trait CatalogueJsonUtil {
               case Some(v) =>
                 jsonObj.add(
                   key,
-                  value
-                    .map(
-                      images =>
-                        images.map(DisplayImage(_, SingleImageIncludes.all))
-                    )
-                    .asJson
+                  v.map(DisplayImage(_, SingleImageIncludes.all)).asJson
                 )
               case None => jsonObj
             }
