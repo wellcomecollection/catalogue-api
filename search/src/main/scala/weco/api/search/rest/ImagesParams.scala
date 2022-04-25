@@ -16,7 +16,7 @@ case class SingleImageParams(
 object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
-      "include".as[SingleImageIncludes].?,
+      "include".as[SingleImageIncludes].?
     ).tmap {
       case Tuple1(include) => SingleImageParams(include)
     }

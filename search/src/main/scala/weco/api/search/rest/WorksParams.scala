@@ -28,7 +28,7 @@ object SingleWorkParams extends QueryParamsUtils {
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
   def parse: Directive[Tuple1[SingleWorkParams]] =
     parameters(
-      "include".as[WorksIncludes].?,
+      "include".as[WorksIncludes].?
     ).tmap {
       case Tuple1(include) => SingleWorkParams(include)
     }
@@ -96,7 +96,7 @@ case class MultipleWorksParams(
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
   query: Option[String],
-  _queryType: Option[SearchQueryType],
+  _queryType: Option[SearchQueryType]
 ) extends QueryParams
     with Paginated {
 
