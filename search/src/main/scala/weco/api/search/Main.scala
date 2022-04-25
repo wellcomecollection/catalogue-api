@@ -4,10 +4,14 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
+import weco.api.search.models.{
+  ApiConfig,
+  CheckModel,
+  PipelineClusterElasticConfig,
+  QueryConfig
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder

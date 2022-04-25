@@ -3,7 +3,7 @@ package weco.api.search.models
 import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
-import weco.catalogue.display_model.models.WorkAggregationRequest
+import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.display_model.models.{
   DisplayAbstractAgent,
   DisplayAvailability,

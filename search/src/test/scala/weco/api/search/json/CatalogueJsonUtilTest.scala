@@ -5,11 +5,8 @@ import io.circe.parser.parse
 import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.display_model.models.{
-  DisplaySerialisationTestBase,
-  WorkInclude,
-  WorksIncludes
-}
+import weco.api.search.models.request.{WorkInclude, WorksIncludes}
+import weco.catalogue.display_model.models.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
@@ -18,6 +15,7 @@ import weco.catalogue.internal_model.work.generators.{
   WorkGenerators
 }
 import weco.catalogue.internal_model.work._
+
 import java.time.Instant
 
 class CatalogueJsonUtilTest

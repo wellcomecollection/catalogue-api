@@ -15,12 +15,12 @@ import weco.api.search.elasticsearch.{
 }
 import weco.api.search.models.{
   ApiConfig,
+  ElasticConfig,
   QueryConfig,
   SearchTemplate,
   SearchTemplateResponse
 }
 import weco.api.search.rest._
-import weco.catalogue.display_model.ElasticConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.ExecutionContext

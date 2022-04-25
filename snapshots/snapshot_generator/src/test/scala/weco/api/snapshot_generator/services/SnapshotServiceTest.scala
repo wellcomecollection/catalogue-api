@@ -6,6 +6,7 @@ import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
@@ -15,7 +16,7 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.catalogue.display_model.models.{ApiVersions, DisplayWork}
+import weco.catalogue.display_model.models.DisplayWork
 import weco.http.json.DisplayJsonUtil.toJson
 
 import java.time.Instant

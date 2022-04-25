@@ -1,11 +1,12 @@
 package weco.api.search.models
 
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   ImageAggregationRequest,
   SortRequest,
   SortingOrder,
   WorkAggregationRequest
 }
+import weco.catalogue.display_model.models.SortingOrder
 
 sealed trait SearchOptions[DocumentFilter, AggregationRequest, MustQuery] {
   val searchQuery: Option[SearchQuery]

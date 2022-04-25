@@ -2,6 +2,12 @@ package weco.api.search.json
 
 import io.circe.Json
 import io.circe.syntax._
+import weco.api.search.models.request.{
+  ImageIncludes,
+  MultipleImagesIncludes,
+  SingleImageIncludes,
+  WorksIncludes
+}
 import weco.catalogue.display_model.models.Implicits._
 import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}

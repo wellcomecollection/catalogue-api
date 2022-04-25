@@ -17,6 +17,7 @@ import weco.catalogue.internal_model.work.generators.{
 }
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
   Aggregation,
   AggregationBucket,
@@ -25,7 +26,6 @@ import weco.api.search.models.{
   SubjectFilter,
   WorkSearchOptions
 }
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Subject}
 

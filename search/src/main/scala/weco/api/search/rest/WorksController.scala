@@ -6,8 +6,8 @@ import weco.Tracing
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
+import weco.api.search.models.request.WorksIncludes
 import weco.api.search.services.WorksService
-import weco.catalogue.display_model.models.WorksIncludes
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Work
 import weco.catalogue.internal_model.work.WorkState.Indexed

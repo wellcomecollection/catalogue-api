@@ -1,8 +1,13 @@
 package weco.api.search.rest
 
 import io.circe.Decoder
-import weco.catalogue.display_model.models.MultipleImagesIncludes
 import weco.api.search.models._
+import weco.api.search.models.request.{
+  ImageAggregationRequest,
+  ImageInclude,
+  MultipleImagesIncludes,
+  SingleImageIncludes
+}
 import weco.catalogue.display_model.models._
 
 case class SingleImageParams(

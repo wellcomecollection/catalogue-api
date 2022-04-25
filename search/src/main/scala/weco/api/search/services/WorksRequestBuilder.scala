@@ -8,12 +8,12 @@ import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
 import weco.api.search.models._
-import weco.api.search.rest.PaginationQuery
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   ProductionDateSortRequest,
-  SortingOrder,
   WorkAggregationRequest
 }
+import weco.api.search.rest.PaginationQuery
+import weco.catalogue.display_model.models.SortingOrder
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
 

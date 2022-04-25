@@ -5,6 +5,7 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
+import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.WorkerServiceFixture
 import weco.api.snapshot_generator.models.{CompletedSnapshotJob, SnapshotJob}
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
@@ -17,10 +18,7 @@ import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.catalogue.display_model.models.{
-  ApiVersions,
-  DisplaySerialisationTestBase
-}
+import weco.catalogue.display_model.models.DisplaySerialisationTestBase
 
 import java.time.Instant
 

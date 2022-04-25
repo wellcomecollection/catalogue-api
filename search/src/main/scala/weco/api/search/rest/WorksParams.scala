@@ -3,8 +3,15 @@ package weco.api.search.rest
 import java.time.LocalDate
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.api.search.models._
+import weco.api.search.models.request.{
+  ProductionDateSortRequest,
+  SortRequest,
+  SortingOrder,
+  WorkAggregationRequest,
+  WorkInclude,
+  WorksIncludes
+}
 import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.locations.AccessStatus
 import weco.catalogue.internal_model.work.WorkType

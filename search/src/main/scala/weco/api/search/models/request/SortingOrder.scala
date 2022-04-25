@@ -1,4 +1,4 @@
-package weco.catalogue.display_model.models
+package weco.api.search.models.request
 
 sealed trait SortingOrder
 

@@ -9,10 +9,11 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models._
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   ImageAggregationRequest,
   WorkAggregationRequest
 }
+import weco.catalogue.display_model.models.WorkAggregationRequest
 
 import scala.collection.immutable._
 
