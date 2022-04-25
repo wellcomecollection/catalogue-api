@@ -64,6 +64,6 @@ object MultipleImagesIncludes {
       `source.languages` = includes.contains(SourceLanguages),
       `source.genres` = includes.contains(SourceGenres)
     )
-  
+
   def none: MultipleImagesIncludes = MultipleImagesIncludes()
 }

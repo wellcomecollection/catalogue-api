@@ -80,7 +80,7 @@ trait CatalogueJsonUtil {
           jsonObj =>
             value match {
               case Some(v) => jsonObj.add(key, v.map(DisplayImage(_)).asJson)
-              case None => jsonObj
+              case None    => jsonObj
             }
         )
       else
