@@ -42,7 +42,7 @@ class SnapshotGeneratorFeatureTest
         insertIntoElasticsearch(worksIndex, works: _*)
 
         val expectedDisplayWorkClassName =
-          "weco.catalogue.display_model.models.DisplayWork$"
+          "weco.catalogue.display_model.work.DisplayWork$"
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
         val snapshotJob = SnapshotJob(
