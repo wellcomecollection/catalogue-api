@@ -32,7 +32,8 @@ trait CatalogueJsonUtil {
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {
     def asJson(includes: MultipleImagesIncludes): Json =
-      DisplayImage(im, includes).asJson
+      DisplayImage(im, includes = MultipleImagesIncludes.all).asJson
+        .withIncludes(includes)
 
     def asJson(
       includes: SingleImageIncludes,
@@ -41,7 +42,7 @@ trait CatalogueJsonUtil {
       withSimilarFeatures: Option[Seq[Image[ImageState.Indexed]]]
     ): Json = {
       val baseJson =
-        DisplayImage(im, includes).asJson
+        DisplayImage(im, includes = SingleImageIncludes.all).asJson
           .addImagesIf(
             includes.visuallySimilar,
             key = "visuallySimilar",
@@ -58,10 +59,7 @@ trait CatalogueJsonUtil {
             value = withSimilarFeatures
           )
 
-      baseJson
-        .removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
-        .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
-        .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
+      baseJson.withIncludes(includes)
     }
   }
 
@@ -82,5 +80,11 @@ trait CatalogueJsonUtil {
         )
       else
         j
+
+    def withIncludes(includes: ImageIncludes): Json =
+      j
+        .removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
+        .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
+        .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
   }
 }
