@@ -1,7 +1,10 @@
 package weco.catalogue.display_model.work
 
 import org.scalatest.funspec.AnyFunSpec
-import weco.catalogue.display_model.test.util.{DisplaySerialisationTestBase, JsonMapperTestUtil}
+import weco.catalogue.display_model.test.util.{
+  DisplaySerialisationTestBase,
+  JsonMapperTestUtil
+}
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Concept, InstantRange, Period, Place}

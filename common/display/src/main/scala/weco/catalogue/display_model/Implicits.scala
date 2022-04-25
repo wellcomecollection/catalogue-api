@@ -21,21 +21,21 @@ object Implicits {
   // https://circe.github.io/circe/codecs/adt.html
 
   implicit val abstractAgentEncoder: Encoder[DisplayAbstractAgent] = {
-    case agent: DisplayAgent => agent.asJson
-    case person: DisplayPerson => person.asJson
+    case agent: DisplayAgent               => agent.asJson
+    case person: DisplayPerson             => person.asJson
     case organisation: DisplayOrganisation => organisation.asJson
-    case meeting: DisplayMeeting => meeting.asJson
+    case meeting: DisplayMeeting           => meeting.asJson
   }
 
   implicit val abstractConceptEncoder: Encoder[DisplayAbstractConcept] = {
     case concept: DisplayConcept => concept.asJson
-    case place: DisplayPlace => place.asJson
-    case period: DisplayPeriod => period.asJson
+    case place: DisplayPlace     => place.asJson
+    case period: DisplayPeriod   => period.asJson
   }
 
   implicit val abstractRootConceptEncoder
-  : Encoder[DisplayAbstractRootConcept] = {
-    case agent: DisplayAbstractAgent => agent.asJson
+    : Encoder[DisplayAbstractRootConcept] = {
+    case agent: DisplayAbstractAgent     => agent.asJson
     case concept: DisplayAbstractConcept => concept.asJson
   }
 
@@ -53,7 +53,7 @@ object Implicits {
 
         location <- ontologyType match {
           case "PhysicalLocation" => c.as[DisplayPhysicalLocation]
-          case "DigitalLocation" => c.as[DisplayDigitalLocation]
+          case "DigitalLocation"  => c.as[DisplayDigitalLocation]
           case _ =>
             throw new IllegalArgumentException(
               s"Unexpected location type: $ontologyType"

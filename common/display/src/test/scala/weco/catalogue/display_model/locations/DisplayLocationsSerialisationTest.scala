@@ -3,7 +3,10 @@ package weco.catalogue.display_model.locations
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.display_model.test.util.{DisplaySerialisationTestBase, JsonMapperTestUtil}
+import weco.catalogue.display_model.test.util.{
+  DisplaySerialisationTestBase,
+  JsonMapperTestUtil
+}
 import weco.catalogue.internal_model.locations._
 
 class DisplayLocationsSerialisationTest

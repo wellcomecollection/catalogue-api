@@ -2,8 +2,16 @@ package weco.catalogue.display_model.test.util
 
 import io.circe.Json
 import org.scalatest.Suite
-import weco.catalogue.display_model.locations.{DisplayAccessMethod, DisplayAccessStatus, DisplayLocationType}
-import weco.catalogue.internal_model.identifiers.{HasId, IdState, SourceIdentifier}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessMethod,
+  DisplayAccessStatus,
+  DisplayLocationType
+}
+import weco.catalogue.internal_model.identifiers.{
+  HasId,
+  IdState,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.image.ImageData
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations._
@@ -19,7 +27,7 @@ trait DisplaySerialisationTestBase {
     def tidy: String = {
       val tidiedFields =
         s
-          // Replace anything that looks like '"key": None,' in the output.
+        // Replace anything that looks like '"key": None,' in the output.
           .replaceAll(""""[a-zA-Z]+": None,""".stripMargin, "")
           // Unwrap anything that looks like '"key": Some({…})' in the output
           .replaceAll("""Some\(\{(.*)\}\)""", "{$1}")
@@ -57,7 +65,7 @@ trait DisplaySerialisationTestBase {
 
   def location(loc: Location) =
     loc match {
-      case l: DigitalLocation => digitalLocation(l)
+      case l: DigitalLocation  => digitalLocation(l)
       case l: PhysicalLocation => physicalLocation(l)
     }
 
@@ -114,15 +122,15 @@ trait DisplaySerialisationTestBase {
       case IdState.Identified(canonicalId, _, _) => s"""
         "id": "$canonicalId",
       """
-      case IdState.Unidentifiable => ""
+      case IdState.Unidentifiable                => ""
     }
 
   def abstractAgent(ag: AbstractAgent[IdState.Minted]) =
     ag match {
-      case a: Agent[IdState.Minted] => agent(a)
+      case a: Agent[IdState.Minted]        => agent(a)
       case o: Organisation[IdState.Minted] => organisation(o)
-      case p: Person[IdState.Minted] => person(p)
-      case m: Meeting[IdState.Minted] => meeting(m)
+      case p: Person[IdState.Minted]       => person(p)
+      case m: Meeting[IdState.Minted]      => meeting(m)
     }
 
   def person(person: Person[IdState.Minted]): String =
@@ -179,25 +187,25 @@ trait DisplaySerialisationTestBase {
     }"""
 
   def abstractRootConcept(
-                           abstractRootConcept: AbstractRootConcept[IdState.Minted]
-                         ) =
+    abstractRootConcept: AbstractRootConcept[IdState.Minted]
+  ) =
     abstractRootConcept match {
-      case c: Concept[IdState.Minted] => concept(c)
-      case p: Place[IdState.Minted] => place(p)
-      case p: Period[IdState.Minted] => period(p)
-      case a: Agent[IdState.Minted] => agent(a)
+      case c: Concept[IdState.Minted]      => concept(c)
+      case p: Place[IdState.Minted]        => place(p)
+      case p: Period[IdState.Minted]       => period(p)
+      case a: Agent[IdState.Minted]        => agent(a)
       case o: Organisation[IdState.Minted] => organisation(o)
-      case p: Person[IdState.Minted] => person(p)
-      case m: Meeting[IdState.Minted] => meeting(m)
+      case p: Person[IdState.Minted]       => person(p)
+      case m: Meeting[IdState.Minted]      => meeting(m)
     }
 
   def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
     concepts.map(abstractRootConcept).mkString(",")
 
   def subject(
-               s: Subject[IdState.Minted],
-               showConcepts: Boolean = true
-             ): String =
+    s: Subject[IdState.Minted],
+    showConcepts: Boolean = true
+  ): String =
     s"""
     {
       "label": "${s.label}",
@@ -334,6 +342,7 @@ trait DisplaySerialisationTestBase {
 
   def listOfHoldings(hs: List[Holdings]): String =
     hs.map {
-      singleHoldings
-    }.mkString(",")
+        singleHoldings
+      }
+      .mkString(",")
 }
