@@ -12,7 +12,6 @@ import weco.api.search.models.request.{
   WorkInclude,
   WorksIncludes
 }
-import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.locations.AccessStatus
 import weco.catalogue.internal_model.work.WorkType
 

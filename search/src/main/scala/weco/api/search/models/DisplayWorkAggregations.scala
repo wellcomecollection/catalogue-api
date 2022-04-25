@@ -6,7 +6,6 @@ import io.circe.generic.extras.JsonKey
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.display_model.languages.DisplayLanguage
 import weco.catalogue.display_model.locations.DisplayLicense
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.display_model.work.{
   DisplayAbstractAgent,
   DisplayAvailability,

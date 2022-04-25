@@ -11,7 +11,6 @@ import weco.api.search.models.request.{
   WorksIncludes
 }
 import weco.api.search.rest
-import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 

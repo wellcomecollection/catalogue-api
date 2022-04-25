@@ -13,7 +13,6 @@ import weco.api.search.models.request.{
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.display_model.models.MultipleImagesIncludes
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}

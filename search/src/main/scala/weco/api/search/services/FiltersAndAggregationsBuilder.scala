@@ -13,7 +13,6 @@ import weco.api.search.models.request.{
   ImageAggregationRequest,
   WorkAggregationRequest
 }
-import weco.catalogue.display_model.models.WorkAggregationRequest
 
 import scala.collection.immutable._
 

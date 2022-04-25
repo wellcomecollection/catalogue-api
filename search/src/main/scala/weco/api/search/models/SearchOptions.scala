@@ -6,7 +6,6 @@ import weco.api.search.models.request.{
   SortingOrder,
   WorkAggregationRequest
 }
-import weco.catalogue.display_model.models.SortingOrder
 
 sealed trait SearchOptions[DocumentFilter, AggregationRequest, MustQuery] {
   val searchQuery: Option[SearchQuery]

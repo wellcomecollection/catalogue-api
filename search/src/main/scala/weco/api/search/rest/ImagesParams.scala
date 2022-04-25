@@ -8,7 +8,6 @@ import weco.api.search.models.request.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
-import weco.catalogue.display_model.models._
 
 case class SingleImageParams(
   include: Option[SingleImageIncludes],
