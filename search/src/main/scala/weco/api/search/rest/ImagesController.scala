@@ -48,7 +48,8 @@ class ImagesController(
                   .map { similarImages =>
                     complete(
                       image.asJson(
-                        includes = params.include.getOrElse(SingleImageIncludes.none),
+                        includes =
+                          params.include.getOrElse(SingleImageIncludes.none),
                         visuallySimilar =
                           similarImages.get(SimilarityMetric.Blended),
                         withSimilarColors =

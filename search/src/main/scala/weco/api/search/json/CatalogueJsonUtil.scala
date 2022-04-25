@@ -70,20 +70,33 @@ trait CatalogueJsonUtil {
     def removeKeyIf(b: Boolean, key: String): Json =
       if (b) j.removeKey(key) else j
 
-    def addImagesIf[V](b: Boolean, key: String, value: Option[Seq[Image[ImageState.Indexed]]]): Json =
+    def addImagesIf[V](
+      b: Boolean,
+      key: String,
+      value: Option[Seq[Image[ImageState.Indexed]]]
+    ): Json =
       if (b)
-        j.mapObject(jsonObj =>
-          value match {
-            case Some(v) => jsonObj.add(key, value.map(images => images.map(DisplayImage(_, SingleImageIncludes.all))).asJson)
-            case None    => jsonObj
-          }
+        j.mapObject(
+          jsonObj =>
+            value match {
+              case Some(v) =>
+                jsonObj.add(
+                  key,
+                  value
+                    .map(
+                      images =>
+                        images.map(DisplayImage(_, SingleImageIncludes.all))
+                    )
+                    .asJson
+                )
+              case None => jsonObj
+            }
         )
       else
         j
 
     def withIncludes(includes: ImageIncludes): Json =
-      j
-        .removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
+      j.removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
         .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
         .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
   }
