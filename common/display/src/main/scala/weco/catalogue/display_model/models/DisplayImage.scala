@@ -8,25 +8,16 @@ case class DisplayImage(
   thumbnail: DisplayDigitalLocation,
   locations: Seq[DisplayDigitalLocation],
   source: DisplayImageSource,
-  visuallySimilar: Option[Seq[DisplayImage]],
-  withSimilarColors: Option[Seq[DisplayImage]],
-  withSimilarFeatures: Option[Seq[DisplayImage]],
   @JsonKey("type") ontologyType: String = "Image"
 )
 
 object DisplayImage {
 
-  def apply(
-    image: Image[ImageState.Indexed],
-    includes: ImageIncludes
-  ): DisplayImage =
+  def apply(image: Image[ImageState.Indexed]): DisplayImage =
     new DisplayImage(
       id = image.id,
       thumbnail = DisplayDigitalLocation(image.state.derivedData.thumbnail),
       locations = image.locations.map(DisplayDigitalLocation(_)),
-      source = DisplayImageSource(image.source, includes),
-      visuallySimilar = None,
-      withSimilarColors = None,
-      withSimilarFeatures = None
+      source = DisplayImageSource(image.source)
     )
 }
