@@ -133,47 +133,4 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
         }
     }
   }
-
-  it("searches different indices with the _index parameter") {
-    withImagesApi {
-      case (defaultIndex, routes) =>
-        withLocalImagesIndex { alternativeIndex =>
-          val defaultImage = createImageData.toIndexedImage
-          val alternativeImage = createImageData.toIndexedImage
-          insertImagesIntoElasticsearch(defaultIndex, defaultImage)
-          insertImagesIntoElasticsearch(alternativeIndex, alternativeImage)
-
-          assertJsonResponse(routes, s"$rootPath/images/${defaultImage.id}") {
-            Status.OK ->
-              s"""
-                 |{
-                 |  $singleImageResult,
-                 |  "id": "${defaultImage.id}",
-                 |  "thumbnail": ${location(
-                   defaultImage.state.derivedData.thumbnail
-                 )},
-                 |  "locations": [${locations(defaultImage.locations)}],
-                 |  "source": ${imageSource(defaultImage.source)}
-                 }""".stripMargin
-          }
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/images/${alternativeImage.id}?_index=${alternativeIndex.name}"
-          ) {
-            Status.OK ->
-              s"""
-                 |{
-                 |  $singleImageResult,
-                 |  "id": "${alternativeImage.id}",
-                 |  "thumbnail": ${location(
-                   alternativeImage.state.derivedData.thumbnail
-                 )},
-                 |  "locations": [${locations(alternativeImage.locations)}],
-                 |  "source": ${imageSource(alternativeImage.source)}
-                 }""".stripMargin
-          }
-        }
-    }
-  }
 }

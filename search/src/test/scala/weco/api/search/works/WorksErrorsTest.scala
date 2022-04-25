@@ -323,38 +323,6 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           )
       }
     }
-
-    describe("an index that doesn't exist") {
-      val indexName = "foobarbaz"
-
-      it("listing") {
-        withApi { route =>
-          assertNotFound(route)(
-            path = s"$rootPath/works?_index=$indexName",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-
-      it("looking up a work") {
-        withApi { route =>
-          assertNotFound(route)(
-            path = s"$rootPath/works/$createCanonicalId?_index=$indexName",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-
-      it("searching") {
-        withApi { route =>
-          assertNotFound(route)(
-            path =
-              s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-    }
   }
 
   it("returns a 500 error if the default index doesn't exist") {

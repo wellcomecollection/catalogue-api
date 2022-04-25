@@ -29,26 +29,6 @@ class ImagesErrorsTest
         )
       }
     }
-
-    it("looking for a non-existent index") {
-      val indexName = createIndexName
-
-      val testPaths = Table(
-        "path",
-        s"$rootPath/images?_index=$indexName",
-        s"$rootPath/images?_index=$indexName&query=fish",
-        s"$rootPath/images/$createCanonicalId?_index=$indexName"
-      )
-
-      withApi { route =>
-        forAll(testPaths) { path =>
-          assertNotFound(route)(
-            path,
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-    }
   }
 
   it("returns a 500 error if the default index doesn't exist") {

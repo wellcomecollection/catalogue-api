@@ -16,7 +16,6 @@ trait SingleWorkDirectives extends CustomDirectives {
   ) {
     def mapVisible(
       f: Work.Visible[WorkState.Indexed] => Future[Route],
-      usingUserSpecifiedIndex: Boolean = false
     ): Future[Route] =
       work.map {
         case Right(work: Work.Visible[Indexed]) =>
@@ -28,11 +27,7 @@ trait SingleWorkDirectives extends CustomDirectives {
         case Right(_: Work.Deleted[Indexed]) =>
           gone("This work has been deleted")
         case Left(err) =>
-          elasticError(
-            documentType = "Work",
-            err = err,
-            usingUserSpecifiedIndex = usingUserSpecifiedIndex
-          )
+          elasticError(documentType = "Work", err)
       }
   }
 
