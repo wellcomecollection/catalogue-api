@@ -1,6 +1,5 @@
 package weco.api.search.generators
 
-import weco.api.search.models
 import weco.api.search.models.request.{
   SortRequest,
   SortingOrder,
@@ -18,7 +17,7 @@ trait SearchOptionsGenerators {
     sortOrder: SortingOrder = SortingOrder.Ascending,
     searchQuery: Option[SearchQuery] = None
   ): WorkSearchOptions =
-    models.WorkSearchOptions(
+    WorkSearchOptions(
       filters = filters,
       pageSize = pageSize,
       pageNumber = pageNumber,
