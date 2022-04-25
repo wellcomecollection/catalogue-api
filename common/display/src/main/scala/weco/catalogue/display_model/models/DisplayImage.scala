@@ -16,15 +16,12 @@ case class DisplayImage(
 
 object DisplayImage {
 
-  def apply(
-    image: Image[ImageState.Indexed],
-    includes: ImageIncludes
-  ): DisplayImage =
+  def apply(image: Image[ImageState.Indexed]): DisplayImage =
     new DisplayImage(
       id = image.id,
       thumbnail = DisplayDigitalLocation(image.state.derivedData.thumbnail),
       locations = image.locations.map(DisplayDigitalLocation(_)),
-      source = DisplayImageSource(image.source, includes),
+      source = DisplayImageSource(image.source, includes = SingleImageIncludes.all),
       visuallySimilar = None,
       withSimilarColors = None,
       withSimilarFeatures = None
