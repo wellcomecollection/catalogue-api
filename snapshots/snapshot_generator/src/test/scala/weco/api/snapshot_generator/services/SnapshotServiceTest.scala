@@ -43,7 +43,7 @@ class SnapshotServiceTest
     }
 
   val expectedDisplayWorkClassName =
-    "weco.catalogue.display_model.models.DisplayWork$"
+    "weco.catalogue.display_model.work.DisplayWork$"
 
   it("completes a snapshot generation") {
     withFixtures {
