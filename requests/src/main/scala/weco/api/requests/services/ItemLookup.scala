@@ -7,8 +7,9 @@ import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
-import weco.catalogue.display_model.models.Implicits._
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.Implicits._
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdState,

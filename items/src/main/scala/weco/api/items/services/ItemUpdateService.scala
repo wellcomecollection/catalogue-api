@@ -1,7 +1,8 @@
 package weco.api.items.services
 
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.work.DisplayItem
 
 import scala.concurrent.{ExecutionContext, Future}
 

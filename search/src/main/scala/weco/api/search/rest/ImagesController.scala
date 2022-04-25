@@ -6,13 +6,13 @@ import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.json.CatalogueJsonUtil
-import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
-import weco.api.search.services.ImagesService
-import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
+import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
+import weco.api.search.services.ImagesService
+import weco.catalogue.display_model.Implicits._
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}

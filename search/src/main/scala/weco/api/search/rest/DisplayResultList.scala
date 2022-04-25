@@ -5,8 +5,12 @@ import io.circe.Json
 import io.circe.generic.extras.JsonKey
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models._
+import weco.api.search.models.request.{
+  MultipleImagesIncludes,
+  WorkAggregationRequest,
+  WorksIncludes
+}
 import weco.api.search.rest
-import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 

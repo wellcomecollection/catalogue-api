@@ -21,6 +21,7 @@ import weco.api.search.elasticsearch.{
   IndexNotFoundError
 }
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
   Aggregation,
   AggregationBucket,
@@ -31,7 +32,6 @@ import weco.api.search.models.{
   WorkAggregations,
   WorkSearchOptions
 }
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.locations.{
   DigitalLocationType,

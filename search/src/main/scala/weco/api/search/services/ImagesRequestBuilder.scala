@@ -13,8 +13,8 @@ import weco.api.search.elasticsearch.{
   ImagesMultiMatcher
 }
 import weco.api.search.models._
+import weco.api.search.models.request.ImageAggregationRequest
 import weco.api.search.rest.PaginationQuery
-import weco.catalogue.display_model.models.ImageAggregationRequest
 import weco.catalogue.internal_model.locations.License
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)

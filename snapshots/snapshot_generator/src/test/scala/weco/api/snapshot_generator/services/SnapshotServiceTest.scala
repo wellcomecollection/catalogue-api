@@ -6,16 +6,17 @@ import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
+import weco.catalogue.display_model.work.DisplayWork
 import weco.elasticsearch.ElasticClientBuilder
 import weco.fixtures.TestWith
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.catalogue.display_model.models.{ApiVersions, DisplayWork}
 import weco.http.json.DisplayJsonUtil.toJson
 
 import java.time.Instant
@@ -28,7 +29,7 @@ class SnapshotServiceTest
     with SnapshotServiceFixture
     with WorkGenerators {
 
-  import weco.catalogue.display_model.models.Implicits._
+  import weco.catalogue.display_model.Implicits._
 
   def withFixtures[R](
     testWith: TestWith[(SnapshotService, Index, Bucket), R]
@@ -42,7 +43,7 @@ class SnapshotServiceTest
     }
 
   val expectedDisplayWorkClassName =
-    "weco.catalogue.display_model.models.DisplayWork$"
+    "weco.catalogue.display_model.work.DisplayWork$"
 
   it("completes a snapshot generation") {
     withFixtures {
@@ -115,7 +116,7 @@ class SnapshotServiceTest
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
         val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
-        import weco.catalogue.display_model.models.Implicits._
+        import weco.catalogue.display_model.Implicits._
 
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength

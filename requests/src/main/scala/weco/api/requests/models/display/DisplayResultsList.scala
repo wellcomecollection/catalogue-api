@@ -2,7 +2,7 @@ package weco.api.requests.models.display
 
 import java.time.LocalDate
 import weco.api.requests.models.{HoldNote, RequestedItemWithWork}
-import weco.catalogue.display_model.models.DisplayItem
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
 

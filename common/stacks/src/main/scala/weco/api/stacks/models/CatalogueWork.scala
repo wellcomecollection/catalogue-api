@@ -1,6 +1,7 @@
 package weco.api.stacks.models
 
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.work.{Work, WorkState}
 
 // This is a fork of the DisplayWork model in the display library, which represents

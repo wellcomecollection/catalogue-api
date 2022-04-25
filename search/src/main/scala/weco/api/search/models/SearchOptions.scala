@@ -1,6 +1,6 @@
 package weco.api.search.models
 
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   ImageAggregationRequest,
   SortRequest,
   SortingOrder,
