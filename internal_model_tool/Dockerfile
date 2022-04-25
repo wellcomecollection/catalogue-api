@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 ADD ./internal_model_tool/common.py common.py
 ADD ./internal_model_tool/check_compatibility.py check_compatibility.py
-ADD ./common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala ../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala
+ADD ./common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala ../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala
 ADD ./project/Dependencies.scala ../project/Dependencies.scala
 
 CMD ["/usr/local/bin/python3", "/usr/src/app/check_compatibility.py"]
