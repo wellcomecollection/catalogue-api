@@ -3,12 +3,9 @@ package weco.api.search.models
 import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
-import weco.catalogue.display_model.models.DisplayAbstractAgent
-import weco.catalogue.display_model.models.{
-  DisplayAbstractAgent,
-  DisplayGenre,
-  DisplayLicense
-}
+import weco.catalogue.display_model.locations.DisplayLicense
+import weco.catalogue.display_model.models.DisplayGenre
+import weco.catalogue.display_model.work.{DisplayAbstractAgent, DisplayGenre}
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
 import weco.http.json.DisplayJsonUtil._
@@ -23,7 +20,7 @@ case class DisplayImageAggregations(
 )
 
 object DisplayImageAggregations {
-  import weco.catalogue.display_model.models.Implicits._
+  import weco.catalogue.display_model.Implicits._
 
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder

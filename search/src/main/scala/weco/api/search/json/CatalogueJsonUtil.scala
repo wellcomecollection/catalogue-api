@@ -8,7 +8,7 @@ import weco.api.search.models.request.{
   SingleImageIncludes,
   WorksIncludes
 }
-import weco.catalogue.display_model.models.Implicits._
+import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.models._
 import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}

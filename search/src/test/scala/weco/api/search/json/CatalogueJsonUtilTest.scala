@@ -6,14 +6,9 @@ import org.scalatest.EitherValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models.request.{WorkInclude, WorksIncludes}
-import weco.catalogue.display_model.models.DisplaySerialisationTestBase
+import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  ProductionEventGenerators,
-  SubjectGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
 import weco.catalogue.internal_model.work._
 
 import java.time.Instant

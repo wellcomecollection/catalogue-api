@@ -1,6 +1,6 @@
 package weco.api.stacks.models
 
-import weco.catalogue.display_model.models.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier

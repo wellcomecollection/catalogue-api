@@ -1,6 +1,6 @@
 package weco.api.requests.models
 
-import weco.catalogue.display_model.models.DisplayItem
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 case class RequestedItemWithWork(

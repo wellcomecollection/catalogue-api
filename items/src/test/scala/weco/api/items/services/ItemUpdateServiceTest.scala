@@ -7,11 +7,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.models.{
-  DisplayAccessCondition,
-  DisplayItem,
-  DisplayPhysicalLocation
-}
+import weco.catalogue.display_model.locations.DisplayPhysicalLocation
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{

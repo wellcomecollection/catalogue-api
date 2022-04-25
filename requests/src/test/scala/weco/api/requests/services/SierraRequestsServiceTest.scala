@@ -8,7 +8,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
-import weco.catalogue.display_model.models.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators

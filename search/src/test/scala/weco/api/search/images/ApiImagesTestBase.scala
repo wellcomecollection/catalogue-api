@@ -1,7 +1,7 @@
 package weco.api.search.images
 
 import weco.api.search.ApiTestBase
-import weco.catalogue.display_model.models.DisplaySerialisationTestBase
+import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.image._
 

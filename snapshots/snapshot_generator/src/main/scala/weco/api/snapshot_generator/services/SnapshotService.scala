@@ -15,7 +15,7 @@ import weco.api.snapshot_generator.models.{
   SnapshotResult
 }
 import weco.api.snapshot_generator.storage.S3Uploader
-import weco.catalogue.display_model.models.DisplayWork
+import weco.catalogue.display_model.work.DisplayWork
 
 import java.time.Instant
 import scala.util.Try

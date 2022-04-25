@@ -39,7 +39,7 @@ trait ItemLookupFixture extends Akka {
       )
     )
 
-  import weco.catalogue.display_model.models.Implicits._
+  import weco.catalogue.display_model.Implicits._
 
   def catalogueWorkResponse(
     works: Seq[Work.Visible[WorkState.Indexed]]

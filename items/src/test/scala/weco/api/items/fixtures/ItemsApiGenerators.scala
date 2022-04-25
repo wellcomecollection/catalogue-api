@@ -1,7 +1,7 @@
 package weco.api.items.fixtures
 
 import akka.http.scaladsl.model._
-import weco.catalogue.display_model.models.DisplayWork
+import weco.catalogue.display_model.work.DisplayWork
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
@@ -84,7 +84,7 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
   //
   //    "locations": [ { "displayPhysicalLocation": { … } }, … ]
   //
-  import weco.catalogue.display_model.models.Implicits._
+  import weco.catalogue.display_model.Implicits._
 
   def catalogueWorkResponse(
     work: Work.Visible[WorkState.Indexed]

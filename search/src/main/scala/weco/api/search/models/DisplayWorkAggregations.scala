@@ -4,16 +4,16 @@ import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.catalogue.display_model.models.{
+import weco.catalogue.display_model.languages.DisplayLanguage
+import weco.catalogue.display_model.locations.DisplayLicense
+import weco.catalogue.display_model.models.WorkAggregationRequest
+import weco.catalogue.display_model.work.{
   DisplayAbstractAgent,
   DisplayAvailability,
   DisplayFormat,
   DisplayGenre,
-  DisplayLanguage,
-  DisplayLicense,
   DisplayPeriod,
-  DisplaySubject,
-  WorkAggregationRequest
+  DisplaySubject
 }
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
@@ -34,7 +34,7 @@ case class DisplayWorkAggregations(
 )
 
 object DisplayWorkAggregations {
-  import weco.catalogue.display_model.models.Implicits._
+  import weco.catalogue.display_model.Implicits._
 
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder

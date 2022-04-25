@@ -7,7 +7,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.models.{DisplayIdentifier, DisplayItem}
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.work.generators.{
   ItemsGenerators,
