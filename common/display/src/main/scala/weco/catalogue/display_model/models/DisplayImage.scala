@@ -21,7 +21,7 @@ object DisplayImage {
       id = image.id,
       thumbnail = DisplayDigitalLocation(image.state.derivedData.thumbnail),
       locations = image.locations.map(DisplayDigitalLocation(_)),
-      source = DisplayImageSource(image.source, includes = SingleImageIncludes.all),
+      source = DisplayImageSource(image.source),
       visuallySimilar = None,
       withSimilarColors = None,
       withSimilarFeatures = None
