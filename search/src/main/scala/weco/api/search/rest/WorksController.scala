@@ -29,18 +29,10 @@ class WorksController(
         transactFuture("GET /works") {
           val searchOptions = params.searchOptions(apiConfig)
 
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(worksIndex)
-
           worksService
-            .listOrSearch(index, searchOptions)
+            .listOrSearch(worksIndex, searchOptions)
             .map {
-              case Left(err) =>
-                elasticError(
-                  documentType = "Work",
-                  err = err,
-                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                )
+              case Left(err) => elasticError(documentType = "Work", err)
 
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
@@ -62,17 +54,13 @@ class WorksController(
     get {
       withFuture {
         transactFuture("GET /works/{workId}") {
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(worksIndex)
-
           val includes = params.include.getOrElse(WorksIncludes.none)
 
           worksService
-            .findById(id)(index)
+            .findById(id)(worksIndex)
             .mapVisible(
               (work: Work.Visible[Indexed]) =>
-                Future.successful(complete(work.asJson(includes))),
-              usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+                Future.successful(complete(work.asJson(includes)))
             )
         }
       }

@@ -31,17 +31,14 @@ class ImagesController(
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(imagesIndex)
-
           imagesService
-            .findById(id)(index)
+            .findById(id)(imagesIndex)
             .flatMap {
               case Right(image) =>
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(index, image, metric)
+                      .retrieveSimilarImages(imagesIndex, image, metric)
                       .map(metric -> _)
                   }
                   .map(_.toMap)
@@ -61,13 +58,7 @@ class ImagesController(
                   }
 
               case Left(err) =>
-                Future.successful(
-                  elasticError(
-                    documentType = "Image",
-                    err = err,
-                    usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                  )
-                )
+                Future.successful(elasticError(documentType = "Image", err))
             }
         }
       }
@@ -79,18 +70,10 @@ class ImagesController(
         transactFuture("GET /images") {
           val searchOptions = params.searchOptions(apiConfig)
 
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(imagesIndex)
-
           imagesService
-            .listOrSearch(index, searchOptions)
+            .listOrSearch(imagesIndex, searchOptions)
             .map {
-              case Left(err) =>
-                elasticError(
-                  documentType = "Image",
-                  err = err,
-                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                )
+              case Left(err) => elasticError(documentType = "Image", err)
 
               case Right(resultList) =>
                 extractPublicUri { uri =>

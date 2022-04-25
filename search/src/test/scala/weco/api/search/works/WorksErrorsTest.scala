@@ -1,6 +1,8 @@
 package weco.api.search.works
 
+import com.sksamuel.elastic4s.Index
 import org.scalatest.prop.TableDrivenPropertyChecks
+import weco.api.search.models.ElasticConfig
 import weco.elasticsearch.IndexConfig
 
 class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
@@ -323,38 +325,6 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           )
       }
     }
-
-    describe("an index that doesn't exist") {
-      val indexName = "foobarbaz"
-
-      it("listing") {
-        withApi { route =>
-          assertNotFound(route)(
-            path = s"$rootPath/works?_index=$indexName",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-
-      it("looking up a work") {
-        withApi { route =>
-          assertNotFound(route)(
-            path = s"$rootPath/works/$createCanonicalId?_index=$indexName",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-
-      it("searching") {
-        withApi { route =>
-          assertNotFound(route)(
-            path =
-              s"$rootPath/works/$createCanonicalId?_index=$indexName&query=foobar",
-            description = s"There is no index $indexName"
-          )
-        }
-      }
-    }
   }
 
   it("returns a 500 error if the default index doesn't exist") {
@@ -387,23 +357,27 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     // in the Elasticsearch handler.
     //
     // By creating an index without a mapping, we don't have a canonicalId field
-    // to sort on.  Trying to query this index of these will trigger one such exception!
-    withWorksApi {
-      case (_, route) =>
-        withLocalElasticsearchIndex(config = IndexConfig.empty) { index =>
-          val path = s"$rootPath/works?_index=${index.name}"
-          assertJsonResponse(route, path)(
-            Status.InternalServerError ->
-              s"""
-                 |{
-                 |  "type": "Error",
-                 |  "errorType": "http",
-                 |  "httpStatus": 500,
-                 |  "label": "Internal Server Error"
-                 |}
+    // to sort on.  Trying to query this index will trigger one such exception!
+    withLocalElasticsearchIndex(config = IndexConfig.empty) { worksIndex =>
+      val elasticConfig = ElasticConfig(
+        worksIndex = worksIndex,
+        imagesIndex = Index("imagesIndex-notused")
+      )
+
+      withRouter(elasticConfig) { route =>
+        val path = s"$rootPath/works"
+        assertJsonResponse(route, path)(
+          Status.InternalServerError ->
+            s"""
+               |{
+               |  "type": "Error",
+               |  "errorType": "http",
+               |  "httpStatus": 500,
+               |  "label": "Internal Server Error"
+               |}
             """.stripMargin
-          )
-        }
+        )
+      }
     }
   }
 }

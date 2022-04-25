@@ -10,16 +10,16 @@ import weco.api.search.models.request.{
 }
 
 case class SingleImageParams(
-  include: Option[SingleImageIncludes],
-  _index: Option[String]
+  include: Option[SingleImageIncludes]
 ) extends QueryParams
 
 object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
-      "include".as[SingleImageIncludes].?,
-      "_index".as[String].?
-    ).tmap((SingleImageParams.apply _).tupled(_))
+      "include".as[SingleImageIncludes].?
+    ).tmap {
+      case Tuple1(include) => SingleImageParams(include)
+    }
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
     decodeOneOfCommaSeparated(
@@ -41,8 +41,7 @@ case class MultipleImagesParams(
   `source.genres.label`: Option[GenreFilter],
   color: Option[ColorMustQuery],
   include: Option[MultipleImagesIncludes],
-  aggregations: Option[List[ImageAggregationRequest]],
-  _index: Option[String]
+  aggregations: Option[List[ImageAggregationRequest]]
 ) extends QueryParams
     with Paginated {
 
@@ -80,8 +79,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.genres.label".as[GenreFilter].?,
       "color".as[ColorMustQuery].?,
       "include".as[MultipleImagesIncludes].?,
-      "aggregations".as[List[ImageAggregationRequest]].?,
-      "_index".as[String].?
+      "aggregations".as[List[ImageAggregationRequest]].?
     ).tflatMap { args =>
       val params = (MultipleImagesParams.apply _).tupled(args)
       validated(params.paginationErrors, params)

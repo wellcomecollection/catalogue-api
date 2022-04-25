@@ -9,9 +9,6 @@ trait ReflectionHelpers {
       .collect {
         case m: MethodSymbol if m.isCaseAccessor => m.name.toString
       }
-      .filterNot {
-        _ == "_index"
-      }
       .toSeq
       .map { _.replace("$u002E", ".") }
 }
