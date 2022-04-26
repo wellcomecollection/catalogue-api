@@ -13,15 +13,14 @@ import scala.util.Try
   * as specified for this environment.
   *
   * The settings may come either from environment variables
-  * (if API_ELASTIC_SETTINGS_FROM_ENVIRONMENT is true)
-  * or from the AWS Secrets Manager
+  * (if API_SETTINGS_MODE is environment) or from the AWS Secrets Manager
   */
 object PipelineElasticClientBuilder {
   def apply(serviceName: String): ElasticClient =
-    sys.env.get("API_ELASTIC_SETTINGS_FROM_ENVIRONMENT") match {
-      case Some(value) if Try(value.toBoolean).getOrElse(false) =>
+    sys.env.get("API_SETTINGS_MODE") match {
+      case None | Some("secretsmanager") => SecretsElasticClientBuilder(serviceName)
+      case Some("environment") =>
         EnvElasticClientBuilder(serviceName)
-      case _ => SecretsElasticClientBuilder(serviceName)
     }
 }
 
