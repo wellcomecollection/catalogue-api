@@ -6,8 +6,6 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.elasticsearch.ElasticClientBuilder
 
-import scala.util.Try
-
 /**
   * Build an ElasticClient that will connect to the appropriate database
   * as specified for this environment.
@@ -21,6 +19,9 @@ object PipelineElasticClientBuilder {
       case None | Some("secretsmanager") => SecretsElasticClientBuilder(serviceName)
       case Some("environment") =>
         EnvElasticClientBuilder(serviceName)
+      case Some(wrongMode) => throw new IllegalArgumentException(
+        s"Unexpected API_SETTINGS_MODE: $wrongMode, must be one of 'secretsmanager' (default) or 'environment'"
+      )
     }
 }
 
