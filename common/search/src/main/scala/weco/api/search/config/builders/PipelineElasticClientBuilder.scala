@@ -16,12 +16,14 @@ import weco.elasticsearch.ElasticClientBuilder
 object PipelineElasticClientBuilder {
   def apply(serviceName: String): ElasticClient =
     sys.env.get("API_SETTINGS_MODE") match {
-      case None | Some("secretsmanager") => SecretsElasticClientBuilder(serviceName)
+      case None | Some("secretsmanager") =>
+        SecretsElasticClientBuilder(serviceName)
       case Some("environment") =>
         EnvElasticClientBuilder(serviceName)
-      case Some(wrongMode) => throw new IllegalArgumentException(
-        s"Unexpected API_SETTINGS_MODE: $wrongMode, must be one of 'secretsmanager' (default) or 'environment'"
-      )
+      case Some(wrongMode) =>
+        throw new IllegalArgumentException(
+          s"Unexpected API_SETTINGS_MODE: $wrongMode, must be one of 'secretsmanager' (default) or 'environment'"
+        )
     }
 }
 
