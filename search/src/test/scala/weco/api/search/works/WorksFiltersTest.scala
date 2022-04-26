@@ -879,12 +879,19 @@ class WorksFiltersTest
     val onlineWork = indexedWork().items(
       List(createDigitalItemWith(accessStatus = AccessStatus.Open))
     )
-    val inLibraryWork = indexedWork().items(List(createIdentifiedPhysicalItem))
-    val onlineAndInLibraryWork = indexedWork().items(
+    val closedStoresWork = indexedWork().items(List(createClosedStoresItem))
+    val openShelvesWork = indexedWork().items(List(createOpenShelvesItem))
+    val onlineAndClosedStoresWork = indexedWork().items(
       List(
         createDigitalItemWith(accessStatus = AccessStatus.OpenWithAdvisory),
-        createIdentifiedPhysicalItem
+        createClosedStoresItem
       )
+    )
+    val works = List(
+      onlineWork,
+      openShelvesWork,
+      closedStoresWork,
+      onlineAndClosedStoresWork
     )
 
     it("filters by availability ID") {
@@ -892,9 +899,7 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           insertIntoElasticsearch(
             worksIndex,
-            onlineWork,
-            inLibraryWork,
-            onlineAndInLibraryWork
+            works: _*
           )
           assertJsonResponse(
             routes = routes,
@@ -902,7 +907,7 @@ class WorksFiltersTest
             path = s"$rootPath/works?availabilities=online"
           ) {
             Status.OK -> worksListResponse(
-              works = Seq(onlineWork, onlineAndInLibraryWork)
+              works = Seq(onlineWork, onlineAndClosedStoresWork)
             )
           }
       }
@@ -913,17 +918,16 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           insertIntoElasticsearch(
             worksIndex,
-            onlineWork,
-            inLibraryWork,
-            onlineAndInLibraryWork
+            works: _*
           )
           assertJsonResponse(
             routes = routes,
             unordered = true,
-            path = s"$rootPath/works?availabilities=in-library,online"
+            path = s"$rootPath/works?availabilities=closed-stores,online"
           ) {
             Status.OK -> worksListResponse(
-              works = Seq(onlineWork, inLibraryWork, onlineAndInLibraryWork)
+              works =
+                Seq(onlineWork, closedStoresWork, onlineAndClosedStoresWork)
             )
           }
       }
