@@ -491,13 +491,13 @@ class WorksAggregationsTest
 
   it("supports aggregating on availabilities") {
     val items = List(
-      List(createIdentifiedPhysicalItem),
-      List(createIdentifiedPhysicalItem),
+      List(createClosedStoresItem),
+      List(createOpenShelvesItem),
       List(createDigitalItemWith(accessStatus = AccessStatus.Open)),
       List(createDigitalItemWith(accessStatus = AccessStatus.Open)),
       List(createDigitalItemWith(accessStatus = AccessStatus.OpenWithAdvisory)),
       List(
-        createIdentifiedPhysicalItem,
+        createClosedStoresItem,
         createDigitalItemWith(accessStatus = AccessStatus.Open)
       )
     )
@@ -526,10 +526,19 @@ class WorksAggregationsTest
                       "type": "AggregationBucket"
                     },
                     {
-                      "count": 3,
+                      "count": 2,
                       "data": {
-                        "label": "In the library",
-                        "id": "in-library",
+                        "label": "Closed stores",
+                        "id": "closed-stores",
+                        "type" : "Availability"
+                      },
+                      "type": "AggregationBucket"
+                    },
+                    {
+                      "count": 1,
+                      "data": {
+                        "label": "Open shelves",
+                        "id": "open-shelves",
                         "type" : "Availability"
                       },
                       "type": "AggregationBucket"
