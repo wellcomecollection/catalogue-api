@@ -2,7 +2,20 @@ package weco.api.search.works
 
 class WorksTest extends ApiWorksTestBase {
   val listOfWorks = List(
-    "works.visible.0", "works.visible.1", "works.visible.2", "works.visible.3", "works.visible.4", "works.invisible.0", "works.invisible.1", "works.invisible.2", "works.redirected.0", "works.redirected.1", "works.deleted.0", "works.deleted.1", "works.deleted.2", "works.deleted.3"
+    "works.visible.0",
+    "works.visible.1",
+    "works.visible.2",
+    "works.visible.3",
+    "works.visible.4",
+    "works.invisible.0",
+    "works.invisible.1",
+    "works.invisible.2",
+    "works.redirected.0",
+    "works.redirected.1",
+    "works.deleted.0",
+    "works.deleted.1",
+    "works.deleted.2",
+    "works.deleted.3"
   )
 
   it("returns a list of works") {
@@ -274,7 +287,7 @@ class WorksTest extends ApiWorksTestBase {
     "work-production.1900",
     "work-production.1904",
     "work-production.1976",
-    "work-production.2020",
+    "work-production.2020"
   )
 
   it("supports sorting by production date") {
@@ -282,7 +295,10 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(worksIndex, datedDocuments: _*)
 
-        assertJsonResponse(routes, path = s"$rootPath/works?sort=production.dates") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=production.dates"
+        ) {
           Status.OK ->
             """
               |{
@@ -338,7 +354,10 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(worksIndex, datedDocuments: _*)
 
-        assertJsonResponse(routes, path = s"$rootPath/works?sort=production.dates&sortOrder=desc") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=production.dates&sortOrder=desc"
+        ) {
           Status.OK ->
             """
               |{

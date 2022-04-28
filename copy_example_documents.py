@@ -17,6 +17,7 @@ for prefix in prefixes:
         shutil.copyfile(
             path,
             os.path.join(
-                "common/search/src/test/resources/example_documents", os.path.basename(path)
+                "common/search/src/test/resources/example_documents",
+                os.path.basename(path),
             ),
         )
