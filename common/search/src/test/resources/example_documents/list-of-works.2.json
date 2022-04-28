@@ -1,7 +1,7 @@
 {
   "description" : "one of a list of works",
-  "createdAt" : "2022-04-28T13:28:29.057Z",
-  "id" : "vbi1ii19",
+  "createdAt" : "2022-04-28T15:24:30.115Z",
+  "id" : "suihraob",
   "document" : {
     "debug" : {
       "source" : {
@@ -10,13 +10,13 @@
             "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "CzLNHBFHuR"
+          "value" : "r589wyJzS2"
         },
-        "version" : 38,
-        "modifiedTime" : "2022-04-13T20:28:09Z"
+        "version" : 95,
+        "modifiedTime" : "2022-04-01T19:28:29Z"
       },
-      "mergedTime" : "2022-04-13T20:28:09Z",
-      "indexedTime" : "2022-04-28T13:28:29.055Z",
+      "mergedTime" : "2022-04-01T19:28:29Z",
+      "indexedTime" : "2022-04-28T15:24:30.112Z",
       "redirectSources" : [
       ]
     },
@@ -26,12 +26,12 @@
           "id" : "miro-image-number"
         },
         "ontologyType" : "Work",
-        "value" : "CzLNHBFHuR"
+        "value" : "r589wyJzS2"
       },
-      "canonicalId" : "vbi1ii19",
-      "mergedTime" : "2022-04-13T20:28:09Z",
-      "sourceModifiedTime" : "2022-04-13T20:28:09Z",
-      "indexedTime" : "2022-04-28T13:28:29.055Z",
+      "canonicalId" : "suihraob",
+      "mergedTime" : "2022-04-01T19:28:29Z",
+      "sourceModifiedTime" : "2022-04-01T19:28:29Z",
+      "indexedTime" : "2022-04-28T15:24:30.112Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,7 +50,7 @@
       }
     },
     "data" : {
-      "title" : "title-WjGGR8UNWu",
+      "title" : "title-2RuvBbFbQP",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
@@ -86,8 +86,8 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "vbi1ii19",
-      "title" : "title-WjGGR8UNWu",
+      "id" : "suihraob",
+      "title" : "title-2RuvBbFbQP",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -99,7 +99,7 @@
             "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "CzLNHBFHuR",
+          "value" : "r589wyJzS2",
           "type" : "Identifier"
         }
       ],
