@@ -1,37 +1,37 @@
 {
-  "description" : "one of a list of works",
-  "createdAt" : "2022-04-28T15:24:30.109Z",
-  "id" : "vbi1ii19",
+  "description" : "a work with optional top-level fields",
+  "createdAt" : "2022-04-28T16:13:07.856Z",
+  "id" : "xckp7yni",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "miro-image-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "CzLNHBFHuR"
+          "value" : "OJccsHbIrE"
         },
-        "version" : 12,
-        "modifiedTime" : "2022-05-19T00:18:42Z"
+        "version" : 68,
+        "modifiedTime" : "2020-10-15T15:51:00Z"
       },
-      "mergedTime" : "2022-05-19T00:18:42Z",
-      "indexedTime" : "2022-04-28T15:24:29.567Z",
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "redirectSources" : [
       ]
     },
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "miro-image-number"
+          "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "CzLNHBFHuR"
+        "value" : "OJccsHbIrE"
       },
-      "canonicalId" : "vbi1ii19",
-      "mergedTime" : "2022-05-19T00:18:42Z",
-      "sourceModifiedTime" : "2022-05-19T00:18:42Z",
-      "indexedTime" : "2022-04-28T15:24:29.567Z",
+      "canonicalId" : "xckp7yni",
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "sourceModifiedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,7 +50,7 @@
       }
     },
     "data" : {
-      "title" : "title-WjGGR8UNWu",
+      "title" : "title-35xO0fGSrU",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
@@ -71,10 +71,10 @@
       ],
       "languages" : [
       ],
-      "edition" : null,
+      "edition" : "Special edition",
       "notes" : [
       ],
-      "duration" : null,
+      "duration" : 3600,
       "items" : [
       ],
       "holdings" : [
@@ -86,8 +86,8 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "vbi1ii19",
-      "title" : "title-WjGGR8UNWu",
+      "id" : "xckp7yni",
+      "title" : "title-35xO0fGSrU",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -95,11 +95,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "CzLNHBFHuR",
+          "value" : "OJccsHbIrE",
           "type" : "Identifier"
         }
       ],
@@ -117,8 +117,10 @@
       ],
       "languages" : [
       ],
+      "edition" : "Special edition",
       "notes" : [
       ],
+      "duration" : 3600,
       "images" : [
       ],
       "parts" : [

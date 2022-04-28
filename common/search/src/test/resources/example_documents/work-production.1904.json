@@ -1,37 +1,37 @@
 {
-  "description" : "one of a list of works",
-  "createdAt" : "2022-04-28T15:24:30.115Z",
-  "id" : "suihraob",
+  "description" : "a work with a production event in 1904",
+  "createdAt" : "2022-04-28T16:18:58.391Z",
+  "id" : "udfit1sh",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "miro-image-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "r589wyJzS2"
+          "value" : "AAjxHM3Wnj"
         },
-        "version" : 95,
-        "modifiedTime" : "2022-04-01T19:28:29Z"
+        "version" : 67,
+        "modifiedTime" : "2020-10-15T15:51:00Z"
       },
-      "mergedTime" : "2022-04-01T19:28:29Z",
-      "indexedTime" : "2022-04-28T15:24:30.112Z",
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "redirectSources" : [
       ]
     },
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "miro-image-number"
+          "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "r589wyJzS2"
+        "value" : "AAjxHM3Wnj"
       },
-      "canonicalId" : "suihraob",
-      "mergedTime" : "2022-04-01T19:28:29Z",
-      "sourceModifiedTime" : "2022-04-01T19:28:29Z",
-      "indexedTime" : "2022-04-28T15:24:30.112Z",
+      "canonicalId" : "udfit1sh",
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "sourceModifiedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,7 +50,7 @@
       }
     },
     "data" : {
-      "title" : "title-2RuvBbFbQP",
+      "title" : "Production event in 1904",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
@@ -68,6 +68,27 @@
       ],
       "thumbnail" : null,
       "production" : [
+        {
+          "label" : "AIV95SWJownjA6lFYOZFgIdUK",
+          "places" : [
+          ],
+          "agents" : [
+          ],
+          "dates" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "1904",
+              "range" : {
+                "from" : "1904-01-01T00:00:00Z",
+                "to" : "1904-12-31T23:59:59.999999999Z",
+                "label" : "1904"
+              }
+            }
+          ],
+          "function" : null
+        }
       ],
       "languages" : [
       ],
@@ -86,8 +107,8 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "suihraob",
-      "title" : "title-2RuvBbFbQP",
+      "id" : "udfit1sh",
+      "title" : "Production event in 1904",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -95,11 +116,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "r589wyJzS2",
+          "value" : "AAjxHM3Wnj",
           "type" : "Identifier"
         }
       ],
@@ -114,6 +135,20 @@
       "availabilities" : [
       ],
       "production" : [
+        {
+          "label" : "AIV95SWJownjA6lFYOZFgIdUK",
+          "places" : [
+          ],
+          "agents" : [
+          ],
+          "dates" : [
+            {
+              "label" : "1904",
+              "type" : "Period"
+            }
+          ],
+          "type" : "ProductionEvent"
+        }
       ],
       "languages" : [
       ],
