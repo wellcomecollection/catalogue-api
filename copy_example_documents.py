@@ -9,7 +9,7 @@ PIPELINE_ROOT = os.path.join(os.environ["HOME"], "repos/pipeline")
 
 prefixes = [
     "common/internal_model/src/test/resources",
-    "fixtures",
+    "pipeline/ingestor/example_documents",
 ]
 
 for prefix in prefixes:
@@ -17,6 +17,6 @@ for prefix in prefixes:
         shutil.copyfile(
             path,
             os.path.join(
-                "common/search/src/test/resources/fixtures", os.path.basename(path)
+                "common/search/src/test/resources/example_documents", os.path.basename(path)
             ),
         )
