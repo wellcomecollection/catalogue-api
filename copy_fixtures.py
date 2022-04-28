@@ -7,10 +7,7 @@ import shutil
 
 PIPELINE_ROOT = os.path.join(os.environ["HOME"], "repos/pipeline")
 
-prefixes = [
-    "common/internal_model/src/test/resources",
-    "fixtures",
-]
+prefixes = ["common/internal_model/src/test/resources", "fixtures"]
 
 for prefix in prefixes:
     for path in glob.glob(f"{PIPELINE_ROOT}/{prefix}/*.json"):

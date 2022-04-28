@@ -111,7 +111,10 @@ trait ApiTestBase extends ApiFixture with LocalResources {
 
       fixture match {
         case Success(f) => f
-        case Failure(err) => throw new IllegalArgumentException(s"Unable to read fixture $id: $err")
+        case Failure(err) =>
+          throw new IllegalArgumentException(
+            s"Unable to read fixture $id: $err"
+          )
       }
     }
 

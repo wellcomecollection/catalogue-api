@@ -13,7 +13,14 @@ class WorksTest
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexFixtures(worksIndex, "list-of-works.0", "list-of-works.1", "list-of-works.2", "list-of-works.3", "list-of-works.4")
+        indexFixtures(
+          worksIndex,
+          "list-of-works.0",
+          "list-of-works.1",
+          "list-of-works.2",
+          "list-of-works.3",
+          "list-of-works.4"
+        )
 
         assertJsonResponse(routes, path = s"$rootPath/works") {
           Status.OK ->
