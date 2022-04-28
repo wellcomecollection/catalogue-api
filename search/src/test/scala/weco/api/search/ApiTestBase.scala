@@ -103,25 +103,25 @@ trait ApiTestBase extends ApiFixture with LocalResources {
       Status.NotFound -> notFound(description = description)
     )
 
-  private case class Fixture(id: String, document: Json)
+  private case class ExampleDocument(id: String, document: Json)
 
-  def indexFixtures(
+  def indexExampleDocuments(
     index: Index,
-    fixtureIds: String*
+    ids: String*
   ): Unit = {
-    val fixtures = fixtureIds.map { id =>
-      val fixture = Try { readResource(s"fixtures/$id.json") }
-        .flatMap(jsonString => fromJson[Fixture](jsonString))
+    val documents = ids.map { id =>
+      val doc = Try { readResource(s"example_documents/$id.json") }
+        .flatMap(jsonString => fromJson[ExampleDocument](jsonString))
 
-      fixture match {
+      doc match {
         case Success(f) => f
-        case Failure(err) => throw new IllegalArgumentException(s"Unable to read fixture $id: $err")
+        case Failure(err) => throw new IllegalArgumentException(s"Unable to read example document $id: $err")
       }
     }
 
     val result = elasticClient.execute(
       bulk(
-        fixtures.map { fixture =>
+        documents.map { fixture =>
           indexInto(index.name)
             .id(fixture.id)
             .doc(fixture.document.noSpaces)
@@ -132,7 +132,7 @@ trait ApiTestBase extends ApiFixture with LocalResources {
     // With a large number of works this can take a long time
     // 30 seconds should be enough
     whenReady(result, Timeout(Span(30, Seconds))) { _ =>
-      getSizeOf(index) shouldBe fixtures.size
+      getSizeOf(index) shouldBe documents.size
     }
   }
 }
