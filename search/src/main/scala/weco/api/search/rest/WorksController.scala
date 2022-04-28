@@ -7,10 +7,8 @@ import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
 import weco.api.search.models.request.WorksIncludes
-import weco.api.search.services.WorksService
+import weco.api.search.services.{IndexedWork, WorksService}
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.Work
-import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -58,10 +56,11 @@ class WorksController(
 
           worksService
             .findById(id)(worksIndex)
-            .mapVisible(
-              (work: Work.Visible[Indexed]) =>
-                Future.successful(complete(work.asJson(includes)))
-            )
+            .mapVisible {
+              case IndexedWork.Visible(display) =>
+                val json = display.withIncludes(includes)
+                Future.successful(complete(json))
+            }
         }
       }
     }

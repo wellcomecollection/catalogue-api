@@ -3,8 +3,7 @@ package weco.api.search.rest
 import akka.http.scaladsl.model.StatusCodes.Found
 import akka.http.scaladsl.server.Route
 import weco.api.search.elasticsearch.ElasticsearchError
-import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.catalogue.internal_model.work.{Work, WorkState}
+import weco.api.search.services.IndexedWork
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,29 +11,25 @@ trait SingleWorkDirectives extends CustomDirectives {
   implicit val ec: ExecutionContext
 
   implicit class RouteOps(
-    work: Future[Either[ElasticsearchError, Work[WorkState.Indexed]]]
+    work: Future[Either[ElasticsearchError, IndexedWork]]
   ) {
-    def mapVisible(
-      f: Work.Visible[WorkState.Indexed] => Future[Route]
-    ): Future[Route] =
+    def mapVisible(f: IndexedWork.Visible => Future[Route]): Future[Route] =
       work.map {
-        case Right(work: Work.Visible[Indexed]) =>
+        case Right(work: IndexedWork.Visible) =>
           withFuture(f(work))
-        case Right(work: Work.Redirected[Indexed]) =>
+        case Right(work: IndexedWork.Redirected) =>
           workRedirect(work)
-        case Right(_: Work.Invisible[Indexed]) =>
-          gone("This work has been deleted")
-        case Right(_: Work.Deleted[Indexed]) =>
+        case Right(IndexedWork.Invisible()) | Right(IndexedWork.Deleted()) =>
           gone("This work has been deleted")
         case Left(err) =>
           elasticError(documentType = "Work", err)
       }
   }
 
-  private def workRedirect(work: Work.Redirected[Indexed]): Route =
+  private def workRedirect(work: IndexedWork.Redirected): Route =
     extractPublicUri { uri =>
       val newPath =
-        (work.redirectTarget.canonicalId.underlying :: uri.path.reverse.tail).reverse
+        (work.redirectTarget.canonicalId :: uri.path.reverse.tail).reverse
 
       // We use a relative URL here so that redirects keep you on the same host.
       //

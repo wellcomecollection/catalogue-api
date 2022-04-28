@@ -5,14 +5,10 @@ import io.circe.Json
 import io.circe.generic.extras.JsonKey
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  MultipleImagesIncludes,
-  WorkAggregationRequest,
-  WorksIncludes
-}
+import weco.api.search.models.request.{MultipleImagesIncludes, WorkAggregationRequest, WorksIncludes}
 import weco.api.search.rest
+import weco.api.search.services.IndexedWork
 import weco.catalogue.internal_model.image.{Image, ImageState}
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 case class DisplayResultList[DisplayAggs](
   @JsonKey("type") ontologyType: String = "ResultList",
@@ -27,7 +23,7 @@ case class DisplayResultList[DisplayAggs](
 
 object DisplayResultList extends CatalogueJsonUtil {
   def apply(
-    resultList: ResultList[Work.Visible[WorkState.Indexed], WorkAggregations],
+    resultList: ResultList[IndexedWork.Visible, WorkAggregations],
     searchOptions: SearchOptions[_, WorkAggregationRequest, _],
     includes: WorksIncludes,
     requestUri: Uri
@@ -38,7 +34,7 @@ object DisplayResultList extends CatalogueJsonUtil {
           pageSize = searchOptions.pageSize,
           totalPages = totalPages,
           totalResults = resultList.totalResults,
-          results = resultList.results.map(_.asJson(includes)),
+          results = resultList.results.map(_.display.withIncludes(includes)),
           prevPage = prevPage,
           nextPage = nextPage,
           aggregations = resultList.aggregations.map(

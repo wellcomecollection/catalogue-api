@@ -557,7 +557,7 @@ class WorksServiceTest
     partialSearchFunction: (
       Index,
       WorkSearchOptions
-    ) => Future[Either[_, ResultList[Work.Visible[Indexed], WorkAggregations]]]
+    ) => Future[Either[_, ResultList[IndexedWork.Visible, WorkAggregations]]]
   )(
     allWorks: Seq[Work[Indexed]],
     expectedWorks: Seq[Work[Indexed]],
