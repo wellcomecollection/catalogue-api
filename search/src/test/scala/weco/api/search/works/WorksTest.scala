@@ -13,14 +13,55 @@ class WorksTest
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = indexedWorks(count = 3).sortBy {
-          _.state.canonicalId
-        }
+        indexFixtures(worksIndex, "list-of-works.0", "list-of-works.1", "list-of-works.2", "list-of-works.3", "list-of-works.4")
 
-        insertIntoElasticsearch(worksIndex, works: _*)
-
-        assertJsonResponse(routes, s"$rootPath/works") {
-          Status.OK -> worksListResponse(works = works)
+        assertJsonResponse(routes, path = s"$rootPath/works") {
+          Status.OK ->
+            """
+              |{
+              |  "type": "ResultList",
+              |  "pageSize": 10,
+              |  "totalPages": 1,
+              |  "totalResults": 5,
+              |  "results": [
+              |    {
+              |      "id" : "equ81tpb",
+              |      "title" : "title-2TWOPFt15v",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [],
+              |      "type" : "Work"
+              |    },
+              |    {
+              |      "id" : "jtwv1ndp",
+              |      "title" : "title-H7sjiP63hv",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [],
+              |      "type": "Work"
+              |    },
+              |    {
+              |      "id" : "suihraob",
+              |      "title" : "title-2RuvBbFbQP",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [],
+              |      "type": "Work"
+              |    },
+              |    {
+              |      "id" : "vbi1ii19",
+              |      "title" : "title-WjGGR8UNWu",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [],
+              |      "type": "Work"
+              |    },
+              |    {
+              |      "id" : "whfyqts0",
+              |      "title" : "title-coJXQqPyux",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [],
+              |      "type": "Work"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
         }
     }
   }
