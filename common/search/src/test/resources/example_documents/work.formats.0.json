@@ -1,18 +1,18 @@
 {
-  "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-04-29T09:01:19.337Z",
-  "id" : "hfyqts0c",
+  "description" : "a list of works with a variety of formats",
+  "createdAt" : "2022-04-29T08:43:39.572Z",
+  "id" : "iba49lem",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "calm-record-id"
+            "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "RZvWebpA5W"
+          "value" : "Ej3tQgSkyZ"
         },
-        "version" : 48,
+        "version" : 29,
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
@@ -23,12 +23,12 @@
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "calm-record-id"
+          "id" : "miro-image-number"
         },
         "ontologyType" : "Work",
-        "value" : "RZvWebpA5W"
+        "value" : "Ej3tQgSkyZ"
       },
-      "canonicalId" : "hfyqts0c",
+      "canonicalId" : "iba49lem",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
       "indexedTime" : "2020-10-15T15:51:00Z",
@@ -50,12 +50,15 @@
       }
     },
     "data" : {
-      "title" : "title-oJXQqPyuxb",
+      "title" : "A work with format Books",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : null,
+      "format" : {
+        "id" : "a",
+        "label" : "Books"
+      },
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -86,20 +89,25 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "hfyqts0c",
-      "title" : "title-oJXQqPyuxb",
+      "id" : "iba49lem",
+      "title" : "A work with format Books",
       "alternativeTitles" : [
       ],
+      "workType" : {
+        "id" : "a",
+        "label" : "Books",
+        "type" : "Format"
+      },
       "contributors" : [
       ],
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "RZvWebpA5W",
+          "value" : "Ej3tQgSkyZ",
           "type" : "Identifier"
         }
       ],

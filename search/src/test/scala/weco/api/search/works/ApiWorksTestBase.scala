@@ -34,6 +34,10 @@ trait ApiWorksTestBase
     "works.deleted.3"
   )
 
+  val formatWorks = List("works.formats.0.Books", "works.formats.1.Books", "works.formats.2.Books", "works.formats.3.Books",
+    "works.formats.4.Journals","works.formats.5.Journals","works.formats.6.Journals",
+    "works.formats.7.Audio","works.formats.8.Audio","works.formats.9.Pictures")
+
   implicit object IdentifiedWorkIndexable
       extends Indexable[Work.Visible[Indexed]] {
     override def json(work: Work.Visible[Indexed]): String =

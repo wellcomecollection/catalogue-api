@@ -103,13 +103,10 @@ trait ApiTestBase extends ApiFixture with LocalResources {
       Status.NotFound -> notFound(description = description)
     )
 
-  private case class ExampleDocument(id: String, document: Json)
+  case class ExampleDocument(id: String, document: Json)
 
-  def indexExampleDocuments(
-    index: Index,
-    ids: String*
-  ): Unit = {
-    val documents = ids.map { id =>
+  def getExampleDocuments(ids: Seq[String]): Seq[ExampleDocument] =
+    ids.map { id =>
       val doc = Try { readResource(s"example_documents/$id.json") }
         .flatMap(jsonString => fromJson[ExampleDocument](jsonString))
 
@@ -121,6 +118,12 @@ trait ApiTestBase extends ApiFixture with LocalResources {
           )
       }
     }
+
+  def indexExampleDocuments(
+    index: Index,
+    ids: String*
+  ): Unit = {
+    val documents = getExampleDocuments(ids)
 
     val result = elasticClient.execute(
       bulk(

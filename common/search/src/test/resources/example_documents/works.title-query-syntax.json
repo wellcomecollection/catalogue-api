@@ -1,7 +1,7 @@
 {
-  "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-04-29T09:01:19.337Z",
-  "id" : "hfyqts0c",
+  "description" : "a work whose title has lots of ES query syntax operators",
+  "createdAt" : "2022-04-29T09:01:19.647Z",
+  "id" : "c4ob7xfo",
   "document" : {
     "debug" : {
       "source" : {
@@ -10,9 +10,9 @@
             "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "RZvWebpA5W"
+          "value" : "6dN4xc5d7p"
         },
-        "version" : 48,
+        "version" : 96,
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
@@ -26,9 +26,9 @@
           "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "RZvWebpA5W"
+        "value" : "6dN4xc5d7p"
       },
-      "canonicalId" : "hfyqts0c",
+      "canonicalId" : "c4ob7xfo",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
       "indexedTime" : "2020-10-15T15:51:00Z",
@@ -50,7 +50,7 @@
       }
     },
     "data" : {
-      "title" : "title-oJXQqPyuxb",
+      "title" : "+a -title | with (all the simple) query~4 syntax operators in it*",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
@@ -86,8 +86,8 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "hfyqts0c",
-      "title" : "title-oJXQqPyuxb",
+      "id" : "c4ob7xfo",
+      "title" : "+a -title | with (all the simple) query~4 syntax operators in it*",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -99,7 +99,7 @@
             "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "RZvWebpA5W",
+          "value" : "6dN4xc5d7p",
           "type" : "Identifier"
         }
       ],

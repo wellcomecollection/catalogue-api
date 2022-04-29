@@ -1,18 +1,18 @@
 {
-  "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-04-29T09:01:19.337Z",
-  "id" : "hfyqts0c",
+  "description" : "a list of works with a variety of formats",
+  "createdAt" : "2022-04-29T08:43:39.574Z",
+  "id" : "jz8rxqza",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "calm-record-id"
+            "id" : "sierra-system-number"
           },
           "ontologyType" : "Work",
-          "value" : "RZvWebpA5W"
+          "value" : "W8Fs9lMqav"
         },
-        "version" : 48,
+        "version" : 38,
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
@@ -23,12 +23,12 @@
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "calm-record-id"
+          "id" : "sierra-system-number"
         },
         "ontologyType" : "Work",
-        "value" : "RZvWebpA5W"
+        "value" : "W8Fs9lMqav"
       },
-      "canonicalId" : "hfyqts0c",
+      "canonicalId" : "jz8rxqza",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
       "indexedTime" : "2020-10-15T15:51:00Z",
@@ -50,12 +50,15 @@
       }
     },
     "data" : {
-      "title" : "title-oJXQqPyuxb",
+      "title" : "A work with format Journals",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : null,
+      "format" : {
+        "id" : "d",
+        "label" : "Journals"
+      },
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -86,20 +89,25 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "hfyqts0c",
-      "title" : "title-oJXQqPyuxb",
+      "id" : "jz8rxqza",
+      "title" : "A work with format Journals",
       "alternativeTitles" : [
       ],
+      "workType" : {
+        "id" : "d",
+        "label" : "Journals",
+        "type" : "Format"
+      },
       "contributors" : [
       ],
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
+            "id" : "sierra-system-number",
+            "label" : "Sierra system number",
             "type" : "IdentifierType"
           },
-          "value" : "RZvWebpA5W",
+          "value" : "W8Fs9lMqav",
           "type" : "Identifier"
         }
       ],

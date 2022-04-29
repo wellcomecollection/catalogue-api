@@ -1,7 +1,7 @@
 {
-  "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-04-29T09:01:19.337Z",
-  "id" : "hfyqts0c",
+  "description" : "a list of works with a variety of formats",
+  "createdAt" : "2022-04-29T08:43:39.576Z",
+  "id" : "et4hburi",
   "document" : {
     "debug" : {
       "source" : {
@@ -10,9 +10,9 @@
             "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "RZvWebpA5W"
+          "value" : "9fWqcUmcET"
         },
-        "version" : 48,
+        "version" : 54,
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
@@ -26,9 +26,9 @@
           "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "RZvWebpA5W"
+        "value" : "9fWqcUmcET"
       },
-      "canonicalId" : "hfyqts0c",
+      "canonicalId" : "et4hburi",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
       "indexedTime" : "2020-10-15T15:51:00Z",
@@ -50,12 +50,15 @@
       }
     },
     "data" : {
-      "title" : "title-oJXQqPyuxb",
+      "title" : "A work with format Audio",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : null,
+      "format" : {
+        "id" : "i",
+        "label" : "Audio"
+      },
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -86,10 +89,15 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "hfyqts0c",
-      "title" : "title-oJXQqPyuxb",
+      "id" : "et4hburi",
+      "title" : "A work with format Audio",
       "alternativeTitles" : [
       ],
+      "workType" : {
+        "id" : "i",
+        "label" : "Audio",
+        "type" : "Format"
+      },
       "contributors" : [
       ],
       "identifiers" : [
@@ -99,7 +107,7 @@
             "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "RZvWebpA5W",
+          "value" : "9fWqcUmcET",
           "type" : "Identifier"
         }
       ],
