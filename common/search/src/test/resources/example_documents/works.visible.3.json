@@ -1,6 +1,6 @@
 {
   "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-04-28T16:13:07.793Z",
+  "createdAt" : "2022-04-29T07:14:08Z",
   "id" : "v1ndph7s",
   "document" : {
     "debug" : {
@@ -16,7 +16,7 @@
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2022-04-29T07:14:07.998Z",
       "redirectSources" : [
       ]
     },
@@ -31,7 +31,7 @@
       "canonicalId" : "v1ndph7s",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2022-04-29T07:14:07.998Z",
       "availabilities" : [
       ],
       "derivedData" : {

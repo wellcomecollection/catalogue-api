@@ -1,37 +1,37 @@
 {
-  "description" : "an arbitrary list of invisible works",
-  "createdAt" : "2022-04-29T07:14:08.053Z",
-  "id" : "ereikut0",
+  "description" : "an invisible work with 'mouse' in the title",
+  "createdAt" : "2022-04-29T07:14:08.178Z",
+  "id" : "osdudvo1",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "miro-image-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "2SuvgbCx2T"
+          "value" : "3fmxMe7Pvj"
         },
-        "version" : 21,
+        "version" : 73,
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.052Z",
+      "indexedTime" : "2022-04-29T07:14:08.178Z",
       "invisibilityReasons" : [
       ]
     },
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "miro-image-number"
+          "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "2SuvgbCx2T"
+        "value" : "3fmxMe7Pvj"
       },
-      "canonicalId" : "ereikut0",
+      "canonicalId" : "osdudvo1",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.052Z",
+      "indexedTime" : "2022-04-29T07:14:08.178Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,7 +50,7 @@
       }
     },
     "data" : {
-      "title" : "title-Uk2wzXddAl",
+      "title" : "A mezzotint of a mouse",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [

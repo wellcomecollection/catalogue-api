@@ -1,19 +1,14 @@
 package weco.api.search.works
 
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.Work
-import weco.catalogue.internal_model.work.WorkState.Indexed
-
 class WorksTestInvisible extends ApiWorksTestBase {
-  val invisibleWork: Work.Invisible[Indexed] =
-    indexedWork().title("This work is invisible").invisible()
+  val invisibleWorkIds = Seq("works.invisible.0", "works.invisible.1", "works.invisible.2")
 
   it("returns an HTTP 410 Gone if looking up a work with visible = false") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, invisibleWork)
-        val path = s"$rootPath/works/${invisibleWork.state.canonicalId}"
-        assertJsonResponse(routes, path) {
+        indexExampleDocuments(worksIndex, invisibleWorkIds: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works/fixxlrcz") {
           Status.Gone -> deleted
         }
     }
@@ -22,15 +17,10 @@ class WorksTestInvisible extends ApiWorksTestBase {
   it("excludes works with visible=false from list results") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = indexedWorks(count = 2).sortBy {
-          _.state.canonicalId
-        }
+        indexExampleDocuments(worksIndex, invisibleWorkIds: _*)
 
-        val worksToIndex = Seq[Work[Indexed]](invisibleWork) ++ works
-        insertIntoElasticsearch(worksIndex, worksToIndex: _*)
-
-        assertJsonResponse(routes, s"$rootPath/works") {
-          Status.OK -> worksListResponse(works = works)
+        assertJsonResponse(routes, path = s"$rootPath/works") {
+          Status.OK -> emptyJsonResult
         }
     }
   }
@@ -38,11 +28,27 @@ class WorksTestInvisible extends ApiWorksTestBase {
   it("excludes works with visible=false from search results") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work = indexedWork().title("This shouldn't be invisible!")
-        insertIntoElasticsearch(worksIndex, work, invisibleWork)
+        indexExampleDocuments(worksIndex, "work.invisible.title-mouse", "work-title-mouse")
 
-        assertJsonResponse(routes, s"$rootPath/works?query=invisible") {
-          Status.OK -> worksListResponse(works = Seq(work))
+        assertJsonResponse(routes, s"$rootPath/works?query=mouse") {
+          Status.OK ->
+            """
+              |{
+              |  "type": "ResultList",
+              |  "pageSize": 10,
+              |  "totalPages": 1,
+              |  "totalResults": 1,
+              |  "results": [
+              |    {
+              |      "id" : "b2tsq547",
+              |      "title" : "A mezzotint of a mouse",
+              |      "alternativeTitles" : [],
+              |      "availabilities" : [],
+              |      "type" : "Work"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
         }
     }
   }
