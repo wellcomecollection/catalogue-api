@@ -1,26 +1,15 @@
 package weco.api.search.works
 
-import weco.api.search.generators.PeriodGenerators
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
-import weco.catalogue.internal_model.locations._
+import weco.api.search.models.request.WorksIncludes
 
-class WorksTest
-    extends ApiWorksTestBase
-    with ItemsGenerators
-    with PeriodGenerators {
+class WorksTest extends ApiWorksTestBase {
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = indexedWorks(count = 3).sortBy {
-          _.state.canonicalId
-        }
+        indexTestDocuments(worksIndex, works: _*)
 
-        insertIntoElasticsearch(worksIndex, works: _*)
-
-        assertJsonResponse(routes, s"$rootPath/works") {
-          Status.OK -> worksListResponse(works = works)
+        assertJsonResponse(routes, path = s"$rootPath/works") {
+          Status.OK -> newWorksListResponse(visibleWorks)
         }
     }
   }
@@ -28,20 +17,19 @@ class WorksTest
   it("returns a single work when requested with id") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work = indexedWork()
+        indexTestDocuments(worksIndex, visibleWorks.head)
 
-        insertIntoElasticsearch(worksIndex, work)
-
-        assertJsonResponse(routes, s"$rootPath/works/${work.state.canonicalId}") {
-          Status.OK -> s"""
-            {
-             ${singleWorkResult()},
-             "id": "${work.state.canonicalId}",
-             "title": "${work.data.title.get}",
-             "alternativeTitles": [],
-             "availabilities": [${availabilities(work.state.availabilities)}]
-            }
-          """
+        assertJsonResponse(routes, path = s"$rootPath/works/7sjip63h") {
+          Status.OK ->
+            """
+              |{
+              |  "id": "7sjip63h",
+              |  "title": "title-dgZfc8BAUa",
+              |  "alternativeTitles": [],
+              |  "availabilities": [],
+              |  "type": "Work"
+              |}
+              |""".stripMargin
         }
     }
   }
@@ -49,73 +37,56 @@ class WorksTest
   it("returns optional fields when they exist") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work = indexedWork()
-          .duration(3600)
-          .edition("Special edition")
+        indexTestDocuments(worksIndex, "work-with-edition-and-duration")
 
-        insertIntoElasticsearch(worksIndex, work)
-        assertJsonResponse(routes, s"$rootPath/works/${work.state.canonicalId}") {
-          Status.OK -> s"""
-            {
-             ${singleWorkResult()},
-             "id": "${work.state.canonicalId}",
-             "title": "${work.data.title.get}",
-             "alternativeTitles": [],
-             "availabilities": [${availabilities(work.state.availabilities)}],
-             "edition": "Special edition",
-             "duration": 3600
-            }
+        assertJsonResponse(routes, path = s"$rootPath/works/kgxrtrir") {
+          Status.OK ->
             """
+              |{
+              |  "id": "kgxrtrir",
+              |  "title": "title-YGQYiF7SAh",
+              |  "alternativeTitles": [],
+              |  "availabilities": [],
+              |  "edition": "Special edition",
+              |  "duration": 3600,
+              |  "type": "Work"
+              |}
+              |""".stripMargin
         }
     }
   }
 
-  it(
-    "returns the requested page of results when requested with page & pageSize"
-  ) {
+  it("returns the requested page of results") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = indexedWorks(count = 3).sortBy {
-          _.state.canonicalId
-        }
-
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, visibleWorks: _*)
 
         assertJsonResponse(routes, s"$rootPath/works?page=2&pageSize=1") {
-          Status.OK -> s"""
-            {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$publicRootUri/works?page=1&pageSize=1",
-              "nextPage": "$publicRootUri/works?page=3&pageSize=1",
-              "results": [
-                ${workResponse(works(1))}
-              ]
-            }
-          """
-        }
-
-        assertJsonResponse(routes, s"$rootPath/works?page=1&pageSize=1") {
-          Status.OK -> s"""
-            {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "nextPage": "$publicRootUri/works?page=2&pageSize=1",
-              "results": [
-                ${workResponse(works(0))}
-              ]
-            }
-          """
+          Status.OK ->
+            s"""
+               |{
+               |  "results": [
+               |    ${getTestWork("works.visible.1").display.withIncludes(WorksIncludes.none).noSpaces}
+               |  ],
+               |  "nextPage" : "$publicRootUri/works?page=3&pageSize=1",
+               |  "prevPage" : "$publicRootUri/works?page=1&pageSize=1",
+               |  "type": "ResultList",
+               |}
+               |""".stripMargin
         }
 
         assertJsonResponse(routes, s"$rootPath/works?page=3&pageSize=1") {
-          Status.OK -> s"""
-            {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$publicRootUri/works?page=2&pageSize=1",
-              "results": [
-                ${workResponse(works(2))}
-              ]
-            }
-          """
+          Status.OK ->
+            s"""
+               |{
+               |  "results": [
+               |    ${getTestWork("works.visible.2").display.withIncludes(WorksIncludes.none).noSpaces}
+               |  ],
+               |  "nextPage" : "$publicRootUri/works?page=4&pageSize=1",
+               |  "prevPage" : "$publicRootUri/works?page=2&pageSize=1",
+               |  "type": "ResultList",
+               |}
+               |""".stripMargin
         }
     }
   }
@@ -123,7 +94,7 @@ class WorksTest
   it("ignores parameters that are unused when making an API request") {
     withWorksApi {
       case (_, routes) =>
-        assertJsonResponse(routes, s"$rootPath/works?foo=bar") {
+        assertJsonResponse(routes, path = s"$rootPath/works?foo=bar") {
           Status.OK -> emptyJsonResult
         }
     }
@@ -132,16 +103,14 @@ class WorksTest
   it("returns matching results if doing a full-text search") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val workDodo = indexedWork().title("A drawing of a dodo")
-        val workMouse = indexedWork().title("A mezzotint of a mouse")
-        insertIntoElasticsearch(worksIndex, workDodo, workMouse)
+        indexTestDocuments(worksIndex, "work-title-dodo", "work-title-mouse")
 
         assertJsonResponse(routes, s"$rootPath/works?query=cat") {
           Status.OK -> emptyJsonResult
         }
 
         assertJsonResponse(routes, s"$rootPath/works?query=dodo") {
-          Status.OK -> worksListResponse(works = Seq(workDodo))
+          Status.OK -> newWorksListResponse(ids = Seq("work-title-dodo"))
         }
     }
   }
@@ -149,77 +118,84 @@ class WorksTest
   it("shows the thumbnail field if available") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val thumbnailLocation = DigitalLocation(
-          locationType = LocationType.ThumbnailImage,
-          url = "https://iiif.example.org/1234/default.jpg",
-          license = Some(License.CCBY)
-        )
-        val work = indexedWork()
-          .thumbnail(thumbnailLocation)
-          .items(
-            List(createIdentifiedItemWith(locations = List(thumbnailLocation)))
-          )
-        insertIntoElasticsearch(worksIndex, work)
+        indexTestDocuments(worksIndex, "work-thumbnail")
 
-        assertJsonResponse(routes, s"$rootPath/works") {
-          Status.OK -> s"""
-            {
-              ${resultList(totalResults = 1)},
-              "results": [
-               {
-                 "type": "Work",
-                 "id": "${work.state.canonicalId}",
-                 "title": "${work.data.title.get}",
-                 "alternativeTitles": [],
-                 "availabilities": [${availabilities(work.state.availabilities)}],
-                 "thumbnail": ${location(work.data.thumbnail.get)}
-                }
-              ]
-            }
-          """
+        assertJsonResponse(routes, path = s"$rootPath/works/b2tsq547") {
+          Status.OK ->
+            """
+              |{
+              |  "id": "b2tsq547",
+              |  "title" : "title-ZNHa9f6J8i",
+              |  "alternativeTitles": [],
+              |  "availabilities": [],
+              |  "thumbnail" : {
+              |    "locationType" : {
+              |      "id" : "iiif-presentation",
+              |      "label" : "IIIF Presentation API",
+              |      "type" : "LocationType"
+              |    },
+              |    "url" : "https://iiif.wellcomecollection.org/image/VKc.jpg/info.json",
+              |    "credit" : "Credit line: xg9Ouz",
+              |    "linkText" : "Link text: lieZAgiK4B",
+              |    "license" : {
+              |      "id" : "cc-by",
+              |      "label" : "Attribution 4.0 International (CC BY 4.0)",
+              |      "url" : "http://creativecommons.org/licenses/by/4.0/",
+              |      "type" : "License"
+              |    },
+              |    "accessConditions" : [
+              |    ],
+              |    "type" : "DigitalLocation"
+              |  },
+              |  "type": "Work"
+              |}
+              |""".stripMargin
         }
     }
   }
 
-  it("supports sorting by production date") {
+  it("sorts by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work1900 = createWorkWithProductionEventFor(year = "1900")
-        val work1976 = createWorkWithProductionEventFor(year = "1976")
-        val work1904 = createWorkWithProductionEventFor(year = "1904")
-        val work2020 = createWorkWithProductionEventFor(year = "2020")
-        val work1098 = createWorkWithProductionEventFor(year = "1098")
-        insertIntoElasticsearch(
-          worksIndex,
-          work1900,
-          work1976,
-          work1904,
-          work2020,
-          work1098
+        val works = Seq(
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904",
+          "work-production.1976",
+          "work-production.2020"
         )
 
-        assertJsonResponse(routes, s"$rootPath/works?sort=production.dates") {
-          Status.OK -> worksListResponse(
-            works = Seq(work1098, work1900, work1904, work1976, work2020)
+        indexTestDocuments(worksIndex, works: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works?sort=production.dates") {
+          Status.OK -> newWorksListResponse(
+            ids = works.sorted,
+            sortByCanonicalId = false
           )
         }
     }
   }
 
-  it("supports sorting of dates in descending order") {
+  it("sorts by production date in descending order") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work1900 = createWorkWithProductionEventFor(year = "1900")
-        val work1976 = createWorkWithProductionEventFor(year = "1976")
-        val work1904 = createWorkWithProductionEventFor(year = "1904")
-        insertIntoElasticsearch(worksIndex, work1900, work1976, work1904)
+        val works = Seq(
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904",
+          "work-production.1976",
+          "work-production.2020"
+        )
+
+        indexTestDocuments(worksIndex, works: _*)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/works?sort=production.dates&sortOrder=desc"
+          path = s"$rootPath/works?sort=production.dates&sortOrder=desc"
         ) {
-          Status.OK -> worksListResponse(
-            works = Seq(work1976, work1904, work1900)
+          Status.OK -> newWorksListResponse(
+            ids = works.sorted.reverse,
+            sortByCanonicalId = false
           )
         }
     }
@@ -228,30 +204,16 @@ class WorksTest
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works =
-          (1 to 5).map(_ => indexedWork()) ++
-            (1 to 3).map(_ => indexedWork().invisible()) ++
-            (1 to 2).map(_ => indexedWork().deleted()) ++
-            (1 to 4).map(
-              _ =>
-                indexedWork().redirected(
-                  IdState.Identified(
-                    canonicalId = createCanonicalId,
-                    sourceIdentifier = createSourceIdentifier
-                  )
-                )
-            )
+        indexTestDocuments(worksIndex, works: _*)
 
-        insertIntoElasticsearch(worksIndex, works: _*)
-
-        assertJsonResponse(routes, s"$rootPath/management/_workTypes") {
+        assertJsonResponse(routes, path = s"$rootPath/management/_workTypes") {
           Status.OK ->
             """
               |{
               |  "Visible": 5,
               |  "Invisible": 3,
-              |  "Deleted": 2,
-              |  "Redirected": 4
+              |  "Deleted": 4,
+              |  "Redirected": 2
               |}
               |""".stripMargin
         }

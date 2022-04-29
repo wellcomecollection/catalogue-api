@@ -47,16 +47,24 @@ trait ApiWorksTestBase
       | }
     """.stripMargin.tidy
 
-  def newWorksListResponse(ids: Seq[String]): String = {
-    val documents = getTestDocuments(ids)
+  def getTestWork(id: String): IndexedWork.Visible = {
+    val doc = getTestDocuments(Seq(id)).head
+    doc.document.as[IndexedWork.Visible].right.get
+  }
 
-    val works = documents
-      .map(doc => doc.document.as[IndexedWork.Visible].right.get)
-      .sortBy(w => getKey(w.display, "id").get.toString)
+  def newWorksListResponse(ids: Seq[String], pageSize: Int = 10, totalPages: Int = 1, sortByCanonicalId: Boolean = true): String = {
+    val works = ids
+      .map(getTestWork)
+      .sortBy { w =>
+        if (sortByCanonicalId)
+          getKey(w.display, "id").get.toString
+        else
+          "0"
+      }
     val displayWorks = works.map(_.display.withIncludes(WorksIncludes.none).noSpaces)
     s"""
        |{
-       |  ${resultList(totalResults = works.size)},
+       |  ${resultList(totalResults = works.size, pageSize = pageSize, totalPages = totalPages)},
        |  "results": [ ${displayWorks.mkString(",")} ]
        |}
        |""".stripMargin
