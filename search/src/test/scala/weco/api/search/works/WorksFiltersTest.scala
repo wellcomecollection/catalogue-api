@@ -7,7 +7,6 @@ import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.generators.PeriodGenerators
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
@@ -366,19 +365,44 @@ class WorksFiltersTest
   }
 
   describe("filtering works by date range") {
-    val work1709 = createWorkWithProductionEventFor(year = "1709")
-    val work1950 = createWorkWithProductionEventFor(year = "1950")
-    val work2000 = createWorkWithProductionEventFor(year = "2000")
-
     it("filters by date range") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
+            path = s"$rootPath/works?production.dates.from=1800-01-01&production.dates.to=1960-01-01"
           ) {
-            Status.OK -> worksListResponse(works = Seq(work1950))
+            Status.OK ->
+              """
+                |{
+                |  "pageSize" : 10,
+                |  "results" : [
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "3twsgdza",
+                |      "title" : "Production event in 1900",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "udfit1sh",
+                |      "title" : "Production event in 1904",
+                |      "type" : "Work"
+                |    }
+                |  ],
+                |  "totalPages" : 1,
+                |  "totalResults" : 2,
+                |  "type" : "ResultList"
+                |}
+                |""".stripMargin
           }
       }
     }
@@ -386,14 +410,59 @@ class WorksFiltersTest
     it("filters by from date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.from=1900-01-01"
+            path = s"$rootPath/works?production.dates.from=1900-01-01"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1950, work2000).sortBy { _.state.canonicalId }
-            )
+            Status.OK ->
+              """
+                |{
+                |  "pageSize" : 10,
+                |  "results" : [
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "3twsgdza",
+                |      "title" : "Production event in 1900",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "pr8zhydf",
+                |      "title" : "Production event in 2020",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "udfit1sh",
+                |      "title" : "Production event in 1904",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "yzum5kot",
+                |      "title" : "Production event in 1976",
+                |      "type" : "Work"
+                |    }
+                |  ],
+                |  "totalPages" : 1,
+                |  "totalResults" : 4,
+                |  "type" : "ResultList"
+                |}
+                |""".stripMargin
           }
       }
     }
@@ -401,51 +470,123 @@ class WorksFiltersTest
     it("filters by to date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.to=1960-01-01"
+            path = s"$rootPath/works?production.dates.to=1902-01-01"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1709, work1950).sortBy { _.state.canonicalId }
-            )
+            Status.OK ->
+              """
+                |{
+                |  "pageSize" : 10,
+                |  "results" : [
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "3twsgdza",
+                |      "title" : "Production event in 1900",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "rz9qpj8a",
+                |      "title" : "Production event in 1098",
+                |      "type" : "Work"
+                |    }
+                |  ],
+                |  "totalPages" : 1,
+                |  "totalResults" : 2,
+                |  "type" : "ResultList"
+                |}
+                |""".stripMargin
           }
       }
     }
 
     it("errors on invalid date") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=INVALID"
-          ) {
-            Status.BadRequest ->
-              badRequest(
-                "production.dates.to: Invalid date encoding. Expected YYYY-MM-DD"
-              )
-          }
+      withApi { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=INVALID"
+        ) {
+          Status.BadRequest ->
+            badRequest(
+              "production.dates.to: Invalid date encoding. Expected YYYY-MM-DD"
+            )
+        }
       }
     }
   }
 
   describe("filtering works by language") {
-    val english = Language(label = "English", id = "eng")
-    val turkish = Language(label = "Turkish", id = "tur")
-
-    val englishWork = indexedWork().languages(List(english))
-    val turkishWork = indexedWork().languages(List(turkish))
-    val noLanguageWork = indexedWork()
-
-    val works = List(englishWork, turkishWork, noLanguageWork)
-
     it("filters by language") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(routes, s"$rootPath/works?languages=eng") {
-            Status.OK -> worksListResponse(works = Seq(englishWork))
+          indexExampleDocuments(worksIndex, languageWorks: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works?languages=eng") {
+            Status.OK ->
+              """
+                |{
+                |  "pageSize" : 10,
+                |  "results" : [
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "6ne7xwrd",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "i8zcsj78",
+                |      "title" : "A work with languages English, Swedish, Turkish",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "js3mu3tx",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "mok5a37b",
+                |      "title" : "A work with languages English, Swedish",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "wjtdpvyp",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    }
+                |  ],
+                |  "totalPages" : 1,
+                |  "totalResults" : 5,
+                |  "type" : "ResultList"
+                |}
+                |""".stripMargin
           }
       }
     }
@@ -453,13 +594,74 @@ class WorksFiltersTest
     it("filters by multiple comma separated languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(routes, s"$rootPath/works?languages=eng,tur") {
-            Status.OK -> worksListResponse(
-              works = Seq(englishWork, turkishWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+          indexExampleDocuments(worksIndex, languageWorks: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works?languages=eng,tur") {
+            Status.OK ->
+              """
+                |{
+                |  "pageSize" : 10,
+                |  "results" : [
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "6ne7xwrd",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "cjyhrq0r",
+                |      "title" : "A work with languages Turkish",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "i8zcsj78",
+                |      "title" : "A work with languages English, Swedish, Turkish",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "js3mu3tx",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "mok5a37b",
+                |      "title" : "A work with languages English, Swedish",
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "alternativeTitles" : [
+                |      ],
+                |      "availabilities" : [
+                |      ],
+                |      "id" : "wjtdpvyp",
+                |      "title" : "A work with languages English",
+                |      "type" : "Work"
+                |    }
+                |  ],
+                |  "totalPages" : 1,
+                |  "totalResults" : 6,
+                |  "type" : "ResultList"
+                |}
+                |""".stripMargin
           }
       }
     }
