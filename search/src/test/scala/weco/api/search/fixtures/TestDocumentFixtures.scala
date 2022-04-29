@@ -12,7 +12,8 @@ import weco.json.JsonUtil._
 
 import scala.util.{Failure, Success, Try}
 
-trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources { this: Suite =>
+trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources {
+  this: Suite =>
   val visibleWorks = (0 to 4).map(i => s"works.visible.$i")
   val invisibleWorks = (0 to 2).map(i => s"works.invisible.$i")
   val redirectedWorks = (0 to 1).map(i => s"works.redirected.$i")
@@ -38,7 +39,10 @@ trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources { t
 
       doc match {
         case Success(d) => d
-        case Failure(err) => throw new IllegalArgumentException(s"Unable to read fixture $id: $err")
+        case Failure(err) =>
+          throw new IllegalArgumentException(
+            s"Unable to read fixture $id: $err"
+          )
       }
     }
 

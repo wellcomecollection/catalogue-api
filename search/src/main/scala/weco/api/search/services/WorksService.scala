@@ -9,14 +9,24 @@ import io.circe.generic.extras.semiauto._
 import weco.json.JsonUtil._
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.models.index.IndexedWork
-import weco.api.search.models.{AggregationBucket, ElasticAggregations, WorkAggregations, WorkSearchOptions}
+import weco.api.search.models.{
+  AggregationBucket,
+  ElasticAggregations,
+  WorkAggregations,
+  WorkSearchOptions
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorksService(val elasticsearchService: ElasticsearchService)(
   implicit
   val ec: ExecutionContext
-) extends SearchService[IndexedWork, IndexedWork.Visible, WorkAggregations, WorkSearchOptions]
+) extends SearchService[
+      IndexedWork,
+      IndexedWork.Visible,
+      WorkAggregations,
+      WorkSearchOptions
+    ]
     with ElasticAggregations {
 
   implicit val decoder: Decoder[IndexedWork] =

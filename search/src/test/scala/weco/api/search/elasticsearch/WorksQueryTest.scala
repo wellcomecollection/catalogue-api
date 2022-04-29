@@ -28,7 +28,11 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(index, query = "7sjip63h", expectedWorks = List("works.visible.0"))
+        assertResultsMatchForAllowedQueryTypes(
+          index,
+          query = "7sjip63h",
+          expectedWorks = List("works.visible.0")
+        )
       }
     }
 
@@ -36,7 +40,11 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(index, query = "ejTwv1NdpH", expectedWorks = List("works.visible.0"))
+        assertResultsMatchForAllowedQueryTypes(
+          index,
+          query = "ejTwv1NdpH",
+          expectedWorks = List("works.visible.0")
+        )
       }
     }
 
@@ -44,7 +52,11 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(index, query = "ji3JH82kKu", expectedWorks = List("work.visible.everything.0"))
+        assertResultsMatchForAllowedQueryTypes(
+          index,
+          query = "ji3JH82kKu",
+          expectedWorks = List("work.visible.everything.0")
+        )
       }
     }
 

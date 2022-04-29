@@ -4,7 +4,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import weco.api.search.JsonHelpers
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
@@ -225,7 +229,7 @@ class WorksServiceTest
                 AggregationBucket(data = Format.Books, count = 4),
                 AggregationBucket(data = Format.Journals, count = 3),
                 AggregationBucket(data = Format.Audio, count = 2),
-                AggregationBucket(data = Format.Pictures, count = 1),
+                AggregationBucket(data = Format.Pictures, count = 1)
               )
             )
           ),
@@ -276,7 +280,12 @@ class WorksServiceTest
     it("filters records by from date") {
       assertListOrSearchResultIsCorrect(
         allWorks = works,
-        expectedWorks = Seq("work-production.1900", "work-production.1904", "work-production.1976", "work-production.2020"),
+        expectedWorks = Seq(
+          "work-production.1900",
+          "work-production.1904",
+          "work-production.1976",
+          "work-production.2020"
+        ),
         expectedTotalResults = 4,
         worksSearchOptions = createWorksSearchOptionsWith(
           filters = List(
@@ -289,7 +298,11 @@ class WorksServiceTest
     it("filters records by to date") {
       assertListOrSearchResultIsCorrect(
         allWorks = works,
-        expectedWorks = Seq("work-production.1098", "work-production.1900", "work-production.1904"),
+        expectedWorks = Seq(
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904"
+        ),
         expectedTotalResults = 3,
         worksSearchOptions = createWorksSearchOptionsWith(
           filters = List(

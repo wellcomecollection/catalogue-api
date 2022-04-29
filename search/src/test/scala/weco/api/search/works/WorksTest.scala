@@ -66,7 +66,9 @@ class WorksTest extends ApiWorksTestBase {
             s"""
                |{
                |  "results": [
-               |    ${getTestWork("works.visible.1").display.withIncludes(WorksIncludes.none).noSpaces}
+               |    ${getTestWork("works.visible.1").display
+                 .withIncludes(WorksIncludes.none)
+                 .noSpaces}
                |  ],
                |  "nextPage" : "$publicRootUri/works?page=3&pageSize=1",
                |  "prevPage" : "$publicRootUri/works?page=1&pageSize=1",
@@ -83,7 +85,9 @@ class WorksTest extends ApiWorksTestBase {
             s"""
                |{
                |  "results": [
-               |    ${getTestWork("works.visible.2").display.withIncludes(WorksIncludes.none).noSpaces}
+               |    ${getTestWork("works.visible.2").display
+                 .withIncludes(WorksIncludes.none)
+                 .noSpaces}
                |  ],
                |  "nextPage" : "$publicRootUri/works?page=4&pageSize=1",
                |  "prevPage" : "$publicRootUri/works?page=2&pageSize=1",
@@ -173,7 +177,10 @@ class WorksTest extends ApiWorksTestBase {
 
         indexTestDocuments(worksIndex, works: _*)
 
-        assertJsonResponse(routes, path = s"$rootPath/works?sort=production.dates") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=production.dates"
+        ) {
           Status.OK -> newWorksListResponse(
             ids = works.sorted,
             sortByCanonicalId = false
