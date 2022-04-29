@@ -34,7 +34,7 @@ trait CatalogueJsonUtil {
 
   implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
     def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w).asJson.withIncludes(includes)
+      DisplayWork(w).asJson.deepDropNullValues.withIncludes(includes)
   }
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {

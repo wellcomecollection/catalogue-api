@@ -27,6 +27,8 @@ trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources { t
 
   val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
+  val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
+
   protected case class TestDocument(id: String, document: Json)
 
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =

@@ -1,8 +1,6 @@
 package weco.api.search.works
 
 class WorksFiltersTest extends ApiWorksTestBase {
-  val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
-
   it("combines multiple filters") {
     withWorksApi {
       case (worksIndex, routes) =>
