@@ -1,9 +1,9 @@
 package weco.api.search
 
 import io.circe.Json
-import weco.api.search.works.ApiWorksTestBase
+import org.scalatest.matchers.should.Matchers
 
-trait JsonHelpers extends ApiWorksTestBase {
+trait JsonHelpers extends Matchers {
   protected def getKeys(json: Json): List[String] =
     json.arrayOrObject(
       Nil,

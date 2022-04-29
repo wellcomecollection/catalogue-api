@@ -10,7 +10,6 @@ import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work._
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
@@ -22,27 +21,19 @@ class WorksFiltersTest
     with PeriodGenerators
     with TableDrivenPropertyChecks {
 
+  val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
+
   it("combines multiple filters") {
-    val work1 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "france")))
-    val work2 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "england")))
-    val work3 = indexedWork()
-      .genres(List(createGenreWith(label = "fantasy")))
-      .subjects(List(createSubjectWith(label = "england")))
-
-    val works = Seq(work1, work2, work3)
-
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, worksEverything: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?genres.label=horror&subjects.label=england"
+
+          path = s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
         ) {
-          Status.OK -> worksListResponse(works = Seq(work2))
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
         }
     }
   }
@@ -134,30 +125,13 @@ class WorksFiltersTest
   }
 
   describe("filtering works by Format") {
-    val noFormatWorks = indexedWorks(count = 3)
-
-    val bookWork = indexedWork()
-      .title("apple")
-      .format(Books)
-    val cdRomWork = indexedWork()
-      .title("apple")
-      .format(CDRoms)
-    val manuscriptWork = indexedWork()
-      .title("apple")
-      .format(ManuscriptsAsian)
-
-    val works = noFormatWorks ++ Seq(bookWork, cdRomWork, manuscriptWork)
-
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?workType=${ManuscriptsAsian.id}"
-          ) {
-            Status.OK -> worksListResponse(works = Seq(manuscriptWork))
+          assertJsonResponse(routes, path = s"$rootPath/works?workType=a") {
+            Status.OK -> newWorksListResponse(ids = worksFormatBooks)
           }
       }
     }
@@ -165,17 +139,10 @@ class WorksFiltersTest
     it("filters by multiple formats") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?workType=${ManuscriptsAsian.id},${CDRoms.id}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(cdRomWork, manuscriptWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?workType=a,i") {
+            Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
           }
       }
     }
@@ -183,17 +150,13 @@ class WorksFiltersTest
     it("when searching works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?query=apple&workType=${ManuscriptsAsian.id},${CDRoms.id}"
+            path = s"$rootPath/works?query=work%20with%20format&workType=a,i"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(cdRomWork, manuscriptWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+            Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
           }
       }
     }
@@ -260,19 +223,27 @@ class WorksFiltersTest
   }
 
   describe("filtering works by date range") {
-    val work1709 = createWorkWithProductionEventFor(year = "1709")
-    val work1950 = createWorkWithProductionEventFor(year = "1950")
-    val work2000 = createWorkWithProductionEventFor(year = "2000")
+    val works = Seq(
+      "work-production.1098",
+      "work-production.1900",
+      "work-production.1904",
+      "work-production.1976",
+      "work-production.2020"
+    )
 
     it("filters by date range") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
             s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
           ) {
-            Status.OK -> worksListResponse(works = Seq(work1950))
+            Status.OK -> newWorksListResponse(ids = Seq(
+              "work-production.1900",
+              "work-production.1904",
+            ))
           }
       }
     }
@@ -280,14 +251,18 @@ class WorksFiltersTest
     it("filters by from date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.from=1900-01-01"
+            path = s"$rootPath/works?production.dates.from=1900-01-01"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1950, work2000).sortBy { _.state.canonicalId }
-            )
+            Status.OK -> newWorksListResponse(ids = Seq(
+              "work-production.1900",
+              "work-production.1904",
+              "work-production.1976",
+              "work-production.2020",
+            ))
           }
       }
     }
@@ -295,14 +270,17 @@ class WorksFiltersTest
     it("filters by to date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.to=1960-01-01"
+            path = s"$rootPath/works?production.dates.to=1960-01-01"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1709, work1950).sortBy { _.state.canonicalId }
-            )
+            Status.OK -> newWorksListResponse(ids = Seq(
+              "work-production.1098",
+              "work-production.1900",
+              "work-production.1904",
+            ))
           }
       }
     }

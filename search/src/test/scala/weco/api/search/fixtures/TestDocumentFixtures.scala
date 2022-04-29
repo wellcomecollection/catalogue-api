@@ -13,6 +13,20 @@ import weco.json.JsonUtil._
 import scala.util.{Failure, Success, Try}
 
 trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources { this: Suite =>
+  val visibleWorks = (0 to 4).map(i => s"works.visible.$i")
+  val invisibleWorks = (0 to 2).map(i => s"works.invisible.$i")
+  val redirectedWorks = (0 to 1).map(i => s"works.redirected.$i")
+  val deletedWorks = (0 to 3).map(i => s"works.deleted.$i")
+
+  val works = visibleWorks ++ invisibleWorks ++ redirectedWorks ++ deletedWorks
+
+  val worksFormatBooks = (0 to 3).map(i => s"works.formats.$i.Books")
+  val worksFormatJournals = (4 to 6).map(i => s"works.formats.$i.Journals")
+  val worksFormatAudio = (7 to 8).map(i => s"works.formats.$i.Audio")
+  val worksFormatPictures = (9 to 9).map(i => s"works.formats.$i.Pictures")
+
+  val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
+
   protected case class TestDocument(id: String, document: Json)
 
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =

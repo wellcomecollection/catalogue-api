@@ -10,6 +10,7 @@ import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.request.WorkAggregationRequest
+import weco.api.search.works.ApiWorksTestBase
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.Format
 
@@ -22,25 +23,12 @@ class WorksServiceTest
     with EitherValues
     with SearchOptionsGenerators
     with TestDocumentFixtures
+    with ApiWorksTestBase
     with JsonHelpers {
 
   val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)
   )
-
-  val visibleWorks = (0 to 4).map(i => s"works.visible.$i")
-  val invisibleWorks = (0 to 2).map(i => s"works.invisible.$i")
-  val redirectedWorks = (0 to 1).map(i => s"works.redirected.$i")
-  val deletedWorks = (0 to 3).map(i => s"works.deleted.$i")
-
-  val works = visibleWorks ++ invisibleWorks ++ redirectedWorks ++ deletedWorks
-
-  val worksFormatBooks = (0 to 3).map(i => s"works.formats.$i.Books")
-  val worksFormatJournals = (4 to 6).map(i => s"works.formats.$i.Journals")
-  val worksFormatAudio = (7 to 8).map(i => s"works.formats.$i.Audio")
-  val worksFormatPictures = (9 to 9).map(i => s"works.formats.$i.Pictures")
-
-  val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
   val defaultWorksSearchOptions: WorkSearchOptions = createWorksSearchOptions
 
