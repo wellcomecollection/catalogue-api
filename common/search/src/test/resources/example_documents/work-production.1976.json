@@ -1,6 +1,6 @@
 {
   "description" : "a work with a production event in 1976",
-  "createdAt" : "2022-04-29T07:14:08.170Z",
+  "createdAt" : "2022-04-29T07:27:43.090Z",
   "id" : "yzum5kot",
   "document" : {
     "debug" : {
@@ -16,7 +16,7 @@
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.169Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "redirectSources" : [
       ]
     },
@@ -31,7 +31,7 @@
       "canonicalId" : "yzum5kot",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.169Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "availabilities" : [
       ],
       "derivedData" : {

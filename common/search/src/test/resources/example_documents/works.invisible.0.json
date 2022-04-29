@@ -1,6 +1,6 @@
 {
   "description" : "an arbitrary list of invisible works",
-  "createdAt" : "2022-04-29T07:14:08.051Z",
+  "createdAt" : "2022-04-29T07:27:42.980Z",
   "id" : "fixxlrcz",
   "document" : {
     "debug" : {
@@ -16,7 +16,7 @@
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.045Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "invisibilityReasons" : [
       ]
     },
@@ -31,7 +31,7 @@
       "canonicalId" : "fixxlrcz",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.045Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "availabilities" : [
       ],
       "derivedData" : {

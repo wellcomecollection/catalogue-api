@@ -1,6 +1,6 @@
 {
   "description" : "a work with a production event in 1900",
-  "createdAt" : "2022-04-29T07:14:08.167Z",
+  "createdAt" : "2022-04-29T07:27:43.087Z",
   "id" : "3twsgdza",
   "document" : {
     "debug" : {
@@ -16,7 +16,7 @@
         "modifiedTime" : "2020-10-15T15:51:00Z"
       },
       "mergedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.153Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "redirectSources" : [
       ]
     },
@@ -31,7 +31,7 @@
       "canonicalId" : "3twsgdza",
       "mergedTime" : "2020-10-15T15:51:00Z",
       "sourceModifiedTime" : "2020-10-15T15:51:00Z",
-      "indexedTime" : "2022-04-29T07:14:08.153Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
       "availabilities" : [
       ],
       "derivedData" : {
