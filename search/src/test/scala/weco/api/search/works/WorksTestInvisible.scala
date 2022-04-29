@@ -17,8 +17,7 @@ class WorksTestInvisible extends ApiWorksTestBase with TestDocumentFixtures {
   it("excludes invisible works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, visibleWorks: _*)
-        indexTestDocuments(worksIndex, invisibleWorks: _*)
+        indexTestDocuments(worksIndex, (visibleWorks ++ invisibleWorks): _*)
 
         assertJsonResponse(routes, s"$rootPath/works") {
           Status.OK -> newWorksListResponse(visibleWorks)
