@@ -70,7 +70,10 @@ class WorksTest extends ApiWorksTestBase {
                |  ],
                |  "nextPage" : "$publicRootUri/works?page=3&pageSize=1",
                |  "prevPage" : "$publicRootUri/works?page=1&pageSize=1",
-               |  "type": "ResultList",
+               |  "totalResults": ${visibleWorks.length},
+               |  "totalPages": ${visibleWorks.length},
+               |  "pageSize": 1,
+               |  "type": "ResultList"
                |}
                |""".stripMargin
         }
@@ -84,7 +87,10 @@ class WorksTest extends ApiWorksTestBase {
                |  ],
                |  "nextPage" : "$publicRootUri/works?page=4&pageSize=1",
                |  "prevPage" : "$publicRootUri/works?page=2&pageSize=1",
-               |  "type": "ResultList",
+               |  "totalResults": ${visibleWorks.length},
+               |  "totalPages": ${visibleWorks.length},
+               |  "pageSize": 1,
+               |  "type": "ResultList"
                |}
                |""".stripMargin
         }

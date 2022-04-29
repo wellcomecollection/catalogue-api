@@ -52,7 +52,7 @@ trait ApiWorksTestBase
     doc.document.as[IndexedWork.Visible].right.get
   }
 
-  def newWorksListResponse(ids: Seq[String], pageSize: Int = 10, totalPages: Int = 1, sortByCanonicalId: Boolean = true): String = {
+  def newWorksListResponse(ids: Seq[String], sortByCanonicalId: Boolean = true): String = {
     val works = ids
       .map(getTestWork)
       .sortBy { w =>
@@ -64,7 +64,7 @@ trait ApiWorksTestBase
     val displayWorks = works.map(_.display.withIncludes(WorksIncludes.none).noSpaces)
     s"""
        |{
-       |  ${resultList(totalResults = works.size, pageSize = pageSize, totalPages = totalPages)},
+       |  ${resultList(totalResults = works.size)},
        |  "results": [ ${displayWorks.mkString(",")} ]
        |}
        |""".stripMargin
