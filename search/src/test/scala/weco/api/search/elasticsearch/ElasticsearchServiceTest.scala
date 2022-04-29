@@ -1,35 +1,25 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{
-  boolQuery,
-  bulk,
-  indexInto,
-  search,
-  termQuery
-}
+import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery, _}
 import com.sksamuel.elastic4s.analysis.Analysis
+import com.sksamuel.elastic4s.circe.hitReaderWithCirce
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
-import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
-import weco.catalogue.internal_model.index.IndexFixtures
-import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
-import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
-import weco.json.JsonUtil.toJson
-import io.circe.generic.auto._
-import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest}
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import com.sksamuel.elastic4s.circe.hitReaderWithCirce
-import com.sksamuel.elastic4s.requests.searches.{
-  MultiSearchRequest,
-  SearchRequest
-}
+import io.circe.generic.auto._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
+import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Seconds, Span}
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.index.IndexFixtures
+import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
+import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.fixtures.{RandomGenerators, TestWith}
+import weco.json.JsonUtil.toJson
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
