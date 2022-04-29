@@ -10,7 +10,6 @@ import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work._
 import weco.catalogue.internal_model.work.WorkState.Indexed
 
@@ -23,26 +22,38 @@ class WorksFiltersTest
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
-    val work1 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "france")))
-    val work2 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "england")))
-    val work3 = indexedWork()
-      .genres(List(createGenreWith(label = "fantasy")))
-      .subjects(List(createSubjectWith(label = "england")))
-
-    val works = Seq(work1, work2, work3)
-
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexExampleDocuments(worksIndex, everythingWorks: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?genres.label=horror&subjects.label=england"
+          path = s"$rootPath/works?genres.label=thDMBLQZhG&subjects.label=dFbK5kJngQ"
         ) {
-          Status.OK -> worksListResponse(works = Seq(work2))
+          Status.OK ->
+            """
+              |{
+              |  "type": "ResultList",
+              |  "pageSize": 10,
+              |  "totalPages": 1,
+              |  "totalResults": 1,
+              |  "results": [
+              |    {
+              |      "id" : "4ed5mjia",
+              |      "title" : "A work with all the include-able fields",
+              |      "alternativeTitles" : [],
+              |      "availabilities": [
+              |        {
+              |          "id" : "open-shelves",
+              |          "label" : "Open shelves",
+              |          "type" : "Availability"
+              |        }
+              |      ],
+              |      "type": "Work"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
         }
     }
   }
@@ -105,7 +116,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
+            path = s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
           ) {
             Status.OK -> worksListResponse(works = matchingWorks.sortBy {
               _.state.canonicalId
@@ -134,30 +145,59 @@ class WorksFiltersTest
   }
 
   describe("filtering works by Format") {
-    val noFormatWorks = indexedWorks(count = 3)
-
-    val bookWork = indexedWork()
-      .title("apple")
-      .format(Books)
-    val cdRomWork = indexedWork()
-      .title("apple")
-      .format(CDRoms)
-    val manuscriptWork = indexedWork()
-      .title("apple")
-      .format(ManuscriptsAsian)
-
-    val works = noFormatWorks ++ Seq(bookWork, cdRomWork, manuscriptWork)
-
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexExampleDocuments(worksIndex, formatWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?workType=${ManuscriptsAsian.id}"
-          ) {
-            Status.OK -> worksListResponse(works = Seq(manuscriptWork))
+          assertJsonResponse(routes, path = s"$rootPath/works?workType=d") {
+            Status.OK ->
+              """
+                |{
+                |  "type": "ResultList",
+                |  "pageSize": 10,
+                |  "totalPages": 1,
+                |  "totalResults": 3,
+                |  "results": [
+                |    {
+                |      "id" : "30wpoiv0",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    },
+                |    {
+                |      "id" : "jz8rxqza",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    },
+                |    {
+                |      "id" : "y3h9ieul",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
           }
       }
     }
@@ -165,17 +205,68 @@ class WorksFiltersTest
     it("filters by multiple formats") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexExampleDocuments(worksIndex, formatWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?workType=${ManuscriptsAsian.id},${CDRoms.id}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(cdRomWork, manuscriptWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?workType=d,k") {
+            Status.OK ->
+              """
+                |{
+                |  "type": "ResultList",
+                |  "pageSize": 10,
+                |  "totalPages": 1,
+                |  "totalResults": 4,
+                |  "results": [
+                |    {
+                |      "id" : "30wpoiv0",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    },
+                |    {
+                |      "id" : "jz8rxqza",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    },
+                |    {
+                |      "id" : "poh3lsc6",
+                |      "title" : "A work with format Pictures",
+                |      "alternativeTitles" : [],
+                |      "workType" : {
+                |        "id" : "k",
+                |        "label" : "Pictures",
+                |        "type" : "Format"
+                |      },
+                |      "availabilities" : [],
+                |      "type" : "Work"
+                |    },
+                |    {
+                |      "id" : "y3h9ieul",
+                |      "title" : "A work with format Journals",
+                |      "alternativeTitles" : [],
+                |      "availabilities": [],
+                |      "workType" : {
+                |        "id" : "d",
+                |        "label" : "Journals",
+                |        "type" : "Format"
+                |      },
+                |      "type": "Work"
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
           }
       }
     }
@@ -183,17 +274,32 @@ class WorksFiltersTest
     it("when searching works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexExampleDocuments(worksIndex, formatWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?query=apple&workType=${ManuscriptsAsian.id},${CDRoms.id}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(cdRomWork, manuscriptWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?query=A%20work%20with%20format&workType=k") {
+            Status.OK ->
+              """
+                |{
+                |  "type": "ResultList",
+                |  "pageSize": 10,
+                |  "totalPages": 1,
+                |  "totalResults": 1,
+                |  "results": [
+                |    {
+                |      "id" : "poh3lsc6",
+                |      "title" : "A work with format Pictures",
+                |      "alternativeTitles" : [],
+                |      "workType" : {
+                |        "id" : "k",
+                |        "label" : "Pictures",
+                |        "type" : "Format"
+                |      },
+                |      "availabilities" : [],
+                |      "type" : "Work"
+                |    }
+                |  ]
+                |}
+                |""".stripMargin
           }
       }
     }
