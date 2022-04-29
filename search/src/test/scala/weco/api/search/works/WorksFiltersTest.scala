@@ -308,18 +308,16 @@ class WorksFiltersTest
     }
 
     it("errors on invalid date") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, work1709, work1950, work2000)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=INVALID"
-          ) {
-            Status.BadRequest ->
-              badRequest(
-                "production.dates.to: Invalid date encoding. Expected YYYY-MM-DD"
-              )
-          }
+      withApi { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?production.dates.from=INVALID"
+        ) {
+          Status.BadRequest ->
+            badRequest(
+              "production.dates.from: Invalid date encoding. Expected YYYY-MM-DD"
+            )
+        }
       }
     }
   }

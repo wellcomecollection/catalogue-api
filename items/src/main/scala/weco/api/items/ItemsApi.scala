@@ -6,6 +6,7 @@ import weco.api.items.responses.LookupItemStatus
 import weco.api.items.services.{ItemUpdateService, WorkLookup}
 import weco.api.search.models.ApiConfig
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.http.FutureDirectives
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Success, Try}
@@ -18,6 +19,7 @@ class ItemsApi(
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
 ) extends LookupItemStatus
+    with FutureDirectives
     with Tracing {
   val routes: Route = concat(
     pathPrefix("works") {
