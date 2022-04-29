@@ -1,15 +1,15 @@
 package weco.api.requests.responses
 
 import akka.http.scaladsl.server.Route
-import weco.api.search.rest.CustomDirectives
 import weco.api.requests.models.display.DisplayResultsList
 import weco.api.requests.services.RequestsService
+import weco.http.FutureDirectives
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-trait LookupPendingRequests extends CustomDirectives {
+trait LookupPendingRequests extends FutureDirectives {
   val requestsService: RequestsService
 
   implicit val ec: ExecutionContext
