@@ -2,12 +2,7 @@ package weco.api.search.rest
 
 import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.server.{Directive, Route}
-import weco.api.search.elasticsearch.{
-  ElasticsearchError,
-  ElasticsearchErrorHandler,
-  IndexNotFoundError,
-  UnknownError
-}
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchErrorHandler, IndexNotFoundError, UnknownError}
 import weco.api.search.models.ApiConfig
 import weco.http.FutureDirectives
 
