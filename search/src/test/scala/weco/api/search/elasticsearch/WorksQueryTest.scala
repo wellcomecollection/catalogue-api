@@ -6,12 +6,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  ContributorGenerators,
-  GenreGenerators,
-  SubjectGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ContributorGenerators, GenreGenerators, SubjectGenerators}
 import weco.api.search.generators.SearchOptionsGenerators
+import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{SearchQuery, SearchQueryType, WorkSearchOptions}
 import weco.api.search.services.WorksService
 import weco.catalogue.internal_model.generators.ImageGenerators
@@ -363,7 +360,7 @@ class WorksQueryTest
   private def searchResults(
     index: Index,
     searchOptions: WorkSearchOptions
-  ): List[Work[Indexed]] = {
+  ): Seq[IndexedWork.Visible] = {
     val future = worksService.listOrSearch(index, searchOptions)
 
     whenReady(future) {

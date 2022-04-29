@@ -2,9 +2,9 @@ package weco.api.search.rest
 
 import akka.http.scaladsl.model.StatusCodes.Found
 import akka.http.scaladsl.server.Route
+import io.circe.Json
 import weco.api.search.elasticsearch.ElasticsearchError
-import weco.catalogue.internal_model.work.WorkState.Indexed
-import weco.catalogue.internal_model.work.{Work, WorkState}
+import weco.api.search.models.index.IndexedWork
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,29 +12,26 @@ trait SingleWorkDirectives extends CustomDirectives {
   implicit val ec: ExecutionContext
 
   implicit class RouteOps(
-    work: Future[Either[ElasticsearchError, Work[WorkState.Indexed]]]
+    work: Future[Either[ElasticsearchError, IndexedWork]]
   ) {
-    def mapVisible(
-      f: Work.Visible[WorkState.Indexed] => Future[Route]
-    ): Future[Route] =
+    def mapVisible(f: Json => Future[Route]): Future[Route] =
       work.map {
-        case Right(work: Work.Visible[Indexed]) =>
-          withFuture(f(work))
-        case Right(work: Work.Redirected[Indexed]) =>
-          workRedirect(work)
-        case Right(_: Work.Invisible[Indexed]) =>
+        case Right(w @ IndexedWork.Visible(displayWork)) =>
+          withFuture(f(displayWork))
+        case Right(IndexedWork.Redirected(redirectTarget)) =>
+          workRedirect(redirectTarget.canonicalId)
+        case Right(IndexedWork.Invisible()) =>
           gone("This work has been deleted")
-        case Right(_: Work.Deleted[Indexed]) =>
+        case Right(IndexedWork.Deleted()) =>
           gone("This work has been deleted")
         case Left(err) =>
           elasticError(documentType = "Work", err)
       }
   }
 
-  private def workRedirect(work: Work.Redirected[Indexed]): Route =
+  private def workRedirect(redirectId: String): Route =
     extractPublicUri { uri =>
-      val newPath =
-        (work.redirectTarget.canonicalId.underlying :: uri.path.reverse.tail).reverse
+      val newPath = (redirectId :: uri.path.reverse.tail).reverse
 
       // We use a relative URL here so that redirects keep you on the same host.
       //
