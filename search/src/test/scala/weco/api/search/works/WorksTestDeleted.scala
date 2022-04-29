@@ -15,8 +15,7 @@ class WorksTestDeleted extends ApiWorksTestBase {
   it("excludes deleted works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, visibleWorks: _*)
-        indexTestDocuments(worksIndex, deletedWorks: _*)
+        indexTestDocuments(worksIndex, (visibleWorks ++ deletedWorks): _*)
 
         assertJsonResponse(routes, s"$rootPath/works") {
           Status.OK -> newWorksListResponse(visibleWorks)
