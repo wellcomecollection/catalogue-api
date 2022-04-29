@@ -1,26 +1,6 @@
 package weco.api.search.works
 
-import com.sksamuel.elastic4s.Index
-import org.scalatest.Assertion
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
-import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.generators.PeriodGenerators
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.languages.Language
-import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
-import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work._
-import weco.catalogue.internal_model.work.WorkState.Indexed
-
-import java.net.URLEncoder
-
-class WorksFiltersTest
-    extends ApiWorksTestBase
-    with ItemsGenerators
-    with PeriodGenerators
-    with TableDrivenPropertyChecks {
-
+class WorksFiltersTest extends ApiWorksTestBase {
   val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
 
   it("combines multiple filters") {
@@ -38,191 +18,73 @@ class WorksFiltersTest
     }
   }
 
-  describe("filtering works by item LocationType") {
-    def createItemWithLocationType(
-      locationType: LocationType
-    ): Item[IdState.Minted] =
-      createIdentifiedItemWith(
-        locations = List(
-          locationType match {
-            case LocationType.ClosedStores =>
-              createPhysicalLocationWith(
-                locationType = LocationType.ClosedStores,
-                label = LocationType.ClosedStores.label
-              )
+  it("filters by item location type") {
+    val worksLocation = (0 to 4).map(i => s"works.locations.$i")
 
-            case physicalLocationType: PhysicalLocationType =>
-              createPhysicalLocationWith(locationType = physicalLocationType)
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksLocation: _*)
 
-            case digitalLocationType: DigitalLocationType =>
-              createDigitalLocationWith(locationType = digitalLocationType)
-          }
-        )
-      )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.locationType=iiif-image"
+        ) {
+          Status.OK -> newWorksListResponse(ids = Seq("works.locations.1", "works.locations.2"))
+        }
 
-    val worksWithNoItem = indexedWorks(count = 3)
-
-    val work1 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.IIIFImageAPI)
-        )
-      )
-    val work2 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.IIIFImageAPI),
-          createItemWithLocationType(LocationType.IIIFPresentationAPI)
-        )
-      )
-    val work3 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.ClosedStores)
-        )
-      )
-
-    val works = worksWithNoItem ++ Seq(work1, work2, work3)
-
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          val matchingWorks = Seq(work1, work2)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
-          ) {
-            Status.OK -> worksListResponse(works = matchingWorks.sortBy {
-              _.state.canonicalId
-            })
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          val matchingWorks = Seq(work2)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?query=carrots&items.locations.locationType=iiif-presentation"
-          ) {
-            Status.OK -> worksListResponse(works = matchingWorks.sortBy {
-              _.state.canonicalId
-            })
-          }
-      }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.locationType=iiif-image,closed-stores"
+        ) {
+          Status.OK -> newWorksListResponse(ids = Seq("works.locations.1", "works.locations.2", "works.locations.4"))
+        }
     }
   }
 
-  describe("filtering works by Format") {
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksFormat: _*)
+  it("filters by format") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksFormat: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?workType=a") {
-            Status.OK -> newWorksListResponse(ids = worksFormatBooks)
-          }
-      }
-    }
+        assertJsonResponse(routes, path = s"$rootPath/works?workType=a") {
+          Status.OK -> newWorksListResponse(ids = worksFormatBooks)
+        }
 
-    it("filters by multiple formats") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksFormat: _*)
+        assertJsonResponse(routes, path = s"$rootPath/works?workType=a,i") {
+          Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
+        }
 
-          assertJsonResponse(routes, path = s"$rootPath/works?workType=a,i") {
-            Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksFormat: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?query=work%20with%20format&workType=a,i"
-          ) {
-            Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
-          }
-      }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?query=work%20with%20format&workType=a,i"
+        ) {
+          Status.OK -> newWorksListResponse(ids = worksFormatBooks ++ worksFormatAudio)
+        }
     }
   }
 
-  describe("filtering works by type") {
-    val collectionWork =
-      indexedWork().title("rats").workType(WorkType.Collection)
-    val seriesWork =
-      indexedWork().title("rats").workType(WorkType.Series)
-    val sectionWork =
-      indexedWork().title("rats").workType(WorkType.Section)
+  it("filters by work type") {
+    val collectionWorks = (0 to 2).map(i => s"works.workType.$i")
+    val seriesWorks = (3 to 4).map(i => s"works.workType.$i")
+    val sectionWork = (5 to 8).map(i => s"works.workType.$i")
 
-    val works = Seq(collectionWork, seriesWork, sectionWork)
+    val works = collectionWorks ++ seriesWorks ++ sectionWork
 
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
 
-          assertJsonResponse(routes, s"$rootPath/works?type=Collection") {
-            Status.OK -> worksListResponse(works = Seq(collectionWork))
-          }
-      }
-    }
+        assertJsonResponse(routes, s"$rootPath/works?type=Collection") {
+          Status.OK -> newWorksListResponse(ids = collectionWorks)
+        }
 
-    it("filters by multiple types") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?type=Collection,Series",
-            unordered = true
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(collectionWork, seriesWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?query=rats&type=Series,Section",
-            unordered = true
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(seriesWork, sectionWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
+        assertJsonResponse(routes, s"$rootPath/works?type=Collection,Series") {
+          Status.OK -> newWorksListResponse(ids = collectionWorks ++ seriesWorks)
+        }
     }
   }
 
-  describe("filtering works by date range") {
+  describe("filtering by date range") {
     val works = Seq(
       "work-production.1098",
       "work-production.1900",
@@ -300,393 +162,110 @@ class WorksFiltersTest
     }
   }
 
-  describe("filtering works by language") {
-    val english = Language(label = "English", id = "eng")
-    val turkish = Language(label = "Turkish", id = "tur")
-
-    val englishWork = indexedWork().languages(List(english))
-    val turkishWork = indexedWork().languages(List(turkish))
-    val noLanguageWork = indexedWork()
-
-    val works = List(englishWork, turkishWork, noLanguageWork)
-
-    it("filters by language") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(routes, s"$rootPath/works?languages=eng") {
-            Status.OK -> worksListResponse(works = Seq(englishWork))
-          }
-      }
-    }
-
-    it("filters by multiple comma separated languages") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(routes, s"$rootPath/works?languages=eng,tur") {
-            Status.OK -> worksListResponse(
-              works = Seq(englishWork, turkishWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
-    }
-  }
-
-  describe("filtering works by genre") {
-    val annualReports = createGenreWith("Annual reports.")
-    val pamphlets = createGenreWith("Pamphlets.")
-    val psychology = createGenreWith("Psychology, Pathological")
-    val darwin = createGenreWith("Darwin \"Jones\", Charles")
-
-    val annualReportsWork = indexedWork().genres(List(annualReports))
-    val pamphletsWork = indexedWork().genres(List(pamphlets))
-    val psychologyWork = indexedWork().genres(List(psychology))
-    val darwinWork =
-      indexedWork().genres(List(darwin))
-    val mostThingsWork =
-      indexedWork().genres(List(pamphlets, psychology, darwin))
-    val nothingWork = indexedWork()
-
-    val works =
-      List(
-        annualReportsWork,
-        pamphletsWork,
-        psychologyWork,
-        darwinWork,
-        mostThingsWork,
-        nothingWork
-      )
-
-    val testCases = Table(
-      ("query", "results", "clue"),
-      ("Annual reports.", Seq(annualReportsWork), "single match single genre"),
-      (
-        "Pamphlets.",
-        Seq(pamphletsWork, mostThingsWork),
-        "multi match single genre"
-      ),
-      (
-        "Annual reports.,Pamphlets.",
-        Seq(annualReportsWork, pamphletsWork, mostThingsWork),
-        "comma separated"
-      ),
-      (
-        """Annual reports.,"Psychology, Pathological"""",
-        Seq(annualReportsWork, psychologyWork, mostThingsWork),
-        "commas in quotes"
-      ),
-      (
-        """"Darwin \"Jones\", Charles","Psychology, Pathological",Pamphlets.""",
-        Seq(darwinWork, psychologyWork, mostThingsWork, pamphletsWork),
-        "escaped quotes in quotes"
-      )
+  it("filters by language") {
+    val worksLanguageEng = Set(
+      "works.languages.0.eng",
+      "works.languages.1.eng",
+      "works.languages.2.eng",
+      "works.languages.3.eng+swe",
+      "works.languages.4.eng+swe+tur"
+    )
+    val worksLanguageSwe = Set(
+      "works.languages.3.eng+swe",
+      "works.languages.4.eng+swe+tur",
+      "works.languages.5.swe",
+    )
+    val worksLanguagesTur = Set(
+      "works.languages.4.eng+swe+tur",
+      "works.languages.6.tur",
     )
 
-    it("filters by genres as a comma separated list") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+    val works = (worksLanguageEng ++ worksLanguageSwe ++ worksLanguagesTur).toSeq
 
-          forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
-                }
-              }
-          }
-      }
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works?languages=eng") {
+          Status.OK -> newWorksListResponse(ids = worksLanguageEng.toSeq)
+        }
+
+        assertJsonResponse(routes, path = s"$rootPath/works?languages=eng,tur") {
+          Status.OK -> newWorksListResponse(ids = (worksLanguageEng ++ worksLanguagesTur).toSeq)
+        }
     }
   }
 
-  describe("filtering works by subject") {
-    val sanitation = createSubjectWith("Sanitation.")
-    val london = createSubjectWith("London (England)")
-    val psychology = createSubjectWith("Psychology, Pathological")
-    val darwin = createSubjectWith("Darwin \"Jones\", Charles")
+  it("filters by genre") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-    val sanitationWork = indexedWork().subjects(List(sanitation))
-    val londonWork = indexedWork().subjects(List(london))
-    val psychologyWork = indexedWork().subjects(List(psychology))
-    val darwinWork =
-      indexedWork().subjects(List(darwin))
-    val mostThingsWork =
-      indexedWork().subjects(List(london, psychology, darwin))
-    val nothingWork = indexedWork()
+        assertJsonResponse(routes, path = s"$rootPath/works?genres.label=4fR1f4tFlV") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+        }
 
-    val works =
-      List(
-        sanitationWork,
-        londonWork,
-        psychologyWork,
-        darwinWork,
-        mostThingsWork,
-        nothingWork
-      )
-
-    val testCases = Table(
-      ("query", "results", "clue"),
-      ("Sanitation.", Seq(sanitationWork), "single match single subject"),
-      (
-        "London (England)",
-        Seq(londonWork, mostThingsWork),
-        "multi match single subject"
-      ),
-      (
-        "Sanitation.,London (England)",
-        Seq(sanitationWork, londonWork, mostThingsWork),
-        "comma separated"
-      ),
-      (
-        """Sanitation.,"Psychology, Pathological"""",
-        Seq(sanitationWork, psychologyWork, mostThingsWork),
-        "commas in quotes"
-      ),
-      (
-        """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
-        Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
-        "escaped quotes in quotes"
-      )
-    )
-
-    it("filters by subjects as a comma separated list") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
-                }
-              }
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?genres.label=4fR1f4tFlV,D06AWAxFOW") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+        }
     }
   }
 
-  describe("filtering works by contributors") {
-    val patricia = Contributor(agent = Person("Bath, Patricia"), roles = Nil)
-    val karlMarx = Contributor(agent = Person("Karl Marx"), roles = Nil)
-    val jakePaul = Contributor(agent = Person("Jake Paul"), roles = Nil)
-    val darwin =
-      Contributor(agent = Person("Darwin \"Jones\", Charles"), roles = Nil)
+  it("filters by subject") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-    val patriciaWork = indexedWork().contributors(List(patricia))
-    val karlMarxWork =
-      indexedWork().contributors(List(karlMarx))
-    val jakePaulWork =
-      indexedWork().contributors(List(jakePaul))
-    val darwinWork = indexedWork().contributors(List(darwin))
-    val patriciaDarwinWork = indexedWork()
-      .contributors(List(patricia, darwin))
-    val noContributorsWork = indexedWork().contributors(Nil)
+        assertJsonResponse(routes, path = s"$rootPath/works?subjects.label=ArEtlVdV0j") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+        }
 
-    val works = List(
-      patriciaWork,
-      karlMarxWork,
-      jakePaulWork,
-      darwinWork,
-      patriciaDarwinWork,
-      noContributorsWork
-    )
-
-    val testCases = Table(
-      ("query", "results", "clue"),
-      ("Karl Marx", Seq(karlMarxWork), "single match"),
-      (
-        """"Bath, Patricia"""",
-        Seq(patriciaWork, patriciaDarwinWork),
-        "multi match"
-      ),
-      (
-        "Karl Marx,Jake Paul",
-        Seq(karlMarxWork, jakePaulWork),
-        "comma separated"
-      ),
-      (
-        """"Bath, Patricia",Karl Marx""",
-        Seq(patriciaWork, patriciaDarwinWork, karlMarxWork),
-        "commas in quotes"
-      ),
-      (
-        """"Bath, Patricia",Karl Marx,"Darwin \"Jones\", Charles"""",
-        Seq(patriciaWork, karlMarxWork, darwinWork, patriciaDarwinWork),
-        "quotes in quotes"
-      )
-    )
-
-    it("filters by contributors as a comma separated list") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  s"$rootPath/works?contributors.agent.label=${URLEncoder
-                    .encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
-                }
-              }
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?subjects.label=ArEtlVdV0j,5LLMVvWxgX") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+        }
     }
   }
 
-  describe("filtering works by license") {
-    def createLicensedWork(
-      licenses: Seq[License]
-    ): Work.Visible[WorkState.Indexed] = {
-      val items =
-        licenses.map { license =>
-          createDigitalItemWith(license = Some(license))
-        }.toList
+  it("filters by contributor") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-      indexedWork().items(items)
-    }
+        assertJsonResponse(routes, path = s"$rootPath/works?contributors.agent.label=person-o8xazs") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+        }
 
-    val ccByWork = createLicensedWork(licenses = List(License.CCBY))
-    val ccByNcWork = createLicensedWork(licenses = List(License.CCBYNC))
-    val bothLicenseWork =
-      createLicensedWork(licenses = List(License.CCBY, License.CCBYNC))
-    val noLicenseWork = createLicensedWork(licenses = List.empty)
-
-    val works = List(ccByWork, ccByNcWork, bothLicenseWork, noLicenseWork)
-
-    it("filters by license") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.license=cc-by"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(ccByWork, bothLicenseWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
-    }
-
-    it("filters by multiple licenses") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.license=cc-by,cc-by-nc"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(ccByWork, ccByNcWork, bothLicenseWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?contributors.agent.label=person-o8xazs,person-Lu2Xsa") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+        }
     }
   }
 
-  describe("filtering works by items.locations.license") {
-    def createLicensedWork(
-      licenses: Seq[License]
-    ): Work.Visible[WorkState.Indexed] = {
-      val items =
-        licenses.map { license =>
-          createDigitalItemWith(license = Some(license))
-        }.toList
+  it("filters by item license") {
+    val works = (0 to 4).map(i => s"works.items-with-licenses.$i")
 
-      indexedWork().items(items)
-    }
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
 
-    val ccByWork = createLicensedWork(licenses = List(License.CCBY))
-    val ccByNcWork = createLicensedWork(licenses = List(License.CCBYNC))
-    val bothLicenseWork =
-      createLicensedWork(licenses = List(License.CCBY, License.CCBYNC))
-    val noLicenseWork = createLicensedWork(licenses = List.empty)
+        assertJsonResponse(routes, path = s"$rootPath/works?items.locations.license=cc-by") {
+          Status.OK -> newWorksListResponse(ids = Seq("works.items-with-licenses.0", "works.items-with-licenses.1", "works.items-with-licenses.3"))
+        }
 
-    val works = List(ccByWork, ccByNcWork, bothLicenseWork, noLicenseWork)
-
-    it("filters by license") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.license=cc-by"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(ccByWork, bothLicenseWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
-    }
-
-    it("filters by multiple licenses") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.license=cc-by,cc-by-nc"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(ccByWork, ccByNcWork, bothLicenseWork).sortBy {
-                _.state.canonicalId
-              }
-            )
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?items.locations.license=cc-by,cc-by-nc") {
+          Status.OK -> newWorksListResponse(ids = Seq("works.items-with-licenses.0", "works.items-with-licenses.1", "works.items-with-licenses.2", "works.items-with-licenses.3"))
+        }
     }
   }
 
-  describe("Identifiers filter") {
-    val unknownWork = indexedWork()
-
+  describe("filters by identifier") {
     it("filters by a sourceIdentifier") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork()
-          insertIntoElasticsearch(worksIndex, unknownWork, work)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?identifiers=${work.sourceIdentifier.value}"
-          ) {
-            Status.OK -> worksListResponse(works = Seq(work))
+          assertJsonResponse(routes, path = s"$rootPath/works?identifiers=cQYSxE7gRG") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
           }
       }
     }
@@ -694,18 +273,10 @@ class WorksFiltersTest
     it("filters by multiple sourceIdentifiers") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work1 = indexedWork()
-          val work2 = indexedWork()
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, unknownWork, work1, work2)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?identifiers=${work1.sourceIdentifier.value},${work2.sourceIdentifier.value}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1, work2).sortBy(_.state.canonicalId)
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?identifiers=cQYSxE7gRG,mGMGKNlQnl") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
           }
       }
     }
@@ -713,379 +284,121 @@ class WorksFiltersTest
     it("filters by an otherIdentifier") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work =
-            indexedWork().otherIdentifiers(List(createSourceIdentifier))
-          insertIntoElasticsearch(worksIndex, unknownWork, work)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?identifiers=${work.data.otherIdentifiers.head.value}"
-          ) {
-            Status.OK -> worksListResponse(works = Seq(work))
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works?identifiers=eG0HzUX6yZ") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.1"))
           }
       }
     }
 
-    it("filters by multiple otherIdentifiers") {
+    it("filters by a mixture of identifiers") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work1 =
-            indexedWork().otherIdentifiers(List(createSourceIdentifier))
-          val work2 =
-            indexedWork().otherIdentifiers(List(createSourceIdentifier))
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, unknownWork, work1, work2)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?identifiers=${work1.data.otherIdentifiers.head.value},${work2.data.otherIdentifiers.head.value}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1, work2).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    it("filters by mixed identifiers") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          val work1 = indexedWork()
-          val work2 =
-            indexedWork().otherIdentifiers(List(createSourceIdentifier))
-
-          insertIntoElasticsearch(worksIndex, unknownWork, work1, work2)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?identifiers=${work1.sourceIdentifier.value},${work2.data.otherIdentifiers.head.value}"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(work1, work2).sortBy(_.state.canonicalId)
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?identifiers=cQYSxE7gRG,eG0HzUX6yZ") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
           }
       }
     }
   }
 
-  describe("Access status filter") {
-    def work(status: AccessStatus): Work.Visible[Indexed] =
-      indexedWork()
-        .items(
-          List(
-            createIdentifiedItemWith(
-              locations = List(
-                createDigitalLocationWith(
-                  accessConditions = List(
-                    AccessCondition(
-                      method = AccessMethod.ManualRequest,
-                      status = Some(status)
-                    )
-                  )
-                )
-              )
-            )
+  it("filters by access status") {
+    val works = (0 to 6).map(i => s"works.accessStatus.$i")
+
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
+        ) {
+          Status.OK -> newWorksListResponse(
+            ids = Seq("works.accessStatus.0", "works.accessStatus.1", "works.accessStatus.2")
           )
-        )
+        }
 
-    val workA = work(AccessStatus.Restricted)
-    val workB = work(AccessStatus.Restricted)
-    val workC = work(AccessStatus.Closed)
-    val workD = work(AccessStatus.Open)
-    val workE = work(AccessStatus.OpenWithAdvisory)
-    val workF = work(
-      AccessStatus.LicensedResources(relationship = LicensedResources.Resource)
-    )
-    val workG = work(
-      AccessStatus
-        .LicensedResources(relationship = LicensedResources.RelatedResource)
-    )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
+        ) {
+          Status.OK -> newWorksListResponse(
+            ids = Seq("works.accessStatus.5", "works.accessStatus.6")
+          )
+        }
 
-    val works = Seq(workA, workB, workC, workD, workE, workF, workG)
-
-    it("includes works by access status") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(workA, workB, workC).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    // The licensed resources access status is a bit special: it's a case class that
-    // takes two values rather than a value.
-    //
-    // Check we're handling it correctly.
-    it("includes works which are licensed resources") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(workF, workG).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    it("excludes works by access status") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
-          ) {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(workD, workE, workF, workG).sortBy(_.state.canonicalId)
-            )
-          }
-      }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
+        ) {
+          Status.OK -> newWorksListResponse(
+            ids = Seq("works.accessStatus.3", "works.accessStatus.4", "works.accessStatus.5", "works.accessStatus.6")
+          )
+        }
     }
   }
 
-  describe("availabilities filter") {
-    val onlineWork = indexedWork().items(
-      List(createDigitalItemWith(accessStatus = AccessStatus.Open))
-    )
-    val closedStoresWork = indexedWork().items(List(createClosedStoresItem))
-    val openShelvesWork = indexedWork().items(List(createOpenShelvesItem))
-    val onlineAndClosedStoresWork = indexedWork().items(
-      List(
-        createDigitalItemWith(accessStatus = AccessStatus.OpenWithAdvisory),
-        createClosedStoresItem
-      )
-    )
-    val works = List(
-      onlineWork,
-      openShelvesWork,
-      closedStoresWork,
-      onlineAndClosedStoresWork
-    )
+  it("filters by availabilities") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-    it("filters by availability ID") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(
-            worksIndex,
-            works: _*
-          )
-          assertJsonResponse(
-            routes = routes,
-            unordered = true,
-            path = s"$rootPath/works?availabilities=online"
-          ) {
-            Status.OK -> worksListResponse(
-              works = Seq(onlineWork, onlineAndClosedStoresWork)
-            )
-          }
-      }
-    }
+        assertJsonResponse(routes, path = s"$rootPath/works?availabilities=closed-stores") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1", "work.visible.everything.2"))
+        }
 
-    it("filters by multiple comma-separated availability IDs") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(
-            worksIndex,
-            works: _*
-          )
-          assertJsonResponse(
-            routes = routes,
-            unordered = true,
-            path = s"$rootPath/works?availabilities=closed-stores,online"
-          ) {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(onlineWork, closedStoresWork, onlineAndClosedStoresWork)
-            )
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?availabilities=open-shelves") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.2"))
+        }
     }
   }
 
-  describe("relation filters") {
+  it("filters by partOf") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-    def work(path: String): Work.Visible[Indexed] =
-      indexedWork(sourceIdentifier = createSourceIdentifierWith(value = path))
-        .collectionPath(CollectionPath(path = path))
-        .title(s"The title is $path")
+        assertJsonResponse(routes, path = s"$rootPath/works?partOf=dza7om88") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+        }
 
-    val workA = work("A")
-    val workB = work("A/B").ancestors(workA)
-    val workC = work("A/C").ancestors(workA)
-    val workD = work("A/C/D").ancestors(workA, workC)
-    val workE = work("A/C/D/E").ancestors(workA, workC, workD)
-    val workX = work("X")
-
-    def storeWorks(index: Index) =
-      insertIntoElasticsearch(index, workA, workB, workC, workD, workE, workX)
-
-    it("filters partOf by id from root position") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(routes, s"$rootPath/works?partOf=${workA.id}") {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    it("filters partOf by title from root position") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?partOf=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
-          ) {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    it("filters partOf explicitly by title from root position") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?partOf.title=${URLEncoder.encode(workA.data.title.get, "UTF-8")}"
-          ) {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(workB, workC, workD, workE).sortBy(_.state.canonicalId)
-            )
-          }
-      }
-    }
-
-    it("filters partOf by id from non root position") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(routes, s"$rootPath/works?partOf=${workC.id}") {
-            Status.OK -> worksListResponse(
-              works = Seq(workD, workE).sortBy(_.state.canonicalId)
-            )
-          }
-      }
+        assertJsonResponse(routes, path = s"$rootPath/works?partOf.title=title-BnN4RHJX7O") {
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+        }
     }
   }
 
   describe("item filters") {
-    val item1 = createIdentifiedItem
-    val item2 = createIdentifiedItem
-    val item3 = createIdentifiedItemWith(
-      otherIdentifiers = List(createSourceIdentifier)
-    )
-    val item4 = createIdentifiedItemWith(
-      otherIdentifiers = List(
-        createSourceIdentifier,
-        createSourceIdentifier
-      )
-    )
-
-    val workA = indexedWork().items(List(item1, item2))
-    val workB = indexedWork().items(List(item1))
-    val workC = indexedWork().items(List(item2, item3))
-    val workD = indexedWork().items(List(item3, item4))
-
     it("filters by canonical ID on items") {
-      assertItemsFilterWorks(
-        path = s"$rootPath/works?items=${item1.id.canonicalId}",
-        expectedWorks = Seq(workA, workB)
-      )
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-      assertItemsFilterWorks(
-        path = s"$rootPath/works?items=${item3.id.canonicalId}",
-        expectedWorks = Seq(workC, workD)
-      )
-    }
+          assertJsonResponse(routes, path = s"$rootPath/works?items=ca3anii6") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+          }
 
-    it("looks up multiple canonical IDs") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item1.id.canonicalId},${item3.id.canonicalId}",
-        expectedWorks = Seq(workA, workB, workC, workD)
-      )
-
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item2.id.canonicalId},${item3.id.canonicalId}",
-        expectedWorks = Seq(workA, workC, workD)
-      )
-
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item3.id.canonicalId},${item4.id.canonicalId}",
-        expectedWorks = Seq(workC, workD)
-      )
+          assertJsonResponse(routes, path = s"$rootPath/works?items=ca3anii6,kdcpazds") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+          }
+      }
     }
 
     it("looks up source identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item3.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workC, workD)
-      )
-
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item1.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workA, workB)
-      )
-    }
-
-    it("looks up multiple source identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item2.id.sourceIdentifier.value},${item3.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workA, workC, workD)
-      )
-    }
-
-    it("looks up other identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value}",
-        expectedWorks = Seq(workD)
-      )
-    }
-
-    it("looks up multiple other identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value},${item3.id.otherIdentifiers.head.value}",
-        expectedWorks = Seq(workC, workD)
-      )
-    }
-
-    def assertItemsFilterWorks(
-      path: String,
-      expectedWorks: Seq[Work.Visible[Indexed]]
-    ): Assertion =
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path) {
-            Status.OK -> worksListResponse(
-              works = expectedWorks.sortBy(_.state.canonicalId)
-            )
+          assertJsonResponse(routes, path = s"$rootPath/works?items.identifiers=hKyStbKjx1") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+          }
+
+          assertJsonResponse(routes, path = s"$rootPath/works?items.identifiers=hKyStbKjx1,xz9bfcN5BF") {
+            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.2"))
           }
       }
+    }
   }
 }

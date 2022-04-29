@@ -13,6 +13,7 @@ trait CatalogueJsonUtil {
   import JsonOps._
 
   implicit class WorkJsonOps(displayWork: Json) {
+    // TODO: Add tests for this form of modifying includes
     def withIncludes(includes: WorksIncludes): Json =
       displayWork
         .removeKeyRecursivelyIf(!includes.identifiers, "identifiers")
@@ -29,27 +30,11 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.partOf, "partOf")
         .removeKeyIf(!includes.precededBy, "precededBy")
         .removeKeyIf(!includes.succeededBy, "succeededBy")
-        .deepDropNullValues
   }
 
   implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
     def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w).asJson
-        .removeKeyRecursivelyIf(!includes.identifiers, "identifiers")
-        .removeKeyIf(!includes.items, "items")
-        .removeKeyIf(!includes.holdings, "holdings")
-        .removeKeyIf(!includes.subjects, "subjects")
-        .removeKeyIf(!includes.genres, "genres")
-        .removeKeyIf(!includes.contributors, "contributors")
-        .removeKeyIf(!includes.production, "production")
-        .removeKeyIf(!includes.languages, "languages")
-        .removeKeyIf(!includes.notes, "notes")
-        .removeKeyIf(!includes.images, "images")
-        .removeKeyIf(!includes.parts, "parts")
-        .removeKeyIf(!includes.partOf, "partOf")
-        .removeKeyIf(!includes.precededBy, "precededBy")
-        .removeKeyIf(!includes.succeededBy, "succeededBy")
-        .deepDropNullValues
+      DisplayWork(w).asJson.withIncludes(includes)
   }
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {
