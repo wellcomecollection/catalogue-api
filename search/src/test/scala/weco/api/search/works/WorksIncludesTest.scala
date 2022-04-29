@@ -1,8 +1,6 @@
 package weco.api.search.works
 
 class WorksIncludesTest extends ApiWorksTestBase {
-  val everythingWorks = List("work.visible.everything.0", "work.visible.everything.1", "work.visible.everything.2")
-
   describe("omits all the optional fields if we don't pass any includes") {
     it("on a list endpoint") {
       withWorksApi {

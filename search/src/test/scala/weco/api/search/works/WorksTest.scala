@@ -62,12 +62,12 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(worksIndex, "works.visible.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/vbi1ii19") {
+        assertJsonResponse(routes, path = s"$rootPath/works/1tpb2two") {
           Status.OK ->
             """
               |{
-              |  "id" : "vbi1ii19",
-              |  "title" : "title-WjGGR8UNWu",
+              |  "id" : "1tpb2two",
+              |  "title" : "title-PFt15vaMzx",
               |  "alternativeTitles" : [],
               |  "availabilities": [],
               |  "type": "Work"

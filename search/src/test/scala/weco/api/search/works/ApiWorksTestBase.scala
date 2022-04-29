@@ -38,6 +38,15 @@ trait ApiWorksTestBase
     "works.formats.4.Journals","works.formats.5.Journals","works.formats.6.Journals",
     "works.formats.7.Audio","works.formats.8.Audio","works.formats.9.Pictures")
 
+  val languageWorks = List(
+    "works.languages.0.eng","works.languages.1.eng","works.languages.2.eng",
+    "works.languages.3.eng+swe",
+    "works.languages.4.eng+swe+tur",
+    "works.languages.5.swe",
+    "works.languages.6.tur")
+
+  val everythingWorks = List("work.visible.everything.0", "work.visible.everything.1", "work.visible.everything.2")
+
   implicit object IdentifiedWorkIndexable
       extends Indexable[Work.Visible[Indexed]] {
     override def json(work: Work.Visible[Indexed]): String =

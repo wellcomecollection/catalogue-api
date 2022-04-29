@@ -1,0 +1,203 @@
+{
+  "description" : "a work with different concepts in the genre",
+  "createdAt" : "2022-04-29T09:39:33.445Z",
+  "id" : "vsf3c3yc",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "identifier" : {
+          "identifierType" : {
+            "id" : "sierra-system-number"
+          },
+          "ontologyType" : "Work",
+          "value" : "uNiUsY89wj"
+        },
+        "version" : 19,
+        "modifiedTime" : "2020-10-15T15:51:00Z"
+      },
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
+      "redirectSources" : [
+      ]
+    },
+    "state" : {
+      "sourceIdentifier" : {
+        "identifierType" : {
+          "id" : "sierra-system-number"
+        },
+        "ontologyType" : "Work",
+        "value" : "uNiUsY89wj"
+      },
+      "canonicalId" : "vsf3c3yc",
+      "mergedTime" : "2020-10-15T15:51:00Z",
+      "sourceModifiedTime" : "2020-10-15T15:51:00Z",
+      "indexedTime" : "2020-10-15T15:51:00Z",
+      "availabilities" : [
+      ],
+      "derivedData" : {
+        "contributorAgents" : [
+        ]
+      },
+      "relations" : {
+        "ancestors" : [
+        ],
+        "children" : [
+        ],
+        "siblingsPreceding" : [
+        ],
+        "siblingsSucceeding" : [
+        ]
+      }
+    },
+    "data" : {
+      "title" : "A work with different concepts in the genre",
+      "otherIdentifiers" : [
+      ],
+      "alternativeTitles" : [
+      ],
+      "format" : null,
+      "description" : null,
+      "physicalDescription" : null,
+      "lettering" : null,
+      "createdDate" : null,
+      "subjects" : [
+      ],
+      "genres" : [
+        {
+          "label" : "Electronic books",
+          "concepts" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "Conceptual Conversations",
+              "type" : "Concept"
+            },
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "Pleasant Paris",
+              "type" : "Place"
+            },
+            {
+              "id" : {
+                "canonicalId" : "gbthahxz",
+                "sourceIdentifier" : {
+                  "identifierType" : {
+                    "id" : "sierra-system-number"
+                  },
+                  "ontologyType" : "Period",
+                  "value" : "ZGWEGMyTaq"
+                },
+                "otherIdentifiers" : [
+                ],
+                "type" : "Identified"
+              },
+              "label" : "Past Prehistory",
+              "range" : null,
+              "type" : "Period"
+            }
+          ]
+        }
+      ],
+      "contributors" : [
+      ],
+      "thumbnail" : null,
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "edition" : null,
+      "notes" : [
+      ],
+      "duration" : null,
+      "items" : [
+      ],
+      "holdings" : [
+      ],
+      "collectionPath" : null,
+      "referenceNumber" : null,
+      "imageData" : [
+      ],
+      "workType" : "Standard"
+    },
+    "display" : {
+      "id" : "vsf3c3yc",
+      "title" : "A work with different concepts in the genre",
+      "alternativeTitles" : [
+      ],
+      "contributors" : [
+      ],
+      "identifiers" : [
+        {
+          "identifierType" : {
+            "id" : "sierra-system-number",
+            "label" : "Sierra system number",
+            "type" : "IdentifierType"
+          },
+          "value" : "uNiUsY89wj",
+          "type" : "Identifier"
+        }
+      ],
+      "subjects" : [
+      ],
+      "genres" : [
+        {
+          "label" : "Electronic books",
+          "concepts" : [
+            {
+              "label" : "Conceptual Conversations",
+              "type" : "Concept"
+            },
+            {
+              "label" : "Pleasant Paris",
+              "type" : "Place"
+            },
+            {
+              "id" : "gbthahxz",
+              "identifiers" : [
+                {
+                  "identifierType" : {
+                    "id" : "sierra-system-number",
+                    "label" : "Sierra system number",
+                    "type" : "IdentifierType"
+                  },
+                  "value" : "ZGWEGMyTaq",
+                  "type" : "Identifier"
+                }
+              ],
+              "label" : "Past Prehistory",
+              "type" : "Period"
+            }
+          ],
+          "type" : "Genre"
+        }
+      ],
+      "items" : [
+      ],
+      "holdings" : [
+      ],
+      "availabilities" : [
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
+    },
+    "type" : "Visible"
+  }
+}
