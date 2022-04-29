@@ -793,54 +793,55 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
-                 |  "subjects" : [
-                 |    {
-                 |      "label" : "dFbK5kJngQ",
-                 |      "concepts" : [
-                 |        {
-                 |          "label" : "gPzDrUplGUfcQYS",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "xE7gRGOo9Fg6icg",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "oKOwWLrIbnrzZji",
-                 |          "type" : "Concept"
-                 |        }
-                 |      ],
-                 |      "type" : "Subject"
-                 |    },
-                 |    {
-                 |      "label" : "3JH82kKuAr",
-                 |      "concepts" : [
-                 |        {
-                 |          "label" : "EtlVdV0jg08I834",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "KKSXk1WGWfqE6xF",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "akoqsVT1GlsNpYp",
-                 |          "type" : "Concept"
-                 |        }
-                 |      ],
-                 |      "type" : "Subject"
-                 |    }
+                 |  "alternativeTitles" : [
                  |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "subjects" : [
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "g08I834KKSXk1WG",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "WfqE6xFakoqsVT1",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "GlsNpYpthDMBLQZ",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "ArEtlVdV0j",
+                 |      "type" : "Subject"
+                 |    },
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "OR7nUmbDY87Uw1L",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "vlTE5cIHQR23GK9",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "tQdPt3acHhNKnNq",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "hG54NzomzM",
+                 |      "type" : "Subject"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1041,54 +1042,55 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
-                 |  "genres" : [
-                 |    {
-                 |      "label" : "thDMBLQZhG",
-                 |      "concepts" : [
-                 |        {
-                 |          "label" : "54NzomzMOR7nUmb",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "DY87Uw1LvlTE5cI",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "HQR23GK9tQdPt3a",
-                 |          "type" : "Concept"
-                 |        }
-                 |      ],
-                 |      "type" : "Genre"
-                 |    },
-                 |    {
-                 |      "label" : "cHhNKnNq4f",
-                 |      "concepts" : [
-                 |        {
-                 |          "label" : "R1f4tFlVnFnK1Qv",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "0bPiYMZquffyNPD",
-                 |          "type" : "Concept"
-                 |        },
-                 |        {
-                 |          "label" : "gAW3Gj5M4V6Fk1U",
-                 |          "type" : "Concept"
-                 |        }
-                 |      ],
-                 |      "type" : "Genre"
-                 |    }
+                 |  "alternativeTitles" : [
                  |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "genres" : [
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "nFnK1Qv0bPiYMZq",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "uffyNPDgAW3Gj5M",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "4V6Fk1Uu2KL5QXs",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "4fR1f4tFlV",
+                 |      "type" : "Genre"
+                 |    },
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "WE1MLX8biK5UW9S",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "VIX0fEgCIWtB2H6",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "8ssuRzRpFAch6oM",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "RV8G10Obxx",
+                 |      "type" : "Genre"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1107,90 +1109,61 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "contributors" : [
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-o8xazs",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        },
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-6am8fhYNr",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        }
+                 |      ],
                  |      "id" : "oo9fg6ic",
                  |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "contributors" : [
-                 |        {
-                 |          "agent" : {
-                 |            "label" : "person-2KL5QXs",
-                 |            "type" : "Person"
-                 |          },
-                 |          "roles" : [
-                 |          ],
-                 |          "type" : "Contributor"
-                 |        },
-                 |        {
-                 |          "agent" : {
-                 |            "label" : "person-V8G10ObxxW",
-                 |            "type" : "Person"
-                 |          },
-                 |          "roles" : [
-                 |          ],
-                 |          "type" : "Contributor"
-                 |        }
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
                  |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "contributors" : [
-                 |        {
-                 |          "agent" : {
-                 |            "label" : "person-iAUBgzynPV",
-                 |            "type" : "Person"
-                 |          },
-                 |          "roles" : [
-                 |          ],
-                 |          "type" : "Contributor"
                  |        },
-                 |        {
-                 |          "agent" : {
-                 |            "label" : "person-y1BmoiqJ",
-                 |            "type" : "Person"
-                 |          },
-                 |          "roles" : [
-                 |          ],
-                 |          "type" : "Contributor"
-                 |        }
-                 |      ],
-                 |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
                  |          "label" : "Closed stores",
                  |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
                  |        }
                  |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
                  |      "contributors" : [
                  |        {
                  |          "agent" : {
-                 |            "label" : "person-PMAgtlZT",
+                 |            "label" : "person-2bLQeClX",
                  |            "type" : "Person"
                  |          },
                  |          "roles" : [
@@ -1199,13 +1172,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        },
                  |        {
                  |          "agent" : {
-                 |            "label" : "person-6GyLzSr",
+                 |            "label" : "person-epg6BQO",
                  |            "type" : "Person"
                  |          },
                  |          "roles" : [
                  |          ],
                  |          "type" : "Contributor"
                  |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
                  |      ],
                  |      "availabilities" : [
                  |        {
@@ -1214,9 +1194,34 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "contributors" : [
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-Lu2Xsa",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        },
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-m0dL6XAj",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -1232,13 +1237,19 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
                  |  "contributors" : [
                  |    {
                  |      "agent" : {
-                 |        "label" : "person-2KL5QXs",
+                 |        "label" : "person-o8xazs",
                  |        "type" : "Person"
                  |      },
                  |      "roles" : [
@@ -1247,7 +1258,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |    },
                  |    {
                  |      "agent" : {
-                 |        "label" : "person-V8G10ObxxW",
+                 |        "label" : "person-6am8fhYNr",
                  |        "type" : "Person"
                  |      },
                  |      "roles" : [
@@ -1255,13 +1266,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |      "type" : "Contributor"
                  |    }
                  |  ],
-                 |  "availabilities" : [
-                 |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
-                 |      "type" : "Availability"
-                 |    }
-                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1280,138 +1286,136 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
                  |      "id" : "oo9fg6ic",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
                  |      "production" : [
                  |        {
-                 |          "label" : "E1MLX8biK5UW9SVIX0fEgCIWt",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "B2H68ssuRz",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "RpFAch6oMg",
+                 |              "label" : "6lVoGuWXqO",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "o8xaz",
+                 |              "label" : "9eqzv",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "NRzQw5sJ89",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        },
                  |        {
-                 |          "label" : "sI6am8fhYNr11C9xxYEdUXSLH",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "jmev7aEhJ0",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "QNRzQw5sJ8",
+                 |              "label" : "Ap8e8SuyMV",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "96lVo",
+                 |              "label" : "HQTT2",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "roF4g2k9frr0xAeKZIqbV783c",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "9SMhIH2DH1",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
                  |        {
                  |          "id" : "closed-stores",
                  |          "label" : "Closed stores",
                  |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "ou9z1esm",
                  |      "production" : [
                  |        {
-                 |          "label" : "be6G99aHcLRRBkyn24xZvMlY5",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "yFST4hzY1c",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "KoWGXrGHlO",
+                 |              "label" : "kEl0aPDS91",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "d9kGP",
+                 |              "label" : "lOaLK",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "O1Lux1bNFDaOKTsDKbwserVib",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "co3T5a2Cte",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        },
                  |        {
-                 |          "label" : "DWLLu2Xsatm0dL6XAjdGFZw7o",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "2IL5cpTq2s",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "zbf8JXFRL5",
+                 |              "label" : "tTXh5eC6hh",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "1Haiq",
+                 |              "label" : "PPPss",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "Lw3A3d2SgHOvziH7duUdynba2",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "c8ykXyKH9v",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
@@ -1419,55 +1423,60 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "wchkoofm",
                  |      "production" : [
                  |        {
-                 |          "label" : "eGLHq3k05FqagUauios0IzDAQ",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "A5geMZT0FF",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "S0zAAZGNVl",
+                 |              "label" : "e7X4srn7yL",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "dxfQF",
+                 |              "label" : "EuJLA",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "dGFZw7o2IL5cpTq2szbf8JXFR",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "L51HaiqMvP",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        },
                  |        {
-                 |          "label" : "hVctBFwsNPAX3Wg9bz6n2QtjP",
-                 |          "places" : [
-                 |            {
-                 |              "label" : "UbfZXARrSC",
-                 |              "type" : "Place"
-                 |            }
-                 |          ],
                  |          "agents" : [
                  |            {
-                 |              "label" : "GUFES8H2bL",
+                 |              "label" : "THk4Fal6yy",
                  |              "type" : "Person"
                  |            }
                  |          ],
                  |          "dates" : [
                  |            {
-                 |              "label" : "QeClX",
+                 |              "label" : "c6PAy",
                  |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "gnoMEDJADyhgl97NLnSGT3Ooi",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "RibBOUDMpI",
+                 |              "type" : "Place"
                  |            }
                  |          ],
                  |          "type" : "ProductionEvent"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -1483,62 +1492,63 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "production" : [
                  |    {
-                 |      "label" : "E1MLX8biK5UW9SVIX0fEgCIWt",
-                 |      "places" : [
-                 |        {
-                 |          "label" : "B2H68ssuRz",
-                 |          "type" : "Place"
-                 |        }
-                 |      ],
                  |      "agents" : [
                  |        {
-                 |          "label" : "RpFAch6oMg",
+                 |          "label" : "6lVoGuWXqO",
                  |          "type" : "Person"
                  |        }
                  |      ],
                  |      "dates" : [
                  |        {
-                 |          "label" : "o8xaz",
+                 |          "label" : "9eqzv",
                  |          "type" : "Period"
+                 |        }
+                 |      ],
+                 |      "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
+                 |      "places" : [
+                 |        {
+                 |          "label" : "NRzQw5sJ89",
+                 |          "type" : "Place"
                  |        }
                  |      ],
                  |      "type" : "ProductionEvent"
                  |    },
                  |    {
-                 |      "label" : "sI6am8fhYNr11C9xxYEdUXSLH",
-                 |      "places" : [
-                 |        {
-                 |          "label" : "jmev7aEhJ0",
-                 |          "type" : "Place"
-                 |        }
-                 |      ],
                  |      "agents" : [
                  |        {
-                 |          "label" : "QNRzQw5sJ8",
+                 |          "label" : "Ap8e8SuyMV",
                  |          "type" : "Person"
                  |        }
                  |      ],
                  |      "dates" : [
                  |        {
-                 |          "label" : "96lVo",
+                 |          "label" : "HQTT2",
                  |          "type" : "Period"
+                 |        }
+                 |      ],
+                 |      "label" : "roF4g2k9frr0xAeKZIqbV783c",
+                 |      "places" : [
+                 |        {
+                 |          "label" : "9SMhIH2DH1",
+                 |          "type" : "Place"
                  |        }
                  |      ],
                  |      "type" : "ProductionEvent"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1557,80 +1567,78 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
                  |      "id" : "oo9fg6ic",
+                 |      "languages" : [
+                 |        {
+                 |          "id" : "Iry",
+                 |          "label" : "y1sdDDR",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "CyK",
+                 |          "label" : "QFKzgro69P",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "kIH",
+                 |          "label" : "HMjgKFaY5",
+                 |          "type" : "Language"
+                 |        }
+                 |      ],
                  |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "languages" : [
-                 |        {
-                 |          "id" : "GuW",
-                 |          "label" : "qO9eqz",
-                 |          "type" : "Language"
                  |        },
-                 |        {
-                 |          "id" : "vro",
-                 |          "label" : "4g2k9fr",
-                 |          "type" : "Language"
-                 |        },
-                 |        {
-                 |          "id" : "r0x",
-                 |          "label" : "eKZIqbV783",
-                 |          "type" : "Language"
-                 |        }
-                 |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
                  |          "label" : "Closed stores",
                  |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "ou9z1esm",
                  |      "languages" : [
                  |        {
-                 |          "id" : "MvP",
-                 |          "label" : "7X4srn7",
+                 |          "id" : "CoB",
+                 |          "label" : "HnJZViP",
                  |          "type" : "Language"
                  |        },
                  |        {
-                 |          "id" : "yLE",
-                 |          "label" : "JLAgnoMED",
+                 |          "id" : "XHQ",
+                 |          "label" : "S7Jxv9xrQ6",
                  |          "type" : "Language"
                  |        },
                  |        {
-                 |          "id" : "JAD",
-                 |          "label" : "hgl97NL",
+                 |          "id" : "Lp6",
+                 |          "label" : "OUAue10NVp",
                  |          "type" : "Language"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
@@ -1638,26 +1646,31 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "wchkoofm",
                  |      "languages" : [
                  |        {
-                 |          "id" : "tep",
-                 |          "label" : "6BQOO1Lu",
+                 |          "id" : "dCh",
+                 |          "label" : "shi6cu",
                  |          "type" : "Language"
                  |        },
                  |        {
-                 |          "id" : "x1b",
-                 |          "label" : "FDaOKTsDK",
+                 |          "id" : "x20",
+                 |          "label" : "O7GkIFx8",
                  |          "type" : "Language"
                  |        },
                  |        {
-                 |          "id" : "bws",
-                 |          "label" : "rVibco3T",
+                 |          "id" : "vXQ",
+                 |          "label" : "PLHOqPv",
                  |          "type" : "Language"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -1673,33 +1686,34 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "languages" : [
                  |    {
-                 |      "id" : "GuW",
-                 |      "label" : "qO9eqz",
+                 |      "id" : "Iry",
+                 |      "label" : "y1sdDDR",
                  |      "type" : "Language"
                  |    },
                  |    {
-                 |      "id" : "vro",
-                 |      "label" : "4g2k9fr",
+                 |      "id" : "CyK",
+                 |      "label" : "QFKzgro69P",
                  |      "type" : "Language"
                  |    },
                  |    {
-                 |      "id" : "r0x",
-                 |      "label" : "eKZIqbV783",
+                 |      "id" : "kIH",
+                 |      "label" : "HMjgKFaY5",
                  |      "type" : "Language"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1718,26 +1732,23 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
                  |      "id" : "oo9fg6ic",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
                  |      "notes" : [
                  |        {
                  |          "contents" : [
-                 |            "9SMhIH"
+                 |            "j9BpOrhd8m"
                  |          ],
                  |          "noteType" : {
                  |            "id" : "general-note",
@@ -1748,19 +1759,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        },
                  |        {
                  |          "contents" : [
-                 |            "H1Ap8e",
-                 |            "ryhy1sdD"
-                 |          ],
-                 |          "noteType" : {
-                 |            "id" : "funding-info",
-                 |            "label" : "Funding information",
-                 |            "type" : "NoteType"
-                 |          },
-                 |          "type" : "Note"
-                 |        },
-                 |        {
-                 |          "contents" : [
-                 |            "uyMVHQTT"
+                 |            "ov3fzhoi",
+                 |            "zybrlE"
                  |          ],
                  |          "noteType" : {
                  |            "id" : "location-of-duplicates",
@@ -1768,30 +1768,44 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |            "type" : "NoteType"
                  |          },
                  |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "YEJhvwXauL"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "funding-info",
+                 |            "label" : "Funding information",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
-                 |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        },
                  |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "ou9z1esm",
                  |      "notes" : [
                  |        {
                  |          "contents" : [
-                 |            "SGT3OoiRi"
+                 |            "GvRAnRE2",
+                 |            "kW4LcPBC1S",
+                 |            "uRC7Fyj"
                  |          ],
                  |          "noteType" : {
                  |            "id" : "general-note",
@@ -1802,24 +1816,22 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        },
                  |        {
                  |          "contents" : [
-                 |            "OUDMpI",
-                 |            "k4Fal6yy",
-                 |            "PAydChzsh"
+                 |            "nCURCTNo7c"
                  |          ],
                  |          "noteType" : {
-                 |            "id" : "funding-info",
-                 |            "label" : "Funding information",
+                 |            "id" : "location-of-duplicates",
+                 |            "label" : "Location of duplicates",
                  |            "type" : "NoteType"
                  |          },
                  |          "type" : "Note"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
@@ -1827,11 +1839,12 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "wchkoofm",
                  |      "notes" : [
                  |        {
                  |          "contents" : [
-                 |            "a2CtekE",
-                 |            "KLw3A3d2S"
+                 |            "CsB8YxC3",
+                 |            "Isn6KqXfd"
                  |          ],
                  |          "noteType" : {
                  |            "id" : "location-of-duplicates",
@@ -1842,8 +1855,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        },
                  |        {
                  |          "contents" : [
-                 |            "aPDS91lO",
-                 |            "OvziH7du"
+                 |            "n6NMM9"
                  |          ],
                  |          "noteType" : {
                  |            "id" : "funding-info",
@@ -1851,11 +1863,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |            "type" : "NoteType"
                  |          },
                  |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "3Au9wn3b"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "general-note",
+                 |            "label" : "Notes",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -1871,20 +1898,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "notes" : [
                  |    {
                  |      "contents" : [
-                 |        "9SMhIH"
+                 |        "j9BpOrhd8m"
                  |      ],
                  |      "noteType" : {
                  |        "id" : "general-note",
@@ -1895,19 +1922,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |    },
                  |    {
                  |      "contents" : [
-                 |        "H1Ap8e",
-                 |        "ryhy1sdD"
-                 |      ],
-                 |      "noteType" : {
-                 |        "id" : "funding-info",
-                 |        "label" : "Funding information",
-                 |        "type" : "NoteType"
-                 |      },
-                 |      "type" : "Note"
-                 |    },
-                 |    {
-                 |      "contents" : [
-                 |        "uyMVHQTT"
+                 |        "ov3fzhoi",
+                 |        "zybrlE"
                  |      ],
                  |      "noteType" : {
                  |        "id" : "location-of-duplicates",
@@ -1915,8 +1931,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        "type" : "NoteType"
                  |      },
                  |      "type" : "Note"
+                 |    },
+                 |    {
+                 |      "contents" : [
+                 |        "YEJhvwXauL"
+                 |      ],
+                 |      "noteType" : {
+                 |        "id" : "funding-info",
+                 |        "label" : "Funding information",
+                 |        "type" : "NoteType"
+                 |      },
+                 |      "type" : "Note"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -1935,66 +1963,64 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
                  |      "id" : "oo9fg6ic",
+                 |      "images" : [
+                 |        {
+                 |          "id" : "01bta4ru",
+                 |          "type" : "Image"
+                 |        },
+                 |        {
+                 |          "id" : "odhob23o",
+                 |          "type" : "Image"
+                 |        }
+                 |      ],
                  |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "images" : [
-                 |        {
-                 |          "id" : "mov3fzho",
-                 |          "type" : "Image"
                  |        },
-                 |        {
-                 |          "id" : "fsaq54gq",
-                 |          "type" : "Image"
-                 |        }
-                 |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
                  |          "label" : "Closed stores",
                  |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "ou9z1esm",
                  |      "images" : [
                  |        {
-                 |          "id" : "sn6kqxfd",
+                 |          "id" : "i8qttsmr",
                  |          "type" : "Image"
                  |        },
                  |        {
-                 |          "id" : "veby8do1",
+                 |          "id" : "o1f5oxzt",
                  |          "type" : "Image"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    },
                  |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "closed-stores",
@@ -2002,19 +2028,24 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "id" : "wchkoofm",
                  |      "images" : [
                  |        {
-                 |          "id" : "xhqhs7jx",
+                 |          "id" : "jo80nlaw",
                  |          "type" : "Image"
                  |        },
                  |        {
-                 |          "id" : "clokw4lc",
+                 |          "id" : "gbgygwvo",
                  |          "type" : "Image"
                  |        }
                  |      ],
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -2030,26 +2061,27 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "images" : [
                  |    {
-                 |      "id" : "mov3fzho",
+                 |      "id" : "01bta4ru",
                  |      "type" : "Image"
                  |    },
                  |    {
-                 |      "id" : "fsaq54gq",
+                 |      "id" : "odhob23o",
                  |      "type" : "Image"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -2068,57 +2100,49 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "type": "ResultList",
-                 |  "pageSize": 10,
-                 |  "totalPages": 1,
-                 |  "totalResults": 3,
-                 |  "results": [
+                 |  "pageSize" : 10,
+                 |  "results" : [
                  |    {
-                 |      "id" : "oo9fg6ic",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
                  |      "holdings" : [
                  |        {
                  |          "enumeration" : [
-                 |            "01BTa4R",
-                 |            "lw1YfRQ9a",
-                 |            "VApneM",
-                 |            "t8o5wd",
-                 |            "W2gcptwRT"
+                 |            "iIHvpnyCp",
+                 |            "gbKXe6",
+                 |            "6XI29tA",
+                 |            "1KbU70mrqZ",
+                 |            "9N8dAz6",
+                 |            "bAErlg"
                  |          ],
                  |          "location" : {
-                 |            "locationType" : {
-                 |              "id" : "open-shelves",
-                 |              "label" : "Open shelves",
-                 |              "type" : "LocationType"
-                 |            },
-                 |            "label" : "locationLabel",
-                 |            "license" : {
-                 |              "id" : "ogl",
-                 |              "label" : "Open Government Licence",
-                 |              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                 |              "type" : "License"
-                 |            },
-                 |            "shelfmark" : "Shelfmark: agBbzkToD",
                  |            "accessConditions" : [
                  |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "cc-by",
+                 |              "label" : "Attribution 4.0 International (CC BY 4.0)",
+                 |              "type" : "License",
+                 |              "url" : "http://creativecommons.org/licenses/by/4.0/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: wTJbrfYCV2",
                  |            "type" : "PhysicalLocation"
                  |          },
                  |          "type" : "Holdings"
                  |        },
                  |        {
-                 |          "enumeration" : [
-                 |            "FPJNgpliIH",
-                 |            "pnyCpsgbK",
-                 |            "e6B6XI29t",
-                 |            "C1KbU70mrq",
-                 |            "m9N8dAz",
-                 |            "1bAErlgjqn"
-                 |          ],
-                 |          "type" : "Holdings"
-                 |        },
-                 |        {
-                 |          "note" : "xSAn4PBcz",
                  |          "enumeration" : [
                  |            "mVMvzez7JF",
                  |            "7FYx3e0",
@@ -2131,166 +2155,111 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |            "XJqcYm9tl",
                  |            "p1QVJo"
                  |          ],
+                 |          "note" : "BxSAn4PBcz",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "Gbjg3Ifi",
+                 |            "HlycAdT2L",
+                 |            "laGIDVwG",
+                 |            "CtLHFeu"
+                 |          ],
+                 |          "note" : "dQ5Aoz3",
                  |          "type" : "Holdings"
                  |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
                  |      ],
                  |      "availabilities" : [
                  |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
                  |        }
                  |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "kdf7if8n",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
                  |      "holdings" : [
                  |        {
-                 |          "note" : "ZyoOSCK",
                  |          "enumeration" : [
-                 |            "80nLAW",
-                 |            "y9B3e17",
-                 |            "LNSLFMReQp",
-                 |            "YosMnVGM",
-                 |            "B4CuJFr",
-                 |            "7LAJgBGyGw"
+                 |            "dJnvNoiufK"
                  |          ],
                  |          "location" : {
-                 |            "locationType" : {
-                 |              "id" : "closed-stores",
-                 |              "label" : "Closed stores",
-                 |              "type" : "LocationType"
-                 |            },
-                 |            "label" : "locationLabel",
-                 |            "license" : {
-                 |              "id" : "pdm",
-                 |              "label" : "Public Domain Mark",
-                 |              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
-                 |              "type" : "License"
-                 |            },
                  |            "accessConditions" : [
                  |            ],
-                 |            "type" : "PhysicalLocation"
-                 |          },
-                 |          "type" : "Holdings"
-                 |        },
-                 |        {
-                 |          "enumeration" : [
-                 |            "QPxyMQW",
-                 |            "dlsrFBR8Q",
-                 |            "LIBD4V4eC",
-                 |            "5soceYhE",
-                 |            "Xco4CAZl",
-                 |            "NX6YfF9ung",
-                 |            "68x12CqOH",
-                 |            "tD46Q9sHcs",
-                 |            "EqOHuG"
-                 |          ],
-                 |          "type" : "Holdings"
-                 |        },
-                 |        {
-                 |          "enumeration" : [
-                 |            "RLuAZL",
-                 |            "a0DogXkz2",
-                 |            "M4S3tuy",
-                 |            "RUMGx0",
-                 |            "x6rK1BxL",
-                 |            "cV6Wb9Wq",
-                 |            "NZKZxU",
-                 |            "ERjrHYBu2S"
-                 |          ],
-                 |          "location" : {
+                 |            "label" : "locationLabel",
                  |            "locationType" : {
                  |              "id" : "open-shelves",
                  |              "label" : "Open shelves",
                  |              "type" : "LocationType"
                  |            },
-                 |            "label" : "locationLabel",
-                 |            "license" : {
-                 |              "id" : "ogl",
-                 |              "label" : "Open Government Licence",
-                 |              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                 |              "type" : "License"
-                 |            },
-                 |            "shelfmark" : "Shelfmark: a0rwLrUlQ4",
-                 |            "accessConditions" : [
-                 |            ],
+                 |            "shelfmark" : "Shelfmark: yDmwtJxhA",
                  |            "type" : "PhysicalLocation"
                  |          },
-                 |          "type" : "Holdings"
-                 |        }
-                 |      ],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "id" : "vcaaacmd",
-                 |      "title" : "A work with all the include-able fields",
-                 |      "alternativeTitles" : [],
-                 |      "holdings" : [
-                 |        {
-                 |          "enumeration" : [
-                 |            "jsJNyP6a",
-                 |            "68MBxtQg",
-                 |            "ny3fst",
-                 |            "HEqgsnmXvD"
-                 |          ],
+                 |          "note" : "ZZrd6sRqV",
                  |          "type" : "Holdings"
                  |        },
                  |        {
                  |          "enumeration" : [
-                 |            "9jhXW1Q",
-                 |            "WhUucLjO44",
-                 |            "IByCcllibc",
-                 |            "cRo1F5OxZT",
-                 |            "ZZrd6sRqV",
-                 |            "EXdJnvNoi"
-                 |          ],
-                 |          "type" : "Holdings"
-                 |        },
-                 |        {
-                 |          "enumeration" : [
-                 |            "ZCEKkIZfs",
-                 |            "kPwunmldw7",
-                 |            "12iBRh1E6",
-                 |            "0oBW52jPT",
-                 |            "qNXqKK4Q",
-                 |            "hldbPB44o8"
+                 |            "CEKkIZfsA",
+                 |            "Pwunml",
+                 |            "w7s12i",
+                 |            "Rh1E6F0o"
                  |          ],
                  |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "pdm",
+                 |              "label" : "Public Domain Mark",
+                 |              "type" : "License",
+                 |              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "open-shelves",
+                 |              "label" : "Open shelves",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: 2jPTlqN",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "EnBrWrk5",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "o8l1009JS"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
                  |            "locationType" : {
                  |              "id" : "closed-stores",
                  |              "label" : "Closed stores",
                  |              "type" : "LocationType"
                  |            },
-                 |            "label" : "locationLabel",
-                 |            "license" : {
-                 |              "id" : "ogl",
-                 |              "label" : "Open Government Licence",
-                 |              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                 |              "type" : "License"
-                 |            },
-                 |            "shelfmark" : "Shelfmark: 09JSeIbf",
-                 |            "accessConditions" : [
-                 |            ],
                  |            "type" : "PhysicalLocation"
                  |          },
                  |          "type" : "Holdings"
                  |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
                  |      ],
                  |      "availabilities" : [
                  |        {
@@ -2299,9 +2268,94 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
+                 |      "holdings" : [
+                 |        {
+                 |          "enumeration" : [
+                 |            "UNX23BmQh",
+                 |            "YWQPxyMQ",
+                 |            "7dlsrFBR8Q",
+                 |            "LIBD4V4eC",
+                 |            "5soceYhE",
+                 |            "Xco4CAZl",
+                 |            "NX6YfF9ung",
+                 |            "68x12CqOH",
+                 |            "tD46Q9sHcs"
+                 |          ],
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "nsuXoz",
+                 |            "RLuAZL",
+                 |            "a0DogXkz2",
+                 |            "M4S3tuy",
+                 |            "RUMGx0",
+                 |            "x6rK1BxL",
+                 |            "cV6Wb9Wq"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "ogl",
+                 |              "label" : "Open Government Licence",
+                 |              "type" : "License",
+                 |              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "TmY1as",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "LrUlQ4SYJ",
+                 |            "p3ABwY",
+                 |            "lV04E1A9I2",
+                 |            "3fXDCODR4",
+                 |            "FZmdTEa6",
+                 |            "UlrveN",
+                 |            "yaDKbXVDr",
+                 |            "ZWmlAid",
+                 |            "7LBYp6y",
+                 |            "0xMucBp"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "pdm",
+                 |              "label" : "Public Domain Mark",
+                 |              "type" : "License",
+                 |              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: GLGn78mfcQ",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "Bu2SeMYa",
+                 |          "type" : "Holdings"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "title" : "A work with all the include-able fields",
                  |      "type" : "Work"
                  |    }
-                 |  ]
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
                  |}
                  |""".stripMargin
           }
@@ -2317,51 +2371,46 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
                  |  "holdings" : [
                  |    {
                  |      "enumeration" : [
-                 |        "01BTa4R",
-                 |        "lw1YfRQ9a",
-                 |        "VApneM",
-                 |        "t8o5wd",
-                 |        "W2gcptwRT"
+                 |        "iIHvpnyCp",
+                 |        "gbKXe6",
+                 |        "6XI29tA",
+                 |        "1KbU70mrqZ",
+                 |        "9N8dAz6",
+                 |        "bAErlg"
                  |      ],
                  |      "location" : {
-                 |        "locationType" : {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "LocationType"
-                 |        },
-                 |        "label" : "locationLabel",
-                 |        "license" : {
-                 |          "id" : "ogl",
-                 |          "label" : "Open Government Licence",
-                 |          "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                 |          "type" : "License"
-                 |        },
-                 |        "shelfmark" : "Shelfmark: agBbzkToD",
                  |        "accessConditions" : [
                  |        ],
+                 |        "label" : "locationLabel",
+                 |        "license" : {
+                 |          "id" : "cc-by",
+                 |          "label" : "Attribution 4.0 International (CC BY 4.0)",
+                 |          "type" : "License",
+                 |          "url" : "http://creativecommons.org/licenses/by/4.0/"
+                 |        },
+                 |        "locationType" : {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "LocationType"
+                 |        },
+                 |        "shelfmark" : "Shelfmark: wTJbrfYCV2",
                  |        "type" : "PhysicalLocation"
                  |      },
                  |      "type" : "Holdings"
                  |    },
                  |    {
-                 |      "enumeration" : [
-                 |        "FPJNgpliIH",
-                 |        "pnyCpsgbK",
-                 |        "e6B6XI29t",
-                 |        "C1KbU70mrq",
-                 |        "m9N8dAz",
-                 |        "1bAErlgjqn"
-                 |      ],
-                 |      "type" : "Holdings"
-                 |    },
-                 |    {
-                 |      "note" : "xSAn4PBcz",
                  |      "enumeration" : [
                  |        "mVMvzez7JF",
                  |        "7FYx3e0",
@@ -2374,16 +2423,22 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        "XJqcYm9tl",
                  |        "p1QVJo"
                  |      ],
+                 |      "note" : "BxSAn4PBcz",
+                 |      "type" : "Holdings"
+                 |    },
+                 |    {
+                 |      "enumeration" : [
+                 |        "Gbjg3Ifi",
+                 |        "HlycAdT2L",
+                 |        "laGIDVwG",
+                 |        "CtLHFeu"
+                 |      ],
+                 |      "note" : "dQ5Aoz3",
                  |      "type" : "Holdings"
                  |    }
                  |  ],
-                 |  "availabilities" : [
-                 |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
-                 |      "type" : "Availability"
-                 |    }
-                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -2402,25 +2457,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "parts" : [
                  |    {
-                 |      "id" : "jgrms5hy",
-                 |      "title" : "title-6x38NrC4O6",
-                 |      "totalParts" : 0,
+                 |      "id" : "b1gnd7b0",
+                 |      "title" : "title-tnetMtnM6n",
                  |      "totalDescendentParts" : 0,
+                 |      "totalParts" : 0,
                  |      "type" : "Work"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -2437,34 +2493,35 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "partOf" : [
                  |    {
-                 |      "id" : "bxb1izsl",
-                 |      "title" : "title-IT5y03R9bs",
+                 |      "id" : "dza7om88",
                  |      "partOf" : [
                  |        {
-                 |          "id" : "i5c8ouwi",
-                 |          "title" : "title-qUUo6BR4gN",
-                 |          "totalParts" : 1,
+                 |          "id" : "nelnrvdy",
+                 |          "title" : "title-grMS5Hy6x3",
                  |          "totalDescendentParts" : 5,
+                 |          "totalParts" : 1,
                  |          "type" : "Work"
                  |        }
                  |      ],
-                 |      "totalParts" : 3,
+                 |      "title" : "title-BnN4RHJX7O",
                  |      "totalDescendentParts" : 4,
+                 |      "totalParts" : 3,
                  |      "type" : "Work"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -2481,25 +2538,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "precededBy" : [
                  |    {
-                 |      "id" : "8xmbnn4r",
-                 |      "title" : "title-HJX7OPKBgh",
-                 |      "totalParts" : 0,
+                 |      "id" : "uxg4ed5m",
+                 |      "title" : "title-a7Ze4ZWUMQ",
                  |      "totalDescendentParts" : 0,
+                 |      "totalParts" : 0,
                  |      "type" : "Work"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
@@ -2516,25 +2574,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
             Status.OK ->
               s"""
                  |{
-                 |  "id" : "oo9fg6ic",
-                 |  "title" : "A work with all the include-able fields",
-                 |  "alternativeTitles" : [],
+                 |  "alternativeTitles" : [
+                 |  ],
                  |  "availabilities" : [
                  |    {
-                 |      "id" : "open-shelves",
-                 |      "label" : "Open shelves",
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
                  |      "type" : "Availability"
                  |    }
                  |  ],
+                 |  "id" : "oo9fg6ic",
                  |  "succeededBy" : [
                  |    {
-                 |      "id" : "7b0m5tne",
-                 |      "title" : "title-tMtnM6n9bK",
-                 |      "totalParts" : 0,
+                 |      "id" : "mdfbk5kj",
+                 |      "title" : "title-QgPzDrUplG",
                  |      "totalDescendentParts" : 0,
+                 |      "totalParts" : 0,
                  |      "type" : "Work"
                  |    }
                  |  ],
+                 |  "title" : "A work with all the include-able fields",
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
