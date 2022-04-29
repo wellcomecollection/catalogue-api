@@ -3,7 +3,11 @@ package weco.api.search.elasticsearch
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.requests.get.GetResponse
-import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest, SearchResponse}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  SearchRequest,
+  SearchResponse
+}
 import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder

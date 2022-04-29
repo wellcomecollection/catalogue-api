@@ -17,12 +17,12 @@ object ElasticsearchErrorHandler extends Logging {
   // When returning a 400 to the user, we wrap this error to avoid talking
   // about internal Elasticsearch concepts.
   private val resultSizePattern =
-  """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
+    """Result window is too large, from \+ size must be less than or equal to: \[([0-9]+)\]""".r.unanchored
 
   def buildDisplayError(
-                         documentType: String,
-                         e: ElasticsearchError
-                       ): DisplayError =
+    documentType: String,
+    e: ElasticsearchError
+  ): DisplayError =
     e match {
       case DocumentNotFoundError(id) =>
         DisplayError(
@@ -59,9 +59,9 @@ object ElasticsearchErrorHandler extends Logging {
     }
 
   private def userError(
-                         message: String,
-                         elasticError: ElasticError
-                       ): DisplayError = {
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     warn(
       s"Sending HTTP 400 from ${this.getClass.getSimpleName} ($message; $elasticError)"
     )
@@ -72,9 +72,9 @@ object ElasticsearchErrorHandler extends Logging {
   }
 
   private def notFound(
-                        message: String,
-                        elasticError: ElasticError
-                      ): DisplayError = {
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     warn(
       s"Sending HTTP 404 from ${this.getClass.getSimpleName} ($message; $elasticError)"
     )
@@ -85,9 +85,9 @@ object ElasticsearchErrorHandler extends Logging {
   }
 
   private def serverError(
-                           message: String,
-                           elasticError: ElasticError
-                         ): DisplayError = {
+    message: String,
+    elasticError: ElasticError
+  ): DisplayError = {
     error(
       s"Sending HTTP 500 from ${this.getClass.getSimpleName} ($message; $elasticError)"
     )

@@ -1,11 +1,21 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticDsl.{boolQuery, bulk, indexInto, search, termQuery, _}
+import com.sksamuel.elastic4s.ElasticDsl.{
+  boolQuery,
+  bulk,
+  indexInto,
+  search,
+  termQuery,
+  _
+}
 import com.sksamuel.elastic4s.analysis.Analysis
 import com.sksamuel.elastic4s.circe.hitReaderWithCirce
 import com.sksamuel.elastic4s.fields.{KeywordField, TextField}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
-import com.sksamuel.elastic4s.requests.searches.{MultiSearchRequest, SearchRequest}
+import com.sksamuel.elastic4s.requests.searches.{
+  MultiSearchRequest,
+  SearchRequest
+}
 import com.sksamuel.elastic4s.{ElasticClient, Index}
 import io.circe.generic.auto._
 import org.scalatest.EitherValues
