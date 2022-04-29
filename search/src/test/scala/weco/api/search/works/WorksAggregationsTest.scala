@@ -8,7 +8,10 @@ class WorksAggregationsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(worksIndex, formatWorks: _*)
 
-        assertJsonResponse(routes, s"$rootPath/works?aggregations=workType&pageSize=1") {
+        assertJsonResponse(
+          routes,
+          s"$rootPath/works?aggregations=workType&pageSize=1"
+        ) {
           Status.OK ->
             s"""
               |{
@@ -147,7 +150,12 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900", "work-production.1904")
+        indexExampleDocuments(
+          worksIndex,
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904"
+        )
 
         assertJsonResponse(
           routes,
@@ -212,7 +220,10 @@ class WorksAggregationsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(worksIndex, languageWorks: _*)
 
-        assertJsonResponse(routes, s"$rootPath/works?aggregations=languages&pageSize=1") {
+        assertJsonResponse(
+          routes,
+          s"$rootPath/works?aggregations=languages&pageSize=1"
+        ) {
           Status.OK ->
             s"""
               |{
@@ -274,7 +285,14 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by subject label") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexExampleDocuments(worksIndex, "works.subjects.0", "works.subjects.1", "works.subjects.2", "works.subjects.3", "works.subjects.4")
+        indexExampleDocuments(
+          worksIndex,
+          "works.subjects.0",
+          "works.subjects.1",
+          "works.subjects.2",
+          "works.subjects.3",
+          "works.subjects.4"
+        )
 
         assertJsonResponse(
           routes,
@@ -334,11 +352,18 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by contributor agent label") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexExampleDocuments(worksIndex, "works.contributor.0", "works.contributor.1", "works.contributor.2", "works.contributor.3")
+        indexExampleDocuments(
+          worksIndex,
+          "works.contributor.0",
+          "works.contributor.1",
+          "works.contributor.2",
+          "works.contributor.3"
+        )
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?aggregations=contributors.agent.label&pageSize=1"
+          path =
+            s"$rootPath/works?aggregations=contributors.agent.label&pageSize=1"
         ) {
           Status.OK ->
             s"""
@@ -448,7 +473,11 @@ class WorksAggregationsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexExampleDocuments(
           worksIndex,
-          "works.items-with-licenses.0", "works.items-with-licenses.1", "works.items-with-licenses.2", "works.items-with-licenses.3", "works.items-with-licenses.4"
+          "works.items-with-licenses.0",
+          "works.items-with-licenses.1",
+          "works.items-with-licenses.2",
+          "works.items-with-licenses.3",
+          "works.items-with-licenses.4"
         )
 
         assertJsonResponse(

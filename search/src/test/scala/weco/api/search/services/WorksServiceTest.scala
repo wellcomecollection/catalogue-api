@@ -4,14 +4,30 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import weco.api.search.JsonHelpers
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{Aggregation, AggregationBucket, FormatFilter, SearchQuery, WorkAggregations, WorkSearchOptions}
+import weco.api.search.models.{
+  Aggregation,
+  AggregationBucket,
+  FormatFilter,
+  SearchQuery,
+  WorkAggregations,
+  WorkSearchOptions
+}
 import weco.api.search.works.ApiWorksTestBase
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.Format.{Audio, Books, Journals, Pictures}
+import weco.catalogue.internal_model.work.Format.{
+  Audio,
+  Books,
+  Journals,
+  Pictures
+}
 
 class WorksServiceTest
     extends AnyFunSpec
@@ -35,7 +51,7 @@ class WorksServiceTest
           "works.visible.1",
           "works.visible.2",
           "works.visible.3",
-          "works.visible.4",
+          "works.visible.4"
         ),
         expectedTotalResults = 5
       )
@@ -61,7 +77,12 @@ class WorksServiceTest
     it("filters results by format") {
       assertListOrSearchResultIsCorrect(
         allWorks = formatWorks,
-        expectedWorks = Seq("works.formats.0.Books", "works.formats.1.Books", "works.formats.2.Books", "works.formats.3.Books"),
+        expectedWorks = Seq(
+          "works.formats.0.Books",
+          "works.formats.1.Books",
+          "works.formats.2.Books",
+          "works.formats.3.Books"
+        ),
         expectedTotalResults = 4,
         worksSearchOptions = createWorksSearchOptionsWith(
           filters = List(FormatFilter(Seq("a")))
@@ -72,7 +93,13 @@ class WorksServiceTest
     it("filters results by multiple formats") {
       assertListOrSearchResultIsCorrect(
         allWorks = formatWorks,
-        expectedWorks = Seq("works.formats.0.Books", "works.formats.1.Books", "works.formats.2.Books", "works.formats.3.Books", "works.formats.9.Pictures"),
+        expectedWorks = Seq(
+          "works.formats.0.Books",
+          "works.formats.1.Books",
+          "works.formats.2.Books",
+          "works.formats.3.Books",
+          "works.formats.9.Pictures"
+        ),
         expectedTotalResults = 5,
         worksSearchOptions = createWorksSearchOptionsWith(
           filters = List(FormatFilter(Seq("a", "k")))
@@ -120,8 +147,9 @@ class WorksServiceTest
         allWorks = List("work-title-dodo", "work-title-mouse"),
         expectedWorks = List("work-title-dodo"),
         expectedTotalResults = 1,
-        worksSearchOptions =
-          createWorksSearchOptionsWith(searchQuery = Some(SearchQuery("dodo \"")))
+        worksSearchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery("dodo \""))
+        )
       )
     }
 
@@ -133,7 +161,7 @@ class WorksServiceTest
           "works.visible.1",
           "works.visible.2",
           "works.visible.3",
-          "works.visible.4",
+          "works.visible.4"
         ),
         expectedTotalResults = 5,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -147,7 +175,7 @@ class WorksServiceTest
         allWorks = listOfWorks,
         expectedWorks = List(
           "works.visible.0",
-          "works.visible.1",
+          "works.visible.1"
         ),
         expectedTotalResults = 5,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -161,7 +189,7 @@ class WorksServiceTest
         allWorks = listOfWorks,
         expectedWorks = List(
           "works.visible.2",
-          "works.visible.3",
+          "works.visible.3"
         ),
         expectedTotalResults = 5,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -205,7 +233,7 @@ class WorksServiceTest
               AggregationBucket(data = Books, count = 4),
               AggregationBucket(data = Journals, count = 3),
               AggregationBucket(data = Audio, count = 2),
-              AggregationBucket(data = Pictures, count = 1),
+              AggregationBucket(data = Pictures, count = 1)
             )
           )
         ),

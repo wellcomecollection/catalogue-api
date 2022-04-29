@@ -27,7 +27,8 @@ class WorksFiltersTest
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.label=thDMBLQZhG&subjects.label=dFbK5kJngQ"
+          path =
+            s"$rootPath/works?genres.label=thDMBLQZhG&subjects.label=dFbK5kJngQ"
         ) {
           Status.OK ->
             """
@@ -115,7 +116,8 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
+            path =
+              s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
           ) {
             Status.OK -> worksListResponse(works = matchingWorks.sortBy {
               _.state.canonicalId
@@ -275,7 +277,10 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexExampleDocuments(worksIndex, formatWorks: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?query=A%20work%20with%20format&workType=k") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?query=A%20work%20with%20format&workType=k"
+          ) {
             Status.OK ->
               """
                 |{
@@ -368,11 +373,19 @@ class WorksFiltersTest
     it("filters by date range") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+          indexExampleDocuments(
+            worksIndex,
+            "work-production.1098",
+            "work-production.1900",
+            "work-production.1904",
+            "work-production.1976",
+            "work-production.2020"
+          )
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?production.dates.from=1800-01-01&production.dates.to=1960-01-01"
+            path =
+              s"$rootPath/works?production.dates.from=1800-01-01&production.dates.to=1960-01-01"
           ) {
             Status.OK ->
               """
@@ -410,7 +423,14 @@ class WorksFiltersTest
     it("filters by from date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+          indexExampleDocuments(
+            worksIndex,
+            "work-production.1098",
+            "work-production.1900",
+            "work-production.1904",
+            "work-production.1976",
+            "work-production.2020"
+          )
 
           assertJsonResponse(
             routes,
@@ -470,7 +490,14 @@ class WorksFiltersTest
     it("filters by to date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexExampleDocuments(worksIndex, "work-production.1098", "work-production.1900","work-production.1904", "work-production.1976", "work-production.2020")
+          indexExampleDocuments(
+            worksIndex,
+            "work-production.1098",
+            "work-production.1900",
+            "work-production.1904",
+            "work-production.1976",
+            "work-production.2020"
+          )
 
           assertJsonResponse(
             routes,
@@ -513,7 +540,8 @@ class WorksFiltersTest
       withApi { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=INVALID"
+          path =
+            s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=INVALID"
         ) {
           Status.BadRequest ->
             badRequest(
@@ -596,7 +624,10 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexExampleDocuments(worksIndex, languageWorks: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?languages=eng,tur") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?languages=eng,tur"
+          ) {
             Status.OK ->
               """
                 |{

@@ -1,7 +1,8 @@
 package weco.api.search.works
 
 class WorksTestInvisible extends ApiWorksTestBase {
-  val invisibleWorkIds = Seq("works.invisible.0", "works.invisible.1", "works.invisible.2")
+  val invisibleWorkIds =
+    Seq("works.invisible.0", "works.invisible.1", "works.invisible.2")
 
   it("returns an HTTP 410 Gone if looking up a work with visible = false") {
     withWorksApi {
@@ -28,7 +29,11 @@ class WorksTestInvisible extends ApiWorksTestBase {
   it("excludes works with visible=false from search results") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexExampleDocuments(worksIndex, "work.invisible.title-mouse", "work-title-mouse")
+        indexExampleDocuments(
+          worksIndex,
+          "work.invisible.title-mouse",
+          "work-title-mouse"
+        )
 
         assertJsonResponse(routes, s"$rootPath/works?query=mouse") {
           Status.OK ->
