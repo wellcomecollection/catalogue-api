@@ -17,6 +17,23 @@ trait ApiWorksTestBase
     with GenreGenerators
     with SubjectGenerators {
 
+  val listOfWorks = List(
+    "works.visible.0",
+    "works.visible.1",
+    "works.visible.2",
+    "works.visible.3",
+    "works.visible.4",
+    "works.invisible.0",
+    "works.invisible.1",
+    "works.invisible.2",
+    "works.redirected.0",
+    "works.redirected.1",
+    "works.deleted.0",
+    "works.deleted.1",
+    "works.deleted.2",
+    "works.deleted.3"
+  )
+
   implicit object IdentifiedWorkIndexable
       extends Indexable[Work.Visible[Indexed]] {
     override def json(work: Work.Visible[Indexed]): String =

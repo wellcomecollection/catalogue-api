@@ -1,23 +1,6 @@
 package weco.api.search.works
 
 class WorksTest extends ApiWorksTestBase {
-  val listOfWorks = List(
-    "works.visible.0",
-    "works.visible.1",
-    "works.visible.2",
-    "works.visible.3",
-    "works.visible.4",
-    "works.invisible.0",
-    "works.invisible.1",
-    "works.invisible.2",
-    "works.redirected.0",
-    "works.redirected.1",
-    "works.deleted.0",
-    "works.deleted.1",
-    "works.deleted.2",
-    "works.deleted.3"
-  )
-
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
