@@ -12,9 +12,9 @@ import weco.catalogue.internal_model.work.{Work, WorkState}
 trait CatalogueJsonUtil {
   import JsonOps._
 
-  implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
-    def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w).asJson
+  implicit class WorkJsonOps(json: Json) {
+    def withIncludes(includes: WorksIncludes): Json =
+      json
         .removeKeyRecursivelyIf(!includes.identifiers, "identifiers")
         .removeKeyIf(!includes.items, "items")
         .removeKeyIf(!includes.holdings, "holdings")
@@ -29,7 +29,13 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.partOf, "partOf")
         .removeKeyIf(!includes.precededBy, "precededBy")
         .removeKeyIf(!includes.succeededBy, "succeededBy")
+  }
+
+  implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
+    def asJson(includes: WorksIncludes): Json =
+      DisplayWork(w).asJson
         .deepDropNullValues
+        .withIncludes(includes)
   }
 
   implicit class ImageOps(im: Image[ImageState.Indexed]) {
