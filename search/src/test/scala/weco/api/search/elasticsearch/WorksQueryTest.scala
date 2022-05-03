@@ -371,7 +371,7 @@ class WorksQueryTest
       val future = worksService.listOrSearch(
         index,
         searchOptions = createWorksSearchOptionsWith(
-        searchQuery = Some(SearchQuery(query, queryType))
+          searchQuery = Some(SearchQuery(query, queryType))
         )
       )
 
