@@ -368,12 +368,16 @@ class WorksQueryTest
     expectedMatches: List[Work[Indexed]]
   ): List[Assertion] =
     SearchQueryType.allowed map { queryType =>
-      val results = searchResults(
+      val future = worksService.listOrSearch(
         index,
         searchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery(query, queryType))
+        searchQuery = Some(SearchQuery(query, queryType))
         )
       )
+
+      val results = whenReady(future) {
+        _.right.value.results
+      }
 
       withClue(s"Using: ${queryType.name}") {
         results.size shouldBe expectedMatches.size
@@ -384,15 +388,4 @@ class WorksQueryTest
   private val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)
   )
-
-  private def searchResults(
-    index: Index,
-    searchOptions: WorkSearchOptions
-  ): List[Work[Indexed]] = {
-    val future = worksService.listOrSearch(index, searchOptions)
-
-    whenReady(future) {
-      _.right.value.results
-    }
-  }
 }
