@@ -1,9 +1,8 @@
 package weco.api.search
 
 import io.circe.Json
-import weco.api.search.works.ApiWorksTestBase
 
-trait JsonHelpers extends ApiWorksTestBase {
+trait JsonHelpers {
   protected def getKeys(json: Json): List[String] =
     json.arrayOrObject(
       Nil,
