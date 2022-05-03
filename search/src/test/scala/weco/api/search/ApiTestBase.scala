@@ -63,7 +63,7 @@ trait ApiTestBase extends ApiFixture {
     }"""
 
   def deleted =
-    s"""{
+    """{
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,
