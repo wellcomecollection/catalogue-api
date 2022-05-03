@@ -4,8 +4,9 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
-import io.circe.Decoder
+import io.circe.{Decoder, HCursor}
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
+import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{
   AggregationBucket,
   ElasticAggregations,
@@ -13,21 +14,31 @@ import weco.api.search.models.{
   WorkSearchOptions
 }
 import weco.catalogue.internal_model.Implicits
-import weco.catalogue.internal_model.work.Work
-import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorksService(val elasticsearchService: ElasticsearchService)(
   implicit
   val ec: ExecutionContext
-) extends SearchService[Work[Indexed], Work.Visible[Indexed], WorkAggregations, WorkSearchOptions]
+) extends SearchService[
+      IndexedWork,
+      IndexedWork.Visible,
+      WorkAggregations,
+      WorkSearchOptions
+    ]
     with ElasticAggregations {
 
-  implicit val decoder: Decoder[Work[Indexed]] =
-    Implicits._decWorkIndexed
-  implicit val decoderV: Decoder[Work.Visible[Indexed]] =
-    Implicits._decWorkVisibleIndexed
+  implicit val decoder: Decoder[IndexedWork] =
+    (c: HCursor) =>
+      Implicits._decWorkIndexed.apply(c).map {
+        IndexedWork(_)
+      }
+
+  implicit val decoderV: Decoder[IndexedWork.Visible] =
+    (c: HCursor) =>
+      Implicits._decWorkVisibleIndexed.apply(c).map {
+        IndexedWork.Visible(_)
+      }
 
   override protected val requestBuilder
     : ElasticsearchRequestBuilder[WorkSearchOptions] =

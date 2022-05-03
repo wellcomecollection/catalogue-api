@@ -6,6 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
+import weco.api.search.JsonHelpers
 import weco.api.search.models._
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -39,7 +40,8 @@ class AggregationsTest
     with ProductionEventGenerators
     with PeriodGenerators
     with SearchOptionsGenerators
-    with WorkGenerators {
+    with WorkGenerators
+    with JsonHelpers {
 
   val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)
@@ -171,11 +173,26 @@ class AggregationsTest
             SubjectFilter(Seq(subjectQuery))
           )
         )
-        whenReady(worksService.listOrSearch(index, searchOptions)) { res =>
-          val results = res.right.get.results
-          results.map(_.data.format.get) should contain only Format.Books
-          results.map(_.data.subjects.head.label) should contain only subjectQuery
-        }
+        val results =
+          whenReady(worksService.listOrSearch(index, searchOptions)) {
+            _.right.get.results
+          }
+
+        val resultFormats =
+          results
+            .flatMap(w => getKey(w.display, "workType"))
+            .flatMap(wt => getKey(wt, "label"))
+            .flatMap(_.asString)
+            .toSet
+
+        resultFormats shouldBe Set("Books")
+
+        results
+          .flatMap(w => getKey(w.display, "subjects"))
+          .flatMap(_.asArray)
+          .map(_.flatMap(s => getKey(s, "label")))
+          .map(subjects => subjects.flatMap(_.asString).toSet)
+          .foreach(subjects => subjects should contain(subjectQuery))
       }
     }
   }

@@ -21,6 +21,7 @@ import weco.api.search.elasticsearch.{
   IndexNotFoundError
 }
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
   Aggregation,
@@ -506,7 +507,7 @@ class WorksServiceTest
         val future = worksService.findById(id = work.state.canonicalId)(index)
 
         whenReady(future) {
-          _ shouldBe Right(work)
+          _ shouldBe Right(IndexedWork(work))
         }
       }
 
@@ -557,7 +558,7 @@ class WorksServiceTest
     partialSearchFunction: (
       Index,
       WorkSearchOptions
-    ) => Future[Either[_, ResultList[Work.Visible[Indexed], WorkAggregations]]]
+    ) => Future[Either[_, ResultList[IndexedWork.Visible, WorkAggregations]]]
   )(
     allWorks: Seq[Work[Indexed]],
     expectedWorks: Seq[Work[Indexed]],
@@ -576,7 +577,9 @@ class WorksServiceTest
         result.isRight shouldBe true
 
         val works = result.right.get
-        works.results should contain theSameElementsAs expectedWorks
+        works.results should contain theSameElementsAs expectedWorks.map(
+          IndexedWork(_)
+        )
         works.totalResults shouldBe expectedTotalResults
         works.aggregations shouldBe expectedAggregations
       }

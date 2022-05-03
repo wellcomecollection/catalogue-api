@@ -12,6 +12,7 @@ import weco.catalogue.internal_model.work.generators.{
   SubjectGenerators
 }
 import weco.api.search.generators.SearchOptionsGenerators
+import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
 import weco.catalogue.internal_model.generators.ImageGenerators
@@ -381,7 +382,9 @@ class WorksQueryTest
 
       withClue(s"Using: ${queryType.name}") {
         results.size shouldBe expectedMatches.size
-        results should contain theSameElementsAs expectedMatches
+        results should contain theSameElementsAs expectedMatches.map(
+          IndexedWork(_)
+        )
       }
     }
 
