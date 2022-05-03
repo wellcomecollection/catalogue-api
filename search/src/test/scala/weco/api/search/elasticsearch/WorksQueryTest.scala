@@ -12,7 +12,7 @@ import weco.catalogue.internal_model.work.generators.{
   SubjectGenerators
 }
 import weco.api.search.generators.SearchOptionsGenerators
-import weco.api.search.models.{SearchQuery, SearchQueryType, WorkSearchOptions}
+import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
