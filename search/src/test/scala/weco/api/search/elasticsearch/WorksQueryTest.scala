@@ -6,7 +6,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{ContributorGenerators, GenreGenerators, SubjectGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ContributorGenerators,
+  GenreGenerators,
+  SubjectGenerators
+}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{SearchQuery, SearchQueryType}
@@ -378,7 +382,9 @@ class WorksQueryTest
 
       withClue(s"Using: ${queryType.name}") {
         results.size shouldBe expectedMatches.size
-        results should contain theSameElementsAs expectedMatches.map(IndexedWork(_))
+        results should contain theSameElementsAs expectedMatches.map(
+          IndexedWork(_)
+        )
       }
     }
 

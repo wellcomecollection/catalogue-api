@@ -34,7 +34,10 @@ object IndexedWork extends CatalogueJsonUtil {
         IndexedWork.Visible(w)
 
       case w: Work.Redirected[WorkState.Indexed] =>
-        IndexedWork.Redirected(redirectTarget = Identified(canonicalId = w.redirectTarget.canonicalId.underlying))
+        IndexedWork.Redirected(
+          redirectTarget =
+            Identified(canonicalId = w.redirectTarget.canonicalId.underlying)
+        )
 
       case _: Work.Invisible[WorkState.Indexed] =>
         IndexedWork.Invisible()

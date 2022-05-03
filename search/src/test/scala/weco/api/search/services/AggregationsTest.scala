@@ -10,11 +10,23 @@ import weco.api.search.JsonHelpers
 import weco.api.search.models._
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{GenreGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  GenreGenerators,
+  ProductionEventGenerators,
+  SubjectGenerators,
+  WorkGenerators
+}
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{Aggregation, AggregationBucket, DateRangeFilter, FormatFilter, SubjectFilter, WorkSearchOptions}
+import weco.api.search.models.{
+  Aggregation,
+  AggregationBucket,
+  DateRangeFilter,
+  FormatFilter,
+  SubjectFilter,
+  WorkSearchOptions
+}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Subject}
 
@@ -161,9 +173,10 @@ class AggregationsTest
             SubjectFilter(Seq(subjectQuery))
           )
         )
-        val results = whenReady(worksService.listOrSearch(index, searchOptions)) {
-          _.right.get.results
-        }
+        val results =
+          whenReady(worksService.listOrSearch(index, searchOptions)) {
+            _.right.get.results
+          }
 
         val resultFormats =
           results

@@ -8,17 +8,37 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.{Assertion, EitherValues}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.catalogue.internal_model.Implicits._
 import weco.api.search.models._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{Aggregation, AggregationBucket, DateRangeFilter, FormatFilter, ItemLocationTypeIdFilter, SearchQuery, WorkAggregations, WorkSearchOptions}
+import weco.api.search.models.{
+  Aggregation,
+  AggregationBucket,
+  DateRangeFilter,
+  FormatFilter,
+  ItemLocationTypeIdFilter,
+  SearchQuery,
+  WorkAggregations,
+  WorkSearchOptions
+}
 import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.locations.{DigitalLocationType, LocationType, PhysicalLocationType}
+import weco.catalogue.internal_model.locations.{
+  DigitalLocationType,
+  LocationType,
+  PhysicalLocationType
+}
 import weco.catalogue.internal_model.work.{Item, Work}
 import weco.catalogue.internal_model.work.Format._
 import weco.catalogue.internal_model.work.WorkState.Indexed
@@ -557,7 +577,9 @@ class WorksServiceTest
         result.isRight shouldBe true
 
         val works = result.right.get
-        works.results should contain theSameElementsAs expectedWorks.map(IndexedWork(_))
+        works.results should contain theSameElementsAs expectedWorks.map(
+          IndexedWork(_)
+        )
         works.totalResults shouldBe expectedTotalResults
         works.aggregations shouldBe expectedAggregations
       }
