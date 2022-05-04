@@ -22,10 +22,8 @@ object MetricsBuilder {
     materializer: Materializer,
     ec: ExecutionContext
   ): Metrics[Future] =
-    sys.env.get("API_USE_MEMORY_METRICS") match {
-      case Some(value) if Try(value.toBoolean).getOrElse(false) =>
-        new MemoryMetrics
-      case _ => CloudWatchBuilder.buildCloudWatchMetrics(config)
-
+    sys.env.get("API_METRICS_MODE") match {
+      case None | Some("cloudwatch") => CloudWatchBuilder.buildCloudWatchMetrics(config)
+      case Some("memory") => new MemoryMetrics
     }
 }

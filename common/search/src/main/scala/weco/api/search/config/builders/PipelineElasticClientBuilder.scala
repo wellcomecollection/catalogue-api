@@ -1,6 +1,7 @@
 package weco.api.search.config.builders
 
 import com.sksamuel.elastic4s.ElasticClient
+import grizzled.slf4j.Logging
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import weco.catalogue.display_model.PipelineClusterElasticConfig
@@ -13,13 +14,15 @@ import weco.elasticsearch.ElasticClientBuilder
   * The settings may come either from environment variables
   * (if API_SETTINGS_MODE is environment) or from the AWS Secrets Manager
   */
-object PipelineElasticClientBuilder {
+object PipelineElasticClientBuilder extends Logging {
   def apply(serviceName: String): ElasticClient =
     sys.env.get("API_SETTINGS_MODE") match {
       case None | Some("secretsmanager") =>
+        info("Building Elastic client from secrets manager")
         SecretsElasticClientBuilder(serviceName)
       case Some("environment") =>
-        EnvElasticClientBuilder(serviceName)
+        info("Building Elastic client from environment variables")
+        EnvElasticClientBuilder()
       case Some(wrongMode) =>
         throw new IllegalArgumentException(
           s"Unexpected API_SETTINGS_MODE: $wrongMode, must be one of 'secretsmanager' (default) or 'environment'"
@@ -33,7 +36,7 @@ object PipelineElasticClientBuilder {
   * For example, to run against a non-pipeline database such as a local copy.
   */
 object EnvElasticClientBuilder {
-  def apply(serviceName: String): ElasticClient = {
+  def apply(): ElasticClient = {
     val hostname = sys.env("API_ELASTIC_HOST")
     val port = sys.env("API_ELASTIC_PORT").toInt
     val protocol = sys.env("API_ELASTIC_PROTOCOL")
