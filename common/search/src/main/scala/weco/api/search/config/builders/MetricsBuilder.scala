@@ -23,7 +23,8 @@ object MetricsBuilder {
     ec: ExecutionContext
   ): Metrics[Future] =
     sys.env.get("API_METRICS_MODE") match {
-      case None | Some("cloudwatch") => CloudWatchBuilder.buildCloudWatchMetrics(config)
+      case None | Some("cloudwatch") =>
+        CloudWatchBuilder.buildCloudWatchMetrics(config)
       case Some("memory") => new MemoryMetrics
     }
 }
