@@ -4,7 +4,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
 import weco.api.search.JsonHelpers
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
@@ -155,7 +159,8 @@ class WorksServiceTest
         expectedWorks = visibleWorks.slice(2, 4),
         expectedTotalResults = visibleWorks.size,
         worksSearchOptions = createWorksSearchOptionsWith(
-          pageSize = 2, pageNumber = 2
+          pageSize = 2,
+          pageNumber = 2
         )
       )
     }
@@ -166,7 +171,8 @@ class WorksServiceTest
         expectedWorks = visibleWorks.slice(4, 6),
         expectedTotalResults = visibleWorks.size,
         worksSearchOptions = createWorksSearchOptionsWith(
-          pageSize = 2, pageNumber = 3
+          pageSize = 2,
+          pageNumber = 3
         )
       )
     }
@@ -177,7 +183,8 @@ class WorksServiceTest
         expectedWorks = Seq(),
         expectedTotalResults = visibleWorks.size,
         worksSearchOptions = createWorksSearchOptionsWith(
-          pageSize = visibleWorks.size * 2, pageNumber = 2
+          pageSize = visibleWorks.size * 2,
+          pageNumber = 2
         )
       )
     }
@@ -218,13 +225,25 @@ class WorksServiceTest
         format = Some(
           Aggregation(
             List(
-              AggregationBucket(data = Format.Books, count = worksFormatBooks.length),
-              AggregationBucket(data = Format.Journals, count = worksFormatJournals.length),
-              AggregationBucket(data = Format.Audio, count = worksFormatAudio.length),
-              AggregationBucket(data = Format.Pictures, count = worksFormatPictures.length),
+              AggregationBucket(
+                data = Format.Books,
+                count = worksFormatBooks.length
+              ),
+              AggregationBucket(
+                data = Format.Journals,
+                count = worksFormatJournals.length
+              ),
+              AggregationBucket(
+                data = Format.Audio,
+                count = worksFormatAudio.length
+              ),
+              AggregationBucket(
+                data = Format.Pictures,
+                count = worksFormatPictures.length
+              )
             )
           )
-        ),
+        )
       )
 
       assertListOrSearchResultIsCorrect(
@@ -255,11 +274,11 @@ class WorksServiceTest
           "work-production.1900",
           "work-production.1904",
           "work-production.1976",
-          "work-production.2020",
+          "work-production.2020"
         ),
         expectedWorks = Seq(
           "work-production.1900",
-          "work-production.1904",
+          "work-production.1904"
         ),
         expectedTotalResults = 2,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -280,13 +299,13 @@ class WorksServiceTest
           "work-production.1900",
           "work-production.1904",
           "work-production.1976",
-          "work-production.2020",
+          "work-production.2020"
         ),
         expectedWorks = Seq(
           "work-production.1900",
           "work-production.1904",
           "work-production.1976",
-          "work-production.2020",
+          "work-production.2020"
         ),
         expectedTotalResults = 4,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -307,12 +326,12 @@ class WorksServiceTest
           "work-production.1900",
           "work-production.1904",
           "work-production.1976",
-          "work-production.2020",
+          "work-production.2020"
         ),
         expectedWorks = Seq(
           "work-production.1098",
           "work-production.1900",
-          "work-production.1904",
+          "work-production.1904"
         ),
         expectedTotalResults = 3,
         worksSearchOptions = createWorksSearchOptionsWith(
@@ -389,7 +408,9 @@ class WorksServiceTest
         result.isRight shouldBe true
 
         val works = result.right.get
-        works.results should contain theSameElementsAs expectedWorks.map(getVisibleWork)
+        works.results should contain theSameElementsAs expectedWorks.map(
+          getVisibleWork
+        )
         works.totalResults shouldBe expectedTotalResults
         works.aggregations shouldBe expectedAggregations
       }

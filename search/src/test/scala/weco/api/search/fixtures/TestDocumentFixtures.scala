@@ -32,18 +32,24 @@ trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources {
 
   val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
-  protected case class TestDocument(id: String, document: Json, work: Work[WorkState.Indexed])
+  protected case class TestDocument(
+    id: String,
+    document: Json,
+    work: Work[WorkState.Indexed]
+  )
 
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =
     ids.map { id =>
       val doc = Try {
         readResource(s"test_documents/$id.json")
-      }
-        .flatMap(jsonString => fromJson[TestDocument](jsonString))
+      }.flatMap(jsonString => fromJson[TestDocument](jsonString))
 
       doc match {
         case Success(d) => d
-        case Failure(err) => throw new IllegalArgumentException(s"Unable to read fixture $id: $err")
+        case Failure(err) =>
+          throw new IllegalArgumentException(
+            s"Unable to read fixture $id: $err"
+          )
       }
     }
 
