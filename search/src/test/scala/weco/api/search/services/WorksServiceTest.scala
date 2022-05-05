@@ -215,17 +215,16 @@ class WorksServiceTest
 
     it("aggregates formats") {
       val expectedAggregations = WorkAggregations(
-        Some(
+        format = Some(
           Aggregation(
             List(
-              AggregationBucket(data = Format.Books, count = 4),
-              AggregationBucket(data = Format.Journals, count = 3),
-              AggregationBucket(data = Format.Audio, count = 2),
-              AggregationBucket(data = Format.Pictures, count = 1),
+              AggregationBucket(data = Format.Books, count = worksFormatBooks.length),
+              AggregationBucket(data = Format.Journals, count = worksFormatJournals.length),
+              AggregationBucket(data = Format.Audio, count = worksFormatAudio.length),
+              AggregationBucket(data = Format.Pictures, count = worksFormatPictures.length),
             )
           )
         ),
-        None
       )
 
       assertListOrSearchResultIsCorrect(
