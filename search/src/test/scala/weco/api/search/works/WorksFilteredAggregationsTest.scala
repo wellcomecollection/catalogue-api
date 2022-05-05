@@ -62,8 +62,9 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             Status.OK -> s"""
             {
               ${resultList(
-                              totalResults =
-                                aggregatedWorks.count(_.data.format.get == Books)
+                              totalResults = aggregatedWorks.count(
+                                _.data.format.get == Books
+                              )
                             )},
               "aggregations": {
                 "type" : "Aggregations",
@@ -107,8 +108,9 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             Status.OK -> s"""
             {
               ${resultList(
-                              totalResults =
-                                aggregatedWorks.count(_.data.format.get == Books)
+                              totalResults = aggregatedWorks.count(
+                                _.data.format.get == Books
+                              )
                             )},
               "aggregations": {
                 "type" : "Aggregations",

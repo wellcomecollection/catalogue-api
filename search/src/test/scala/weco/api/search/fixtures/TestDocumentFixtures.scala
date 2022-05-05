@@ -17,7 +17,10 @@ import weco.json.JsonUtil._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources with JsonHelpers {
+trait TestDocumentFixtures
+    extends ElasticsearchFixtures
+    with LocalResources
+    with JsonHelpers {
   this: Suite =>
 
   val visibleWorks = (0 to 4).map(i => s"works.visible.$i")

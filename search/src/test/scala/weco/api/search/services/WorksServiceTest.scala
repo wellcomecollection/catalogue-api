@@ -3,7 +3,11 @@ package weco.api.search.services
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
