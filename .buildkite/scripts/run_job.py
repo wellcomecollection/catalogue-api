@@ -55,13 +55,6 @@ def should_run_sbt_project(repo, project_name, changed_paths):
         if os.path.basename(path) in {".terraform.lock.hcl", ".wellcome_project"}:
             continue
 
-        if path.endswith("Makefile"):
-            if os.path.dirname(project.folder) == os.path.dirname(path):
-                print("*** %s is defined by %s" % (project.name, path))
-                return True
-            else:
-                continue
-
         try:
             project_for_path = repo.lookup_path(path)
         except KeyError:
