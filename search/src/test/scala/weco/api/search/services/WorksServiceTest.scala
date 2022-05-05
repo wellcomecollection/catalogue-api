@@ -3,16 +3,10 @@ package weco.api.search.services
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import weco.api.search.JsonHelpers
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
-import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
@@ -29,7 +23,6 @@ class WorksServiceTest
     with Matchers
     with EitherValues
     with SearchOptionsGenerators
-    with JsonHelpers
     with IdentifiersGenerators
     with TestDocumentFixtures {
 
@@ -383,14 +376,6 @@ class WorksServiceTest
       }
     }
   }
-
-  private def getVisibleWork(id: String): IndexedWork.Visible =
-    getTestDocuments(Seq(id))
-      .map(doc => {
-        val display = getKey(doc.document, "display").get
-        IndexedWork.Visible(display)
-      })
-      .head
 
   private def assertListOrSearchResultIsCorrect(
     allWorks: Seq[String],

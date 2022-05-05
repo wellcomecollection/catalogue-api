@@ -6,6 +6,8 @@ import io.circe.Json
 import org.scalatest.Suite
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
+import weco.api.search.JsonHelpers
+import weco.api.search.models.index.IndexedWork
 import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.catalogue.internal_model.Implicits._
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
@@ -15,7 +17,7 @@ import weco.json.JsonUtil._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources {
+trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources with JsonHelpers {
   this: Suite =>
 
   val visibleWorks = (0 to 4).map(i => s"works.visible.$i")
@@ -32,11 +34,21 @@ trait TestDocumentFixtures extends ElasticsearchFixtures with LocalResources {
 
   val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
+  val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
+
   protected case class TestDocument(
     id: String,
     document: Json,
     work: Work[WorkState.Indexed]
   )
+
+  def getVisibleWork(id: String): IndexedWork.Visible =
+    getTestDocuments(Seq(id))
+      .map(doc => {
+        val display = getKey(doc.document, "display").get
+        IndexedWork.Visible(display)
+      })
+      .head
 
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =
     ids.map { id =>

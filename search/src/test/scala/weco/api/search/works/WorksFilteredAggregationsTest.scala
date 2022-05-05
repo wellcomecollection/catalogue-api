@@ -28,7 +28,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
    * | che / Chechen | 1     |
    *
    */
-  val works: List[Work.Visible[WorkState.Indexed]] = List(
+  val aggregatedWorks: List[Work.Visible[WorkState.Indexed]] = List(
     (Books, bashkir, "rats"), // a
     (Journals, marathi, "capybara"), // d
     (Pictures, quechua, "tapirs"), // k
@@ -53,7 +53,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do not have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          insertIntoElasticsearch(worksIndex, aggregatedWorks: _*)
           assertJsonResponse(
             routes,
             // We expect to see the language buckets for only the works with workType=a
@@ -63,7 +63,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             {
               ${resultList(
                               totalResults =
-                                works.count(_.data.format.get == Books)
+                                aggregatedWorks.count(_.data.format.get == Books)
                             )},
               "aggregations": {
                 "type" : "Aggregations",
@@ -83,7 +83,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   ]
                 }
               },
-              "results": [${works
+              "results": [${aggregatedWorks
                               .filter(_.data.format.get == Books)
                               .sortBy { _.state.canonicalId }
                               .map(workResponse)
@@ -97,7 +97,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          insertIntoElasticsearch(worksIndex, aggregatedWorks: _*)
           assertJsonResponse(
             routes,
             // We expect to see the language buckets for only the works with workType=a
@@ -108,7 +108,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             {
               ${resultList(
                               totalResults =
-                                works.count(_.data.format.get == Books)
+                                aggregatedWorks.count(_.data.format.get == Books)
                             )},
               "aggregations": {
                 "type" : "Aggregations",
@@ -153,7 +153,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   ]
                 }
               },
-              "results": [${works
+              "results": [${aggregatedWorks
                               .filter(_.data.format.get == Books)
                               .sortBy { _.state.canonicalId }
                               .map(workResponse)
@@ -167,7 +167,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("but still returns empty buckets if their paired filter is present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          insertIntoElasticsearch(worksIndex, aggregatedWorks: _*)
           assertJsonResponse(
             routes,
             // We expect to see the workType buckets for worktype i/Audio, because that
@@ -217,7 +217,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("applies the search query to aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        insertIntoElasticsearch(worksIndex, aggregatedWorks: _*)
         assertJsonResponse(
           routes,
           s"$rootPath/works?query=rats&workType=a&aggregations=workType"
@@ -225,7 +225,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
           Status.OK -> s"""
             {
               ${resultList(
-                            totalResults = works
+                            totalResults = aggregatedWorks
                               .filter(_.data.format.get == Books)
                               .count(_.data.title.contains("rats"))
                           )},
@@ -257,7 +257,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   ]
                 }
               },
-              "results": [${works
+              "results": [${aggregatedWorks
                             .filter(_.data.format.get == Books)
                             .filter(_.data.title.contains("rats"))
                             .sortBy { _.state.canonicalId }
@@ -272,7 +272,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("filters results but not aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        insertIntoElasticsearch(worksIndex, aggregatedWorks: _*)
         assertJsonResponse(
           routes,
           s"$rootPath/works?workType=a&aggregations=workType"
@@ -281,7 +281,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             {
               ${resultList(
                             totalResults =
-                              works.count(_.data.format.get == Books)
+                              aggregatedWorks.count(_.data.format.get == Books)
                           )},
               "aggregations": {
                 "type" : "Aggregations",
@@ -311,7 +311,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   ]
                 }
               },
-              "results": [${works
+              "results": [${aggregatedWorks
                             .filter(_.data.format.get == Books)
                             .sortBy { _.state.canonicalId }
                             .map(workResponse)
