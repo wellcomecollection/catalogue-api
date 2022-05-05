@@ -23,26 +23,15 @@ class WorksFiltersTest
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
-    val work1 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "france")))
-    val work2 = indexedWork()
-      .genres(List(createGenreWith(label = "horror")))
-      .subjects(List(createSubjectWith(label = "england")))
-    val work3 = indexedWork()
-      .genres(List(createGenreWith(label = "fantasy")))
-      .subjects(List(createSubjectWith(label = "england")))
-
-    val works = Seq(work1, work2, work3)
-
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, worksEverything: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?genres.label=horror&subjects.label=england"
+          path = s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
         ) {
-          Status.OK -> worksListResponse(works = Seq(work2))
+          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
         }
     }
   }
@@ -151,13 +140,13 @@ class WorksFiltersTest
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?workType=${ManuscriptsAsian.id}"
+            path = s"$rootPath/works?workType=k"
           ) {
-            Status.OK -> worksListResponse(works = Seq(manuscriptWork))
+            Status.OK -> newWorksListResponse(ids = Seq("works.formats.9.Pictures"))
           }
       }
     }
