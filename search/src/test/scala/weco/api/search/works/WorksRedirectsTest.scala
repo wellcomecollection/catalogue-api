@@ -19,7 +19,10 @@ class WorksRedirectsTest extends ApiWorksTestBase with TestDocumentFixtures {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.redirected.0")
 
-        assertRedirectResponse(routes, path = s"$rootPath/works/yemd0v8n?include=identifiers") {
+        assertRedirectResponse(
+          routes,
+          path = s"$rootPath/works/yemd0v8n?include=identifiers"
+        ) {
           Status.Found -> s"${apiConfig.publicRootPath}/works/qklbwm3u?include=identifiers"
         }
     }
