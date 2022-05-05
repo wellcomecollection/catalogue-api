@@ -2,6 +2,9 @@ package weco.api.search.works
 
 import com.sksamuel.elastic4s.Indexable
 import weco.api.search.ApiTestBase
+import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.json.CatalogueJsonUtil
+import weco.api.search.models.request.WorksIncludes
 import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.Implicits._
 import weco.json.JsonUtil._
@@ -15,7 +18,9 @@ trait ApiWorksTestBase
     with DisplaySerialisationTestBase
     with WorkGenerators
     with GenreGenerators
-    with SubjectGenerators {
+    with SubjectGenerators
+    with CatalogueJsonUtil
+    with TestDocumentFixtures {
 
   implicit object IdentifiedWorkIndexable
       extends Indexable[Work.Visible[Indexed]] {
@@ -46,6 +51,22 @@ trait ApiWorksTestBase
        |  ${resultList(totalResults = works.size)},
        |  "results": [
        |    ${works.map { workResponse }.mkString(",")}
+       |  ]
+       |}
+      """.stripMargin
+
+  def newWorksListResponse(
+    ids: Seq[String],
+    includes: WorksIncludes = WorksIncludes.none
+  ): String =
+    s"""
+       |{
+       |  ${resultList(totalResults = ids.size)},
+       |  "results": [
+       |    ${ids
+         .map { getVisibleWork }
+         .map(_.display.withIncludes(includes))
+         .mkString(",")}
        |  ]
        |}
       """.stripMargin
