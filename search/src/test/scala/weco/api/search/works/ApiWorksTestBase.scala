@@ -55,12 +55,18 @@ trait ApiWorksTestBase
        |}
       """.stripMargin
 
-  def newWorksListResponse(ids: Seq[String], includes: WorksIncludes = WorksIncludes.none): String =
+  def newWorksListResponse(
+    ids: Seq[String],
+    includes: WorksIncludes = WorksIncludes.none
+  ): String =
     s"""
        |{
        |  ${resultList(totalResults = ids.size)},
        |  "results": [
-       |    ${ids.map { getVisibleWork }.map( _.display.withIncludes(includes) ).mkString(",")}
+       |    ${ids
+         .map { getVisibleWork }
+         .map(_.display.withIncludes(includes))
+         .mkString(",")}
        |  ]
        |}
       """.stripMargin

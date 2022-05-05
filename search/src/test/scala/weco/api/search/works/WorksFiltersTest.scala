@@ -29,9 +29,12 @@ class WorksFiltersTest
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
+          path =
+            s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
         ) {
-          Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+          Status.OK -> newWorksListResponse(
+            ids = Seq("work.visible.everything.0")
+          )
         }
     }
   }
@@ -146,7 +149,9 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?workType=k"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("works.formats.9.Pictures"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("works.formats.9.Pictures")
+            )
           }
       }
     }

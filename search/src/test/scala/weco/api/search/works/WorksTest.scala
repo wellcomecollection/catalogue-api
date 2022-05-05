@@ -177,7 +177,9 @@ class WorksTest
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-production.1098", "work-production.1900", "work-production.1904",
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904"
         )
 
         assertJsonResponse(
@@ -185,7 +187,11 @@ class WorksTest
           path = s"$rootPath/works?sort=production.dates"
         ) {
           Status.OK -> newWorksListResponse(
-            ids = Seq("work-production.1098", "work-production.1900", "work-production.1904")
+            ids = Seq(
+              "work-production.1098",
+              "work-production.1900",
+              "work-production.1904"
+            )
           )
         }
     }
@@ -196,7 +202,9 @@ class WorksTest
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-production.1098", "work-production.1900", "work-production.1904",
+          "work-production.1098",
+          "work-production.1900",
+          "work-production.1904"
         )
 
         assertJsonResponse(
@@ -204,7 +212,11 @@ class WorksTest
           path = s"$rootPath/works?sort=production.dates&sortOrder=desc"
         ) {
           Status.OK -> newWorksListResponse(
-            ids = Seq("work-production.1904", "work-production.1900", "work-production.1098")
+            ids = Seq(
+              "work-production.1904",
+              "work-production.1900",
+              "work-production.1098"
+            )
           )
         }
     }
