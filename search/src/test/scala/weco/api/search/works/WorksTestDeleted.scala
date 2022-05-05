@@ -13,4 +13,15 @@ class WorksTestDeleted extends ApiWorksTestBase with TestDocumentFixtures {
         }
     }
   }
+
+  it("excludes deleted works from results") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, deletedWorks: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works") {
+          Status.OK -> emptyJsonResult
+        }
+    }
+  }
 }
