@@ -4,19 +4,14 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  ContributorGenerators,
-  GenreGenerators,
-  SubjectGenerators
-}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
 import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.work.WorkState.Indexed
 import weco.catalogue.internal_model.work.{CollectionPath, Work}
 
@@ -28,92 +23,66 @@ class WorksQueryTest
     with EitherValues
     with IndexFixtures
     with SearchOptionsGenerators
-    with SubjectGenerators
-    with GenreGenerators
     with ImageGenerators
-    with ContributorGenerators {
+    with TestDocumentFixtures {
 
   describe("Free text query functionality") {
-
     it("searches the canonicalId") {
       withLocalWorksIndex { index =>
-        val work = indexedWork(canonicalId = CanonicalId("12345678"))
-
-        insertIntoElasticsearch(index, work)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "12345678",
-          expectedMatches = List(work)
+          query = "7sjip63h",
+          expectedMatches = List("works.visible.0")
         )
       }
     }
 
     it("searches the sourceIdentifiers") {
       withLocalWorksIndex { index =>
-        val work = indexedWork()
-        val workNotMatching = indexedWork()
-
-        insertIntoElasticsearch(index, work, workNotMatching)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = work.sourceIdentifier.value,
-          expectedMatches = List(work)
+          query = "ejTwv1NdpH",
+          expectedMatches = List("works.visible.0")
         )
       }
     }
 
     it("searches the otherIdentifiers") {
       withLocalWorksIndex { index =>
-        val work = indexedWork()
-          .otherIdentifiers(List(createSourceIdentifier))
-
-        val workNotMatching = indexedWork()
-          .otherIdentifiers(List(createSourceIdentifier))
-
-        insertIntoElasticsearch(index, work, workNotMatching)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = work.data.otherIdentifiers.head.value,
-          expectedMatches = List(work)
+          query = "ji3JH82kKu",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
     it("searches the items.canonicalId as keyword") {
       withLocalWorksIndex { index =>
-        val item1 = createIdentifiedItem
-        val item2 = createIdentifiedItem
-
-        val work1 = indexedWork().items(List(item1))
-        val work2 = indexedWork().items(List(item2))
-
-        insertIntoElasticsearch(index, work1, work2)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = item1.id.canonicalId.underlying,
-          expectedMatches = List(work1)
+          query = "ca3anii6",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
     it("searches the items.sourceIdentifiers") {
       withLocalWorksIndex { index =>
-        val item1 = createIdentifiedItem
-        val item2 = createIdentifiedItem
-
-        val work1 = indexedWork().items(List(item1))
-        val work2 = indexedWork().items(List(item2))
-
-        insertIntoElasticsearch(index, work1, work2)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = item1.id.sourceIdentifier.value,
-          expectedMatches = List(work1)
+          query = "hKyStbKjx1",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
@@ -132,7 +101,7 @@ class WorksQueryTest
 
         insertIntoElasticsearch(index, work1, work2)
 
-        assertResultsMatchForAllowedQueryTypes(
+        assertResultsMatchForAllowedQueryTypesOld(
           index,
           query = item1.id.otherIdentifiers.head.value,
           expectedMatches = List(work1)
@@ -142,18 +111,12 @@ class WorksQueryTest
 
     it("searches the images.canonicalId as keyword") {
       withLocalWorksIndex { index =>
-        val image1 = createImageData.toIdentified
-        val image2 = createImageData.toIdentified
-
-        val work1 = indexedWork().imageData(List(image1))
-        val work2 = indexedWork().imageData(List(image2))
-
-        insertIntoElasticsearch(index, work1, work2)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = image1.id.canonicalId.underlying,
-          expectedMatches = List(work1)
+          query = "01bta4ru",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
@@ -168,7 +131,7 @@ class WorksQueryTest
 
         insertIntoElasticsearch(index, work1, work2)
 
-        assertResultsMatchForAllowedQueryTypes(
+        assertResultsMatchForAllowedQueryTypesOld(
           index,
           query = image1.id.sourceIdentifier.value,
           expectedMatches = List(work1)
@@ -182,7 +145,7 @@ class WorksQueryTest
 
         insertIntoElasticsearch(index, work)
 
-        assertResultsMatchForAllowedQueryTypes(
+        assertResultsMatchForAllowedQueryTypesOld(
           index,
           query = work.state.canonicalId.underlying,
           expectedMatches = List(work)
@@ -192,13 +155,17 @@ class WorksQueryTest
 
     it("doesn't match on partial IDs") {
       withLocalWorksIndex { index =>
-        val work = indexedWork(canonicalId = CanonicalId("12345678"))
-
-        insertIntoElasticsearch(index, work)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "123",
+          query = "7sjip63h",
+          expectedMatches = List("works.visible.0")
+        )
+
+        assertResultsMatchForAllowedQueryTypes(
+          index,
+          query = "7sji",
           expectedMatches = List()
         )
       }
@@ -206,110 +173,83 @@ class WorksQueryTest
 
     it("matches IDs case insensitively") {
       withLocalWorksIndex { index =>
-        val work1 = indexedWork(canonicalId = CanonicalId("AbCDeF12"))
-        val work2 = indexedWork(canonicalId = CanonicalId("bloopybo"))
-
-        insertIntoElasticsearch(index, work1, work2)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = work1.state.canonicalId.underlying.toLowerCase(),
-          expectedMatches = List(work1)
+          query = "7SJIP63H",
+          expectedMatches = List("works.visible.0")
         )
       }
     }
 
     it("matches multiple IDs") {
       withLocalWorksIndex { index =>
-        val work1 = indexedWork()
-        val work2 = indexedWork()
-        val work3 = indexedWork()
-
-        insertIntoElasticsearch(index, work1, work2, work3)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = s"${work1.state.canonicalId} ${work2.state.canonicalId}",
-          List(work1, work2)
+          query = "7SJIP63H ob2ruvbb",
+          expectedMatches = List("works.visible.0", "works.visible.1")
         )
       }
     }
 
-    it("doesn't match partially matching IDs") {
+    it("doesn't match partially matching source identifiers") {
       withLocalWorksIndex { index =>
-        val work1 = indexedWork()
-        val work2 = indexedWork()
-
-        // We've put spaces in this as some Miro IDs are sentences
-        val work3 = indexedWork(
-          sourceIdentifier = createMiroSourceIdentifierWith(
-            value = "Oxford English Dictionary"
-          )
-        )
-
-        insertIntoElasticsearch(index, work1, work2, work3)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query =
-            s"${work1.state.canonicalId} ${work2.state.canonicalId} Oxford",
-          expectedMatches = List(work1, work2)
+          query = "ejTwv1NdpH",
+          expectedMatches = List("works.visible.0")
+        )
+
+        assertResultsMatchForAllowedQueryTypes(
+          index,
+          query = "ejTwv",
+          expectedMatches = List()
         )
       }
     }
 
     it("searches for contributors") {
       withLocalWorksIndex { index =>
-        val matchingWork = indexedWork()
-          .contributors(List(createPersonContributorWith("Matching")))
-        val notMatchingWork = indexedWork()
-          .contributors(List(createPersonContributorWith("Notmatching")))
-
-        insertIntoElasticsearch(index, matchingWork, notMatchingWork)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "matching",
-          expectedMatches = List(matchingWork)
+          query = "person-o8xazs",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
-    it("Searches for genres") {
+    it("searches genre labels") {
       withLocalWorksIndex { index =>
-        val matchingWork = indexedWork()
-          .genres(List(createGenreWithMatchingConcept("Matching")))
-        val notMatchingWork = indexedWork()
-          .genres(List(createGenreWithMatchingConcept("Notmatching")))
-
-        insertIntoElasticsearch(index, matchingWork, notMatchingWork)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "matching",
-          expectedMatches = List(matchingWork)
+          query = "nFnK1Qv0bPiYMZq",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
-    it("Searches for subjects") {
+    it("searches subject labels") {
       withLocalWorksIndex { index =>
-        val matchingWork = indexedWork()
-          .subjects(List(createSubjectWithMatchingConcept("Matching")))
-        val notMatchingWork = indexedWork()
-          .subjects(List(createSubjectWithMatchingConcept("Notmatching")))
-
-        insertIntoElasticsearch(index, matchingWork, notMatchingWork)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "matching",
-          expectedMatches = List(matchingWork)
+          query = "g08I834KKSXk1WG",
+          expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
-    it("Searches lettering") {
+    it("searches lettering") {
       withLocalWorksIndex { index =>
         val matchingWork = indexedWork()
           .lettering(
@@ -320,7 +260,7 @@ class WorksQueryTest
 
         insertIntoElasticsearch(index, matchingWork, notMatchingWork)
 
-        assertResultsMatchForAllowedQueryTypes(
+        assertResultsMatchForAllowedQueryTypesOld(
           index,
           query = "shahjahanabad",
           expectedMatches = List(matchingWork)
@@ -328,7 +268,7 @@ class WorksQueryTest
       }
     }
 
-    it("Searches for collection in collectionPath.path") {
+    it("searches for collection in collectionPath.path") {
       withLocalWorksIndex { index =>
         val matchingWork = indexedWork()
           .collectionPath(CollectionPath("PPCPB", label = Some("PP/CRI")))
@@ -337,33 +277,33 @@ class WorksQueryTest
 
         insertIntoElasticsearch(index, matchingWork, notMatchingWork)
 
-        assertResultsMatchForAllowedQueryTypes(
+        assertResultsMatchForAllowedQueryTypesOld(
           index,
           query = "PPCPB",
           expectedMatches = List(matchingWork)
         )
       }
     }
-  }
 
-  it("Searches for collection in collectionPath.label") {
-    withLocalWorksIndex { index =>
-      val matchingWork = indexedWork()
-        .collectionPath(CollectionPath("PPCPB", label = Some("PP/CRI")))
-      val notMatchingWork = indexedWork()
-        .collectionPath(CollectionPath("NUFFINK", label = Some("NUF/FINK")))
+    it("searches for collection in collectionPath.label") {
+      withLocalWorksIndex { index =>
+        val matchingWork = indexedWork()
+          .collectionPath(CollectionPath("PPCPB", label = Some("PP/CRI")))
+        val notMatchingWork = indexedWork()
+          .collectionPath(CollectionPath("NUFFINK", label = Some("NUF/FINK")))
 
-      insertIntoElasticsearch(index, matchingWork, notMatchingWork)
+        insertIntoElasticsearch(index, matchingWork, notMatchingWork)
 
-      assertResultsMatchForAllowedQueryTypes(
-        index,
-        query = "PP/CRI",
-        expectedMatches = List(matchingWork)
-      )
+        assertResultsMatchForAllowedQueryTypesOld(
+          index,
+          query = "PP/CRI",
+          expectedMatches = List(matchingWork)
+        )
+      }
     }
   }
 
-  private def assertResultsMatchForAllowedQueryTypes(
+  private def assertResultsMatchForAllowedQueryTypesOld(
     index: Index,
     query: String,
     expectedMatches: List[Work[Indexed]]
@@ -384,6 +324,31 @@ class WorksQueryTest
         results.size shouldBe expectedMatches.size
         results should contain theSameElementsAs expectedMatches.map(
           IndexedWork(_)
+        )
+      }
+    }
+
+  private def assertResultsMatchForAllowedQueryTypes(
+    index: Index,
+    query: String,
+    expectedMatches: List[String]
+  ): List[Assertion] =
+    SearchQueryType.allowed map { queryType =>
+      val future = worksService.listOrSearch(
+        index,
+        searchOptions = createWorksSearchOptionsWith(
+          searchQuery = Some(SearchQuery(query, queryType))
+        )
+      )
+
+      val results = whenReady(future) {
+        _.right.value.results
+      }
+
+      withClue(s"Using: ${queryType.name}") {
+        results.size shouldBe expectedMatches.size
+        results should contain theSameElementsAs expectedMatches.map(
+          getVisibleWork
         )
       }
     }
