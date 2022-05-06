@@ -46,7 +46,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=identifiers") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=identifiers"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -174,7 +177,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=identifiers") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=identifiers"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -506,7 +512,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=items") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=items"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -789,7 +798,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=subjects") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=subjects"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1038,7 +1050,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=genres") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=genres"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1105,7 +1120,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=contributors") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=contributors"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1233,7 +1251,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=contributors") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=contributors"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1282,7 +1303,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=production") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=production"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1488,7 +1512,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=production") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=production"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1563,7 +1590,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=languages") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=languages"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1682,7 +1712,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=languages") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=languages"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1894,7 +1927,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=notes") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=notes"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2057,7 +2093,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=images") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=images"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2367,7 +2406,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=holdings") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=holdings"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2453,7 +2495,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=parts") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=parts"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2489,7 +2534,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=partOf") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=partOf"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2534,7 +2582,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=precededBy") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=precededBy"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -2570,7 +2621,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=succeededBy") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=succeededBy"
+          ) {
             Status.OK ->
               s"""
                  |{
