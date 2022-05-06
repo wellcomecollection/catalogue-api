@@ -81,7 +81,8 @@ class WorksQueryTest
       }
     }
 
-    val worksWithItemIdentifiers = (0 to 4).map(i => s"works.items-with-other-identifiers.$i")
+    val worksWithItemIdentifiers =
+      (0 to 4).map(i => s"works.items-with-other-identifiers.$i")
 
     it("searches the items.otherIdentifiers") {
       withLocalWorksIndex { index =>
@@ -242,7 +243,8 @@ class WorksQueryTest
     it("searches for collection in collectionPath.path") {
       withLocalWorksIndex { index =>
         indexTestDocuments(
-          index, "works.collection-path.NUFFINK",
+          index,
+          "works.collection-path.NUFFINK",
           "works.collection-path.PPCRI"
         )
 
@@ -257,7 +259,8 @@ class WorksQueryTest
     it("searches for collection in collectionPath.label") {
       withLocalWorksIndex { index =>
         indexTestDocuments(
-          index, "works.collection-path.NUFFINK",
+          index,
+          "works.collection-path.NUFFINK",
           "works.collection-path.PPCRI"
         )
 
