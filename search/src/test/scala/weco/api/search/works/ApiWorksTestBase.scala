@@ -66,6 +66,7 @@ trait ApiWorksTestBase
        |    ${ids
          .map { getVisibleWork }
          .map(_.display.withIncludes(includes))
+         .sortBy(w => getKey(w, "id").get.asString)
          .mkString(",")}
        |  ]
        |}
