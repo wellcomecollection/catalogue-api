@@ -1,14 +1,6 @@
 package weco.api.search.works
 
-import weco.api.search.fixtures.TestDocumentFixtures
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
-
-class WorksTest
-    extends ApiWorksTestBase
-    with TestDocumentFixtures
-    with ItemsGenerators {
+class WorksTest extends ApiWorksTestBase {
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
@@ -23,18 +15,16 @@ class WorksTest
   it("returns a single work when requested with id") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val work = indexedWork()
+        indexTestDocuments(worksIndex, "works.visible.0")
 
-        insertIntoElasticsearch(worksIndex, work)
-
-        assertJsonResponse(routes, s"$rootPath/works/${work.state.canonicalId}") {
+        assertJsonResponse(routes, path = s"$rootPath/works/7sjip63h") {
           Status.OK -> s"""
             {
-             ${singleWorkResult()},
-             "id": "${work.state.canonicalId}",
-             "title": "${work.data.title.get}",
+             "id": "7sjip63h",
+             "title": "title-dgZfc8BAUa",
              "alternativeTitles": [],
-             "availabilities": [${availabilities(work.state.availabilities)}]
+             "availabilities": [],
+             "type": "Work"
             }
           """
         }
@@ -68,44 +58,83 @@ class WorksTest
   ) {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = indexedWorks(count = 3).sortBy {
-          _.state.canonicalId
-        }
+        indexTestDocuments(worksIndex, visibleWorks: _*)
 
-        insertIntoElasticsearch(worksIndex, works: _*)
+        val totalPages = math.ceil(visibleWorks.length / 2.0).toInt
 
-        assertJsonResponse(routes, s"$rootPath/works?page=2&pageSize=1") {
+        assertJsonResponse(routes, path = s"$rootPath/works?page=1&pageSize=2") {
           Status.OK -> s"""
             {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$publicRootUri/works?page=1&pageSize=1",
-              "nextPage": "$publicRootUri/works?page=3&pageSize=1",
+              "type": "ResultList",
+              "pageSize": 2,
+              "totalPages": $totalPages,
+              "totalResults": ${visibleWorks.length},
+              "nextPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                ${workResponse(works(1))}
+                {
+                 "id": "7sjip63h",
+                 "title": "title-dgZfc8BAUa",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                },
+                {
+                 "id": "ob2ruvbb",
+                 "title": "title-QPNB7ZuKSW",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                }
               ]
             }
           """
         }
 
-        assertJsonResponse(routes, s"$rootPath/works?page=1&pageSize=1") {
+        assertJsonResponse(routes, path = s"$rootPath/works?page=2&pageSize=2") {
           Status.OK -> s"""
             {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "nextPage": "$publicRootUri/works?page=2&pageSize=1",
+              "type": "ResultList",
+              "pageSize": 2,
+              "totalPages": $totalPages,
+              "totalResults": ${visibleWorks.length},
+              "prevPage": "$publicRootUri/works?page=1&pageSize=2",
+              "nextPage": "$publicRootUri/works?page=3&pageSize=2",
               "results": [
-                ${workResponse(works(0))}
+                {
+                 "id": "pft15vam",
+                 "title": "title-d8prf0oY4u",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                },
+                {
+                 "id": "vbi1ii19",
+                 "title": "title-GGR8UNWutF",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                }
               ]
             }
           """
         }
 
-        assertJsonResponse(routes, s"$rootPath/works?page=3&pageSize=1") {
+        assertJsonResponse(routes, path = s"$rootPath/works?page=3&pageSize=2") {
           Status.OK -> s"""
             {
-              ${resultList(pageSize = 1, totalPages = 3, totalResults = 3)},
-              "prevPage": "$publicRootUri/works?page=2&pageSize=1",
+              "type": "ResultList",
+              "pageSize": 2,
+              "totalPages": $totalPages,
+              "totalResults": ${visibleWorks.length},
+              "prevPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                ${workResponse(works(2))}
+                {
+                 "id": "yqts0coj",
+                 "title": "title-qPyuxbr589",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                }
               ]
             }
           """
@@ -140,32 +169,35 @@ class WorksTest
   it("shows the thumbnail field if available") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val thumbnailLocation = DigitalLocation(
-          locationType = LocationType.ThumbnailImage,
-          url = "https://iiif.example.org/1234/default.jpg",
-          license = Some(License.CCBY)
-        )
-        val work = indexedWork()
-          .thumbnail(thumbnailLocation)
-          .items(
-            List(createIdentifiedItemWith(locations = List(thumbnailLocation)))
-          )
-        insertIntoElasticsearch(worksIndex, work)
+        indexTestDocuments(worksIndex, "work-thumbnail")
 
-        assertJsonResponse(routes, s"$rootPath/works") {
+        assertJsonResponse(routes, path = s"$rootPath/works/b2tsq547") {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = 1)},
-              "results": [
-               {
-                 "type": "Work",
-                 "id": "${work.state.canonicalId}",
-                 "title": "${work.data.title.get}",
-                 "alternativeTitles": [],
-                 "availabilities": [${availabilities(work.state.availabilities)}],
-                 "thumbnail": ${location(work.data.thumbnail.get)}
-                }
-              ]
+              "id" : "b2tsq547",
+              "title" : "title-ZNHa9f6J8i",
+              "alternativeTitles" : [],
+              "thumbnail" : {
+                "locationType" : {
+                  "id" : "iiif-presentation",
+                  "label" : "IIIF Presentation API",
+                  "type" : "LocationType"
+                },
+                "url" : "https://iiif.wellcomecollection.org/image/VKc.jpg/info.json",
+                "credit" : "Credit line: xg9Ouz",
+                "linkText" : "Link text: lieZAgiK4B",
+                "license" : {
+                  "id" : "cc-by",
+                  "label" : "Attribution 4.0 International (CC BY 4.0)",
+                  "url" : "http://creativecommons.org/licenses/by/4.0/",
+                  "type" : "License"
+                },
+                "accessConditions" : [
+                ],
+                "type" : "DigitalLocation"
+              },
+              "availabilities" : [],
+              "type" : "Work"
             }
           """
         }
