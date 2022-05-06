@@ -263,7 +263,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?production.dates.to=1960-01-01"
+            path = s"$rootPath/works?production.dates.to=1960-01-01"
           ) {
             Status.OK -> newWorksListResponse(ids = Seq("work-production.1098", "work-production.1900", "work-production.1904"))
           }
