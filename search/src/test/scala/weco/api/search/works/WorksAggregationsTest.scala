@@ -1,45 +1,22 @@
 package weco.api.search.works
 
-import weco.api.search.generators.PeriodGenerators
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.languages.Language
-import weco.catalogue.internal_model.locations.{AccessStatus, License}
-import weco.catalogue.internal_model.work.Format._
-import weco.catalogue.internal_model.work._
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  ProductionEventGenerators
-}
-
-import java.time.{LocalDate, Month}
-
-class WorksAggregationsTest
-    extends ApiWorksTestBase
-    with ItemsGenerators
-    with ProductionEventGenerators
-    with PeriodGenerators {
-
-  it("supports fetching the format aggregation") {
+class WorksAggregationsTest extends ApiWorksTestBase {
+  it("aggregates by format") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val formats = List(
-          Books,
-          Books,
-          Books,
-          Pictures,
-          Pictures,
-          Journals
-        )
+        indexTestDocuments(worksIndex, worksFormat: _*)
 
-        val works = formats.map { indexedWork().format(_) }
-
-        insertIntoElasticsearch(worksIndex, works: _*)
-
-        assertJsonResponse(routes, s"$rootPath/works?aggregations=workType") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=workType&pageSize=1"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = works.size)},
+              ${resultList(
+            totalResults = worksFormat.size,
+            pageSize = 1,
+            totalPages = worksFormat.size
+          )},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -51,16 +28,7 @@ class WorksAggregationsTest
                         "label" : "Books",
                         "type" : "Format"
                       },
-                      "count" : 3,
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "data" : {
-                        "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
-                      },
-                      "count" : 2,
+                      "count" : ${worksFormatBooks.length},
                       "type" : "AggregationBucket"
                     },
                     {
@@ -69,50 +37,60 @@ class WorksAggregationsTest
                         "label" : "Journals",
                         "type" : "Format"
                       },
-                      "count" : 1,
+                      "count" : ${worksFormatJournals.length},
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "data" : {
+                        "id" : "i",
+                        "label" : "Audio",
+                        "type" : "Format"
+                      },
+                      "count" : ${worksFormatAudio.length},
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "data" : {
+                        "id" : "k",
+                        "label" : "Pictures",
+                        "type" : "Format"
+                      },
+                      "count" : ${worksFormatPictures.length},
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
               "results": [
-                ${works
-            .sortBy { _.state.canonicalId }
-            .map(workResponse)
-            .mkString(",")}
-              ]
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "3uu0bujc",
+                  "title" : "A work with format Journals",
+                  "type" : "Work",
+                  "workType" : {
+                    "id" : "d",
+                    "label" : "Journals",
+                    "type" : "Format"
+                  }
+                }
+              ],
+              "nextPage" : "$publicRootUri/works?aggregations=workType&pageSize=1&page=2"
             }
           """
         }
     }
   }
 
-  it("supports fetching the genre.label aggregation") {
+  it("aggregates by genre label") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val concept0 = Concept("conceptLabel")
-        val concept1 = Place("placeLabel")
-        val concept2 = Period(
-          id = IdState.Identified(
-            canonicalId = createCanonicalId,
-            sourceIdentifier = createSourceIdentifierWith(
-              ontologyType = "Period"
-            )
-          ),
-          label = "periodLabel",
-          range = None
-        )
+        indexTestDocuments(worksIndex, "works.genres")
 
-        val genre = Genre(
-          label = "Electronic books.",
-          concepts = List(concept0, concept1, concept2)
-        )
-
-        val work = indexedWork().genres(List(genre))
-
-        insertIntoElasticsearch(worksIndex, work)
-
-        assertJsonResponse(routes, s"$rootPath/works?aggregations=genres.label") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=genres.label"
+        ) {
           Status.OK -> s"""
             {
               ${resultList(totalResults = 1)},
@@ -123,7 +101,7 @@ class WorksAggregationsTest
                   "buckets": [
                     {
                       "data" : {
-                        "label" : "conceptLabel",
+                        "label" : "Conceptual Conversations",
                         "concepts": [],
                         "type" : "Genre"
                       },
@@ -132,7 +110,7 @@ class WorksAggregationsTest
                     },
                            {
                       "data" : {
-                        "label" : "periodLabel",
+                        "label" : "Past Prehistory",
                         "concepts": [],
                         "type" : "Genre"
                       },
@@ -141,7 +119,7 @@ class WorksAggregationsTest
                     },
                            {
                       "data" : {
-                        "label" : "placeLabel",
+                        "label" : "Pleasant Paris",
                         "concepts": [],
                         "type" : "Genre"
                       },
@@ -151,46 +129,35 @@ class WorksAggregationsTest
                   ]
                 }
               },
-              "results": [${workResponse(work)}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "lhrstrzi",
+                  "title" : "A work with different concepts in the genre",
+                  "type" : "Work"
+                }
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on dates by from year") {
+  it("aggregates by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val periods = List(
-          Period(
-            id = IdState.Unidentifiable,
-            label = "1st May 1970",
-            range = Some(
-              InstantRange(
-                from = LocalDate.of(1970, Month.MAY, 1),
-                to = LocalDate.of(1970, Month.MAY, 1),
-                label = "1st May 1970"
-              )
-            )
-          ),
-          createPeriodForYear("1970"),
-          createPeriodForYear("1976"),
-          createPeriodForYearRange("1970", "1979")
+        val works = Seq(
+          "work-production.1098",
+          "work-production.1904",
+          "work-production.2020"
         )
 
-        val works = periods
-          .map { p =>
-            indexedWork()
-              .production(
-                List(createProductionEvent.copy(dates = List(p)))
-              )
-          }
-          .sortBy { _.state.canonicalId }
+        indexTestDocuments(worksIndex, works: _*)
 
-        insertIntoElasticsearch(worksIndex, works: _*)
         assertJsonResponse(
           routes,
-          s"$rootPath/works?aggregations=production.dates"
+          path = s"$rootPath/works?aggregations=production.dates"
         ) {
           Status.OK -> s"""
             {
@@ -202,15 +169,23 @@ class WorksAggregationsTest
                   "buckets": [
                     {
                       "data" : {
-                        "label": "1970",
+                        "label": "1098",
                         "type": "Period"
                       },
-                      "count" : 3,
+                      "count" : 1,
                       "type" : "AggregationBucket"
                     },
                     {
                       "data" : {
-                        "label": "1976",
+                        "label": "1904",
+                        "type": "Period"
+                      },
+                      "count" : 1,
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "data" : {
+                        "label": "2020",
                         "type": "Period"
                       },
                       "count" : 1,
@@ -219,85 +194,158 @@ class WorksAggregationsTest
                   ]
                 }
               },
-              "results": [${works.map(workResponse).mkString(",")}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "ko9eldlc",
+                  "title" : "Production event in 1904",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "minusjlh",
+                  "title" : "Production event in 2020",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "mxme7pvj",
+                  "title" : "Production event in 1098",
+                  "type" : "Work"
+                }
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on languages") {
-    val english = Language(label = "English", id = "eng")
-    val swedish = Language(label = "Swedish", id = "swe")
-    val turkish = Language(label = "Turkish", id = "tur")
-
-    val works = Seq(
-      indexedWork().languages(List(english)),
-      indexedWork().languages(List(english, swedish)),
-      indexedWork().languages(List(english, swedish, turkish))
-    )
-
+  it("aggregates by language") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
-        assertJsonResponse(routes, s"$rootPath/works?aggregations=languages") {
+        indexTestDocuments(
+          worksIndex,
+          "works.languages.0.eng",
+          "works.languages.1.eng",
+          "works.languages.2.eng",
+          "works.languages.3.eng+swe",
+          "works.languages.4.eng+swe+tur",
+          "works.languages.5.swe",
+          "works.languages.6.tur"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=languages"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = works.size)},
+              ${resultList(totalResults = 7)},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data" : ${language(english)},
+                      "data" : {
+                        "id" : "eng",
+                        "label" : "English",
+                        "type" : "Language"
+                      },
+                      "count" : 5,
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "data" : {
+                        "id" : "swe",
+                        "label" : "Swedish",
+                        "type" : "Language"
+                      },
                       "count" : 3,
                       "type" : "AggregationBucket"
                     },
                     {
-                      "data" : ${language(swedish)},
+                      "data" : {
+                        "id" : "tur",
+                        "label" : "Turkish",
+                        "type" : "Language"
+                      },
                       "count" : 2,
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "data" : ${language(turkish)},
-                      "count" : 1,
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-            .sortBy { _.state.canonicalId }
-            .map(workResponse)
-            .mkString(",")}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "5a37bi10",
+                  "title" : "A work with languages English",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "j78ps149",
+                  "title" : "A work with languages English, Swedish",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "m6ne7xwr",
+                  "title" : "A work with languages English",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "ry03jkbp",
+                  "title" : "A work with languages Swedish",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "s3mu3txt",
+                  "title" : "A work with languages English",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "xmkstgwq",
+                  "title" : "A work with languages Turkish",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "xqjkrlx5",
+                  "title" : "A work with languages English, Swedish, Turkish",
+                  "type" : "Work"
+                }
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on subjects.label, ordered by frequency") {
-    val paleoNeuroBiology = createSubjectWith(label = "paleoNeuroBiology")
-    val realAnalysis = createSubjectWith(label = "realAnalysis")
-
-    val subjectLists = List(
-      List(paleoNeuroBiology),
-      List(realAnalysis),
-      List(realAnalysis),
-      List(paleoNeuroBiology, realAnalysis),
-      List.empty
-    )
-
-    val works = subjectLists
-      .map { indexedWork().subjects(_) }
+  it("aggregates by subject label") {
+    val works = (0 to 4).map(i => s"works.subjects.$i")
 
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?aggregations=subjects.label"
+          path = s"$rootPath/works?aggregations=subjects.label"
         ) {
           Status.OK -> s"""
             {
@@ -308,49 +356,79 @@ class WorksAggregationsTest
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data" : ${subject(realAnalysis, showConcepts = false)},
+                      "data" : {
+                        "concepts" : [],
+                        "label" : "realAnalysis",
+                        "type" : "Subject"
+                      },
                       "count" : 3,
                       "type" : "AggregationBucket"
                     },
                     {
-                      "data" : ${subject(
-            paleoNeuroBiology,
-            showConcepts = false
-          )},
+                      "data" : {
+                        "concepts" : [],
+                        "label" : "paleoNeuroBiology",
+                        "type" : "Subject"
+                      },
                       "count" : 2,
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-            .sortBy { _.state.canonicalId }
-            .map(workResponse)
-            .mkString(",")}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "5ymcwk8h",
+                  "title" : "title-KD9r1zHmiH",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "6jxrk5e3",
+                  "title" : "title-by26w1evrA",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "p9ugies0",
+                  "title" : "title-LgxSR5EK6U",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "u7atgijp",
+                  "title" : "title-v2pMEZn8L2",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "wrkxloww",
+                  "title" : "title-bkm5UMJEwT",
+                  "type" : "Work"
+                }
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on contributor agent labels") {
-    val agent47 = Agent("47")
-    val jamesBond = Agent("007")
-    val mi5 = Organisation("MI5")
-    val gchq = Organisation("GCHQ")
-
-    val works =
-      List(List(agent47), List(agent47), List(jamesBond, mi5), List(mi5, gchq))
-        .map { agents =>
-          indexedWork().contributors(agents.map(Contributor(_, roles = Nil)))
-        }
+  it("aggregates by contributor agent label") {
+    val works = (0 to 3).map(i => s"works.contributor.$i")
 
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?aggregations=contributors.agent.label"
+          path = s"$rootPath/works?aggregations=contributors.agent.label"
         ) {
           Status.OK -> s"""
             {
@@ -362,105 +440,90 @@ class WorksAggregationsTest
                   "buckets": [
                     {
                       "count" : 2,
-                      "data" : ${abstractAgent(agent47)},
+                      "data" : {
+                        "label" : "47",
+                        "type" : "Agent"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
-                      "data" : ${abstractAgent(mi5)},
+                      "data" : {
+                        "label" : "MI5",
+                        "type" : "Organisation"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${abstractAgent(jamesBond)},
+                      "data" : {
+                        "label" : "007",
+                        "type" : "Agent"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${abstractAgent(gchq)},
+                      "data" : {
+                        "label" : "GCHQ",
+                        "type" : "Organisation"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-            .sortBy(_.state.canonicalId)
-            .map(workResponse)
-            .mkString(",")}]
-            }
-          """
-        }
-    }
-  }
-
-  it("does not bring down the API when unknown contributor type") {
-
-    val work = indexedWork()
-
-    val workWithContributor = work.copy(
-      state = work.state.copy(
-        derivedData = work.state.derivedData.copy(
-          contributorAgents = List("Producer:Keith")
-        )
-      )
-    )
-
-    withWorksApi {
-      case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, workWithContributor)
-        assertJsonResponse(
-          routes,
-          s"$rootPath/works?aggregations=contributors.agent.label"
-        ) {
-          Status.OK -> s"""
-            {
-              ${resultList(totalResults = 1)},
-              "aggregations": {
-                "type" : "Aggregations",
-                "contributors.agent.label": {
-                  "type" : "Aggregation",
-                  "buckets": []
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "hui5cjlp",
+                  "title" : "title-MGlgVkz3Vf",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "hutjlml0",
+                  "title" : "title-H1Bj9evx0c",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "pkf3m7xe",
+                  "title" : "title-xv45oXcssa",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "xilf8imb",
+                  "title" : "title-PHmut9nJ8z",
+                  "type" : "Work"
                 }
-              },
-              "results": [${workResponse(workWithContributor)}]
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on items.locations.license") {
-    def createLicensedWork(
-      licenses: Seq[License]
-    ): Work.Visible[WorkState.Indexed] = {
-      val items =
-        licenses.map { license =>
-          createDigitalItemWith(license = Some(license))
-        }.toList
-
-      indexedWork().items(items)
-    }
-
-    val licenseLists = List(
-      List(License.CCBY),
-      List(License.CCBY),
-      List(License.CCBYNC),
-      List(License.CCBY, License.CCBYNC),
-      List.empty
-    )
-
-    val works = licenseLists.map { createLicensedWork(_) }
-
+  it("aggregates by item license") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(
+          worksIndex,
+          (0 to 4).map(i => s"works.items-with-licenses.$i"): _*
+        )
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?aggregations=items.locations.license"
+          path = s"$rootPath/works?aggregations=items.locations.license"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = works.size)},
+              ${resultList(totalResults = 5)},
               "aggregations": {
                 "type" : "Aggregations",
                 "items.locations.license": {
@@ -468,65 +531,87 @@ class WorksAggregationsTest
                   "buckets": [
                     {
                       "count" : 3,
-                      "data" : ${license(License.CCBY)},
+                      "data" : {
+                        "id" : "cc-by",
+                        "label" : "Attribution 4.0 International (CC BY 4.0)",
+                        "type" : "License",
+                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
-                      "data" : ${license(License.CCBYNC)},
+                      "data" : {
+                        "id" : "cc-by-nc",
+                        "label" : "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
+                        "type" : "License",
+                        "url" : "https://creativecommons.org/licenses/by-nc/4.0/"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-            .sortBy { _.state.canonicalId }
-            .map(workResponse)
-            .mkString(",")}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "aaipgbth",
+                  "title" : "title-xzEZGWEGMy",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "fx49bqty",
+                  "title" : "title-WIjswjHR3o",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "pak011dv",
+                  "title" : "title-n9x0HfU454",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "tbgvrpdz",
+                  "title" : "title-zGimVHoe2r",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [],
+                  "id" : "wjvsf3c3",
+                  "title" : "title-67fbITZO5o",
+                  "type" : "Work"
+                }
+              ]
             }
           """
         }
     }
   }
 
-  it("supports aggregating on availabilities") {
-    val items = List(
-      List(createClosedStoresItem),
-      List(createOpenShelvesItem),
-      List(createDigitalItemWith(accessStatus = AccessStatus.Open)),
-      List(createDigitalItemWith(accessStatus = AccessStatus.Open)),
-      List(createDigitalItemWith(accessStatus = AccessStatus.OpenWithAdvisory)),
-      List(
-        createClosedStoresItem,
-        createDigitalItemWith(accessStatus = AccessStatus.Open)
-      )
-    )
-    val works = items.map(indexedWork().items(_))
-
+  it("aggregates by availability") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, worksEverything: _*)
+
         assertJsonResponse(
-          routes = routes,
+          routes,
           path = s"$rootPath/works?aggregations=availabilities"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = works.size)},
+              ${resultList(totalResults = worksEverything.size)},
               "aggregations": {
                 "availabilities": {
                   "buckets": [
                     {
-                      "count": 4,
-                      "data": {
-                        "label": "Online",
-                        "id": "online",
-                        "type" : "Availability"
-                      },
-                      "type": "AggregationBucket"
-                    },
-                    {
-                      "count": 2,
+                      "count": 3,
                       "data": {
                         "label": "Closed stores",
                         "id": "closed-stores",
@@ -548,10 +633,52 @@ class WorksAggregationsTest
                 },
                 "type": "Aggregations"
               },
-              "results": [${works
-                            .sortBy { _.state.canonicalId }
-                            .map(workResponse)
-                            .mkString(",")}]
+              "results": [
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [
+                    {
+                      "id" : "open-shelves",
+                      "label" : "Open shelves",
+                      "type" : "Availability"
+                    },
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "ou9z1esm",
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                },
+                {
+                  "alternativeTitles" : [],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "wchkoofm",
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+              ]
             }
           """.stripMargin
         }

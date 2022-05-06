@@ -50,7 +50,7 @@ trait DisplaySerialisationTestBase {
   def items(items: List[Item[IdState.Minted]]) =
     items.map(item).mkString(",")
 
-  def item(item: Item[IdState.Minted]): String =
+  private def item(item: Item[IdState.Minted]): String =
     s"""
      {
        ${identifiers(item)}
@@ -95,7 +95,7 @@ trait DisplaySerialisationTestBase {
   def accessConditions(conds: List[AccessCondition]) =
     s"[${conds.map(accessCondition).mkString(",")}]"
 
-  def accessCondition(cond: AccessCondition): String =
+  private def accessCondition(cond: AccessCondition): String =
     s"""
       {
         "method": {
@@ -109,7 +109,7 @@ trait DisplaySerialisationTestBase {
       }
     """.tidy
 
-  def accessStatus(status: AccessStatus): String =
+  private def accessStatus(status: AccessStatus): String =
     s"""{
        |  "type": "AccessStatus",
        |  "id": ${DisplayAccessStatus(status).id.toJson},
@@ -319,7 +319,7 @@ trait DisplaySerialisationTestBase {
       "value": "${identifier.value}"
     }"""
 
-  def locationType(locType: LocationType): String =
+  private def locationType(locType: LocationType): String =
     s"""{
          "id": "${DisplayLocationType(locType).id}",
          "label": "${DisplayLocationType(locType).label}",
@@ -327,7 +327,7 @@ trait DisplaySerialisationTestBase {
        }
      """ stripMargin
 
-  def singleHoldings(h: Holdings): String = {
+  private def singleHoldings(h: Holdings): String = {
     val enumerations = h.enumeration.map(_.toJson)
 
     s"""
