@@ -6,8 +6,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
-import weco.api.search.JsonHelpers
-import weco.api.search.models._
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.generators.{
@@ -17,6 +15,7 @@ import weco.catalogue.internal_model.work.generators.{
   WorkGenerators
 }
 import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
@@ -41,63 +40,53 @@ class AggregationsTest
     with PeriodGenerators
     with SearchOptionsGenerators
     with WorkGenerators
-    with JsonHelpers {
+    with TestDocumentFixtures {
 
   val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
   it("returns more than 10 format aggregations") {
-    val formats = Format.values
-    val works = formats.flatMap { format =>
-      (0 to 4).map(_ => indexedWork().format(format))
-    }
     withLocalWorksIndex { index =>
-      insertIntoElasticsearch(index, works: _*)
+      indexTestDocuments(
+        index,
+        (0 to 22).map(i => s"works.every-format.$i"): _*
+      )
+
       val searchOptions = createWorksSearchOptionsWith(
         aggregations = List(WorkAggregationRequest.Format)
       )
-      whenReady(aggregationQuery(index, searchOptions)) { aggs =>
-        aggs.format should not be empty
-        val buckets = aggs.format.get.buckets
-        buckets.length shouldBe formats.length
-        buckets.map(_.data.label) should contain theSameElementsAs formats
-          .map(_.label)
+
+      val future = aggregationQuery(index, searchOptions)
+
+      whenReady(future) {
+        _.format.get.buckets should have size 23
       }
     }
   }
 
   it("aggregate over filtered dates, using only 'from' date") {
-    val periods = List(
-      createPeriodForYear("1850"),
-      createPeriodForYearRange("1850", "2000"),
-      createPeriodForYearRange("1860", "1960"),
-      createPeriodForYear("1960"),
-      createPeriodForYearRange("1960", "1964"),
-      createPeriodForYear("1962")
-    )
-
-    val works = periods.map { p =>
-      indexedWork()
-        .production(
-          List(createProductionEvent.copy(dates = List(p)))
-        )
-    }
-
     withLocalWorksIndex { index =>
-      insertIntoElasticsearch(index, works: _*)
+      indexTestDocuments(
+        index,
+        (0 to 5).map(i => s"works.production.multi-year.$i"): _*
+      )
+
       val searchOptions = createWorksSearchOptionsWith(
         aggregations = List(WorkAggregationRequest.ProductionDate),
         filters = List(
           DateRangeFilter(Some(LocalDate.of(1960, 1, 1)), None)
         )
       )
-      whenReady(aggregationQuery(index, searchOptions)) { aggs =>
-        aggs.productionDates shouldBe Some(
+
+      val future = aggregationQuery(index, searchOptions)
+
+      whenReady(future) {
+        _.productionDates shouldBe Some(
           Aggregation(
             List(
-              AggregationBucket(createPeriodForYear("1960"), 2),
-              AggregationBucket(createPeriodForYear("1962"), 1)
+              AggregationBucket(data = createPeriodForYear("1960"), count = 2),
+              AggregationBucket(data = createPeriodForYear("1962"), count = 1)
             )
           )
         )
