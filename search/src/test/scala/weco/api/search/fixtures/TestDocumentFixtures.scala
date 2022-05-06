@@ -37,6 +37,8 @@ trait TestDocumentFixtures
 
   val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
+  val worksLicensed = (0 to 4).map(i => s"works.items-with-licenses.$i")
+
   val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
 
   protected case class TestDocument(

@@ -191,7 +191,8 @@ class WorksTest
               "work-production.1098",
               "work-production.1900",
               "work-production.1904"
-            )
+            ),
+            strictOrdering = true
           )
         }
     }
@@ -216,7 +217,8 @@ class WorksTest
               "work-production.1904",
               "work-production.1900",
               "work-production.1098"
-            )
+            ),
+            strictOrdering = true
           )
         }
     }
