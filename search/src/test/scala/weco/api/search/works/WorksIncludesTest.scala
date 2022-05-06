@@ -148,6 +148,7 @@ class WorksIncludesTest
                  |}
                  |""".stripMargin
           }
+      }
     }
 
     it(
@@ -305,43 +306,181 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val subjects1 = List(createSubject)
-          val subjects2 = List(createSubject)
-          val work1 =
-            indexedWork(canonicalId = canonicalId1).subjects(subjects1)
-          val work2 =
-            indexedWork(canonicalId = canonicalId2).subjects(subjects2)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work1, work2)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=subjects") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                 {
-                   "type": "Work",
-                   "id": "${work1.state.canonicalId}",
-                   "title": "${work1.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                   "subjects": [ ${subjects(subjects1)}]
-                 },
-                 {
-                   "type": "Work",
-                   "id": "${work2.state.canonicalId}",
-                   "title": "${work2.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                   "subjects": [ ${subjects(subjects2)}]
-                 }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=subjects") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "subjects" : [
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "g08I834KKSXk1WG",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "WfqE6xFakoqsVT1",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "GlsNpYpthDMBLQZ",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "ArEtlVdV0j",
+                 |          "type" : "Subject"
+                 |        },
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "OR7nUmbDY87Uw1L",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "vlTE5cIHQR23GK9",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "tQdPt3acHhNKnNq",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "hG54NzomzM",
+                 |          "type" : "Subject"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "subjects" : [
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "31h63sJtsRuBvzw",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "4YQmyoWabAgXxwl",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "S5TtSeuKJt4fspO",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "osW8hKQNGv",
+                 |          "type" : "Subject"
+                 |        },
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "eEWECb7cJuhQpXN",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "FDoA7rpYPiDfifs",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "BwXAEPbWRaGNi2H",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "h5tlAUKxcP",
+                 |          "type" : "Subject"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "subjects" : [
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "RSdhZCyeulPkNaP",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "0ClgfwapmD7jxio",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "pplRbppKZMbAm0v",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "5LLMVvWxgX",
+                 |          "type" : "Subject"
+                 |        },
+                 |        {
+                 |          "concepts" : [
+                 |            {
+                 |              "label" : "2EMkmWOjlKvfRGK",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "p22pTPNg1Fb7hLZ",
+                 |              "type" : "Concept"
+                 |            },
+                 |            {
+                 |              "label" : "CWP2ToHCa1SqaQC",
+                 |              "type" : "Concept"
+                 |            }
+                 |          ],
+                 |          "label" : "PSF4EIy1m2",
+                 |          "type" : "Subject"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -351,24 +490,64 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork().subjects(List(createSubject))
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=subjects"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "subjects": [ ${subjects(work.data.subjects)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=subjects") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "subjects" : [
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "g08I834KKSXk1WG",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "WfqE6xFakoqsVT1",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "GlsNpYpthDMBLQZ",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "ArEtlVdV0j",
+                 |      "type" : "Subject"
+                 |    },
+                 |    {
+                 |      "concepts" : [
+                 |        {
+                 |          "label" : "OR7nUmbDY87Uw1L",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "vlTE5cIHQR23GK9",
+                 |          "type" : "Concept"
+                 |        },
+                 |        {
+                 |          "label" : "tQdPt3acHhNKnNq",
+                 |          "type" : "Concept"
+                 |        }
+                 |      ],
+                 |      "label" : "hG54NzomzM",
+                 |      "type" : "Subject"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
