@@ -8,12 +8,24 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{GenreGenerators, ProductionEventGenerators, SubjectGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  GenreGenerators,
+  ProductionEventGenerators,
+  SubjectGenerators,
+  WorkGenerators
+}
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{Aggregation, AggregationBucket, DateRangeFilter, FormatFilter, SubjectFilter, WorkSearchOptions}
+import weco.api.search.models.{
+  Aggregation,
+  AggregationBucket,
+  DateRangeFilter,
+  FormatFilter,
+  SubjectFilter,
+  WorkSearchOptions
+}
 import weco.catalogue.internal_model.identifiers.IdState
 import weco.catalogue.internal_model.work.{Format, Subject}
 
@@ -36,7 +48,10 @@ class AggregationsTest
 
   it("returns more than 10 format aggregations") {
     withLocalWorksIndex { index =>
-      indexTestDocuments(index, (0 to 22).map(i => s"works.every-format.$i"): _*)
+      indexTestDocuments(
+        index,
+        (0 to 22).map(i => s"works.every-format.$i"): _*
+      )
 
       val searchOptions = createWorksSearchOptionsWith(
         aggregations = List(WorkAggregationRequest.Format)
@@ -52,7 +67,10 @@ class AggregationsTest
 
   it("aggregate over filtered dates, using only 'from' date") {
     withLocalWorksIndex { index =>
-      indexTestDocuments(index, (0 to 5).map(i => s"works.production.multi-year.$i"): _*)
+      indexTestDocuments(
+        index,
+        (0 to 5).map(i => s"works.production.multi-year.$i"): _*
+      )
 
       val searchOptions = createWorksSearchOptionsWith(
         aggregations = List(WorkAggregationRequest.ProductionDate),
