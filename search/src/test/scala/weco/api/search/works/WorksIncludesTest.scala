@@ -1843,6 +1843,17 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |      "notes" : [
                  |        {
                  |          "contents" : [
+                 |            "3Au9wn3b"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "general-note",
+                 |            "label" : "Notes",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
                  |            "CsB8YxC3",
                  |            "Isn6KqXfd"
                  |          ],
@@ -1860,17 +1871,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "noteType" : {
                  |            "id" : "funding-info",
                  |            "label" : "Funding information",
-                 |            "type" : "NoteType"
-                 |          },
-                 |          "type" : "Note"
-                 |        },
-                 |        {
-                 |          "contents" : [
-                 |            "3Au9wn3b"
-                 |          ],
-                 |          "noteType" : {
-                 |            "id" : "general-note",
-                 |            "label" : "Notes",
                  |            "type" : "NoteType"
                  |          },
                  |          "type" : "Note"
