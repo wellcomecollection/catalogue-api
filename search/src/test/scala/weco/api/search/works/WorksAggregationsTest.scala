@@ -6,10 +6,17 @@ class WorksAggregationsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, worksFormat: _*)
 
-        assertJsonResponse(routes, path = s"$rootPath/works?aggregations=workType&pageSize=1") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=workType&pageSize=1"
+        ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = worksFormat.size, pageSize = 1, totalPages = worksFormat.size)},
+              ${resultList(
+            totalResults = worksFormat.size,
+            pageSize = 1,
+            totalPages = worksFormat.size
+          )},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -80,7 +87,10 @@ class WorksAggregationsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.genres")
 
-        assertJsonResponse(routes, path = s"$rootPath/works?aggregations=genres.label") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=genres.label"
+        ) {
           Status.OK -> s"""
             {
               ${resultList(totalResults = 1)},
@@ -137,7 +147,11 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        val works = Seq("work-production.1098", "work-production.1904", "work-production.2020")
+        val works = Seq(
+          "work-production.1098",
+          "work-production.1904",
+          "work-production.2020"
+        )
 
         indexTestDocuments(worksIndex, works: _*)
 
@@ -212,9 +226,21 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by language") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "works.languages.0.eng", "works.languages.1.eng", "works.languages.2.eng", "works.languages.3.eng+swe", "works.languages.4.eng+swe+tur", "works.languages.5.swe", "works.languages.6.tur")
+        indexTestDocuments(
+          worksIndex,
+          "works.languages.0.eng",
+          "works.languages.1.eng",
+          "works.languages.2.eng",
+          "works.languages.3.eng+swe",
+          "works.languages.4.eng+swe+tur",
+          "works.languages.5.swe",
+          "works.languages.6.tur"
+        )
 
-        assertJsonResponse(routes, path = s"$rootPath/works?aggregations=languages") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?aggregations=languages"
+        ) {
           Status.OK -> s"""
             {
               ${resultList(totalResults = 7)},
@@ -487,7 +513,8 @@ class WorksAggregationsTest extends ApiWorksTestBase {
     withWorksApi {
       case (worksIndex, routes) =>
         indexTestDocuments(
-          worksIndex, (0 to 4).map(i => s"works.items-with-licenses.$i"): _*
+          worksIndex,
+          (0 to 4).map(i => s"works.items-with-licenses.$i"): _*
         )
 
         assertJsonResponse(
