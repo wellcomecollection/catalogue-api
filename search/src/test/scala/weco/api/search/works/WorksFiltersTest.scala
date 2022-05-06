@@ -235,9 +235,12 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
+            path =
+              s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work-production.1900", "work-production.1904"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("work-production.1900", "work-production.1904")
+            )
           }
       }
     }
@@ -251,7 +254,14 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?production.dates.from=1900-01-01"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work-production.1900", "work-production.1904", "work-production.1976", "work-production.2020"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "work-production.1900",
+                "work-production.1904",
+                "work-production.1976",
+                "work-production.2020"
+              )
+            )
           }
       }
     }
@@ -265,7 +275,13 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?production.dates.to=1960-01-01"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work-production.1098", "work-production.1900", "work-production.1904"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "work-production.1098",
+                "work-production.1900",
+                "work-production.1904"
+              )
+            )
           }
       }
     }
@@ -293,7 +309,7 @@ class WorksFiltersTest
       "works.languages.3.eng+swe",
       "works.languages.4.eng+swe+tur",
       "works.languages.5.swe",
-      "works.languages.6.tur",
+      "works.languages.6.tur"
     )
 
     it("filters by language") {
@@ -302,7 +318,15 @@ class WorksFiltersTest
           indexTestDocuments(worksIndex, languageWorks: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?languages=eng") {
-            Status.OK -> newWorksListResponse(ids = Seq("works.languages.0.eng", "works.languages.1.eng", "works.languages.2.eng", "works.languages.3.eng+swe", "works.languages.4.eng+swe+tur"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.languages.0.eng",
+                "works.languages.1.eng",
+                "works.languages.2.eng",
+                "works.languages.3.eng+swe",
+                "works.languages.4.eng+swe+tur"
+              )
+            )
           }
       }
     }
@@ -312,8 +336,18 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, languageWorks: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?languages=swe,tur") {
-            Status.OK -> newWorksListResponse(ids = Seq("works.languages.3.eng+swe", "works.languages.4.eng+swe+tur", "works.languages.5.swe", "works.languages.6.tur"))
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?languages=swe,tur"
+          ) {
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.languages.3.eng+swe",
+                "works.languages.4.eng+swe+tur",
+                "works.languages.5.swe",
+                "works.languages.6.tur"
+              )
+            )
           }
       }
     }
@@ -557,7 +591,13 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?items.locations.license=cc-by"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("works.items-with-licenses.0", "works.items-with-licenses.1", "works.items-with-licenses.3"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.items-with-licenses.0",
+                "works.items-with-licenses.1",
+                "works.items-with-licenses.3"
+              )
+            )
           }
       }
     }
@@ -571,7 +611,14 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?items.locations.license=cc-by,cc-by-nc"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("works.items-with-licenses.0", "works.items-with-licenses.1", "works.items-with-licenses.2", "works.items-with-licenses.3"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.items-with-licenses.0",
+                "works.items-with-licenses.1",
+                "works.items-with-licenses.2",
+                "works.items-with-licenses.3"
+              )
+            )
           }
       }
     }
@@ -587,7 +634,9 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?identifiers=cQYSxE7gRG"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("work.visible.everything.0")
+            )
           }
       }
     }
@@ -601,7 +650,10 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?identifiers=cQYSxE7gRG,mGMGKNlQnl"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+            Status.OK -> newWorksListResponse(
+              ids =
+                Seq("work.visible.everything.0", "work.visible.everything.1")
+            )
           }
       }
     }
@@ -615,7 +667,9 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?identifiers=eG0HzUX6yZ"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.1"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("work.visible.everything.1")
+            )
           }
       }
     }
@@ -629,7 +683,10 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?identifiers=eG0HzUX6yZ,ji3JH82kKu"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+            Status.OK -> newWorksListResponse(
+              ids =
+                Seq("work.visible.everything.0", "work.visible.everything.1")
+            )
           }
       }
     }
@@ -643,7 +700,10 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?identifiers=cQYSxE7gRG,eG0HzUX6yZ"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0", "work.visible.everything.1"))
+            Status.OK -> newWorksListResponse(
+              ids =
+                Seq("work.visible.everything.0", "work.visible.everything.1")
+            )
           }
       }
     }
@@ -741,7 +801,10 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?availabilities=open-shelves") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?availabilities=open-shelves"
+          ) {
             Status.OK -> newWorksListResponse(
               ids = Seq("work.visible.everything.2")
             )
@@ -754,9 +817,16 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything ++ visibleWorks: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?availabilities=open-shelves,closed-stores") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?availabilities=open-shelves,closed-stores"
+          ) {
             Status.OK -> newWorksListResponse(
-              ids = Seq("work.visible.everything.0", "work.visible.everything.1", "work.visible.everything.2")
+              ids = Seq(
+                "work.visible.everything.0",
+                "work.visible.everything.1",
+                "work.visible.everything.2"
+              )
             )
           }
       }
@@ -770,7 +840,9 @@ class WorksFiltersTest
           indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?partOf=dza7om88") {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("work.visible.everything.0")
+            )
           }
       }
     }
@@ -780,8 +852,13 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?partOf=title-BnN4RHJX7O") {
-            Status.OK -> newWorksListResponse(ids = Seq("work.visible.everything.0"))
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?partOf=title-BnN4RHJX7O"
+          ) {
+            Status.OK -> newWorksListResponse(
+              ids = Seq("work.visible.everything.0")
+            )
           }
       }
     }
