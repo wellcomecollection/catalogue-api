@@ -57,20 +57,29 @@ trait ApiWorksTestBase
 
   def newWorksListResponse(
     ids: Seq[String],
-    includes: WorksIncludes = WorksIncludes.none
-  ): String =
+    includes: WorksIncludes = WorksIncludes.none,
+    strictOrdering: Boolean = false
+  ): String = {
+    val works =
+      ids
+        .map { getVisibleWork }
+        .map(_.display.withIncludes(includes))
+
+    val sortedWorks = if (strictOrdering) {
+      works
+    } else {
+      works.sortBy(w => getKey(w, "id").get.asString)
+    }
+
     s"""
        |{
        |  ${resultList(totalResults = ids.size)},
        |  "results": [
-       |    ${ids
-         .map { getVisibleWork }
-         .map(_.display.withIncludes(includes))
-         .sortBy(w => getKey(w, "id").get.asString)
-         .mkString(",")}
+       |    ${sortedWorks.mkString(",")}
        |  ]
        |}
       """.stripMargin
+  }
 
   def formatOntologyType(workType: WorkType): String =
     workType match {
