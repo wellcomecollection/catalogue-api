@@ -62,6 +62,34 @@ class WorksTest extends ApiWorksTestBase {
 
         val totalPages = math.ceil(visibleWorks.length / 2.0).toInt
 
+        assertJsonResponse(routes, path = s"$rootPath/works?page=1&pageSize=2") {
+          Status.OK -> s"""
+            {
+              "type": "ResultList",
+              "pageSize": 2,
+              "totalPages": $totalPages,
+              "totalResults": ${visibleWorks.length},
+              "nextPage": "$publicRootUri/works?page=2&pageSize=2",
+              "results": [
+                {
+                 "id": "7sjip63h",
+                 "title": "title-dgZfc8BAUa",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                },
+                {
+                 "id": "ob2ruvbb",
+                 "title": "title-QPNB7ZuKSW",
+                 "alternativeTitles": [],
+                 "availabilities": [],
+                 "type": "Work"
+                }
+              ]
+            }
+          """
+        }
+
         assertJsonResponse(routes, path = s"$rootPath/works?page=2&pageSize=2") {
           Status.OK -> s"""
             {
@@ -103,34 +131,6 @@ class WorksTest extends ApiWorksTestBase {
                 {
                  "id": "yqts0coj",
                  "title": "title-qPyuxbr589",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                }
-              ]
-            }
-          """
-        }
-
-        assertJsonResponse(routes, path = s"$rootPath/works?page=1&pageSize=2") {
-          Status.OK -> s"""
-            {
-              "type": "ResultList",
-              "pageSize": 2,
-              "totalPages": $totalPages,
-              "totalResults": ${visibleWorks.length},
-              "nextPage": "$publicRootUri/works?page=2&pageSize=2",
-              "results": [
-                {
-                 "id": "7sjip63h",
-                 "title": "title-dgZfc8BAUa",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                },
-                {
-                 "id": "ob2ruvbb",
-                 "title": "title-QPNB7ZuKSW",
                  "alternativeTitles": [],
                  "availabilities": [],
                  "type": "Work"
