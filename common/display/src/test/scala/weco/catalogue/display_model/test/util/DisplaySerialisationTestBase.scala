@@ -95,7 +95,7 @@ trait DisplaySerialisationTestBase {
   def accessConditions(conds: List[AccessCondition]) =
     s"[${conds.map(accessCondition).mkString(",")}]"
 
-  def accessCondition(cond: AccessCondition): String =
+  private def accessCondition(cond: AccessCondition): String =
     s"""
       {
         "method": {
@@ -109,7 +109,7 @@ trait DisplaySerialisationTestBase {
       }
     """.tidy
 
-  def accessStatus(status: AccessStatus): String =
+  private def accessStatus(status: AccessStatus): String =
     s"""{
        |  "type": "AccessStatus",
        |  "id": ${DisplayAccessStatus(status).id.toJson},
@@ -133,7 +133,7 @@ trait DisplaySerialisationTestBase {
       case m: Meeting[IdState.Minted]      => meeting(m)
     }
 
-  def person(person: Person[IdState.Minted]): String =
+  private def person(person: Person[IdState.Minted]): String =
     s"""
        |{
        |  ${identifiers(person)}
@@ -144,49 +144,49 @@ trait DisplaySerialisationTestBase {
        |}
        |""".stripMargin.tidy
 
-  def organisation(organisation: Organisation[IdState.Minted]) =
+  private def organisation(organisation: Organisation[IdState.Minted]) =
     s"""{
        ${identifiers(organisation)}
         "type": "Organisation",
         "label": "${organisation.label}"
       }"""
 
-  def meeting(meeting: Meeting[IdState.Minted]) =
+  private def meeting(meeting: Meeting[IdState.Minted]) =
     s"""{
        ${identifiers(meeting)}
         "type": "Meeting",
         "label": "${meeting.label}"
       }"""
 
-  def agent(agent: Agent[IdState.Minted]) =
+  private def agent(agent: Agent[IdState.Minted]) =
     s"""{
        ${identifiers(agent)}
         "type": "Agent",
         "label": "${agent.label}"
       }"""
 
-  def period(period: Period[IdState.Minted]) =
+  private def period(period: Period[IdState.Minted]) =
     s"""{
        ${identifiers(period)}
       "type": "Period",
       "label": "${period.label}"
     }"""
 
-  def place(place: Place[IdState.Minted]) =
+  private def place(place: Place[IdState.Minted]) =
     s"""{
        ${identifiers(place)}
       "type": "Place",
       "label": "${place.label}"
     }"""
 
-  def concept(concept: Concept[IdState.Minted]) =
+  private def concept(concept: Concept[IdState.Minted]) =
     s"""{
        ${identifiers(concept)}
       "type": "Concept",
       "label": "${concept.label}"
     }"""
 
-  def abstractRootConcept(
+  private def abstractRootConcept(
     abstractRootConcept: AbstractRootConcept[IdState.Minted]
   ) =
     abstractRootConcept match {
@@ -199,7 +199,7 @@ trait DisplaySerialisationTestBase {
       case m: Meeting[IdState.Minted]      => meeting(m)
     }
 
-  def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
+  private def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
     concepts.map(abstractRootConcept).mkString(",")
 
   def subject(
@@ -271,7 +271,7 @@ trait DisplaySerialisationTestBase {
        |}
        |""".stripMargin
 
-  def productionEvent(event: ProductionEvent[IdState.Minted]): String =
+  private def productionEvent(event: ProductionEvent[IdState.Minted]): String =
     s"""
        |{
        |  "label": "${event.label}",
@@ -326,23 +326,4 @@ trait DisplaySerialisationTestBase {
          "type": "LocationType"
        }
      """ stripMargin
-
-  def singleHoldings(h: Holdings): String = {
-    val enumerations = h.enumeration.map(_.toJson)
-
-    s"""
-       |{
-       |  "note": ${h.note.map(_.toJson)},
-       |  "enumeration": [${enumerations.mkString(",")}],
-       |  "location": ${h.location.map(location)},
-       |  "type": "Holdings"
-       |}
-       |""".stripMargin.tidy
-  }
-
-  def listOfHoldings(hs: List[Holdings]): String =
-    hs.map {
-        singleHoldings
-      }
-      .mkString(",")
 }
