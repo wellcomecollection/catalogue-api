@@ -28,7 +28,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=identifiers") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=identifiers"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -158,7 +161,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=identifiers") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=identifiers"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -206,7 +212,10 @@ class WorksIncludesTest
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, worksEverything: _*)
 
-        assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=items") {
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/oo9fg6ic?include=items"
+        ) {
           Status.OK ->
             s"""
                |{
@@ -492,7 +501,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=subjects") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=subjects"
+          ) {
             Status.OK ->
               s"""
                  |{
