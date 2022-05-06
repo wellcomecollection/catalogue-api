@@ -1,7 +1,7 @@
 {
-  "description" : "works with every format",
-  "createdAt" : "2022-05-06T14:32:35.289Z",
-  "id" : "jgy9dhtc",
+  "description" : "works with multi-year production ranges",
+  "createdAt" : "2022-05-06T14:32:35.318Z",
+  "id" : "rcwpk521",
   "document" : {
     "debug" : {
       "source" : {
@@ -10,13 +10,13 @@
             "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "qX5kMbWpmM"
+          "value" : "GLcg1WHGjZ"
         },
-        "version" : 9,
-        "modifiedTime" : "2022-04-12T16:56:54Z"
+        "version" : 78,
+        "modifiedTime" : "2022-05-17T12:34:39Z"
       },
-      "mergedTime" : "2022-04-12T16:56:54Z",
-      "indexedTime" : "2022-05-06T14:32:35.289Z",
+      "mergedTime" : "2022-05-17T12:34:39Z",
+      "indexedTime" : "2022-05-06T14:32:35.317Z",
       "redirectSources" : [
       ]
     },
@@ -26,12 +26,12 @@
           "id" : "miro-image-number"
         },
         "ontologyType" : "Work",
-        "value" : "qX5kMbWpmM"
+        "value" : "GLcg1WHGjZ"
       },
-      "canonicalId" : "jgy9dhtc",
-      "mergedTime" : "2022-04-12T16:56:54Z",
-      "sourceModifiedTime" : "2022-04-12T16:56:54Z",
-      "indexedTime" : "2022-05-06T14:32:35.289Z",
+      "canonicalId" : "rcwpk521",
+      "mergedTime" : "2022-05-17T12:34:39Z",
+      "sourceModifiedTime" : "2022-05-17T12:34:39Z",
+      "indexedTime" : "2022-05-06T14:32:35.317Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,15 +50,12 @@
       }
     },
     "data" : {
-      "title" : "title-25207khUTL",
+      "title" : "title-54blSY3iyd",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : {
-        "id" : "u",
-        "label" : "Standing order"
-      },
+      "format" : null,
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -71,6 +68,42 @@
       ],
       "thumbnail" : null,
       "production" : [
+        {
+          "label" : "QHICakdbojfZVe3xG7r6V9IS9",
+          "places" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "e3TZJGYTcw"
+            }
+          ],
+          "agents" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "sJbljhDu1G",
+              "prefix" : null,
+              "numeration" : null,
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "1850-2000",
+              "range" : {
+                "from" : "1850-01-01T00:00:00Z",
+                "to" : "2000-12-31T23:59:59.999999999Z",
+                "label" : "1850-2000"
+              }
+            }
+          ],
+          "function" : null
+        }
       ],
       "languages" : [
       ],
@@ -89,15 +122,10 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "jgy9dhtc",
-      "title" : "title-25207khUTL",
+      "id" : "rcwpk521",
+      "title" : "title-54blSY3iyd",
       "alternativeTitles" : [
       ],
-      "workType" : {
-        "id" : "u",
-        "label" : "Standing order",
-        "type" : "Format"
-      },
       "contributors" : [
       ],
       "identifiers" : [
@@ -107,7 +135,7 @@
             "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "qX5kMbWpmM",
+          "value" : "GLcg1WHGjZ",
           "type" : "Identifier"
         }
       ],
@@ -122,6 +150,28 @@
       "availabilities" : [
       ],
       "production" : [
+        {
+          "label" : "QHICakdbojfZVe3xG7r6V9IS9",
+          "places" : [
+            {
+              "label" : "e3TZJGYTcw",
+              "type" : "Place"
+            }
+          ],
+          "agents" : [
+            {
+              "label" : "sJbljhDu1G",
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "label" : "1850-2000",
+              "type" : "Period"
+            }
+          ],
+          "type" : "ProductionEvent"
+        }
       ],
       "languages" : [
       ],
@@ -142,17 +192,14 @@
     "type" : "Visible"
   },
   "work" : {
-    "version" : 9,
+    "version" : 78,
     "data" : {
-      "title" : "title-25207khUTL",
+      "title" : "title-54blSY3iyd",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : {
-        "id" : "u",
-        "label" : "Standing order"
-      },
+      "format" : null,
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -165,6 +212,42 @@
       ],
       "thumbnail" : null,
       "production" : [
+        {
+          "label" : "QHICakdbojfZVe3xG7r6V9IS9",
+          "places" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "e3TZJGYTcw"
+            }
+          ],
+          "agents" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "sJbljhDu1G",
+              "prefix" : null,
+              "numeration" : null,
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "1850-2000",
+              "range" : {
+                "from" : "1850-01-01T00:00:00Z",
+                "to" : "2000-12-31T23:59:59.999999999Z",
+                "label" : "1850-2000"
+              }
+            }
+          ],
+          "function" : null
+        }
       ],
       "languages" : [
       ],
@@ -188,12 +271,12 @@
           "id" : "miro-image-number"
         },
         "ontologyType" : "Work",
-        "value" : "qX5kMbWpmM"
+        "value" : "GLcg1WHGjZ"
       },
-      "canonicalId" : "jgy9dhtc",
-      "mergedTime" : "2022-04-12T16:56:54Z",
-      "sourceModifiedTime" : "2022-04-12T16:56:54Z",
-      "indexedTime" : "2022-05-06T14:32:35.289Z",
+      "canonicalId" : "rcwpk521",
+      "mergedTime" : "2022-05-17T12:34:39Z",
+      "sourceModifiedTime" : "2022-05-17T12:34:39Z",
+      "indexedTime" : "2022-05-06T14:32:35.318Z",
       "availabilities" : [
       ],
       "derivedData" : {

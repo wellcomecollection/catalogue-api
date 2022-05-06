@@ -51,36 +51,24 @@ class AggregationsTest
   }
 
   it("aggregate over filtered dates, using only 'from' date") {
-    val periods = List(
-      createPeriodForYear("1850"),
-      createPeriodForYearRange("1850", "2000"),
-      createPeriodForYearRange("1860", "1960"),
-      createPeriodForYear("1960"),
-      createPeriodForYearRange("1960", "1964"),
-      createPeriodForYear("1962")
-    )
-
-    val works = periods.map { p =>
-      indexedWork()
-        .production(
-          List(createProductionEvent.copy(dates = List(p)))
-        )
-    }
-
     withLocalWorksIndex { index =>
-      insertIntoElasticsearch(index, works: _*)
+      indexTestDocuments(index, (0 to 5).map(i => s"works.production.multi-year.$i"): _*)
+
       val searchOptions = createWorksSearchOptionsWith(
         aggregations = List(WorkAggregationRequest.ProductionDate),
         filters = List(
           DateRangeFilter(Some(LocalDate.of(1960, 1, 1)), None)
         )
       )
-      whenReady(aggregationQuery(index, searchOptions)) { aggs =>
-        aggs.productionDates shouldBe Some(
+
+      val future = aggregationQuery(index, searchOptions)
+
+      whenReady(future) {
+        _.productionDates shouldBe Some(
           Aggregation(
             List(
-              AggregationBucket(createPeriodForYear("1960"), 2),
-              AggregationBucket(createPeriodForYear("1962"), 1)
+              AggregationBucket(data = createPeriodForYear("1960"), count = 2),
+              AggregationBucket(data = createPeriodForYear("1962"), count = 1)
             )
           )
         )

@@ -1,7 +1,7 @@
 {
-  "description" : "works with every format",
-  "createdAt" : "2022-05-06T14:32:35.286Z",
-  "id" : "7xk8vjz3",
+  "description" : "works with multi-year production ranges",
+  "createdAt" : "2022-05-06T14:32:35.319Z",
+  "id" : "yg4jwzra",
   "document" : {
     "debug" : {
       "source" : {
@@ -10,13 +10,13 @@
             "id" : "sierra-system-number"
           },
           "ontologyType" : "Work",
-          "value" : "KltFZVRNi7"
+          "value" : "PoOAv5vdS0"
         },
-        "version" : 44,
-        "modifiedTime" : "2022-05-07T20:25:35Z"
+        "version" : 64,
+        "modifiedTime" : "2022-04-27T01:58:28Z"
       },
-      "mergedTime" : "2022-05-07T20:25:35Z",
-      "indexedTime" : "2022-05-06T14:32:35.286Z",
+      "mergedTime" : "2022-04-27T01:58:28Z",
+      "indexedTime" : "2022-05-06T14:32:35.319Z",
       "redirectSources" : [
       ]
     },
@@ -26,12 +26,12 @@
           "id" : "sierra-system-number"
         },
         "ontologyType" : "Work",
-        "value" : "KltFZVRNi7"
+        "value" : "PoOAv5vdS0"
       },
-      "canonicalId" : "7xk8vjz3",
-      "mergedTime" : "2022-05-07T20:25:35Z",
-      "sourceModifiedTime" : "2022-05-07T20:25:35Z",
-      "indexedTime" : "2022-05-06T14:32:35.286Z",
+      "canonicalId" : "yg4jwzra",
+      "mergedTime" : "2022-04-27T01:58:28Z",
+      "sourceModifiedTime" : "2022-04-27T01:58:28Z",
+      "indexedTime" : "2022-05-06T14:32:35.319Z",
       "availabilities" : [
       ],
       "derivedData" : {
@@ -50,15 +50,12 @@
       }
     },
     "data" : {
-      "title" : "title-xT5oi8CwvL",
+      "title" : "title-4BPWRHbuSq",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : {
-        "id" : "w",
-        "label" : "Student dissertations"
-      },
+      "format" : null,
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -71,6 +68,42 @@
       ],
       "thumbnail" : null,
       "production" : [
+        {
+          "label" : "DzUOjOyKabHlF2fhJcUH8ak2g",
+          "places" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "ePdAnZy8IL"
+            }
+          ],
+          "agents" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "7DS24A3bjh",
+              "prefix" : null,
+              "numeration" : null,
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "1960-1964",
+              "range" : {
+                "from" : "1960-01-01T00:00:00Z",
+                "to" : "1964-12-31T23:59:59.999999999Z",
+                "label" : "1960-1964"
+              }
+            }
+          ],
+          "function" : null
+        }
       ],
       "languages" : [
       ],
@@ -89,15 +122,10 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "7xk8vjz3",
-      "title" : "title-xT5oi8CwvL",
+      "id" : "yg4jwzra",
+      "title" : "title-4BPWRHbuSq",
       "alternativeTitles" : [
       ],
-      "workType" : {
-        "id" : "w",
-        "label" : "Student dissertations",
-        "type" : "Format"
-      },
       "contributors" : [
       ],
       "identifiers" : [
@@ -107,7 +135,7 @@
             "label" : "Sierra system number",
             "type" : "IdentifierType"
           },
-          "value" : "KltFZVRNi7",
+          "value" : "PoOAv5vdS0",
           "type" : "Identifier"
         }
       ],
@@ -122,6 +150,28 @@
       "availabilities" : [
       ],
       "production" : [
+        {
+          "label" : "DzUOjOyKabHlF2fhJcUH8ak2g",
+          "places" : [
+            {
+              "label" : "ePdAnZy8IL",
+              "type" : "Place"
+            }
+          ],
+          "agents" : [
+            {
+              "label" : "7DS24A3bjh",
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "label" : "1960-1964",
+              "type" : "Period"
+            }
+          ],
+          "type" : "ProductionEvent"
+        }
       ],
       "languages" : [
       ],
@@ -142,17 +192,14 @@
     "type" : "Visible"
   },
   "work" : {
-    "version" : 44,
+    "version" : 64,
     "data" : {
-      "title" : "title-xT5oi8CwvL",
+      "title" : "title-4BPWRHbuSq",
       "otherIdentifiers" : [
       ],
       "alternativeTitles" : [
       ],
-      "format" : {
-        "id" : "w",
-        "label" : "Student dissertations"
-      },
+      "format" : null,
       "description" : null,
       "physicalDescription" : null,
       "lettering" : null,
@@ -165,6 +212,42 @@
       ],
       "thumbnail" : null,
       "production" : [
+        {
+          "label" : "DzUOjOyKabHlF2fhJcUH8ak2g",
+          "places" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "ePdAnZy8IL"
+            }
+          ],
+          "agents" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "7DS24A3bjh",
+              "prefix" : null,
+              "numeration" : null,
+              "type" : "Person"
+            }
+          ],
+          "dates" : [
+            {
+              "id" : {
+                "type" : "Unidentifiable"
+              },
+              "label" : "1960-1964",
+              "range" : {
+                "from" : "1960-01-01T00:00:00Z",
+                "to" : "1964-12-31T23:59:59.999999999Z",
+                "label" : "1960-1964"
+              }
+            }
+          ],
+          "function" : null
+        }
       ],
       "languages" : [
       ],
@@ -188,12 +271,12 @@
           "id" : "sierra-system-number"
         },
         "ontologyType" : "Work",
-        "value" : "KltFZVRNi7"
+        "value" : "PoOAv5vdS0"
       },
-      "canonicalId" : "7xk8vjz3",
-      "mergedTime" : "2022-05-07T20:25:35Z",
-      "sourceModifiedTime" : "2022-05-07T20:25:35Z",
-      "indexedTime" : "2022-05-06T14:32:35.286Z",
+      "canonicalId" : "yg4jwzra",
+      "mergedTime" : "2022-04-27T01:58:28Z",
+      "sourceModifiedTime" : "2022-04-27T01:58:28Z",
+      "indexedTime" : "2022-05-06T14:32:35.319Z",
       "availabilities" : [
       ],
       "derivedData" : {
