@@ -1290,7 +1290,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=languages") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=languages"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1409,7 +1412,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=languages") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=languages"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1621,7 +1627,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=notes") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=notes"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1788,7 +1797,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=images") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=images"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -2301,7 +2313,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=holdings") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=holdings"
+          ) {
             Status.OK ->
               s"""
                 {
