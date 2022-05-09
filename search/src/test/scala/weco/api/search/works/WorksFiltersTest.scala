@@ -75,7 +75,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?workType=k,d"
+            path = s"$rootPath/works?workType=k,d"
           ) {
             Status.OK -> newWorksListResponse(
               ids = Seq(
