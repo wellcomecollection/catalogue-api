@@ -1295,46 +1295,118 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes languages on a list endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val english = Language(label = "English", id = "eng")
-          val turkish = Language(label = "Turkish", id = "tur")
-          val swedish = Language(label = "Swedish", id = "swe")
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          val work1 =
-            indexedWork(canonicalId = canonicalId1)
-              .languages(List(english, turkish))
-          val work2 =
-            indexedWork(canonicalId = canonicalId2).languages(List(swedish))
-
-          insertIntoElasticsearch(worksIndex, work1, work2)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=languages") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                 {
-                   "type": "Work",
-                   "id": "${work1.state.canonicalId}",
-                   "title": "${work1.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                   "languages": [ ${languages(work1.data.languages)}]
-                 },
-                 {
-                   "type": "Work",
-                   "id": "${work2.state.canonicalId}",
-                   "title": "${work2.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                   "languages": [ ${languages(work2.data.languages)}]
-                 }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=languages") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "languages" : [
+                 |        {
+                 |          "id" : "Iry",
+                 |          "label" : "y1sdDDR",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "CyK",
+                 |          "label" : "QFKzgro69P",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "kIH",
+                 |          "label" : "HMjgKFaY5",
+                 |          "type" : "Language"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "languages" : [
+                 |        {
+                 |          "id" : "CoB",
+                 |          "label" : "HnJZViP",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "XHQ",
+                 |          "label" : "S7Jxv9xrQ6",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "Lp6",
+                 |          "label" : "OUAue10NVp",
+                 |          "type" : "Language"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "languages" : [
+                 |        {
+                 |          "id" : "dCh",
+                 |          "label" : "shi6cu",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "x20",
+                 |          "label" : "O7GkIFx8",
+                 |          "type" : "Language"
+                 |        },
+                 |        {
+                 |          "id" : "vXQ",
+                 |          "label" : "PLHOqPv",
+                 |          "type" : "Language"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -1342,28 +1414,43 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes languages on a work endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val english = Language(label = "English", id = "eng")
-          val turkish = Language(label = "Turkish", id = "tur")
-          val swedish = Language(label = "Swedish", id = "swe")
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          val work = indexedWork().languages(List(english, turkish, swedish))
-
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=languages"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "languages": [ ${languages(work.data.languages)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=languages") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "languages" : [
+                 |    {
+                 |      "id" : "Iry",
+                 |      "label" : "y1sdDDR",
+                 |      "type" : "Language"
+                 |    },
+                 |    {
+                 |      "id" : "CyK",
+                 |      "label" : "QFKzgro69P",
+                 |      "type" : "Language"
+                 |    },
+                 |    {
+                 |      "id" : "kIH",
+                 |      "label" : "HMjgKFaY5",
+                 |      "type" : "Language"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
