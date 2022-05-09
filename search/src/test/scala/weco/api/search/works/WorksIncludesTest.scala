@@ -1,10 +1,6 @@
 package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
-import weco.catalogue.internal_model.work.generators.{
-  ProductionEventGenerators,
-  SubjectGenerators
-}
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
@@ -13,8 +9,6 @@ import weco.catalogue.internal_model.work._
 
 class WorksIncludesTest
     extends ApiWorksTestBase
-    with ProductionEventGenerators
-    with SubjectGenerators
     with ImageGenerators {
 
   val canonicalId1 = CanonicalId("00000000")
