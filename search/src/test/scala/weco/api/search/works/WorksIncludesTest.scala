@@ -824,45 +824,127 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val contributors1 =
-            List(Contributor(Person("Ginger Rogers"), roles = Nil))
-          val contributors2 =
-            List(Contributor(Person("Fred Astair"), roles = Nil))
-          val work1 =
-            indexedWork(canonicalId = canonicalId1).contributors(contributors1)
-          val work2 =
-            indexedWork(canonicalId = canonicalId2).contributors(contributors2)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work1, work2)
-
-          assertJsonResponse(routes, s"$rootPath/works/?include=contributors") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                 {
-                   "type": "Work",
-                   "id": "${work1.state.canonicalId}",
-                   "title": "${work1.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                   "contributors": [ ${contributors(contributors1)}]
-                 },
-                 {
-                   "type": "Work",
-                   "id": "${work2.state.canonicalId}",
-                   "title": "${work2.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                   "contributors": [ ${contributors(contributors2)}]
-                 }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=contributors") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "contributors" : [
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-o8xazs",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        },
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-6am8fhYNr",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "contributors" : [
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-2bLQeClX",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        },
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-epg6BQO",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "contributors" : [
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-Lu2Xsa",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        },
+                 |        {
+                 |          "agent" : {
+                 |            "label" : "person-m0dL6XAj",
+                 |            "type" : "Person"
+                 |          },
+                 |          "roles" : [
+                 |          ],
+                 |          "type" : "Contributor"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -872,27 +954,46 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork()
-            .contributors(
-              List(Contributor(Person("Ginger Rogers"), roles = Nil))
-            )
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=contributors"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "contributors": [ ${contributors(work.data.contributors)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=contributors") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "contributors" : [
+                 |    {
+                 |      "agent" : {
+                 |        "label" : "person-o8xazs",
+                 |        "type" : "Person"
+                 |      },
+                 |      "roles" : [
+                 |      ],
+                 |      "type" : "Contributor"
+                 |    },
+                 |    {
+                 |      "agent" : {
+                 |        "label" : "person-6am8fhYNr",
+                 |        "type" : "Person"
+                 |      },
+                 |      "roles" : [
+                 |      ],
+                 |      "type" : "Contributor"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
