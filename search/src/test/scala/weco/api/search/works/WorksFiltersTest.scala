@@ -38,14 +38,23 @@ class WorksFiltersTest
   it("filters works by item LocationType") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "work.items-with-location-types.0", "work.items-with-location-types.1", "work.items-with-location-types.2")
+        indexTestDocuments(
+          worksIndex,
+          "work.items-with-location-types.0",
+          "work.items-with-location-types.1",
+          "work.items-with-location-types.2"
+        )
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?items.locations.locationType=iiif-presentation,closed-stores"
+          path =
+            s"$rootPath/works?items.locations.locationType=iiif-presentation,closed-stores"
         ) {
           Status.OK -> newWorksListResponse(
-            ids = Seq("work.items-with-location-types.1", "work.items-with-location-types.2")
+            ids = Seq(
+              "work.items-with-location-types.1",
+              "work.items-with-location-types.2"
+            )
           )
         }
     }
@@ -811,17 +820,20 @@ class WorksFiltersTest
     it("looks up multiple canonical IDs") {
       assertItemsFilterWorks(
         path = s"$rootPath/works?items=ca3anii6,kdcpazds",
-        expectedIds = Seq("work.visible.everything.0", "work.visible.everything.1")
+        expectedIds =
+          Seq("work.visible.everything.0", "work.visible.everything.1")
       )
 
       assertItemsFilterWorks(
         path = s"$rootPath/works?items=kdcpazds,atsdmxht",
-        expectedIds = Seq("work.visible.everything.1", "work.visible.everything.2")
+        expectedIds =
+          Seq("work.visible.everything.1", "work.visible.everything.2")
       )
 
       assertItemsFilterWorks(
         path = s"$rootPath/works?items=atsdmxht,ca3anii6",
-        expectedIds = Seq("work.visible.everything.2", "work.visible.everything.0")
+        expectedIds =
+          Seq("work.visible.everything.2", "work.visible.everything.0")
       )
     }
 
@@ -840,7 +852,8 @@ class WorksFiltersTest
     it("looks up multiple source identifiers") {
       assertItemsFilterWorks(
         path = s"$rootPath/works?items.identifiers=hKyStbKjx1,CnNOdtzVPO",
-        expectedIds = Seq("work.visible.everything.0", "work.visible.everything.1")
+        expectedIds =
+          Seq("work.visible.everything.0", "work.visible.everything.1")
       )
     }
 
