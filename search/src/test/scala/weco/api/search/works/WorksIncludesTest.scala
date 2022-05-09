@@ -1693,51 +1693,97 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val works = List(
-            indexedWork()
-              .imageData(
-                (1 to 3)
-                  .map(_ => createImageData.toIdentified)
-                  .toList
-              ),
-            indexedWork()
-              .imageData(
-                (1 to 3)
-                  .map(_ => createImageData.toIdentified)
-                  .toList
-              )
-          ).sortBy { _.state.canonicalId }
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=images") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = works.size)},
-                "results": [
-                  {
-                    "type": "Work",
-                    "id": "${works.head.state.canonicalId}",
-                    "title": "${works.head.data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works.head.state.availabilities
-            )}],
-                    "images": [${workImageIncludes(works.head.data.imageData)}]
-                  },
-                  {
-                    "type": "Work",
-                    "id": "${works(1).state.canonicalId}",
-                    "title": "${works(1).data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works(1).state.availabilities
-            )}],
-                    "images": [${workImageIncludes(works(1).data.imageData)}]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "images" : [
+                 |        {
+                 |          "id" : "01bta4ru",
+                 |          "type" : "Image"
+                 |        },
+                 |        {
+                 |          "id" : "odhob23o",
+                 |          "type" : "Image"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "images" : [
+                 |        {
+                 |          "id" : "i8qttsmr",
+                 |          "type" : "Image"
+                 |        },
+                 |        {
+                 |          "id" : "o1f5oxzt",
+                 |          "type" : "Image"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "images" : [
+                 |        {
+                 |          "id" : "jo80nlaw",
+                 |          "type" : "Image"
+                 |        },
+                 |        {
+                 |          "id" : "gbgygwvo",
+                 |          "type" : "Image"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -1747,26 +1793,36 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val images =
-            (1 to 3).map(_ => createImageData.toIdentified).toList
-          val work = indexedWork().imageData(images)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=images"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "images": [${workImageIncludes(images)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=images") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "images" : [
+                 |    {
+                 |      "id" : "01bta4ru",
+                 |      "type" : "Image"
+                 |    },
+                 |    {
+                 |      "id" : "odhob23o",
+                 |      "type" : "Image"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
