@@ -7,9 +7,7 @@ import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.work._
 
-class WorksIncludesTest
-    extends ApiWorksTestBase
-    with ImageGenerators {
+class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
 
   val canonicalId1 = CanonicalId("00000000")
   val canonicalId2 = CanonicalId("11111111")
@@ -751,7 +749,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=genres") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=genres"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -820,7 +821,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=contributors") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=contributors"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -950,7 +954,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=contributors") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=contributors"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1001,7 +1008,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=production") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=production"
+          ) {
             Status.OK ->
               s"""
                  |{
@@ -1209,7 +1219,10 @@ class WorksIncludesTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=production") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=production"
+          ) {
             Status.OK ->
               s"""
                  |{
