@@ -1460,79 +1460,165 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes notes on the list endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work1 = indexedWork(canonicalId = canonicalId1)
-            .notes(
-              List(
-                Note(contents = "GN1", noteType = NoteType.GeneralNote),
-                Note(contents = "FI1", noteType = NoteType.FundingInformation)
-              )
-            )
-          val work2 = indexedWork(canonicalId = canonicalId2)
-            .notes(
-              List(
-                Note(contents = "GN2.1", noteType = NoteType.GeneralNote),
-                Note(contents = "GN2.2", noteType = NoteType.GeneralNote)
-              )
-            )
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work1, work2)
-          assertJsonResponse(routes, s"$rootPath/works?include=notes") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                   {
-                     "type": "Work",
-                     "id": "${work1.state.canonicalId}",
-                     "title": "${work1.data.title.get}",
-                     "alternativeTitles": [],
-                     "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                     "notes": [
-                       {
-                         "noteType": {
-                           "id": "general-note",
-                           "label": "Notes",
-                           "type": "NoteType"
-                         },
-                         "contents": ["GN1"],
-                         "type": "Note"
-                       },
-                       {
-                         "noteType": {
-                           "id": "funding-info",
-                           "label": "Funding information",
-                           "type": "NoteType"
-                         },
-                         "contents": ["FI1"],
-                         "type": "Note"
-                       }
-                     ]
-                   },
-                   {
-                     "type": "Work",
-                     "id": "${work2.state.canonicalId}",
-                     "title": "${work2.data.title.get}",
-                     "alternativeTitles": [],
-                     "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                     "notes": [
-                       {
-                         "noteType": {
-                           "id": "general-note",
-                           "label": "Notes",
-                           "type": "NoteType"
-                         },
-                         "contents": ["GN2.1", "GN2.2"],
-                         "type": "Note"
-                       }
-                     ]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=notes") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "notes" : [
+                 |        {
+                 |          "contents" : [
+                 |            "j9BpOrhd8m"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "general-note",
+                 |            "label" : "Notes",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "ov3fzhoi",
+                 |            "zybrlE"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "location-of-duplicates",
+                 |            "label" : "Location of duplicates",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "YEJhvwXauL"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "funding-info",
+                 |            "label" : "Funding information",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "notes" : [
+                 |        {
+                 |          "contents" : [
+                 |            "GvRAnRE2",
+                 |            "kW4LcPBC1S",
+                 |            "uRC7Fyj"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "general-note",
+                 |            "label" : "Notes",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "nCURCTNo7c"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "location-of-duplicates",
+                 |            "label" : "Location of duplicates",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "notes" : [
+                 |        {
+                 |          "contents" : [
+                 |            "3Au9wn3b"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "general-note",
+                 |            "label" : "Notes",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "CsB8YxC3",
+                 |            "Isn6KqXfd"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "location-of-duplicates",
+                 |            "label" : "Location of duplicates",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        },
+                 |        {
+                 |          "contents" : [
+                 |            "n6NMM9"
+                 |          ],
+                 |          "noteType" : {
+                 |            "id" : "funding-info",
+                 |            "label" : "Funding information",
+                 |            "type" : "NoteType"
+                 |          },
+                 |          "type" : "Note"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -1540,38 +1626,62 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes notes on the single work endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work =
-            indexedWork().notes(
-              List(
-                Note(contents = "A", noteType = NoteType.GeneralNote),
-                Note(contents = "B", noteType = NoteType.GeneralNote)
-              )
-            )
-          insertIntoElasticsearch(worksIndex, work)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=notes"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "notes": [
-                   {
-                     "noteType": {
-                       "id": "general-note",
-                       "label": "Notes",
-                       "type": "NoteType"
-                     },
-                     "contents": ["A", "B"],
-                     "type": "Note"
-                   }
-                ]
-              }
-            """
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=notes") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "notes" : [
+                 |    {
+                 |      "contents" : [
+                 |        "j9BpOrhd8m"
+                 |      ],
+                 |      "noteType" : {
+                 |        "id" : "general-note",
+                 |        "label" : "Notes",
+                 |        "type" : "NoteType"
+                 |      },
+                 |      "type" : "Note"
+                 |    },
+                 |    {
+                 |      "contents" : [
+                 |        "ov3fzhoi",
+                 |        "zybrlE"
+                 |      ],
+                 |      "noteType" : {
+                 |        "id" : "location-of-duplicates",
+                 |        "label" : "Location of duplicates",
+                 |        "type" : "NoteType"
+                 |      },
+                 |      "type" : "Note"
+                 |    },
+                 |    {
+                 |      "contents" : [
+                 |        "YEJhvwXauL"
+                 |      ],
+                 |      "noteType" : {
+                 |        "id" : "funding-info",
+                 |        "label" : "Funding information",
+                 |        "type" : "NoteType"
+                 |      },
+                 |      "type" : "Note"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
