@@ -251,7 +251,7 @@ trait DisplaySerialisationTestBase {
   def languages(ls: List[Language]): String =
     ls.map(language).mkString(",")
 
-  def workImageInclude(image: ImageData[IdState.Identified]) =
+  private def workImageInclude(image: ImageData[IdState.Identified]) =
     s"""
        |{
        |  "id": "${image.id.canonicalId}",
@@ -262,7 +262,7 @@ trait DisplaySerialisationTestBase {
   def workImageIncludes(images: List[ImageData[IdState.Identified]]) =
     images.map(workImageInclude).mkString(",")
 
-  def availability(availability: Availability): String =
+  private def availability(availability: Availability): String =
     s"""
        |{
        |  "id": "${availability.id}",
@@ -271,7 +271,7 @@ trait DisplaySerialisationTestBase {
        |}
        |""".stripMargin
 
-  def productionEvent(event: ProductionEvent[IdState.Minted]): String =
+  private def productionEvent(event: ProductionEvent[IdState.Minted]): String =
     s"""
        |{
        |  "label": "${event.label}",
@@ -326,23 +326,4 @@ trait DisplaySerialisationTestBase {
          "type": "LocationType"
        }
      """ stripMargin
-
-  private def singleHoldings(h: Holdings): String = {
-    val enumerations = h.enumeration.map(_.toJson)
-
-    s"""
-       |{
-       |  "note": ${h.note.map(_.toJson)},
-       |  "enumeration": [${enumerations.mkString(",")}],
-       |  "location": ${h.location.map(location)},
-       |  "type": "Holdings"
-       |}
-       |""".stripMargin.tidy
-  }
-
-  def listOfHoldings(hs: List[Holdings]): String =
-    hs.map {
-        singleHoldings
-      }
-      .mkString(",")
 }

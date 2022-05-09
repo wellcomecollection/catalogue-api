@@ -2,16 +2,9 @@ package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.work._
 
-class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
-
-  val canonicalId1 = CanonicalId("00000000")
-  val canonicalId2 = CanonicalId("11111111")
-
+class WorksIncludesTest extends ApiWorksTestBase {
   describe("identifiers includes") {
     it(
       "includes a list of identifiers on a list endpoint if we pass ?include=identifiers"
@@ -2032,16 +2025,6 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
   }
 
   describe("holdings includes") {
-    def createHoldings(count: Int): List[Holdings] =
-      (1 to count).map { _ =>
-        Holdings(
-          note = chooseFrom(None, Some(randomAlphanumeric())),
-          enumeration =
-            collectionOf(min = 0, max = 10) { randomAlphanumeric() }.toList,
-          location = chooseFrom(None, Some(createPhysicalLocation))
-        )
-      }.toList
-
     it("on the list endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
