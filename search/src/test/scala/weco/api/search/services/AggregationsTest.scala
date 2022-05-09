@@ -75,7 +75,8 @@ class AggregationsTest
   }
 
   describe("aggregations with filters") {
-    val works = (0 to 22).map(i => s"works.examples.aggregation-with-filters-tests.$i")
+    val works =
+      (0 to 22).map(i => s"works.examples.aggregation-with-filters-tests.$i")
 
     it("applies filters to their related aggregations") {
       withLocalWorksIndex { index =>
