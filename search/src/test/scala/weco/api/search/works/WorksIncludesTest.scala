@@ -2,16 +2,9 @@ package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.generators.ImageGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.languages.Language
 import weco.catalogue.internal_model.work._
 
-class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
-
-  val canonicalId1 = CanonicalId("00000000")
-  val canonicalId2 = CanonicalId("11111111")
-
+class WorksIncludesTest extends ApiWorksTestBase {
   describe("identifiers includes") {
     it(
       "includes a list of identifiers on a list endpoint if we pass ?include=identifiers"
@@ -1295,46 +1288,121 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes languages on a list endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val english = Language(label = "English", id = "eng")
-          val turkish = Language(label = "Turkish", id = "tur")
-          val swedish = Language(label = "Swedish", id = "swe")
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          val work1 =
-            indexedWork(canonicalId = canonicalId1)
-              .languages(List(english, turkish))
-          val work2 =
-            indexedWork(canonicalId = canonicalId2).languages(List(swedish))
-
-          insertIntoElasticsearch(worksIndex, work1, work2)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=languages") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                 {
-                   "type": "Work",
-                   "id": "${work1.state.canonicalId}",
-                   "title": "${work1.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                   "languages": [ ${languages(work1.data.languages)}]
-                 },
-                 {
-                   "type": "Work",
-                   "id": "${work2.state.canonicalId}",
-                   "title": "${work2.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                   "languages": [ ${languages(work2.data.languages)}]
-                 }
-                ]
-              }
-            """
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=languages"
+          ) {
+            Status.OK ->
+              s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "oo9fg6ic",
+                      "languages" : [
+                        {
+                          "id" : "Iry",
+                          "label" : "y1sdDDR",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "CyK",
+                          "label" : "QFKzgro69P",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "kIH",
+                          "label" : "HMjgKFaY5",
+                          "type" : "Language"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "ou9z1esm",
+                      "languages" : [
+                        {
+                          "id" : "CoB",
+                          "label" : "HnJZViP",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "XHQ",
+                          "label" : "S7Jxv9xrQ6",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "Lp6",
+                          "label" : "OUAue10NVp",
+                          "type" : "Language"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "wchkoofm",
+                      "languages" : [
+                        {
+                          "id" : "dCh",
+                          "label" : "shi6cu",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "x20",
+                          "label" : "O7GkIFx8",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "vXQ",
+                          "label" : "PLHOqPv",
+                          "type" : "Language"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
           }
       }
     }
@@ -1342,28 +1410,46 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes languages on a work endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val english = Language(label = "English", id = "eng")
-          val turkish = Language(label = "Turkish", id = "tur")
-          val swedish = Language(label = "Swedish", id = "swe")
-
-          val work = indexedWork().languages(List(english, turkish, swedish))
-
-          insertIntoElasticsearch(worksIndex, work)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=languages"
+            path = s"$rootPath/works/oo9fg6ic?include=languages"
           ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "languages": [ ${languages(work.data.languages)}]
-              }
-            """
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "languages" : [
+                    {
+                      "id" : "Iry",
+                      "label" : "y1sdDDR",
+                      "type" : "Language"
+                    },
+                    {
+                      "id" : "CyK",
+                      "label" : "QFKzgro69P",
+                      "type" : "Language"
+                    },
+                    {
+                      "id" : "kIH",
+                      "label" : "HMjgKFaY5",
+                      "type" : "Language"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
@@ -1373,79 +1459,165 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes notes on the list endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work1 = indexedWork(canonicalId = canonicalId1)
-            .notes(
-              List(
-                Note(contents = "GN1", noteType = NoteType.GeneralNote),
-                Note(contents = "FI1", noteType = NoteType.FundingInformation)
-              )
-            )
-          val work2 = indexedWork(canonicalId = canonicalId2)
-            .notes(
-              List(
-                Note(contents = "GN2.1", noteType = NoteType.GeneralNote),
-                Note(contents = "GN2.2", noteType = NoteType.GeneralNote)
-              )
-            )
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work1, work2)
-          assertJsonResponse(routes, s"$rootPath/works?include=notes") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                   {
-                     "type": "Work",
-                     "id": "${work1.state.canonicalId}",
-                     "title": "${work1.data.title.get}",
-                     "alternativeTitles": [],
-                     "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                     "notes": [
-                       {
-                         "noteType": {
-                           "id": "general-note",
-                           "label": "Notes",
-                           "type": "NoteType"
-                         },
-                         "contents": ["GN1"],
-                         "type": "Note"
-                       },
-                       {
-                         "noteType": {
-                           "id": "funding-info",
-                           "label": "Funding information",
-                           "type": "NoteType"
-                         },
-                         "contents": ["FI1"],
-                         "type": "Note"
-                       }
-                     ]
-                   },
-                   {
-                     "type": "Work",
-                     "id": "${work2.state.canonicalId}",
-                     "title": "${work2.data.title.get}",
-                     "alternativeTitles": [],
-                     "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                     "notes": [
-                       {
-                         "noteType": {
-                           "id": "general-note",
-                           "label": "Notes",
-                           "type": "NoteType"
-                         },
-                         "contents": ["GN2.1", "GN2.2"],
-                         "type": "Note"
-                       }
-                     ]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=notes") {
+            Status.OK ->
+              s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "oo9fg6ic",
+                      "notes" : [
+                        {
+                          "contents" : [
+                            "j9BpOrhd8m"
+                          ],
+                          "noteType" : {
+                            "id" : "general-note",
+                            "label" : "Notes",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "ov3fzhoi",
+                            "zybrlE"
+                          ],
+                          "noteType" : {
+                            "id" : "location-of-duplicates",
+                            "label" : "Location of duplicates",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "YEJhvwXauL"
+                          ],
+                          "noteType" : {
+                            "id" : "funding-info",
+                            "label" : "Funding information",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "ou9z1esm",
+                      "notes" : [
+                        {
+                          "contents" : [
+                            "GvRAnRE2",
+                            "kW4LcPBC1S",
+                            "uRC7Fyj"
+                          ],
+                          "noteType" : {
+                            "id" : "general-note",
+                            "label" : "Notes",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "nCURCTNo7c"
+                          ],
+                          "noteType" : {
+                            "id" : "location-of-duplicates",
+                            "label" : "Location of duplicates",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "wchkoofm",
+                      "notes" : [
+                        {
+                          "contents" : [
+                            "3Au9wn3b"
+                          ],
+                          "noteType" : {
+                            "id" : "general-note",
+                            "label" : "Notes",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "CsB8YxC3",
+                            "Isn6KqXfd"
+                          ],
+                          "noteType" : {
+                            "id" : "location-of-duplicates",
+                            "label" : "Location of duplicates",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "n6NMM9"
+                          ],
+                          "noteType" : {
+                            "id" : "funding-info",
+                            "label" : "Funding information",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
           }
       }
     }
@@ -1453,38 +1625,65 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("includes notes on the single work endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work =
-            indexedWork().notes(
-              List(
-                Note(contents = "A", noteType = NoteType.GeneralNote),
-                Note(contents = "B", noteType = NoteType.GeneralNote)
-              )
-            )
-          insertIntoElasticsearch(worksIndex, work)
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=notes"
+            path = s"$rootPath/works/oo9fg6ic?include=notes"
           ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "notes": [
-                   {
-                     "noteType": {
-                       "id": "general-note",
-                       "label": "Notes",
-                       "type": "NoteType"
-                     },
-                     "contents": ["A", "B"],
-                     "type": "Note"
-                   }
-                ]
-              }
-            """
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "notes" : [
+                    {
+                      "contents" : [
+                        "j9BpOrhd8m"
+                      ],
+                      "noteType" : {
+                        "id" : "general-note",
+                        "label" : "Notes",
+                        "type" : "NoteType"
+                      },
+                      "type" : "Note"
+                    },
+                    {
+                      "contents" : [
+                        "ov3fzhoi",
+                        "zybrlE"
+                      ],
+                      "noteType" : {
+                        "id" : "location-of-duplicates",
+                        "label" : "Location of duplicates",
+                        "type" : "NoteType"
+                      },
+                      "type" : "Note"
+                    },
+                    {
+                      "contents" : [
+                        "YEJhvwXauL"
+                      ],
+                      "noteType" : {
+                        "id" : "funding-info",
+                        "label" : "Funding information",
+                        "type" : "NoteType"
+                      },
+                      "type" : "Note"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
@@ -1496,51 +1695,97 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val works = List(
-            indexedWork()
-              .imageData(
-                (1 to 3)
-                  .map(_ => createImageData.toIdentified)
-                  .toList
-              ),
-            indexedWork()
-              .imageData(
-                (1 to 3)
-                  .map(_ => createImageData.toIdentified)
-                  .toList
-              )
-          ).sortBy { _.state.canonicalId }
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=images") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = works.size)},
-                "results": [
-                  {
-                    "type": "Work",
-                    "id": "${works.head.state.canonicalId}",
-                    "title": "${works.head.data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works.head.state.availabilities
-            )}],
-                    "images": [${workImageIncludes(works.head.data.imageData)}]
-                  },
-                  {
-                    "type": "Work",
-                    "id": "${works(1).state.canonicalId}",
-                    "title": "${works(1).data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works(1).state.availabilities
-            )}],
-                    "images": [${workImageIncludes(works(1).data.imageData)}]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
+            Status.OK ->
+              s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "oo9fg6ic",
+                      "images" : [
+                        {
+                          "id" : "01bta4ru",
+                          "type" : "Image"
+                        },
+                        {
+                          "id" : "odhob23o",
+                          "type" : "Image"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "ou9z1esm",
+                      "images" : [
+                        {
+                          "id" : "i8qttsmr",
+                          "type" : "Image"
+                        },
+                        {
+                          "id" : "o1f5oxzt",
+                          "type" : "Image"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "wchkoofm",
+                      "images" : [
+                        {
+                          "id" : "jo80nlaw",
+                          "type" : "Image"
+                        },
+                        {
+                          "id" : "gbgygwvo",
+                          "type" : "Image"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
           }
       }
     }
@@ -1550,26 +1795,39 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val images =
-            (1 to 3).map(_ => createImageData.toIdentified).toList
-          val work = indexedWork().imageData(images)
-
-          insertIntoElasticsearch(worksIndex, work)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=images"
+            path = s"$rootPath/works/oo9fg6ic?include=images"
           ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "images": [${workImageIncludes(images)}]
-              }
-            """
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "images" : [
+                    {
+                      "id" : "01bta4ru",
+                      "type" : "Image"
+                    },
+                    {
+                      "id" : "odhob23o",
+                      "type" : "Image"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
@@ -1779,54 +2037,273 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
   }
 
   describe("holdings includes") {
-    def createHoldings(count: Int): List[Holdings] =
-      (1 to count).map { _ =>
-        Holdings(
-          note = chooseFrom(None, Some(randomAlphanumeric())),
-          enumeration =
-            collectionOf(min = 0, max = 10) { randomAlphanumeric() }.toList,
-          location = chooseFrom(None, Some(createPhysicalLocation))
-        )
-      }.toList
-
     it("on the list endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val works = List(
-            indexedWork().holdings(createHoldings(3)),
-            indexedWork().holdings(createHoldings(4))
-          ).sortBy { _.state.canonicalId }
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=holdings") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = works.size)},
-                "results": [
-                  {
-                    "type": "Work",
-                    "id": "${works.head.state.canonicalId}",
-                    "title": "${works.head.data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works.head.state.availabilities
-            )}],
-                    "holdings": [${listOfHoldings(works.head.data.holdings)}]
-                  },
-                  {
-                    "type": "Work",
-                    "id": "${works(1).state.canonicalId}",
-                    "title": "${works(1).data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works(1).state.availabilities
-            )}],
-                    "holdings": [${listOfHoldings(works(1).data.holdings)}]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=holdings") {
+            Status.OK ->
+              s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "holdings" : [
+                        {
+                          "enumeration" : [
+                            "iIHvpnyCp",
+                            "gbKXe6",
+                            "6XI29tA",
+                            "1KbU70mrqZ",
+                            "9N8dAz6",
+                            "bAErlg"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "license" : {
+                              "id" : "cc-by",
+                              "label" : "Attribution 4.0 International (CC BY 4.0)",
+                              "type" : "License",
+                              "url" : "http://creativecommons.org/licenses/by/4.0/"
+                            },
+                            "locationType" : {
+                              "id" : "closed-stores",
+                              "label" : "Closed stores",
+                              "type" : "LocationType"
+                            },
+                            "shelfmark" : "Shelfmark: wTJbrfYCV2",
+                            "type" : "PhysicalLocation"
+                          },
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "mVMvzez7JF",
+                            "7FYx3e0",
+                            "ZI12L0U9K8",
+                            "yAtfsUkFIG",
+                            "BSj9Gf",
+                            "Mi4wC1H",
+                            "ZomzsnWpc",
+                            "aAA6nO9h",
+                            "XJqcYm9tl",
+                            "p1QVJo"
+                          ],
+                          "note" : "BxSAn4PBcz",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "Gbjg3Ifi",
+                            "HlycAdT2L",
+                            "laGIDVwG",
+                            "CtLHFeu"
+                          ],
+                          "note" : "dQ5Aoz3",
+                          "type" : "Holdings"
+                        }
+                      ],
+                      "id" : "oo9fg6ic",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "holdings" : [
+                        {
+                          "enumeration" : [
+                            "dJnvNoiufK"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "locationType" : {
+                              "id" : "open-shelves",
+                              "label" : "Open shelves",
+                              "type" : "LocationType"
+                            },
+                            "shelfmark" : "Shelfmark: yDmwtJxhA",
+                            "type" : "PhysicalLocation"
+                          },
+                          "note" : "ZZrd6sRqV",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "CEKkIZfsA",
+                            "Pwunml",
+                            "w7s12i",
+                            "Rh1E6F0o"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "license" : {
+                              "id" : "pdm",
+                              "label" : "Public Domain Mark",
+                              "type" : "License",
+                              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                            },
+                            "locationType" : {
+                              "id" : "open-shelves",
+                              "label" : "Open shelves",
+                              "type" : "LocationType"
+                            },
+                            "shelfmark" : "Shelfmark: 2jPTlqN",
+                            "type" : "PhysicalLocation"
+                          },
+                          "note" : "EnBrWrk5",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "o8l1009JS"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "locationType" : {
+                              "id" : "closed-stores",
+                              "label" : "Closed stores",
+                              "type" : "LocationType"
+                            },
+                            "type" : "PhysicalLocation"
+                          },
+                          "type" : "Holdings"
+                        }
+                      ],
+                      "id" : "ou9z1esm",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "holdings" : [
+                        {
+                          "enumeration" : [
+                            "UNX23BmQh",
+                            "YWQPxyMQ",
+                            "7dlsrFBR8Q",
+                            "LIBD4V4eC",
+                            "5soceYhE",
+                            "Xco4CAZl",
+                            "NX6YfF9ung",
+                            "68x12CqOH",
+                            "tD46Q9sHcs"
+                          ],
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "nsuXoz",
+                            "RLuAZL",
+                            "a0DogXkz2",
+                            "M4S3tuy",
+                            "RUMGx0",
+                            "x6rK1BxL",
+                            "cV6Wb9Wq"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "license" : {
+                              "id" : "ogl",
+                              "label" : "Open Government Licence",
+                              "type" : "License",
+                              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                            },
+                            "locationType" : {
+                              "id" : "closed-stores",
+                              "label" : "Closed stores",
+                              "type" : "LocationType"
+                            },
+                            "type" : "PhysicalLocation"
+                          },
+                          "note" : "TmY1as",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "LrUlQ4SYJ",
+                            "p3ABwY",
+                            "lV04E1A9I2",
+                            "3fXDCODR4",
+                            "FZmdTEa6",
+                            "UlrveN",
+                            "yaDKbXVDr",
+                            "ZWmlAid",
+                            "7LBYp6y",
+                            "0xMucBp"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "license" : {
+                              "id" : "pdm",
+                              "label" : "Public Domain Mark",
+                              "type" : "License",
+                              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                            },
+                            "locationType" : {
+                              "id" : "closed-stores",
+                              "label" : "Closed stores",
+                              "type" : "LocationType"
+                            },
+                            "shelfmark" : "Shelfmark: GLGn78mfcQ",
+                            "type" : "PhysicalLocation"
+                          },
+                          "note" : "Bu2SeMYa",
+                          "type" : "Holdings"
+                        }
+                      ],
+                      "id" : "wchkoofm",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
           }
       }
     }
@@ -1834,24 +2311,86 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("on a single work endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork().holdings(createHoldings(3))
-
-          insertIntoElasticsearch(worksIndex, work)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=holdings"
+            path = s"$rootPath/works/oo9fg6ic?include=holdings"
           ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "holdings": [${listOfHoldings(work.data.holdings)}]
-              }
-            """
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "holdings" : [
+                    {
+                      "enumeration" : [
+                        "iIHvpnyCp",
+                        "gbKXe6",
+                        "6XI29tA",
+                        "1KbU70mrqZ",
+                        "9N8dAz6",
+                        "bAErlg"
+                      ],
+                      "location" : {
+                        "accessConditions" : [
+                        ],
+                        "label" : "locationLabel",
+                        "license" : {
+                          "id" : "cc-by",
+                          "label" : "Attribution 4.0 International (CC BY 4.0)",
+                          "type" : "License",
+                          "url" : "http://creativecommons.org/licenses/by/4.0/"
+                        },
+                        "locationType" : {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "LocationType"
+                        },
+                        "shelfmark" : "Shelfmark: wTJbrfYCV2",
+                        "type" : "PhysicalLocation"
+                      },
+                      "type" : "Holdings"
+                    },
+                    {
+                      "enumeration" : [
+                        "mVMvzez7JF",
+                        "7FYx3e0",
+                        "ZI12L0U9K8",
+                        "yAtfsUkFIG",
+                        "BSj9Gf",
+                        "Mi4wC1H",
+                        "ZomzsnWpc",
+                        "aAA6nO9h",
+                        "XJqcYm9tl",
+                        "p1QVJo"
+                      ],
+                      "note" : "BxSAn4PBcz",
+                      "type" : "Holdings"
+                    },
+                    {
+                      "enumeration" : [
+                        "Gbjg3Ifi",
+                        "HlycAdT2L",
+                        "laGIDVwG",
+                        "CtLHFeu"
+                      ],
+                      "note" : "dQ5Aoz3",
+                      "type" : "Holdings"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
