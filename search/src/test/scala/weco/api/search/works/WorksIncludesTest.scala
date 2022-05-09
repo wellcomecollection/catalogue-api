@@ -1,9 +1,5 @@
 package weco.api.search.works
 
-import com.sksamuel.elastic4s.Index
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work._
-
 class WorksIncludesTest extends ApiWorksTestBase {
   describe("identifiers includes") {
     it(
@@ -1834,74 +1830,38 @@ class WorksIncludesTest extends ApiWorksTestBase {
   }
 
   describe("relation includes") {
-    def seriesWork(
-      seriesTitle: String,
-      title: String
-    ): Work.Visible[WorkState.Indexed] =
-      indexedWork(
-        sourceIdentifier =
-          createSourceIdentifierWith(value = s"$seriesTitle-$title"),
-        relations = Relations(ancestors = List(SeriesRelation(seriesTitle)))
-      ).title(title)
-        .workType(WorkType.Standard)
-    def work(
-      path: String,
-      workType: WorkType
-    ): Work.Visible[WorkState.Indexed] =
-      indexedWork(sourceIdentifier = createSourceIdentifierWith(value = path))
-        .collectionPath(CollectionPath(path = path))
-        .title(path)
-        .workType(workType)
-
-    val work0 = work("0", WorkType.Collection)
-    val workA = work("0/a", WorkType.Section)
-    val workB = work("0/a/b", WorkType.Standard)
-    val workD = work("0/a/d", WorkType.Standard)
-    val workE = work("0/a/c/e", WorkType.Standard)
-
-    val workC =
-      indexedWork(
-        sourceIdentifier = createSourceIdentifierWith(value = "0/a/c"),
-        relations = Relations(
-          ancestors = List(
-            Relation(work0, 0, 1, 5),
-            Relation(workA, 1, 3, 4)
-          ),
-          children = List(Relation(workE, 3, 0, 0)),
-          siblingsPreceding = List(Relation(workB, 2, 0, 0)),
-          siblingsSucceeding = List(Relation(workD, 2, 0, 0))
-        )
-      ).collectionPath(CollectionPath(path = "0/a/c"))
-        .title("0/a/c")
-        .workType(WorkType.Series)
-
-    def storeWorks(index: Index) =
-      insertIntoElasticsearch(index, work0, workA, workB, workC, workD, workE)
-
     it("includes parts") {
       withWorksApi {
         case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${workC.state.canonicalId}?include=parts"
-          ) {
-            Status.OK -> s"""
-            {
-              ${singleWorkResult("Series")},
-              "id": "${workC.state.canonicalId}",
-              "title": "0/a/c",
-              "alternativeTitles": [],
-              "availabilities": [${availabilities(workC.state.availabilities)}],
-              "parts": [{
-                "id": "${workE.state.canonicalId}",
-                "title": "0/a/c/e",
-                "totalParts": 0,
-                "totalDescendentParts": 0,
-                "type": "Work"
-              }]
-            }
-          """
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=parts") {
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "parts" : [
+                    {
+                      "id" : "b1gnd7b0",
+                      "title" : "title-tnetMtnM6n",
+                      "totalDescendentParts" : 0,
+                      "totalParts" : 0,
+                      "type" : "Work"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
@@ -1909,100 +1869,80 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes partOf") {
       withWorksApi {
         case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${workC.state.canonicalId}?include=partOf"
-          ) {
-            Status.OK -> s"""
-            {
-              ${singleWorkResult("Series")},
-              "id": "${workC.state.canonicalId}",
-              "title": "0/a/c",
-              "alternativeTitles": [],
-              "availabilities": [${availabilities(workC.state.availabilities)}],
-              "partOf": [
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=partOf") {
+            Status.OK ->
+              s"""
                 {
-                  "id": "${workA.state.canonicalId}",
-                  "title": "0/a",
-                  "totalParts": 3,
-                  "totalDescendentParts": 4,
-                  "type": "Section",
-                  "partOf": [{
-                    "id": "${work0.state.canonicalId}",
-                    "title": "0",
-                    "totalParts": 1,
-                    "totalDescendentParts": 5,
-                    "type": "Collection"
-                  }
-                ]
-              }]
-            }
-          """
-          }
-      }
-    }
-    it("includes partOf representing membership of a Series") {
-      val workInSeries = seriesWork(
-        seriesTitle = "I am a series",
-        title = "I am part of a series"
-      )
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(
-            index = worksIndex,
-            workInSeries
-          )
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${workInSeries.state.canonicalId}?include=partOf"
-          ) {
-            Status.OK -> s"""
-            {
-              ${singleWorkResult("Work")},
-              "id": "${workInSeries.state.canonicalId}",
-              "title": "I am part of a series",
-              "alternativeTitles": [],
-              "availabilities": [${availabilities(
-              workInSeries.state.availabilities
-            )}],
-              "partOf": [
-                {
-                  "title":  "I am a series",
-                  "totalParts": 0,
-                  "totalDescendentParts": 0,
-                  "type": "Series"
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "partOf" : [
+                    {
+                      "id" : "dza7om88",
+                      "partOf" : [
+                        {
+                          "id" : "nelnrvdy",
+                          "title" : "title-grMS5Hy6x3",
+                          "totalDescendentParts" : 5,
+                          "totalParts" : 1,
+                          "type" : "Work"
+                        }
+                      ],
+                      "title" : "title-BnN4RHJX7O",
+                      "totalDescendentParts" : 4,
+                      "totalParts" : 3,
+                      "type" : "Work"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
                 }
-              ]
-            }
-          """
+                """
           }
       }
     }
+
     it("includes precededBy") {
       withWorksApi {
         case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${workC.state.canonicalId}?include=precededBy"
-          ) {
-            Status.OK -> s"""
-            {
-              ${singleWorkResult("Series")},
-              "id": "${workC.state.canonicalId}",
-              "title": "0/a/c",
-              "alternativeTitles": [],
-              "availabilities": [${availabilities(workC.state.availabilities)}],
-              "precededBy": [{
-                "id": "${workB.state.canonicalId}",
-                "title": "0/a/b",
-                "totalParts": 0,
-                "totalDescendentParts": 0,
-                "type": "Work"
-              }]
-            }
-          """
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=precededBy") {
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "precededBy" : [
+                    {
+                      "id" : "uxg4ed5m",
+                      "title" : "title-a7Ze4ZWUMQ",
+                      "totalDescendentParts" : 0,
+                      "totalParts" : 0,
+                      "type" : "Work"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
@@ -2010,27 +1950,35 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes succeededBy") {
       withWorksApi {
         case (worksIndex, routes) =>
-          storeWorks(worksIndex)
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${workC.state.canonicalId}?include=succeededBy"
-          ) {
-            Status.OK -> s"""
-            {
-              ${singleWorkResult("Series")},
-              "id": "${workC.state.canonicalId}",
-              "title": "0/a/c",
-              "alternativeTitles": [],
-              "availabilities": [${availabilities(workC.state.availabilities)}],
-              "succeededBy": [{
-                "id": "${workD.state.canonicalId}",
-                "title": "0/a/d",
-                "totalParts": 0,
-                "totalDescendentParts": 0,
-                "type": "Work"
-              }]
-            }
-          """
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=succeededBy") {
+            Status.OK ->
+              s"""
+                {
+                  "alternativeTitles" : [
+                  ],
+                  "availabilities" : [
+                    {
+                      "id" : "closed-stores",
+                      "label" : "Closed stores",
+                      "type" : "Availability"
+                    }
+                  ],
+                  "id" : "oo9fg6ic",
+                  "succeededBy" : [
+                    {
+                      "id" : "mdfbk5kj",
+                      "title" : "title-QgPzDrUplG",
+                      "totalDescendentParts" : 0,
+                      "totalParts" : 0,
+                      "type" : "Work"
+                    }
+                  ],
+                  "title" : "A work with all the include-able fields",
+                  "type" : "Work"
+                }
+                """
           }
       }
     }
