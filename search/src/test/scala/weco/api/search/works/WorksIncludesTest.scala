@@ -2045,41 +2045,270 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("on the list endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val works = List(
-            indexedWork().holdings(createHoldings(3)),
-            indexedWork().holdings(createHoldings(4))
-          ).sortBy { _.state.canonicalId }
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=holdings") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = works.size)},
-                "results": [
-                  {
-                    "type": "Work",
-                    "id": "${works.head.state.canonicalId}",
-                    "title": "${works.head.data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works.head.state.availabilities
-            )}],
-                    "holdings": [${listOfHoldings(works.head.data.holdings)}]
-                  },
-                  {
-                    "type": "Work",
-                    "id": "${works(1).state.canonicalId}",
-                    "title": "${works(1).data.title.get}",
-                    "alternativeTitles": [],
-                    "availabilities": [${availabilities(
-              works(1).state.availabilities
-            )}],
-                    "holdings": [${listOfHoldings(works(1).data.holdings)}]
-                  }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=holdings") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "holdings" : [
+                 |        {
+                 |          "enumeration" : [
+                 |            "iIHvpnyCp",
+                 |            "gbKXe6",
+                 |            "6XI29tA",
+                 |            "1KbU70mrqZ",
+                 |            "9N8dAz6",
+                 |            "bAErlg"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "cc-by",
+                 |              "label" : "Attribution 4.0 International (CC BY 4.0)",
+                 |              "type" : "License",
+                 |              "url" : "http://creativecommons.org/licenses/by/4.0/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: wTJbrfYCV2",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "mVMvzez7JF",
+                 |            "7FYx3e0",
+                 |            "ZI12L0U9K8",
+                 |            "yAtfsUkFIG",
+                 |            "BSj9Gf",
+                 |            "Mi4wC1H",
+                 |            "ZomzsnWpc",
+                 |            "aAA6nO9h",
+                 |            "XJqcYm9tl",
+                 |            "p1QVJo"
+                 |          ],
+                 |          "note" : "BxSAn4PBcz",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "Gbjg3Ifi",
+                 |            "HlycAdT2L",
+                 |            "laGIDVwG",
+                 |            "CtLHFeu"
+                 |          ],
+                 |          "note" : "dQ5Aoz3",
+                 |          "type" : "Holdings"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "holdings" : [
+                 |        {
+                 |          "enumeration" : [
+                 |            "dJnvNoiufK"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "locationType" : {
+                 |              "id" : "open-shelves",
+                 |              "label" : "Open shelves",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: yDmwtJxhA",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "ZZrd6sRqV",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "CEKkIZfsA",
+                 |            "Pwunml",
+                 |            "w7s12i",
+                 |            "Rh1E6F0o"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "pdm",
+                 |              "label" : "Public Domain Mark",
+                 |              "type" : "License",
+                 |              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "open-shelves",
+                 |              "label" : "Open shelves",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: 2jPTlqN",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "EnBrWrk5",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "o8l1009JS"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "type" : "Holdings"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "holdings" : [
+                 |        {
+                 |          "enumeration" : [
+                 |            "UNX23BmQh",
+                 |            "YWQPxyMQ",
+                 |            "7dlsrFBR8Q",
+                 |            "LIBD4V4eC",
+                 |            "5soceYhE",
+                 |            "Xco4CAZl",
+                 |            "NX6YfF9ung",
+                 |            "68x12CqOH",
+                 |            "tD46Q9sHcs"
+                 |          ],
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "nsuXoz",
+                 |            "RLuAZL",
+                 |            "a0DogXkz2",
+                 |            "M4S3tuy",
+                 |            "RUMGx0",
+                 |            "x6rK1BxL",
+                 |            "cV6Wb9Wq"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "ogl",
+                 |              "label" : "Open Government Licence",
+                 |              "type" : "License",
+                 |              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "TmY1as",
+                 |          "type" : "Holdings"
+                 |        },
+                 |        {
+                 |          "enumeration" : [
+                 |            "LrUlQ4SYJ",
+                 |            "p3ABwY",
+                 |            "lV04E1A9I2",
+                 |            "3fXDCODR4",
+                 |            "FZmdTEa6",
+                 |            "UlrveN",
+                 |            "yaDKbXVDr",
+                 |            "ZWmlAid",
+                 |            "7LBYp6y",
+                 |            "0xMucBp"
+                 |          ],
+                 |          "location" : {
+                 |            "accessConditions" : [
+                 |            ],
+                 |            "label" : "locationLabel",
+                 |            "license" : {
+                 |              "id" : "pdm",
+                 |              "label" : "Public Domain Mark",
+                 |              "type" : "License",
+                 |              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                 |            },
+                 |            "locationType" : {
+                 |              "id" : "closed-stores",
+                 |              "label" : "Closed stores",
+                 |              "type" : "LocationType"
+                 |            },
+                 |            "shelfmark" : "Shelfmark: GLGn78mfcQ",
+                 |            "type" : "PhysicalLocation"
+                 |          },
+                 |          "note" : "Bu2SeMYa",
+                 |          "type" : "Holdings"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -2087,24 +2316,83 @@ class WorksIncludesTest extends ApiWorksTestBase with ImageGenerators {
     it("on a single work endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork().holdings(createHoldings(3))
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=holdings"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "holdings": [${listOfHoldings(work.data.holdings)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=holdings") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "holdings" : [
+                 |    {
+                 |      "enumeration" : [
+                 |        "iIHvpnyCp",
+                 |        "gbKXe6",
+                 |        "6XI29tA",
+                 |        "1KbU70mrqZ",
+                 |        "9N8dAz6",
+                 |        "bAErlg"
+                 |      ],
+                 |      "location" : {
+                 |        "accessConditions" : [
+                 |        ],
+                 |        "label" : "locationLabel",
+                 |        "license" : {
+                 |          "id" : "cc-by",
+                 |          "label" : "Attribution 4.0 International (CC BY 4.0)",
+                 |          "type" : "License",
+                 |          "url" : "http://creativecommons.org/licenses/by/4.0/"
+                 |        },
+                 |        "locationType" : {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "LocationType"
+                 |        },
+                 |        "shelfmark" : "Shelfmark: wTJbrfYCV2",
+                 |        "type" : "PhysicalLocation"
+                 |      },
+                 |      "type" : "Holdings"
+                 |    },
+                 |    {
+                 |      "enumeration" : [
+                 |        "mVMvzez7JF",
+                 |        "7FYx3e0",
+                 |        "ZI12L0U9K8",
+                 |        "yAtfsUkFIG",
+                 |        "BSj9Gf",
+                 |        "Mi4wC1H",
+                 |        "ZomzsnWpc",
+                 |        "aAA6nO9h",
+                 |        "XJqcYm9tl",
+                 |        "p1QVJo"
+                 |      ],
+                 |      "note" : "BxSAn4PBcz",
+                 |      "type" : "Holdings"
+                 |    },
+                 |    {
+                 |      "enumeration" : [
+                 |        "Gbjg3Ifi",
+                 |        "HlycAdT2L",
+                 |        "laGIDVwG",
+                 |        "CtLHFeu"
+                 |      ],
+                 |      "note" : "dQ5Aoz3",
+                 |      "type" : "Holdings"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
