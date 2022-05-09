@@ -4,7 +4,7 @@ import org.scalatest.Assertion
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.catalogue.internal_model.identifiers.IdState
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
 import weco.catalogue.internal_model.locations._
 import weco.catalogue.internal_model.work._
@@ -15,6 +15,7 @@ import java.net.URLEncoder
 class WorksFiltersTest
     extends ApiWorksTestBase
     with ItemsGenerators
+    with TestDocumentFixtures
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
@@ -34,89 +35,19 @@ class WorksFiltersTest
     }
   }
 
-  describe("filtering works by item LocationType") {
-    def createItemWithLocationType(
-      locationType: LocationType
-    ): Item[IdState.Minted] =
-      createIdentifiedItemWith(
-        locations = List(
-          locationType match {
-            case LocationType.ClosedStores =>
-              createPhysicalLocationWith(
-                locationType = LocationType.ClosedStores,
-                label = LocationType.ClosedStores.label
-              )
+  it("filters works by item LocationType") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, "work.items-with-location-types.0", "work.items-with-location-types.1", "work.items-with-location-types.2")
 
-            case physicalLocationType: PhysicalLocationType =>
-              createPhysicalLocationWith(locationType = physicalLocationType)
-
-            case digitalLocationType: DigitalLocationType =>
-              createDigitalLocationWith(locationType = digitalLocationType)
-          }
-        )
-      )
-
-    val worksWithNoItem = indexedWorks(count = 3)
-
-    val work1 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.IIIFImageAPI)
-        )
-      )
-    val work2 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.IIIFImageAPI),
-          createItemWithLocationType(LocationType.IIIFPresentationAPI)
-        )
-      )
-    val work3 = indexedWork()
-      .title("Crumbling carrots")
-      .items(
-        List(
-          createItemWithLocationType(LocationType.ClosedStores)
-        )
-      )
-
-    val works = worksWithNoItem ++ Seq(work1, work2, work3)
-
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          val matchingWorks = Seq(work1, work2)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?items.locations.locationType=iiif-image,iiif-presentation"
-          ) {
-            Status.OK -> worksListResponse(works = matchingWorks.sortBy {
-              _.state.canonicalId
-            })
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
-
-          val matchingWorks = Seq(work2)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works?query=carrots&items.locations.locationType=iiif-presentation"
-          ) {
-            Status.OK -> worksListResponse(works = matchingWorks.sortBy {
-              _.state.canonicalId
-            })
-          }
-      }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.locationType=iiif-presentation,closed-stores"
+        ) {
+          Status.OK -> newWorksListResponse(
+            ids = Seq("work.items-with-location-types.1", "work.items-with-location-types.2")
+          )
+        }
     }
   }
 
