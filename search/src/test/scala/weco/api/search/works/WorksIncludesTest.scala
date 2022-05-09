@@ -1835,7 +1835,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=parts") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=parts"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1871,7 +1874,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=partOf") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=partOf"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1916,7 +1922,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=precededBy") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=precededBy"
+          ) {
             Status.OK ->
               s"""
                 {
@@ -1952,7 +1961,10 @@ class WorksIncludesTest extends ApiWorksTestBase {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=succeededBy") {
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/oo9fg6ic?include=succeededBy"
+          ) {
             Status.OK ->
               s"""
                 {
