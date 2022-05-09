@@ -1,45 +1,25 @@
 package weco.api.search.services
 
-import java.time.LocalDate
-import scala.concurrent.ExecutionContext.Implicits.global
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.concurrent.ScalaFutures
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.generators.{
-  GenreGenerators,
-  ProductionEventGenerators,
-  SubjectGenerators,
-  WorkGenerators
-}
+import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{
-  Aggregation,
-  AggregationBucket,
-  DateRangeFilter,
-  FormatFilter,
-  SubjectFilter,
-  WorkSearchOptions
-}
-import weco.catalogue.internal_model.identifiers.IdState
-import weco.catalogue.internal_model.work.{Format, Subject}
+import weco.catalogue.internal_model.index.IndexFixtures
+import weco.catalogue.internal_model.work.Format
+
+import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class AggregationsTest
     extends AnyFunSpec
     with Matchers
-    with ScalaFutures
     with IndexFixtures
-    with SubjectGenerators
-    with GenreGenerators
-    with ProductionEventGenerators
     with PeriodGenerators
     with SearchOptionsGenerators
-    with WorkGenerators
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
@@ -95,18 +75,12 @@ class AggregationsTest
   }
 
   describe("aggregations with filters") {
-    val formats = Format.values
-    val subjects = (0 to 5).map(_ => createSubject)
-    val works = formats.zipWithIndex.map {
-      case (format, i) =>
-        indexedWork()
-          .format(format)
-          .subjects(List(subjects(i / subjects.size)))
-    }
+    val works = (0 to 22).map(i => s"works.examples.aggregation-with-filters-tests.$i")
 
     it("applies filters to their related aggregations") {
       withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, works: _*)
+        indexTestDocuments(index, works: _*)
+
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
@@ -117,49 +91,39 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
-          buckets.length shouldBe formats.length
-          buckets.map(_.data) should contain theSameElementsAs formats
+          buckets.length shouldBe works.length
         }
       }
     }
 
     it("applies all non-related filters to aggregations") {
       withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, works: _*)
-        val subjectQuery = subjects.head match {
-          case Subject(IdState.Unidentifiable, label, _) => label
-          case _                                         => "bilberry"
-        }
+        indexTestDocuments(index, works: _*)
+
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List(Format.Books.id)),
-            SubjectFilter(Seq(subjectQuery))
+            SubjectFilter(Seq("pGkJTZWwn4"))
           )
         )
-        whenReady(aggregationQuery(index, searchOptions)) { aggs =>
-          val buckets = aggs.format.get.buckets
-          val expectedFormats = works.map { _.data.format.get }
-          buckets.length shouldBe expectedFormats.length
-          buckets.map(_.data) should contain theSameElementsAs expectedFormats
+        whenReady(aggregationQuery(index, searchOptions)) {
+          _.format.get.buckets should have size works.length
         }
       }
     }
 
     it("applies all filters to the results") {
       withLocalWorksIndex { index =>
-        insertIntoElasticsearch(index, works: _*)
-        val subjectQuery = subjects.head match {
-          case Subject(IdState.Unidentifiable, label, _) => label
-          case _                                         => "passionfruit"
-        }
+        indexTestDocuments(index, works: _*)
+
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List(Format.Books.id)),
-            SubjectFilter(Seq(subjectQuery))
+            SubjectFilter(Seq("pGkJTZWwn4"))
           )
         )
         val results =
@@ -181,7 +145,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain(subjectQuery))
+          .foreach(subjects => subjects should contain("pGkJTZWwn4"))
       }
     }
   }
