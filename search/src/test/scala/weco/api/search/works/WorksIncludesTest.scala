@@ -1005,45 +1005,205 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val productionEvents1 = createProductionEventList()
-          val productionEvents2 = createProductionEventList()
-          val work1 =
-            indexedWork(canonicalId = canonicalId1)
-              .production(productionEvents1)
-          val work2 =
-            indexedWork(canonicalId = canonicalId2)
-              .production(productionEvents2)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work1, work2)
-
-          assertJsonResponse(routes, s"$rootPath/works?include=production") {
-            Status.OK -> s"""
-              {
-                ${resultList(totalResults = 2)},
-                "results": [
-                 {
-                   "type": "Work",
-                   "id": "${work1.state.canonicalId}",
-                   "title": "${work1.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work1.state.availabilities
-            )}],
-                   "production": [ ${production(productionEvents1)}]
-                 },
-                 {
-                   "type": "Work",
-                   "id": "${work2.state.canonicalId}",
-                   "title": "${work2.data.title.get}",
-                   "alternativeTitles": [],
-                   "availabilities": [${availabilities(
-              work2.state.availabilities
-            )}],
-                   "production": [ ${production(productionEvents2)}]
-                 }
-                ]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works?include=production") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "pageSize" : 10,
+                 |  "results" : [
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "oo9fg6ic",
+                 |      "production" : [
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "6lVoGuWXqO",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "9eqzv",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "NRzQw5sJ89",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        },
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "Ap8e8SuyMV",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "HQTT2",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "roF4g2k9frr0xAeKZIqbV783c",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "9SMhIH2DH1",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "open-shelves",
+                 |          "label" : "Open shelves",
+                 |          "type" : "Availability"
+                 |        },
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "ou9z1esm",
+                 |      "production" : [
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "kEl0aPDS91",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "lOaLK",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "O1Lux1bNFDaOKTsDKbwserVib",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "co3T5a2Cte",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        },
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "tTXh5eC6hh",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "PPPss",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "Lw3A3d2SgHOvziH7duUdynba2",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "c8ykXyKH9v",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |        {
+                 |          "id" : "closed-stores",
+                 |          "label" : "Closed stores",
+                 |          "type" : "Availability"
+                 |        }
+                 |      ],
+                 |      "id" : "wchkoofm",
+                 |      "production" : [
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "e7X4srn7yL",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "EuJLA",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "dGFZw7o2IL5cpTq2szbf8JXFR",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "L51HaiqMvP",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        },
+                 |        {
+                 |          "agents" : [
+                 |            {
+                 |              "label" : "THk4Fal6yy",
+                 |              "type" : "Person"
+                 |            }
+                 |          ],
+                 |          "dates" : [
+                 |            {
+                 |              "label" : "c6PAy",
+                 |              "type" : "Period"
+                 |            }
+                 |          ],
+                 |          "label" : "gnoMEDJADyhgl97NLnSGT3Ooi",
+                 |          "places" : [
+                 |            {
+                 |              "label" : "RibBOUDMpI",
+                 |              "type" : "Place"
+                 |            }
+                 |          ],
+                 |          "type" : "ProductionEvent"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    }
+                 |  ],
+                 |  "totalPages" : 1,
+                 |  "totalResults" : 3,
+                 |  "type" : "ResultList"
+                 |}
+                 |""".stripMargin
           }
       }
     }
@@ -1053,24 +1213,72 @@ class WorksIncludesTest
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          val work = indexedWork().production(createProductionEventList())
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
-          insertIntoElasticsearch(worksIndex, work)
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/works/${work.state.canonicalId}?include=production"
-          ) {
-            Status.OK -> s"""
-              {
-                ${singleWorkResult()},
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "alternativeTitles": [],
-                "availabilities": [${availabilities(work.state.availabilities)}],
-                "production": [ ${production(work.data.production)}]
-              }
-            """
+          assertJsonResponse(routes, path = s"$rootPath/works/oo9fg6ic?include=production") {
+            Status.OK ->
+              s"""
+                 |{
+                 |  "alternativeTitles" : [
+                 |  ],
+                 |  "availabilities" : [
+                 |    {
+                 |      "id" : "closed-stores",
+                 |      "label" : "Closed stores",
+                 |      "type" : "Availability"
+                 |    }
+                 |  ],
+                 |  "id" : "oo9fg6ic",
+                 |  "production" : [
+                 |    {
+                 |      "agents" : [
+                 |        {
+                 |          "label" : "6lVoGuWXqO",
+                 |          "type" : "Person"
+                 |        }
+                 |      ],
+                 |      "dates" : [
+                 |        {
+                 |          "label" : "9eqzv",
+                 |          "type" : "Period"
+                 |        }
+                 |      ],
+                 |      "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
+                 |      "places" : [
+                 |        {
+                 |          "label" : "NRzQw5sJ89",
+                 |          "type" : "Place"
+                 |        }
+                 |      ],
+                 |      "type" : "ProductionEvent"
+                 |    },
+                 |    {
+                 |      "agents" : [
+                 |        {
+                 |          "label" : "Ap8e8SuyMV",
+                 |          "type" : "Person"
+                 |        }
+                 |      ],
+                 |      "dates" : [
+                 |        {
+                 |          "label" : "HQTT2",
+                 |          "type" : "Period"
+                 |        }
+                 |      ],
+                 |      "label" : "roF4g2k9frr0xAeKZIqbV783c",
+                 |      "places" : [
+                 |        {
+                 |          "label" : "9SMhIH2DH1",
+                 |          "type" : "Place"
+                 |        }
+                 |      ],
+                 |      "type" : "ProductionEvent"
+                 |    }
+                 |  ],
+                 |  "title" : "A work with all the include-able fields",
+                 |  "type" : "Work"
+                 |}
+                 |""".stripMargin
           }
       }
     }
