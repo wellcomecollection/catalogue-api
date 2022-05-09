@@ -796,105 +796,64 @@ class WorksFiltersTest
   }
 
   describe("item filters") {
-    val item1 = createIdentifiedItem
-    val item2 = createIdentifiedItem
-    val item3 = createIdentifiedItemWith(
-      otherIdentifiers = List(createSourceIdentifier)
-    )
-    val item4 = createIdentifiedItemWith(
-      otherIdentifiers = List(
-        createSourceIdentifier,
-        createSourceIdentifier
-      )
-    )
-
-    val workA = indexedWork().items(List(item1, item2))
-    val workB = indexedWork().items(List(item1))
-    val workC = indexedWork().items(List(item2, item3))
-    val workD = indexedWork().items(List(item3, item4))
-
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=${item1.id.canonicalId}",
-        expectedWorks = Seq(workA, workB)
+        path = s"$rootPath/works?items=ca3anii6",
+        expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=${item3.id.canonicalId}",
-        expectedWorks = Seq(workC, workD)
+        path = s"$rootPath/works?items=kdcpazds",
+        expectedIds = Seq("work.visible.everything.1")
       )
     }
 
     it("looks up multiple canonical IDs") {
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item1.id.canonicalId},${item3.id.canonicalId}",
-        expectedWorks = Seq(workA, workB, workC, workD)
+        path = s"$rootPath/works?items=ca3anii6,kdcpazds",
+        expectedIds = Seq("work.visible.everything.0", "work.visible.everything.1")
       )
 
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item2.id.canonicalId},${item3.id.canonicalId}",
-        expectedWorks = Seq(workA, workC, workD)
+        path = s"$rootPath/works?items=kdcpazds,atsdmxht",
+        expectedIds = Seq("work.visible.everything.1", "work.visible.everything.2")
       )
 
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items=${item3.id.canonicalId},${item4.id.canonicalId}",
-        expectedWorks = Seq(workC, workD)
+        path = s"$rootPath/works?items=atsdmxht,ca3anii6",
+        expectedIds = Seq("work.visible.everything.2", "work.visible.everything.0")
       )
     }
 
     it("looks up source identifiers") {
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item3.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workC, workD)
+        path = s"$rootPath/works?items.identifiers=hKyStbKjx1",
+        expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item1.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workA, workB)
+        path = s"$rootPath/works?items.identifiers=CnNOdtzVPO",
+        expectedIds = Seq("work.visible.everything.1")
       )
     }
 
     it("looks up multiple source identifiers") {
       assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item2.id.sourceIdentifier.value},${item3.id.sourceIdentifier.value}",
-        expectedWorks = Seq(workA, workC, workD)
-      )
-    }
-
-    it("looks up other identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value}",
-        expectedWorks = Seq(workD)
-      )
-    }
-
-    it("looks up multiple other identifiers") {
-      assertItemsFilterWorks(
-        path =
-          s"$rootPath/works?items.identifiers=${item4.id.otherIdentifiers.head.value},${item3.id.otherIdentifiers.head.value}",
-        expectedWorks = Seq(workC, workD)
+        path = s"$rootPath/works?items.identifiers=hKyStbKjx1,CnNOdtzVPO",
+        expectedIds = Seq("work.visible.everything.0", "work.visible.everything.1")
       )
     }
 
     def assertItemsFilterWorks(
       path: String,
-      expectedWorks: Seq[Work.Visible[Indexed]]
+      expectedIds: Seq[String]
     ): Assertion =
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, workA, workB, workC, workD)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path) {
-            Status.OK -> worksListResponse(
-              works = expectedWorks.sortBy(_.state.canonicalId)
-            )
+            Status.OK -> newWorksListResponse(ids = expectedIds)
           }
       }
   }
