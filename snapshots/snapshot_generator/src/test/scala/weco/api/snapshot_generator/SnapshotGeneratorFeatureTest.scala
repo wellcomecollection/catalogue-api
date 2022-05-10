@@ -34,7 +34,7 @@ class SnapshotGeneratorFeatureTest
   it("completes a snapshot generation") {
     withFixtures {
       case (queue, messageSender, worksIndex, _, bucket) =>
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 

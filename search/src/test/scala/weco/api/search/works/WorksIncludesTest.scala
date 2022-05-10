@@ -7,7 +7,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -140,7 +140,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -191,7 +191,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
   it("renders the items if the items include is present") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+        indexTestWorks(worksIndex, worksEverything: _*)
 
         assertJsonResponse(
           routes,
@@ -296,7 +296,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=subjects") {
             Status.OK ->
@@ -480,7 +480,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -552,7 +552,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=genres") {
             Status.OK ->
@@ -736,7 +736,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -808,7 +808,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -941,7 +941,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -995,7 +995,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1206,7 +1206,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1284,7 +1284,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes languages on a list endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1406,7 +1406,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes languages on a work endpoint if we pass ?include=languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1455,7 +1455,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes notes on the list endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=notes") {
             Status.OK ->
@@ -1621,7 +1621,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes notes on the single work endpoint if we pass ?include=notes") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1691,7 +1691,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
             Status.OK ->
@@ -1791,7 +1791,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1833,7 +1833,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes parts") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1872,7 +1872,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes partOf") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1920,7 +1920,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes precededBy") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -1959,7 +1959,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("includes succeededBy") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -2000,7 +2000,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("on the list endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=holdings") {
             Status.OK ->
@@ -2271,7 +2271,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
     it("on a single work endpoint") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestWorks(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,

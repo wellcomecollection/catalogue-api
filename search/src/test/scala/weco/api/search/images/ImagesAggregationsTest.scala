@@ -1,29 +1,24 @@
 package weco.api.search.images
 
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.GenreGenerators
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
 
-class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
+class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators with TestDocumentFixtures {
   it("aggregates by license") {
-    val ccByImages = (1 to 5).map { _ =>
-      createLicensedImage(License.CCBY)
-    }
+    val images = (0 to 6).map(i => s"images.different-licenses.$i")
 
-    val pdmImages = (1 to 2).map { _ =>
-      createLicensedImage(License.PDM)
-    }
-
-    val images = ccByImages ++ pdmImages
+    val displayImages = images.map(getDisplayImage(_).noSpaces)
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?aggregations=locations.license"
+          path = s"$rootPath/images?aggregations=locations.license"
         ) {
           Status.OK -> s"""
             {
@@ -35,22 +30,19 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                   "buckets": [
                     {
                       "data" : ${license(License.CCBY)},
-                      "count" : ${ccByImages.size},
+                      "count" : 5,
                       "type" : "AggregationBucket"
                     },
                     {
                       "data" : ${license(License.PDM)},
-                      "count" : ${pdmImages.size},
+                      "count" : 2,
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
               "results": [
-                ${images
-            .sortBy { _.state.canonicalId }
-            .map(imageResponse)
-            .mkString(",")}
+                ${displayImages.mkString(",")}
               ]
             }
           """
