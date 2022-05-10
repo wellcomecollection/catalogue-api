@@ -93,7 +93,31 @@ class AggregationsTest
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List("Books", "Manuscripts", "Music", "Journals", "Maps", "E-videos", "Videos", "Archives and manuscripts", "Audio", "E-journals", "Pictures", "Ephemera", "CD-Roms", "Film", "Mixed materials", "Digital Images", "3-D Objects", "E-sound", "Standing order", "E-books", "Student dissertations", "Manuscripts", "Web sites")
+          buckets.map(_.data.label) should contain theSameElementsAs List(
+            "Books",
+            "Manuscripts",
+            "Music",
+            "Journals",
+            "Maps",
+            "E-videos",
+            "Videos",
+            "Archives and manuscripts",
+            "Audio",
+            "E-journals",
+            "Pictures",
+            "Ephemera",
+            "CD-Roms",
+            "Film",
+            "Mixed materials",
+            "Digital Images",
+            "3-D Objects",
+            "E-sound",
+            "Standing order",
+            "E-books",
+            "Student dissertations",
+            "Manuscripts",
+            "Web sites"
+          )
         }
       }
     }
@@ -113,7 +137,31 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List("Books", "Manuscripts", "Music", "Journals", "Maps", "E-videos", "Videos", "Archives and manuscripts", "Audio", "E-journals", "Pictures", "Ephemera", "CD-Roms", "Film", "Mixed materials", "Digital Images", "3-D Objects", "E-sound", "Standing order", "E-books", "Student dissertations", "Manuscripts", "Web sites")
+          buckets.map(_.data.label) should contain theSameElementsAs List(
+            "Books",
+            "Manuscripts",
+            "Music",
+            "Journals",
+            "Maps",
+            "E-videos",
+            "Videos",
+            "Archives and manuscripts",
+            "Audio",
+            "E-journals",
+            "Pictures",
+            "Ephemera",
+            "CD-Roms",
+            "Film",
+            "Mixed materials",
+            "Digital Images",
+            "3-D Objects",
+            "E-sound",
+            "Standing order",
+            "E-books",
+            "Student dissertations",
+            "Manuscripts",
+            "Web sites"
+          )
         }
       }
     }

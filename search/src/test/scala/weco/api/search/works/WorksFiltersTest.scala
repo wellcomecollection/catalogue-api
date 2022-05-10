@@ -93,9 +93,11 @@ class WorksFiltersTest
   }
 
   describe("filtering works by type") {
-    val works = Seq("works.examples.different-work-types.Collection",
+    val works = Seq(
+      "works.examples.different-work-types.Collection",
       "works.examples.different-work-types.Series",
-      "works.examples.different-work-types.Section")
+      "works.examples.different-work-types.Section"
+    )
 
     it("when listing works") {
       withWorksApi {
@@ -103,7 +105,9 @@ class WorksFiltersTest
           indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?type=Collection") {
-            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Collection"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq("works.examples.different-work-types.Collection")
+            )
           }
       }
     }
@@ -117,7 +121,12 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?type=Collection,Series"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Collection", "works.examples.different-work-types.Series"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.examples.different-work-types.Collection",
+                "works.examples.different-work-types.Series"
+              )
+            )
           }
       }
     }
@@ -131,7 +140,12 @@ class WorksFiltersTest
             routes,
             path = s"$rootPath/works?query=rats&type=Series,Section"
           ) {
-            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Series", "works.examples.different-work-types.Section"))
+            Status.OK -> newWorksListResponse(
+              ids = Seq(
+                "works.examples.different-work-types.Series",
+                "works.examples.different-work-types.Section"
+              )
+            )
           }
       }
     }
@@ -324,7 +338,8 @@ class WorksFiltersTest
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  path = s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
+                  path =
+                    s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
                   Status.OK -> newWorksListResponse(expectedIds)
                 }
@@ -387,7 +402,8 @@ class WorksFiltersTest
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  path = s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
+                  path =
+                    s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
                   Status.OK -> newWorksListResponse(expectedIds)
                 }
@@ -449,10 +465,8 @@ class WorksFiltersTest
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  path = s"$rootPath/works?contributors.agent.label=${
-                    URLEncoder
-                      .encode(query, "UTF-8")
-                  }"
+                  path = s"$rootPath/works?contributors.agent.label=${URLEncoder
+                    .encode(query, "UTF-8")}"
                 ) {
                   Status.OK -> newWorksListResponse(expectedIds)
                 }
@@ -591,7 +605,8 @@ class WorksFiltersTest
   }
 
   describe("Access status filter") {
-    val works = (0 to 6).map(i => s"works.examples.access-status-filters-tests.$i")
+    val works =
+      (0 to 6).map(i => s"works.examples.access-status-filters-tests.$i")
 
     it("includes works by access status") {
       withWorksApi {
@@ -600,10 +615,13 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
+            path =
+              s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
           ) {
             Status.OK -> newWorksListResponse(
-              ids = Seq(0, 1, 2).map(i => s"works.examples.access-status-filters-tests.$i")
+              ids = Seq(0, 1, 2).map(
+                i => s"works.examples.access-status-filters-tests.$i"
+              )
             )
           }
       }
@@ -620,10 +638,13 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
+            path =
+              s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
           ) {
             Status.OK -> newWorksListResponse(
-              ids = Seq(5, 6).map(i => s"works.examples.access-status-filters-tests.$i")
+              ids = Seq(5, 6).map(
+                i => s"works.examples.access-status-filters-tests.$i"
+              )
             )
           }
       }
@@ -636,10 +657,13 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
+            path =
+              s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
           ) {
             Status.OK -> newWorksListResponse(
-              ids = Seq(3, 4, 5, 6).map(i => s"works.examples.access-status-filters-tests.$i")
+              ids = Seq(3, 4, 5, 6).map(
+                i => s"works.examples.access-status-filters-tests.$i"
+              )
             )
           }
       }
