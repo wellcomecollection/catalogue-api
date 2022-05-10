@@ -7,11 +7,9 @@ import org.scalatest.Suite
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
 import weco.api.search.models.index.IndexedWork
-import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.LocalResources
 import weco.json.JsonUtil._
-import weco.catalogue.internal_model.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
@@ -40,11 +38,7 @@ trait TestDocumentFixtures
 
   val worksEverything = (0 to 2).map(i => s"work.visible.everything.$i")
 
-  protected case class TestDocument(
-    id: String,
-    document: Json,
-    work: Work[WorkState.Indexed]
-  )
+  protected case class TestDocument(id: String, document: Json)
 
   def getVisibleWork(id: String): IndexedWork.Visible =
     getTestDocuments(Seq(id))
@@ -80,8 +74,7 @@ trait TestDocumentFixtures
         documents.map { fixture =>
           indexInto(index.name)
             .id(fixture.id)
-            .doc(toJson(fixture.work).get)
-        //            .doc(fixture.document.noSpaces)
+            .doc(fixture.document.noSpaces)
         }
       ).refreshImmediately
     )
