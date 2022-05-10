@@ -1,4 +1,4 @@
-package weco.api.search
+package weco.api.search.fixtures
 
 import io.circe.Json
 
