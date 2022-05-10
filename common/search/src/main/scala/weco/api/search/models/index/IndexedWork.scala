@@ -1,10 +1,6 @@
 package weco.api.search.models.index
 
 import io.circe.Json
-import io.circe.syntax._
-import weco.catalogue.display_model.work.DisplayWork
-import weco.catalogue.display_model.Implicits._
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 sealed trait IndexedWork
 
@@ -20,25 +16,4 @@ object IndexedWork {
 
   case class Invisible() extends IndexedWork
   case class Deleted() extends IndexedWork
-
-  // TODO: These are temporary methods used while we're moving the API to
-  // use the "display" field in the index; once that work is done we can
-  // delete this.
-  def apply(work: Work[WorkState.Indexed]): IndexedWork =
-    work match {
-      case w: Work.Visible[WorkState.Indexed] =>
-        IndexedWork.Visible(DisplayWork(w).asJson.deepDropNullValues)
-
-      case w: Work.Redirected[WorkState.Indexed] =>
-        IndexedWork.Redirected(
-          redirectTarget =
-            Identified(canonicalId = w.redirectTarget.canonicalId.underlying)
-        )
-
-      case _: Work.Invisible[WorkState.Indexed] =>
-        IndexedWork.Invisible()
-
-      case _: Work.Deleted[WorkState.Indexed] =>
-        IndexedWork.Deleted()
-    }
 }
