@@ -1,20 +1,13 @@
 package weco.api.search.works
 
 import org.scalatest.Assertion
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.catalogue.internal_model.locations.AccessStatus.LicensedResources
-import weco.catalogue.internal_model.locations._
-import weco.catalogue.internal_model.work._
-import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import java.net.URLEncoder
 
 class WorksFiltersTest
     extends ApiWorksTestBase
-    with ItemsGenerators
     with TestDocumentFixtures
     with TableDrivenPropertyChecks {
 
@@ -598,50 +591,19 @@ class WorksFiltersTest
   }
 
   describe("Access status filter") {
-    def work(status: AccessStatus): Work.Visible[Indexed] =
-      indexedWork()
-        .items(
-          List(
-            createIdentifiedItemWith(
-              locations = List(
-                createDigitalLocationWith(
-                  accessConditions = List(
-                    AccessCondition(
-                      method = AccessMethod.ManualRequest,
-                      status = Some(status)
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-
-    val workA = work(AccessStatus.Restricted)
-    val workB = work(AccessStatus.Restricted)
-    val workC = work(AccessStatus.Closed)
-    val workD = work(AccessStatus.Open)
-    val workE = work(AccessStatus.OpenWithAdvisory)
-    val workF = work(
-      AccessStatus.LicensedResources(relationship = LicensedResources.Resource)
-    )
-    val workG = work(
-      AccessStatus
-        .LicensedResources(relationship = LicensedResources.RelatedResource)
-    )
-
-    val works = Seq(workA, workB, workC, workD, workE, workF, workG)
+    val works = (0 to 6).map(i => s"works.examples.access-status-filters-tests.$i")
 
     it("includes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
+            path = s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(workA, workB, workC).sortBy(_.state.canonicalId)
+            Status.OK -> newWorksListResponse(
+              ids = Seq(0, 1, 2).map(i => s"works.examples.access-status-filters-tests.$i")
             )
           }
       }
@@ -654,13 +616,14 @@ class WorksFiltersTest
     it("includes works which are licensed resources") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
+            path = s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(workF, workG).sortBy(_.state.canonicalId)
+            Status.OK -> newWorksListResponse(
+              ids = Seq(5, 6).map(i => s"works.examples.access-status-filters-tests.$i")
             )
           }
       }
@@ -669,14 +632,14 @@ class WorksFiltersTest
     it("excludes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
+
           assertJsonResponse(
             routes,
-            s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
+            path = s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
           ) {
-            Status.OK -> worksListResponse(
-              works =
-                Seq(workD, workE, workF, workG).sortBy(_.state.canonicalId)
+            Status.OK -> newWorksListResponse(
+              ids = Seq(3, 4, 5, 6).map(i => s"works.examples.access-status-filters-tests.$i")
             )
           }
       }
