@@ -145,35 +145,35 @@ trait DisplaySerialisationTestBase {
         "label": "${meeting.label}"
       }"""
 
-  def agent(agent: Agent[IdState.Minted]) =
+  private def agent(agent: Agent[IdState.Minted]) =
     s"""{
        ${identifiers(agent)}
         "type": "Agent",
         "label": "${agent.label}"
       }"""
 
-  def period(period: Period[IdState.Minted]) =
+  private def period(period: Period[IdState.Minted]) =
     s"""{
        ${identifiers(period)}
       "type": "Period",
       "label": "${period.label}"
     }"""
 
-  def place(place: Place[IdState.Minted]) =
+  private def place(place: Place[IdState.Minted]) =
     s"""{
        ${identifiers(place)}
       "type": "Place",
       "label": "${place.label}"
     }"""
 
-  def concept(concept: Concept[IdState.Minted]) =
+  private def concept(concept: Concept[IdState.Minted]) =
     s"""{
        ${identifiers(concept)}
       "type": "Concept",
       "label": "${concept.label}"
     }"""
 
-  def abstractRootConcept(
+  private def abstractRootConcept(
     abstractRootConcept: AbstractRootConcept[IdState.Minted]
   ) =
     abstractRootConcept match {
@@ -189,7 +189,7 @@ trait DisplaySerialisationTestBase {
   def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
     concepts.map(abstractRootConcept).mkString(",")
 
-  def subject(
+  private def subject(
     s: Subject[IdState.Minted],
     showConcepts: Boolean = true
   ): String =
