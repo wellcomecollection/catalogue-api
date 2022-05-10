@@ -21,10 +21,13 @@ object IndexedWork {
   case class Invisible() extends IndexedWork
   case class Deleted() extends IndexedWork
 
+  // TODO: These are temporary methods used while we're moving the API to
+  // use the "display" field in the index; once that work is done we can
+  // delete this.
   def apply(work: Work[WorkState.Indexed]): IndexedWork =
     work match {
       case w: Work.Visible[WorkState.Indexed] =>
-        IndexedWork.Visible(DisplayWork(w).asJson)
+        IndexedWork.Visible(DisplayWork(w).asJson.deepDropNullValues)
 
       case w: Work.Redirected[WorkState.Indexed] =>
         IndexedWork.Redirected(
