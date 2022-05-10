@@ -18,8 +18,6 @@ every character to check they were supported by the candidate font.
 """
 
 import csv
-from pprint import pprint
-import sys
 import unicodedata
 
 from utils import get_works
