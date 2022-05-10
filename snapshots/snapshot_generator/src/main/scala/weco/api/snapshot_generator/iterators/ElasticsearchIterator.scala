@@ -3,18 +3,20 @@ package weco.api.snapshot_generator.iterators
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl.{search, termQuery}
 import grizzled.slf4j.Logging
-import weco.api.search.models.index.IndexedWork
+import io.circe.Json
 import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
 import weco.elasticsearch.ElasticsearchScanner
 import weco.json.JsonUtil._
 
 import scala.concurrent.duration._
 
-class ElasticsearchWorksIterator(
+class ElasticsearchIterator(
   implicit
   client: ElasticClient,
   timeout: FiniteDuration = 5 minutes
 ) extends Logging {
+  case class HasDisplay(display: Json)
+
   def scroll(
     config: SnapshotGeneratorConfig
   ): Iterator[String] = {
@@ -25,7 +27,7 @@ class ElasticsearchWorksIterator(
     )
 
     underlying
-      .scroll[IndexedWork.Visible](
+      .scroll[HasDisplay](
         search(config.index)
           .query(termQuery("type", "Visible"))
       )

@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import weco.api.snapshot_generator.compress.GzipCompressor
-import weco.api.snapshot_generator.iterators.ElasticsearchWorksIterator
+import weco.api.snapshot_generator.iterators.ElasticsearchIterator
 import weco.api.snapshot_generator.models.{
   CompletedSnapshotJob,
   SnapshotGeneratorConfig,
@@ -33,7 +33,7 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
 
     for {
       jsonStrings <- Try {
-        new ElasticsearchWorksIterator()(elasticClient)
+        new ElasticsearchIterator()(elasticClient)
           .scroll(config)
           .map { work =>
             workCount += 1
