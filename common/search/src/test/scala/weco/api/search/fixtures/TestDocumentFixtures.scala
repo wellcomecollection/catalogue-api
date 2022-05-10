@@ -6,13 +6,12 @@ import io.circe.Json
 import org.scalatest.Suite
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
-import weco.api.search.JsonHelpers
 import weco.api.search.models.index.IndexedWork
 import weco.catalogue.internal_model.work.{Work, WorkState}
-import weco.catalogue.internal_model.Implicits._
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.LocalResources
 import weco.json.JsonUtil._
+import weco.catalogue.internal_model.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
@@ -82,7 +81,7 @@ trait TestDocumentFixtures
           indexInto(index.name)
             .id(fixture.id)
             .doc(toJson(fixture.work).get)
-//            .doc(fixture.document.noSpaces)
+        //            .doc(fixture.document.noSpaces)
         }
       ).refreshImmediately
     )

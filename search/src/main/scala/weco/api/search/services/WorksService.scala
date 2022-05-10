@@ -6,7 +6,9 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import io.circe.{Decoder, HCursor}
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
+import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.index.IndexedWork
+import weco.api.search.models.request.WorksIncludes
 import weco.api.search.models.{
   AggregationBucket,
   ElasticAggregations,
@@ -26,7 +28,8 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
       WorkAggregations,
       WorkSearchOptions
     ]
-    with ElasticAggregations {
+    with ElasticAggregations
+    with CatalogueJsonUtil {
 
   implicit val decoder: Decoder[IndexedWork] =
     (c: HCursor) =>
@@ -36,8 +39,8 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
 
   implicit val decoderV: Decoder[IndexedWork.Visible] =
     (c: HCursor) =>
-      Implicits._decWorkVisibleIndexed.apply(c).map {
-        IndexedWork.Visible(_)
+      Implicits._decWorkVisibleIndexed.apply(c).map { work =>
+        IndexedWork.Visible(work.asJson(WorksIncludes.all))
       }
 
   override protected val requestBuilder
