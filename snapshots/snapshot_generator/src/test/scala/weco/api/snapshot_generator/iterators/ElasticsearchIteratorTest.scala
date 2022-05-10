@@ -52,7 +52,8 @@ class ElasticsearchIteratorTest
       }
 
       val config = SnapshotGeneratorConfig(index)
-      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10).map(i => s""""document $i"""")
+      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10)
+        .map(i => s""""document $i"""")
     }
   }
 
@@ -78,7 +79,8 @@ class ElasticsearchIteratorTest
       }
 
       val config = SnapshotGeneratorConfig(index, bulkSize = 5)
-      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10).map(i => s""""document $i"""")
+      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10)
+        .map(i => s""""document $i"""")
     }
   }
 }

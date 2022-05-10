@@ -9,7 +9,12 @@ import io.circe.generic.extras.semiauto._
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.index.IndexedWork
-import weco.api.search.models.{AggregationBucket, ElasticAggregations, WorkAggregations, WorkSearchOptions}
+import weco.api.search.models.{
+  AggregationBucket,
+  ElasticAggregations,
+  WorkAggregations,
+  WorkSearchOptions
+}
 import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}

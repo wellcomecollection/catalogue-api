@@ -4,7 +4,10 @@ import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesAggregationsTest extends ApiImagesTestBase with TestDocumentFixtures with CatalogueJsonUtil {
+class ImagesAggregationsTest
+    extends ApiImagesTestBase
+    with TestDocumentFixtures
+    with CatalogueJsonUtil {
   it("aggregates by license") {
     val images = (0 to 6).map(i => s"images.different-licenses.$i")
     val displayImages = images
@@ -62,7 +65,8 @@ class ImagesAggregationsTest extends ApiImagesTestBase with TestDocumentFixtures
 
   it("aggregates by the canonical source's contributor agent labels") {
     val images = (0 to 2).map(i => s"images.contributors.$i")
-    val displayImages = images.map(getDisplayImage)
+    val displayImages = images
+      .map(getDisplayImage)
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
@@ -72,7 +76,8 @@ class ImagesAggregationsTest extends ApiImagesTestBase with TestDocumentFixtures
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?aggregations=source.contributors.agent.label"
+          path =
+            s"$rootPath/images?aggregations=source.contributors.agent.label"
         ) {
           Status.OK -> s"""
             {
@@ -120,7 +125,8 @@ class ImagesAggregationsTest extends ApiImagesTestBase with TestDocumentFixtures
 
   it("aggregates by the canonical source's genres") {
     val images = (0 to 2).map(i => s"images.genres.$i")
-    val displayImages = images.map(getDisplayImage)
+    val displayImages = images
+      .map(getDisplayImage)
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 

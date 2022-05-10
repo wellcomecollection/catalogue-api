@@ -69,7 +69,11 @@ trait TestDocumentFixtures
       }
     }
 
-  protected case class TestImageDocument(id: String, document: Json, image: Image[ImageState.Augmented])
+  protected case class TestImageDocument(
+    id: String,
+    document: Json,
+    image: Image[ImageState.Augmented]
+  )
 
   // TODO: When this work is done, we'll collapse indexTestImages back into
   // indexTestDocuments and get rid of the separate methods.
