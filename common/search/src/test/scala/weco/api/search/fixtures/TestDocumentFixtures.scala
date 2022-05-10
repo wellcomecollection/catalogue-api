@@ -7,7 +7,7 @@ import org.scalatest.Suite
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
 import weco.api.search.models.index.IndexedWork
-import weco.catalogue.internal_model.image.{Image, ImageState}
+import weco.catalogue.internal_model.image.{Image, ImageFsm, ImageState}
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.LocalResources
 import weco.json.JsonUtil._
@@ -69,7 +69,7 @@ trait TestDocumentFixtures
       }
     }
 
-  protected case class TestImageDocument(id: String, document: Json, image: Image[ImageState.Indexed])
+  protected case class TestImageDocument(id: String, document: Json, image: Image[ImageState.Augmented])
 
   // TODO: When this work is done, we'll collapse indexTestImages back into
   // indexTestDocuments and get rid of the separate methods.
@@ -94,12 +94,14 @@ trait TestDocumentFixtures
   ): Unit = {
     val documents = getTestImageDocuments(documentIds)
 
+    import ImageFsm._
+
     val result = elasticClient.execute(
       bulk(
         documents.map { fixture =>
           indexInto(index.name)
             .id(fixture.id)
-            .doc(toJson(fixture.image).get)
+            .doc(toJson(fixture.image.transition[ImageState.Indexed]()).get)
         }
       ).refreshImmediately
     )
