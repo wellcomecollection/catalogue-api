@@ -279,19 +279,12 @@ class WorksFiltersTest
   }
 
   describe("filtering works by genre") {
-    val annualReports = createGenreWith("Annual reports.")
-    val pamphlets = createGenreWith("Pamphlets.")
-    val psychology = createGenreWith("Psychology, Pathological")
-    val darwin = createGenreWith("Darwin \"Jones\", Charles")
-
-    val annualReportsWork = indexedWork().genres(List(annualReports))
-    val pamphletsWork = indexedWork().genres(List(pamphlets))
-    val psychologyWork = indexedWork().genres(List(psychology))
-    val darwinWork =
-      indexedWork().genres(List(darwin))
-    val mostThingsWork =
-      indexedWork().genres(List(pamphlets, psychology, darwin))
-    val nothingWork = indexedWork()
+    val annualReportsWork = s"works.examples.genre-filters-tests.0"
+    val pamphletsWork = "works.examples.genre-filters-tests.1"
+    val psychologyWork = "works.examples.genre-filters-tests.2"
+    val darwinWork = "works.examples.genre-filters-tests.3"
+    val mostThingsWork = "works.examples.genre-filters-tests.4"
+    val nothingWork = "works.examples.genre-filters-tests.5"
 
     val works =
       List(
@@ -304,7 +297,7 @@ class WorksFiltersTest
       )
 
     val testCases = Table(
-      ("query", "results", "clue"),
+      ("query", "expectedIds", "clue"),
       ("Annual reports.", Seq(annualReportsWork), "single match single genre"),
       (
         "Pamphlets.",
@@ -331,22 +324,16 @@ class WorksFiltersTest
     it("filters by genres as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
+            (query: String, expectedIds: Seq[String], clue: String) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
+                  path = s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
+                  Status.OK -> newWorksListResponse(expectedIds)
                 }
               }
           }
@@ -355,19 +342,12 @@ class WorksFiltersTest
   }
 
   describe("filtering works by subject") {
-    val sanitation = createSubjectWith("Sanitation.")
-    val london = createSubjectWith("London (England)")
-    val psychology = createSubjectWith("Psychology, Pathological")
-    val darwin = createSubjectWith("Darwin \"Jones\", Charles")
-
-    val sanitationWork = indexedWork().subjects(List(sanitation))
-    val londonWork = indexedWork().subjects(List(london))
-    val psychologyWork = indexedWork().subjects(List(psychology))
-    val darwinWork =
-      indexedWork().subjects(List(darwin))
-    val mostThingsWork =
-      indexedWork().subjects(List(london, psychology, darwin))
-    val nothingWork = indexedWork()
+    val sanitationWork = "works.examples.subject-filters-tests.0"
+    val londonWork = "works.examples.subject-filters-tests.1"
+    val psychologyWork = "works.examples.subject-filters-tests.2"
+    val darwinWork = "works.examples.subject-filters-tests.3"
+    val mostThingsWork = "works.examples.subject-filters-tests.4"
+    val nothingWork = "works.examples.subject-filters-tests.5"
 
     val works =
       List(
@@ -380,7 +360,7 @@ class WorksFiltersTest
       )
 
     val testCases = Table(
-      ("query", "results", "clue"),
+      ("query", "expectedIds", "clue"),
       ("Sanitation.", Seq(sanitationWork), "single match single subject"),
       (
         "London (England)",
@@ -407,21 +387,16 @@ class WorksFiltersTest
     it("filters by subjects as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
+
           forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
+            (query: String, expectedIds: Seq[String], clue: String) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
+                  path = s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
+                  Status.OK -> newWorksListResponse(expectedIds)
                 }
               }
           }
@@ -430,21 +405,12 @@ class WorksFiltersTest
   }
 
   describe("filtering works by contributors") {
-    val patricia = Contributor(agent = Person("Bath, Patricia"), roles = Nil)
-    val karlMarx = Contributor(agent = Person("Karl Marx"), roles = Nil)
-    val jakePaul = Contributor(agent = Person("Jake Paul"), roles = Nil)
-    val darwin =
-      Contributor(agent = Person("Darwin \"Jones\", Charles"), roles = Nil)
-
-    val patriciaWork = indexedWork().contributors(List(patricia))
-    val karlMarxWork =
-      indexedWork().contributors(List(karlMarx))
-    val jakePaulWork =
-      indexedWork().contributors(List(jakePaul))
-    val darwinWork = indexedWork().contributors(List(darwin))
-    val patriciaDarwinWork = indexedWork()
-      .contributors(List(patricia, darwin))
-    val noContributorsWork = indexedWork().contributors(Nil)
+    val patriciaWork = "works.examples.contributor-filters-tests.0"
+    val karlMarxWork = "works.examples.contributor-filters-tests.1"
+    val jakePaulWork = "works.examples.contributor-filters-tests.2"
+    val darwinWork = "works.examples.contributor-filters-tests.3"
+    val patriciaDarwinWork = "works.examples.contributor-filters-tests.4"
+    val noContributorsWork = "works.examples.contributor-filters-tests.5"
 
     val works = List(
       patriciaWork,
@@ -456,7 +422,7 @@ class WorksFiltersTest
     )
 
     val testCases = Table(
-      ("query", "results", "clue"),
+      ("query", "expectedIds", "clue"),
       ("Karl Marx", Seq(karlMarxWork), "single match"),
       (
         """"Bath, Patricia"""",
@@ -483,22 +449,19 @@ class WorksFiltersTest
     it("filters by contributors as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
+
           forAll(testCases) {
-            (
-              query: String,
-              results: Seq[Work.Visible[WorkState.Indexed]],
-              clue: String
-            ) =>
+            (query: String, expectedIds: Seq[String], clue: String) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
-                  s"$rootPath/works?contributors.agent.label=${URLEncoder
-                    .encode(query, "UTF-8")}"
+                  path = s"$rootPath/works?contributors.agent.label=${
+                    URLEncoder
+                      .encode(query, "UTF-8")
+                  }"
                 ) {
-                  Status.OK -> worksListResponse(works = results.sortBy {
-                    _.state.canonicalId
-                  })
+                  Status.OK -> newWorksListResponse(expectedIds)
                 }
               }
           }
