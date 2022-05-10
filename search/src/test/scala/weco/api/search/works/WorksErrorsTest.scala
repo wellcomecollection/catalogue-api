@@ -332,7 +332,7 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       "path",
       s"$rootPath/works",
       s"$rootPath/works?query=fish",
-      s"$rootPath/works/$createCanonicalId"
+      s"$rootPath/works/xyakm37j"
     )
 
     withApi { route =>

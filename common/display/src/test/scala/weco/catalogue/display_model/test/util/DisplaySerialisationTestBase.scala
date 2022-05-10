@@ -47,19 +47,6 @@ trait DisplaySerialisationTestBase {
       Json.fromString(s).noSpaces
   }
 
-  def items(items: List[Item[IdState.Minted]]) =
-    items.map(item).mkString(",")
-
-  private def item(item: Item[IdState.Minted]): String =
-    s"""
-     {
-       ${identifiers(item)}
-       "type": "Item",
-       "title": ${item.title.map(_.toJson)},
-       "locations": [${locations(item.locations)}]
-     }
-    """.tidy
-
   def locations(locations: List[Location]) =
     locations.map(location).mkString(",")
 
@@ -92,7 +79,7 @@ trait DisplaySerialisationTestBase {
        }
      """.tidy
 
-  def accessConditions(conds: List[AccessCondition]) =
+  private def accessConditions(conds: List[AccessCondition]) =
     s"[${conds.map(accessCondition).mkString(",")}]"
 
   private def accessCondition(cond: AccessCondition): String =
@@ -158,35 +145,35 @@ trait DisplaySerialisationTestBase {
         "label": "${meeting.label}"
       }"""
 
-  def agent(agent: Agent[IdState.Minted]) =
+  private def agent(agent: Agent[IdState.Minted]) =
     s"""{
        ${identifiers(agent)}
         "type": "Agent",
         "label": "${agent.label}"
       }"""
 
-  def period(period: Period[IdState.Minted]) =
+  private def period(period: Period[IdState.Minted]) =
     s"""{
        ${identifiers(period)}
       "type": "Period",
       "label": "${period.label}"
     }"""
 
-  def place(place: Place[IdState.Minted]) =
+  private def place(place: Place[IdState.Minted]) =
     s"""{
        ${identifiers(place)}
       "type": "Place",
       "label": "${place.label}"
     }"""
 
-  def concept(concept: Concept[IdState.Minted]) =
+  private def concept(concept: Concept[IdState.Minted]) =
     s"""{
        ${identifiers(concept)}
       "type": "Concept",
       "label": "${concept.label}"
     }"""
 
-  def abstractRootConcept(
+  private def abstractRootConcept(
     abstractRootConcept: AbstractRootConcept[IdState.Minted]
   ) =
     abstractRootConcept match {
@@ -202,7 +189,7 @@ trait DisplaySerialisationTestBase {
   def concepts(concepts: List[AbstractRootConcept[IdState.Minted]]) =
     concepts.map(abstractRootConcept).mkString(",")
 
-  def subject(
+  private def subject(
     s: Subject[IdState.Minted],
     showConcepts: Boolean = true
   ): String =
@@ -245,9 +232,6 @@ trait DisplaySerialisationTestBase {
   def production(production: List[ProductionEvent[IdState.Minted]]) =
     production.map(productionEvent).mkString(",")
 
-  def availabilities(availabilities: Set[Availability]) =
-    availabilities.map(availability).mkString(",")
-
   def languages(ls: List[Language]): String =
     ls.map(language).mkString(",")
 
@@ -261,15 +245,6 @@ trait DisplaySerialisationTestBase {
 
   def workImageIncludes(images: List[ImageData[IdState.Identified]]) =
     images.map(workImageInclude).mkString(",")
-
-  private def availability(availability: Availability): String =
-    s"""
-       |{
-       |  "id": "${availability.id}",
-       |  "label": "${availability.label}",
-       |  "type": "Availability"
-       |}
-       |""".stripMargin
 
   private def productionEvent(event: ProductionEvent[IdState.Minted]): String =
     s"""
