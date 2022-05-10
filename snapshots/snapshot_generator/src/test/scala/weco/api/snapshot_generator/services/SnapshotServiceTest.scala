@@ -67,7 +67,8 @@ class SnapshotServiceTest
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
 
-        val expectedJsonLines = readResource("expected-snapshot.txt").split("\n")
+        val expectedJsonLines =
+          readResource("expected-snapshot.txt").split("\n")
         val actualLines = contents.split("\n")
 
         actualLines.zip(expectedJsonLines).foreach {
@@ -96,7 +97,9 @@ class SnapshotServiceTest
     }
   }
 
-  ignore("completes a snapshot generation of an index with more than 10000 items") {
+  ignore(
+    "completes a snapshot generation of an index with more than 10000 items"
+  ) {
     // TODO: restore this test after we've refactored the snapshot generator
     // to use the "display" property on documents, so we can easily generate
     // 1000 examples to use here.

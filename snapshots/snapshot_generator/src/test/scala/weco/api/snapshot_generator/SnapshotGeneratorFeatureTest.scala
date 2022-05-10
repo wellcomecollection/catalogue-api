@@ -56,7 +56,8 @@ class SnapshotGeneratorFeatureTest
           val s3Etag = objectMetadata.getETag
           val s3Size = objectMetadata.getContentLength
 
-          val expectedJsonLines = readResource("expected-snapshot.txt").split("\n")
+          val expectedJsonLines =
+            readResource("expected-snapshot.txt").split("\n")
 
           actualJsonLines.zip(expectedJsonLines).foreach {
             case (actualLine, expectedLine) =>
