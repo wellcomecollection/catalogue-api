@@ -100,22 +100,17 @@ class WorksFiltersTest
   }
 
   describe("filtering works by type") {
-    val collectionWork =
-      indexedWork().title("rats").workType(WorkType.Collection)
-    val seriesWork =
-      indexedWork().title("rats").workType(WorkType.Series)
-    val sectionWork =
-      indexedWork().title("rats").workType(WorkType.Section)
-
-    val works = Seq(collectionWork, seriesWork, sectionWork)
+    val works = Seq("works.examples.different-work-types.Collection",
+      "works.examples.different-work-types.Series",
+      "works.examples.different-work-types.Section")
 
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
-          assertJsonResponse(routes, s"$rootPath/works?type=Collection") {
-            Status.OK -> worksListResponse(works = Seq(collectionWork))
+          assertJsonResponse(routes, path = s"$rootPath/works?type=Collection") {
+            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Collection"))
           }
       }
     }
@@ -123,18 +118,13 @@ class WorksFiltersTest
     it("filters by multiple types") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?type=Collection,Series",
-            unordered = true
+            path = s"$rootPath/works?type=Collection,Series"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(collectionWork, seriesWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Collection", "works.examples.different-work-types.Series"))
           }
       }
     }
@@ -142,18 +132,13 @@ class WorksFiltersTest
     it("when searching works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
-            s"$rootPath/works?query=rats&type=Series,Section",
-            unordered = true
+            path = s"$rootPath/works?query=rats&type=Series,Section"
           ) {
-            Status.OK -> worksListResponse(
-              works = Seq(seriesWork, sectionWork).sortBy {
-                _.state.canonicalId
-              }
-            )
+            Status.OK -> newWorksListResponse(ids = Seq("works.examples.different-work-types.Series", "works.examples.different-work-types.Section"))
           }
       }
     }
