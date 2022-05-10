@@ -5,18 +5,16 @@ import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.WorkerServiceFixture
 import weco.api.snapshot_generator.models.{CompletedSnapshotJob, SnapshotJob}
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
-import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 import weco.json.utils.JsonAssertions
 import weco.messaging.fixtures.SQS.Queue
 import weco.messaging.memory.MemoryMessageSender
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
 
@@ -30,19 +28,14 @@ class SnapshotGeneratorFeatureTest
     with S3GzipUtils
     with JsonAssertions
     with IntegrationPatience
-    with DisplaySerialisationTestBase
     with WorkerServiceFixture
-    with WorkGenerators {
+    with TestDocumentFixtures {
 
   it("completes a snapshot generation") {
     withFixtures {
       case (queue, messageSender, worksIndex, _, bucket) =>
-        val works = indexedWorks(count = 3)
+        indexTestDocuments(worksIndex, works: _*)
 
-        insertIntoElasticsearch(worksIndex, works: _*)
-
-        val expectedDisplayWorkClassName =
-          "weco.catalogue.display_model.work.DisplayWork$"
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
         val snapshotJob = SnapshotJob(
@@ -54,7 +47,6 @@ class SnapshotGeneratorFeatureTest
         sendNotificationToSQS(queue = queue, message = snapshotJob)
 
         eventually {
-
           val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
 
           val actualJsonLines = contents.split("\n").toList
@@ -62,37 +54,14 @@ class SnapshotGeneratorFeatureTest
           val s3Etag = objectMetadata.getETag
           val s3Size = objectMetadata.getContentLength
 
-          val expectedJsonLines = works.sortBy { _.state.canonicalId }.map {
-            work =>
-              s"""
-              {
-                "id": "${work.state.canonicalId}",
-                "title": "${work.data.title.get}",
-                "identifiers": [${identifier(work.sourceIdentifier)}],
-                "contributors": [],
-                "genres": [],
-                "subjects": [],
-                "items": [],
-                "holdings": [],
-                "production": [],
-                "languages": [],
-                "alternativeTitles": [],
-                "availabilities": [],
-                "notes": [],
-                "images": [],
-                "parts": [],
-                "partOf": [],
-                "precededBy": [],
-                "succeededBy": [],
-                "type": "Work"
-              }
-            """
-          }
+          val expectedJsonLines =
+            readResource("expected-snapshot.txt").split("\n")
 
-          actualJsonLines.sorted.zip(expectedJsonLines).foreach {
+          actualJsonLines.zip(expectedJsonLines).foreach {
             case (actualLine, expectedLine) =>
-              println(s"actualLine = <<$actualLine>>")
-              assertJsonStringsAreEqual(actualLine, expectedLine)
+              withClue(s"actualLine = <<$actualLine>>") {
+                assertJsonStringsAreEqual(actualLine, expectedLine)
+              }
           }
 
           val result = messageSender.getMessages[CompletedSnapshotJob].head
@@ -100,8 +69,7 @@ class SnapshotGeneratorFeatureTest
           result.snapshotJob shouldBe snapshotJob
 
           result.snapshotResult.indexName shouldBe worksIndex.name
-          result.snapshotResult.documentCount shouldBe works.length
-          result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
+          result.snapshotResult.documentCount shouldBe visibleWorks.length
 
           result.snapshotResult.startedAt shouldBe >(
             result.snapshotJob.requestedAt

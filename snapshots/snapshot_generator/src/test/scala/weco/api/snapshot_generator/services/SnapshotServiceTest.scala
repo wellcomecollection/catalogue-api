@@ -1,23 +1,26 @@
 package weco.api.snapshot_generator.services
 
 import com.amazonaws.services.s3.model.AmazonS3Exception
-import com.sksamuel.elastic4s.{ElasticClient, Index}
+import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
+import com.sksamuel.elastic4s.{ElasticClient, Index}
+import io.circe.Json
+import io.circe.generic.extras.JsonKey
+import io.circe.syntax._
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
-import weco.catalogue.display_model.work.DisplayWork
 import weco.elasticsearch.ElasticClientBuilder
 import weco.fixtures.TestWith
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.WorkGenerators
+import weco.json.JsonUtil._
+import weco.json.utils.JsonAssertions
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-import weco.http.json.DisplayJsonUtil.toJson
 
 import java.time.Instant
 
@@ -27,9 +30,8 @@ class SnapshotServiceTest
     with TryValues
     with S3GzipUtils
     with SnapshotServiceFixture
-    with WorkGenerators {
-
-  import weco.catalogue.display_model.Implicits._
+    with TestDocumentFixtures
+    with JsonAssertions {
 
   def withFixtures[R](
     testWith: TestWith[(SnapshotService, Index, Bucket), R]
@@ -42,19 +44,10 @@ class SnapshotServiceTest
       }
     }
 
-  val expectedDisplayWorkClassName =
-    "weco.catalogue.display_model.work.DisplayWork$"
-
   it("completes a snapshot generation") {
     withFixtures {
       case (snapshotService, worksIndex, bucket) =>
-        val visibleWorks = indexedWorks(count = 3)
-        val notVisibleWorks = indexedWorks(count = 2).map {
-          _.invisible()
-        }
-
-        val works = visibleWorks ++ notVisibleWorks
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
         val snapshotJob = SnapshotJob(
@@ -70,18 +63,21 @@ class SnapshotServiceTest
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
 
-        val expectedContents = visibleWorks
-          .map { DisplayWork(_) }
-          .map(toJson[DisplayWork])
-          .mkString("\n") + "\n"
+        val expectedJsonLines =
+          readResource("expected-snapshot.txt").split("\n")
+        val actualLines = contents.split("\n")
 
-        contents shouldBe expectedContents
+        actualLines.zip(expectedJsonLines).foreach {
+          case (actualLine, expectedLine) =>
+            withClue(s"actualLine = <<$actualLine>>") {
+              assertJsonStringsAreEqual(actualLine, expectedLine)
+            }
+        }
 
         result.snapshotJob shouldBe snapshotJob
 
         result.snapshotResult.indexName shouldBe worksIndex.name
         result.snapshotResult.documentCount shouldBe visibleWorks.length
-        result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
         result.snapshotResult.startedAt shouldBe >=(
           result.snapshotJob.requestedAt
@@ -99,12 +95,36 @@ class SnapshotServiceTest
   it("completes a snapshot generation of an index with more than 10000 items") {
     withFixtures {
       case (snapshotService, worksIndex, bucket) =>
-        val works = indexedWorks(count = 11000)
-          .map {
-            _.title(randomAlphanumeric(length = 1500))
+        case class HasDisplay(
+          display: Json,
+          @JsonKey("type") ontologyType: String
+        )
+
+        val documents = (1 to 10100)
+          .map { i =>
+            val id = i.toString
+            val doc = HasDisplay(
+              display = Json.fromString(s"document $i"),
+              ontologyType = "Visible"
+            )
+
+            (id, doc)
           }
 
-        insertIntoElasticsearch(worksIndex, works: _*)
+        elasticClient.execute(
+          bulk(
+            documents.map {
+              case (id, doc) =>
+                indexInto(worksIndex)
+                  .id(id)
+                  .doc(doc.asJson.noSpaces)
+            }
+          ).refreshImmediately
+        )
+
+        eventually {
+          getSizeOf(worksIndex) shouldBe documents.length
+        }
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
         val snapshotJob = SnapshotJob(
@@ -116,14 +136,12 @@ class SnapshotServiceTest
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
         val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
-        import weco.catalogue.display_model.Implicits._
 
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
 
-        val expectedContents = works
-          .map { DisplayWork(_) }
-          .map(toJson[DisplayWork])
+        val expectedContents = documents
+          .map { case (id, _) => s""""document $id"""" }
           .mkString("\n") + "\n"
 
         contents shouldBe expectedContents
@@ -131,8 +149,7 @@ class SnapshotServiceTest
         result.snapshotJob shouldBe snapshotJob
 
         result.snapshotResult.indexName shouldBe worksIndex.name
-        result.snapshotResult.documentCount shouldBe works.length
-        result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
+        result.snapshotResult.documentCount shouldBe documents.length
 
         result.snapshotResult.startedAt shouldBe >=(
           result.snapshotJob.requestedAt
@@ -150,9 +167,7 @@ class SnapshotServiceTest
   it("returns a failed future if the S3 upload fails") {
     withFixtures {
       case (snapshotService, worksIndex, _) =>
-        val works = indexedWorks(count = 3)
-
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
 
         val snapshotJob = SnapshotJob(
           s3Location = createS3ObjectLocation,
