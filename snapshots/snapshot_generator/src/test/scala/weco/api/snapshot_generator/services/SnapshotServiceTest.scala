@@ -63,7 +63,8 @@ class SnapshotServiceTest
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
 
-        val expectedJsonLines = readResource("expected-snapshot.txt").split("\n")
+        val expectedJsonLines =
+          readResource("expected-snapshot.txt").split("\n")
         val actualLines = contents.split("\n")
 
         actualLines.zip(expectedJsonLines).foreach {
@@ -94,22 +95,29 @@ class SnapshotServiceTest
   it("completes a snapshot generation of an index with more than 10000 items") {
     withFixtures {
       case (snapshotService, worksIndex, bucket) =>
-        case class HasDisplay(display: Json, @JsonKey("type") ontologyType: String)
+        case class HasDisplay(
+          display: Json,
+          @JsonKey("type") ontologyType: String
+        )
 
         val documents = (1 to 10100)
           .map { i =>
             val id = i.toString
-            val doc = HasDisplay(display = Json.fromString(s"document $i"), ontologyType = "Visible")
+            val doc = HasDisplay(
+              display = Json.fromString(s"document $i"),
+              ontologyType = "Visible"
+            )
 
             (id, doc)
           }
 
         elasticClient.execute(
           bulk(
-            documents.map { case (id, doc) =>
-              indexInto(worksIndex)
-                .id(id)
-                .doc(doc.asJson.noSpaces)
+            documents.map {
+              case (id, doc) =>
+                indexInto(worksIndex)
+                  .id(id)
+                  .doc(doc.asJson.noSpaces)
             }
           ).refreshImmediately
         )
@@ -132,7 +140,9 @@ class SnapshotServiceTest
         val s3Etag = objectMetadata.getETag
         val s3Size = objectMetadata.getContentLength
 
-        val expectedContents = documents.map { case (id, _) => s""""document $id"""" }.mkString("\n") + "\n"
+        val expectedContents = documents
+          .map { case (id, _) => s""""document $id"""" }
+          .mkString("\n") + "\n"
 
         contents shouldBe expectedContents
 
