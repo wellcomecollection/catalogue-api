@@ -11,12 +11,6 @@ trait ApiWorksTestBase
     with DisplaySerialisationTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
-//
-//  implicit object IdentifiedWorkIndexable
-//      extends Indexable[Work.Visible[Indexed]] {
-//    override def json(work: Work.Visible[Indexed]): String =
-//      toJson(work).get
-//  }
 
   def worksListResponse(
     ids: Seq[String],

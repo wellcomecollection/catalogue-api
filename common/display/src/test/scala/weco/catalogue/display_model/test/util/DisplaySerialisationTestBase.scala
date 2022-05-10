@@ -47,19 +47,6 @@ trait DisplaySerialisationTestBase {
       Json.fromString(s).noSpaces
   }
 
-  def items(items: List[Item[IdState.Minted]]) =
-    items.map(item).mkString(",")
-
-  private def item(item: Item[IdState.Minted]): String =
-    s"""
-     {
-       ${identifiers(item)}
-       "type": "Item",
-       "title": ${item.title.map(_.toJson)},
-       "locations": [${locations(item.locations)}]
-     }
-    """.tidy
-
   def locations(locations: List[Location]) =
     locations.map(location).mkString(",")
 
@@ -92,7 +79,7 @@ trait DisplaySerialisationTestBase {
        }
      """.tidy
 
-  def accessConditions(conds: List[AccessCondition]) =
+  private def accessConditions(conds: List[AccessCondition]) =
     s"[${conds.map(accessCondition).mkString(",")}]"
 
   private def accessCondition(cond: AccessCondition): String =
@@ -245,9 +232,6 @@ trait DisplaySerialisationTestBase {
   def production(production: List[ProductionEvent[IdState.Minted]]) =
     production.map(productionEvent).mkString(",")
 
-  def availabilities(availabilities: Set[Availability]) =
-    availabilities.map(availability).mkString(",")
-
   def languages(ls: List[Language]): String =
     ls.map(language).mkString(",")
 
@@ -261,15 +245,6 @@ trait DisplaySerialisationTestBase {
 
   def workImageIncludes(images: List[ImageData[IdState.Identified]]) =
     images.map(workImageInclude).mkString(",")
-
-  private def availability(availability: Availability): String =
-    s"""
-       |{
-       |  "id": "${availability.id}",
-       |  "label": "${availability.label}",
-       |  "type": "Availability"
-       |}
-       |""".stripMargin
 
   private def productionEvent(event: ProductionEvent[IdState.Minted]): String =
     s"""
