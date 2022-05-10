@@ -7,7 +7,7 @@ class WorksTest extends ApiWorksTestBase {
         indexTestDocuments(worksIndex, works: _*)
 
         assertJsonResponse(routes, path = s"$rootPath/works") {
-          Status.OK -> newWorksListResponse(visibleWorks)
+          Status.OK -> worksListResponse(visibleWorks)
         }
     }
   }
@@ -161,7 +161,7 @@ class WorksTest extends ApiWorksTestBase {
         }
 
         assertJsonResponse(routes, s"$rootPath/works?query=dodo") {
-          Status.OK -> newWorksListResponse(ids = Seq("work-title-dodo"))
+          Status.OK -> worksListResponse(ids = Seq("work-title-dodo"))
         }
     }
   }
@@ -218,7 +218,7 @@ class WorksTest extends ApiWorksTestBase {
           routes,
           path = s"$rootPath/works?sort=production.dates"
         ) {
-          Status.OK -> newWorksListResponse(
+          Status.OK -> worksListResponse(
             ids = Seq(
               "work-production.1098",
               "work-production.1900",
@@ -244,7 +244,7 @@ class WorksTest extends ApiWorksTestBase {
           routes,
           path = s"$rootPath/works?sort=production.dates&sortOrder=desc"
         ) {
-          Status.OK -> newWorksListResponse(
+          Status.OK -> worksListResponse(
             ids = Seq(
               "work-production.1904",
               "work-production.1900",
