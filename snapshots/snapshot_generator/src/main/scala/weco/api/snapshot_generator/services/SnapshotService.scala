@@ -4,10 +4,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import weco.api.snapshot_generator.compress.GzipCompressor
-import weco.api.snapshot_generator.iterators.{
-  ElasticsearchWorksIterator,
-  WorkToJsonIterator
-}
+import weco.api.snapshot_generator.iterators.ElasticsearchWorksIterator
 import weco.api.snapshot_generator.models.{
   CompletedSnapshotJob,
   SnapshotGeneratorConfig,
@@ -15,7 +12,6 @@ import weco.api.snapshot_generator.models.{
   SnapshotResult
 }
 import weco.api.snapshot_generator.storage.S3Uploader
-import weco.catalogue.display_model.work.DisplayWork
 
 import java.time.Instant
 import scala.util.Try
@@ -36,7 +32,7 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
     var s3Size = 0L
 
     for {
-      visibleWorks <- Try {
+      jsonStrings <- Try {
         new ElasticsearchWorksIterator()(elasticClient)
           .scroll(config)
           .map { work =>
@@ -44,8 +40,6 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
             work
           }
       }
-
-      jsonStrings = WorkToJsonIterator(visibleWorks)
 
       compressedBytes = GzipCompressor(jsonStrings)
         .map { byte =>
@@ -60,7 +54,6 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
         documentCount = workCount,
         startedAt = startedAt,
         finishedAt = Instant.now(),
-        displayModel = DisplayWork.getClass.getCanonicalName,
         s3Etag = uploadResult.getETag,
         s3Size = s3Size,
         s3Location = snapshotJob.s3Location

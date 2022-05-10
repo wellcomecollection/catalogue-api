@@ -42,9 +42,6 @@ class SnapshotServiceTest
       }
     }
 
-  val expectedDisplayWorkClassName =
-    "weco.catalogue.display_model.work.DisplayWork$"
-
   it("completes a snapshot generation") {
     withFixtures {
       case (snapshotService, worksIndex, bucket) =>
@@ -81,7 +78,6 @@ class SnapshotServiceTest
 
         result.snapshotResult.indexName shouldBe worksIndex.name
         result.snapshotResult.documentCount shouldBe visibleWorks.length
-        result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
         result.snapshotResult.startedAt shouldBe >=(
           result.snapshotJob.requestedAt
@@ -132,7 +128,6 @@ class SnapshotServiceTest
 
         result.snapshotResult.indexName shouldBe worksIndex.name
         result.snapshotResult.documentCount shouldBe works.length
-        result.snapshotResult.displayModel shouldBe expectedDisplayWorkClassName
 
         result.snapshotResult.startedAt shouldBe >=(
           result.snapshotJob.requestedAt
