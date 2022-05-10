@@ -39,22 +39,32 @@ def get_used_characters(json_object):
         raise ValueError(f"Unrecognised type: {type(json_object)}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     seen_characters = set()
 
-    with open('character_analysis.csv', 'w') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=['character', 'Unicode name', 'Unicode category', 'example work'])
+    with open("character_analysis.csv", "w") as outfile:
+        writer = csv.DictWriter(
+            outfile,
+            fieldnames=[
+                "character",
+                "Unicode name",
+                "Unicode category",
+                "example work",
+            ],
+        )
         writer.writeheader()
 
         for w in get_works():
-            work_id = w['id']
+            work_id = w["id"]
             characters = get_used_characters(w)
 
             for char in characters:
                 if char not in seen_characters:
-                    writer.writerow({
-                        'character': char,
-                        'Unicode name': unicodedata.name(char),
-                        'Unicode category': unicodedata.category(char),
-                        'example work': work_id
-                    })
+                    writer.writerow(
+                        {
+                            "character": char,
+                            "Unicode name": unicodedata.name(char),
+                            "Unicode category": unicodedata.category(char),
+                            "example work": work_id,
+                        }
+                    )
