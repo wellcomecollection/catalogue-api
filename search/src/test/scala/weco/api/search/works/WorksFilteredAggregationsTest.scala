@@ -3,7 +3,8 @@ package weco.api.search.works
 import weco.api.search.models.request.WorksIncludes
 
 class WorksFilteredAggregationsTest extends ApiWorksTestBase {
-  val aggregatedWorks = (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
+  val aggregatedWorks =
+    (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 
   val worksBooks =
     Seq(0, 4, 5, 7)
@@ -166,7 +167,8 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
             // We expect to see the workType buckets for worktype i/Audio, because that
             // has the language che/Chechen, and for a/Books, because a filter for it is
             // present
-            path = s"$rootPath/works?workType=a&languages=che&aggregations=workType"
+            path =
+              s"$rootPath/works?workType=a&languages=che&aggregations=workType"
           ) {
             Status.OK -> s"""
             {
