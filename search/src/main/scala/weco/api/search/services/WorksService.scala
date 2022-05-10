@@ -9,7 +9,12 @@ import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.request.WorksIncludes
-import weco.api.search.models.{AggregationBucket, ElasticAggregations, WorkAggregations, WorkSearchOptions}
+import weco.api.search.models.{
+  AggregationBucket,
+  ElasticAggregations,
+  WorkAggregations,
+  WorkSearchOptions
+}
 import weco.catalogue.internal_model.Implicits
 
 import scala.concurrent.{ExecutionContext, Future}

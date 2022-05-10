@@ -17,7 +17,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 trait TestDocumentFixtures
-  extends ElasticsearchFixtures
+    extends ElasticsearchFixtures
     with LocalResources
     with JsonHelpers {
   this: Suite =>
@@ -70,9 +70,9 @@ trait TestDocumentFixtures
     }
 
   def indexTestDocuments(
-                          index: Index,
-                          documentIds: String*
-                        ): Unit = {
+    index: Index,
+    documentIds: String*
+  ): Unit = {
     val documents = getTestDocuments(documentIds)
 
     val result = elasticClient.execute(
@@ -81,7 +81,7 @@ trait TestDocumentFixtures
           indexInto(index.name)
             .id(fixture.id)
             .doc(toJson(fixture.work).get)
-          //            .doc(fixture.document.noSpaces)
+        //            .doc(fixture.document.noSpaces)
         }
       ).refreshImmediately
     )
