@@ -1,29 +1,27 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.GenreGenerators
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work._
+import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.json.CatalogueJsonUtil
+import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
+class ImagesAggregationsTest
+    extends ApiImagesTestBase
+    with TestDocumentFixtures
+    with CatalogueJsonUtil {
   it("aggregates by license") {
-    val ccByImages = (1 to 5).map { _ =>
-      createLicensedImage(License.CCBY)
-    }
-
-    val pdmImages = (1 to 2).map { _ =>
-      createLicensedImage(License.PDM)
-    }
-
-    val images = ccByImages ++ pdmImages
+    val images = (0 to 6).map(i => s"images.different-licenses.$i")
+    val displayImages = images
+      .map(getDisplayImage)
+      .sortBy(w => getKey(w, "id").get.asString)
+      .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?aggregations=locations.license"
+          path = s"$rootPath/images?aggregations=locations.license"
         ) {
           Status.OK -> s"""
             {
@@ -34,23 +32,30 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data" : ${license(License.CCBY)},
-                      "count" : ${ccByImages.size},
+                      "data" : {
+                        "id" : "cc-by",
+                        "label" : "Attribution 4.0 International (CC BY 4.0)",
+                        "type" : "License",
+                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                      },
+                      "count" : 5,
                       "type" : "AggregationBucket"
                     },
                     {
-                      "data" : ${license(License.PDM)},
-                      "count" : ${pdmImages.size},
+                      "data" : {
+                        "id" : "pdm",
+                        "label" : "Public Domain Mark",
+                        "type" : "License",
+                        "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                      },
+                      "count" : 2,
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
               "results": [
-                ${images
-            .sortBy { _.state.canonicalId }
-            .map(imageResponse)
-            .mkString(",")}
+                ${displayImages.mkString(",")}
               ]
             }
           """
@@ -59,44 +64,20 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
   }
 
   it("aggregates by the canonical source's contributor agent labels") {
-    val carrots = Agent("carrots")
-    val parrots = Organisation("parrots")
-    val parrotsMeeting = Meeting("parrots")
-    val rats = Person("rats")
-
-    val images = List(
-      createImageData.toIndexedImageWith(
-        parentWork = identifiedWork()
-          .contributors(List(carrots).map(Contributor(_, roles = Nil)))
-      ),
-      createImageData.toIndexedImageWith(
-        parentWork = identifiedWork().contributors(
-          List(carrots, parrots).map(Contributor(_, roles = Nil))
-        ),
-        redirectedWork = Some(
-          identifiedWork().contributors(
-            List(parrots, parrotsMeeting).map(Contributor(_, roles = Nil))
-          )
-        )
-      ),
-      createImageData.toIndexedImageWith(
-        parentWork = identifiedWork().contributors(
-          List(carrots, parrotsMeeting).map(Contributor(_, roles = Nil))
-        ),
-        redirectedWork = Some(
-          identifiedWork()
-            .contributors(List(rats).map(Contributor(_, roles = Nil)))
-        )
-      )
-    )
+    val images = (0 to 2).map(i => s"images.contributors.$i")
+    val displayImages = images
+      .map(getDisplayImage)
+      .sortBy(w => getKey(w, "id").get.asString)
+      .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?aggregations=source.contributors.agent.label"
+          path =
+            s"$rootPath/images?aggregations=source.contributors.agent.label"
         ) {
           Status.OK -> s"""
             {
@@ -107,17 +88,26 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data": ${abstractAgent(carrots)},
+                      "data": {
+                        "label" : "carrots",
+                        "type" : "Agent"
+                      },
                       "count": 3,
                       "type": "AggregationBucket"
                     },
                     {
-                      "data": ${abstractAgent(parrotsMeeting)},
+                      "data": {
+                        "label" : "parrots",
+                        "type" : "Meeting"
+                      },
                       "count": 1,
                       "type": "AggregationBucket"
                     },
                     {
-                      "data": ${abstractAgent(parrots)},
+                      "data": {
+                        "label" : "parrots",
+                        "type" : "Organisation"
+                      },
                       "count": 1,
                       "type": "AggregationBucket"
                     }
@@ -125,10 +115,7 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                 }
               },
               "results": [
-                ${images
-            .sortBy { _.state.canonicalId }
-            .map(imageResponse)
-            .mkString(",")}
+                ${displayImages.mkString(",")}
               ]
             }
           """
@@ -137,39 +124,19 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
   }
 
   it("aggregates by the canonical source's genres") {
-    val carrotCounselling =
-      createGenreWith("Carrot counselling", concepts = Nil)
-    val dodoDivination = createGenreWith("Dodo divination", concepts = Nil)
-    val emuEntrepreneurship =
-      createGenreWith("Emu entrepreneurship", concepts = Nil)
-    val falconFinances = createGenreWith("Falcon finances", concepts = Nil)
-
-    val carrotCounsellingImage = createImageData.toIndexedImageWith(
-      parentWork = identifiedWork().genres(List(carrotCounselling))
-    )
-    val redirectedDodoDivinationImage = createImageData.toIndexedImageWith(
-      redirectedWork = Some(identifiedWork().genres(List(dodoDivination)))
-    )
-    val carrotEmuFalconImage =
-      createImageData.toIndexedImageWith(
-        parentWork = identifiedWork().genres(
-          List(emuEntrepreneurship, falconFinances, carrotCounselling)
-        )
-      )
-
-    val images = List(
-      carrotCounsellingImage,
-      redirectedDodoDivinationImage,
-      carrotEmuFalconImage
-    )
+    val images = (0 to 2).map(i => s"images.genres.$i")
+    val displayImages = images
+      .map(getDisplayImage)
+      .sortBy(w => getKey(w, "id").get.asString)
+      .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?aggregations=source.genres.label"
+          path = s"$rootPath/images?aggregations=source.genres.label"
         ) {
           Status.OK -> s"""
             {
@@ -180,17 +147,32 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data": ${genre(carrotCounselling)},
+                      "data": {
+                        "concepts" : [
+                        ],
+                        "label" : "Carrot counselling",
+                        "type" : "Genre"
+                      },
                       "count": 2,
                       "type": "AggregationBucket"
                     },
                     {
-                      "data": ${genre(emuEntrepreneurship)},
+                      "data": {
+                        "concepts" : [
+                        ],
+                        "label" : "Emu entrepreneurship",
+                        "type" : "Genre"
+                      },
                       "count": 1,
                       "type": "AggregationBucket"
                     },
                     {
-                      "data": ${genre(falconFinances)},
+                      "data": {
+                        "concepts" : [
+                        ],
+                        "label" : "Falcon finances",
+                        "type" : "Genre"
+                      },
                       "count": 1,
                       "type": "AggregationBucket"
                     }
@@ -198,10 +180,7 @@ class ImagesAggregationsTest extends ApiImagesTestBase with GenreGenerators {
                 }
               },
               "results": [
-                ${images
-            .sortBy { _.state.canonicalId }
-            .map(imageResponse)
-            .mkString(",")}
+                ${displayImages.mkString(",")}
               ]
             }
           """
