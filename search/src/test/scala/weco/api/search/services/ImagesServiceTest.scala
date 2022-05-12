@@ -4,7 +4,11 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.{EitherValues, OptionValues}
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
@@ -38,7 +42,8 @@ class ImagesServiceTest
       withLocalImagesIndex { index =>
         indexTestImages(index, "images.everything")
 
-        val expectedImage = IndexedImage(display = getDisplayImage("images.everything"))
+        val expectedImage =
+          IndexedImage(display = getDisplayImage("images.everything"))
 
         val future = imagesService.findById(id = CanonicalId("ggpvgjra"))(index)
         val actualImage = whenReady(future) {
@@ -81,11 +86,16 @@ class ImagesServiceTest
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
 
-        val expectedImages = (1 to 5).map(i =>
-          IndexedImage(display = getDisplayImage(s"images.similar-features-and-palettes.$i"))
+        val expectedImages = (1 to 5).map(
+          i =>
+            IndexedImage(
+              display =
+                getDisplayImage(s"images.similar-features-and-palettes.$i")
+            )
         )
 
-        val future = imagesService.retrieveSimilarImages(index, imageId = "fxlggzx3")
+        val future =
+          imagesService.retrieveSimilarImages(index, imageId = "fxlggzx3")
 
         whenReady(future) {
           _ shouldBe expectedImages
@@ -100,8 +110,11 @@ class ImagesServiceTest
           (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
 
-        val expectedImages = (1 to 5).map(i =>
-          IndexedImage(display = getDisplayImage(s"images.similar-features.$i"))
+        val expectedImages = (1 to 5).map(
+          i =>
+            IndexedImage(
+              display = getDisplayImage(s"images.similar-features.$i")
+            )
         )
 
         val future =
@@ -125,8 +138,11 @@ class ImagesServiceTest
           (0 to 5).map(i => s"images.similar-palettes.$i"): _*
         )
 
-        val expectedImages = (1 to 5).map(i =>
-          IndexedImage(display = getDisplayImage(s"images.similar-palettes.$i"))
+        val expectedImages = (1 to 5).map(
+          i =>
+            IndexedImage(
+              display = getDisplayImage(s"images.similar-palettes.$i")
+            )
         )
 
         val future =
@@ -175,7 +191,9 @@ class ImagesServiceTest
       withLocalImagesIndex { index =>
         indexTestImages(index, "images.everything")
 
-        whenReady(imagesService.retrieveSimilarImages(index, imageId = "ggpvgjra")) {
+        whenReady(
+          imagesService.retrieveSimilarImages(index, imageId = "ggpvgjra")
+        ) {
           _ shouldBe empty
         }
       }

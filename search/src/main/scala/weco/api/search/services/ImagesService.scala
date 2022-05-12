@@ -17,7 +17,12 @@ class ImagesService(
 )(
   implicit
   val ec: ExecutionContext
-) extends SearchService[IndexedImage, IndexedImage, ImageAggregations, ImageSearchOptions] {
+) extends SearchService[
+      IndexedImage,
+      IndexedImage,
+      ImageAggregations,
+      ImageSearchOptions
+    ] {
 
   private val nVisuallySimilarImages = 5
 

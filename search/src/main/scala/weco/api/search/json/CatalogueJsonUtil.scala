@@ -79,7 +79,8 @@ trait CatalogueJsonUtil {
         json
 
     def withIncludes(includes: ImageIncludes): Json =
-      json.removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
+      json
+        .removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
         .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
         .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
   }
