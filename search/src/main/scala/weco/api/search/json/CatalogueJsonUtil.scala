@@ -2,11 +2,10 @@ package weco.api.search.json
 
 import io.circe.Json
 import io.circe.syntax._
+import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.request._
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.display_model.image.DisplayImage
 import weco.catalogue.display_model.work.DisplayWork
-import weco.catalogue.internal_model.image.{Image, ImageState}
 import weco.catalogue.internal_model.work.{Work, WorkState}
 
 trait CatalogueJsonUtil {
@@ -37,37 +36,52 @@ trait CatalogueJsonUtil {
         .withIncludes(includes)
   }
 
-  implicit class ImageOps(im: Image[ImageState.Indexed]) {
-    def asJson(includes: MultipleImagesIncludes): Json =
-      DisplayImage(im).asJson
-        .withIncludes(includes)
-
+  implicit class ImageJsonOps(json: Json) {
     def asJson(
       includes: SingleImageIncludes,
-      visuallySimilar: Option[Seq[Image[ImageState.Indexed]]],
-      withSimilarColors: Option[Seq[Image[ImageState.Indexed]]],
-      withSimilarFeatures: Option[Seq[Image[ImageState.Indexed]]]
-    ): Json = {
-      val baseJson =
-        DisplayImage(im).asJson
-          .addImagesIf(
-            includes.visuallySimilar,
-            key = "visuallySimilar",
-            value = visuallySimilar
-          )
-          .addImagesIf(
-            includes.withSimilarColors,
-            key = "withSimilarColors",
-            value = withSimilarColors
-          )
-          .addImagesIf(
-            includes.withSimilarFeatures,
-            key = "withSimilarFeatures",
-            value = withSimilarFeatures
-          )
+      visuallySimilar: Option[Seq[IndexedImage]],
+      withSimilarColors: Option[Seq[IndexedImage]],
+      withSimilarFeatures: Option[Seq[IndexedImage]]
+    ): Json =
+      json
+        .addImagesIf(
+          includes.visuallySimilar,
+          key = "visuallySimilar",
+          value = visuallySimilar
+        )
+        .addImagesIf(
+          includes.withSimilarColors,
+          key = "withSimilarColors",
+          value = withSimilarColors
+        )
+        .addImagesIf(
+          includes.withSimilarFeatures,
+          key = "withSimilarFeatures",
+          value = withSimilarFeatures
+        )
+        .withIncludes(includes)
+        .deepDropNullValues
 
-      baseJson.withIncludes(includes)
-    }
+    def addImagesIf[V](
+      b: Boolean,
+      key: String,
+      value: Option[Seq[IndexedImage]]
+    ): Json =
+      if (b)
+        json.mapObject(
+          jsonObj =>
+            value match {
+              case Some(v) => jsonObj.add(key, v.map(_.display).asJson)
+              case None    => jsonObj
+            }
+        )
+      else
+        json
+
+    def withIncludes(includes: ImageIncludes): Json =
+      json.removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
+        .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
+        .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
   }
 
   implicit class ImplicitCatalogueJsonOps(j: Json) {
@@ -76,26 +90,5 @@ trait CatalogueJsonUtil {
 
     def removeKeyIf(b: Boolean, key: String): Json =
       if (b) j.removeKey(key) else j
-
-    def addImagesIf[V](
-      b: Boolean,
-      key: String,
-      value: Option[Seq[Image[ImageState.Indexed]]]
-    ): Json =
-      if (b)
-        j.mapObject(
-          jsonObj =>
-            value match {
-              case Some(v) => jsonObj.add(key, v.map(DisplayImage(_)).asJson)
-              case None    => jsonObj
-            }
-        )
-      else
-        j
-
-    def withIncludes(includes: ImageIncludes): Json =
-      j.removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
-        .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
-        .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
   }
 }

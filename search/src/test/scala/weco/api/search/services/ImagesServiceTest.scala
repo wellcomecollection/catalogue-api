@@ -82,7 +82,7 @@ class ImagesServiceTest
 
         whenReady(
           imagesService
-            .retrieveSimilarImages(index, images.head)
+            .retrieveSimilarImages(index, images.head.id)
         ) { results =>
           results should not be empty
           results should contain theSameElementsAs images.tail
@@ -100,7 +100,7 @@ class ImagesServiceTest
           imagesService
             .retrieveSimilarImages(
               index,
-              images.head,
+              images.head.id,
               similarityMetric = SimilarityMetric.Features
             )
         ) { results =>
@@ -120,7 +120,7 @@ class ImagesServiceTest
           imagesService
             .retrieveSimilarImages(
               index,
-              images.head,
+              images.head.id,
               similarityMetric = SimilarityMetric.Colors
             )
         ) { results =>
@@ -139,13 +139,13 @@ class ImagesServiceTest
         val colorResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
-            images.head,
+            images.head.id,
             similarityMetric = SimilarityMetric.Colors
           )
         val blendedResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
-            images.head,
+            images.head.id,
             similarityMetric = SimilarityMetric.Blended
           )
         whenReady(colorResultsFuture) { colorResults =>
@@ -162,7 +162,7 @@ class ImagesServiceTest
         val image = createImageData.toIndexedImage
         insertImagesIntoElasticsearch(index, image)
 
-        whenReady(imagesService.retrieveSimilarImages(index, image)) {
+        whenReady(imagesService.retrieveSimilarImages(index, image.id)) {
           _ shouldBe empty
         }
       }
@@ -173,7 +173,7 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            createImageData.toIndexedImage
+            createImageData.toIndexedImage.id
           )
       ) {
         _ shouldBe empty
