@@ -13,7 +13,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images?include=source.contributors"
           ) {
-            Status.OK -> readResource("expected_responses/include-list-contributors.json")
+            Status.OK -> readResource(
+              "expected_responses/include-list-contributors.json"
+            )
           }
       }
     }
@@ -29,7 +31,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images/ggpvgjra?include=source.contributors"
           ) {
-            Status.OK -> readResource("expected_responses/include-image-contributors.json")
+            Status.OK -> readResource(
+              "expected_responses/include-image-contributors.json"
+            )
           }
       }
     }
@@ -45,7 +49,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images?include=source.languages"
           ) {
-            Status.OK -> readResource("expected_responses/include-list-languages.json")
+            Status.OK -> readResource(
+              "expected_responses/include-list-languages.json"
+            )
           }
       }
     }
@@ -61,7 +67,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images/ggpvgjra?include=source.languages"
           ) {
-            Status.OK -> readResource("expected_responses/include-image-languages.json")
+            Status.OK -> readResource(
+              "expected_responses/include-image-languages.json"
+            )
           }
       }
     }
@@ -74,7 +82,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
           indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(routes, s"$rootPath/images?include=source.genres") {
-            Status.OK -> readResource("expected_responses/include-list-genres.json")
+            Status.OK -> readResource(
+              "expected_responses/include-list-genres.json"
+            )
           }
       }
     }
@@ -90,7 +100,9 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images/ggpvgjra?include=source.genres"
           ) {
-            Status.OK -> readResource("expected_responses/include-image-genres.json")
+            Status.OK -> readResource(
+              "expected_responses/include-image-genres.json"
+            )
           }
       }
     }
