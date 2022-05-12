@@ -7,14 +7,17 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestImages(
-          imagesIndex, (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
 
         assertJsonResponse(
           routes,
           path = s"$rootPath/images/fxlggzx3?include=visuallySimilar"
         ) {
-          Status.OK -> readResource("expected_responses/visually-similar-features-and-palettes.json")
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-features-and-palettes.json"
+          )
         }
     }
   }
@@ -23,30 +26,38 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestImages(
-          imagesIndex, (0 to 5).map(i => s"images.similar-features.$i"): _*
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
 
         assertJsonResponse(
           routes,
           path = s"$rootPath/images/1bxltcv6?include=withSimilarFeatures"
         ) {
-          Status.OK -> readResource("expected_responses/visually-similar-features.json")
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-features.json"
+          )
         }
     }
   }
 
-  it("includes images with similar color palettes with ?include=withSimilarColors") {
+  it(
+    "includes images with similar color palettes with ?include=withSimilarColors"
+  ) {
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestImages(
-          imagesIndex, (0 to 5).map(i => s"images.similar-palettes.$i"): _*
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-palettes.$i"): _*
         )
 
         assertJsonResponse(
           routes,
           path = s"$rootPath/images/tsmrwj5f?include=withSimilarColors"
         ) {
-          Status.OK -> readResource("expected_responses/visually-similar-palettes.json")
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-palettes.json"
+          )
         }
     }
   }
@@ -55,7 +66,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestImages(
-          imagesIndex, (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
 
         assertJsonResponse(
