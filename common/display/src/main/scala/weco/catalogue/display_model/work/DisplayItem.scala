@@ -15,12 +15,10 @@ case class DisplayItem(
   title: Option[String] = None,
   note: Option[String] = None,
   locations: List[DisplayLocation] = List(),
-  status: Option[DisplayItemStatus] = None,
   @JsonKey("type") ontologyType: String = "Item"
 )
 
 object DisplayItem extends GetIdentifiers {
-
   def apply(item: Item[IdState.Minted]): DisplayItem =
     item match {
       case Item(id, title, note, locations) =>
@@ -29,8 +27,7 @@ object DisplayItem extends GetIdentifiers {
           identifiers = getIdentifiers(id),
           title = title,
           note = note,
-          locations = locations.map(DisplayLocation(_)),
-          status = None
+          locations = locations.map(DisplayLocation(_))
         )
     }
 }
