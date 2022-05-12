@@ -1,0 +1,67 @@
+{
+  "id": "eccsqg7j",
+  "title": "title-WK4LB1Ndv6",
+  "alternativeTitles": [],
+  "identifiers": [
+    {
+      "identifierType": {
+        "id": "calm-record-id",
+        "label": "Calm RecordIdentifier",
+        "type": "IdentifierType"
+      },
+      "value": "5WKosCzlNt",
+      "type": "Identifier"
+    }
+  ],
+  "items": [
+    {
+      "id": "otdlfo0u",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "value": "i10240834",
+          "type": "Identifier"
+        }
+      ],
+      "locations": [
+        {
+          "locationType": {
+            "id": "closed-stores",
+            "label": "Closed stores",
+            "type": "LocationType"
+          },
+          "label": "locationLabel",
+          "accessConditions": [
+            {
+              "method": {
+                "id": "not-requestable",
+                "label": "Not requestable",
+                "type": "AccessMethod"
+              },
+              "status": {
+                "id": "temporarily-unavailable",
+                "label": "Temporarily unavailable",
+                "type": "AccessStatus"
+              },
+              "type": "AccessCondition"
+            }
+          ],
+          "type": "PhysicalLocation"
+        }
+      ],
+      "type": "Item"
+    }
+  ],
+  "availabilities": [
+    {
+      "id": "closed-stores",
+      "label": "Closed stores",
+      "type": "Availability"
+    }
+  ],
+  "type": "Work"
+}
