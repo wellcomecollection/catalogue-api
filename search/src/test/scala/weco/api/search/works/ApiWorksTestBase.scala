@@ -4,7 +4,6 @@ import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.request.WorksIncludes
-import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 
 trait ApiWorksTestBase
     extends ApiTestBase
