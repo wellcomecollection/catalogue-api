@@ -5,7 +5,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by license") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 6).map(i => s"images.different-licenses.$i"): _*
           )
@@ -14,7 +14,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images?locations.license=cc-by"
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = (0 to 4).map(i => s"images.different-licenses.$i")
             )
           }
@@ -26,7 +26,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by contributors from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -37,7 +37,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             path =
               s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq("images.examples.contributor-filter-tests.0")
             )
           }
@@ -47,7 +47,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("does not filter by contributors from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -65,7 +65,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple contributors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -76,7 +76,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             path =
               s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               List(
                 "images.examples.contributor-filter-tests.0",
                 "images.examples.contributor-filter-tests.1"
@@ -91,7 +91,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by genres from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -100,7 +100,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             routes,
             path = s"$rootPath/images?source.genres.label=Carrot%20counselling"
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq("images.examples.genre-filter-tests.0")
             )
           }
@@ -110,7 +110,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("does not filter by genres from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -127,7 +127,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple genres") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -137,7 +137,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             path =
               s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq(
                 "images.examples.genre-filter-tests.0",
                 "images.examples.genre-filter-tests.2"
@@ -152,14 +152,14 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by color") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.blue"
           )
 
           assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq("images.examples.color-filter-tests.red")
             )
           }
@@ -169,7 +169,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple colors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.blue"
@@ -184,7 +184,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             routes,
             path = f"$rootPath/images?color=ff0000,0000ff"
           ) {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq(
                 "images.examples.color-filter-tests.red",
                 "images.examples.color-filter-tests.blue"
@@ -197,7 +197,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("scores by number of color bin matches") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(
+          indexTestDocuments(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.even-less-red",
@@ -206,7 +206,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
           )
 
           assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
-            Status.OK -> newImagesListResponse(
+            Status.OK -> imagesListResponse(
               ids = Seq(
                 "images.examples.color-filter-tests.red",
                 "images.examples.color-filter-tests.slightly-less-red",

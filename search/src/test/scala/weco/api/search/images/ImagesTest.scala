@@ -6,13 +6,13 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns a list of images") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
 
         assertJsonResponse(routes, path = s"$rootPath/images") {
-          Status.OK -> newImagesListResponse(
+          Status.OK -> imagesListResponse(
             ids = (0 to 6).map(i => s"images.different-licenses.$i")
           )
         }
@@ -22,7 +22,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns a single image when requested with ID") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
@@ -42,7 +42,7 @@ class ImagesTest extends ApiImagesTestBase {
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           workImages :+ "images.examples.linked-with-another-work": _*
         )
@@ -51,19 +51,19 @@ class ImagesTest extends ApiImagesTestBase {
           routes,
           path = s"$rootPath/images?query=cg1whgjz"
         ) {
-          Status.OK -> newImagesListResponse(workImages)
+          Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
           path = s"$rootPath/images?query=ihnjwgMtGL"
         ) {
-          Status.OK -> newImagesListResponse(workImages)
+          Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
           path = s"$rootPath/images?query=lSY3iydrQH"
         ) {
-          Status.OK -> newImagesListResponse(workImages)
+          Status.OK -> imagesListResponse(workImages)
         }
     }
   }
@@ -71,7 +71,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns matching results when using work data") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           "images.examples.bread-baguette",
           "images.examples.bread-focaccia",
@@ -79,7 +79,7 @@ class ImagesTest extends ApiImagesTestBase {
         )
 
         assertJsonResponse(routes, path = s"$rootPath/images?query=bread") {
-          Status.OK -> newImagesListResponse(
+          Status.OK -> imagesListResponse(
             ids = List(
               "images.examples.bread-baguette",
               "images.examples.bread-focaccia",
@@ -89,7 +89,7 @@ class ImagesTest extends ApiImagesTestBase {
           )
         }
         assertJsonResponse(routes, path = s"$rootPath/images?query=focaccia") {
-          Status.OK -> newImagesListResponse(
+          Status.OK -> imagesListResponse(
             ids = List("images.examples.bread-focaccia")
           )
         }
@@ -99,7 +99,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns matching results when using workdata from the redirected work") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           "images.examples.bread-baguette",
           "images.examples.bread-focaccia",
@@ -107,7 +107,7 @@ class ImagesTest extends ApiImagesTestBase {
         )
 
         assertJsonResponse(routes, s"$rootPath/images?query=bread") {
-          Status.OK -> newImagesListResponse(
+          Status.OK -> imagesListResponse(
             ids = List(
               "images.examples.bread-schiacciata",
               "images.examples.bread-baguette",
@@ -118,7 +118,7 @@ class ImagesTest extends ApiImagesTestBase {
         }
 
         assertJsonResponse(routes, s"$rootPath/images?query=schiacciata") {
-          Status.OK -> newImagesListResponse(
+          Status.OK -> imagesListResponse(
             ids = List("images.examples.bread-schiacciata")
           )
         }

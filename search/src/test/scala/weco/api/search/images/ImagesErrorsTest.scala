@@ -41,7 +41,7 @@ class ImagesErrorsTest
       "path",
       s"$rootPath/images",
       s"$rootPath/images?query=fish",
-      s"$rootPath/images/$createCanonicalId"
+      s"$rootPath/images/aj0amjkh"
     )
 
     withRouter(elasticConfig) { routes =>

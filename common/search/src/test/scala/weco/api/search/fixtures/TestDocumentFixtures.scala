@@ -68,15 +68,7 @@ trait TestDocumentFixtures
       }
     }
 
-  // TODO: These methods will be combined into one, but I'm leaving them separate to
-  // reduce the size of the diff on the PR that changes the API behaviour.
-  def indexTestImages(
-    index: Index,
-    documentIds: String*
-  ): Unit =
-    indexTestWorks(index, documentIds: _*)
-
-  def indexTestWorks(
+  def indexTestDocuments(
     index: Index,
     documentIds: String*
   ): Unit = {

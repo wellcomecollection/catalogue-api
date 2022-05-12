@@ -7,7 +7,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
@@ -25,7 +25,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
@@ -43,7 +43,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
@@ -61,7 +61,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
@@ -79,7 +79,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(routes, s"$rootPath/images?include=source.genres") {
             Status.OK -> readResource(
@@ -94,7 +94,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestImages(imagesIndex, "images.everything")
+          indexTestDocuments(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,

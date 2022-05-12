@@ -20,19 +20,19 @@ class QueryParamsTest extends AnyFunSpec with Matchers {
     def decode(str: String) =
       decoder.decodeJson(Json.fromString(str))
 
-    it("should decode includes") {
+    it("decodes includes") {
       decode("a,b") shouldBe Right((List(A, B), Nil))
     }
 
-    it("should decode excludes") {
+    it("decodes excludes") {
       decode("!a,!b") shouldBe Right((Nil, List(A, B)))
     }
 
-    it("should decode and mixture of includes and excludes") {
+    it("decodes a mixture of includes and excludes") {
       decode("a,!b") shouldBe Right((List(A), List(B)))
     }
 
-    it("should fail decoding when unrecognised values") {
+    it("fails decoding when unrecognised values") {
       val result = decode("b,c,!d")
       result shouldBe a[Left[_, _]]
       result.left.get.message shouldBe

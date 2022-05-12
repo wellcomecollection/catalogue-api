@@ -23,7 +23,7 @@ class WorksQueryTest
   describe("Free text query functionality") {
     it("searches the canonicalId") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -35,7 +35,7 @@ class WorksQueryTest
 
     it("searches the sourceIdentifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -47,7 +47,7 @@ class WorksQueryTest
 
     it("searches the otherIdentifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -59,7 +59,7 @@ class WorksQueryTest
 
     it("searches the items.canonicalId as keyword") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -71,7 +71,7 @@ class WorksQueryTest
 
     it("searches the items.sourceIdentifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -86,7 +86,7 @@ class WorksQueryTest
 
     it("searches the items.otherIdentifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksWithItemIdentifiers: _*)
+        indexTestDocuments(index, worksWithItemIdentifiers: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -98,7 +98,7 @@ class WorksQueryTest
 
     it("searches the images.canonicalId as keyword") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -110,7 +110,7 @@ class WorksQueryTest
 
     it("searches the images.sourceIdentifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -122,7 +122,7 @@ class WorksQueryTest
 
     it("matches when searching for an ID") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, visibleWorks: _*)
+        indexTestDocuments(index, visibleWorks: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -134,7 +134,7 @@ class WorksQueryTest
 
     it("doesn't match on partial IDs") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -152,7 +152,7 @@ class WorksQueryTest
 
     it("matches IDs case insensitively") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -164,7 +164,7 @@ class WorksQueryTest
 
     it("matches multiple IDs") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -176,7 +176,7 @@ class WorksQueryTest
 
     it("doesn't match partially matching source identifiers") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -194,7 +194,7 @@ class WorksQueryTest
 
     it("searches for contributors") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -206,7 +206,7 @@ class WorksQueryTest
 
     it("searches genre labels") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -218,7 +218,7 @@ class WorksQueryTest
 
     it("searches subject labels") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, worksEverything: _*)
+        indexTestDocuments(index, worksEverything: _*)
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -230,7 +230,7 @@ class WorksQueryTest
 
     it("searches lettering") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, "work-title-dodo", "work-title-mouse")
+        indexTestDocuments(index, "work-title-dodo", "work-title-mouse")
 
         assertResultsMatchForAllowedQueryTypes(
           index,
@@ -242,7 +242,7 @@ class WorksQueryTest
 
     it("searches for collection in collectionPath.path") {
       withLocalWorksIndex { index =>
-        indexTestWorks(
+        indexTestDocuments(
           index,
           "works.collection-path.NUFFINK",
           "works.collection-path.PPCRI"
@@ -258,7 +258,7 @@ class WorksQueryTest
 
     it("searches for collection in collectionPath.label") {
       withLocalWorksIndex { index =>
-        indexTestWorks(
+        indexTestDocuments(
           index,
           "works.collection-path.NUFFINK",
           "works.collection-path.PPCRI"

@@ -1,9 +1,9 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.{EitherValues, OptionValues}
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,
@@ -12,7 +12,6 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
 
@@ -23,8 +22,6 @@ class ImagesServiceTest
     with ScalaFutures
     with IndexFixtures
     with EitherValues
-    with OptionValues
-    with IdentifiersGenerators
     with TestDocumentFixtures {
 
   val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -40,7 +37,7 @@ class ImagesServiceTest
   describe("findById") {
     it("fetches an Image by ID") {
       withLocalImagesIndex { index =>
-        indexTestImages(index, "images.everything")
+        indexTestDocuments(index, "images.everything")
 
         val expectedImage =
           IndexedImage(display = getDisplayImage("images.everything"))
@@ -56,7 +53,7 @@ class ImagesServiceTest
 
     it("returns a DocumentNotFoundError if no image can be found") {
       withLocalImagesIndex { index =>
-        val id = createCanonicalId
+        val id = CanonicalId("nopenope")
         val future = imagesService.findById(id)(index)
 
         whenReady(future) {
@@ -67,7 +64,7 @@ class ImagesServiceTest
 
     it("returns an ElasticsearchError if Elasticsearch returns an error") {
       val index = createIndex
-      val future = imagesService.findById(createCanonicalId)(index)
+      val future = imagesService.findById(CanonicalId("nopenope"))(index)
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]
@@ -81,7 +78,7 @@ class ImagesServiceTest
   describe("retrieveSimilarImages") {
     it("gets images using a blended similarity metric by default") {
       withLocalImagesIndex { index =>
-        indexTestImages(
+        indexTestDocuments(
           index,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
@@ -105,7 +102,7 @@ class ImagesServiceTest
 
     it("gets images with similar features") {
       withLocalImagesIndex { index =>
-        indexTestImages(
+        indexTestDocuments(
           index,
           (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
@@ -133,7 +130,7 @@ class ImagesServiceTest
 
     it("gets images with similar color palettes") {
       withLocalImagesIndex { index =>
-        indexTestImages(
+        indexTestDocuments(
           index,
           (0 to 5).map(i => s"images.similar-palettes.$i"): _*
         )
@@ -161,7 +158,7 @@ class ImagesServiceTest
 
     it("does not blend similarity metrics when specific ones are requested") {
       withLocalImagesIndex { index =>
-        indexTestImages(
+        indexTestDocuments(
           index,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
@@ -189,7 +186,7 @@ class ImagesServiceTest
 
     it("returns Nil when no visually similar images can be found") {
       withLocalImagesIndex { index =>
-        indexTestImages(index, "images.everything")
+        indexTestDocuments(index, "images.everything")
 
         whenReady(
           imagesService.retrieveSimilarImages(index, imageId = "ggpvgjra")
@@ -204,7 +201,7 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            imageId = createCanonicalId.underlying
+            imageId = "nopenope"
           )
 
       whenReady(future) {
