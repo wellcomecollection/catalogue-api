@@ -64,7 +64,9 @@ trait ApiImagesTestBase
     ids: Seq[String],
     strictOrdering: Boolean = false
   ): String = {
-    val works = ids.map { getDisplayImage }.map { _.withIncludes(SingleImageIncludes.none) }
+    val works = ids.map { getDisplayImage }.map {
+      _.withIncludes(SingleImageIncludes.none)
+    }
 
     val sortedWorks = if (strictOrdering) {
       works

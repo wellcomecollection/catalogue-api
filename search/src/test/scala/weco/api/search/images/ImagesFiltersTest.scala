@@ -6,14 +6,17 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+            imagesIndex,
+            (0 to 6).map(i => s"images.different-licenses.$i"): _*
           )
 
           assertJsonResponse(
             routes,
             path = s"$rootPath/images?locations.license=cc-by"
           ) {
-            Status.OK -> newImagesListResponse(ids = (0 to 4).map(i => s"images.different-licenses.$i"))
+            Status.OK -> newImagesListResponse(
+              ids = (0 to 4).map(i => s"images.different-licenses.$i")
+            )
           }
       }
     }
@@ -24,14 +27,19 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2)
+              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
             routes,
-            path = s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
+            path =
+              s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
           ) {
-            Status.OK -> newImagesListResponse(ids = Seq("images.examples.contributor-filter-tests.0"))
+            Status.OK -> newImagesListResponse(
+              ids = Seq("images.examples.contributor-filter-tests.0")
+            )
           }
       }
     }
@@ -40,7 +48,9 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2)
+              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
@@ -56,15 +66,21 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2)
+              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
             routes,
-            path = s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
+            path =
+              s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
           ) {
             Status.OK -> newImagesListResponse(
-              List("images.examples.contributor-filter-tests.0", "images.examples.contributor-filter-tests.1")
+              List(
+                "images.examples.contributor-filter-tests.0",
+                "images.examples.contributor-filter-tests.1"
+              )
             )
           }
       }
@@ -76,14 +92,17 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
             routes,
             path = s"$rootPath/images?source.genres.label=Carrot%20counselling"
           ) {
-            Status.OK -> newImagesListResponse(ids = Seq("images.examples.genre-filter-tests.0"))
+            Status.OK -> newImagesListResponse(
+              ids = Seq("images.examples.genre-filter-tests.0")
+            )
           }
       }
     }
@@ -92,7 +111,8 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
@@ -108,15 +128,17 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestImages(
-            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+            imagesIndex,
+            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
+            path =
+              s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
           ) {
-            Status.OK -> newImagesListResponse(ids =
-              Seq(
+            Status.OK -> newImagesListResponse(
+              ids = Seq(
                 "images.examples.genre-filter-tests.0",
                 "images.examples.genre-filter-tests.2"
               )
@@ -163,7 +185,10 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             path = f"$rootPath/images?color=ff0000,0000ff"
           ) {
             Status.OK -> newImagesListResponse(
-              ids = Seq("images.examples.color-filter-tests.red","images.examples.color-filter-tests.blue")
+              ids = Seq(
+                "images.examples.color-filter-tests.red",
+                "images.examples.color-filter-tests.blue"
+              )
             )
           }
       }
@@ -176,13 +201,17 @@ class ImagesFiltersTest extends ApiImagesTestBase {
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.even-less-red",
-          "images.examples.color-filter-tests.slightly-less-red",
+            "images.examples.color-filter-tests.slightly-less-red",
             "images.examples.color-filter-tests.blue"
           )
 
           assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
             Status.OK -> newImagesListResponse(
-              ids = Seq("images.examples.color-filter-tests.red", "images.examples.color-filter-tests.slightly-less-red", "images.examples.color-filter-tests.even-less-red"),
+              ids = Seq(
+                "images.examples.color-filter-tests.red",
+                "images.examples.color-filter-tests.slightly-less-red",
+                "images.examples.color-filter-tests.even-less-red"
+              ),
               strictOrdering = true
             )
           }

@@ -7,7 +7,8 @@ class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestImages(
-          imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+          imagesIndex,
+          (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
 
         val ccByImages = (0 to 4)
@@ -18,7 +19,8 @@ class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?aggregations=locations.license&locations.license=cc-by"
+          path =
+            s"$rootPath/images?aggregations=locations.license&locations.license=cc-by"
         ) {
           Status.OK -> s"""
             {
