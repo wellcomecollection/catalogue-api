@@ -5,9 +5,16 @@ import io.circe.Json
 import io.circe.generic.extras.JsonKey
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models._
-import weco.api.search.models.display.{DisplayImageAggregations, DisplayWorkAggregations}
+import weco.api.search.models.display.{
+  DisplayImageAggregations,
+  DisplayWorkAggregations
+}
 import weco.api.search.models.index.{IndexedImage, IndexedWork}
-import weco.api.search.models.request.{MultipleImagesIncludes, WorkAggregationRequest, WorksIncludes}
+import weco.api.search.models.request.{
+  MultipleImagesIncludes,
+  WorkAggregationRequest,
+  WorksIncludes
+}
 import weco.api.search.rest
 
 case class DisplayResultList[DisplayAggs](

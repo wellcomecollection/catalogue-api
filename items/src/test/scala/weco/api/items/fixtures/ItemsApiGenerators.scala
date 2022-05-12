@@ -2,7 +2,11 @@ package weco.api.items.fixtures
 
 import akka.http.scaladsl.model._
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
-import weco.catalogue.internal_model.locations.{AccessCondition, LocationType, PhysicalLocation}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  LocationType,
+  PhysicalLocation
+}
 import weco.catalogue.internal_model.work.Item
 import weco.catalogue.internal_model.work.generators.ItemsGenerators
 import weco.fixtures.LocalResources
