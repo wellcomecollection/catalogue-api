@@ -56,22 +56,4 @@ case object WorksIncludes {
     )
 
   def none: WorksIncludes = WorksIncludes()
-
-  def all: WorksIncludes =
-    WorksIncludes(
-      identifiers = true,
-      items = true,
-      holdings = true,
-      subjects = true,
-      genres = true,
-      contributors = true,
-      production = true,
-      languages = true,
-      notes = true,
-      images = true,
-      parts = true,
-      partOf = true,
-      precededBy = true,
-      succeededBy = true
-    )
 }
