@@ -1,7 +1,7 @@
 package weco.catalogue.display_model.work
 
 import io.circe.generic.extras.JsonKey
-import weco.catalogue.internal_model.work.Relation
+import weco.catalogue.internal_model.work.{Relation, WorkType}
 
 case class DisplayRelation(
   id: Option[String],
@@ -20,8 +20,15 @@ object DisplayRelation {
       id = relation.id.map { _.underlying },
       title = relation.title,
       referenceNumber = relation.collectionPath.flatMap(_.label),
-      ontologyType = DisplayWork.displayWorkType(relation.workType),
+      ontologyType = displayWorkType(relation.workType),
       totalParts = relation.numChildren,
       totalDescendentParts = relation.numDescendents
     )
+
+  private def displayWorkType(workType: WorkType): String = workType match {
+    case WorkType.Standard   => "Work"
+    case WorkType.Collection => "Collection"
+    case WorkType.Series     => "Series"
+    case WorkType.Section    => "Section"
+  }
 }

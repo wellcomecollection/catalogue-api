@@ -39,11 +39,10 @@ class ElasticsearchServiceTest
     with IndexFixtures
     with EitherValues
     with RandomGenerators
-    with IdentifiersGenerators
     with ElasticsearchFixtures {
 
-  case class ExampleThing(id: CanonicalId, name: String)
-  case class DifferentExampleThing(id: CanonicalId, age: Int)
+  case class ExampleThing(id: String, name: String)
+  case class DifferentExampleThing(id: String, age: Int)
 
   val badElasticClient: ElasticClient = ElasticClientBuilder.create(
     hostname = "noresolve",
@@ -54,7 +53,7 @@ class ElasticsearchServiceTest
   )
 
   def randomThing: ExampleThing = ExampleThing(
-    id = createCanonicalId,
+    id = randomAlphanumeric(),
     name = randomAlphanumeric(10).toLowerCase
   )
 
@@ -82,7 +81,7 @@ class ElasticsearchServiceTest
           thingsToIndex.map { thing =>
             val jsonDoc = toJson(thing).get
             indexInto(index.name)
-              .id(thing.id.underlying)
+              .id(thing.id)
               .doc(jsonDoc)
           }
         ).refreshImmediately

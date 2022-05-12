@@ -75,7 +75,6 @@ object Implicits {
   implicit val _enc08: Encoder[DisplayProductionEvent] = deriveConfiguredEncoder
   implicit val _enc09: Encoder[DisplayItem] = deriveConfiguredEncoder
   implicit val _enc10: Encoder[DisplayNote] = deriveConfiguredEncoder
-  implicit val _enc11: Encoder[DisplayWork] = deriveConfiguredEncoder
   implicit val _enc12: Encoder[DisplayImage] = deriveConfiguredEncoder
 
   implicit val _dec00: Decoder[DisplayAccessCondition] = deriveConfiguredDecoder
@@ -89,6 +88,5 @@ object Implicits {
   implicit val _dec08: Decoder[DisplayProductionEvent] = deriveConfiguredDecoder
   implicit val _dec09: Decoder[DisplayItem] = deriveConfiguredDecoder
   implicit val _dec10: Decoder[DisplayNote] = deriveConfiguredDecoder
-  implicit val _dec11: Decoder[DisplayWork] = deriveConfiguredDecoder
   implicit val _dec12: Decoder[DisplayImage] = deriveConfiguredDecoder
 }
