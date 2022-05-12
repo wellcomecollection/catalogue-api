@@ -1,18 +1,17 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.work.generators.SierraWorkGenerators
-import weco.catalogue.internal_model.Implicits._
+import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
-
+class ImagesTest extends ApiImagesTestBase {
   it("returns a list of images") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val images =
-          (1 to 5).map(_ => createImageData.toIndexedImage).sortBy(_.id)
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
-        assertJsonResponse(routes, s"$rootPath/images") {
-          Status.OK -> imagesListResponse(images)
+        indexTestImages(
+          imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
+
+        assertJsonResponse(routes, path = s"$rootPath/images") {
+          Status.OK -> newImagesListResponse(ids = (0 to 6).map(i => s"images.different-licenses.$i"))
         }
     }
   }
@@ -20,91 +19,70 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
   it("returns a single image when requested with ID") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val image = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(imagesIndex, image)
-        assertJsonResponse(routes, s"$rootPath/images/${image.id}") {
+        indexTestImages(
+          imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
+
+        assertJsonResponse(routes, path = s"$rootPath/images/5vamzxd8") {
           Status.OK ->
-            s"""
-             |{
-             |  $singleImageResult,
-             |  "id": "${image.id}",
-             |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-             |  "locations": [${locations(image.locations)}],
-             |  "source": ${imageSource(image.source)}
-             |}""".stripMargin
+            getDisplayImage("images.different-licenses.0")
+              .withIncludes(SingleImageIncludes.none)
+              .noSpaces
         }
     }
   }
 
   it("returns only linked images when a source work ID is requested") {
+    val workImages = (0 to 3).map(i => s"images.examples.linked-with-the-same-work.$i")
+
     withImagesApi {
       case (imagesIndex, routes) =>
-        val parentWork = sierraIdentifiedWork()
-        val workImages =
-          (0 to 3)
-            .map(
-              _ => createImageData.toIndexedImageWith(parentWork = parentWork)
-            )
-            .toList
-        val otherImage = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(imagesIndex, otherImage :: workImages: _*)
+        indexTestImages(
+          imagesIndex, workImages :+ "images.examples.linked-with-another-work": _*,
+        )
+
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.state.canonicalId}",
-          unordered = true
+          path = s"$rootPath/images?query=cg1whgjz"
         ) {
-          Status.OK -> imagesListResponse(workImages)
+          Status.OK -> newImagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.sourceIdentifier.value}",
-          unordered = true
+          path = s"$rootPath/images?query=ihnjwgMtGL"
         ) {
-          Status.OK -> imagesListResponse(workImages)
+          Status.OK -> newImagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.data.otherIdentifiers.head.value}",
-          unordered = true
+          path = s"$rootPath/images?query=lSY3iydrQH"
         ) {
-          Status.OK -> imagesListResponse(workImages)
+          Status.OK -> newImagesListResponse(workImages)
         }
     }
   }
 
-  val baguetteImage = createImageData.toIndexedImageWith(
-    parentWork = identifiedWork()
-      .title(
-        "Baguette is a French style of bread; it's a long, thin bread; other countries also make this bread"
-      )
-  )
-  val focacciaImage = createImageData.toIndexedImageWith(
-    parentWork = identifiedWork()
-      .title("A Ligurian style of bread, Focaccia is a flat Italian bread")
-  )
+
 
   it("returns matching results when using work data") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val mantouImage = createImageData.toIndexedImageWith(
-          parentWork = identifiedWork()
-            .title("Mantou is a steamed bread associated with Northern China")
-        )
-
-        insertImagesIntoElasticsearch(
+        indexTestImages(
           imagesIndex,
-          baguetteImage,
-          focacciaImage,
-          mantouImage
+          "images.examples.bread-baguette",
+          "images.examples.bread-focaccia",
+          "images.examples.bread-mantou",
         )
 
-        assertJsonResponse(routes, s"$rootPath/images?query=bread") {
-          Status.OK -> imagesListResponse(
-            List(baguetteImage, focacciaImage, mantouImage)
+        assertJsonResponse(routes, path = s"$rootPath/images?query=bread") {
+          Status.OK -> newImagesListResponse(
+            ids = List("images.examples.bread-baguette",
+              "images.examples.bread-focaccia",
+              "images.examples.bread-mantou")
           )
         }
-        assertJsonResponse(routes, s"$rootPath/images?query=focaccia") {
-          Status.OK -> imagesListResponse(List(focacciaImage))
+        assertJsonResponse(routes, path = s"$rootPath/images?query=focaccia") {
+          Status.OK -> newImagesListResponse(ids = List("images.examples.bread-focaccia"))
         }
     }
   }
@@ -112,23 +90,25 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
   it("returns matching results when using workdata from the redirected work") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val schiacciataImage = createImageData.toIndexedImageWith(
-          parentWork = identifiedWork()
-            .title("Schiacciata is a Tuscan focaccia"),
-          redirectedWork = Some(
-            identifiedWork().title("A Tusdan bread")
-          )
-        )
-        insertImagesIntoElasticsearch(
+        indexTestImages(
           imagesIndex,
-          baguetteImage,
-          focacciaImage,
-          schiacciataImage
+          "images.examples.bread-baguette",
+          "images.examples.bread-focaccia",
+          "images.examples.bread-schiacciata",
         )
 
         assertJsonResponse(routes, s"$rootPath/images?query=bread") {
-          Status.OK -> imagesListResponse(
-            List(baguetteImage, focacciaImage, schiacciataImage)
+          Status.OK -> newImagesListResponse(
+            ids = List("images.examples.bread-baguette",
+              "images.examples.bread-focaccia",
+              "images.examples.bread-schiacciata")
+          )
+        }
+
+        assertJsonResponse(routes, s"$rootPath/images?query=schiacciata") {
+          Status.OK -> newImagesListResponse(
+            ids = List(
+              "images.examples.bread-schiacciata")
           )
         }
     }
