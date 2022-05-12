@@ -1,64 +1,58 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.locations.License
+import weco.api.search.models.request.SingleImageIncludes
 
 class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
   it("filters and aggregates by license") {
-    val ccByImages = (1 to 5).map { _ =>
-      createLicensedImage(License.CCBY)
-    }
-
-    val pdmImages = (1 to 2).map { _ =>
-      createLicensedImage(License.PDM)
-    }
-
-    val oglImages = (1 to 3).map { _ =>
-      createLicensedImage(License.OGL)
-    }
-
-    val images = ccByImages ++ pdmImages ++ oglImages
-
     withImagesApi {
       case (imagesIndex, routes) =>
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
-        val expectedImages = ccByImages ++ pdmImages
+        indexTestImages(
+          imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
+
+        val ccByImages = (0 to 4)
+          .map(i => s"images.different-licenses.$i")
+          .map { getDisplayImage }
+          .map { _.withIncludes(SingleImageIncludes.none) }
+          .sortBy(w => getKey(w, "id").get.asString)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?aggregations=locations.license&locations.license=cc-by,pdm"
+          path = s"$rootPath/images?aggregations=locations.license&locations.license=cc-by"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = expectedImages.size)},
+              ${resultList(totalResults = ccByImages.length)},
               "aggregations": {
                 "type" : "Aggregations",
                 "license": {
                   "type" : "Aggregation",
                   "buckets": [
                     {
-                      "data" : ${license(License.CCBY)},
-                      "count" : ${ccByImages.size},
+                      "data" : {
+                        "id" : "cc-by",
+                        "label" : "Attribution 4.0 International (CC BY 4.0)",
+                        "type" : "License",
+                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                      },
+                      "count" : 5,
                       "type" : "AggregationBucket"
                     },
                     {
-                      "data" : ${license(License.OGL)},
-                      "count" : ${oglImages.size},
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "data" : ${license(License.PDM)},
-                      "count" : ${pdmImages.size},
+                      "data" : {
+                        "id" : "pdm",
+                        "label" : "Public Domain Mark",
+                        "type" : "License",
+                        "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                      },
+                      "count" : 2,
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
               "results": [
-                ${expectedImages
-            .sortBy { _.state.canonicalId }
-            .map(imageResponse)
-            .mkString(",")}
+                ${ccByImages.mkString(",")}
               ]
             }
           """
