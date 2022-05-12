@@ -1,28 +1,27 @@
 package weco.api.search.services
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.sksamuel.elastic4s.Index
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.{EitherValues, OptionValues}
-import weco.api.search.models.QueryConfig
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.index.IndexFixtures
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
-import weco.catalogue.internal_model.generators.ImageGenerators
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.internal_model.index.IndexFixtures
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ImagesServiceTest
     extends AnyFunSpec
     with ScalaFutures
     with IndexFixtures
-    with ImageGenerators
     with EitherValues
-    with OptionValues {
+    with OptionValues
+    with IdentifiersGenerators
+    with TestDocumentFixtures {
 
   val elasticsearchService = new ElasticsearchService(elasticClient)
 
@@ -37,15 +36,16 @@ class ImagesServiceTest
   describe("findById") {
     it("fetches an Image by ID") {
       withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(index, image)
+        indexTestDocuments(index, "images.everything")
 
-        whenReady(
-          imagesService
-            .findById(id = image.state.canonicalId)(index)
-        ) {
-          _.right.value shouldBe image
+        val expectedImage = IndexedImage(display = getDisplayImage("images.everything"))
+
+        val future = imagesService.findById(id = CanonicalId("ggpvgjra"))(index)
+        val actualImage = whenReady(future) {
+          _.right.value
         }
+
+        expectedImage shouldBe actualImage
       }
     }
 
@@ -76,76 +76,90 @@ class ImagesServiceTest
   describe("retrieveSimilarImages") {
     it("gets images using a blended similarity metric by default") {
       withLocalImagesIndex { index =>
-        val images =
-          createSimilarImages(6, similarFeatures = true, similarPalette = true)
-        insertImagesIntoElasticsearch(index, images: _*)
+        indexTestDocuments(
+          index,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+        )
 
-        whenReady(
-          imagesService
-            .retrieveSimilarImages(index, images.head.id)
-        ) { results =>
-          results should not be empty
-          results should contain theSameElementsAs images.tail
+        val expectedImages = (1 to 5).map(i =>
+          IndexedImage(display = getDisplayImage(s"images.similar-features-and-palettes.$i"))
+        )
+
+        val future = imagesService.retrieveSimilarImages(index, imageId = "fxlggzx3")
+
+        whenReady(future) {
+          _ shouldBe expectedImages
         }
       }
     }
 
     it("gets images with similar features") {
       withLocalImagesIndex { index =>
-        val images =
-          createSimilarImages(6, similarFeatures = true, similarPalette = false)
-        insertImagesIntoElasticsearch(index, images: _*)
+        indexTestDocuments(
+          index,
+          (0 to 5).map(i => s"images.similar-features.$i"): _*
+        )
 
-        whenReady(
+        val expectedImages = (1 to 5).map(i =>
+          IndexedImage(display = getDisplayImage(s"images.similar-features.$i"))
+        )
+
+        val future =
           imagesService
             .retrieveSimilarImages(
               index,
-              images.head.id,
+              imageId = "1bxltcv6",
               similarityMetric = SimilarityMetric.Features
             )
-        ) { results =>
-          results should not be empty
-          results should contain theSameElementsAs images.tail
+
+        whenReady(future) {
+          _ should contain theSameElementsAs expectedImages
         }
       }
     }
 
     it("gets images with similar color palettes") {
       withLocalImagesIndex { index =>
-        val images =
-          createSimilarImages(6, similarFeatures = false, similarPalette = true)
-        insertImagesIntoElasticsearch(index, images: _*)
+        indexTestDocuments(
+          index,
+          (0 to 5).map(i => s"images.similar-palettes.$i"): _*
+        )
 
-        whenReady(
+        val expectedImages = (1 to 5).map(i =>
+          IndexedImage(display = getDisplayImage(s"images.similar-palettes.$i"))
+        )
+
+        val future =
           imagesService
             .retrieveSimilarImages(
               index,
-              images.head.id,
+              imageId = "tsmrwj5f",
               similarityMetric = SimilarityMetric.Colors
             )
-        ) { results =>
-          results should not be empty
-          results should contain theSameElementsAs images.tail
+
+        whenReady(future) {
+          _ should contain theSameElementsAs expectedImages
         }
       }
     }
 
     it("does not blend similarity metrics when specific ones are requested") {
       withLocalImagesIndex { index =>
-        val images =
-          createSimilarImages(6, similarFeatures = true, similarPalette = false)
-        insertImagesIntoElasticsearch(index, images: _*)
+        indexTestDocuments(
+          index,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+        )
 
         val colorResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
-            images.head.id,
+            imageId = "fxlggzx3",
             similarityMetric = SimilarityMetric.Colors
           )
         val blendedResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
-            images.head.id,
+            imageId = "fxlggzx3",
             similarityMetric = SimilarityMetric.Blended
           )
         whenReady(colorResultsFuture) { colorResults =>
@@ -159,23 +173,23 @@ class ImagesServiceTest
 
     it("returns Nil when no visually similar images can be found") {
       withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(index, image)
+        indexTestDocuments(index, "images.everything")
 
-        whenReady(imagesService.retrieveSimilarImages(index, image.id)) {
+        whenReady(imagesService.retrieveSimilarImages(index, imageId = "ggpvgjra")) {
           _ shouldBe empty
         }
       }
     }
 
     it("returns Nil when Elasticsearch returns an error") {
-      whenReady(
+      val future =
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            createImageData.toIndexedImage.id
+            imageId = createCanonicalId.underlying
           )
-      ) {
+
+      whenReady(future) {
         _ shouldBe empty
       }
     }
