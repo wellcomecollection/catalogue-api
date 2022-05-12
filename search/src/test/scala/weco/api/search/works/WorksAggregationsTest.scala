@@ -4,7 +4,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by format") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksFormat: _*)
+        indexTestWorks(worksIndex, worksFormat: _*)
 
         assertJsonResponse(
           routes,
@@ -85,7 +85,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by genre label") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "works.genres")
+        indexTestWorks(worksIndex, "works.genres")
 
         assertJsonResponse(
           routes,
@@ -153,7 +153,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
           "work-production.2020"
         )
 
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         assertJsonResponse(
           routes,
@@ -226,7 +226,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by language") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
+        indexTestWorks(
           worksIndex,
           "works.languages.0.eng",
           "works.languages.1.eng",
@@ -341,7 +341,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
 
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         assertJsonResponse(
           routes,
@@ -424,7 +424,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
 
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         assertJsonResponse(
           routes,
@@ -512,7 +512,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by item license") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
+        indexTestWorks(
           worksIndex,
           (0 to 4).map(i => s"works.items-with-licenses.$i"): _*
         )
@@ -598,7 +598,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by availability") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+        indexTestWorks(worksIndex, worksEverything: _*)
 
         assertJsonResponse(
           routes,

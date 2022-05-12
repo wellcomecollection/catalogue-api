@@ -6,7 +6,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
   it("includes visually similar images with ?include=visuallySimilar") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
@@ -25,7 +25,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
   it("includes images with similar features with ?include=withSimilarFeatures") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
@@ -46,7 +46,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
   ) {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 5).map(i => s"images.similar-palettes.$i"): _*
         )
@@ -65,7 +65,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
   it("never includes visually similar images on an images search") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )

@@ -5,7 +5,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by license") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 6).map(i => s"images.different-licenses.$i"): _*
           )
@@ -26,7 +26,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by contributors from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -47,7 +47,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("does not filter by contributors from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -65,7 +65,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple contributors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2)
               .map(i => s"images.examples.contributor-filter-tests.$i"): _*
@@ -91,7 +91,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by genres from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -110,7 +110,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("does not filter by genres from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -127,7 +127,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple genres") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
@@ -152,7 +152,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by color") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.blue"
@@ -169,7 +169,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple colors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.blue"
@@ -197,7 +197,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("scores by number of color bin matches") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          indexTestDocuments(
+          indexTestImages(
             imagesIndex,
             "images.examples.color-filter-tests.red",
             "images.examples.color-filter-tests.even-less-red",

@@ -4,7 +4,7 @@ class WorksTest extends ApiWorksTestBase {
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         assertJsonResponse(routes, path = s"$rootPath/works") {
           Status.OK -> worksListResponse(visibleWorks)
@@ -15,7 +15,7 @@ class WorksTest extends ApiWorksTestBase {
   it("returns a single work when requested with id") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "works.visible.0")
+        indexTestWorks(worksIndex, "works.visible.0")
 
         assertJsonResponse(routes, path = s"$rootPath/works/7sjip63h") {
           Status.OK -> s"""
@@ -34,7 +34,7 @@ class WorksTest extends ApiWorksTestBase {
   it("returns optional fields when they exist") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "work-with-edition-and-duration")
+        indexTestWorks(worksIndex, "work-with-edition-and-duration")
 
         assertJsonResponse(routes, path = s"$rootPath/works/kgxrtrir") {
           Status.OK ->
@@ -58,7 +58,7 @@ class WorksTest extends ApiWorksTestBase {
   ) {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, visibleWorks: _*)
+        indexTestWorks(worksIndex, visibleWorks: _*)
 
         val totalPages = math.ceil(visibleWorks.length / 2.0).toInt
 
@@ -154,7 +154,7 @@ class WorksTest extends ApiWorksTestBase {
   it("returns matching results if doing a full-text search") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "work-title-dodo", "work-title-mouse")
+        indexTestWorks(worksIndex, "work-title-dodo", "work-title-mouse")
 
         assertJsonResponse(routes, s"$rootPath/works?query=cat") {
           Status.OK -> emptyJsonResult
@@ -169,7 +169,7 @@ class WorksTest extends ApiWorksTestBase {
   it("shows the thumbnail field if available") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "work-thumbnail")
+        indexTestWorks(worksIndex, "work-thumbnail")
 
         assertJsonResponse(routes, path = s"$rootPath/works/b2tsq547") {
           Status.OK -> s"""
@@ -207,7 +207,7 @@ class WorksTest extends ApiWorksTestBase {
   it("sorts by production date") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
+        indexTestWorks(
           worksIndex,
           "work-production.1098",
           "work-production.1900",
@@ -233,7 +233,7 @@ class WorksTest extends ApiWorksTestBase {
   it("sorts by date in descending order") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
+        indexTestWorks(
           worksIndex,
           "work-production.1098",
           "work-production.1900",
@@ -259,7 +259,7 @@ class WorksTest extends ApiWorksTestBase {
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
+        indexTestWorks(worksIndex, works: _*)
 
         assertJsonResponse(routes, path = s"$rootPath/management/_workTypes") {
           Status.OK ->

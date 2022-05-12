@@ -36,7 +36,7 @@ class ImagesServiceTest
   describe("findById") {
     it("fetches an Image by ID") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(index, "images.everything")
+        indexTestImages(index, "images.everything")
 
         val expectedImage = IndexedImage(display = getDisplayImage("images.everything"))
 
@@ -76,7 +76,7 @@ class ImagesServiceTest
   describe("retrieveSimilarImages") {
     it("gets images using a blended similarity metric by default") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(
+        indexTestImages(
           index,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
@@ -95,7 +95,7 @@ class ImagesServiceTest
 
     it("gets images with similar features") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(
+        indexTestImages(
           index,
           (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
@@ -120,7 +120,7 @@ class ImagesServiceTest
 
     it("gets images with similar color palettes") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(
+        indexTestImages(
           index,
           (0 to 5).map(i => s"images.similar-palettes.$i"): _*
         )
@@ -145,7 +145,7 @@ class ImagesServiceTest
 
     it("does not blend similarity metrics when specific ones are requested") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(
+        indexTestImages(
           index,
           (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
@@ -173,7 +173,7 @@ class ImagesServiceTest
 
     it("returns Nil when no visually similar images can be found") {
       withLocalImagesIndex { index =>
-        indexTestDocuments(index, "images.everything")
+        indexTestImages(index, "images.everything")
 
         whenReady(imagesService.retrieveSimilarImages(index, imageId = "ggpvgjra")) {
           _ shouldBe empty

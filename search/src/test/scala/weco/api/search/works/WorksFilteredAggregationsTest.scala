@@ -26,7 +26,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do not have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+          indexTestWorks(worksIndex, aggregatedWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -72,7 +72,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+          indexTestWorks(worksIndex, aggregatedWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -160,7 +160,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("but still returns empty buckets if their paired filter is present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+          indexTestWorks(worksIndex, aggregatedWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -228,7 +228,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("applies the search query to aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+        indexTestWorks(worksIndex, aggregatedWorks: _*)
 
         assertJsonResponse(
           routes,
@@ -291,7 +291,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("filters results but not aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+        indexTestWorks(worksIndex, aggregatedWorks: _*)
 
         assertJsonResponse(
           routes,

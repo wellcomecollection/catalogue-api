@@ -6,7 +6,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns a list of images") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
@@ -22,7 +22,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns a single image when requested with ID") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
@@ -42,7 +42,7 @@ class ImagesTest extends ApiImagesTestBase {
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           workImages :+ "images.examples.linked-with-another-work": _*
         )
@@ -71,7 +71,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns matching results when using work data") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           "images.examples.bread-baguette",
           "images.examples.bread-focaccia",
@@ -99,7 +99,7 @@ class ImagesTest extends ApiImagesTestBase {
   it("returns matching results when using workdata from the redirected work") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(
+        indexTestImages(
           imagesIndex,
           "images.examples.bread-baguette",
           "images.examples.bread-focaccia",

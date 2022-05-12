@@ -17,7 +17,7 @@ class ImagesAggregationsTest
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
@@ -72,7 +72,7 @@ class ImagesAggregationsTest
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
@@ -132,7 +132,7 @@ class ImagesAggregationsTest
 
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+        indexTestImages(imagesIndex, images: _*)
 
         assertJsonResponse(
           routes,
