@@ -1,0 +1,67 @@
+{
+  "type": "ResultList",
+  "pageSize": 10,
+  "totalPages": 1,
+  "totalResults":1,
+  "results": [
+    {
+      "id" : "ggpvgjra",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
+        },
+        "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
+        "linkText" : "Link text: Y4Py8GcWiP",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
+      },
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
+          "linkText" : "Link text: Y4Py8GcWiP",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "source" : {
+        "id" : "fpixjlf3",
+        "title" : "Apple agitator",
+        "languages" : [
+          {
+            "id" : "eng",
+            "label" : "English",
+            "type" : "Language"
+          },
+          {
+            "id" : "tur",
+            "label" : "Turkish",
+            "type" : "Language"
+          }
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    }
+  ]
+}
