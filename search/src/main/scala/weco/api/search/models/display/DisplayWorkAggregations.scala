@@ -1,22 +1,16 @@
-package weco.api.search.models
+package weco.api.search.models.display
 
-import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
+import io.circe.generic.extras.semiauto._
+import weco.api.search.models
 import weco.api.search.models.request.WorkAggregationRequest
+import weco.api.search.models.{Aggregation, WorkAggregations}
 import weco.catalogue.display_model.languages.DisplayLanguage
 import weco.catalogue.display_model.locations.DisplayLicense
-import weco.catalogue.display_model.work.{
-  DisplayAbstractAgent,
-  DisplayAvailability,
-  DisplayFormat,
-  DisplayGenre,
-  DisplayPeriod,
-  DisplaySubject
-}
+import weco.catalogue.display_model.work._
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
-import weco.http.json.DisplayJsonUtil._
 
 case class DisplayWorkAggregations(
   workType: Option[DisplayAggregation[DisplayFormat]],
@@ -33,7 +27,6 @@ case class DisplayWorkAggregations(
 )
 
 object DisplayWorkAggregations {
-  import weco.catalogue.display_model.Implicits._
 
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder
@@ -94,6 +87,6 @@ object DisplayWorkAggregations {
     display: T => D
   ): Option[DisplayAggregation[D]] =
     maybeAgg.map {
-      DisplayAggregation(_, display)
+      models.display.DisplayAggregation(_, display)
     }
 }
