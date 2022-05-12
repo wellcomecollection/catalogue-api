@@ -1,6 +1,9 @@
 package weco.api.search.images
 
 import weco.api.search.ApiTestBase
+import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.json.CatalogueJsonUtil
+import weco.api.search.models.request.SingleImageIncludes
 import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 import weco.catalogue.internal_model.generators.ImageGenerators
 import weco.catalogue.internal_model.image._
@@ -8,7 +11,9 @@ import weco.catalogue.internal_model.image._
 trait ApiImagesTestBase
     extends ApiTestBase
     with DisplaySerialisationTestBase
-    with ImageGenerators {
+    with ImageGenerators
+    with CatalogueJsonUtil
+    with TestDocumentFixtures {
 
   def singleImageResult: String =
     s"""
@@ -54,4 +59,28 @@ trait ApiImagesTestBase
        |  ]
        |}
     """.stripMargin
+
+  def newImagesListResponse(
+    ids: Seq[String],
+    strictOrdering: Boolean = false
+  ): String = {
+    val works = ids.map { getDisplayImage }.map {
+      _.withIncludes(SingleImageIncludes.none)
+    }
+
+    val sortedWorks = if (strictOrdering) {
+      works
+    } else {
+      works.sortBy(w => getKey(w, "id").get.asString)
+    }
+
+    s"""
+       |{
+       |  ${resultList(totalResults = ids.size)},
+       |  "results": [
+       |    ${sortedWorks.mkString(",")}
+       |  ]
+       |}
+      """.stripMargin
+  }
 }
