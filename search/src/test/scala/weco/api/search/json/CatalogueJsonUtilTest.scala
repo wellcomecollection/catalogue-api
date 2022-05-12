@@ -86,6 +86,7 @@ class CatalogueJsonUtilTest
 
   val testCases = Table(
     ("fieldName", "workInclude"),
+    ("identifiers", WorkInclude.Identifiers),
     ("items", WorkInclude.Items),
     ("holdings", WorkInclude.Holdings),
     ("subjects", WorkInclude.Subjects),
@@ -102,6 +103,14 @@ class CatalogueJsonUtilTest
   )
 
   describe("WorkJsonOps") {
+
+    // Note: identifiers are a special case because we expect them to be nested
+    // throughout the Work JSON; we don't expect other fields to appear anywhere
+    // but at the top level.
+    //
+    // What to do if we see, e.g. "items" in a nested position, is undefined.
+    // We don't know what the correct behaviour is (because it doesn't occur)
+    // so we don't test it.
     it("includes/omits identifiers based on the work include") {
       nestedJsonWithField("identifiers").withIncludes(
         WorksIncludes(WorkInclude.Identifiers)
