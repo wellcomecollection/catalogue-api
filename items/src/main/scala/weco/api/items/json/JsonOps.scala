@@ -16,7 +16,7 @@ trait JsonOps {
     def identifier: Option[CatalogueIdentifier] =
       json.as[HasIdentifiers] match {
         case Right(HasIdentifiers(identifiers)) => identifiers.headOption
-        case _ => None
+        case _                                  => None
       }
   }
 }

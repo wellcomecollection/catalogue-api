@@ -7,8 +7,7 @@ import org.scalatest.matchers.should.Matchers
 class JsonOpsTest extends AnyFunSpec with Matchers with JsonOps {
   describe("identifierType") {
     it("returns None if the object has no identifiers") {
-      val json = parse(
-        """
+      val json = parse("""
           |{ "color": "red", "sides": 5 }
           |""".stripMargin).right.get
 
@@ -16,8 +15,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with JsonOps {
     }
 
     it("returns None if there are no identifiers") {
-      val json = parse(
-        """
+      val json = parse("""
           |{ "color": "blue", "identifiers": [] }
           |""".stripMargin).right.get
 
@@ -25,8 +23,7 @@ class JsonOpsTest extends AnyFunSpec with Matchers with JsonOps {
     }
 
     it("returns the first identifier type") {
-      val json = parse(
-        """
+      val json = parse("""
           |{
           |  "color": "blue",
           |  "identifiers": [

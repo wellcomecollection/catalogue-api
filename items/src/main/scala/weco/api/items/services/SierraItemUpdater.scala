@@ -5,7 +5,10 @@ import io.circe.Json
 import weco.api.items.json.JsonOps
 import weco.sierra.http.SierraSource
 import weco.api.stacks.models.{CatalogueIdentifierType, SierraItemIdentifier}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
@@ -23,7 +26,8 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class SierraItemUpdater(sierraSource: SierraSource)(
   implicit executionContext: ExecutionContext
-) extends ItemUpdater with JsonOps
+) extends ItemUpdater
+    with JsonOps
     with Logging {
 
   import weco.api.stacks.models.SierraItemDataOps._

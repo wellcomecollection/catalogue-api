@@ -12,7 +12,8 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
-)(implicit executionContext: ExecutionContext) extends JsonOps {
+)(implicit executionContext: ExecutionContext)
+    extends JsonOps {
 
   type ItemsWithIndex = Seq[(Json, Int)]
 

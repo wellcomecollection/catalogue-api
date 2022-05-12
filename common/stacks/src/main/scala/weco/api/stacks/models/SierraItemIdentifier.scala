@@ -26,7 +26,11 @@ object SierraItemIdentifier {
   def fromSourceIdentifier(
     sourceIdentifier: CatalogueIdentifier
   ): SierraItemNumber = {
-    require(sourceIdentifier.identifierType == CatalogueIdentifierType("sierra-system-number"))
+    require(
+      sourceIdentifier.identifierType == CatalogueIdentifierType(
+        "sierra-system-number"
+      )
+    )
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix
     // and a check digit, e.g. i18234495
