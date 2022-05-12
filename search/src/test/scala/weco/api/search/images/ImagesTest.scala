@@ -78,7 +78,8 @@ class ImagesTest extends ApiImagesTestBase {
           Status.OK -> newImagesListResponse(
             ids = List("images.examples.bread-baguette",
               "images.examples.bread-focaccia",
-              "images.examples.bread-mantou")
+              "images.examples.bread-mantou"),
+            strictOrdering = true
           )
         }
         assertJsonResponse(routes, path = s"$rootPath/images?query=focaccia") {
@@ -99,9 +100,9 @@ class ImagesTest extends ApiImagesTestBase {
 
         assertJsonResponse(routes, s"$rootPath/images?query=bread") {
           Status.OK -> newImagesListResponse(
-            ids = List("images.examples.bread-baguette",
-              "images.examples.bread-focaccia",
-              "images.examples.bread-schiacciata")
+            ids = List("images.examples.bread-schiacciata", "images.examples.bread-baguette",
+              "images.examples.bread-focaccia"),
+            strictOrdering = true
           )
         }
 
