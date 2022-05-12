@@ -74,7 +74,7 @@ trait TestDocumentFixtures
     index: Index,
     documentIds: String*
   ): Unit =
-    indexTestWorks(index, documentIds)
+    indexTestWorks(index, documentIds: _*)
 
   def indexTestWorks(
     index: Index,
