@@ -98,29 +98,34 @@ class CatalogueJsonUtilTest
     ("parts", WorkInclude.Parts),
     ("partOf", WorkInclude.PartOf),
     ("precededBy", WorkInclude.PrecededBy),
-    ("succeededBy", WorkInclude.SucceededBy),
+    ("succeededBy", WorkInclude.SucceededBy)
   )
 
   describe("WorkJsonOps") {
     it("includes/omits identifiers based on the work include") {
-      nestedJsonWithField("identifiers").withIncludes(WorksIncludes(WorkInclude.Identifiers)) shouldBe nestedJsonWithField("identifiers")
+      nestedJsonWithField("identifiers").withIncludes(
+        WorksIncludes(WorkInclude.Identifiers)
+      ) shouldBe nestedJsonWithField("identifiers")
 
       nestedJsonWithField("identifiers").withIncludes(WorksIncludes.none) shouldBe nestedJsonWithoutField
     }
 
     it("includes/omits fields based on the work include") {
-      forAll(testCases) { case (fieldName, fieldInclude) =>
-        withClue(s"includes $fieldName if the include is present") {
-          val includes = WorksIncludes(fieldInclude)
+      forAll(testCases) {
+        case (fieldName, fieldInclude) =>
+          withClue(s"includes $fieldName if the include is present") {
+            val includes = WorksIncludes(fieldInclude)
 
-          jsonWithField(fieldName).withIncludes(includes) shouldBe jsonWithField(fieldName)
-        }
+            jsonWithField(fieldName).withIncludes(includes) shouldBe jsonWithField(
+              fieldName
+            )
+          }
 
-        withClue(s"omits $fieldName if the include is missing") {
-          val includes = WorksIncludes.none
+          withClue(s"omits $fieldName if the include is missing") {
+            val includes = WorksIncludes.none
 
-          jsonWithField(fieldName).withIncludes(includes) shouldBe jsonWithoutField
-        }
+            jsonWithField(fieldName).withIncludes(includes) shouldBe jsonWithoutField
+          }
       }
     }
   }

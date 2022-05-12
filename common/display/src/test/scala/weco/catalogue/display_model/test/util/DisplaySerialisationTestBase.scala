@@ -2,7 +2,11 @@ package weco.catalogue.display_model.test.util
 
 import io.circe.Json
 import org.scalatest.Suite
-import weco.catalogue.display_model.locations.{DisplayAccessMethod, DisplayAccessStatus, DisplayLocationType}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessMethod,
+  DisplayAccessStatus,
+  DisplayLocationType
+}
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations._
 import weco.json.JsonUtil._
