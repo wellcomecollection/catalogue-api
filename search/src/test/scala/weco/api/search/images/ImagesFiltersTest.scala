@@ -1,7 +1,5 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.Implicits._
-
 class ImagesFiltersTest extends ApiImagesTestBase {
   describe("filtering images by license") {
     it("filters by license") {
@@ -129,80 +127,18 @@ class ImagesFiltersTest extends ApiImagesTestBase {
   }
 
   describe("filtering images by color") {
-    val redImage = createImageData.toIndexedImageWith(
-      inferredData = createInferredData.map(
-        _.copy(
-          palette = List(
-            "7/0",
-            "7/0",
-            "7/0",
-            "71/1",
-            "71/1",
-            "71/1",
-            "268/2",
-            "268/2",
-            "268/2"
-          )
-        )
-      )
-    )
-    val blueImage = createImageData.toIndexedImageWith(
-      inferredData = createInferredData.map(
-        _.copy(
-          palette = List(
-            "9/0",
-            "9/0",
-            "9/0",
-            "5/0",
-            "74/1",
-            "74/1",
-            "74/1",
-            "35/1",
-            "50/1",
-            "29/1",
-            "38/1",
-            "273/2",
-            "273/2",
-            "273/2",
-            "187/2",
-            "165/2",
-            "115/2",
-            "129/2"
-          )
-        )
-      )
-    )
-    val slightlyLessRedImage = createImageData.toIndexedImageWith(
-      inferredData = createInferredData.map(
-        _.copy(
-          palette = List(
-            "7/0",
-            "71/1",
-            "71/1",
-            "71/1"
-          )
-        )
-      )
-    )
-    val evenLessRedImage = createImageData.toIndexedImageWith(
-      inferredData = createInferredData.map(
-        _.copy(
-          palette = List(
-            "7/0",
-            "7/0",
-            "7/0"
-          )
-        )
-      )
-    )
-
     it("filters by color") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, redImage, blueImage)
-          assertJsonResponse(routes, f"$rootPath/images?color=ff0000") {
-            Status.OK -> imagesListResponse(
-              images = Seq(redImage)
+          indexTestImages(
+            imagesIndex,
+            "images.examples.color-filter-tests.red",
+            "images.examples.color-filter-tests.blue"
+          )
+
+          assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
+            Status.OK -> newImagesListResponse(
+              ids = Seq("images.examples.color-filter-tests.red")
             )
           }
       }
@@ -211,14 +147,23 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("filters by multiple colors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, redImage, blueImage)
+          indexTestImages(
+            imagesIndex,
+            "images.examples.color-filter-tests.red",
+            "images.examples.color-filter-tests.blue"
+          )
+
+          // TODO: This test would pass if it was returning every image.
+          //
+          // We should add a green image and check it gets filtered out correctly.
+          //
+          // See https://github.com/wellcomecollection/catalogue-api/issues/432
           assertJsonResponse(
             routes,
-            f"$rootPath/images?color=ff0000,0000ff",
-            unordered = true
+            path = f"$rootPath/images?color=ff0000,0000ff"
           ) {
-            Status.OK -> imagesListResponse(
-              images = Seq(blueImage, redImage)
+            Status.OK -> newImagesListResponse(
+              ids = Seq("images.examples.color-filter-tests.red","images.examples.color-filter-tests.blue")
             )
           }
       }
@@ -227,16 +172,18 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     it("scores by number of color bin matches") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(
+          indexTestImages(
             imagesIndex,
-            redImage,
-            slightlyLessRedImage,
-            evenLessRedImage,
-            blueImage
+            "images.examples.color-filter-tests.red",
+            "images.examples.color-filter-tests.even-less-red",
+          "images.examples.color-filter-tests.slightly-less-red",
+            "images.examples.color-filter-tests.blue"
           )
-          assertJsonResponse(routes, f"$rootPath/images?color=ff0000") {
-            Status.OK -> imagesListResponse(
-              images = Seq(redImage, slightlyLessRedImage, evenLessRedImage)
+
+          assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
+            Status.OK -> newImagesListResponse(
+              ids = Seq("images.examples.color-filter-tests.red", "images.examples.color-filter-tests.slightly-less-red", "images.examples.color-filter-tests.even-less-red"),
+              strictOrdering = true
             )
           }
       }
