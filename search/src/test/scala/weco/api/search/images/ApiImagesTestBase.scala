@@ -43,24 +43,7 @@ trait ApiImagesTestBase
        |  }
      """.stripMargin
 
-  def imagesListResponse(images: Seq[Image[ImageState.Indexed]]): String =
-    s"""
-       |{
-       |  ${resultList(
-         totalResults = images.size,
-         totalPages = if (images.nonEmpty) {
-           1
-         } else {
-           0
-         }
-       )},
-       |  "results": [
-       |    ${images.map(imageResponse).mkString(",")}
-       |  ]
-       |}
-    """.stripMargin
-
-  def newImagesListResponse(
+  def imagesListResponse(
     ids: Seq[String],
     strictOrdering: Boolean = false
   ): String = {
