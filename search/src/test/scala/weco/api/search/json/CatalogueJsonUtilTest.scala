@@ -128,5 +128,45 @@ class CatalogueJsonUtilTest
           }
       }
     }
+
+    it("omits all the fields which aren't included") {
+      val startingJson = parse(
+        s"""
+        {
+          "name": "An engraving of a fish",
+          "items": [
+            {
+              "name": "The first item"
+            },
+            {
+              "name": "The second item"
+            }
+          ],
+          "holdings": [
+            "The first holdings",
+            "The second holdings"
+          ],
+          "subjects": [
+            "marine life",
+            "aquatics"
+          ]
+        }
+        """
+      ).right.get
+
+      val expectedJson = parse(
+        s"""
+        {
+          "name": "An engraving of a fish",
+          "holdings": [
+            "The first holdings",
+            "The second holdings"
+          ]
+        }
+        """
+      ).right.get
+
+      startingJson.withIncludes(WorksIncludes(WorkInclude.Holdings)) shouldBe expectedJson
+    }
   }
 }
