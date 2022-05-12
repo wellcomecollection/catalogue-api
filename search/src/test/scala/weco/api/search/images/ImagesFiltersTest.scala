@@ -2,61 +2,39 @@ package weco.api.search.images
 
 import weco.catalogue.internal_model.Implicits._
 import weco.catalogue.internal_model.work.generators.GenreGenerators
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work.{Contributor, Person}
 
 class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
   describe("filtering images by license") {
-    val ccByImage = createLicensedImage(License.CCBY)
-    val ccByNcImage = createLicensedImage(License.CCBYNC)
-
     it("filters by license") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, ccByImage, ccByNcImage)
+          indexTestImages(
+            imagesIndex, (0 to 6).map(i => s"images.different-licenses.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"$rootPath/images?locations.license=cc-by"
+            path = s"$rootPath/images?locations.license=cc-by"
           ) {
-            Status.OK -> imagesListResponse(
-              images = Seq(ccByImage)
-            )
+            Status.OK -> newImagesListResponse(ids = (0 to 4).map(i => s"images.different-licenses.$i"))
           }
       }
     }
   }
 
   describe("filtering images by source contributors") {
-    val machiavelli =
-      Contributor(agent = Person("Machiavelli, Niccolo"), roles = Nil)
-    val hypatia = Contributor(agent = Person("Hypatia"), roles = Nil)
-    val said = Contributor(agent = Person("Edward Said"), roles = Nil)
-
-    val canonicalMachiavelliImage = createImageData.toIndexedImageWith(
-      parentWork = identifiedWork().contributors(List(machiavelli))
-    )
-    val canonicalSaidImage = createImageData.toIndexedImageWith(
-      parentWork = identifiedWork().contributors(List(said))
-    )
-    val redirectedHypatiaImage = createImageData.toIndexedImageWith(
-      redirectedWork = Some(identifiedWork().contributors(List(hypatia)))
-    )
-
-    val images = List(
-      canonicalMachiavelliImage,
-      canonicalSaidImage,
-      redirectedHypatiaImage
-    )
-
     it("filters by contributors from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
+            path = s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
           ) {
-            Status.OK -> imagesListResponse(List(canonicalMachiavelliImage))
+            Status.OK -> newImagesListResponse(ids = Seq("images.examples.contributor-filter-tests.0"))
           }
       }
     }
@@ -64,12 +42,15 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
     it("does not filter by contributors from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"$rootPath/images?source.contributors.agent.label=Hypatia"
+            path = s"$rootPath/images?source.contributors.agent.label=Hypatia"
           ) {
-            Status.OK -> imagesListResponse(Nil)
+            Status.OK -> emptyJsonResult
           }
       }
     }
@@ -77,14 +58,16 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
     it("filters by multiple contributors") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.contributor-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said""",
-            unordered = true
+            path = s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
           ) {
-            Status.OK -> imagesListResponse(
-              List(canonicalMachiavelliImage, canonicalSaidImage)
+            Status.OK -> newImagesListResponse(
+              List("images.examples.contributor-filter-tests.0", "images.examples.contributor-filter-tests.1")
             )
           }
       }
