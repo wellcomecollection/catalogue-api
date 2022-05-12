@@ -12,7 +12,6 @@ import weco.api.search.models.request.{
 }
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
-import weco.catalogue.display_model.Implicits._
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,13 +37,13 @@ class ImagesController(
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(imagesIndex, image, metric)
+                      .retrieveSimilarImages(imagesIndex, id.underlying, metric)
                       .map(metric -> _)
                   }
                   .map(_.toMap)
                   .map { similarImages =>
                     complete(
-                      image.asJson(
+                      image.display.asJson(
                         includes =
                           params.include.getOrElse(SingleImageIncludes.none),
                         visuallySimilar =

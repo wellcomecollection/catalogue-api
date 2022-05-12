@@ -7,7 +7,6 @@ import org.scalatest.Suite
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.time.{Seconds, Span}
 import weco.api.search.models.index.IndexedWork
-import weco.catalogue.internal_model.image.{Image, ImageFsm, ImageState}
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.LocalResources
 import weco.json.JsonUtil._
@@ -50,7 +49,7 @@ trait TestDocumentFixtures
       .head
 
   def getDisplayImage(id: String): Json =
-    getTestImageDocuments(Seq(id))
+    getTestDocuments(Seq(id))
       .map(doc => getKey(doc.document, "display").get)
       .head
 
@@ -69,53 +68,13 @@ trait TestDocumentFixtures
       }
     }
 
-  protected case class TestImageDocument(
-    id: String,
-    document: Json,
-    image: Image[ImageState.Augmented]
-  )
-
-  // TODO: When this work is done, we'll collapse indexTestImages back into
-  // indexTestDocuments and get rid of the separate methods.
-  def getTestImageDocuments(ids: Seq[String]): Seq[TestImageDocument] =
-    ids.map { id =>
-      val doc = Try {
-        readResource(s"test_documents/$id.json")
-      }.flatMap(jsonString => fromJson[TestImageDocument](jsonString))
-
-      doc match {
-        case Success(d) => d
-        case Failure(err) =>
-          throw new IllegalArgumentException(
-            s"Unable to read fixture $id: $err"
-          )
-      }
-    }
-
+  // TODO: These methods will be combined into one, but I'm leaving them separate to
+  // reduce the size of the diff on the PR that changes the API behaviour.
   def indexTestImages(
     index: Index,
     documentIds: String*
-  ): Unit = {
-    val documents = getTestImageDocuments(documentIds)
-
-    import ImageFsm._
-
-    val result = elasticClient.execute(
-      bulk(
-        documents.map { fixture =>
-          indexInto(index.name)
-            .id(fixture.id)
-            .doc(toJson(fixture.image.transition[ImageState.Indexed]()).get)
-        }
-      ).refreshImmediately
-    )
-
-    // With a large number of works this can take a long time
-    // 30 seconds should be enough
-    whenReady(result, Timeout(Span(30, Seconds))) { _ =>
-      getSizeOf(index) shouldBe documents.size
-    }
-  }
+  ): Unit =
+    indexTestWorks(index, documentIds: _*)
 
   def indexTestWorks(
     index: Index,
