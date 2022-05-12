@@ -1,69 +1,21 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.work.generators.{
-  ContributorGenerators,
-  GenreGenerators
-}
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.languages.Language
-
-class ImagesIncludesTest
-    extends ApiImagesTestBase
-    with ContributorGenerators
-    with GenreGenerators {
+class ImagesIncludesTest extends ApiImagesTestBase {
   describe("images includes") {
-    val source = identifiedWork()
-      .title("Apple agitator")
-      .languages(
-        List(
-          Language(label = "English", id = "eng"),
-          Language(label = "Turkish", id = "tur")
-        )
-      )
-      .contributors(
-        List(
-          createPersonContributorWith("Adrian Aardvark"),
-          createPersonContributorWith("Beatrice Buffalo")
-        )
-      )
-      .genres(
-        List(
-          createGenreWith("Crumbly cabbages"),
-          createGenreWith("Deadly durians")
-        )
-      )
-    val image = createImageData.toIndexedImageWith(parentWork = source)
-
     it(
       "includes the source contributors on results from the list endpoint if we pass ?include=source.contributors"
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
-            s"$rootPath/images?include=source.contributors"
+            path = s"$rootPath/images?include=source.contributors"
           ) {
-            Status.OK -> s"""
-              |{
-              |  ${resultList(totalResults = 1)},
-              |  "results": [
-              |    {
-              |      "type": "Image",
-              |      "id": "${image.id}",
-              |      "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |      "locations": [${locations(image.locations)}],
-              |      "source": {
-              |        "id": "${source.id}",
-              |        "title": "Apple agitator",
-              |        "contributors": [${contributors(source.data.contributors)}],
-              |        "type": "Work"
-              |      }
-              |    }
-              |  ]
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-list-contributors.json"
+            )
           }
       }
     }
@@ -73,27 +25,15 @@ class ImagesIncludesTest
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
-            s"$rootPath/images/${image.id}?include=source.contributors"
+            path = s"$rootPath/images/ggpvgjra?include=source.contributors"
           ) {
-            Status.OK -> s"""
-              |{
-              |  $singleImageResult,
-              |  "type": "Image",
-              |  "id": "${image.id}",
-              |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |  "locations": [${locations(image.locations)}],
-              |  "source": {
-              |    "id": "${source.id}",
-              |    "title": "Apple agitator",
-              |    "contributors": [${contributors(source.data.contributors)}],
-              |    "type": "Work"
-              |  }
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-image-contributors.json"
+            )
           }
       }
     }
@@ -103,31 +43,15 @@ class ImagesIncludesTest
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
-            s"$rootPath/images?include=source.languages"
+            path = s"$rootPath/images?include=source.languages"
           ) {
-            Status.OK -> s"""
-              |{
-              |  ${resultList(totalResults = 1)},
-              |  "results": [
-              |    {
-              |      "type": "Image",
-              |      "id": "${image.id}",
-              |      "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |      "locations": [${locations(image.locations)}],
-              |      "source": {
-              |        "id": "${source.id}",
-              |        "title": "Apple agitator",
-              |        "languages": [${languages(source.data.languages)}],
-              |        "type": "Work"
-              |      }
-              |    }
-              |  ]
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-list-languages.json"
+            )
           }
       }
     }
@@ -137,27 +61,15 @@ class ImagesIncludesTest
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
-            s"$rootPath/images/${image.id}?include=source.languages"
+            path = s"$rootPath/images/ggpvgjra?include=source.languages"
           ) {
-            Status.OK -> s"""
-              |{
-              |  $singleImageResult,
-              |  "type": "Image",
-              |  "id": "${image.id}",
-              |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |  "locations": [${locations(image.locations)}],
-              |  "source": {
-              |    "id": "${source.id}",
-              |    "title": "Apple agitator",
-              |    "languages": [${languages(source.data.languages)}],
-              |    "type": "Work"
-              |  }
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-image-languages.json"
+            )
           }
       }
     }
@@ -167,28 +79,12 @@ class ImagesIncludesTest
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(routes, s"$rootPath/images?include=source.genres") {
-            Status.OK -> s"""
-              |{
-              |  ${resultList(totalResults = 1)},
-              |  "results": [
-              |    {
-              |      "type": "Image",
-              |      "id": "${image.id}",
-              |      "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |      "locations": [${locations(image.locations)}],
-              |      "source": {
-              |        "id": "${source.id}",
-              |        "title": "Apple agitator",
-              |        "genres": [${genres(source.data.genres)}],
-              |        "type": "Work"
-              |      }
-              |    }
-              |  ]
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-list-genres.json"
+            )
           }
       }
     }
@@ -198,27 +94,15 @@ class ImagesIncludesTest
     ) {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, image)
+          indexTestImages(imagesIndex, "images.everything")
 
           assertJsonResponse(
             routes,
-            s"$rootPath/images/${image.id}?include=source.genres"
+            path = s"$rootPath/images/ggpvgjra?include=source.genres"
           ) {
-            Status.OK -> s"""
-              |{
-              |  $singleImageResult,
-              |  "type": "Image",
-              |  "id": "${image.id}",
-              |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-              |  "locations": [${locations(image.locations)}],
-              |  "source": {
-              |    "id": "${source.id}",
-              |    "title": "Apple agitator",
-              |    "genres": [${genres(source.data.genres)}],
-              |    "type": "Work"
-              |  }
-              |}
-            """.stripMargin
+            Status.OK -> readResource(
+              "expected_responses/include-image-genres.json"
+            )
           }
       }
     }

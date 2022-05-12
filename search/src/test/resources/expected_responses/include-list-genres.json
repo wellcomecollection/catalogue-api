@@ -1,0 +1,93 @@
+{
+  "type": "ResultList",
+  "pageSize": 10,
+  "totalPages": 1,
+  "totalResults":1,
+  "results": [
+    {
+      "id" : "ggpvgjra",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
+        },
+        "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
+        "linkText" : "Link text: Y4Py8GcWiP",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
+      },
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
+          "linkText" : "Link text: Y4Py8GcWiP",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "source" : {
+        "id" : "fpixjlf3",
+        "title" : "Apple agitator",
+        "genres" : [
+          {
+            "label" : "Crumbly cabbages",
+            "concepts" : [
+              {
+                "label" : "5hzpvxV6vISRu7M",
+                "type" : "Concept"
+              },
+              {
+                "label" : "tEoau6TjOf0XGaj",
+                "type" : "Concept"
+              },
+              {
+                "label" : "AY87vuuJ5lq8kfI",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          },
+          {
+            "label" : "Deadly durians",
+            "concepts" : [
+              {
+                "label" : "sxyrogDQ417uX7J",
+                "type" : "Concept"
+              },
+              {
+                "label" : "1fupAzsfbKKzDNf",
+                "type" : "Concept"
+              },
+              {
+                "label" : "alpwOjYum0Yf1oI",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          }
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    }
+  ]
+}
