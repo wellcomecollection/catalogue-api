@@ -3,14 +3,9 @@ package weco.api.search
 import akka.http.scaladsl.model.ContentTypes
 import io.circe.Json
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.fixtures.JsonHelpers
 import weco.api.search.works.ApiWorksTestBase
 
-class ApiSearchTemplatesTest
-    extends ApiWorksTestBase
-    with Matchers
-    with JsonHelpers {
-
+class ApiSearchTemplatesTest extends ApiWorksTestBase with Matchers {
   it("renders a list of available search templates") {
     checkJson { json =>
       json.isObject shouldBe true

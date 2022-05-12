@@ -2,13 +2,11 @@ package weco.api.search.works
 
 import org.scalatest.Assertion
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.fixtures.TestDocumentFixtures
 
 import java.net.URLEncoder
 
 class WorksFiltersTest
     extends ApiWorksTestBase
-    with TestDocumentFixtures
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {

@@ -8,7 +8,6 @@ import weco.catalogue.display_model.test.util.DisplaySerialisationTestBase
 
 trait ApiWorksTestBase
     extends ApiTestBase
-    with DisplaySerialisationTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
 

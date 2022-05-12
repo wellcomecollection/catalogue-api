@@ -1,13 +1,8 @@
 package weco.api.search.images
 
-import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesAggregationsTest
-    extends ApiImagesTestBase
-    with TestDocumentFixtures
-    with CatalogueJsonUtil {
+class ImagesAggregationsTest extends ApiImagesTestBase {
   it("aggregates by license") {
     val images = (0 to 6).map(i => s"images.different-licenses.$i")
     val displayImages = images

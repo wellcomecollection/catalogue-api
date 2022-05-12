@@ -2,12 +2,8 @@ package weco.api.search.images
 
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.models.ElasticConfig
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
 
-class ImagesErrorsTest
-    extends ApiImagesTestBase
-    with IdentifiersGenerators
-    with TableDrivenPropertyChecks {
+class ImagesErrorsTest extends ApiImagesTestBase with TableDrivenPropertyChecks {
   describe("returns a 404 for missing resources") {
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
@@ -43,7 +39,7 @@ class ImagesErrorsTest
       "path",
       s"$rootPath/images",
       s"$rootPath/images?query=fish",
-      s"$rootPath/images/$createCanonicalId"
+      s"$rootPath/images/aj0amjkh"
     )
 
     withRouter(elasticConfig) { routes =>

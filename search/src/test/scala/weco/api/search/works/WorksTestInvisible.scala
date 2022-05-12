@@ -1,8 +1,6 @@
 package weco.api.search.works
 
-import weco.api.search.fixtures.TestDocumentFixtures
-
-class WorksTestInvisible extends ApiWorksTestBase with TestDocumentFixtures {
+class WorksTestInvisible extends ApiWorksTestBase {
   it("returns an HTTP 410 Gone if looking up a work with visible = false") {
     withWorksApi {
       case (worksIndex, routes) =>

@@ -1,18 +1,13 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.{EitherValues, OptionValues}
-import weco.api.search.elasticsearch.{
-  DocumentNotFoundError,
-  ElasticsearchService,
-  IndexNotFoundError
-}
+import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
 
@@ -23,8 +18,6 @@ class ImagesServiceTest
     with ScalaFutures
     with IndexFixtures
     with EitherValues
-    with OptionValues
-    with IdentifiersGenerators
     with TestDocumentFixtures {
 
   val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -56,7 +49,7 @@ class ImagesServiceTest
 
     it("returns a DocumentNotFoundError if no image can be found") {
       withLocalImagesIndex { index =>
-        val id = createCanonicalId
+        val id = CanonicalId("nopenope")
         val future = imagesService.findById(id)(index)
 
         whenReady(future) {
@@ -67,7 +60,7 @@ class ImagesServiceTest
 
     it("returns an ElasticsearchError if Elasticsearch returns an error") {
       val index = createIndex
-      val future = imagesService.findById(createCanonicalId)(index)
+      val future = imagesService.findById(CanonicalId("nopenope"))(index)
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]
@@ -204,7 +197,7 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            imageId = createCanonicalId.underlying
+            imageId = "nopenope"
           )
 
       whenReady(future) {

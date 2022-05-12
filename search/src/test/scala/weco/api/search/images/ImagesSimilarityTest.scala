@@ -1,8 +1,6 @@
 package weco.api.search.images
 
-import weco.api.search.fixtures.TestDocumentFixtures
-
-class ImagesSimilarityTest extends ApiImagesTestBase with TestDocumentFixtures {
+class ImagesSimilarityTest extends ApiImagesTestBase {
   it("includes visually similar images with ?include=visuallySimilar") {
     withImagesApi {
       case (imagesIndex, routes) =>

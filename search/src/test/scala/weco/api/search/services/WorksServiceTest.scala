@@ -12,7 +12,6 @@ import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
 import weco.catalogue.internal_model.work.Format
@@ -27,7 +26,6 @@ class WorksServiceTest
     with Matchers
     with EitherValues
     with SearchOptionsGenerators
-    with IdentifiersGenerators
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
@@ -359,7 +357,7 @@ class WorksServiceTest
 
     it("returns a DocumentNotFoundError if there is no work") {
       withLocalWorksIndex { index =>
-        val id = createCanonicalId
+        val id = CanonicalId("nopenope")
         val future = worksService.findById(id = id)(index)
 
         whenReady(future) {
@@ -370,7 +368,7 @@ class WorksServiceTest
 
     it("returns an ElasticsearchError if there's an Elasticsearch error") {
       val index = createIndex
-      val future = worksService.findById(id = createCanonicalId)(index)
+      val future = worksService.findById(id = CanonicalId("nopenope"))(index)
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]

@@ -1,8 +1,6 @@
 package weco.api.search.works
 
-import weco.api.search.fixtures.TestDocumentFixtures
-
-class WorksTestDeleted extends ApiWorksTestBase with TestDocumentFixtures {
+class WorksTestDeleted extends ApiWorksTestBase {
   it("returns an HTTP 410 Gone if looking up a deleted work") {
     withWorksApi {
       case (worksIndex, routes) =>

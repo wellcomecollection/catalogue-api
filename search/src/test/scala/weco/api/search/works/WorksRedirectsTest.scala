@@ -1,8 +1,6 @@
 package weco.api.search.works
 
-import weco.api.search.fixtures.TestDocumentFixtures
-
-class WorksRedirectsTest extends ApiWorksTestBase with TestDocumentFixtures {
+class WorksRedirectsTest extends ApiWorksTestBase {
   it("returns a TemporaryRedirect if looking up a redirected work") {
     withWorksApi {
       case (worksIndex, routes) =>
