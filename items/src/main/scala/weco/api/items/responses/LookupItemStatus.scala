@@ -11,8 +11,6 @@ import weco.http.ErrorDirectives
 import scala.concurrent.{ExecutionContext, Future}
 
 trait LookupItemStatus extends ErrorDirectives {
-  import weco.catalogue.display_model.Implicits._
-
   implicit val ec: ExecutionContext
 
   val itemUpdateService: ItemUpdateService

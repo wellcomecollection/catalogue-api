@@ -1,8 +1,8 @@
 package weco.api.items.services
 
+import io.circe.Json
+import weco.api.items.json.JsonOps
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.work.DisplayItem
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -12,16 +12,13 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
-)(implicit executionContext: ExecutionContext) {
+)(implicit executionContext: ExecutionContext) extends JsonOps {
 
-  type ItemsWithIndex = Seq[(DisplayItem, Int)]
+  type ItemsWithIndex = Seq[(Json, Int)]
 
   private final val itemUpdatesMap = itemUpdaters
     .map(updater => updater.identifierType.id -> updater)
     .toMap
-
-  def getSrcId(item: DisplayItem): Option[DisplayIdentifier] =
-    item.identifiers.headOption
 
   /** Updates a tuple of Item and index preserving the original index
     *
@@ -29,7 +26,7 @@ class ItemUpdateService(
     */
   private def preservedOrderItemsUpdate(
     itemsWithIndex: ItemsWithIndex,
-    updateFunction: Seq[DisplayItem] => Future[Seq[DisplayItem]]
+    updateFunction: Seq[Json] => Future[Seq[Json]]
   ): Future[ItemsWithIndex] = {
     val items = itemsWithIndex.map(_._1)
 
@@ -37,12 +34,12 @@ class ItemUpdateService(
       // Construct a lookup from SourceIdentifier -> index
       val updatedItemsWithIndex = itemsWithIndex
         .map {
-          case (item, index) => getSrcId(item) -> index
+          case (item, index) => item.identifier -> index
         }
         .flatMap {
           // Add the correct index for an item by SourceIdentifier
           case (srcId, index) =>
-            updatedItems.find(getSrcId(_) == srcId).map { updatedItem =>
+            updatedItems.find(_.identifier == srcId).map { updatedItem =>
               (updatedItem, index)
             }
         }
@@ -65,13 +62,11 @@ class ItemUpdateService(
     *
     *  @return a sequence of updated items
     */
-  def updateItems(
-    work: CatalogueWork
-  ): Future[Seq[DisplayItem]] = {
+  def updateItems(work: CatalogueWork): Future[Seq[Json]] = {
     val items = work.items
 
     val groupedItems = items.zipWithIndex.groupBy {
-      case (item, _) => getSrcId(item).map(_.identifierType.id)
+      case (item, _) => item.identifierType
     }
 
     Future.sequence {

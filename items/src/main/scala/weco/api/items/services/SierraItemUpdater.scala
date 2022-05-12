@@ -1,12 +1,11 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
+import io.circe.Json
+import weco.api.items.json.JsonOps
 import weco.sierra.http.SierraSource
-import weco.api.stacks.models.SierraItemIdentifier
-import weco.catalogue.display_model.locations.{
-  DisplayAccessCondition,
-  DisplayPhysicalLocation
-}
+import weco.api.stacks.models.{CatalogueIdentifierType, SierraItemIdentifier}
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayPhysicalLocation}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
@@ -24,12 +23,12 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class SierraItemUpdater(sierraSource: SierraSource)(
   implicit executionContext: ExecutionContext
-) extends ItemUpdater
+) extends ItemUpdater with JsonOps
     with Logging {
 
   import weco.api.stacks.models.SierraItemDataOps._
 
-  val identifierType = IdentifierType.SierraSystemNumber
+  val identifierType = CatalogueIdentifierType("sierra-system-number")
 
   /** Updates the AccessCondition for a single item
     *
@@ -41,9 +40,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     *
     */
   private def updateAccessCondition(
-    item: DisplayItem,
+    item: Json,
     accessCondition: AccessCondition
-  ): DisplayItem = {
+  ): Json = {
     val updatedItemLocations = item.locations.map {
       case physicalLocation: DisplayPhysicalLocation =>
         physicalLocation.copy(
@@ -87,9 +86,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       }
     } yield accessConditions
 
-  def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
+  def updateItems(items: Seq[Json]): Future[Seq[Json]] = {
     val itemMap = items.map { item =>
-      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
+      SierraItemIdentifier.fromSourceIdentifier(item.identifier.get) -> item
     } toMap
 
     val accessConditions = for {

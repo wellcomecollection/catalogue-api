@@ -11,9 +11,11 @@ trait JsonOps {
 
   implicit class CatalogueJsonOps(json: Json) {
     def identifierType: Option[String] =
-      json.as[HasIdentifiers] match {
-        case Right(HasIdentifiers(identifiers)) => identifiers.headOption.map(_.identifierType.id)
+      json.identifier.map(_.identifierType.id)
 
+    def identifier: Option[CatalogueIdentifier] =
+      json.as[HasIdentifiers] match {
+        case Right(HasIdentifiers(identifiers)) => identifiers.headOption
         case _ => None
       }
   }
