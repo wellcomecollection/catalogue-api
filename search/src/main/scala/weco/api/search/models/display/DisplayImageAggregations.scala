@@ -3,12 +3,12 @@ package weco.api.search.models.display
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto._
-import weco.api.search.models
 import weco.api.search.models.{Aggregation, ImageAggregations}
 import weco.catalogue.display_model.locations.DisplayLicense
 import weco.catalogue.display_model.work.{DisplayAbstractAgent, DisplayGenre}
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
+import weco.http.json.DisplayJsonUtil._
 
 case class DisplayImageAggregations(
   license: Option[DisplayAggregation[DisplayLicense]],
