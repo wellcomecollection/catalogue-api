@@ -72,7 +72,7 @@ object DisplayWorkAggregations {
         displayAggregation(aggs.availabilities, DisplayAvailability.apply)
     )
 
-  def whenRequestPresent[T](
+  private def whenRequestPresent[T](
     requests: Seq[WorkAggregationRequest],
     conditionalRequest: WorkAggregationRequest
   )(property: Option[T]): Option[T] =
