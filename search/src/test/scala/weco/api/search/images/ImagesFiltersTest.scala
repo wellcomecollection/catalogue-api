@@ -1,9 +1,8 @@
 package weco.api.search.images
 
 import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.work.generators.GenreGenerators
 
-class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
+class ImagesFiltersTest extends ApiImagesTestBase {
   describe("filtering images by license") {
     it("filters by license") {
       withImagesApi {
@@ -75,38 +74,18 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
   }
 
   describe("filtering images by source genres") {
-    val carrotCounselling = createGenreWith("Carrot counselling")
-    val dodoDivination = createGenreWith("Dodo divination")
-    val emuEntrepreneurship = createGenreWith("Emu entrepreneurship")
-    val falconFinances = createGenreWith("Falcon finances")
-
-    val carrotCounsellingImage = createImageData.toIndexedImageWith(
-      parentWork = identifiedWork().genres(List(carrotCounselling))
-    )
-    val redirectedDodoDivinationImage = createImageData.toIndexedImageWith(
-      redirectedWork = Some(identifiedWork().genres(List(dodoDivination)))
-    )
-    val emuEntrepreneurShipAndFalconFinancesImage =
-      createImageData.toIndexedImageWith(
-        parentWork =
-          identifiedWork().genres(List(emuEntrepreneurship, falconFinances))
-      )
-
-    val images = List(
-      carrotCounsellingImage,
-      redirectedDodoDivinationImage,
-      emuEntrepreneurShipAndFalconFinancesImage
-    )
-
     it("filters by genres from the canonical source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"$rootPath/images?source.genres.label=Carrot%20counselling"
+            path = s"$rootPath/images?source.genres.label=Carrot%20counselling"
           ) {
-            Status.OK -> imagesListResponse(List(carrotCounsellingImage))
+            Status.OK -> newImagesListResponse(ids = Seq("images.examples.genre-filter-tests.0"))
           }
       }
     }
@@ -114,12 +93,15 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
     it("does not filter by genres from the redirected source work") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"$rootPath/images?source.genres.label=Dodo%20divination"
+            path = s"$rootPath/images?source.genres.label=Dodo%20divination"
           ) {
-            Status.OK -> imagesListResponse(Nil)
+            Status.OK -> emptyJsonResult
           }
       }
     }
@@ -127,16 +109,18 @@ class ImagesFiltersTest extends ApiImagesTestBase with GenreGenerators {
     it("filters by multiple genres") {
       withImagesApi {
         case (imagesIndex, routes) =>
-          insertImagesIntoElasticsearch(imagesIndex, images: _*)
+          indexTestImages(
+            imagesIndex, (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+          )
+
           assertJsonResponse(
             routes,
-            s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship",
-            unordered = true
+            path = s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
           ) {
-            Status.OK -> imagesListResponse(
-              List(
-                carrotCounsellingImage,
-                emuEntrepreneurShipAndFalconFinancesImage
+            Status.OK -> newImagesListResponse(ids =
+              Seq(
+                "images.examples.genre-filter-tests.0",
+                "images.examples.genre-filter-tests.2"
               )
             )
           }
