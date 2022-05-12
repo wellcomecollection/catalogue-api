@@ -14,7 +14,7 @@ class WorksFiltersTest
   it("combines multiple filters") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestWorks(worksIndex, worksEverything: _*)
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
         assertJsonResponse(
           routes,
@@ -31,7 +31,7 @@ class WorksFiltersTest
   it("filters works by item LocationType") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestWorks(
+        indexTestDocuments(
           worksIndex,
           "work.items-with-location-types.0",
           "work.items-with-location-types.1",
@@ -57,7 +57,7 @@ class WorksFiltersTest
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksFormat: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
           assertJsonResponse(
             routes,
@@ -73,7 +73,7 @@ class WorksFiltersTest
     it("filters by multiple formats") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksFormat: _*)
+          indexTestDocuments(worksIndex, worksFormat: _*)
 
           assertJsonResponse(
             routes,
@@ -102,7 +102,7 @@ class WorksFiltersTest
     it("when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?type=Collection") {
             Status.OK -> worksListResponse(
@@ -115,7 +115,7 @@ class WorksFiltersTest
     it("filters by multiple types") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
@@ -134,7 +134,7 @@ class WorksFiltersTest
     it("when searching works") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
@@ -163,7 +163,7 @@ class WorksFiltersTest
     it("filters by date range") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, productionWorks: _*)
+          indexTestDocuments(worksIndex, productionWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -180,7 +180,7 @@ class WorksFiltersTest
     it("filters by from date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, productionWorks: _*)
+          indexTestDocuments(worksIndex, productionWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -201,7 +201,7 @@ class WorksFiltersTest
     it("filters by to date") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, productionWorks: _*)
+          indexTestDocuments(worksIndex, productionWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -247,7 +247,7 @@ class WorksFiltersTest
     it("filters by language") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, languageWorks: _*)
+          indexTestDocuments(worksIndex, languageWorks: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?languages=eng") {
             Status.OK -> worksListResponse(
@@ -266,7 +266,7 @@ class WorksFiltersTest
     it("filters by multiple comma separated languages") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, languageWorks: _*)
+          indexTestDocuments(worksIndex, languageWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -331,7 +331,7 @@ class WorksFiltersTest
     it("filters by genres as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
             (query: String, expectedIds: Seq[String], clue: String) =>
@@ -395,7 +395,7 @@ class WorksFiltersTest
     it("filters by subjects as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
             (query: String, expectedIds: Seq[String], clue: String) =>
@@ -458,7 +458,7 @@ class WorksFiltersTest
     it("filters by contributors as a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
             (query: String, expectedIds: Seq[String], clue: String) =>
@@ -480,7 +480,7 @@ class WorksFiltersTest
     it("filters by license") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksLicensed: _*)
+          indexTestDocuments(worksIndex, worksLicensed: _*)
 
           assertJsonResponse(
             routes,
@@ -500,7 +500,7 @@ class WorksFiltersTest
     it("filters by multiple licenses") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksLicensed: _*)
+          indexTestDocuments(worksIndex, worksLicensed: _*)
 
           assertJsonResponse(
             routes,
@@ -523,7 +523,7 @@ class WorksFiltersTest
     it("filters by a sourceIdentifier") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -539,7 +539,7 @@ class WorksFiltersTest
     it("filters by multiple sourceIdentifiers") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -556,7 +556,7 @@ class WorksFiltersTest
     it("filters by an otherIdentifier") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -572,7 +572,7 @@ class WorksFiltersTest
     it("filters by multiple otherIdentifiers") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -589,7 +589,7 @@ class WorksFiltersTest
     it("filters by mixed identifiers") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -611,7 +611,7 @@ class WorksFiltersTest
     it("includes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
@@ -634,7 +634,7 @@ class WorksFiltersTest
     it("includes works which are licensed resources") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
@@ -653,7 +653,7 @@ class WorksFiltersTest
     it("excludes works by access status") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, works: _*)
 
           assertJsonResponse(
             routes,
@@ -674,7 +674,7 @@ class WorksFiltersTest
     it("filters by availability ID") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -690,7 +690,7 @@ class WorksFiltersTest
     it("filters by multiple comma-separated availability IDs") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything ++ visibleWorks: _*)
+          indexTestDocuments(worksIndex, worksEverything ++ visibleWorks: _*)
 
           assertJsonResponse(
             routes,
@@ -712,7 +712,7 @@ class WorksFiltersTest
     it("filters partOf by id") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path = s"$rootPath/works?partOf=dza7om88") {
             Status.OK -> worksListResponse(
@@ -725,7 +725,7 @@ class WorksFiltersTest
     it("filters partOf by title") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(
             routes,
@@ -798,7 +798,7 @@ class WorksFiltersTest
     ): Assertion =
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestWorks(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksEverything: _*)
 
           assertJsonResponse(routes, path) {
             Status.OK -> worksListResponse(ids = expectedIds)

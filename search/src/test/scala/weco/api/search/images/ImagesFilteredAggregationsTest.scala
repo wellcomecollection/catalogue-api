@@ -6,7 +6,7 @@ class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
   it("filters and aggregates by license") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        indexTestImages(
+        indexTestDocuments(
           imagesIndex,
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )

@@ -47,7 +47,7 @@ class SnapshotServiceTest
   it("completes a snapshot generation") {
     withFixtures {
       case (snapshotService, worksIndex, bucket) =>
-        indexTestWorks(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
         val snapshotJob = SnapshotJob(
@@ -167,7 +167,7 @@ class SnapshotServiceTest
   it("returns a failed future if the S3 upload fails") {
     withFixtures {
       case (snapshotService, worksIndex, _) =>
-        indexTestWorks(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, works: _*)
 
         val snapshotJob = SnapshotJob(
           s3Location = createS3ObjectLocation,
