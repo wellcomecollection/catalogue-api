@@ -28,7 +28,7 @@ class AggregationsTest
 
   it("returns more than 10 format aggregations") {
     withLocalWorksIndex { index =>
-      indexTestWorks(
+      indexTestDocuments(
         index,
         (0 to 22).map(i => s"works.every-format.$i"): _*
       )
@@ -47,7 +47,7 @@ class AggregationsTest
 
   it("aggregate over filtered dates, using only 'from' date") {
     withLocalWorksIndex { index =>
-      indexTestWorks(
+      indexTestDocuments(
         index,
         (0 to 5).map(i => s"works.production.multi-year.$i"): _*
       )
@@ -80,7 +80,7 @@ class AggregationsTest
 
     it("applies filters to their related aggregations") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
@@ -124,7 +124,7 @@ class AggregationsTest
 
     it("applies all non-related filters to aggregations") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
@@ -168,7 +168,7 @@ class AggregationsTest
 
     it("applies all filters to the results") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, works: _*)
+        indexTestDocuments(index, works: _*)
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =

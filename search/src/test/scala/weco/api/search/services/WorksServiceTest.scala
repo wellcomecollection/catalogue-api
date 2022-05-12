@@ -346,7 +346,7 @@ class WorksServiceTest
   describe("findById") {
     it("gets a Work by id") {
       withLocalWorksIndex { index =>
-        indexTestWorks(index, "works.visible.0")
+        indexTestDocuments(index, "works.visible.0")
 
         val future = worksService.findById(id = CanonicalId("7sjip63h"))(index)
 
@@ -389,7 +389,7 @@ class WorksServiceTest
     worksSearchOptions: WorkSearchOptions = createWorksSearchOptions
   ): Assertion =
     withLocalWorksIndex { index =>
-      indexTestWorks(index, allWorks: _*)
+      indexTestDocuments(index, allWorks: _*)
 
       val future = worksService.listOrSearch(index, worksSearchOptions)
 

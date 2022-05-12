@@ -6,7 +6,7 @@ class WorksTestInvisible extends ApiWorksTestBase with TestDocumentFixtures {
   it("returns an HTTP 410 Gone if looking up a work with visible = false") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestWorks(worksIndex, "works.invisible.0")
+        indexTestDocuments(worksIndex, "works.invisible.0")
 
         assertJsonResponse(routes, path = s"$rootPath/works/ocx5hlvi") {
           Status.Gone -> deleted
@@ -17,7 +17,7 @@ class WorksTestInvisible extends ApiWorksTestBase with TestDocumentFixtures {
   it("excludes invisible works from results") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestWorks(worksIndex, invisibleWorks: _*)
+        indexTestDocuments(worksIndex, invisibleWorks: _*)
 
         assertJsonResponse(routes, path = s"$rootPath/works") {
           Status.OK -> emptyJsonResult

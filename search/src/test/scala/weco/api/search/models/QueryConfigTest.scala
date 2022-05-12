@@ -17,7 +17,7 @@ class QueryConfigTest
   describe("fetchFromIndex") {
     it("fetches query config from a given index") {
       withLocalImagesIndex { index =>
-        indexTestImages(index, "images.similar-features-and-palettes.0")
+        indexTestDocuments(index, "images.similar-features-and-palettes.0")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe List(
@@ -58,7 +58,7 @@ class QueryConfigTest
 
     it("returns the default config if the data is not in the expected format") {
       withLocalImagesIndex { index =>
-        indexTestImages(index, "images.inferred-data.wrong-format")
+        indexTestDocuments(index, "images.inferred-data.wrong-format")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes
@@ -67,7 +67,7 @@ class QueryConfigTest
 
     it("returns the default config if the data is not found") {
       withLocalImagesIndex { index =>
-        indexTestImages(index, "images.inferred-data.none")
+        indexTestDocuments(index, "images.inferred-data.none")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes
