@@ -8,7 +8,11 @@ import org.scalatest.matchers.should.Matchers
 import weco.fixtures.LocalResources
 import weco.json.utils.JsonAssertions
 
-class SearchQueryJsonTest extends AnyFunSpec with Matchers with JsonAssertions with LocalResources {
+class SearchQueryJsonTest
+    extends AnyFunSpec
+    with Matchers
+    with JsonAssertions
+    with LocalResources {
   it("matches the works JSON") {
     val fileJson = readResource("WorksMultiMatcherQuery.json")
 

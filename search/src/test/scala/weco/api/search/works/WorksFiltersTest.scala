@@ -5,9 +5,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 
 import java.net.URLEncoder
 
-class WorksFiltersTest
-    extends ApiWorksTestBase
-    with TableDrivenPropertyChecks {
+class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
     withWorksApi {
