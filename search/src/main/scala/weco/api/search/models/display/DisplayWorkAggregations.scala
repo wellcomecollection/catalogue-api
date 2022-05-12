@@ -87,6 +87,6 @@ object DisplayWorkAggregations {
     display: T => D
   ): Option[DisplayAggregation[D]] =
     maybeAgg.map {
-      models.display.DisplayAggregation(_, display)
+      DisplayAggregation(_, display)
     }
 }
