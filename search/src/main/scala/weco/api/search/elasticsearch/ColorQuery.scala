@@ -48,21 +48,21 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
           val nValBins = nBins(1)
           colors
             .map {
-              case c if c.value < valMin => 0
-              case c if c.saturation < satMin =>
+              case HsvColor(_, _, v) if v < valMin => 0
+              case HsvColor(_, s, v) if s < satMin =>
                 1 + math
-                  .floor(nValBins * (c.value - valMin) / (1 - valMin + minBinWidth))
+                  .floor(nValBins * (v - valMin) / (1 - valMin + minBinWidth))
                   .toInt
-              case c =>
+              case HsvColor(h, s, v) =>
                 def idx(x: Float, i: Int): Int = {
                   val num = nBins(i) * (x - binMinima(i))
                   val denom = 1 - binMinima(i) + minBinWidth
                   math.floor(num / denom).toInt
                 }
                 1 + nValBins +
-                  idx(c.hue, 0) +
-                  nBins(0) * idx(c.saturation, 1) +
-                  nBins(0) * nBins(1) * idx(c.value, 2)
+                  idx(h, 0) +
+                  nBins(0) * idx(s, 1) +
+                  nBins(0) * nBins(1) * idx(v, 2)
             }
             .map((_, i))
       }
