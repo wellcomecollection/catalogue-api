@@ -1,14 +1,12 @@
 package weco.api.search.models
 
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
-import weco.catalogue.internal_model.identifiers.IdState.Minted
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
+import io.circe.Json
 
 case class ImageAggregations(
-  license: Option[Aggregation[License]] = None,
-  sourceContributorAgents: Option[Aggregation[AbstractAgent[Minted]]] = None,
-  sourceGenres: Option[Aggregation[Genre[Minted]]] = None
+  license: Option[Aggregation[Json]] = None,
+  sourceContributorAgents: Option[Aggregation[Json]] = None,
+  sourceGenres: Option[Aggregation[Json]] = None
 )
 
 object ImageAggregations extends ElasticAggregations {
@@ -17,11 +15,9 @@ object ImageAggregations extends ElasticAggregations {
     if (e4sAggregations.data.nonEmpty) {
       Some(
         ImageAggregations(
-          license = e4sAggregations.decodeAgg[License]("license"),
-          sourceContributorAgents = e4sAggregations
-            .decodeAgg[AbstractAgent[Minted]]("sourceContributorAgents"),
-          sourceGenres =
-            e4sAggregations.decodeAgg[Genre[Minted]]("sourceGenres")
+          license = e4sAggregations.decodeJsonAgg("license"),
+          sourceContributorAgents = e4sAggregations.decodeJsonAgg("sourceContributorAgents"),
+          sourceGenres = e4sAggregations.decodeJsonAgg("sourceGenres")
         )
       )
     } else {

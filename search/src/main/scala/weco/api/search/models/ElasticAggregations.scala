@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
   Aggregations => Elastic4sAggregations
 }
 import grizzled.slf4j.Logging
-import io.circe.Decoder
+import io.circe.{Decoder, Json}
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
@@ -50,6 +50,24 @@ trait ElasticAggregations extends Logging {
           ).recoverWith {
             case err =>
               warn("Failed to parse aggregation from ES", err)
+              Failure(err)
+          }.toOption
+        )
+
+    // Note: eventually this method will replace the decodeAgg method above, but we have
+    // them both while images/works aggregations are handled differently.
+    def decodeJsonAgg(name: String): Option[Aggregation[Json]] =
+      aggregations
+        .getAgg(name)
+        .flatMap(
+          _.safeTo[Aggregation[Json]](
+            (json: String) => {
+              AggregationMapping.jsonAggregationParse(json)
+            }
+          ).recoverWith {
+            case err =>
+              warn("Failed to parse aggregation from ES", err)
+              println(s"Failed to parse aggregation from ES: $err")
               Failure(err)
           }.toOption
         )

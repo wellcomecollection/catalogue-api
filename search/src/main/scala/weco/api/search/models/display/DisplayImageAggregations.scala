@@ -1,42 +1,28 @@
 package weco.api.search.models.display
 
-import io.circe.Encoder
+import io.circe.{Encoder, Json}
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto._
 import weco.api.search.models.{Aggregation, ImageAggregations}
-import weco.catalogue.display_model.locations.DisplayLicense
-import weco.catalogue.display_model.work.{DisplayAbstractAgent, DisplayGenre}
-import weco.catalogue.internal_model.identifiers.IdState.Minted
-import weco.catalogue.internal_model.work.{AbstractAgent, Genre}
-import weco.http.json.DisplayJsonUtil._
+import weco.json.JsonUtil._
 
 case class DisplayImageAggregations(
-  license: Option[DisplayAggregation[DisplayLicense]],
-  `source.contributors.agent.label`: Option[
-    DisplayAggregation[DisplayAbstractAgent]
-  ] = None,
-  `source.genres.label`: Option[DisplayAggregation[DisplayGenre]],
+  license: Option[DisplayAggregation[Json]],
+  `source.contributors.agent.label`: Option[DisplayAggregation[Json]],
+  `source.genres.label`: Option[DisplayAggregation[Json]],
   @JsonKey("type") ontologyType: String = "Aggregations"
 )
 
 object DisplayImageAggregations {
-  import weco.catalogue.display_model.Implicits._
-
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder
 
   def apply(aggs: ImageAggregations): DisplayImageAggregations =
     DisplayImageAggregations(
-      license = displayAggregation(aggs.license, DisplayLicense.apply),
+      license = displayAggregation(aggs.license, identity[Json]),
       `source.contributors.agent.label` =
-        displayAggregation[AbstractAgent[Minted], DisplayAbstractAgent](
-          aggs.sourceContributorAgents,
-          DisplayAbstractAgent(_, includesIdentifiers = false)
-        ),
-      `source.genres.label` = displayAggregation[Genre[Minted], DisplayGenre](
-        aggs.sourceGenres,
-        DisplayGenre(_, includesIdentifiers = false)
-      )
+        displayAggregation(aggs.sourceContributorAgents, identity[Json]),
+      `source.genres.label` = displayAggregation(aggs.sourceGenres, identity[Json])
     )
 
   private def displayAggregation[T, D](
