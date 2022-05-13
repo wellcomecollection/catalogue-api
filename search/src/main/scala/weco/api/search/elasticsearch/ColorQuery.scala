@@ -1,9 +1,10 @@
 package weco.api.search.elasticsearch
 
-import java.awt.Color
+import java.awt.{Color => AwtColor}
 
 import com.sksamuel.elastic4s.ElasticApi._
 import com.sksamuel.elastic4s.requests.searches.queries.MoreLikeThisQuery
+import weco.api.search.models.Color
 
 class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
   require(
@@ -40,7 +41,7 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
 
   // This replicates the logic in palette_encoder.py:get_bin_index
   private def getColorsSignature(
-    colors: Seq[ColorQuery.Hsv],
+    colors: Seq[Color.Hsv],
     binIndices: Seq[Int]
   ): Seq[String] =
     binIndices
@@ -51,21 +52,21 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
           val nValBins = nBins(1)
           colors
             .map {
-              case (_, _, v) if v < valMin => 0
-              case (_, s, v) if s < satMin =>
+              case c if c.value < valMin => 0
+              case c if c.saturation < satMin =>
                 1 + math
-                  .floor(nValBins * (v - valMin) / (1 - valMin + minBinWidth))
+                  .floor(nValBins * (c.value - valMin) / (1 - valMin + minBinWidth))
                   .toInt
-              case (h, s, v) =>
+              case c =>
                 def idx(x: Float, i: Int): Int = {
                   val num = nBins(i) * (x - binMinima(i))
                   val denom = 1 - binMinima(i) + minBinWidth
                   math.floor(num / denom).toInt
                 }
                 1 + nValBins +
-                  idx(h, 0) +
-                  nBins(0) * idx(s, 1) +
-                  nBins(0) * nBins(1) * idx(v, 2)
+                  idx(c.hue, 0) +
+                  nBins(0) * idx(c.saturation, 1) +
+                  nBins(0) * nBins(1) * idx(c.value, 2)
             }
             .map((_, i))
       }
@@ -76,16 +77,15 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
 }
 
 object ColorQuery {
-  type Hsv = (Float, Float, Float)
-
-  def hexToHsv(hex: String): Hsv = {
+  def hexToHsv(hex: String): Color.Hsv = {
     val n = Integer.parseInt(hex, 16)
     val (r, g, b) = (
       (n >> 16) & 0xFF,
       (n >> 8) & 0xFF,
       n & 0xFF
     )
-    val hsv = Color.RGBtoHSB(r, g, b, null)
-    (hsv(0), hsv(1), hsv(2))
+    val hsv = AwtColor.RGBtoHSB(r, g, b, null)
+
+    Color.Hsv(hue = hsv(0), saturation = hsv(1), value = hsv(2))
   }
 }
