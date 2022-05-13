@@ -40,9 +40,6 @@ trait DisplaySerialisationTestBase {
       Json.fromString(s).noSpaces
   }
 
-  def locations(locations: List[Location]) =
-    locations.map(location).mkString(",")
-
   def location(loc: Location) =
     loc match {
       case l: DigitalLocation  => digitalLocation(l)

@@ -1,0 +1,25 @@
+{
+  "id": "eccsqg7j",
+  "title": "title-WK4LB1Ndv6",
+  "alternativeTitles": [],
+  "identifiers": [
+    {
+      "identifierType": {
+        "id": "calm-record-id",
+        "label": "Calm RecordIdentifier",
+        "type": "IdentifierType"
+      },
+      "value": "5WKosCzlNt",
+      "type": "Identifier"
+    }
+  ],
+  "items": [],
+  "availabilities": [
+    {
+      "id": "closed-stores",
+      "label": "Closed stores",
+      "type": "Availability"
+    }
+  ],
+  "type": "Work"
+}

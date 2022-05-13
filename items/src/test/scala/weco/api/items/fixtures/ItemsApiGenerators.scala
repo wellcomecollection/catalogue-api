@@ -1,25 +1,21 @@
 package weco.api.items.fixtures
 
 import akka.http.scaladsl.model._
-import weco.catalogue.display_model.work.DisplayWork
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
   LocationType,
   PhysicalLocation
 }
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
-import weco.catalogue.internal_model.work.{Item, Work, WorkState}
+import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.work.generators.ItemsGenerators
+import weco.fixtures.LocalResources
 import weco.http.json.DisplayJsonUtil
-import weco.http.json.DisplayJsonUtil._
 import weco.http.models.DisplayError
 import weco.sierra.http.SierraSource
 import weco.sierra.models.identifiers.SierraItemNumber
 
-trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
+trait ItemsApiGenerators extends ItemsGenerators with LocalResources {
   def buildEntry(
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
@@ -79,20 +75,11 @@ trait ItemsApiGenerators extends WorkGenerators with ItemsGenerators {
       uri = Uri(s"http://catalogue:9001/works/$id?include=identifiers,items")
     )
 
-  // This is to make sure our locations look like locations from the catalogue API,
-  // and not some other serialisation, e.g.
-  //
-  //    "locations": [ { "displayPhysicalLocation": { … } }, … ]
-  //
-  import weco.catalogue.display_model.Implicits._
-
-  def catalogueWorkResponse(
-    work: Work.Visible[WorkState.Indexed]
-  ): HttpResponse =
+  def catalogueWorkResponse(resourceName: String): HttpResponse =
     HttpResponse(
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
-        DisplayJsonUtil.toJson(DisplayWork(work))
+        readResource(resourceName)
       )
     )
 

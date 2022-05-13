@@ -1,8 +1,9 @@
-package weco.api.search.models
+package weco.api.search.models.display
 
-import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
+import io.circe.generic.extras.semiauto._
+import weco.api.search.models.{Aggregation, ImageAggregations}
 import weco.catalogue.display_model.locations.DisplayLicense
 import weco.catalogue.display_model.work.{DisplayAbstractAgent, DisplayGenre}
 import weco.catalogue.internal_model.identifiers.IdState.Minted

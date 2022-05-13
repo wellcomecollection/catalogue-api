@@ -4,9 +4,6 @@ import io.circe.Json
 import io.circe.syntax._
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.request._
-import weco.catalogue.display_model.Implicits._
-import weco.catalogue.display_model.work.DisplayWork
-import weco.catalogue.internal_model.work.{Work, WorkState}
 
 trait CatalogueJsonUtil {
   import JsonOps._
@@ -40,12 +37,6 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.partOf, "partOf")
         .removeKeyIf(!includes.precededBy, "precededBy")
         .removeKeyIf(!includes.succeededBy, "succeededBy")
-  }
-
-  implicit class WorkOps(w: Work.Visible[WorkState.Indexed]) {
-    def asJson(includes: WorksIncludes): Json =
-      DisplayWork(w).asJson.deepDropNullValues
-        .withIncludes(includes)
   }
 
   implicit class ImageJsonOps(json: Json) {

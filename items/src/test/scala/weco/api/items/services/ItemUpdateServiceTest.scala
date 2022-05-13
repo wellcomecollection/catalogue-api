@@ -20,6 +20,7 @@ import weco.catalogue.internal_model.locations.{
   AccessStatus
 }
 import weco.catalogue.internal_model.work.Item
+import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -37,6 +38,7 @@ class ItemUpdateServiceTest
     with ItemsApiGenerators
     with IntegrationPatience
     with SierraIdentifierGenerators
+    with WorkGenerators
     with SierraSourceFixture {
 
   def withSierraItemUpdater[R](

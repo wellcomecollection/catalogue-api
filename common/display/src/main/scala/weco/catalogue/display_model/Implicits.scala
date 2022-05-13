@@ -5,7 +5,6 @@ import io.circe.{Decoder, Encoder, HCursor}
 import io.circe.syntax._
 import weco.http.json.DisplayJsonUtil._
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.image.DisplayImage
 import weco.catalogue.display_model.languages.DisplayLanguage
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work._
@@ -72,11 +71,7 @@ object Implicits {
   implicit val _enc05: Encoder[DisplayIdentifier] = deriveConfiguredEncoder
   implicit val _enc06: Encoder[DisplaySubject] = deriveConfiguredEncoder
   implicit val _enc07: Encoder[DisplayGenre] = deriveConfiguredEncoder
-  implicit val _enc08: Encoder[DisplayProductionEvent] = deriveConfiguredEncoder
   implicit val _enc09: Encoder[DisplayItem] = deriveConfiguredEncoder
-  implicit val _enc10: Encoder[DisplayNote] = deriveConfiguredEncoder
-  implicit val _enc11: Encoder[DisplayWork] = deriveConfiguredEncoder
-  implicit val _enc12: Encoder[DisplayImage] = deriveConfiguredEncoder
 
   implicit val _dec00: Decoder[DisplayAccessCondition] = deriveConfiguredDecoder
   implicit val _dec01: Decoder[DisplayLanguage] = deriveConfiguredDecoder
@@ -86,9 +81,5 @@ object Implicits {
   implicit val _dec05: Decoder[DisplayIdentifier] = deriveConfiguredDecoder
   implicit val _dec06: Decoder[DisplaySubject] = deriveConfiguredDecoder
   implicit val _dec07: Decoder[DisplayGenre] = deriveConfiguredDecoder
-  implicit val _dec08: Decoder[DisplayProductionEvent] = deriveConfiguredDecoder
   implicit val _dec09: Decoder[DisplayItem] = deriveConfiguredDecoder
-  implicit val _dec10: Decoder[DisplayNote] = deriveConfiguredDecoder
-  implicit val _dec11: Decoder[DisplayWork] = deriveConfiguredDecoder
-  implicit val _dec12: Decoder[DisplayImage] = deriveConfiguredDecoder
 }

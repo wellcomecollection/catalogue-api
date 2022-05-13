@@ -1,19 +1,13 @@
-package weco.api.search.models
+package weco.api.search.models.display
 
-import io.circe.generic.extras.semiauto._
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
+import io.circe.generic.extras.semiauto._
 import weco.api.search.models.request.WorkAggregationRequest
+import weco.api.search.models.{Aggregation, WorkAggregations}
 import weco.catalogue.display_model.languages.DisplayLanguage
 import weco.catalogue.display_model.locations.DisplayLicense
-import weco.catalogue.display_model.work.{
-  DisplayAbstractAgent,
-  DisplayAvailability,
-  DisplayFormat,
-  DisplayGenre,
-  DisplayPeriod,
-  DisplaySubject
-}
+import weco.catalogue.display_model.work._
 import weco.catalogue.internal_model.identifiers.IdState.Minted
 import weco.catalogue.internal_model.work.{Contributor, Genre, Subject}
 import weco.http.json.DisplayJsonUtil._
@@ -79,7 +73,7 @@ object DisplayWorkAggregations {
         displayAggregation(aggs.availabilities, DisplayAvailability.apply)
     )
 
-  def whenRequestPresent[T](
+  private def whenRequestPresent[T](
     requests: Seq[WorkAggregationRequest],
     conditionalRequest: WorkAggregationRequest
   )(property: Option[T]): Option[T] =
