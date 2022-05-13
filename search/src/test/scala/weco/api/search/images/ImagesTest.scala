@@ -27,7 +27,7 @@ class ImagesTest extends ApiImagesTestBase {
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
 
-        assertJsonResponse(routes, path = s"$rootPath/images/5vamzxd8") {
+        assertJsonResponse(routes, path = s"$rootPath/images/${getTestImageId("images.different-licenses.0")}") {
           Status.OK ->
             getDisplayImage("images.different-licenses.0")
               .withIncludes(SingleImageIncludes.none)
@@ -49,19 +49,19 @@ class ImagesTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?query=cg1whgjz"
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?query=ihnjwgMtGL"
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?query=lSY3iydrQH"
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
