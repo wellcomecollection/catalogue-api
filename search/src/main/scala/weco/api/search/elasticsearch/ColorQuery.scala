@@ -22,13 +22,11 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
 
   def apply(
     field: String,
-    hexColors: Seq[String],
+    colors: Seq[HsvColor],
     binIndices: Seq[Int] = binSizes.indices
   ): MoreLikeThisQuery =
     moreLikeThisQuery(field)
-      .likeTexts(
-        getColorsSignature(hexColors.map(HsvColor.fromHex(_).get), binIndices)
-      )
+      .likeTexts(getColorsSignature(colors, binIndices))
       .copy(
         minTermFreq = Some(1),
         minDocFreq = Some(1),
