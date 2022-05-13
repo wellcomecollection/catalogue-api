@@ -1,10 +1,8 @@
 package weco.api.search.elasticsearch
 
-import java.awt.{Color => AwtColor}
-
 import com.sksamuel.elastic4s.ElasticApi._
 import com.sksamuel.elastic4s.requests.searches.queries.MoreLikeThisQuery
-import weco.api.search.models.Color
+import weco.api.search.models.HsvColor
 
 class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
   require(
@@ -29,7 +27,7 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
   ): MoreLikeThisQuery =
     moreLikeThisQuery(field)
       .likeTexts(
-        getColorsSignature(hexColors.map(ColorQuery.hexToHsv), binIndices)
+        getColorsSignature(hexColors.map(HsvColor.fromHex(_).get), binIndices)
       )
       .copy(
         minTermFreq = Some(1),
@@ -41,7 +39,7 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
 
   // This replicates the logic in palette_encoder.py:get_bin_index
   private def getColorsSignature(
-    colors: Seq[Color.Hsv],
+    colors: Seq[HsvColor],
     binIndices: Seq[Int]
   ): Seq[String] =
     binIndices
@@ -74,18 +72,4 @@ class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
         case (binIndex, i) => s"$binIndex/$i"
       }
 
-}
-
-object ColorQuery {
-  def hexToHsv(hex: String): Color.Hsv = {
-    val n = Integer.parseInt(hex, 16)
-    val (r, g, b) = (
-      (n >> 16) & 0xFF,
-      (n >> 8) & 0xFF,
-      n & 0xFF
-    )
-    val hsv = AwtColor.RGBtoHSB(r, g, b, null)
-
-    Color.Hsv(hue = hsv(0), saturation = hsv(1), value = hsv(2))
-  }
 }

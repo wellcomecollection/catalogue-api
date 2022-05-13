@@ -9,18 +9,6 @@ class ColorQueryTest extends AnyFunSpec with Matchers {
     binMinima = Seq(0f, 10f / 256, 10f / 256)
   )
 
-  it("converts hex colors to hsv tuples") {
-    val hexes = Seq("ff0000", "00ff00", "0000ff", "00fa9a")
-    val tuples = hexes.map(ColorQuery.hexToHsv)
-
-    tuples shouldBe Seq(
-      (0f, 1f, 1f),
-      (120f / 360f, 1f, 1f),
-      (240f / 360f, 1f, 1f),
-      (0.43600f, 1f, 0.98039216f)
-    )
-  }
-
   it("creates queries for signatures with given bin sizes") {
     val hexCode = "ffff00"
     val q = colorQuery("colorField", Seq(hexCode))
