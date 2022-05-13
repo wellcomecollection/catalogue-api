@@ -9,6 +9,8 @@ import weco.api.search.models.request.{
   SingleImageIncludes
 }
 
+import scala.util.{Failure, Success}
+
 case class SingleImageParams(
   include: Option[SingleImageIncludes]
 ) extends QueryParams
@@ -86,7 +88,28 @@ object MultipleImagesParams extends QueryParamsUtils {
     }
 
   implicit val colorMustQuery: Decoder[ColorMustQuery] =
-    decodeCommaSeparated.emap(strs => Right(ColorMustQuery(strs)))
+    decodeCommaSeparated.emap { strs =>
+      val tryColors = strs.map { s =>
+        (s, HsvColor.fromHex(s))
+      }
+
+      val colors = tryColors.collect { case (_, Success(c))   => c }
+      val unparsed = tryColors.collect { case (s, Failure(_)) => s }
+
+      val errorMessage = unparsed match {
+        case Nil => ""
+        case Seq(singleColor) =>
+          s"'$singleColor' is not a valid value. Please supply a hex string."
+        case multipleColors =>
+          s"${multipleColors.map(mc => s"'$mc'").mkString(", ")} are not valid values. Please supply hex strings."
+      }
+
+      Either.cond(
+        unparsed.isEmpty,
+        right = ColorMustQuery(colors),
+        left = errorMessage
+      )
+    }
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
     decodeOneOfCommaSeparated(

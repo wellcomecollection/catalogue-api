@@ -31,6 +31,28 @@ class ImagesErrorsTest
     }
   }
 
+  describe("returns a 400 Bad Request for invalid parameters") {
+    it("rejects an invalid color parameter") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?color=%3C",
+          description =
+            s"color: '<' is not a valid value. Please supply a hex string."
+        )
+      }
+    }
+
+    it("rejects multiple invalid color parameters") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?color=%3C,ff0000,<script>",
+          description =
+            s"color: '<', '<script>' are not valid values. Please supply hex strings."
+        )
+      }
+    }
+  }
+
   it("returns a 500 error if the default index doesn't exist") {
     val elasticConfig = ElasticConfig(
       worksIndex = createIndex,
