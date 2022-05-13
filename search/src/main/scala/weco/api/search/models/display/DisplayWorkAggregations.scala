@@ -27,6 +27,7 @@ case class DisplayWorkAggregations(
 )
 
 object DisplayWorkAggregations {
+  import weco.catalogue.display_model.Implicits._
 
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder

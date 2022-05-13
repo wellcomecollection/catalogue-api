@@ -20,6 +20,7 @@ case class DisplayImageAggregations(
 )
 
 object DisplayImageAggregations {
+  import weco.catalogue.display_model.Implicits._
 
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder
