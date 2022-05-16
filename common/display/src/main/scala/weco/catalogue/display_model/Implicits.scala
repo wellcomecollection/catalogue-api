@@ -5,7 +5,6 @@ import io.circe.{Decoder, Encoder, HCursor}
 import io.circe.syntax._
 import weco.http.json.DisplayJsonUtil._
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.languages.DisplayLanguage
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work._
 
