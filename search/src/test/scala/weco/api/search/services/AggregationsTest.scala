@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.fixtures.{JsonHelpers, TestDocumentFixtures}
 import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
@@ -20,6 +20,7 @@ class AggregationsTest
     with IndexFixtures
     with PeriodGenerators
     with SearchOptionsGenerators
+    with JsonHelpers
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
@@ -93,7 +94,7 @@ class AggregationsTest
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List(
+          buckets.map(b => getKey(b.data, "label")) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -137,7 +138,7 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List(
+          buckets.map(b => getKey(b.data, "label")) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
