@@ -7,7 +7,6 @@ import weco.catalogue.display_model.locations.{
   DisplayAccessStatus,
   DisplayLocationType
 }
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.catalogue.internal_model.locations._
 import weco.json.JsonUtil._
 
@@ -39,12 +38,6 @@ trait DisplaySerialisationTestBase {
     def toJson: String =
       Json.fromString(s).noSpaces
   }
-
-  def location(loc: Location) =
-    loc match {
-      case l: DigitalLocation  => digitalLocation(l)
-      case l: PhysicalLocation => physicalLocation(l)
-    }
 
   def digitalLocation(loc: DigitalLocation): String =
     s"""{
@@ -101,17 +94,6 @@ trait DisplaySerialisationTestBase {
       "url": "${license.url}",
       "type": "License"
     }""".tidy
-
-  def identifier(identifier: SourceIdentifier) =
-    s"""{
-      "type": "Identifier",
-      "identifierType": {
-        "id": "${identifier.identifierType.id}",
-        "label": "${identifier.identifierType.label}",
-        "type": "IdentifierType"
-      },
-      "value": "${identifier.value}"
-    }"""
 
   private def locationType(locType: LocationType): String =
     s"""{
