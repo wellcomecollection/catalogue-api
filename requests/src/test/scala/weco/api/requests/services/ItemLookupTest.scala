@@ -10,10 +10,7 @@ import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -117,6 +114,57 @@ class ItemLookupTest
       val item1 = createIdentifiedItem
       val item2 = createIdentifiedItem
       val item3 = createIdentifiedItem
+
+      val workSourceIds = createSortedSourceIdentifiers(count = 2)
+
+      // Enforcing ordering of source identifier value to ensure consistent
+      // results when items appear on multiple works
+      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
+      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+
+      val responses = Seq(
+        (
+          catalogueItemsRequest(
+            item1.id.sourceIdentifier,
+            item2.id.sourceIdentifier
+          ),
+          catalogueWorkResponse(Seq(workA, workB))
+        )
+      )
+
+      val future = withItemLookup(responses) {
+        _.bySourceIdentifier(
+          Seq(
+            item1.id.sourceIdentifier,
+            item2.id.sourceIdentifier
+          )
+        )
+      }
+
+      whenReady(future) {
+        _ shouldBe List(
+          Right(
+            RequestedItemWithWork(
+              workA.state.canonicalId,
+              workA.data.title,
+              DisplayItem(item1)
+            )
+          ),
+          Right(
+            RequestedItemWithWork(
+              workA.state.canonicalId,
+              workA.data.title,
+              DisplayItem(item2)
+            )
+          )
+        )
+      }
+    }
+
+    it("handles a work where some items have no identifiers") {
+      val item1 = createIdentifiedItem
+      val item2 = createIdentifiedItem
+      val item3 = createUnidentifiableItem
 
       val workSourceIds = createSortedSourceIdentifiers(count = 2)
 

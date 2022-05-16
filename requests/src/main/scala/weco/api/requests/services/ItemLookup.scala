@@ -148,7 +148,8 @@ class ItemLookup(client: HttpClient with HttpGet)(
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
           Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
-            // Sort by source identifier value
+            // Sort by source identifier value.  A work's identifiers are always non-empty,
+            // so calling .head is safe here.
             val works = results.results.sortBy(_.identifiers.head.value)
 
             val items: Seq[(CatalogueWork, DisplayItem)] = works
@@ -159,20 +160,13 @@ class ItemLookup(client: HttpClient with HttpGet)(
             itemIdentifiers.map { itemId =>
               val matchingWorks = items.filter {
                 case (_, item) =>
-                  // We're seeing issues where sometimes items.identifiers is empty, and calling
-                  // .head on it causes a java.util.NoSuchElementException.
-                  //
-                  // It's not obvious when/how this can happen, so let's get some more debugging
-                  // information here.
-                  val sourceIdentifier = item.identifiers.headOption match {
-                    case Some(sourceId) => sourceId
-                    case None =>
-                      throw new RuntimeException(
-                        s"Could not find identifiers in item: $item"
-                      )
-                  }
+                  // Not all items have identifiers, e.g. METS items are unidentified.
+                  item.identifiers.headOption match {
+                    case Some(sourceId) =>
+                      sourceId.value == itemId.value && sourceId.identifierType.id == itemId.identifierType.id
 
-                  sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
+                    case None => false
+                  }
               }
 
               matchingWorks.headOption match {
