@@ -4,7 +4,11 @@ import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import weco.api.search.elasticsearch.{DocumentNotFoundError, ElasticsearchService, IndexNotFoundError}
+import weco.api.search.elasticsearch.{
+  DocumentNotFoundError,
+  ElasticsearchService,
+  IndexNotFoundError
+}
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
@@ -221,7 +225,7 @@ class WorksServiceTest
                   Seq(
                     ("id", Json.fromString("a")),
                     ("label", Json.fromString("Books")),
-                    ("type", Json.fromString("Format")),
+                    ("type", Json.fromString("Format"))
                   )
                 ),
                 count = worksFormatBooks.length
@@ -231,7 +235,7 @@ class WorksServiceTest
                   Seq(
                     ("id", Json.fromString("d")),
                     ("label", Json.fromString("Journals")),
-                    ("type", Json.fromString("Format")),
+                    ("type", Json.fromString("Format"))
                   )
                 ),
                 count = worksFormatJournals.length
@@ -241,7 +245,7 @@ class WorksServiceTest
                   Seq(
                     ("id", Json.fromString("i")),
                     ("label", Json.fromString("Audio")),
-                    ("type", Json.fromString("Format")),
+                    ("type", Json.fromString("Format"))
                   )
                 ),
                 count = worksFormatAudio.length
@@ -251,7 +255,7 @@ class WorksServiceTest
                   Seq(
                     ("id", Json.fromString("k")),
                     ("label", Json.fromString("Pictures")),
-                    ("type", Json.fromString("Format")),
+                    ("type", Json.fromString("Format"))
                   )
                 ),
                 count = worksFormatPictures.length

@@ -29,14 +29,14 @@ object DisplayWorkAggregations {
   ): DisplayWorkAggregations =
     DisplayWorkAggregations(
       workType = aggs.format.map(DisplayAggregation(_)),
-      `production.dates` =
-        aggs.productionDates.map(DisplayAggregation(_)),
-      `genres.label` =
-        aggs.genresLabel.map(DisplayAggregation(_)),
+      `production.dates` = aggs.productionDates.map(DisplayAggregation(_)),
+      `genres.label` = aggs.genresLabel.map(DisplayAggregation(_)),
       languages = aggs.languages.map(DisplayAggregation(_)),
       `subjects.label` = aggs.subjectsLabel.map(DisplayAggregation(_)),
-      `contributors.agent.label` = aggs.contributorsAgentsLabel.map(DisplayAggregation(_)),
-      `items.locations.license` = aggs.itemsLocationsLicense.map(DisplayAggregation(_)),
+      `contributors.agent.label` =
+        aggs.contributorsAgentsLabel.map(DisplayAggregation(_)),
+      `items.locations.license` =
+        aggs.itemsLocationsLicense.map(DisplayAggregation(_)),
       availabilities = aggs.availabilities.map(DisplayAggregation(_))
     )
 }

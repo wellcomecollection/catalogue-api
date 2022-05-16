@@ -1,7 +1,11 @@
 package weco.api.search.models
 
 import com.sksamuel.elastic4s.requests.common.Shards
-import com.sksamuel.elastic4s.requests.searches.{SearchHits, SearchResponse, Total}
+import com.sksamuel.elastic4s.requests.searches.{
+  SearchHits,
+  SearchResponse,
+  Total
+}
 import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -196,7 +200,10 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format
       .flatMap(_.buckets.headOption)
-      .get shouldBe AggregationBucket(data = Json.fromString("apricot"), count = 4)
+      .get shouldBe AggregationBucket(
+      data = Json.fromString("apricot"),
+      count = 4
+    )
     singleAgg.get.format
       .map(_.buckets.map(_.count))
       .get

@@ -1,6 +1,8 @@
 package weco.api.search.models
 
-import com.sksamuel.elastic4s.requests.searches.aggs.responses.{Aggregations => Elastic4sAggregations}
+import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
+  Aggregations => Elastic4sAggregations
+}
 import grizzled.slf4j.Logging
 import io.circe.{Decoder, Json}
 

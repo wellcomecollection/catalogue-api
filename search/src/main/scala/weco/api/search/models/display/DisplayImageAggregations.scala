@@ -22,7 +22,6 @@ object DisplayImageAggregations {
       license = aggs.license.map(DisplayAggregation(_)),
       `source.contributors.agent.label` =
         aggs.sourceContributorAgents.map(DisplayAggregation(_)),
-      `source.genres.label` =
-        aggs.sourceGenres.map(DisplayAggregation(_))
+      `source.genres.label` = aggs.sourceGenres.map(DisplayAggregation(_))
     )
 }
