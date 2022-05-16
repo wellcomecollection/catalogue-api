@@ -1,15 +1,10 @@
 package weco.api.search.models
 
 import com.sksamuel.elastic4s.requests.common.Shards
-import com.sksamuel.elastic4s.requests.searches.{
-  SearchHits,
-  SearchResponse,
-  Total
-}
+import com.sksamuel.elastic4s.requests.searches.{SearchHits, SearchResponse, Total}
+import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.internal_model.work.Format
-import weco.catalogue.internal_model.work.Format._
 
 class AggregationResultsTest extends AnyFunSpec with Matchers {
   it("destructures a single aggregation result") {
@@ -31,15 +26,15 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           "sum_other_doc_count" -> 0,
           "buckets" -> List(
             Map(
-              "key" -> "a",
+              "key" -> """ "apple" """,
               "doc_count" -> 393145
             ),
             Map(
-              "key" -> "b",
+              "key" -> """ "banana" """,
               "doc_count" -> 5696
             ),
             Map(
-              "key" -> "c",
+              "key" -> """ "coconut" """,
               "doc_count" -> 9
             )
           )
@@ -48,11 +43,11 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
-      Aggregation[Format](
-        List(
-          AggregationBucket(data = Books, count = 393145),
-          AggregationBucket(data = ManuscriptsAsian, count = 5696),
-          AggregationBucket(data = Music, count = 9)
+      Aggregation(
+        buckets = List(
+          AggregationBucket(data = Json.fromString("apple"), count = 393145),
+          AggregationBucket(data = Json.fromString("banana"), count = 5696),
+          AggregationBucket(data = Json.fromString("coconut"), count = 9)
         )
       )
     )
@@ -77,7 +72,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           "sum_other_doc_count" -> 0,
           "buckets" -> List(
             Map(
-              "key" -> "a",
+              "key" -> """ "artichoke" """,
               "doc_count" -> 393145,
               "filtered" -> Map(
                 "doc_count" -> 1234
@@ -89,7 +84,14 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
-      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234)))
+      Aggregation(
+        buckets = List(
+          AggregationBucket(
+            data = Json.fromString("artichoke"),
+            count = 1234
+          )
+        )
+      )
     )
   }
 
@@ -114,7 +116,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
             "sum_other_doc_count" -> 0,
             "buckets" -> List(
               Map(
-                "key" -> "a",
+                "key" -> """ "absinthe" """,
                 "doc_count" -> 393145,
                 "filtered" -> Map(
                   "doc_count" -> 1234
@@ -127,7 +129,14 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
-      Aggregation[Format](List(AggregationBucket(data = Books, count = 1234)))
+      Aggregation(
+        buckets = List(
+          AggregationBucket(
+            data = Json.fromString("absinthe"),
+            count = 1234
+          )
+        )
+      )
     )
   }
 
@@ -152,28 +161,28 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
             "sum_other_doc_count" -> 0,
             "buckets" -> List(
               Map(
-                "key" -> "d",
+                "key" -> """ "damson" """,
                 "doc_count" -> 10,
                 "filtered" -> Map(
                   "doc_count" -> 1
                 )
               ),
               Map(
-                "key" -> "c",
+                "key" -> """ "cherry" """,
                 "doc_count" -> 9,
                 "filtered" -> Map(
                   "doc_count" -> 2
                 )
               ),
               Map(
-                "key" -> "b",
+                "key" -> """ "banana" """,
                 "doc_count" -> 8,
                 "filtered" -> Map(
                   "doc_count" -> 3
                 )
               ),
               Map(
-                "key" -> "a",
+                "key" -> """ "apricot" """,
                 "doc_count" -> 7,
                 "filtered" -> Map(
                   "doc_count" -> 4
@@ -187,7 +196,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format
       .flatMap(_.buckets.headOption)
-      .get shouldBe AggregationBucket(data = Books, count = 4)
+      .get shouldBe AggregationBucket(data = Json.fromString("apricot"), count = 4)
     singleAgg.get.format
       .map(_.buckets.map(_.count))
       .get
