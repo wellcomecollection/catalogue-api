@@ -159,7 +159,18 @@ class ItemLookup(client: HttpClient with HttpGet)(
             itemIdentifiers.map { itemId =>
               val matchingWorks = items.filter {
                 case (_, item) =>
-                  val sourceIdentifier = item.identifiers.head
+
+                  // We're seeing issues where sometimes items.identifiers is empty, and calling
+                  // .head on it causes a java.util.NoSuchElementException.
+                  //
+                  // It's not obvious when/how this can happen, so let's get some more debugging
+                  // information here.
+                  val sourceIdentifier = item.identifiers.headOption match {
+                    case Some(sourceId) => sourceId
+                    case None => throw new RuntimeException(
+                      s"Could not find identifiers in item: $item"
+                    )
+                  }
 
                   sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
               }
