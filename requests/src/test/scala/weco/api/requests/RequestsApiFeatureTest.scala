@@ -64,7 +64,7 @@ class RequestsApiFeatureTest
   }
 
   describe("requests") {
-    it("provides information about a users' holds") {
+    it("provides information about a user's holds") {
       val patron = SierraPatronNumber("1234567")
       val itemNumber1 = createSierraItemNumber
       val itemNumber2 = createSierraItemNumber
@@ -274,6 +274,88 @@ class RequestsApiFeatureTest
 
           withStringEntity(response.entity) {
             assertJsonStringsAreEqual(_, expectedJson)
+          }
+        }
+      }
+    }
+
+    it("surfaces unexpected errors when finding a user's holds") {
+      val patron = SierraPatronNumber("1234567")
+      val itemNumber1 = createSierraItemNumber
+      val itemNumber2 = createSierraItemNumber
+
+      val sierraResponses = Seq(
+        (
+          HttpRequest(
+            method = HttpMethods.GET,
+            uri =
+              s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "total": 1,
+                 |  "start": 0,
+                 |  "entries": [
+                 |    {
+                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
+                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber1.withoutCheckDigit}",
+                 |      "note": "Requested for: 2021-05-07",
+                 |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
+                 |      "status": {"code": "0", "name": "on hold."}
+                 |    },
+                 |    {
+                 |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
+                 |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${itemNumber2.withoutCheckDigit}",
+                 |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
+                 |      "status": {"code": "0", "name": "on hold."}
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      val catalogueResponses = Seq(
+        (
+          catalogueItemsRequest(
+            createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit),
+            createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)
+          ),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              """{ "bleep": "bloop" }"""
+            )
+          )
+        )
+      )
+
+      withRequestsApi(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses
+      ) { _ =>
+        val path = s"/users/$patron/item-requests"
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.InternalServerError
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(
+              _,
+              """
+               {
+                 "errorType" : "http",
+                 "httpStatus" : 500,
+                 "label" : "Internal Server Error",
+                 "type" : "Error"
+               }
+              """.stripMargin
+            )
           }
         }
       }
