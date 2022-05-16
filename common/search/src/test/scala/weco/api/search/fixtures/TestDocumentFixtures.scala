@@ -40,6 +40,9 @@ trait TestDocumentFixtures
 
   protected case class TestDocument(id: String, document: Json)
 
+  def getTestImageId(id: String): String =
+    getKey(getDisplayImage(id), "id").get.asString.get
+
   def getVisibleWork(id: String): IndexedWork.Visible =
     getTestDocuments(Seq(id))
       .map(doc => {

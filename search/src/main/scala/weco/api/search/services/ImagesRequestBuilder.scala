@@ -63,15 +63,15 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     case ImageAggregationRequest.License =>
       TermsAggregation("license")
         .size(License.values.size)
-        .field("locations.license.id")
+        .field("aggregatableValues.locations.license")
     case ImageAggregationRequest.SourceContributorAgents =>
       TermsAggregation("sourceContributorAgents")
         .size(20)
-        .field("state.derivedData.sourceContributorAgents")
+        .field("aggregatableValues.source.contributors.agent.label")
     case ImageAggregationRequest.SourceGenres =>
       TermsAggregation("sourceGenres")
         .size(20)
-        .field("source.canonicalWork.data.genres.label.keyword")
+        .field("aggregatableValues.source.genres.label")
   }
 
   def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =

@@ -21,18 +21,18 @@ class QueryConfigTest
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe List(
-          List(9, 2, 3),
-          List(5, 4, 1),
-          List(0, 6, 9)
+          List(1, 7, 5),
+          List(0, 5, 7),
+          List(6, 5, 1)
         )
 
         // Casting to string here is to avoid weirdness when comparing Doubles;
         // if you compare to List(0.34999806, 0.7922977, 0.3721038), Scala will
         // tell you they're different.
         result.paletteBinMinima.map(_.toString) shouldBe List(
-          "0.34999806",
-          "0.7922977",
-          "0.3721038"
+          "0.7710878",
+          "0.8503088",
+          "0.6996027"
         )
       }
     }

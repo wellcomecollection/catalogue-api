@@ -1,52 +1,30 @@
 {
-  "type": "ResultList",
-  "pageSize": 10,
-  "totalPages": 1,
-  "totalResults":1,
-  "results": [
+  "pageSize" : 10,
+  "results" : [
     {
-      "id" : "ggpvgjra",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
-        "linkText" : "Link text: Y4Py8GcWiP",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
+      "id" : "qpvx7gyp",
       "locations" : [
         {
+          "accessConditions" : [
+          ],
+          "credit" : "Credit line: f0VBIgS96L",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "type" : "License",
+            "url" : "http://creativecommons.org/licenses/by/4.0/"
+          },
           "locationType" : {
             "id" : "iiif-image",
             "label" : "IIIF Image API",
             "type" : "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/mZe.jpg/info.json",
-          "linkText" : "Link text: Y4Py8GcWiP",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
+          "type" : "DigitalLocation",
+          "url" : "https://iiif.wellcomecollection.org/image/GC3.jpg/info.json"
         }
       ],
       "source" : {
-        "id" : "fpixjlf3",
-        "title" : "Apple agitator",
+        "id" : "v39xo2l4",
         "languages" : [
           {
             "id" : "eng",
@@ -59,9 +37,31 @@
             "type" : "Language"
           }
         ],
+        "title" : "Apple agitator",
         "type" : "Work"
+      },
+      "thumbnail" : {
+        "accessConditions" : [
+        ],
+        "credit" : "Credit line: f0VBIgS96L",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "type" : "License",
+          "url" : "http://creativecommons.org/licenses/by/4.0/"
+        },
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
+        },
+        "type" : "DigitalLocation",
+        "url" : "https://iiif.wellcomecollection.org/image/GC3.jpg/info.json"
       },
       "type" : "Image"
     }
-  ]
+  ],
+  "totalPages" : 1,
+  "totalResults" : 1,
+  "type" : "ResultList"
 }

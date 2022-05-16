@@ -29,7 +29,8 @@ class ImagesIncludesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images/ggpvgjra?include=source.contributors"
+            path =
+              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.contributors"
           ) {
             Status.OK -> readResource(
               "expected_responses/include-image-contributors.json"
@@ -65,7 +66,8 @@ class ImagesIncludesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images/ggpvgjra?include=source.languages"
+            path =
+              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.languages"
           ) {
             Status.OK -> readResource(
               "expected_responses/include-image-languages.json"
@@ -98,7 +100,8 @@ class ImagesIncludesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images/ggpvgjra?include=source.genres"
+            path =
+              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.genres"
           ) {
             Status.OK -> readResource(
               "expected_responses/include-image-genres.json"

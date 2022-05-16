@@ -11,7 +11,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images/fxlggzx3?include=visuallySimilar"
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar"
         ) {
           Status.OK -> readResource(
             "expected_responses/visually-similar-features-and-palettes.json"
@@ -30,7 +31,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images/1bxltcv6?include=withSimilarFeatures"
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures"
         ) {
           Status.OK -> readResource(
             "expected_responses/visually-similar-features.json"
@@ -51,7 +53,8 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images/tsmrwj5f?include=withSimilarColors"
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-palettes.0")}?include=withSimilarColors"
         ) {
           Status.OK -> readResource(
             "expected_responses/visually-similar-palettes.json"
