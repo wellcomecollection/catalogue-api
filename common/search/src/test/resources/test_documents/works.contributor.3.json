@@ -179,107 +179,26 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 27,
-    "data" : {
-      "title" : "title-H1Bj9evx0c",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "agent" : {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "label" : "MI5",
-            "type" : "Organisation"
-          },
-          "roles" : [
-          ]
-        },
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "agent" : {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "label" : "GCHQ",
-            "type" : "Organisation"
-          },
-          "roles" : [
-          ]
-        }
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
+        "{\"label\":\"MI5\",\"type\":\"Organisation\"}",
+        "{\"label\":\"GCHQ\",\"type\":\"Organisation\"}"
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "Wh4OVfDtEV"
-      },
-      "canonicalId" : "hutjlml0",
-      "mergedTime" : "2022-05-26T12:29:00Z",
-      "sourceModifiedTime" : "2022-05-26T12:29:00Z",
-      "indexedTime" : "2022-05-04T07:15:03.079Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-          "Organisation:MI5",
-          "Organisation:GCHQ"
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

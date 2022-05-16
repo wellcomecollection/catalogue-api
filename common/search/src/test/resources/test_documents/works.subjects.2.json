@@ -178,106 +178,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 53,
-    "data" : {
-      "title" : "title-LgxSR5EK6U",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "realAnalysis",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "dy5rBObrVoekomu",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "zt2ZO588uP9XuZD",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "AITl22EqbmTfcJn",
-              "type" : "Concept"
-            }
-          ]
-        }
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
+        "{\"label\":\"realAnalysis\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "8uH8GnKqkw"
-      },
-      "canonicalId" : "p9ugies0",
-      "mergedTime" : "2022-04-06T22:22:50Z",
-      "sourceModifiedTime" : "2022-04-06T22:22:50Z",
-      "indexedTime" : "2022-05-04T07:15:03.062Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

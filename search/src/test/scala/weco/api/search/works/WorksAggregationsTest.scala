@@ -101,25 +101,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "data" : {
-                        "label" : "Conceptual Conversations",
-                        "concepts": [],
-                        "type" : "Genre"
-                      },
-                      "count" : 1,
-                      "type" : "AggregationBucket"
-                    },
-                           {
-                      "data" : {
-                        "label" : "Past Prehistory",
-                        "concepts": [],
-                        "type" : "Genre"
-                      },
-                      "count" : 1,
-                      "type" : "AggregationBucket"
-                    },
-                           {
-                      "data" : {
-                        "label" : "Pleasant Paris",
+                        "label" : "Electronic books",
                         "concepts": [],
                         "type" : "Genre"
                       },
@@ -169,7 +151,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "data" : {
-                        "label": "1098",
+                        "label": "1097",
                         "type": "Period"
                       },
                       "count" : 1,
@@ -611,7 +593,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
                 "availabilities": {
                   "buckets": [
                     {
-                      "count": 3,
+                      "count": 2,
                       "data": {
                         "label": "Closed stores",
                         "id": "closed-stores",

@@ -189,113 +189,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 71,
-    "data" : {
-      "title" : "title-Q9rgmu63iB",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
+        "{\"label\":\"1850\",\"type\":\"Period\"}"
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
-        {
-          "label" : "DHZ5kGsC2NVWzsZA7OUAa31Sp",
-          "places" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "T9StDQoegg"
-            }
-          ],
-          "agents" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "PvgjRA9Vih",
-              "prefix" : null,
-              "numeration" : null,
-              "type" : "Person"
-            }
-          ],
-          "dates" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "1850",
-              "range" : {
-                "from" : "1850-01-01T00:00:00Z",
-                "to" : "1850-12-31T23:59:59.999999999Z",
-                "label" : "1850"
-              }
-            }
-          ],
-          "function" : null
-        }
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "qt38YgNxOY"
-      },
-      "canonicalId" : "83tyy1gh",
-      "mergedTime" : "2022-05-25T20:43:45Z",
-      "sourceModifiedTime" : "2022-05-25T20:43:45Z",
-      "indexedTime" : "2022-05-06T14:32:35.317Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

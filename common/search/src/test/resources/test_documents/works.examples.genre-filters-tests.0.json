@@ -175,103 +175,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 18,
-    "data" : {
-      "title" : "title-FRAV0ZsJyw",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
+        "{\"label\":\"Annual reports.\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-        {
-          "label" : "Annual reports.",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "KxMxs7kIOR3Tm3c",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "NOqp5RA4f5gWVIp",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "tlxE0qlBbPiSihn",
-              "type" : "Concept"
-            }
-          ]
-        }
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "vsJ0y4QwQT"
-      },
-      "canonicalId" : "lrfnqpfl",
-      "mergedTime" : "2022-05-23T15:35:52Z",
-      "sourceModifiedTime" : "2022-05-23T15:35:52Z",
-      "indexedTime" : "2022-05-10T09:03:13.093Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

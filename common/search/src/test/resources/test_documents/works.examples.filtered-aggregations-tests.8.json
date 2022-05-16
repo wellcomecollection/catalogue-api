@@ -148,84 +148,26 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 83,
-    "data" : {
-      "title" : "tapirs",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
+        "{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : {
-        "id" : "d",
-        "label" : "Journals"
-      },
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
-        {
-          "id" : "que",
-          "label" : "Quechua"
-        }
+        "{\"id\":\"que\",\"label\":\"Quechua\",\"type\":\"Language\"}"
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "grNNX4MZCl"
-      },
-      "canonicalId" : "elheubhh",
-      "mergedTime" : "2022-05-26T14:23:30Z",
-      "sourceModifiedTime" : "2022-05-26T14:23:30Z",
-      "indexedTime" : "2022-05-10T09:25:20.140Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

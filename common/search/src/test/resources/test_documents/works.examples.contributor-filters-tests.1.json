@@ -157,94 +157,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 74,
-    "data" : {
-      "title" : "title-t3ic4OR9Lz",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "agent" : {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "label" : "Karl Marx",
-            "prefix" : null,
-            "numeration" : null,
-            "type" : "Person"
-          },
-          "roles" : [
-          ]
-        }
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
+        "{\"label\":\"Karl Marx\",\"type\":\"Person\"}"
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "zGryOg3KGy"
-      },
-      "canonicalId" : "7mz5gnuj",
-      "mergedTime" : "2022-04-12T05:45:03Z",
-      "sourceModifiedTime" : "2022-04-12T05:45:03Z",
-      "indexedTime" : "2022-05-10T09:10:37.797Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-          "Person:Karl Marx"
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

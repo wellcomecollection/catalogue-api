@@ -272,164 +272,27 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 36,
-    "data" : {
-      "title" : "title-C1ICZOvNWb",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "London (England)",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "u7hZZtHlWPIpZYu",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "m1qUlCcjglMPaKQ",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Z55SIuLPMgIG177",
-              "type" : "Concept"
-            }
-          ]
-        },
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "Psychology, Pathological",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "tcCDpKgb0Wdy2nM",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "uMcZq1JcxukacPW",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "KUROxBsQ4CK8DrD",
-              "type" : "Concept"
-            }
-          ]
-        },
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "sk2kCAGURhx40zJ",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "bSlLwDNn2Etp5zf",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "ssscK3StYS1KOlZ",
-              "type" : "Concept"
-            }
-          ]
-        }
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
+        "{\"label\":\"London (England)\",\"concepts\":[],\"type\":\"Subject\"}",
+        "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Subject\"}",
+        "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "Kke6NacQ8Q"
-      },
-      "canonicalId" : "opjdaxfg",
-      "mergedTime" : "2022-05-31T22:47:47Z",
-      "sourceModifiedTime" : "2022-05-31T22:47:47Z",
-      "indexedTime" : "2022-05-10T09:08:11.348Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

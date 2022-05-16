@@ -229,123 +229,26 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 50,
-    "data" : {
-      "title" : "title-TEVZsYV21F",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
-        {
-          "id" : {
-            "canonicalId" : "clr9e9al",
-            "sourceIdentifier" : {
-              "identifierType" : {
-                "id" : "miro-image-number"
-              },
-              "ontologyType" : "Work",
-              "value" : "xX5tbPGXaL"
-            },
-            "otherIdentifiers" : [
-            ],
-            "type" : "Identified"
-          },
-          "title" : null,
-          "note" : null,
-          "locations" : [
-            {
-              "url" : "https://iiif.wellcomecollection.org/image/Gjb.jpg/info.json",
-              "locationType" : {
-                "id" : "iiif-presentation"
-              },
-              "license" : {
-                "id" : "cc-by"
-              },
-              "credit" : null,
-              "linkText" : null,
-              "accessConditions" : [
-                {
-                  "method" : {
-                    "type" : "ManualRequest"
-                  },
-                  "status" : {
-                    "type" : "OpenWithAdvisory"
-                  },
-                  "note" : null,
-                  "terms" : null
-                }
-              ],
-              "type" : "DigitalLocation"
-            }
-          ]
-        }
+      "items.locations.license" : [
+        "{\"id\":\"cc-by\",\"label\":\"Attribution 4.0 International (CC BY 4.0)\",\"url\":\"http://creativecommons.org/licenses/by/4.0/\",\"type\":\"License\"}"
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "anI2SUm7p7"
-      },
-      "canonicalId" : "njfw4dxc",
-      "mergedTime" : "2022-04-14T13:08:25Z",
-      "sourceModifiedTime" : "2022-04-14T13:08:25Z",
-      "indexedTime" : "2022-05-10T09:15:17.790Z",
       "availabilities" : [
-        {
-          "id" : "online"
-        }
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+        "{\"id\":\"online\",\"label\":\"Online\",\"type\":\"Availability\"}"
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

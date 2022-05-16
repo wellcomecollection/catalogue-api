@@ -180,100 +180,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 48,
-    "data" : {
-      "title" : "title-n9x0HfU454",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "title" : null,
-          "note" : null,
-          "locations" : [
-            {
-              "url" : "https://iiif.wellcomecollection.org/image/h2C.jpg/info.json",
-              "locationType" : {
-                "id" : "iiif-presentation"
-              },
-              "license" : {
-                "id" : "cc-by-nc"
-              },
-              "credit" : "Credit line: 3B2FRNwvc",
-              "linkText" : "Link text: LP9LzQY",
-              "accessConditions" : [
-              ],
-              "type" : "DigitalLocation"
-            }
-          ]
-        }
+      "items.locations.license" : [
+        "{\"id\":\"cc-by-nc\",\"label\":\"Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)\",\"url\":\"https://creativecommons.org/licenses/by-nc/4.0/\",\"type\":\"License\"}"
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "mye6nSw6AS"
-      },
-      "canonicalId" : "pak011dv",
-      "mergedTime" : "2022-05-13T11:39:58Z",
-      "sourceModifiedTime" : "2022-05-13T11:39:58Z",
-      "indexedTime" : "2022-05-04T07:15:03.045Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

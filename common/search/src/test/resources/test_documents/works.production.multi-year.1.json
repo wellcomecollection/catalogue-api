@@ -189,113 +189,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 78,
-    "data" : {
-      "title" : "title-54blSY3iyd",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
+        "{\"label\":\"1850\",\"type\":\"Period\"}"
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
-        {
-          "label" : "QHICakdbojfZVe3xG7r6V9IS9",
-          "places" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "e3TZJGYTcw"
-            }
-          ],
-          "agents" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "sJbljhDu1G",
-              "prefix" : null,
-              "numeration" : null,
-              "type" : "Person"
-            }
-          ],
-          "dates" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "1850-2000",
-              "range" : {
-                "from" : "1850-01-01T00:00:00Z",
-                "to" : "2000-12-31T23:59:59.999999999Z",
-                "label" : "1850-2000"
-              }
-            }
-          ],
-          "function" : null
-        }
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "GLcg1WHGjZ"
-      },
-      "canonicalId" : "rcwpk521",
-      "mergedTime" : "2022-05-17T12:34:39Z",
-      "sourceModifiedTime" : "2022-05-17T12:34:39Z",
-      "indexedTime" : "2022-05-06T14:32:35.318Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

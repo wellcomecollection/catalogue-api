@@ -139,80 +139,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 9,
-    "data" : {
-      "title" : "A work with format Journals",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
+        "{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : {
-        "id" : "d",
-        "label" : "Journals"
-      },
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "iv0NQvyeIt"
-      },
-      "canonicalId" : "sna2xj27",
-      "mergedTime" : "2022-05-06T11:39:36Z",
-      "sourceModifiedTime" : "2022-05-06T11:39:36Z",
-      "indexedTime" : "2022-05-04T07:15:03.022Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

@@ -199,110 +199,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 99,
-    "data" : {
-      "title" : "title-a56tujbhys",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
-        {
-          "id" : {
-            "canonicalId" : "bghz727m",
-            "sourceIdentifier" : {
-              "identifierType" : {
-                "id" : "sierra-system-number"
-              },
-              "ontologyType" : "Work",
-              "value" : "zTnSvRiZtg"
-            },
-            "otherIdentifiers" : [
-            ],
-            "type" : "Identified"
-          },
-          "title" : null,
-          "note" : null,
-          "locations" : [
-            {
-              "url" : "https://iiif.wellcomecollection.org/image/tOI.jpg/info.json",
-              "locationType" : {
-                "id" : "iiif-image"
-              },
-              "license" : {
-                "id" : "cc-by"
-              },
-              "credit" : null,
-              "linkText" : "Link text: XKeDQMh",
-              "accessConditions" : [
-              ],
-              "type" : "DigitalLocation"
-            }
-          ]
-        }
+      "items.locations.license" : [
+        "{\"id\":\"cc-by\",\"label\":\"Attribution 4.0 International (CC BY 4.0)\",\"url\":\"http://creativecommons.org/licenses/by/4.0/\",\"type\":\"License\"}"
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "kQjFHQROpF"
-      },
-      "canonicalId" : "fnfl9elp",
-      "mergedTime" : "2022-05-17T07:40:15Z",
-      "sourceModifiedTime" : "2022-05-17T07:40:15Z",
-      "indexedTime" : "2022-05-09T11:41:20.622Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

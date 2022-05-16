@@ -263,155 +263,27 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 74,
-    "data" : {
-      "title" : "title-Ddf4bTPrmW",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
+        "{\"label\":\"Pamphlets.\",\"concepts\":[],\"type\":\"Genre\"}",
+        "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Genre\"}",
+        "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-        {
-          "label" : "Pamphlets.",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "TeJBs3eSemcGNQX",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "d87ZYKrzxgMS4HD",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "JMnToBweq2UFKJP",
-              "type" : "Concept"
-            }
-          ]
-        },
-        {
-          "label" : "Psychology, Pathological",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "lzYfNgtG1SKw3kl",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "DAuK4GKNsXvX3NJ",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "fIXCFVccBcFLmxt",
-              "type" : "Concept"
-            }
-          ]
-        },
-        {
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "r1wn4mlLNPr0YHU",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "0g7V2pOSQnJOeXj",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Vuylz3BDWIViYo3",
-              "type" : "Concept"
-            }
-          ]
-        }
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "mbPJWDqmpb"
-      },
-      "canonicalId" : "eanc7xce",
-      "mergedTime" : "2022-05-18T00:41:45Z",
-      "sourceModifiedTime" : "2022-05-18T00:41:45Z",
-      "indexedTime" : "2022-05-10T09:03:13.095Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

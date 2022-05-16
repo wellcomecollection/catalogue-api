@@ -175,103 +175,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 90,
-    "data" : {
-      "title" : "title-oJyr1MqUtq",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
+        "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-        {
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "r1wn4mlLNPr0YHU",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "0g7V2pOSQnJOeXj",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Vuylz3BDWIViYo3",
-              "type" : "Concept"
-            }
-          ]
-        }
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "FYwsvmZKLO"
-      },
-      "canonicalId" : "sineemqh",
-      "mergedTime" : "2022-05-31T03:04:47Z",
-      "sourceModifiedTime" : "2022-05-31T03:04:47Z",
-      "indexedTime" : "2022-05-10T09:03:13.094Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

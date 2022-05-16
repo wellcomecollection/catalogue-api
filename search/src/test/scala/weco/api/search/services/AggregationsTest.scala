@@ -1,11 +1,12 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
+import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.fixtures.{JsonHelpers, TestDocumentFixtures}
+import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -18,8 +19,8 @@ class AggregationsTest
     extends AnyFunSpec
     with Matchers
     with IndexFixtures
-    with PeriodGenerators
     with SearchOptionsGenerators
+    with JsonHelpers
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
@@ -65,8 +66,24 @@ class AggregationsTest
         _.productionDates shouldBe Some(
           Aggregation(
             List(
-              AggregationBucket(data = createPeriodForYear("1960"), count = 2),
-              AggregationBucket(data = createPeriodForYear("1962"), count = 1)
+              AggregationBucket(
+                data = Json.fromFields(
+                  Seq(
+                    ("label", Json.fromString("1960")),
+                    ("type", Json.fromString("Period"))
+                  )
+                ),
+                count = 2
+              ),
+              AggregationBucket(
+                data = Json.fromFields(
+                  Seq(
+                    ("label", Json.fromString("1962")),
+                    ("type", Json.fromString("Period"))
+                  )
+                ),
+                count = 1
+              )
             )
           )
         )
@@ -93,7 +110,7 @@ class AggregationsTest
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List(
+          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -137,7 +154,7 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(_.data.label) should contain theSameElementsAs List(
+          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -175,7 +192,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List(Format.Books.id)),
-            SubjectFilter(Seq("pGkJTZWwn4"))
+            SubjectFilter(Seq("6IZ2DrUzFk"))
           )
         )
         val results =
@@ -197,7 +214,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain("pGkJTZWwn4"))
+          .foreach(subjects => subjects should contain("6IZ2DrUzFk"))
       }
     }
   }

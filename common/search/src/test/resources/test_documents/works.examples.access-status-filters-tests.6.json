@@ -225,123 +225,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 73,
-    "data" : {
-      "title" : "title-D7y5YIlP5y",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
-        {
-          "id" : {
-            "canonicalId" : "y8mu1pkn",
-            "sourceIdentifier" : {
-              "identifierType" : {
-                "id" : "miro-image-number"
-              },
-              "ontologyType" : "Work",
-              "value" : "HekSl7z2Ia"
-            },
-            "otherIdentifiers" : [
-            ],
-            "type" : "Identified"
-          },
-          "title" : null,
-          "note" : null,
-          "locations" : [
-            {
-              "url" : "https://iiif.wellcomecollection.org/image/nhm.jpg/info.json",
-              "locationType" : {
-                "id" : "iiif-presentation"
-              },
-              "license" : {
-                "id" : "cc-by"
-              },
-              "credit" : null,
-              "linkText" : "Link text: EAeKWAv",
-              "accessConditions" : [
-                {
-                  "method" : {
-                    "type" : "ManualRequest"
-                  },
-                  "status" : {
-                    "relationship" : {
-                      "type" : "RelatedResource"
-                    },
-                    "type" : "LicensedResources"
-                  },
-                  "note" : null,
-                  "terms" : null
-                }
-              ],
-              "type" : "DigitalLocation"
-            }
-          ]
-        }
+      "items.locations.license" : [
+        "{\"id\":\"cc-by\",\"label\":\"Attribution 4.0 International (CC BY 4.0)\",\"url\":\"http://creativecommons.org/licenses/by/4.0/\",\"type\":\"License\"}"
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "vcUqhxoxVF"
-      },
-      "canonicalId" : "qtu496lv",
-      "mergedTime" : "2022-06-08T18:47:37Z",
-      "sourceModifiedTime" : "2022-06-08T18:47:37Z",
-      "indexedTime" : "2022-05-10T09:15:17.796Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

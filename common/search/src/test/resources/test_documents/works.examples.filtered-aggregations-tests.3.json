@@ -148,84 +148,26 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 6,
-    "data" : {
-      "title" : "rats",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
+        "{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : {
-        "id" : "i",
-        "label" : "Audio"
-      },
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
-        {
-          "id" : "bak",
-          "label" : "Bashkir"
-        }
+        "{\"id\":\"bak\",\"label\":\"Bashkir\",\"type\":\"Language\"}"
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "Oz1fY94Zzr"
-      },
-      "canonicalId" : "lthdeniu",
-      "mergedTime" : "2022-04-21T14:22:27Z",
-      "sourceModifiedTime" : "2022-04-21T14:22:27Z",
-      "indexedTime" : "2022-05-10T09:25:20.139Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

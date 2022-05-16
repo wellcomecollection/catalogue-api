@@ -225,135 +225,26 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 73,
-    "data" : {
-      "title" : "title-KD9r1zHmiH",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "paleoNeuroBiology",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "a2FIC2DNd6NAvWG",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "1cJ2yUYmmH4BoIs",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "wjSVmALe83XqBJ6",
-              "type" : "Concept"
-            }
-          ]
-        },
-        {
-          "id" : {
-            "type" : "Unidentifiable"
-          },
-          "label" : "realAnalysis",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "dy5rBObrVoekomu",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "zt2ZO588uP9XuZD",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "AITl22EqbmTfcJn",
-              "type" : "Concept"
-            }
-          ]
-        }
+      "production.dates" : [
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
+        "{\"label\":\"paleoNeuroBiology\",\"concepts\":[],\"type\":\"Subject\"}",
+        "{\"label\":\"realAnalysis\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "SOJyEDtaaw"
-      },
-      "canonicalId" : "5ymcwk8h",
-      "mergedTime" : "2022-05-28T14:49:30Z",
-      "sourceModifiedTime" : "2022-05-28T14:49:30Z",
-      "indexedTime" : "2022-05-04T07:15:03.063Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

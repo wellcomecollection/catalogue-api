@@ -1,5 +1,6 @@
 package weco.api.search.services
 
+import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
@@ -14,7 +15,6 @@ import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.Format
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -221,19 +221,43 @@ class WorksServiceTest
           Aggregation(
             List(
               AggregationBucket(
-                data = Format.Books,
+                data = Json.fromFields(
+                  Seq(
+                    ("id", Json.fromString("a")),
+                    ("label", Json.fromString("Books")),
+                    ("type", Json.fromString("Format"))
+                  )
+                ),
                 count = worksFormatBooks.length
               ),
               AggregationBucket(
-                data = Format.Journals,
+                data = Json.fromFields(
+                  Seq(
+                    ("id", Json.fromString("d")),
+                    ("label", Json.fromString("Journals")),
+                    ("type", Json.fromString("Format"))
+                  )
+                ),
                 count = worksFormatJournals.length
               ),
               AggregationBucket(
-                data = Format.Audio,
+                data = Json.fromFields(
+                  Seq(
+                    ("id", Json.fromString("i")),
+                    ("label", Json.fromString("Audio")),
+                    ("type", Json.fromString("Format"))
+                  )
+                ),
                 count = worksFormatAudio.length
               ),
               AggregationBucket(
-                data = Format.Pictures,
+                data = Json.fromFields(
+                  Seq(
+                    ("id", Json.fromString("k")),
+                    ("label", Json.fromString("Pictures")),
+                    ("type", Json.fromString("Format"))
+                  )
+                ),
                 count = worksFormatPictures.length
               )
             )
