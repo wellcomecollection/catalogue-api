@@ -22,7 +22,8 @@ object DisplayImageAggregations {
       license = displayAggregation(aggs.license, identity[Json]),
       `source.contributors.agent.label` =
         displayAggregation(aggs.sourceContributorAgents, identity[Json]),
-      `source.genres.label` = displayAggregation(aggs.sourceGenres, identity[Json])
+      `source.genres.label` =
+        displayAggregation(aggs.sourceGenres, identity[Json])
     )
 
   private def displayAggregation[T, D](

@@ -42,7 +42,9 @@ class ImagesServiceTest
         val expectedImage =
           IndexedImage(display = getDisplayImage("images.everything"))
 
-        val future = imagesService.findById(id = CanonicalId(getTestImageId("images.everything")))(index)
+        val future = imagesService.findById(
+          id = CanonicalId(getTestImageId("images.everything"))
+        )(index)
         val actualImage = whenReady(future) {
           _.right.value
         }
@@ -92,7 +94,10 @@ class ImagesServiceTest
         )
 
         val future =
-          imagesService.retrieveSimilarImages(index, imageId = getTestImageId("images.similar-features-and-palettes.0"))
+          imagesService.retrieveSimilarImages(
+            index,
+            imageId = getTestImageId("images.similar-features-and-palettes.0")
+          )
 
         whenReady(future) {
           _ shouldBe expectedImages
@@ -189,7 +194,10 @@ class ImagesServiceTest
         indexTestDocuments(index, "images.everything")
 
         whenReady(
-          imagesService.retrieveSimilarImages(index, imageId = getTestImageId("images.everything"))
+          imagesService.retrieveSimilarImages(
+            index,
+            imageId = getTestImageId("images.everything")
+          )
         ) {
           _ shouldBe empty
         }

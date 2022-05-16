@@ -16,7 +16,8 @@ object ImageAggregations extends ElasticAggregations {
       Some(
         ImageAggregations(
           license = e4sAggregations.decodeJsonAgg("license"),
-          sourceContributorAgents = e4sAggregations.decodeJsonAgg("sourceContributorAgents"),
+          sourceContributorAgents =
+            e4sAggregations.decodeJsonAgg("sourceContributorAgents"),
           sourceGenres = e4sAggregations.decodeJsonAgg("sourceGenres")
         )
       )

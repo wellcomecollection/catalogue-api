@@ -27,7 +27,11 @@ class ImagesTest extends ApiImagesTestBase {
           (0 to 6).map(i => s"images.different-licenses.$i"): _*
         )
 
-        assertJsonResponse(routes, path = s"$rootPath/images/${getTestImageId("images.different-licenses.0")}") {
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images/${getTestImageId("images.different-licenses.0")}"
+        ) {
           Status.OK ->
             getDisplayImage("images.different-licenses.0")
               .withIncludes(SingleImageIncludes.none)
