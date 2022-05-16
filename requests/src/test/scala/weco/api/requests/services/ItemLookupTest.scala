@@ -10,7 +10,10 @@ import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
+import weco.catalogue.internal_model.work.generators.{
+  ItemsGenerators,
+  WorkGenerators
+}
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
