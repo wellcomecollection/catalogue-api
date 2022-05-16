@@ -198,114 +198,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 100,
-    "data" : {
-      "title" : "A work with different concepts in the genre",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
+        "{\"label\":\"Electronic books\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
       ],
-      "genres" : [
-        {
-          "label" : "Electronic books",
-          "concepts" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Conceptual Conversations",
-              "type" : "Concept"
-            },
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Pleasant Paris",
-              "type" : "Place"
-            },
-            {
-              "id" : {
-                "canonicalId" : "gougtipk",
-                "sourceIdentifier" : {
-                  "identifierType" : {
-                    "id" : "calm-record-id"
-                  },
-                  "ontologyType" : "Period",
-                  "value" : "XpEBp6sf3W"
-                },
-                "otherIdentifiers" : [
-                ],
-                "type" : "Identified"
-              },
-              "label" : "Past Prehistory",
-              "range" : null,
-              "type" : "Period"
-            }
-          ]
-        }
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
-        },
-        "ontologyType" : "Work",
-        "value" : "agAbkJTEEo"
-      },
-      "canonicalId" : "lhrstrzi",
-      "mergedTime" : "2022-04-08T13:14:18Z",
-      "sourceModifiedTime" : "2022-04-08T13:14:18Z",
-      "indexedTime" : "2022-05-04T07:15:03.057Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

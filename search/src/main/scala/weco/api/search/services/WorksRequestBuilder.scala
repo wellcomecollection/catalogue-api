@@ -52,7 +52,7 @@ object WorksRequestBuilder
         .field("aggregatableValues.workType")
 
     case WorkAggregationRequest.ProductionDate =>
-      DateHistogramAggregation("productionDates")
+      TermsAggregation("productionDates")
         .field("aggregatableValues.production.dates")
         .minDocCount(1)
 

@@ -166,98 +166,25 @@
       ],
       "type" : "Work"
     },
-    "type" : "Visible"
-  },
-  "work" : {
-    "version" : 87,
-    "data" : {
-      "title" : "Production event in 1098",
-      "otherIdentifiers" : [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "alternativeTitles" : [
+      "genres.label" : [
       ],
-      "format" : null,
-      "description" : null,
-      "physicalDescription" : null,
-      "lettering" : null,
-      "createdDate" : null,
-      "subjects" : [
+      "production.dates" : [
+        "{\"label\":\"1097\",\"type\":\"Period\"}"
       ],
-      "genres" : [
-      ],
-      "contributors" : [
-      ],
-      "thumbnail" : null,
-      "production" : [
-        {
-          "label" : "AH5ZlILHMEHd2S7eki5C8ouWi",
-          "places" : [
-          ],
-          "agents" : [
-          ],
-          "dates" : [
-            {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "1098",
-              "range" : {
-                "from" : "1098-01-01T00:00:00Z",
-                "to" : "1098-12-31T23:59:59.999999999Z",
-                "label" : "1098"
-              }
-            }
-          ],
-          "function" : null
-        }
+      "subjects.label" : [
       ],
       "languages" : [
       ],
-      "edition" : null,
-      "notes" : [
+      "contributors.agent.label" : [
       ],
-      "duration" : null,
-      "items" : [
+      "items.locations.license" : [
       ],
-      "holdings" : [
-      ],
-      "collectionPath" : null,
-      "referenceNumber" : null,
-      "imageData" : [
-      ],
-      "workType" : "Standard"
-    },
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "calm-record-id"
-        },
-        "ontologyType" : "Work",
-        "value" : "KtjbO5NI3f"
-      },
-      "canonicalId" : "mxme7pvj",
-      "mergedTime" : "2022-04-06T19:52:05Z",
-      "sourceModifiedTime" : "2022-04-06T19:52:05Z",
-      "indexedTime" : "2022-05-04T07:15:02.879Z",
       "availabilities" : [
-      ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
-      "relations" : {
-        "ancestors" : [
-        ],
-        "children" : [
-        ],
-        "siblingsPreceding" : [
-        ],
-        "siblingsSucceeding" : [
-        ]
-      }
+      ]
     },
-    "redirectSources" : [
-    ],
     "type" : "Visible"
   }
 }

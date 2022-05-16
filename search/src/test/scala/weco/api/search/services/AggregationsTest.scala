@@ -1,11 +1,12 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
+import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.fixtures.{JsonHelpers, TestDocumentFixtures}
-import weco.api.search.generators.{PeriodGenerators, SearchOptionsGenerators}
+import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.catalogue.internal_model.index.IndexFixtures
@@ -18,7 +19,6 @@ class AggregationsTest
     extends AnyFunSpec
     with Matchers
     with IndexFixtures
-    with PeriodGenerators
     with SearchOptionsGenerators
     with JsonHelpers
     with TestDocumentFixtures {
@@ -66,8 +66,24 @@ class AggregationsTest
         _.productionDates shouldBe Some(
           Aggregation(
             List(
-              AggregationBucket(data = createPeriodForYear("1960"), count = 2),
-              AggregationBucket(data = createPeriodForYear("1962"), count = 1)
+              AggregationBucket(
+                data = Json.fromFields(
+                  Seq(
+                    ("label", Json.fromString("1960")),
+                    ("type", Json.fromString("Period"))
+                  )
+                ),
+                count = 2
+              ),
+              AggregationBucket(
+                data = Json.fromFields(
+                  Seq(
+                    ("label", Json.fromString("1962")),
+                    ("type", Json.fromString("Period"))
+                  )
+                ),
+                count = 1
+              )
             )
           )
         )
