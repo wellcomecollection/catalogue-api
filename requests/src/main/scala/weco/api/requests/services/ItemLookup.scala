@@ -10,10 +10,7 @@ import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  SourceIdentifier
-}
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
