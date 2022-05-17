@@ -36,8 +36,7 @@ lazy val display = setupProject(
 
 lazy val search_common = setupProject(
   project,
-  "common/search",
-  localDependencies = Seq(display),
+  folder = "common/search",
   externalDependencies = CatalogueDependencies.searchCommonDependencies
 )
 
@@ -50,8 +49,8 @@ lazy val stacks = setupProject(
 
 lazy val search = setupProject(
   project,
-  "search",
-  localDependencies = Seq(display, search_common),
+  folder = "search",
+  localDependencies = Seq(search_common),
   externalDependencies = CatalogueDependencies.searchDependencies
 )
 
@@ -71,8 +70,8 @@ lazy val requests = setupProject(
 
 lazy val snapshot_generator = setupProject(
   project,
-  "snapshots/snapshot_generator",
-  localDependencies = Seq(display, search_common),
+  folder = "snapshots/snapshot_generator",
+  localDependencies = Seq(search_common),
   externalDependencies = CatalogueDependencies.snapshotGeneratorDependencies
 )
 
