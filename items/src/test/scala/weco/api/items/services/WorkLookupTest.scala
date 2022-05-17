@@ -1,13 +1,6 @@
 package weco.api.items.services
 
-import akka.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpRequest,
-  HttpResponse,
-  StatusCodes,
-  Uri
-}
+import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
@@ -15,12 +8,11 @@ import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-  PhysicalLocation
-}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.internal_model.identifiers.{CanonicalId, IdentifierType, SourceIdentifier}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType}
 import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
@@ -52,69 +44,61 @@ class WorkLookupTest
     }
 
   it("returns a work with matching ID") {
-    val sierraItemNumber = createSierraItemNumber
-
-    val temporarilyUnavailableOnline = AccessCondition(
-      method = AccessMethod.NotRequestable,
-      status = AccessStatus.TemporarilyUnavailable
-    )
-
-    val physicalItem = createPhysicalItemWith(
-      sierraItemNumber = sierraItemNumber,
-      accessCondition = temporarilyUnavailableOnline
-    )
-
-    val work = indexedWork().items(List(physicalItem))
+    val canonicalId = CanonicalId(randomAlphanumeric(length = 8))
+    val title = "a test item"
+    val identifierType = IdentifierType.MiroImageNumber
+    val sourceIdentifier = randomAlphanumeric()
+    val itemId = randomAlphanumeric()
+    val itemNumber = "i52945510"
+    val locationLabel = "where the item is"
 
     // Note: this is deliberately a hard-coded JSON string rather than the
     // helpers we use in other tests so we can be sure we really can decode
     // the catalogue API JSON, and avoid any encoding bugs in the tests themselves.
     val responses = Seq(
       (
-        catalogueWorkRequest(work.state.canonicalId),
+        catalogueWorkRequest(canonicalId),
         HttpResponse(
           entity = HttpEntity(
             contentType = ContentTypes.`application/json`,
             s"""
             {
-              "id": "${work.state.canonicalId}",
-              "title": "${work.data.title.get}",
+              "id": "$canonicalId",
+              "title": "$title",
               "alternativeTitles": [],
               "identifiers": [
                 {
                   "identifierType": {
-                    "id": "${work.state.sourceIdentifier.identifierType.id}",
-                    "label": "${work.state.sourceIdentifier.identifierType.label}",
+                    "id": "${identifierType.id}",
+                    "label": "${identifierType.label}",
                     "type": "IdentifierType"
                   },
-                  "value": "${work.state.sourceIdentifier.value}",
+                  "value": "$sourceIdentifier",
                   "type": "Identifier"
                 }
               ],
               "items": [
                 {
-                  "id": "${physicalItem.id.canonicalId}",
+                  "id": "$itemId",
                   "identifiers": [
                     {
                       "identifierType": {
-                        "id": "${physicalItem.id.sourceIdentifier.identifierType.id}",
-                        "label": "${physicalItem.id.sourceIdentifier.identifierType.label}",
+                        "id": "sierra-system-number",
+                        "label": "Sierra system number",
                         "type": "IdentifierType"
                       },
-                      "value": "${physicalItem.id.sourceIdentifier.value}",
+                      "value": "$itemNumber",
                       "type": "Identifier"
                     }
                   ],
                   "locations": [
                     {
                       "locationType": {
-                        "id": "${physicalItem.locations.head.locationType.id}",
-                        "label": "${physicalItem.locations.head.locationType.label}",
+                        "id": "closed-stores",
+                        "label": "Closed stores",
                         "type": "LocationType"
                       },
-                      "label": "${physicalItem.locations.head
-              .asInstanceOf[PhysicalLocation]
-              .label}",
+                      "label": "$locationLabel",
                       "accessConditions": [
                         {
                           "method": {
@@ -151,11 +135,55 @@ class WorkLookupTest
     )
 
     val future = withLookup(responses) {
-      _.byCanonicalId(work.state.canonicalId)
+      _.byCanonicalId(canonicalId)
     }
 
     whenReady(future) {
-      _ shouldBe Right(CatalogueWork(work))
+      _ shouldBe Right(
+        CatalogueWork(
+          id = canonicalId.underlying,
+          title = Some(title),
+          identifiers = List(
+            DisplayIdentifier(
+              sourceIdentifier = SourceIdentifier(
+                identifierType = identifierType,
+                value = sourceIdentifier,
+                ontologyType = "Work"
+              )
+            )
+          ),
+          items = List(
+            DisplayItem(
+              id = Some(itemId),
+              identifiers = List(
+                DisplayIdentifier(
+                  sourceIdentifier = SourceIdentifier(
+                    identifierType = IdentifierType.SierraSystemNumber,
+                    value = itemNumber,
+                    ontologyType = "Item"
+                  )
+                )
+              ),
+              locations = List(
+                DisplayPhysicalLocation(
+                  label = locationLabel,
+                  locationType = DisplayLocationType(
+                    locationType = LocationType.ClosedStores
+                  ),
+                  accessConditions = List(
+                    DisplayAccessCondition(
+                      AccessCondition(
+                        status = AccessStatus.TemporarilyUnavailable,
+                        method = AccessMethod.NotRequestable
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
     }
   }
 
