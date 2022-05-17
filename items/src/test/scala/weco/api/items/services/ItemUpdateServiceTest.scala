@@ -163,16 +163,19 @@ class ItemUpdateServiceTest
     val orderedItems = List(
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
       ),
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
       ),
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      )
     )
 
     val reversedItems = orderedItems.reverse
@@ -214,27 +217,31 @@ class ItemUpdateServiceTest
       items = List(
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
         ),
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
         ),
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        )
       )
     )
 
-    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
-        failure =>
-          failure shouldBe a[IllegalArgumentException]
-          failure.getMessage should include(
-            "Inconsistent results updating items"
-          )
-      }
+    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
+      itemUpdateService =>
+        whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+          failure =>
+            failure shouldBe a[IllegalArgumentException]
+            failure.getMessage should include(
+              "Inconsistent results updating items"
+            )
+        }
     }
   }
 
