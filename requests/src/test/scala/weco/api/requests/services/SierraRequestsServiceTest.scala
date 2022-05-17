@@ -3,7 +3,7 @@ package weco.api.requests.services
 import java.net.URI
 import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
@@ -21,7 +21,6 @@ class SierraRequestsServiceTest
     extends AnyFunSpec
     with Matchers
     with ScalaFutures
-    with IntegrationPatience
     with EitherValues
     with SierraIdentifierGenerators
     with SierraServiceFixture {

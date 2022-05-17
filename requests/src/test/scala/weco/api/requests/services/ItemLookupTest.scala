@@ -2,7 +2,7 @@ package weco.api.requests.services
 
 import akka.http.scaladsl.model.{HttpResponse, Uri}
 import org.scalatest.EitherValues
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
@@ -10,10 +10,7 @@ import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.work.generators.{ItemsGenerators, WorkGenerators}
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -26,7 +23,6 @@ class ItemLookupTest
     with ItemsGenerators
     with WorkGenerators
     with ScalaFutures
-    with IntegrationPatience
     with ItemLookupFixture {
 
   describe("byCanonicalId") {

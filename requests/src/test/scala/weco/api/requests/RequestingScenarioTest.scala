@@ -5,7 +5,6 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.GivenWhenThen
-import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
@@ -34,7 +33,6 @@ class RequestingScenarioTest
     with ItemsGenerators
     with WorkGenerators
     with RequestsApiFixture
-    with IntegrationPatience
     with ScalatestRouteTest
     with SierraIdentifierGenerators {
 
