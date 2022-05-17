@@ -2,7 +2,7 @@ package weco.api.items.services
 
 import akka.http.scaladsl.model._
 import org.scalatest.EitherValues
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
@@ -13,10 +13,8 @@ import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLo
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{CanonicalId, IdentifierType, SourceIdentifier}
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType}
-import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
-import weco.sierra.generators.SierraIdentifierGenerators
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -25,12 +23,9 @@ class WorkLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
-    with WorkGenerators
     with Akka
     with ScalaFutures
-    with IntegrationPatience
-    with ItemsApiGenerators
-    with SierraIdentifierGenerators {
+    with ItemsApiGenerators {
 
   def withLookup[R](
     responses: Seq[(HttpRequest, HttpResponse)]
