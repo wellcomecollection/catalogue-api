@@ -161,32 +161,43 @@ class ItemUpdateServiceTest
     val itemUpdater = new DummyItemUpdater()
 
     val orderedItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
     )
 
     val reversedItems = orderedItems.reverse
 
     val workWithItemsForward = CatalogueWork(
-      indexedWork().items(orderedItems)
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems
     )
+
     val workWithItemsBackward = CatalogueWork(
-      indexedWork().items(reversedItems)
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems.reverse
     )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(it => DisplayItem(it))
+        _ shouldBe orderedItems
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(it => DisplayItem(it))
+        _ shouldBe reversedItems
       }
     }
   }
