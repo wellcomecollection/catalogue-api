@@ -12,10 +12,8 @@ import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
-  IdState,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.work.Item
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
@@ -119,15 +117,6 @@ class ItemLookup(client: HttpClient with HttpGet)(
 
       case _ => searchBySourceIdentifier(itemIdentifiers)
     }
-
-  private case class WorkStubData(
-    title: Option[String],
-    items: List[Item[IdState.Minted]]
-  )
-
-  private case class WorkStubState(canonicalId: CanonicalId)
-
-  private case class WorkStub(data: WorkStubData, state: WorkStubState)
 
   private def searchBySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
