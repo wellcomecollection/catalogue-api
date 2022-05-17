@@ -7,6 +7,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayPhysicalLocation
@@ -153,6 +154,9 @@ class ItemUpdateServiceTest
     }
   }
 
+  def randomCanonicalId: String =
+    randomAlphanumeric()
+
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
@@ -190,19 +194,29 @@ class ItemUpdateServiceTest
   it("detects if the item updater returns items with differing IDs") {
     def badUpdate(items: Seq[DisplayItem]) = items.tail
 
-    val itemUpdater = new DummyItemUpdater(badUpdate)
+    val brokenItemUpdater = new DummyItemUpdater(badUpdate)
 
-    val startingItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+    val workWithItems = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+      )
     )
 
-    val workWithItems = CatalogueWork(indexedWork().items(startingItems))
-
-    withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItems).failed) {
         failure =>
           failure shouldBe a[IllegalArgumentException]
