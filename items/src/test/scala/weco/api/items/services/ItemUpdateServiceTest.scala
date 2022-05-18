@@ -1,12 +1,12 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayPhysicalLocation
@@ -20,7 +20,6 @@ import weco.catalogue.internal_model.locations.{
   AccessStatus
 }
 import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -34,11 +33,8 @@ class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
-    with ScalaFutures
     with ItemsApiGenerators
-    with IntegrationPatience
     with SierraIdentifierGenerators
-    with WorkGenerators
     with SierraSourceFixture {
 
   def withSierraItemUpdater[R](
@@ -153,36 +149,53 @@ class ItemUpdateServiceTest
     }
   }
 
+  def randomCanonicalId: String =
+    randomAlphanumeric()
+
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
     val orderedItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      )
     )
 
     val reversedItems = orderedItems.reverse
 
     val workWithItemsForward = CatalogueWork(
-      indexedWork().items(orderedItems)
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems
     )
+
     val workWithItemsBackward = CatalogueWork(
-      indexedWork().items(reversedItems)
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems.reverse
     )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(it => DisplayItem(it))
+        _ shouldBe orderedItems
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(it => DisplayItem(it))
+        _ shouldBe reversedItems
       }
     }
   }
@@ -190,26 +203,40 @@ class ItemUpdateServiceTest
   it("detects if the item updater returns items with differing IDs") {
     def badUpdate(items: Seq[DisplayItem]) = items.tail
 
-    val itemUpdater = new DummyItemUpdater(badUpdate)
+    val brokenItemUpdater = new DummyItemUpdater(badUpdate)
 
-    val startingItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+    val workWithItems = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        )
+      )
     )
 
-    val workWithItems = CatalogueWork(indexedWork().items(startingItems))
-
-    withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
-        failure =>
-          failure shouldBe a[IllegalArgumentException]
-          failure.getMessage should include(
-            "Inconsistent results updating items"
-          )
-      }
+    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
+      itemUpdateService =>
+        whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+          failure =>
+            failure shouldBe a[IllegalArgumentException]
+            failure.getMessage should include(
+              "Inconsistent results updating items"
+            )
+        }
     }
   }
 
@@ -217,17 +244,23 @@ class ItemUpdateServiceTest
     val workWithUnavailableItemNumber = createSierraItemNumber
     val workWithAvailableItemNumber = createSierraItemNumber
 
-    val workWithUnavailableItem = indexedWork().items(
-      List(
-        temporarilyUnavailableItem(workWithUnavailableItemNumber),
-        dummyDigitalItem
+    val workWithUnavailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(temporarilyUnavailableItem(workWithUnavailableItemNumber)),
+        DisplayItem(dummyDigitalItem)
       )
     )
 
-    val workWithAvailableItem = indexedWork().items(
-      List(
-        availableItem(workWithAvailableItemNumber),
-        dummyDigitalItem
+    val workWithAvailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(availableItem(workWithAvailableItemNumber)),
+        DisplayItem(dummyDigitalItem)
       )
     )
 
@@ -261,30 +294,27 @@ class ItemUpdateServiceTest
     )
 
     it("updates AccessCondition correctly based on Sierra responses") {
-      forAll(itemStates) {
-        (sierraResponses, catalogueWork, expectedAccessCondition) =>
-          withSierraItemUpdater(sierraResponses) { itemUpdater =>
-            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work = CatalogueWork(catalogueWork)
+      forAll(itemStates) { (sierraResponses, work, expectedAccessCondition) =>
+        withSierraItemUpdater(sierraResponses) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+              updatedItems.length shouldBe 2
 
-              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-                updatedItems.length shouldBe 2
+              val physicalItem = updatedItems(0)
+              val digitalItem = updatedItems(1)
 
-                val physicalItem = updatedItems(0)
-                val digitalItem = updatedItems(1)
+              val updatedAccessCondition = physicalItem.locations.head
+                .asInstanceOf[DisplayPhysicalLocation]
+                .accessConditions
+                .head
+              updatedAccessCondition shouldBe DisplayAccessCondition(
+                expectedAccessCondition
+              )
 
-                val updatedAccessCondition = physicalItem.locations.head
-                  .asInstanceOf[DisplayPhysicalLocation]
-                  .accessConditions
-                  .head
-                updatedAccessCondition shouldBe DisplayAccessCondition(
-                  expectedAccessCondition
-                )
-
-                digitalItem shouldBe DisplayItem(dummyDigitalItem)
-              }
+              digitalItem shouldBe DisplayItem(dummyDigitalItem)
             }
           }
+        }
       }
     }
   }
