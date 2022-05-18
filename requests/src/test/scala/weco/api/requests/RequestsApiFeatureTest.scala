@@ -1,7 +1,14 @@
 package weco.api.requests
 
 import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCodes}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  StatusCodes
+}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.concurrent.IntegrationPatience
@@ -105,7 +112,10 @@ class RequestsApiFeatureTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemsRequest(itemNumber1.withCheckDigit, itemNumber2.withCheckDigit),
+          catalogueItemsRequest(
+            itemNumber1.withCheckDigit,
+            itemNumber2.withCheckDigit
+          ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,

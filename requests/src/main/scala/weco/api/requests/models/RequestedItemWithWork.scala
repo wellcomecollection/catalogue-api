@@ -14,7 +14,11 @@ case class RequestedItemWithWork(
 )
 
 case object RequestedItemWithWork {
-  def apply(workId: CanonicalId, workTitle: Option[String], item: DisplayItem): RequestedItemWithWork =
+  def apply(
+    workId: CanonicalId,
+    workTitle: Option[String],
+    item: DisplayItem
+  ): RequestedItemWithWork =
     RequestedItemWithWork(
       workId,
       workTitle,

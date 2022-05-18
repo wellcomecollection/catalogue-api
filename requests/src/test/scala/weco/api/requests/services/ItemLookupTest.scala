@@ -115,7 +115,9 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueSourceIdsRequest(item1.sourceIdentifier, item2.sourceIdentifier
+          catalogueSourceIdsRequest(
+            item1.sourceIdentifier,
+            item2.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workA, workB))
         )
@@ -419,8 +421,8 @@ class ItemLookupTest
   private def itemAsJson(item: ItemStub): Json =
     item match {
       case IdentifiedItemStub(id, sourceIdentifier, otherIdentifiers) => {
-        val identifiers = (sourceIdentifier +: otherIdentifiers).map(sourceIdentifier =>
-          s"""
+        val identifiers =
+          (sourceIdentifier +: otherIdentifiers).map(sourceIdentifier => s"""
              |{
              |  "identifierType": {
              |    "id": "${sourceIdentifier.identifierType.id}",
@@ -430,8 +432,7 @@ class ItemLookupTest
              |  "value": "${sourceIdentifier.value}",
              |  "type": "Identifier"
              |}
-             |""".stripMargin
-        )
+             |""".stripMargin)
 
         parse(
           s"""

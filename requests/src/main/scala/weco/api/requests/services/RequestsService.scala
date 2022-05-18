@@ -1,11 +1,19 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
-import weco.api.requests.models.{HoldAccepted, HoldRejected, RequestedItemWithWork}
+import weco.api.requests.models.{
+  HoldAccepted,
+  HoldRejected,
+  RequestedItemWithWork
+}
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdentifierType, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdentifierType,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -63,10 +71,10 @@ class RequestsService(
 
       itemHoldTuples = itemsFound.flatMap { itemLookup =>
         val identifiers =
-          itemLookup
-            .item
-            .hcursor.get[List[DisplayIdentifier]]("identifiers")
-            .right.get
+          itemLookup.item.hcursor
+            .get[List[DisplayIdentifier]]("identifiers")
+            .right
+            .get
 
         val itemId = identifiers.head
 

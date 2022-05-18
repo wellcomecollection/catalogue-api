@@ -9,7 +9,11 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.api.requests.services.{ItemLookup, RequestsService, SierraRequestsService}
+import weco.api.requests.services.{
+  ItemLookup,
+  RequestsService,
+  SierraRequestsService
+}
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
@@ -39,8 +43,7 @@ class RequestingScenarioTest
         (
           catalogueItemRequest(itemId),
           HttpResponse(
-            entity = createJsonHttpEntityWith(
-              s"""
+            entity = createJsonHttpEntityWith(s"""
                  |{
                  |  "results": [
                  |    {
@@ -1497,7 +1500,8 @@ class RequestingScenarioTest
     )
 
   private def catalogueItemResponse(
-    itemId: CanonicalId, itemNumber: SierraItemNumber
+    itemId: CanonicalId,
+    itemNumber: SierraItemNumber
   ): HttpResponse =
     HttpResponse(
       entity = createJsonHttpEntityWith(
