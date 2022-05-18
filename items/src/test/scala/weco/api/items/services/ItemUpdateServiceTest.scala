@@ -7,18 +7,11 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{
-  DisplayAccessCondition,
-  DisplayPhysicalLocation
-}
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayDigitalLocation, DisplayLicense, DisplayLocationType, DisplayPhysicalLocation}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
 import weco.catalogue.internal_model.work.Item
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
@@ -49,7 +42,28 @@ class ItemUpdateServiceTest
   )(testWith: TestWith[ItemUpdateService, R]): R =
     testWith(new ItemUpdateService(itemUpdaters))
 
-  val dummyDigitalItem = createDigitalItem
+  val dummyDigitalItem =
+    DisplayItem(
+      id = None,
+      identifiers = Nil,
+      locations = List(
+        DisplayDigitalLocation(
+          locationType = DisplayLocationType(
+            id = "iiif-presentation",
+            label = "IIIF Presentation API"
+          ),
+          url = s"https://iiif.wellcomecollection.org/image/${randomAlphanumeric(3)}.jpg/info.json",
+          license = Some(
+            DisplayLicense(
+              id = "cc-by",
+              label = "Attribution 4.0 International (CC BY 4.0)",
+              url = "http://creativecommons.org/licenses/by/4.0/"
+            )
+          ),
+          accessConditions = Nil
+        )
+      )
+    )
 
   def missingItemResponse(sierraItemNumber: SierraItemNumber) = Seq(
     (
@@ -250,7 +264,7 @@ class ItemUpdateServiceTest
       identifiers = Nil,
       items = List(
         DisplayItem(temporarilyUnavailableItem(workWithUnavailableItemNumber)),
-        DisplayItem(dummyDigitalItem)
+        dummyDigitalItem
       )
     )
 
@@ -260,7 +274,7 @@ class ItemUpdateServiceTest
       identifiers = Nil,
       items = List(
         DisplayItem(availableItem(workWithAvailableItemNumber)),
-        DisplayItem(dummyDigitalItem)
+        dummyDigitalItem
       )
     )
 
@@ -311,7 +325,7 @@ class ItemUpdateServiceTest
                 expectedAccessCondition
               )
 
-              digitalItem shouldBe DisplayItem(dummyDigitalItem)
+              digitalItem shouldBe dummyDigitalItem
             }
           }
         }
