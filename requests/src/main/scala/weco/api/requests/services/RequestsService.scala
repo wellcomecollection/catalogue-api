@@ -7,6 +7,8 @@ import weco.api.requests.models.{
   RequestedItemWithWork
 }
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.Implicits._
 import weco.catalogue.internal_model.identifiers.{
   CanonicalId,
   IdentifierType,
@@ -68,7 +70,13 @@ class RequestsService(
       }
 
       itemHoldTuples = itemsFound.flatMap { itemLookup =>
-        val itemId = itemLookup.item.identifiers.head
+        val identifiers =
+          itemLookup.item.hcursor
+            .get[List[DisplayIdentifier]]("identifiers")
+            .right
+            .get
+
+        val itemId = identifiers.head
 
         val sierraId = SourceIdentifier(
           identifierType = IdentifierType(itemId.identifierType.id),

@@ -1,6 +1,8 @@
 package weco.api.requests.services
 
 import akka.http.scaladsl.model.{HttpResponse, Uri}
+import io.circe.Json
+import io.circe.parser._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
@@ -8,12 +10,8 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,37 +21,31 @@ class ItemLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
-    with ItemsGenerators
-    with WorkGenerators
+    with IdentifiersGenerators
     with ScalaFutures
     with IntegrationPatience
     with ItemLookupFixture {
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
-      val item1 = createIdentifiedItem
-      val item2 = createIdentifiedItem
-      val item3 = createIdentifiedItem
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = IdentifiedItemStub()
 
-      val workSourceIds = List(
-        createSourceIdentifier,
-        createSourceIdentifier
-      ).sortBy(_.value)
-
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(items = List(item1, item2))
+      val workB = WorkStub(items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemRequest(item1.id.canonicalId),
+          catalogueItemRequest(item1.id),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemRequest(item2.id.canonicalId),
+          catalogueItemRequest(item2.id),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueItemRequest(item3.id.canonicalId),
+          catalogueItemRequest(item3.id),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -61,10 +53,10 @@ class ItemLookupTest
       withItemLookup(responses) { lookup =>
         Seq(item1, item2, item3).foreach { item =>
           val future =
-            lookup.byCanonicalId(item.id.canonicalId)
+            lookup.byCanonicalId(item.id)
 
           whenReady(future) {
-            _ shouldBe Right(DisplayIdentifier(item.id.sourceIdentifier))
+            _ shouldBe Right(DisplayIdentifier(item.sourceIdentifier))
           }
         }
       }
@@ -114,22 +106,18 @@ class ItemLookupTest
 
   describe("bySourceIdentifier") {
     it("finds items by source identifier") {
-      val item1 = createIdentifiedItem
-      val item2 = createIdentifiedItem
-      val item3 = createIdentifiedItem
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = IdentifiedItemStub()
 
-      val workSourceIds = createSortedSourceIdentifiers(count = 2)
-
-      // Enforcing ordering of source identifier value to ensure consistent
-      // results when items appear on multiple works
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
-            item1.id.sourceIdentifier,
-            item2.id.sourceIdentifier
+          catalogueSourceIdsRequest(
+            item1.sourceIdentifier,
+            item2.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workA, workB))
         )
@@ -138,8 +126,8 @@ class ItemLookupTest
       val future = withItemLookup(responses) {
         _.bySourceIdentifier(
           Seq(
-            item1.id.sourceIdentifier,
-            item2.id.sourceIdentifier
+            item1.sourceIdentifier,
+            item2.sourceIdentifier
           )
         )
       }
@@ -148,16 +136,16 @@ class ItemLookupTest
         _ shouldBe List(
           Right(
             RequestedItemWithWork(
-              workA.state.canonicalId,
-              workA.data.title,
-              DisplayItem(item1)
+              workId = workA.id,
+              workTitle = workA.title,
+              item = itemAsJson(item1)
             )
           ),
           Right(
             RequestedItemWithWork(
-              workA.state.canonicalId,
-              workA.data.title,
-              DisplayItem(item2)
+              workId = workA.id,
+              workTitle = workA.title,
+              item = itemAsJson(item2)
             )
           )
         )
@@ -165,22 +153,18 @@ class ItemLookupTest
     }
 
     it("handles a work where some items have no identifiers") {
-      val item1 = createIdentifiedItem
-      val item2 = createIdentifiedItem
-      val item3 = createUnidentifiableItem
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = UnidentifiedItemStub()
 
-      val workSourceIds = createSortedSourceIdentifiers(count = 2)
-
-      // Enforcing ordering of source identifier value to ensure consistent
-      // results when items appear on multiple works
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
-            item1.id.sourceIdentifier,
-            item2.id.sourceIdentifier
+          catalogueSourceIdsRequest(
+            item1.sourceIdentifier,
+            item2.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workA, workB))
         )
@@ -189,8 +173,8 @@ class ItemLookupTest
       val future = withItemLookup(responses) {
         _.bySourceIdentifier(
           Seq(
-            item1.id.sourceIdentifier,
-            item2.id.sourceIdentifier
+            item1.sourceIdentifier,
+            item2.sourceIdentifier
           )
         )
       }
@@ -199,16 +183,16 @@ class ItemLookupTest
         _ shouldBe List(
           Right(
             RequestedItemWithWork(
-              workA.state.canonicalId,
-              workA.data.title,
-              DisplayItem(item1)
+              workId = workA.id,
+              workTitle = workA.title,
+              item = itemAsJson(item1)
             )
           ),
           Right(
             RequestedItemWithWork(
-              workA.state.canonicalId,
-              workA.data.title,
-              DisplayItem(item2)
+              workId = workA.id,
+              workTitle = workA.title,
+              item = itemAsJson(item2)
             )
           )
         )
@@ -216,25 +200,20 @@ class ItemLookupTest
     }
 
     it("returns not found errors where ID matches cannot be found") {
-      val item1 = createIdentifiedItem
-      val item2 = createIdentifiedItem
-      val item3 = createIdentifiedItem
-      val item4 = createIdentifiedItem
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = IdentifiedItemStub()
+      val item4 = IdentifiedItemStub()
 
-      val workSourceIds = List(
-        createSourceIdentifier,
-        createSourceIdentifier
-      ).sortBy(_.value)
-
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
-            item1.id.sourceIdentifier,
-            item4.id.sourceIdentifier,
-            item3.id.sourceIdentifier
+          catalogueSourceIdsRequest(
+            item1.sourceIdentifier,
+            item4.sourceIdentifier,
+            item3.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workA, workB))
         )
@@ -243,9 +222,9 @@ class ItemLookupTest
       val future = withItemLookup(responses) {
         _.bySourceIdentifier(
           Seq(
-            item1.id.sourceIdentifier,
-            item4.id.sourceIdentifier,
-            item3.id.sourceIdentifier
+            item1.sourceIdentifier,
+            item4.sourceIdentifier,
+            item3.sourceIdentifier
           )
         )
       }
@@ -254,40 +233,38 @@ class ItemLookupTest
         result should have size 3
 
         result(0).value shouldBe RequestedItemWithWork(
-          workA.state.canonicalId,
-          workA.data.title,
-          DisplayItem(item1)
+          workId = workA.id,
+          workTitle = workA.title,
+          item = itemAsJson(item1)
         )
         result(1).left.value shouldBe a[ItemNotFoundError]
         result(2).value shouldBe RequestedItemWithWork(
-          workB.state.canonicalId,
-          workB.data.title,
-          DisplayItem(item3)
+          workId = workB.id,
+          workTitle = workB.title,
+          item = itemAsJson(item3)
         )
       }
     }
 
     it("chooses work details based on work source id ordering") {
-      val item1 = createIdentifiedItem
-      val item2 = createIdentifiedItem
-      val item3 = createIdentifiedItem
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = IdentifiedItemStub()
 
-      val workSourceIds = createSortedSourceIdentifiers(count = 2)
-
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item1.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item2.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item2.sourceIdentifier),
           catalogueWorkResponse(Seq(workB, workA))
         ),
         (
-          catalogueItemsRequest(item3.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item3.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -296,15 +273,15 @@ class ItemLookupTest
         Seq((workA, item1), (workA, item2), (workB, item3)).foreach {
           case (work, item) =>
             val future =
-              lookup.bySourceIdentifier(Seq(item.id.sourceIdentifier))
+              lookup.bySourceIdentifier(Seq(item.sourceIdentifier))
 
             whenReady(future) {
               _ shouldBe List(
                 Right(
                   RequestedItemWithWork(
-                    work.state.canonicalId,
-                    work.data.title,
-                    DisplayItem(item)
+                    workId = work.id,
+                    workTitle = work.title,
+                    item = itemAsJson(item)
                   )
                 )
               )
@@ -313,45 +290,43 @@ class ItemLookupTest
       }
     }
 
-    it("does not match on anything but the first identifier") {
-      val item1 = createIdentifiedItemWith(
+    it("only matches on the first identifier") {
+      val item1 = IdentifiedItemStub(
         otherIdentifiers = List(createSourceIdentifier)
       )
-      val item2 = createIdentifiedItemWith(
+      val item2 = IdentifiedItemStub(
         otherIdentifiers = List(createSourceIdentifier)
       )
-      val item3 = createIdentifiedItemWith(
+      val item3 = IdentifiedItemStub(
         otherIdentifiers = List(createSourceIdentifier)
       )
 
-      val workSourceIds = createSortedSourceIdentifiers(count = 2)
-
-      val workA = indexedWork(workSourceIds(0)).items(List(item1, item2))
-      val workB = indexedWork(workSourceIds(1)).items(List(item2, item3))
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item1.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item1.id.otherIdentifiers.head),
+          catalogueSourceIdsRequest(item1.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item2.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item2.sourceIdentifier),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueItemsRequest(item2.id.otherIdentifiers.head),
+          catalogueSourceIdsRequest(item2.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueItemsRequest(item3.id.sourceIdentifier),
+          catalogueSourceIdsRequest(item3.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         ),
         (
-          catalogueItemsRequest(item3.id.otherIdentifiers.head),
+          catalogueSourceIdsRequest(item3.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -359,20 +334,20 @@ class ItemLookupTest
       withItemLookup(responses) { lookup =>
         List((workA, item1), (workA, item2), (workB, item3)).foreach {
           case (work, item) =>
-            whenReady(lookup.bySourceIdentifier(List(item.id.sourceIdentifier))) {
+            whenReady(lookup.bySourceIdentifier(List(item.sourceIdentifier))) {
               _ shouldBe List(
                 Right(
                   RequestedItemWithWork(
-                    work.state.canonicalId,
-                    work.data.title,
-                    DisplayItem(item)
+                    workId = work.id,
+                    workTitle = work.title,
+                    item = itemAsJson(item)
                   )
                 )
               )
             }
 
             whenReady(
-              lookup.bySourceIdentifier(List(item.id.otherIdentifiers.head))
+              lookup.bySourceIdentifier(List(item.otherIdentifiers.head))
             ) { result =>
               result should have size 1
               result.head.left.value shouldBe a[ItemNotFoundError]
@@ -417,19 +392,94 @@ class ItemLookupTest
     }
   }
 
-  // It seems like Elasticsearch and Scala disagree about how source identifiers should
-  // be sorted, especially when the case of two identifiers is different.  This causes
-  // some of the sort-related tests to be flaky.
-  //
-  // Because we're usually doing this with Sierra identifiers which start with a
-  // lowercase 'b', just lowercase all the values we use in these tests.
-  private def createSortedSourceIdentifiers(count: Int): Seq[SourceIdentifier] =
-    (1 to count)
-      .map { _ =>
-        createSourceIdentifier
+  sealed trait ItemStub
+  case class IdentifiedItemStub(
+    id: CanonicalId = createCanonicalId,
+    sourceIdentifier: SourceIdentifier = createSourceIdentifier,
+    otherIdentifiers: Seq[SourceIdentifier] = List()
+  ) extends ItemStub
+  case class UnidentifiedItemStub() extends ItemStub
+
+  case class WorkStub(
+    id: CanonicalId = createCanonicalId,
+    items: Seq[ItemStub],
+    sourceIdentifier: String = randomAlphanumeric(),
+    title: Option[String] = Some(s"title-${randomAlphanumeric()}")
+  )
+
+  private def catalogueWorkResponse(works: Seq[WorkStub]): HttpResponse =
+    HttpResponse(
+      entity = createJsonHttpEntityWith(
+        s"""
+           |{
+           |  "results": [ ${works.map(catalogueWorkJson).mkString(",")} ]
+           |}
+           |""".stripMargin
+      )
+    )
+
+  private def itemAsJson(item: ItemStub): Json =
+    item match {
+      case IdentifiedItemStub(id, sourceIdentifier, otherIdentifiers) => {
+        val identifiers =
+          (sourceIdentifier +: otherIdentifiers).map(sourceIdentifier => s"""
+             |{
+             |  "identifierType": {
+             |    "id": "${sourceIdentifier.identifierType.id}",
+             |    "label": "${sourceIdentifier.identifierType.label}",
+             |    "type": "IdentifierType"
+             |  },
+             |  "value": "${sourceIdentifier.value}",
+             |  "type": "Identifier"
+             |}
+             |""".stripMargin)
+
+        parse(
+          s"""
+             |{
+             |  "id": "$id",
+             |  "identifiers": [
+             |    ${identifiers.mkString(",")}
+             |  ],
+             |  "locations": [],
+             |  "type": "Item"
+             |}
+             |""".stripMargin
+        ).right.get
       }
-      .map { s =>
-        s.copy(value = s.value.toLowerCase)
-      }
-      .sortBy { _.value }
+
+      case UnidentifiedItemStub() =>
+        parse(
+          s"""
+             |{
+             |  "identifiers": [],
+             |  "locations": [],
+             |  "type": "Item"
+             |}
+             |""".stripMargin
+        ).right.get
+    }
+
+  private def catalogueWorkJson(w: WorkStub): String = {
+    val itemJson = w.items.map(itemAsJson(_).noSpaces)
+
+    s"""
+       |{
+       |  "id": "${w.id}",
+       |  "title": "${w.title.get}",
+       |  "identifiers": [
+       |    {
+       |      "identifierType": {
+       |        "id": "sierra-system-number",
+       |        "label": "Sierra system number",
+       |        "type": "IdentifierType"
+       |      },
+       |      "value": "${w.sourceIdentifier}",
+       |      "type": "Identifier"
+       |    }
+       |  ],
+       |  "items": [ ${itemJson.mkString(",")} ]
+       |}
+       |""".stripMargin
+  }
 }

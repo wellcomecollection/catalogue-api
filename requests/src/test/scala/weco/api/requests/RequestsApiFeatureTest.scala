@@ -15,13 +15,8 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.json.utils.JsonAssertions
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -31,8 +26,6 @@ class RequestsApiFeatureTest
     with RequestsApiFixture
     with JsonAssertions
     with IntegrationPatience
-    with ItemsGenerators
-    with WorkGenerators
     with SierraIdentifierGenerators
     with ScalatestRouteTest {
 
@@ -68,6 +61,18 @@ class RequestsApiFeatureTest
       val patron = SierraPatronNumber("1234567")
       val itemNumber1 = createSierraItemNumber
       val itemNumber2 = createSierraItemNumber
+
+      val workId1 = CanonicalId(randomAlphanumeric(length = 8))
+      val workId2 = CanonicalId(randomAlphanumeric(length = 8))
+
+      val itemId1 = CanonicalId(randomAlphanumeric(length = 8))
+      val itemId2 = CanonicalId(randomAlphanumeric(length = 8))
+
+      val workTitle1 = randomAlphanumeric()
+      val workTitle2 = randomAlphanumeric()
+
+      val itemTitle1 = randomAlphanumeric()
+      val itemTitle2 = randomAlphanumeric()
 
       val sierraResponses = Seq(
         (
@@ -105,39 +110,91 @@ class RequestsApiFeatureTest
         )
       )
 
-      val titleString = randomAlphanumeric(length = 20)
-
-      val item1 = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          value = itemNumber1.withCheckDigit,
-          ontologyType = "Item"
-        ),
-        locations = List.empty,
-        title = Some(titleString)
-      )
-
-      val work1 = indexedWork().items(List(item1))
-
-      val item2 = createIdentifiedItemWith(
-        sourceIdentifier = SourceIdentifier(
-          identifierType = SierraSystemNumber,
-          value = itemNumber2.withCheckDigit,
-          ontologyType = "Item"
-        ),
-        locations = List.empty,
-        title = Some(titleString)
-      )
-
-      val work2 = indexedWork().items(List(item2))
-
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
-            createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit),
-            createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)
+            itemNumber1.withCheckDigit,
+            itemNumber2.withCheckDigit
           ),
-          catalogueWorkResponse(Seq(work1, work2))
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              s"""
+                 |{
+                 |  "results": [
+                 |    {
+                 |      "id": "$workId1",
+                 |      "title": "$workTitle1",
+                 |      "identifiers": [
+                 |        {
+                 |          "identifierType": {
+                 |            "id": "calm-record-id",
+                 |            "label": "Calm RecordIdentifier",
+                 |            "type": "IdentifierType"
+                 |          },
+                 |          "value": "21FxkWhG4b",
+                 |          "type": "Identifier"
+                 |        }
+                 |      ],
+                 |      "items": [
+                 |        {
+                 |          "id": "$itemId1",
+                 |          "identifiers": [
+                 |            {
+                 |              "identifierType": {
+                 |                "id": "sierra-system-number",
+                 |                "label": "Sierra system number",
+                 |                "type": "IdentifierType"
+                 |              },
+                 |              "value": "${itemNumber1.withCheckDigit}",
+                 |              "type": "Identifier"
+                 |            }
+                 |          ],
+                 |          "title": "$itemTitle1",
+                 |          "locations": [],
+                 |          "type": "Item"
+                 |        }
+                 |      ]
+                 |    },
+                 |    {
+                 |      "id": "$workId2",
+                 |      "title": "$workTitle2",
+                 |      "identifiers": [
+                 |        {
+                 |          "identifierType": {
+                 |            "id": "miro-image-number",
+                 |            "label": "Miro image number",
+                 |            "type": "IdentifierType"
+                 |          },
+                 |          "value": "nysdKFCmtI",
+                 |          "type": "Identifier"
+                 |        }
+                 |      ],
+                 |      "items": [
+                 |        {
+                 |          "id": "$itemId2",
+                 |          "identifiers": [
+                 |            {
+                 |              "identifierType": {
+                 |                "id": "sierra-system-number",
+                 |                "label": "Sierra system number",
+                 |                "type": "IdentifierType"
+                 |              },
+                 |              "value": "${itemNumber2.withCheckDigit}",
+                 |              "type": "Identifier"
+                 |            }
+                 |          ],
+                 |          "title": "$itemTitle2",
+                 |          "locations": [],
+                 |          "type": "Item"
+                 |        }
+                 |      ]
+                 |    }
+                 |  ]
+                 |}
+                 |""".stripMargin
+            )
+          )
         )
       )
 
@@ -152,10 +209,10 @@ class RequestsApiFeatureTest
              |{
              |  "results" : [
              |    {
-             |      "workTitle" : "${work1.data.title.get}",
-             |      "workId" : "${work1.state.canonicalId}",
+             |      "workTitle" : "$workTitle1",
+             |      "workId" : "$workId1",
              |      "item" : {
-             |        "id" : "${item1.id.canonicalId}",
+             |        "id" : "$itemId1",
              |        "identifiers" : [
              |          {
              |            "identifierType" : {
@@ -167,7 +224,7 @@ class RequestsApiFeatureTest
              |            "type" : "Identifier"
              |          }
              |        ],
-             |        "title" : "$titleString",
+             |        "title" : "$itemTitle1",
              |        "locations" : [
              |        ],
              |        "type" : "Item"
@@ -186,10 +243,10 @@ class RequestsApiFeatureTest
              |      "type" : "Request"
              |    },
              |    {
-             |      "workTitle" : "${work2.data.title.get}",
-             |      "workId" : "${work2.state.canonicalId}",
+             |      "workTitle" : "$workTitle2",
+             |      "workId" : "$workId2",
              |      "item" : {
-             |        "id" : "${item2.id.canonicalId}",
+             |        "id" : "$itemId2",
              |        "identifiers" : [
              |          {
              |            "identifierType" : {
@@ -201,7 +258,7 @@ class RequestsApiFeatureTest
              |            "type" : "Identifier"
              |          }
              |        ],
-             |        "title" : "$titleString",
+             |        "title" : "$itemTitle2",
              |        "locations" : [
              |        ],
              |        "type" : "Item"

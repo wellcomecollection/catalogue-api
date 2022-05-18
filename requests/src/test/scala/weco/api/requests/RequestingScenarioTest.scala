@@ -14,12 +14,8 @@ import weco.api.requests.services.{
   RequestsService,
   SierraRequestsService
 }
-import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
-import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.{
-  ItemsGenerators,
-  WorkGenerators
-}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
@@ -31,8 +27,7 @@ class RequestingScenarioTest
     extends AnyFeatureSpec
     with GivenWhenThen
     with Matchers
-    with ItemsGenerators
-    with WorkGenerators
+    with IdentifiersGenerators
     with RequestsApiFixture
     with IntegrationPatience
     with ScalatestRouteTest
@@ -41,14 +36,43 @@ class RequestingScenarioTest
   Feature("requesting an item") {
     Scenario("An item which is not from Sierra") {
       Given("a physical item which is not from Sierra")
-      val item = createIdentifiedCalmItem
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          HttpResponse(
+            entity = createJsonHttpEntityWith(s"""
+                 |{
+                 |  "results": [
+                 |    {
+                 |      "id": "kltbsiza",
+                 |      "identifiers": [],
+                 |      "items": [
+                 |        {
+                 |          "id": "$itemId",
+                 |          "identifiers": [
+                 |            {
+                 |              "identifierType": {
+                 |                "id": "calm-record-id",
+                 |                "label": "Calm RecordIdentifier",
+                 |                "type": "IdentifierType"
+                 |              },
+                 |              "value": "qd251bJJOr",
+                 |              "type": "Identifier"
+                 |            }
+                 |          ],
+                 |          "locations": [],
+                 |          "type": "Item"
+                 |        }
+                 |      ]
+                 |    }
+                 |  ]
+                 |}
+                 |
+                 |""".stripMargin)
+          )
         )
       )
 
@@ -61,7 +85,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -83,7 +107,7 @@ class RequestingScenarioTest
              |  "errorType": "http",
              |  "httpStatus": 400,
              |  "label": "Bad Request",
-             |  "description": "You cannot request ${item.id.canonicalId}"
+             |  "description": "You cannot request $itemId"
              |}
              |""".stripMargin
         )
@@ -97,7 +121,15 @@ class RequestingScenarioTest
       val catalogueResponses = Seq(
         (
           catalogueItemRequest(itemId),
-          catalogueWorkResponse(Seq())
+          HttpResponse(
+            entity = createJsonHttpEntityWith(
+              """
+                |{
+                |  "results": []
+                |}
+                |""".stripMargin
+            )
+          )
         )
       )
 
@@ -145,8 +177,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       val sierraResponses = Seq(
@@ -158,8 +189,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -174,7 +205,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -195,8 +226,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       val sierraResponses = Seq(
@@ -278,8 +308,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -294,7 +324,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -317,7 +347,7 @@ class RequestingScenarioTest
              |  "errorType": "http",
              |  "httpStatus": 400,
              |  "label": "Bad Request",
-             |  "description": "You can't request ${item.id.canonicalId}"
+             |  "description": "You can't request $itemId"
              |}
              |""".stripMargin
         )
@@ -328,8 +358,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val neededBy = LocalDate.parse("2022-02-18")
 
       val sierraResponses = Seq(
@@ -359,8 +388,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -376,7 +405,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -400,8 +429,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("which has just been requested in Sierra")
@@ -432,8 +460,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -448,7 +476,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -469,8 +497,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("which is on hold for another user")
@@ -524,8 +551,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -540,7 +567,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -563,7 +590,7 @@ class RequestingScenarioTest
              |  "errorType": "http",
              |  "httpStatus": 409,
              |  "label": "Conflict",
-             |  "description": "Item ${item.id.canonicalId} is on hold for another library member"
+             |  "description": "Item $itemId is on hold for another library member"
              |}
              |""".stripMargin
         )
@@ -574,8 +601,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
       And("a user who has as many items as they're allowed to request")
       val holdLimit = 10
@@ -610,8 +636,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -626,7 +652,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -669,8 +695,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra in the catalogue API")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("which is deleted in Sierra")
@@ -718,8 +743,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -734,7 +759,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -757,7 +782,7 @@ class RequestingScenarioTest
              |  "errorType": "http",
              |  "httpStatus": 400,
              |  "label": "Bad Request",
-             |  "description": "You can't request ${item.id.canonicalId}"
+             |  "description": "You can't request $itemId"
              |}
              |""".stripMargin
         )
@@ -771,8 +796,7 @@ class RequestingScenarioTest
       Given("a physical item from Sierra in the catalogue API")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("which is suppressed in Sierra")
@@ -827,8 +851,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -843,7 +867,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -866,7 +890,7 @@ class RequestingScenarioTest
              |  "errorType": "http",
              |  "httpStatus": 400,
              |  "label": "Bad Request",
-             |  "description": "You can't request ${item.id.canonicalId}"
+             |  "description": "You can't request $itemId"
              |}
              |""".stripMargin
         )
@@ -881,14 +905,13 @@ class RequestingScenarioTest
       Given("a physical item from Sierra in the catalogue API")
       val patronNumber = createSierraPatronNumber
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       val catalogueResponses = Seq(
         (
-          catalogueItemsRequest(item.id.sourceIdentifier),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       );
 
@@ -942,7 +965,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -969,8 +992,7 @@ class RequestingScenarioTest
 
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("and a user that doesn't exist in Sierra")
@@ -997,8 +1019,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -1013,7 +1035,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -1046,14 +1068,13 @@ class RequestingScenarioTest
     Scenario("A user whose account is barred") {
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -1123,7 +1144,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -1150,8 +1171,7 @@ class RequestingScenarioTest
 
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("and a user whose account has expired")
@@ -1228,8 +1248,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -1244,7 +1264,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -1277,8 +1297,7 @@ class RequestingScenarioTest
     Scenario("A self registered user can't request items") {
       Given("a physical item from Sierra in the catalogue API")
       val itemNumber = createSierraItemNumber
-      val item = createIdentifiedSierraItemWith(itemNumber)
-      val work = indexedWork().items(List(item))
+      val itemId = createCanonicalId
       val pickupDate = LocalDate.parse("2022-02-18")
 
       And("and a user who is self registered")
@@ -1323,8 +1342,8 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemRequest(item.id.canonicalId),
-          catalogueWorkResponse(Seq(work))
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
         )
       )
 
@@ -1339,7 +1358,7 @@ class RequestingScenarioTest
         entity = createJsonHttpEntityWith(
           s"""
              |{
-             |  "itemId": "${item.id.canonicalId}",
+             |  "itemId": "$itemId",
              |  "workId": "$createCanonicalId",
              |  "pickupDate": "$pickupDate",
              |  "type": "ItemRequest"
@@ -1383,27 +1402,6 @@ class RequestingScenarioTest
       response
     }
   }
-
-  def createIdentifiedCalmItem: Item[IdState.Identified] =
-    createIdentifiedItemWith(
-      sourceIdentifier = createSourceIdentifierWith(
-        identifierType = IdentifierType.CalmRecordIdentifier,
-        ontologyType = "Item"
-      ),
-      locations = List(createPhysicalLocation)
-    )
-
-  def createIdentifiedSierraItemWith(
-    itemNumber: SierraItemNumber
-  ): Item[IdState.Identified] =
-    createIdentifiedItemWith(
-      sourceIdentifier = createSourceIdentifierWith(
-        identifierType = IdentifierType.SierraSystemNumber,
-        value = itemNumber.withCheckDigit,
-        ontologyType = "Item"
-      ),
-      locations = List(createPhysicalLocation)
-    )
 
   def createRoute(
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
@@ -1497,6 +1495,44 @@ class RequestingScenarioTest
              .format(pickupDate)}",
            |  "pickupLocation": "unspecified"
            |}
+           |""".stripMargin
+      )
+    )
+
+  private def catalogueItemResponse(
+    itemId: CanonicalId,
+    itemNumber: SierraItemNumber
+  ): HttpResponse =
+    HttpResponse(
+      entity = createJsonHttpEntityWith(
+        s"""
+           |{
+           |  "results": [
+           |    {
+           |      "id": "rbhv3mnj",
+           |      "identifiers": [],
+           |      "items": [
+           |        {
+           |          "id": "$itemId",
+           |          "identifiers": [
+           |            {
+           |              "identifierType": {
+           |                "id": "sierra-system-number",
+           |                "label": "Sierra system number",
+           |                "type": "IdentifierType"
+           |              },
+           |              "value": "${itemNumber.withCheckDigit}",
+           |              "type": "Identifier"
+           |            }
+           |          ],
+           |          "locations": [],
+           |          "type": "Item"
+           |        }
+           |      ]
+           |    }
+           |  ]
+           |}
+           |
            |""".stripMargin
       )
     )
