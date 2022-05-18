@@ -9,10 +9,23 @@ import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdentifierType, SourceIdentifier}
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdentifierType,
+  SourceIdentifier
+}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus,
+  LocationType
+}
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 

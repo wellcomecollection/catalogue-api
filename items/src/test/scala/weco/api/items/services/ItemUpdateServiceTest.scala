@@ -158,16 +158,19 @@ class ItemUpdateServiceTest
     val orderedItems = List(
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
       ),
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
       ),
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      )
     )
 
     val reversedItems = orderedItems.reverse
@@ -209,27 +212,31 @@ class ItemUpdateServiceTest
       items = List(
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
         ),
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
         ),
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers = List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        )
       )
     )
 
-    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
-        failure =>
-          failure shouldBe a[IllegalArgumentException]
-          failure.getMessage should include(
-            "Inconsistent results updating items"
-          )
-      }
+    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
+      itemUpdateService =>
+        whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+          failure =>
+            failure shouldBe a[IllegalArgumentException]
+            failure.getMessage should include(
+              "Inconsistent results updating items"
+            )
+        }
     }
   }
 
@@ -287,28 +294,27 @@ class ItemUpdateServiceTest
     )
 
     it("updates AccessCondition correctly based on Sierra responses") {
-      forAll(itemStates) {
-        (sierraResponses, work, expectedAccessCondition) =>
-          withSierraItemUpdater(sierraResponses) { itemUpdater =>
-            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-                updatedItems.length shouldBe 2
+      forAll(itemStates) { (sierraResponses, work, expectedAccessCondition) =>
+        withSierraItemUpdater(sierraResponses) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+              updatedItems.length shouldBe 2
 
-                val physicalItem = updatedItems(0)
-                val digitalItem = updatedItems(1)
+              val physicalItem = updatedItems(0)
+              val digitalItem = updatedItems(1)
 
-                val updatedAccessCondition = physicalItem.locations.head
-                  .asInstanceOf[DisplayPhysicalLocation]
-                  .accessConditions
-                  .head
-                updatedAccessCondition shouldBe DisplayAccessCondition(
-                  expectedAccessCondition
-                )
+              val updatedAccessCondition = physicalItem.locations.head
+                .asInstanceOf[DisplayPhysicalLocation]
+                .accessConditions
+                .head
+              updatedAccessCondition shouldBe DisplayAccessCondition(
+                expectedAccessCondition
+              )
 
-                digitalItem shouldBe DisplayItem(dummyDigitalItem)
-              }
+              digitalItem shouldBe DisplayItem(dummyDigitalItem)
             }
           }
+        }
       }
     }
   }
