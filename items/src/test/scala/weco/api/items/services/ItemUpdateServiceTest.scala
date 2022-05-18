@@ -7,25 +7,26 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayDigitalLocation, DisplayLicense, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
-import weco.catalogue.internal_model.work.Item
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
+    with IdentifiersGenerators
     with ItemsApiGenerators
     with SierraIdentifierGenerators
     with SierraSourceFixture {
@@ -110,7 +111,7 @@ class ItemUpdateServiceTest
 
   def temporarilyUnavailableItem(
     sierraItemNumber: SierraItemNumber
-  ): Item[IdState.Identified] = {
+  ): DisplayItem = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.NotRequestable,
       status = AccessStatus.TemporarilyUnavailable
@@ -263,7 +264,7 @@ class ItemUpdateServiceTest
       title = None,
       identifiers = Nil,
       items = List(
-        DisplayItem(temporarilyUnavailableItem(workWithUnavailableItemNumber)),
+        temporarilyUnavailableItem(workWithUnavailableItemNumber),
         dummyDigitalItem
       )
     )
@@ -273,7 +274,7 @@ class ItemUpdateServiceTest
       title = None,
       identifiers = Nil,
       items = List(
-        DisplayItem(availableItem(workWithAvailableItemNumber)),
+        availableItem(workWithAvailableItemNumber),
         dummyDigitalItem
       )
     )
@@ -331,5 +332,34 @@ class ItemUpdateServiceTest
         }
       }
     }
+  }
+
+  def createPhysicalItemWith(
+    sierraItemNumber: SierraItemNumber,
+    accessCondition: AccessCondition
+  ): DisplayItem = {
+
+    val physicalItemLocation =
+      DisplayPhysicalLocation(
+        accessConditions = List(DisplayAccessCondition(accessCondition)),
+        label = randomAlphanumeric(),
+        locationType = DisplayLocationType(
+          id = "closed-stores",
+          label = "Closed stores"
+        )
+      )
+
+    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
+      value = sierraItemNumber.withCheckDigit,
+      ontologyType = "Item"
+    )
+
+    DisplayItem(
+      id = Some(randomAlphanumeric(length = 8)),
+      identifiers = List(
+        DisplayIdentifier(itemSourceIdentifier)
+      ),
+      locations = List(physicalItemLocation)
+    )
   }
 }

@@ -5,6 +5,7 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -18,6 +19,7 @@ class ItemsApiFeatureTest
     with ItemsApiFixture
     with JsonAssertions
     with IntegrationPatience
+    with IdentifiersGenerators
     with ItemsApiGenerators
     with SierraIdentifierGenerators {
 

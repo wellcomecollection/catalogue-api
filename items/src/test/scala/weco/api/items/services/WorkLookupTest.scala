@@ -15,17 +15,9 @@ import weco.catalogue.display_model.locations.{
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdentifierType,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-  LocationType
-}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.{IdentifierType, SourceIdentifier}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType}
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -38,6 +30,7 @@ class WorkLookupTest
     with EitherValues
     with Akka
     with ScalaFutures
+    with IdentifiersGenerators
     with ItemsApiGenerators {
 
   def withLookup[R](
@@ -52,7 +45,7 @@ class WorkLookupTest
     }
 
   it("returns a work with matching ID") {
-    val canonicalId = CanonicalId(randomAlphanumeric(length = 8))
+    val canonicalId = createCanonicalId
     val title = "a test item"
     val identifierType = IdentifierType.MiroImageNumber
     val sourceIdentifier = randomAlphanumeric()

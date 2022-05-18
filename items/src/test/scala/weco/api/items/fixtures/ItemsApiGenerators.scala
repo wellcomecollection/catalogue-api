@@ -1,21 +1,14 @@
 package weco.api.items.fixtures
 
 import akka.http.scaladsl.model._
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdState}
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  LocationType,
-  PhysicalLocation
-}
-import weco.catalogue.internal_model.work.Item
-import weco.catalogue.internal_model.work.generators.ItemsGenerators
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.LocalResources
 import weco.http.json.DisplayJsonUtil
 import weco.http.models.DisplayError
 import weco.sierra.http.SierraSource
 import weco.sierra.models.identifiers.SierraItemNumber
 
-trait ItemsApiGenerators extends ItemsGenerators with LocalResources {
+trait ItemsApiGenerators extends LocalResources {
   def buildEntry(
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
@@ -91,27 +84,4 @@ trait ItemsApiGenerators extends ItemsGenerators with LocalResources {
         DisplayJsonUtil.toJson(DisplayError(statusCode = status))
       )
     )
-
-  def createPhysicalItemWith(
-    sierraItemNumber: SierraItemNumber,
-    accessCondition: AccessCondition
-  ): Item[IdState.Identified] = {
-
-    val physicalItemLocation: PhysicalLocation = createPhysicalLocationWith(
-      accessConditions = List(accessCondition),
-      locationType = LocationType.ClosedStores,
-      license = None,
-      shelfmark = None
-    )
-
-    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
-      value = sierraItemNumber.withCheckDigit,
-      ontologyType = "Item"
-    )
-
-    createIdentifiedItemWith(
-      sourceIdentifier = itemSourceIdentifier,
-      locations = List(physicalItemLocation)
-    )
-  }
 }
