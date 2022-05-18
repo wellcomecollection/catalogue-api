@@ -17,17 +17,3 @@ case class DisplayItem(
   locations: List[DisplayLocation] = List(),
   @JsonKey("type") ontologyType: String = "Item"
 )
-
-object DisplayItem extends GetIdentifiers {
-  def apply(item: Item[IdState.Minted]): DisplayItem =
-    item match {
-      case Item(id, title, note, locations) =>
-        DisplayItem(
-          id = id.maybeCanonicalId.map { _.underlying },
-          identifiers = getIdentifiers(id),
-          title = title,
-          note = note,
-          locations = locations.map(DisplayLocation(_))
-        )
-    }
-}
