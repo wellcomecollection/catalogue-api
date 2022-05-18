@@ -32,12 +32,15 @@ trait ItemLookupFixture extends Akka {
       )
     )
 
-  def catalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
+  def catalogueItemsRequest(ids: String*): HttpRequest =
     HttpRequest(
       uri = Uri(
-        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.map(_.value).mkString(",")}&pageSize=100"
+        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.mkString(",")}&pageSize=100"
       )
     )
+
+  def oldCatalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
+    catalogueItemsRequest(ids.map(_.value): _*)
 
   import weco.catalogue.display_model.Implicits._
 

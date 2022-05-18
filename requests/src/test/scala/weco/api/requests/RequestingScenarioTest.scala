@@ -887,7 +887,7 @@ class RequestingScenarioTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemsRequest(item.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item.id.sourceIdentifier),
           catalogueWorkResponse(Seq(work))
         )
       );

@@ -127,7 +127,7 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
+          oldCatalogueItemsRequest(
             item1.id.sourceIdentifier,
             item2.id.sourceIdentifier
           ),
@@ -178,7 +178,7 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
+          oldCatalogueItemsRequest(
             item1.id.sourceIdentifier,
             item2.id.sourceIdentifier
           ),
@@ -231,7 +231,7 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(
+          oldCatalogueItemsRequest(
             item1.id.sourceIdentifier,
             item4.id.sourceIdentifier,
             item3.id.sourceIdentifier
@@ -279,15 +279,15 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item1.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item2.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item2.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workB, workA))
         ),
         (
-          catalogueItemsRequest(item3.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item3.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -331,27 +331,27 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueItemsRequest(item1.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item1.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item1.id.otherIdentifiers.head),
+          oldCatalogueItemsRequest(item1.id.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueItemsRequest(item2.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item2.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueItemsRequest(item2.id.otherIdentifiers.head),
+          oldCatalogueItemsRequest(item2.id.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueItemsRequest(item3.id.sourceIdentifier),
+          oldCatalogueItemsRequest(item3.id.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         ),
         (
-          catalogueItemsRequest(item3.id.otherIdentifiers.head),
+          oldCatalogueItemsRequest(item3.id.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workB))
         )
       )
