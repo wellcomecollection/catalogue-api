@@ -1,7 +1,6 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
@@ -34,9 +33,7 @@ class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
-    with ScalaFutures
     with ItemsApiGenerators
-    with IntegrationPatience
     with SierraIdentifierGenerators
     with SierraSourceFixture {
 
