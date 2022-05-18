@@ -51,14 +51,14 @@ class SierraRequestsServiceTest
                    |    {
                    |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
                    |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}",
-                   |      "note": "Requested for: 2022-02-18",
+                   |      "note": "Requested for: 18-02-2022",
                    |      "pickupLocation": {"code":"sepbb", "name":"Rare Materials Room"},
                    |      "status": {"code": "0", "name": "on hold."}
                    |    },
                    |    {
                    |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
                    |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}",
-                   |      "note": "Requested for: 2022-02-19",
+                   |      "note": "Requested for: 19-02-2022",
                    |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                    |      "status": {"code": "i", "name": "item hold ready for pickup"}
                    |    }
@@ -96,7 +96,7 @@ class SierraRequestsServiceTest
                 ),
                 pickupLocation = SierraLocation("sepbb", "Rare Materials Room"),
                 notNeededAfterDate = None,
-                note = Some("Requested for: 2022-02-18"),
+                note = Some("Requested for: 18-02-2022"),
                 status = SierraHoldStatus("0", "on hold.")
               ),
               item2SrcId -> SierraHold(
@@ -108,7 +108,7 @@ class SierraRequestsServiceTest
                 ),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
                 notNeededAfterDate = None,
-                note = Some("Requested for: 2022-02-19"),
+                note = Some("Requested for: 19-02-2022"),
                 status = SierraHoldStatus("i", "item hold ready for pickup")
               )
             )
@@ -252,7 +252,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "note": "Requested for: $pickupDateString",
+                   |  "note": "Requested for: 18-02-2022",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -297,7 +297,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${itemNumber.withoutCheckDigit},
-                   |  "note": "Requested for: $pickupDateString",
+                   |  "note": "Requested for: 18-02-2022",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
