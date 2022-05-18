@@ -242,17 +242,23 @@ class ItemUpdateServiceTest
     val workWithUnavailableItemNumber = createSierraItemNumber
     val workWithAvailableItemNumber = createSierraItemNumber
 
-    val workWithUnavailableItem = indexedWork().items(
-      List(
-        temporarilyUnavailableItem(workWithUnavailableItemNumber),
-        dummyDigitalItem
+    val workWithUnavailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(temporarilyUnavailableItem(workWithUnavailableItemNumber)),
+        DisplayItem(dummyDigitalItem)
       )
     )
 
-    val workWithAvailableItem = indexedWork().items(
-      List(
-        availableItem(workWithAvailableItemNumber),
-        dummyDigitalItem
+    val workWithAvailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(availableItem(workWithAvailableItemNumber)),
+        DisplayItem(dummyDigitalItem)
       )
     )
 
@@ -287,11 +293,9 @@ class ItemUpdateServiceTest
 
     it("updates AccessCondition correctly based on Sierra responses") {
       forAll(itemStates) {
-        (sierraResponses, catalogueWork, expectedAccessCondition) =>
+        (sierraResponses, work, expectedAccessCondition) =>
           withSierraItemUpdater(sierraResponses) { itemUpdater =>
             withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work = CatalogueWork(catalogueWork)
-
               whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
                 updatedItems.length shouldBe 2
 
