@@ -6,7 +6,9 @@ import scala.util.Try
 
 object HoldNote {
   val pickupDateLabel = "Requested for"
-  val pickupDateFormat = "dd-MM" // Format as per https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+  // We put the date and month first because it gets truncated on the ticket slip so we want to make sure
+  // the important information is always visible.
+  val pickupDateFormat = "dd-MM-yyyy" // Format as per https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
 
   private lazy val formatter = DateTimeFormatter.ofPattern(pickupDateFormat)
   def createPickupDate(pickupDate: LocalDate): String =
