@@ -2,16 +2,11 @@ package weco.api.requests.fixtures
 
 import akka.http.scaladsl.model._
 import weco.akka.fixtures.Akka
-import weco.api.requests.services.{CatalogueWorkResults, ItemLookup}
-import weco.api.stacks.models.CatalogueWork
+import weco.api.requests.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
-import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
-import weco.http.json.DisplayJsonUtil
-import weco.json.JsonUtil._
-import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -41,22 +36,6 @@ trait ItemLookupFixture extends Akka with HttpFixtures {
       )
     )
 
-  def oldCatalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
+  def catalogueSourceIdsRequest(ids: SourceIdentifier*): HttpRequest =
     catalogueItemsRequest(ids.map(_.value): _*)
-
-  import weco.catalogue.display_model.Implicits._
-
-  def catalogueWorkResponse(
-    works: Seq[Work.Visible[WorkState.Indexed]]
-  ): HttpResponse =
-    HttpResponse(
-      entity = HttpEntity(
-        contentType = ContentTypes.`application/json`,
-        DisplayJsonUtil.toJson(
-          CatalogueWorkResults(
-            works.map { CatalogueWork(_) }
-          )
-        )
-      )
-    )
 }
