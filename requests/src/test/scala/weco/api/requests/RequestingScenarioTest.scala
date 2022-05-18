@@ -1493,7 +1493,7 @@ class RequestingScenarioTest
            |  "recordType": "i",
            |  "recordNumber": ${item.withoutCheckDigit},
            |  "note": "Requested for: ${DateTimeFormatter
-             .ofPattern("yyyy-MM-dd")
+             .ofPattern("dd-MM-yyyy")
              .format(pickupDate)}",
            |  "pickupLocation": "unspecified"
            |}
