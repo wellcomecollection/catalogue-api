@@ -9,11 +9,3 @@ case class DisplayLicense(
   url: String,
   @JsonKey("type") ontologyType: String = "License"
 )
-
-case object DisplayLicense {
-  def apply(license: License): DisplayLicense = DisplayLicense(
-    id = license.id,
-    label = license.label,
-    url = license.url
-  )
-}
