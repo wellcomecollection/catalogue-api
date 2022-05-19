@@ -1,7 +1,7 @@
 package weco.api.search.images
 
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.catalogue.display_model.ElasticConfig
+import weco.api.search.models.ElasticConfig
 
 class ImagesErrorsTest
     extends ApiImagesTestBase
@@ -29,24 +29,26 @@ class ImagesErrorsTest
         )
       }
     }
+  }
 
-    it("looking for a non-existent index") {
-      val indexName = createIndexName
-
-      val testPaths = Table(
-        "path",
-        s"$rootPath/images?_index=$indexName",
-        s"$rootPath/images?_index=$indexName&query=fish",
-        s"$rootPath/images/$createCanonicalId?_index=$indexName"
-      )
-
+  describe("returns a 400 Bad Request for invalid parameters") {
+    it("rejects an invalid color parameter") {
       withApi { route =>
-        forAll(testPaths) { path =>
-          assertNotFound(route)(
-            path,
-            description = s"There is no index $indexName"
-          )
-        }
+        assertBadRequest(route)(
+          path = s"$rootPath/images?color=%3C",
+          description =
+            s"color: '<' is not a valid value. Please supply a hex string."
+        )
+      }
+    }
+
+    it("rejects multiple invalid color parameters") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?color=%3C,ff0000,<script>",
+          description =
+            s"color: '<', '<script>' are not valid values. Please supply hex strings."
+        )
       }
     }
   }
@@ -61,7 +63,7 @@ class ImagesErrorsTest
       "path",
       s"$rootPath/images",
       s"$rootPath/images?query=fish",
-      s"$rootPath/images/$createCanonicalId"
+      s"$rootPath/images/aj0amjkh"
     )
 
     withRouter(elasticConfig) { routes =>

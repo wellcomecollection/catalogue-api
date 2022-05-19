@@ -3,15 +3,20 @@ package weco.api.search.rest
 import java.time.LocalDate
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
-import weco.catalogue.display_model.models.WorkAggregationRequest
 import weco.api.search.models._
-import weco.catalogue.display_model.models._
+import weco.api.search.models.request.{
+  ProductionDateSortRequest,
+  SortRequest,
+  SortingOrder,
+  WorkAggregationRequest,
+  WorkInclude,
+  WorksIncludes
+}
 import weco.catalogue.internal_model.locations.AccessStatus
 import weco.catalogue.internal_model.work.WorkType
 
 case class SingleWorkParams(
-  include: Option[WorksIncludes],
-  _index: Option[String]
+  include: Option[WorksIncludes]
 ) extends QueryParams
 
 object SingleWorkParams extends QueryParamsUtils {
@@ -23,9 +28,10 @@ object SingleWorkParams extends QueryParamsUtils {
   // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
   def parse: Directive[Tuple1[SingleWorkParams]] =
     parameters(
-      "include".as[WorksIncludes].?,
-      "_index".as[String].?
-    ).tmap((SingleWorkParams.apply _).tupled(_))
+      "include".as[WorksIncludes].?
+    ).tmap {
+      case Tuple1(include) => SingleWorkParams(include)
+    }
 
   implicit val decodePaths: Decoder[List[String]] =
     decodeCommaSeparated
@@ -90,8 +96,7 @@ case class MultipleWorksParams(
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
   query: Option[String],
-  _queryType: Option[SearchQueryType],
-  _index: Option[String]
+  _queryType: Option[SearchQueryType]
 ) extends QueryParams
     with Paginated {
 
@@ -162,7 +167,6 @@ object MultipleWorksParams extends QueryParamsUtils {
       "sort".as[List[SortRequest]].?,
       "sortOrder".as[SortingOrder].?,
       "_queryType".as[SearchQueryType].?,
-      "_index".as[String].?,
       "query".as[String].?,
       "include".as[WorksIncludes].?,
       "aggregations".as[List[WorkAggregationRequest]].?
@@ -178,7 +182,6 @@ object MultipleWorksParams extends QueryParamsUtils {
           sort,
           sortOrder,
           queryType,
-          index,
           query,
           includes,
           aggregations
@@ -243,8 +246,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               include = includes,
               aggregations = aggregations,
               query = query,
-              _queryType = queryType,
-              _index = index
+              _queryType = queryType
             )
             validated(params.paginationErrors, params)
         }

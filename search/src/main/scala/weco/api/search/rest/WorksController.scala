@@ -4,13 +4,11 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
+import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
+import weco.api.search.models.request.WorksIncludes
 import weco.api.search.services.WorksService
-import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.work.Work
-import weco.catalogue.internal_model.work.WorkState.Indexed
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -20,8 +18,8 @@ class WorksController(
   worksIndex: Index
 )(implicit val ec: ExecutionContext)
     extends Tracing
+    with CatalogueJsonUtil
     with SingleWorkDirectives {
-  import DisplayResultList.encoder
 
   def multipleWorks(params: MultipleWorksParams): Route =
     get {
@@ -29,18 +27,10 @@ class WorksController(
         transactFuture("GET /works") {
           val searchOptions = params.searchOptions(apiConfig)
 
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(worksIndex)
-
           worksService
-            .listOrSearch(index, searchOptions)
+            .listOrSearch(worksIndex, searchOptions)
             .map {
-              case Left(err) =>
-                elasticError(
-                  documentType = "Work",
-                  err = err,
-                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                )
+              case Left(err) => elasticError(documentType = "Work", err)
 
               case Right(resultList) =>
                 extractPublicUri { requestUri =>
@@ -62,19 +52,13 @@ class WorksController(
     get {
       withFuture {
         transactFuture("GET /works/{workId}") {
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(worksIndex)
-
           val includes = params.include.getOrElse(WorksIncludes.none)
 
           worksService
-            .findById(id)(index)
+            .findById(id)(worksIndex)
             .mapVisible(
-              (work: Work.Visible[Indexed]) =>
-                Future.successful(
-                  complete(DisplayWork(work, includes))
-                ),
-              usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
+              work =>
+                Future.successful(complete(work.display.withIncludes(includes)))
             )
         }
       }

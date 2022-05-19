@@ -8,9 +8,10 @@ import weco.api.search.config.builders.{
   PipelineElasticClientBuilder
 }
 import weco.api.search.models.{ApiConfig, CheckModel, QueryConfig}
+import weco.api.search.models.PipelineClusterElasticConfig
+
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
-import weco.catalogue.display_model.PipelineClusterElasticConfig
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder

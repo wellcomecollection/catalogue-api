@@ -3,8 +3,9 @@ package weco.api.requests.services
 import akka.stream.Materializer
 import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
-import weco.api.stacks.models.SierraItemIdentifier
-import weco.catalogue.display_model.models.DisplayIdentifier
+import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.locations.DisplayAccessCondition
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
@@ -23,14 +24,16 @@ class SierraRequestsService(
   sierraSource: SierraSource,
   holdLimit: Int
 )(implicit ec: ExecutionContext)
-    extends Logging {
+    extends Logging
+    with DisplayItemOps {
 
   import weco.api.stacks.models.SierraItemDataOps._
 
   def placeHold(
     patron: SierraPatronNumber,
     pickupDate: Option[LocalDate],
-    sourceIdentifier: DisplayIdentifier
+    sourceIdentifier: DisplayIdentifier,
+    accessCondition: Option[DisplayAccessCondition] = None
   ): Future[Either[HoldRejected, HoldAccepted]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
 
@@ -102,7 +105,7 @@ class SierraRequestsService(
             case holds if holds.size >= holdLimit =>
               Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
             case _ =>
-              checkIfItemCanBeRequested(item)
+              checkIfItemCanBeRequested(item, accessCondition)
                 .flatMap {
                   case None     => checkIfUserCanMakeRequests(patron)
                   case rejected => Future.successful(rejected)
@@ -123,7 +126,7 @@ class SierraRequestsService(
         // If the item really doesn't exist, we'll find out pretty quickly.
         //
         case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-          checkIfItemCanBeRequested(item).map {
+          checkIfSierraItemCanBeRequested(item).map {
             case Some(rejected) => Left(rejected)
             case None           => Left(HoldRejected.UnknownReason)
           }
@@ -143,6 +146,20 @@ class SierraRequestsService(
   }
 
   private def checkIfItemCanBeRequested(
+    item: SierraItemNumber,
+    accessCondition: Option[DisplayAccessCondition]
+  ): Future[Option[HoldRejected]] =
+    accessCondition match {
+      // If the catalogue API tells us this item can't be requested and this
+      // isn't something that would have changed recently (e.g. the item is closed),
+      // we don't need to go to Sierra to check.
+      case Some(ac) if !ac.isStale && !ac.isRequestable =>
+        Future.successful(Some(HoldRejected.ItemCannotBeRequested))
+
+      case _ => checkIfSierraItemCanBeRequested(item)
+    }
+
+  private def checkIfSierraItemCanBeRequested(
     item: SierraItemNumber
   ): Future[Option[HoldRejected]] =
     sierraSource.lookupItem(item).map {

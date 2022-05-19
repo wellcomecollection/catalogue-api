@@ -2,18 +2,15 @@ package weco.api.requests.fixtures
 
 import akka.http.scaladsl.model._
 import weco.akka.fixtures.Akka
-import weco.api.requests.services.{DisplayWorkResults, ItemLookup}
-import weco.catalogue.display_model.models.{DisplayWork, WorksIncludes}
+import weco.api.requests.services.ItemLookup
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
-import weco.catalogue.internal_model.work.{Work, WorkState}
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
-import weco.http.json.DisplayJsonUtil
-import weco.json.JsonUtil._
+import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemLookupFixture extends Akka {
+trait ItemLookupFixture extends Akka with HttpFixtures {
   def withItemLookup[R](
     responses: Seq[(HttpRequest, HttpResponse)]
   )(testWith: TestWith[ItemLookup, R]): R =
@@ -32,26 +29,13 @@ trait ItemLookupFixture extends Akka {
       )
     )
 
-  def catalogueItemsRequest(ids: SourceIdentifier*): HttpRequest =
+  def catalogueItemsRequest(ids: String*): HttpRequest =
     HttpRequest(
       uri = Uri(
-        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.map(_.value).mkString(",")}&pageSize=100"
+        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.mkString(",")}&pageSize=100"
       )
     )
 
-  import weco.catalogue.display_model.models.Implicits._
-
-  def catalogueWorkResponse(
-    works: Seq[Work.Visible[WorkState.Indexed]]
-  ): HttpResponse =
-    HttpResponse(
-      entity = HttpEntity(
-        contentType = ContentTypes.`application/json`,
-        DisplayJsonUtil.toJson(
-          DisplayWorkResults(
-            works.map(w => DisplayWork(w, includes = WorksIncludes.all))
-          )
-        )
-      )
-    )
+  def catalogueSourceIdsRequest(ids: SourceIdentifier*): HttpRequest =
+    catalogueItemsRequest(ids.map(_.value): _*)
 }

@@ -1,44 +1,41 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.catalogue.display_model.models.{
-  DisplayAccessCondition,
-  DisplayItem,
-  DisplayPhysicalLocation,
-  DisplayWork,
-  WorksIncludes
-}
-import weco.catalogue.internal_model.identifiers.{IdState, IdentifierType}
+import weco.api.stacks.models.CatalogueWork
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.locations._
+import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
 import weco.catalogue.internal_model.locations.{
   AccessCondition,
   AccessMethod,
   AccessStatus
 }
-import weco.catalogue.internal_model.work.Item
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
-    with ScalaFutures
+    with IdentifiersGenerators
     with ItemsApiGenerators
-    with IntegrationPatience
     with SierraIdentifierGenerators
-    with SierraSourceFixture {
+    with SierraSourceFixture
+    with IntegrationPatience {
 
   def withSierraItemUpdater[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
@@ -52,7 +49,29 @@ class ItemUpdateServiceTest
   )(testWith: TestWith[ItemUpdateService, R]): R =
     testWith(new ItemUpdateService(itemUpdaters))
 
-  val dummyDigitalItem = createDigitalItem
+  val dummyDigitalItem =
+    DisplayItem(
+      id = None,
+      identifiers = Nil,
+      locations = List(
+        DisplayDigitalLocation(
+          locationType = DisplayLocationType(
+            id = "iiif-presentation",
+            label = "IIIF Presentation API"
+          ),
+          url =
+            s"https://iiif.wellcomecollection.org/image/${randomAlphanumeric(3)}.jpg/info.json",
+          license = Some(
+            DisplayLicense(
+              id = "cc-by",
+              label = "Attribution 4.0 International (CC BY 4.0)",
+              url = "http://creativecommons.org/licenses/by/4.0/"
+            )
+          ),
+          accessConditions = Nil
+        )
+      )
+    )
 
   def missingItemResponse(sierraItemNumber: SierraItemNumber) = Seq(
     (
@@ -99,7 +118,7 @@ class ItemUpdateServiceTest
 
   def temporarilyUnavailableItem(
     sierraItemNumber: SierraItemNumber
-  ): Item[IdState.Identified] = {
+  ): DisplayItem = {
     val temporarilyUnavailableOnline = AccessCondition(
       method = AccessMethod.NotRequestable,
       status = AccessStatus.TemporarilyUnavailable
@@ -152,42 +171,53 @@ class ItemUpdateServiceTest
     }
   }
 
+  def randomCanonicalId: String =
+    randomAlphanumeric()
+
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
     val orderedItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      createDigitalItem,
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      ),
+      DisplayItem(
+        id = Some(randomCanonicalId),
+        identifiers =
+          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      )
     )
 
     val reversedItems = orderedItems.reverse
 
-    val workWithItemsForward = DisplayWork(
-      indexedWork().items(orderedItems),
-      includes = WorksIncludes.all
+    val workWithItemsForward = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems
     )
-    val workWithItemsBackward = DisplayWork(
-      indexedWork().items(reversedItems),
-      includes = WorksIncludes.all
+
+    val workWithItemsBackward = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = orderedItems.reverse
     )
 
     withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
       whenReady(itemUpdateService.updateItems(workWithItemsForward)) {
-        _ shouldBe orderedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe orderedItems
       }
 
       whenReady(itemUpdateService.updateItems(workWithItemsBackward)) {
-        _ shouldBe reversedItems.map(
-          it => DisplayItem(it, includesIdentifiers = true)
-        )
+        _ shouldBe reversedItems
       }
     }
   }
@@ -195,29 +225,40 @@ class ItemUpdateServiceTest
   it("detects if the item updater returns items with differing IDs") {
     def badUpdate(items: Seq[DisplayItem]) = items.tail
 
-    val itemUpdater = new DummyItemUpdater(badUpdate)
+    val brokenItemUpdater = new DummyItemUpdater(badUpdate)
 
-    val startingItems = List(
-      temporarilyUnavailableItem(createSierraItemNumber),
-      availableItem(createSierraItemNumber),
-      temporarilyUnavailableItem(createSierraItemNumber),
-      createDigitalItem,
-      createDigitalItem
+    val workWithItems = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        ),
+        DisplayItem(
+          id = Some(randomCanonicalId),
+          identifiers =
+            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        )
+      )
     )
 
-    val workWithItems = DisplayWork(
-      indexedWork().items(startingItems),
-      includes = WorksIncludes.all
-    )
-
-    withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-      whenReady(itemUpdateService.updateItems(workWithItems).failed) {
-        failure =>
-          failure shouldBe a[IllegalArgumentException]
-          failure.getMessage should include(
-            "Inconsistent results updating items"
-          )
-      }
+    withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
+      itemUpdateService =>
+        whenReady(itemUpdateService.updateItems(workWithItems).failed) {
+          failure =>
+            failure shouldBe a[IllegalArgumentException]
+            failure.getMessage should include(
+              "Inconsistent results updating items"
+            )
+        }
     }
   }
 
@@ -225,15 +266,21 @@ class ItemUpdateServiceTest
     val workWithUnavailableItemNumber = createSierraItemNumber
     val workWithAvailableItemNumber = createSierraItemNumber
 
-    val workWithUnavailableItem = indexedWork().items(
-      List(
+    val workWithUnavailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
         temporarilyUnavailableItem(workWithUnavailableItemNumber),
         dummyDigitalItem
       )
     )
 
-    val workWithAvailableItem = indexedWork().items(
-      List(
+    val workWithAvailableItem = CatalogueWork(
+      id = randomCanonicalId,
+      title = None,
+      identifiers = Nil,
+      items = List(
         availableItem(workWithAvailableItemNumber),
         dummyDigitalItem
       )
@@ -269,35 +316,57 @@ class ItemUpdateServiceTest
     )
 
     it("updates AccessCondition correctly based on Sierra responses") {
-      forAll(itemStates) {
-        (sierraResponses, catalogueWork, expectedAccessCondition) =>
-          withSierraItemUpdater(sierraResponses) { itemUpdater =>
-            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              val work =
-                DisplayWork(catalogueWork, includes = WorksIncludes.all)
+      forAll(itemStates) { (sierraResponses, work, expectedAccessCondition) =>
+        withSierraItemUpdater(sierraResponses) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+              updatedItems.length shouldBe 2
 
-              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-                updatedItems.length shouldBe 2
+              val physicalItem = updatedItems(0)
+              val digitalItem = updatedItems(1)
 
-                val physicalItem = updatedItems(0)
-                val digitalItem = updatedItems(1)
+              val updatedAccessCondition = physicalItem.locations.head
+                .asInstanceOf[DisplayPhysicalLocation]
+                .accessConditions
+                .head
+              updatedAccessCondition shouldBe DisplayAccessCondition(
+                expectedAccessCondition
+              )
 
-                val updatedAccessCondition = physicalItem.locations.head
-                  .asInstanceOf[DisplayPhysicalLocation]
-                  .accessConditions
-                  .head
-                updatedAccessCondition shouldBe DisplayAccessCondition(
-                  expectedAccessCondition
-                )
-
-                digitalItem shouldBe DisplayItem(
-                  dummyDigitalItem,
-                  includesIdentifiers = true
-                )
-              }
+              digitalItem shouldBe dummyDigitalItem
             }
           }
+        }
       }
     }
+  }
+
+  def createPhysicalItemWith(
+    sierraItemNumber: SierraItemNumber,
+    accessCondition: AccessCondition
+  ): DisplayItem = {
+
+    val physicalItemLocation =
+      DisplayPhysicalLocation(
+        accessConditions = List(DisplayAccessCondition(accessCondition)),
+        label = randomAlphanumeric(),
+        locationType = DisplayLocationType(
+          id = "closed-stores",
+          label = "Closed stores"
+        )
+      )
+
+    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
+      value = sierraItemNumber.withCheckDigit,
+      ontologyType = "Item"
+    )
+
+    DisplayItem(
+      id = Some(randomAlphanumeric(length = 8)),
+      identifiers = List(
+        DisplayIdentifier(itemSourceIdentifier)
+      ),
+      locations = List(physicalItemLocation)
+    )
   }
 }

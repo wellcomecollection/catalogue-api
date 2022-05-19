@@ -1,51 +1,24 @@
 package weco.api.search.works
 
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.languages.Language
-import weco.catalogue.internal_model.work.{Work, WorkState}
-import weco.catalogue.internal_model.work.Format._
+import weco.api.search.models.request.WorksIncludes
 
 class WorksFilteredAggregationsTest extends ApiWorksTestBase {
+  val aggregatedWorks =
+    (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 
-  val bashkir = Language(label = "Bashkir", id = "bak")
-  val marathi = Language(label = "Marathi", id = "mar")
-  val quechua = Language(label = "Quechua", id = "que")
-  val chechen = Language(label = "Chechen", id = "che")
+  val worksBooks =
+    Seq(0, 4, 5, 7)
+      .map(i => s"works.examples.filtered-aggregations-tests.$i")
+      .map { getVisibleWork }
+      .map(_.display.withIncludes(WorksIncludes.none))
+      .sortBy(w => getKey(w, "id").get.asString)
 
-  /*
-   * | workType     | count |
-   * |--------------|-------|
-   * | a / Books    | 4     |
-   * | d / Journals | 3     |
-   * | i / Audio    | 2     |
-   * | k / Pictures | 1     |
-   *
-   * | language      | count |
-   * |---------------|-------|
-   * | bak / Bashkir | 4     |
-   * | que / Quechua | 3     |
-   * | mar / Marathi  | 2     |
-   * | che / Chechen | 1     |
-   *
-   */
-  val works: List[Work.Visible[WorkState.Indexed]] = List(
-    (Books, bashkir, "rats"), // a
-    (Journals, marathi, "capybara"), // d
-    (Pictures, quechua, "tapirs"), // k
-    (Audio, bashkir, "rats"), // i
-    (Books, bashkir, "capybara"), // a
-    (Books, bashkir, "tapirs"), // a
-    (Journals, quechua, "rats"), // d
-    (Books, marathi, "capybara"), // a
-    (Journals, quechua, "tapirs"), // d
-    (Audio, chechen, "rats") // i
-  ).map {
-    case (format, language, title) =>
-      indexedWork()
-        .title(title)
-        .format(format)
-        .languages(List(language))
-  }
+  val worksBooksAboutRats =
+    Seq(0)
+      .map(i => s"works.examples.filtered-aggregations-tests.$i")
+      .map { getVisibleWork }
+      .map(_.display.withIncludes(WorksIncludes.none))
+      .sortBy(w => getKey(w, "id").get.asString)
 
   describe(
     "filters aggregation buckets with any filters that are not paired to the aggregation"
@@ -53,18 +26,16 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do not have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+
           assertJsonResponse(
             routes,
             // We expect to see the language buckets for only the works with workType=a
-            s"$rootPath/works?workType=a&aggregations=languages"
+            path = s"$rootPath/works?workType=a&aggregations=languages"
           ) {
             Status.OK -> s"""
             {
-              ${resultList(
-                              totalResults =
-                                works.count(_.data.format.get == Books)
-                            )},
+              ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
@@ -72,22 +43,26 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "count" : 3,
-                      "data" : ${language(bashkir)},
+                      "data" : {
+                        "id" : "bak",
+                        "label" : "Bashkir",
+                        "type" : "Language"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${language(marathi)},
+                      "data" : {
+                        "id" : "mar",
+                        "label" : "Marathi",
+                        "type" : "Language"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-                              .filter(_.data.format.get == Books)
-                              .sortBy { _.state.canonicalId }
-                              .map(workResponse)
-                              .mkString(",")}]
+              "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
           }
@@ -97,19 +72,17 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("when those filters do have a paired aggregation present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+
           assertJsonResponse(
             routes,
             // We expect to see the language buckets for only the works with workType=a
             // We expect to see the workType buckets for all of the works
-            s"$rootPath/works?workType=a&aggregations=languages,workType"
+            path = s"$rootPath/works?workType=a&aggregations=languages,workType"
           ) {
             Status.OK -> s"""
             {
-              ${resultList(
-                              totalResults =
-                                works.count(_.data.format.get == Books)
-                            )},
+              ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
                 "type" : "Aggregations",
                 "languages": {
@@ -117,12 +90,20 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "count" : 3,
-                      "data" : ${language(bashkir)},
+                      "data" : {
+                        "id" : "bak",
+                        "label" : "Bashkir",
+                        "type" : "Language"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${language(marathi)},
+                      "data" : {
+                        "id" : "mar",
+                        "label" : "Marathi",
+                        "type" : "Language"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
@@ -132,32 +113,44 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets" : [
                     {
                       "count" : 4,
-                      "data" : ${format(Books)},
+                      "data" : {
+                        "id" : "a",
+                        "label" : "Books",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 3,
-                      "data" : ${format(Journals)},
+                      "data" : {
+                        "id" : "d",
+                        "label" : "Journals",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
-                      "data" : ${format(Audio)},
+                      "data" : {
+                        "id" : "i",
+                        "label" : "Audio",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${format(Pictures)},
+                      "data" : {
+                        "id" : "k",
+                        "label" : "Pictures",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-                              .filter(_.data.format.get == Books)
-                              .sortBy { _.state.canonicalId }
-                              .map(workResponse)
-                              .mkString(",")}]
+              "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
           }
@@ -167,13 +160,15 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
     it("but still returns empty buckets if their paired filter is present") {
       withWorksApi {
         case (worksIndex, routes) =>
-          insertIntoElasticsearch(worksIndex, works: _*)
+          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+
           assertJsonResponse(
             routes,
             // We expect to see the workType buckets for worktype i/Audio, because that
             // has the language che/Chechen, and for a/Books, because a filter for it is
             // present
-            s"$rootPath/works?workType=a&languages=che&aggregations=workType"
+            path =
+              s"$rootPath/works?workType=a&languages=che&aggregations=workType"
           ) {
             Status.OK -> s"""
             {
@@ -185,22 +180,38 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets" : [
                     {
                       "count" : 1,
-                      "data" : ${format(Audio)},
+                      "data" : {
+                        "id" : "i",
+                        "label" : "Audio",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 0,
-                      "data" : ${format(Books)},
+                      "data" : {
+                        "id" : "a",
+                        "label" : "Books",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 0,
-                      "data" : ${format(Journals)},
+                      "data" : {
+                        "id" : "d",
+                        "label" : "Journals",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 0,
-                      "data" : ${format(Pictures)},
+                      "data" : {
+                        "id" : "k",
+                        "label" : "Pictures",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
@@ -217,18 +228,15 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("applies the search query to aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+
         assertJsonResponse(
           routes,
-          s"$rootPath/works?query=rats&workType=a&aggregations=workType"
+          path = s"$rootPath/works?query=rats&workType=a&aggregations=workType"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(
-                            totalResults = works
-                              .filter(_.data.format.get == Books)
-                              .count(_.data.title.contains("rats"))
-                          )},
+              ${resultList(totalResults = worksBooksAboutRats.length)},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -236,33 +244,44 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "count" : 2,
-                      "data" : ${format(Audio)},
+                      "data" : {
+                        "id" : "i",
+                        "label" : "Audio",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${format(Books)},
+                      "data" : {
+                        "id" : "a",
+                        "label" : "Books",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${format(Journals)},
+                      "data" : {
+                        "id" : "d",
+                        "label" : "Journals",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 0,
-                      "data" : ${format(Pictures)},
+                      "data" : {
+                        "id" : "k",
+                        "label" : "Pictures",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-                            .filter(_.data.format.get == Books)
-                            .filter(_.data.title.contains("rats"))
-                            .sortBy { _.state.canonicalId }
-                            .map(workResponse)
-                            .mkString(",")}]
+              "results": [${worksBooksAboutRats.mkString(",")}]
             }
           """.stripMargin
         }
@@ -272,17 +291,15 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
   it("filters results but not aggregations paired with an applied filter") {
     withWorksApi {
       case (worksIndex, routes) =>
-        insertIntoElasticsearch(worksIndex, works: _*)
+        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+
         assertJsonResponse(
           routes,
           s"$rootPath/works?workType=a&aggregations=workType"
         ) {
           Status.OK -> s"""
             {
-              ${resultList(
-                            totalResults =
-                              works.count(_.data.format.get == Books)
-                          )},
+              ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
                 "type" : "Aggregations",
                 "workType": {
@@ -290,32 +307,44 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                   "buckets": [
                     {
                       "count" : 4,
-                      "data" : ${format(Books)},
+                      "data" : {
+                        "id" : "a",
+                        "label" : "Books",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 3,
-                      "data" : ${format(Journals)},
+                      "data" : {
+                        "id" : "d",
+                        "label" : "Journals",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
-                      "data" : ${format(Audio)},
+                      "data" : {
+                        "id" : "i",
+                        "label" : "Audio",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
-                      "data" : ${format(Pictures)},
+                      "data" : {
+                        "id" : "k",
+                        "label" : "Pictures",
+                        "type" : "Format"
+                      },
                       "type" : "AggregationBucket"
                     }
                   ]
                 }
               },
-              "results": [${works
-                            .filter(_.data.format.get == Books)
-                            .sortBy { _.state.canonicalId }
-                            .map(workResponse)
-                            .mkString(",")}]
+              "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
         }

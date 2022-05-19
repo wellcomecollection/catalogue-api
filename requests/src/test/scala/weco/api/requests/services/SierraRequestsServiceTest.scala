@@ -8,7 +8,12 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
-import weco.catalogue.display_model.models.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayAccessMethod,
+  DisplayAccessStatus
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -36,10 +41,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -51,14 +53,14 @@ class SierraRequestsServiceTest
                    |    {
                    |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/1111",
                    |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item1.withoutCheckDigit}",
-                   |      "note": "Requested for: 2022-02-18",
+                   |      "note": "Requested for: 18-02-2022",
                    |      "pickupLocation": {"code":"sepbb", "name":"Rare Materials Room"},
                    |      "status": {"code": "0", "name": "on hold."}
                    |    },
                    |    {
                    |      "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/2222",
                    |      "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item2.withoutCheckDigit}",
-                   |      "note": "Requested for: 2022-02-19",
+                   |      "note": "Requested for: 19-02-2022",
                    |      "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
                    |      "status": {"code": "i", "name": "item hold ready for pickup"}
                    |    }
@@ -96,7 +98,7 @@ class SierraRequestsServiceTest
                 ),
                 pickupLocation = SierraLocation("sepbb", "Rare Materials Room"),
                 notNeededAfterDate = None,
-                note = Some("Requested for: 2022-02-18"),
+                note = Some("Requested for: 18-02-2022"),
                 status = SierraHoldStatus("0", "on hold.")
               ),
               item2SrcId -> SierraHold(
@@ -108,7 +110,7 @@ class SierraRequestsServiceTest
                 ),
                 pickupLocation = SierraLocation("sotop", "Rare Materials Room"),
                 notNeededAfterDate = None,
-                note = Some("Requested for: 2022-02-19"),
+                note = Some("Requested for: 19-02-2022"),
                 status = SierraHoldStatus("i", "item hold ready for pickup")
               )
             )
@@ -121,10 +123,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               status = StatusCodes.InternalServerError,
               entity = HttpEntity(
@@ -159,10 +158,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -243,21 +239,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              method = HttpMethods.POST,
-              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "note": "Requested for: $pickupDateString",
-                   |  "pickupLocation": "unspecified"
-                   |}
-                   |""".stripMargin
-              )
-            ),
+            createHoldRequest(patron, item, pickupDate),
             HttpResponse(status = StatusCodes.NoContent)
           )
         )
@@ -297,7 +279,7 @@ class SierraRequestsServiceTest
                    |{
                    |  "recordType": "i",
                    |  "recordNumber": ${itemNumber.withoutCheckDigit},
-                   |  "note": "Requested for: $pickupDateString",
+                   |  "note": "Requested for: 18-02-2022",
                    |  "pickupLocation": "unspecified"
                    |}
                    |""".stripMargin
@@ -370,6 +352,81 @@ class SierraRequestsServiceTest
             patron = patron,
             sourceIdentifier = DisplayIdentifier(sourceIdentifier),
             pickupDate = Some(pickupDate)
+          )
+        }
+
+        whenReady(future) {
+          _.left.value shouldBe HoldRejected.ItemCannotBeRequested
+        }
+      }
+
+      it(
+        "rejects a hold if the Catalogue API item is neither stale nor requestable"
+      ) {
+        val patron = SierraPatronNumber("1234567")
+        val item = createSierraItemNumber
+        val pickupDateString = "2022-02-18"
+        val pickupDate = LocalDate.parse(pickupDateString)
+
+        val sourceIdentifier = SourceIdentifier(
+          identifierType = SierraSystemNumber,
+          ontologyType = "Item",
+          value = item.withCheckDigit
+        )
+
+        val responses = Seq(
+          (
+            createHoldRequest(patron, item, pickupDate),
+            HttpResponse(
+              status = StatusCodes.InternalServerError,
+              entity = HttpEntity(
+                contentType = ContentTypes.`application/json`,
+                s"""
+                   |{
+                   |  "code": 132,
+                   |  "specificCode": 2,
+                   |  "httpStatus": 500,
+                   |  "name": "XCirc error",
+                   |  "description": "XCirc error : This record is not available"
+                   |}
+                   |""".stripMargin
+              )
+            )
+          ),
+          (
+            createListHoldsRequest(patron),
+            createListHoldsResponse(patron, items = List())
+          )
+          // If the requests service thought the access condition was stale or
+          // that the item might be requestable, we'd expect to see it make
+          // a third API call to Sierra, to get fresh item data.
+          //
+          // If it tries to make that request during this test, the test will fail
+          // because the in-memory Sierra API client doesn't have a request/response
+          // defined in this list.
+        )
+
+        val future = withSierraService(responses) {
+          _.placeHold(
+            patron = patron,
+            sourceIdentifier = DisplayIdentifier(sourceIdentifier),
+            pickupDate = Some(pickupDate),
+            accessCondition = Some(
+              DisplayAccessCondition(
+                method = DisplayAccessMethod(
+                  id = "not-requestable",
+                  label = "Not requestable"
+                ),
+                status = Some(
+                  DisplayAccessStatus(
+                    id = "unavailable",
+                    label = "Unavailable"
+                  )
+                ),
+                terms = None,
+                note = None
+              )
+            )
           )
         }
 

@@ -1,21 +1,27 @@
 package weco.api.search.rest
 
 import io.circe.Decoder
-import weco.catalogue.display_model.models.MultipleImagesIncludes
 import weco.api.search.models._
-import weco.catalogue.display_model.models._
+import weco.api.search.models.request.{
+  ImageAggregationRequest,
+  ImageInclude,
+  MultipleImagesIncludes,
+  SingleImageIncludes
+}
+
+import scala.util.{Failure, Success}
 
 case class SingleImageParams(
-  include: Option[SingleImageIncludes],
-  _index: Option[String]
+  include: Option[SingleImageIncludes]
 ) extends QueryParams
 
 object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
-      "include".as[SingleImageIncludes].?,
-      "_index".as[String].?
-    ).tmap((SingleImageParams.apply _).tupled(_))
+      "include".as[SingleImageIncludes].?
+    ).tmap {
+      case Tuple1(include) => SingleImageParams(include)
+    }
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
     decodeOneOfCommaSeparated(
@@ -37,8 +43,7 @@ case class MultipleImagesParams(
   `source.genres.label`: Option[GenreFilter],
   color: Option[ColorMustQuery],
   include: Option[MultipleImagesIncludes],
-  aggregations: Option[List[ImageAggregationRequest]],
-  _index: Option[String]
+  aggregations: Option[List[ImageAggregationRequest]]
 ) extends QueryParams
     with Paginated {
 
@@ -76,15 +81,35 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.genres.label".as[GenreFilter].?,
       "color".as[ColorMustQuery].?,
       "include".as[MultipleImagesIncludes].?,
-      "aggregations".as[List[ImageAggregationRequest]].?,
-      "_index".as[String].?
+      "aggregations".as[List[ImageAggregationRequest]].?
     ).tflatMap { args =>
       val params = (MultipleImagesParams.apply _).tupled(args)
       validated(params.paginationErrors, params)
     }
 
   implicit val colorMustQuery: Decoder[ColorMustQuery] =
-    decodeCommaSeparated.emap(strs => Right(ColorMustQuery(strs)))
+    decodeCommaSeparated.emap { strs =>
+      val tryColors = strs.map { s =>
+        (s, HsvColor.fromHex(s))
+      }
+
+      val colors = tryColors.collect { case (_, Success(c))   => c }
+      val unparsed = tryColors.collect { case (s, Failure(_)) => s }
+
+      val errorMessage = unparsed match {
+        case Nil => ""
+        case Seq(singleColor) =>
+          s"'$singleColor' is not a valid value. Please supply a hex string."
+        case multipleColors =>
+          s"${multipleColors.map(mc => s"'$mc'").mkString(", ")} are not valid values. Please supply hex strings."
+      }
+
+      Either.cond(
+        unparsed.isEmpty,
+        right = ColorMustQuery(colors),
+        left = errorMessage
+      )
+    }
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
     decodeOneOfCommaSeparated(

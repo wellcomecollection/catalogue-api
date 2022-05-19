@@ -1,65 +1,38 @@
 package weco.api.search.works
 
-import com.sksamuel.elastic4s.Indexable
 import weco.api.search.ApiTestBase
-import weco.catalogue.internal_model.Implicits._
-import weco.json.JsonUtil._
-import weco.catalogue.internal_model.work.generators._
-import weco.catalogue.display_model.models.DisplaySerialisationTestBase
-import weco.catalogue.internal_model.locations.DigitalLocation
-import weco.catalogue.internal_model.work.{Work, WorkType}
-import weco.catalogue.internal_model.work.WorkState.Indexed
+import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.json.CatalogueJsonUtil
+import weco.api.search.models.request.WorksIncludes
 
 trait ApiWorksTestBase
     extends ApiTestBase
-    with DisplaySerialisationTestBase
-    with WorkGenerators
-    with GenreGenerators
-    with SubjectGenerators {
+    with CatalogueJsonUtil
+    with TestDocumentFixtures {
 
-  implicit object IdentifiedWorkIndexable
-      extends Indexable[Work.Visible[Indexed]] {
-    override def json(work: Work.Visible[Indexed]): String =
-      toJson(work).get
-  }
+  def worksListResponse(
+    ids: Seq[String],
+    includes: WorksIncludes = WorksIncludes.none,
+    strictOrdering: Boolean = false
+  ): String = {
+    val works =
+      ids
+        .map { getVisibleWork }
+        .map(_.display.withIncludes(includes))
 
-  def singleWorkResult(ontologyType: String = "Work"): String =
-    s"""
-        "type": "$ontologyType"
-     """.stripMargin
+    val sortedWorks = if (strictOrdering) {
+      works
+    } else {
+      works.sortBy(w => getKey(w, "id").get.asString)
+    }
 
-  def workResponse(work: Work.Visible[Indexed]): String =
-    s"""
-      | {
-      |   "id": "${work.state.canonicalId}",
-      |   "title": "${work.data.title.get}",
-      |   "availabilities": [${availabilities(work.state.availabilities)}],
-      |   "alternativeTitles": [],
-      |   "workType": ${work.data.format.map(format)},
-      |   "type": "${formatOntologyType(work.data.workType)}"
-      | }
-    """.stripMargin.tidy
-
-  def worksListResponse(works: Seq[Work.Visible[Indexed]]): String =
     s"""
        |{
-       |  ${resultList(totalResults = works.size)},
+       |  ${resultList(totalResults = ids.size)},
        |  "results": [
-       |    ${works.map { workResponse }.mkString(",")}
+       |    ${sortedWorks.mkString(",")}
        |  ]
        |}
       """.stripMargin
-
-  def formatOntologyType(workType: WorkType): String =
-    workType match {
-      case WorkType.Standard   => "Work"
-      case WorkType.Collection => "Collection"
-      case WorkType.Series     => "Series"
-      case WorkType.Section    => "Section"
-    }
-
-  def hasDigitalLocations(work: Work.Visible[Indexed]): String =
-    work.data.items
-      .exists(_.locations.exists(_.isInstanceOf[DigitalLocation]))
-      .toString
+  }
 }

@@ -1,0 +1,85 @@
+{
+  "id" : "qpvx7gyp",
+  "locations" : [
+    {
+      "accessConditions" : [
+      ],
+      "credit" : "Credit line: f0VBIgS96L",
+      "license" : {
+        "id" : "cc-by",
+        "label" : "Attribution 4.0 International (CC BY 4.0)",
+        "type" : "License",
+        "url" : "http://creativecommons.org/licenses/by/4.0/"
+      },
+      "locationType" : {
+        "id" : "iiif-image",
+        "label" : "IIIF Image API",
+        "type" : "LocationType"
+      },
+      "type" : "DigitalLocation",
+      "url" : "https://iiif.wellcomecollection.org/image/GC3.jpg/info.json"
+    }
+  ],
+  "source" : {
+    "genres" : [
+      {
+        "concepts" : [
+          {
+            "label" : "VTMxwlsU4ID8FJO",
+            "type" : "Concept"
+          },
+          {
+            "label" : "smLVneLxGixuwYM",
+            "type" : "Concept"
+          },
+          {
+            "label" : "WEKRGOyVEETAXu2",
+            "type" : "Concept"
+          }
+        ],
+        "label" : "Crumbly cabbages",
+        "type" : "Genre"
+      },
+      {
+        "concepts" : [
+          {
+            "label" : "wVgSyRdeyNrYD8Z",
+            "type" : "Concept"
+          },
+          {
+            "label" : "5K6TPbywqiK3tTT",
+            "type" : "Concept"
+          },
+          {
+            "label" : "s2UdfxnodZzKVgW",
+            "type" : "Concept"
+          }
+        ],
+        "label" : "Deadly durians",
+        "type" : "Genre"
+      }
+    ],
+    "id" : "v39xo2l4",
+    "title" : "Apple agitator",
+    "type" : "Work"
+  },
+  "thumbnail" : {
+    "accessConditions" : [
+    ],
+    "credit" : "Credit line: f0VBIgS96L",
+    "license" : {
+      "id" : "cc-by",
+      "label" : "Attribution 4.0 International (CC BY 4.0)",
+      "type" : "License",
+      "url" : "http://creativecommons.org/licenses/by/4.0/"
+    },
+    "locationType" : {
+      "id" : "iiif-image",
+      "label" : "IIIF Image API",
+      "type" : "LocationType"
+    },
+    "type" : "DigitalLocation",
+    "url" : "https://iiif.wellcomecollection.org/image/GC3.jpg/info.json"
+  },
+  "type" : "Image"
+}

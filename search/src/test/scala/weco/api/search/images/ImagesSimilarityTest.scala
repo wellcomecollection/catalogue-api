@@ -1,95 +1,64 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.Implicits._
-
 class ImagesSimilarityTest extends ApiImagesTestBase {
-
-  it(
-    "includes visually similar images on a single image if we pass ?include=visuallySimilar"
-  ) {
+  it("includes visually similar images with ?include=visuallySimilar") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val images =
-          createSimilarImages(6, similarFeatures = true, similarPalette = true)
-        val image = images.head
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+        )
+
         assertJsonResponse(
           routes,
-          s"$rootPath/images/${images.head.id}?include=visuallySimilar",
-          unordered = true
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar"
         ) {
-          Status.OK ->
-            s"""
-               |{
-               |  $singleImageResult,
-               |  "id": "${image.id}",
-               |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-               |  "locations": [${locations(image.locations)}],
-               |  "visuallySimilar": [
-               |    ${images.tail.map(imageResponse).mkString(",")}
-               |  ],
-               |  "source": ${imageSource(image.source)}
-               |}""".stripMargin
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-features-and-palettes.json"
+          )
+        }
+    }
+  }
+
+  it("includes images with similar features with ?include=withSimilarFeatures") {
+    withImagesApi {
+      case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features.$i"): _*
+        )
+
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures"
+        ) {
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-features.json"
+          )
         }
     }
   }
 
   it(
-    "includes images with similar features on a single image if we pass ?include=withSimilarFeatures"
+    "includes images with similar color palettes with ?include=withSimilarColors"
   ) {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val images =
-          createSimilarImages(6, similarFeatures = true, similarPalette = false)
-        val image = images.head
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
-        assertJsonResponse(
-          routes,
-          s"$rootPath/images/${images.head.id}?include=withSimilarFeatures",
-          unordered = true
-        ) {
-          Status.OK ->
-            s"""
-               |{
-               |  $singleImageResult,
-               |  "id": "${image.id}",
-               |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-               |  "locations": [${locations(image.locations)}],
-               |  "withSimilarFeatures": [
-               |    ${images.tail.map(imageResponse).mkString(",")}
-               |  ],
-               |  "source": ${imageSource(image.source)}
-               |}""".stripMargin
-        }
-    }
-  }
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-palettes.$i"): _*
+        )
 
-  it(
-    "includes images with similar color palettes on a single image if we pass ?include=withSimilarColors"
-  ) {
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        val images =
-          createSimilarImages(6, similarFeatures = false, similarPalette = true)
-        val image = images.head
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
         assertJsonResponse(
           routes,
-          s"$rootPath/images/${images.head.id}?include=withSimilarColors",
-          unordered = true
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-palettes.0")}?include=withSimilarColors"
         ) {
-          Status.OK ->
-            s"""
-               |{
-               |  $singleImageResult,
-               |  "id": "${image.id}",
-               |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-               |  "locations": [${locations(image.locations)}],
-               |  "withSimilarColors": [
-               |    ${images.tail.map(imageResponse).mkString(",")}
-               |  ],
-               |  "source": ${imageSource(image.source)}
-               |}""".stripMargin
+          Status.OK -> readResource(
+            "expected_responses/visually-similar-palettes.json"
+          )
         }
     }
   }
@@ -97,15 +66,14 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
   it("never includes visually similar images on an images search") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val focacciaImage = createImageData.toIndexedImageWith(
-          parentWork =
-            identifiedWork().title("A Ligurian style of bread, Focaccia")
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
         )
-        insertImagesIntoElasticsearch(imagesIndex, focacciaImage)
 
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=focaccia&include=visuallySimilar"
+          path = s"$rootPath/images?query=focaccia&include=visuallySimilar"
         ) {
           Status.BadRequest -> badRequest(
             description =
@@ -114,5 +82,4 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
         }
     }
   }
-
 }

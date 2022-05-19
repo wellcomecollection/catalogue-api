@@ -1,30 +1,39 @@
 package weco.api.search.models
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.elasticsearch.ElasticClientBuilder
-import weco.catalogue.internal_model.Implicits._
+import weco.api.search.fixtures.TestDocumentFixtures
 import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.generators.ImageGenerators
+import weco.elasticsearch.ElasticClientBuilder
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class QueryConfigTest
     extends AnyFunSpec
     with Matchers
     with IndexFixtures
-    with ImageGenerators {
+    with TestDocumentFixtures {
   describe("fetchFromIndex") {
-
     it("fetches query config from a given index") {
       withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImage
-        val inferredData = image.state.inferredData.get
-        insertImagesIntoElasticsearch(index, image)
+        indexTestDocuments(index, "images.similar-features-and-palettes.0")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
-        result.paletteBinSizes shouldBe inferredData.binSizes
-        result.paletteBinMinima shouldBe inferredData.binMinima
+        result.paletteBinSizes shouldBe List(
+          List(1, 7, 5),
+          List(0, 5, 7),
+          List(6, 5, 1)
+        )
+
+        // Casting to string here is to avoid weirdness when comparing Doubles;
+        // if you compare to List(0.34999806, 0.7922977, 0.3721038), Scala will
+        // tell you they're different.
+        result.paletteBinMinima.map(_.toString) shouldBe List(
+          "0.7710878",
+          "0.8503088",
+          "0.6996027"
+        )
       }
     }
 
@@ -49,15 +58,7 @@ class QueryConfigTest
 
     it("returns the default config if the data is not in the expected format") {
       withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImageWith(
-          inferredData = createInferredData.map(
-            _.copy(
-              binMinima = List(1f),
-              binSizes = List(List(1))
-            )
-          )
-        )
-        insertImagesIntoElasticsearch(index, image)
+        indexTestDocuments(index, "images.inferred-data.wrong-format")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes
@@ -66,8 +67,7 @@ class QueryConfigTest
 
     it("returns the default config if the data is not found") {
       withLocalImagesIndex { index =>
-        val image = createImageData.toIndexedImageWith(inferredData = None)
-        insertImagesIntoElasticsearch(index, image)
+        indexTestDocuments(index, "images.inferred-data.none")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes

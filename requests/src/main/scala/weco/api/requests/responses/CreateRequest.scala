@@ -5,8 +5,6 @@ import akka.http.scaladsl.server.Route
 import grizzled.slf4j.Logging
 import weco.api.requests.models.HoldRejected
 import weco.api.requests.services.RequestsService
-import weco.api.search.elasticsearch.ElasticsearchError
-import weco.api.search.rest.CustomDirectives
 import HoldRejected.SourceSystemNotSupported
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
@@ -15,7 +13,7 @@ import weco.sierra.models.identifiers.SierraPatronNumber
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
+trait CreateRequest extends ErrorDirectives with Logging {
   implicit val ec: ExecutionContext
 
   val requestsService: RequestsService
@@ -47,10 +45,7 @@ trait CreateRequest extends CustomDirectives with ErrorDirectives with Logging {
             )
         )
     } recover {
-      case err: ElasticsearchError =>
-        elasticError("Item", err)
-      case err =>
-        internalError(err)
+      case err => internalError(err)
     }
 
   private def handleError(

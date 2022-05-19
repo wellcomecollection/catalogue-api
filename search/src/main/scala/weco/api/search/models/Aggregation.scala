@@ -73,6 +73,40 @@ object AggregationMapping {
 
   private case class FilteredResult(@JsonKey("doc_count") count: Int)
 
+  def jsonAggregationParse(jsonString: String): Try[Aggregation[Json]] =
+    fromJson[Result](jsonString)
+      .flatMap {
+        case Result(Some(buckets)) =>
+          Success(buckets)
+        case Result(None) =>
+          parse(jsonString)
+            .map(globalAggBuckets.getAll)
+            .toTry
+      }
+      .map { buckets =>
+        buckets.map { b =>
+          val key = b.key.as[String].flatMap(parse)
+          val docCount = b.docCount
+
+          (key, docCount)
+        }
+      }
+      .map { tally =>
+        tally.collect {
+          case (Right(t), count) => AggregationBucket(t, count = count)
+        }
+      }
+      .map { buckets =>
+        Aggregation(
+          buckets
+          // Sort manually here because filtered aggregations are bucketed before filtering
+          // therefore they are not always ordered by their final counts.
+          // Sorting in Scala is stable.
+            .sortBy(_.count)(Ordering[Int].reverse)
+            .toList
+        )
+      }
+
   def aggregationParser[T: Decoder](jsonString: String): Try[Aggregation[T]] =
     fromJson[Result](jsonString)
       .flatMap {

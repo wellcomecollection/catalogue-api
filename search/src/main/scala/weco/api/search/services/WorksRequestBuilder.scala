@@ -8,12 +8,12 @@ import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
 import weco.api.search.models._
-import weco.api.search.rest.PaginationQuery
-import weco.catalogue.display_model.models.{
+import weco.api.search.models.request.{
   ProductionDateSortRequest,
   SortingOrder,
   WorkAggregationRequest
 }
+import weco.api.search.rest.PaginationQuery
 import weco.catalogue.internal_model.locations.License
 import weco.catalogue.internal_model.work._
 
@@ -49,12 +49,11 @@ object WorksRequestBuilder
     case WorkAggregationRequest.Format =>
       TermsAggregation("format")
         .size(Format.values.size)
-        .field("data.format.id")
+        .field("aggregatableValues.workType")
 
     case WorkAggregationRequest.ProductionDate =>
-      DateHistogramAggregation("productionDates")
-        .calendarInterval(DateHistogramInterval.Year)
-        .field("data.production.dates.range.from")
+      TermsAggregation("productionDates")
+        .field("aggregatableValues.production.dates")
         .minDocCount(1)
 
     // We don't split genres into concepts, as the data isn't great,
@@ -62,32 +61,32 @@ object WorksRequestBuilder
     case WorkAggregationRequest.Genre =>
       TermsAggregation("genres")
         .size(20)
-        .field("data.genres.concepts.label.keyword")
+        .field("aggregatableValues.genres.label")
 
     case WorkAggregationRequest.Subject =>
       TermsAggregation("subjects")
         .size(20)
-        .field("data.subjects.label.keyword")
+        .field("aggregatableValues.subjects.label")
 
     case WorkAggregationRequest.Contributor =>
       TermsAggregation("contributors")
         .size(20)
-        .field("state.derivedData.contributorAgents")
+        .field("aggregatableValues.contributors.agent.label")
 
     case WorkAggregationRequest.Languages =>
       TermsAggregation("languages")
         .size(200)
-        .field("data.languages.id")
+        .field("aggregatableValues.languages")
 
     case WorkAggregationRequest.License =>
       TermsAggregation("license")
         .size(License.values.size)
-        .field("data.items.locations.license.id")
+        .field("aggregatableValues.items.locations.license")
 
     case WorkAggregationRequest.Availabilities =>
       TermsAggregation("availabilities")
         .size(Availability.values.size)
-        .field("state.availabilities.id")
+        .field("aggregatableValues.availabilities")
   }
 
   private def sortBy(implicit searchOptions: WorkSearchOptions) =

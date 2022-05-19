@@ -5,14 +5,13 @@ import cats.implicits._
 import com.sksamuel.elastic4s.Index
 import weco.Tracing
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
-import weco.api.search.services.ImagesService
-import weco.catalogue.display_model.models.Implicits._
-import weco.catalogue.display_model.models.{
-  DisplayImage,
+import weco.api.search.json.CatalogueJsonUtil
+import weco.api.search.models.request.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
+import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
+import weco.api.search.services.ImagesService
 import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,32 +23,27 @@ class ImagesController(
   queryConfig: QueryConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
+    with CatalogueJsonUtil
     with Tracing {
-
-  import DisplayResultList.encoder
 
   def singleImage(id: CanonicalId, params: SingleImageParams): Route =
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(imagesIndex)
-
           imagesService
-            .findById(id)(index)
+            .findById(id)(imagesIndex)
             .flatMap {
               case Right(image) =>
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(index, image, metric)
+                      .retrieveSimilarImages(imagesIndex, id.underlying, metric)
                       .map(metric -> _)
                   }
                   .map(_.toMap)
                   .map { similarImages =>
                     complete(
-                      DisplayImage(
-                        image = image,
+                      image.display.asJson(
                         includes =
                           params.include.getOrElse(SingleImageIncludes.none),
                         visuallySimilar =
@@ -63,13 +57,7 @@ class ImagesController(
                   }
 
               case Left(err) =>
-                Future.successful(
-                  elasticError(
-                    documentType = "Image",
-                    err = err,
-                    usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                  )
-                )
+                Future.successful(elasticError(documentType = "Image", err))
             }
         }
       }
@@ -81,18 +69,10 @@ class ImagesController(
         transactFuture("GET /images") {
           val searchOptions = params.searchOptions(apiConfig)
 
-          val userSpecifiedIndex = params._index.map(Index(_))
-          val index = userSpecifiedIndex.getOrElse(imagesIndex)
-
           imagesService
-            .listOrSearch(index, searchOptions)
+            .listOrSearch(imagesIndex, searchOptions)
             .map {
-              case Left(err) =>
-                elasticError(
-                  documentType = "Image",
-                  err = err,
-                  usingUserSpecifiedIndex = userSpecifiedIndex.isDefined
-                )
+              case Left(err) => elasticError(documentType = "Image", err)
 
               case Right(resultList) =>
                 extractPublicUri { uri =>

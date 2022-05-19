@@ -6,17 +6,10 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.models.{
-  DisplayIdentifier,
-  DisplayItem,
-  DisplayWork
-}
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdState,
-  SourceIdentifier
-}
-import weco.catalogue.internal_model.work.Item
+import weco.api.stacks.models.{CatalogueWork, DisplayItemOps}
+import weco.catalogue.display_model.Implicits._
+import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
@@ -30,28 +23,24 @@ sealed trait ItemLookupError {
 case class ItemNotFoundError(id: Any, err: Throwable) extends ItemLookupError
 case class UnknownItemError(id: Any, err: Throwable) extends ItemLookupError
 
-case class DisplayWorkResults(
-  results: Seq[DisplayWork]
+case class CatalogueWorkResults(
+  results: Seq[CatalogueWork]
 )
 
 class ItemLookup(client: HttpClient with HttpGet)(
   implicit
   as: ActorSystem,
   ec: ExecutionContext
-) extends Logging {
+) extends Logging
+    with DisplayItemOps {
 
-  import weco.catalogue.display_model.models.Implicits._
+  implicit val um: Unmarshaller[HttpEntity, CatalogueWorkResults] =
+    CirceMarshalling.fromDecoder[CatalogueWorkResults]
 
-  implicit val um: Unmarshaller[HttpEntity, DisplayWorkResults] =
-    CirceMarshalling.fromDecoder[DisplayWorkResults]
-
-  /** Returns the SourceIdentifier of the item that corresponds to this
-    * canonical ID.
-    *
-    */
+  /** Returns the item for this canonical ID. */
   def byCanonicalId(
     itemId: CanonicalId
-  ): Future[Either[ItemLookupError, DisplayIdentifier]] = {
+  ): Future[Either[ItemLookupError, DisplayItem]] = {
     val path = Path("works")
     val params = Map(
       "include" -> "identifiers,items",
@@ -65,13 +54,13 @@ class ItemLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
-            val items = results.results.flatMap(_.items).flatten
+          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
+            val items = results.results.flatMap(_.items)
 
-            items
-              .find(_.id.contains(itemId.underlying))
-              .flatMap(item => item.identifiers.getOrElse(List()).headOption) match {
-              case Some(identifier) => Right(identifier)
+            val matchingItem = items.find(_.id.contains(itemId.underlying))
+
+            matchingItem match {
+              case Some(item) => Right(item)
               case None =>
                 Left(
                   ItemNotFoundError(
@@ -123,15 +112,6 @@ class ItemLookup(client: HttpClient with HttpGet)(
       case _ => searchBySourceIdentifier(itemIdentifiers)
     }
 
-  private case class WorkStubData(
-    title: Option[String],
-    items: List[Item[IdState.Minted]]
-  )
-
-  private case class WorkStubState(canonicalId: CanonicalId)
-
-  private case class WorkStub(data: WorkStubData, state: WorkStubState)
-
   private def searchBySourceIdentifier(
     itemIdentifiers: Seq[SourceIdentifier]
   ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] = {
@@ -150,21 +130,26 @@ class ItemLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[DisplayWorkResults].map { results =>
-            // Sort by source identifier value
-            val works = results.results.sortBy(_.identifiers.get.head.value)
+          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
+            // Sort by source identifier value.  A work's identifiers are always non-empty,
+            // so calling .head is safe here.
+            val works = results.results.sortBy(_.identifiers.head.value)
 
-            val items: Seq[(DisplayWork, DisplayItem)] = works
+            val items: Seq[(CatalogueWork, DisplayItem)] = works
               .flatMap { w =>
-                w.items.getOrElse(List()).map(item => (w, item))
+                w.items.map(item => (w, item))
               }
 
             itemIdentifiers.map { itemId =>
               val matchingWorks = items.filter {
                 case (_, item) =>
-                  val sourceIdentifier = item.identifiers.getOrElse(List()).head
+                  // Not all items have identifiers, e.g. METS items are unidentified.
+                  item.identifiers.headOption match {
+                    case Some(sourceId) =>
+                      sourceId.value == itemId.value && sourceId.identifierType.id == itemId.identifierType.id
 
-                  sourceIdentifier.value == itemId.value && sourceIdentifier.identifierType.id == itemId.identifierType.id
+                    case None => false
+                  }
               }
 
               matchingWorks.headOption match {

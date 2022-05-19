@@ -5,10 +5,12 @@ import akka.http.scaladsl.model.Uri.Path
 import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
-import weco.catalogue.display_model.models.DisplayWork
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
+import weco.catalogue.display_model.Implicits._
+import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -24,17 +26,15 @@ class WorkLookup(client: HttpClient with HttpGet)(
   ec: ExecutionContext
 ) extends Logging {
 
-  import weco.catalogue.display_model.models.Implicits._
-
-  implicit val um: Unmarshaller[HttpEntity, DisplayWork] =
-    CirceMarshalling.fromDecoder[DisplayWork]
+  implicit val um: Unmarshaller[HttpEntity, CatalogueWork] =
+    CirceMarshalling.fromDecoder[CatalogueWork]
 
   /** Returns the Work that corresponds to this canonical ID.
     *
     */
   def byCanonicalId(
     id: CanonicalId
-  ): Future[Either[WorkLookupError, DisplayWork]] = {
+  ): Future[Either[WorkLookupError, CatalogueWork]] = {
     val path = Path(s"works/$id")
     val params = Map("include" -> "identifiers,items")
 
@@ -44,7 +44,7 @@ class WorkLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[DisplayWork].map { Right(_) }
+          Unmarshal(response.entity).to[CatalogueWork].map { Right(_) }
 
         case StatusCodes.NotFound =>
           info(s"Not Found for GET to $path with $params")

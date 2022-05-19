@@ -5,14 +5,11 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.util.{Failure, Try}
 
@@ -22,29 +19,21 @@ class ItemsApiFeatureTest
     with ItemsApiFixture
     with JsonAssertions
     with IntegrationPatience
+    with IdentifiersGenerators
     with ItemsApiGenerators
     with SierraIdentifierGenerators {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
-      val sierraItemNumber = createSierraItemNumber
-
-      val temporarilyUnavailableOnline = AccessCondition(
-        method = AccessMethod.NotRequestable,
-        status = AccessStatus.TemporarilyUnavailable
-      )
-
-      val physicalItem = createPhysicalItemWith(
-        sierraItemNumber = sierraItemNumber,
-        accessCondition = temporarilyUnavailableOnline
-      )
-
-      val work = indexedWork().items(List(physicalItem))
+      val resourceName = "work-with-temporarily-unavailable-item.json"
+      val workId = CanonicalId("eccsqg7j")
+      val itemId = CanonicalId("otdlfo0u")
+      val sierraItemNumber = SierraItemNumber("1024083")
 
       val catalogueResponses = Seq(
         (
-          catalogueWorkRequest(work.state.canonicalId),
-          catalogueWorkResponse(work)
+          catalogueWorkRequest(workId),
+          catalogueWorkResponse(resourceName)
         )
       )
 
@@ -60,7 +49,7 @@ class ItemsApiFeatureTest
       )
 
       withItemsApi(catalogueResponses, sierraResponses) { _ =>
-        val path = s"/works/${work.state.canonicalId}"
+        val path = s"/works/$workId"
 
         val expectedJson =
           s"""
@@ -69,7 +58,7 @@ class ItemsApiFeatureTest
              |  "totalResults" : 1,
              |  "results" : [
              |    {
-             |      "id" : "${physicalItem.id.canonicalId}",
+             |      "id" : "$itemId",
              |      "identifiers" : [
              |        {
              |          "identifierType" : {
@@ -123,17 +112,18 @@ class ItemsApiFeatureTest
     }
 
     it("returns an empty list if a work has no items") {
-      val work = indexedWork().items(List())
+      val resourceName = "work-with-no-items.json"
+      val workId = CanonicalId("eccsqg7j")
 
       val catalogueResponses = Seq(
         (
-          catalogueWorkRequest(work.state.canonicalId),
-          catalogueWorkResponse(work)
+          catalogueWorkRequest(workId),
+          catalogueWorkResponse(resourceName)
         )
       )
 
       withItemsApi(catalogueResponses) { _ =>
-        val path = s"/works/${work.state.canonicalId}"
+        val path = s"/works/$workId"
 
         val expectedJson =
           s"""

@@ -1,18 +1,20 @@
 package weco.api.search.images
 
-import weco.catalogue.internal_model.work.generators.SierraWorkGenerators
-import weco.catalogue.internal_model.Implicits._
+import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
-
+class ImagesTest extends ApiImagesTestBase {
   it("returns a list of images") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val images =
-          (1 to 5).map(_ => createImageData.toIndexedImage).sortBy(_.id)
-        insertImagesIntoElasticsearch(imagesIndex, images: _*)
-        assertJsonResponse(routes, s"$rootPath/images") {
-          Status.OK -> imagesListResponse(images)
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
+
+        assertJsonResponse(routes, path = s"$rootPath/images") {
+          Status.OK -> imagesListResponse(
+            ids = (0 to 6).map(i => s"images.different-licenses.$i")
+          )
         }
     }
   }
@@ -20,91 +22,80 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
   it("returns a single image when requested with ID") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val image = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(imagesIndex, image)
-        assertJsonResponse(routes, s"$rootPath/images/${image.id}") {
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
+
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images/${getTestImageId("images.different-licenses.0")}"
+        ) {
           Status.OK ->
-            s"""
-             |{
-             |  $singleImageResult,
-             |  "id": "${image.id}",
-             |  "thumbnail": ${location(image.state.derivedData.thumbnail)},
-             |  "locations": [${locations(image.locations)}],
-             |  "source": ${imageSource(image.source)}
-             |}""".stripMargin
+            getDisplayImage("images.different-licenses.0")
+              .withIncludes(SingleImageIncludes.none)
+              .noSpaces
         }
     }
   }
 
   it("returns only linked images when a source work ID is requested") {
+    val workImages =
+      (0 to 3).map(i => s"images.examples.linked-with-the-same-work.$i")
+
     withImagesApi {
       case (imagesIndex, routes) =>
-        val parentWork = sierraIdentifiedWork()
-        val workImages =
-          (0 to 3)
-            .map(
-              _ => createImageData.toIndexedImageWith(parentWork = parentWork)
-            )
-            .toList
-        val otherImage = createImageData.toIndexedImage
-        insertImagesIntoElasticsearch(imagesIndex, otherImage :: workImages: _*)
+        indexTestDocuments(
+          imagesIndex,
+          workImages :+ "images.examples.linked-with-another-work": _*
+        )
+
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.state.canonicalId}",
-          unordered = true
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.sourceIdentifier.value}",
-          unordered = true
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
         assertJsonResponse(
           routes,
-          s"$rootPath/images?query=${parentWork.data.otherIdentifiers.head.value}",
-          unordered = true
+          path = s"$rootPath/images?query=q5rilm5u"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
     }
   }
 
-  val baguetteImage = createImageData.toIndexedImageWith(
-    parentWork = identifiedWork()
-      .title(
-        "Baguette is a French style of bread; it's a long, thin bread; other countries also make this bread"
-      )
-  )
-  val focacciaImage = createImageData.toIndexedImageWith(
-    parentWork = identifiedWork()
-      .title("A Ligurian style of bread, Focaccia is a flat Italian bread")
-  )
-
   it("returns matching results when using work data") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val mantouImage = createImageData.toIndexedImageWith(
-          parentWork = identifiedWork()
-            .title("Mantou is a steamed bread associated with Northern China")
-        )
-
-        insertImagesIntoElasticsearch(
+        indexTestDocuments(
           imagesIndex,
-          baguetteImage,
-          focacciaImage,
-          mantouImage
+          "images.examples.bread-baguette",
+          "images.examples.bread-focaccia",
+          "images.examples.bread-mantou"
         )
 
-        assertJsonResponse(routes, s"$rootPath/images?query=bread") {
+        assertJsonResponse(routes, path = s"$rootPath/images?query=bread") {
           Status.OK -> imagesListResponse(
-            List(baguetteImage, focacciaImage, mantouImage)
+            ids = List(
+              "images.examples.bread-baguette",
+              "images.examples.bread-focaccia",
+              "images.examples.bread-mantou"
+            ),
+            strictOrdering = true
           )
         }
-        assertJsonResponse(routes, s"$rootPath/images?query=focaccia") {
-          Status.OK -> imagesListResponse(List(focacciaImage))
+        assertJsonResponse(routes, path = s"$rootPath/images?query=focaccia") {
+          Status.OK -> imagesListResponse(
+            ids = List("images.examples.bread-focaccia")
+          )
         }
     }
   }
@@ -112,67 +103,28 @@ class ImagesTest extends ApiImagesTestBase with SierraWorkGenerators {
   it("returns matching results when using workdata from the redirected work") {
     withImagesApi {
       case (imagesIndex, routes) =>
-        val schiacciataImage = createImageData.toIndexedImageWith(
-          parentWork = identifiedWork()
-            .title("Schiacciata is a Tuscan focaccia"),
-          redirectedWork = Some(
-            identifiedWork().title("A Tusdan bread")
-          )
-        )
-        insertImagesIntoElasticsearch(
+        indexTestDocuments(
           imagesIndex,
-          baguetteImage,
-          focacciaImage,
-          schiacciataImage
+          "images.examples.bread-baguette",
+          "images.examples.bread-focaccia",
+          "images.examples.bread-schiacciata"
         )
 
         assertJsonResponse(routes, s"$rootPath/images?query=bread") {
           Status.OK -> imagesListResponse(
-            List(baguetteImage, focacciaImage, schiacciataImage)
+            ids = List(
+              "images.examples.bread-schiacciata",
+              "images.examples.bread-baguette",
+              "images.examples.bread-focaccia"
+            ),
+            strictOrdering = true
           )
         }
-    }
-  }
 
-  it("searches different indices with the _index parameter") {
-    withImagesApi {
-      case (defaultIndex, routes) =>
-        withLocalImagesIndex { alternativeIndex =>
-          val defaultImage = createImageData.toIndexedImage
-          val alternativeImage = createImageData.toIndexedImage
-          insertImagesIntoElasticsearch(defaultIndex, defaultImage)
-          insertImagesIntoElasticsearch(alternativeIndex, alternativeImage)
-
-          assertJsonResponse(routes, s"$rootPath/images/${defaultImage.id}") {
-            Status.OK ->
-              s"""
-                 |{
-                 |  $singleImageResult,
-                 |  "id": "${defaultImage.id}",
-                 |  "thumbnail": ${location(
-                   defaultImage.state.derivedData.thumbnail
-                 )},
-                 |  "locations": [${locations(defaultImage.locations)}],
-                 |  "source": ${imageSource(defaultImage.source)}
-                 }""".stripMargin
-          }
-
-          assertJsonResponse(
-            routes,
-            s"$rootPath/images/${alternativeImage.id}?_index=${alternativeIndex.name}"
-          ) {
-            Status.OK ->
-              s"""
-                 |{
-                 |  $singleImageResult,
-                 |  "id": "${alternativeImage.id}",
-                 |  "thumbnail": ${location(
-                   alternativeImage.state.derivedData.thumbnail
-                 )},
-                 |  "locations": [${locations(alternativeImage.locations)}],
-                 |  "source": ${imageSource(alternativeImage.source)}
-                 }""".stripMargin
-          }
+        assertJsonResponse(routes, s"$rootPath/images?query=schiacciata") {
+          Status.OK -> imagesListResponse(
+            ids = List("images.examples.bread-schiacciata")
+          )
         }
     }
   }

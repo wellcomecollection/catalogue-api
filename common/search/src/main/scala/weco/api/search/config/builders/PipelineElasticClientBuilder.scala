@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.catalogue.display_model.PipelineClusterElasticConfig
+import weco.api.search.models.PipelineClusterElasticConfig
 import weco.elasticsearch.ElasticClientBuilder
 
 /**

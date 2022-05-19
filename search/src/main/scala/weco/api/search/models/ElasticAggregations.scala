@@ -4,37 +4,11 @@ import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
   Aggregations => Elastic4sAggregations
 }
 import grizzled.slf4j.Logging
-import io.circe.Decoder
-import weco.catalogue.internal_model.identifiers.IdState.Minted
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work._
+import io.circe.{Decoder, Json}
 
 import scala.util.Failure
 
 trait ElasticAggregations extends Logging {
-
-  implicit val decodeLicenseFromId: Decoder[License] =
-    Decoder.decodeString.emap(License.withNameEither(_).getMessage)
-
-  implicit val decodeAgentFromLabel: Decoder[AbstractAgent[Minted]] =
-    Decoder.decodeString.emap { str =>
-      val splitIdx = str.indexOf(':')
-      val ontologyType = str.slice(0, splitIdx)
-      val label = str.slice(splitIdx + 1, Int.MaxValue)
-      ontologyType match {
-        case "Agent"        => Right(Agent(label = label))
-        case "Person"       => Right(Person(label = label))
-        case "Organisation" => Right(Organisation(label = label))
-        case "Meeting"      => Right(Meeting(label = label))
-        case ontologyType   => Left(s"Illegal agent type: $ontologyType")
-      }
-    }
-
-  implicit val decodeGenreFromLabel: Decoder[Genre[Minted]] =
-    Decoder.decodeString.map { str =>
-      Genre(label = str)
-    }
-
   implicit class ThrowableEitherOps[T](either: Either[Throwable, T]) {
     def getMessage: Either[String, T] =
       either.left.map(_.getMessage)
@@ -50,6 +24,24 @@ trait ElasticAggregations extends Logging {
           ).recoverWith {
             case err =>
               warn("Failed to parse aggregation from ES", err)
+              Failure(err)
+          }.toOption
+        )
+
+    // Note: eventually this method will replace the decodeAgg method above, but we have
+    // them both while images/works aggregations are handled differently.
+    def decodeJsonAgg(name: String): Option[Aggregation[Json]] =
+      aggregations
+        .getAgg(name)
+        .flatMap(
+          _.safeTo[Aggregation[Json]](
+            (json: String) => {
+              AggregationMapping.jsonAggregationParse(json)
+            }
+          ).recoverWith {
+            case err =>
+              warn("Failed to parse aggregation from ES", err)
+              println(s"Failed to parse aggregation from ES: $err")
               Failure(err)
           }.toOption
         )

@@ -4,4 +4,4 @@ sealed trait WorkMustQuery
 
 sealed trait ImageMustQuery
 
-case class ColorMustQuery(hexColors: Seq[String]) extends ImageMustQuery
+case class ColorMustQuery(colors: Seq[HsvColor]) extends ImageMustQuery

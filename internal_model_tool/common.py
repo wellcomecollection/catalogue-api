@@ -25,7 +25,7 @@ def get_local_date():
     with open(
         os.path.join(
             HERE,
-            "../common/display/src/main/scala/weco/catalogue/display_model/ElasticConfig.scala",
+            "../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala",
         ),
         "r",
     ) as config_file:

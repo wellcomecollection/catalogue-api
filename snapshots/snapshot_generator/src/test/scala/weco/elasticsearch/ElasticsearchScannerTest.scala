@@ -5,7 +5,6 @@ import com.sksamuel.elastic4s.{Index, Response}
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.internal_model.work.generators.WorkGenerators
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.fixtures.TestWith
 import weco.json.JsonUtil._
@@ -13,8 +12,7 @@ import weco.json.JsonUtil._
 class ElasticsearchScannerTest
     extends AnyFunSpec
     with Matchers
-    with ElasticsearchFixtures
-    with WorkGenerators {
+    with ElasticsearchFixtures {
   val scanner = new ElasticsearchScanner()(elasticClient)
 
   case class Shape(sides: Int, colour: String)

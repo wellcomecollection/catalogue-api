@@ -4,14 +4,16 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Route
 import weco.api.items.models.DisplayItemsList
 import weco.api.items.services._
-import weco.api.search.rest.SingleWorkDirectives
-import weco.catalogue.display_model.models.DisplayWork
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.http.ErrorDirectives
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait LookupItemStatus extends SingleWorkDirectives {
-  import weco.catalogue.display_model.models.Implicits._
+trait LookupItemStatus extends ErrorDirectives {
+  import weco.catalogue.display_model.Implicits._
+
+  implicit val ec: ExecutionContext
 
   val itemUpdateService: ItemUpdateService
 
@@ -19,7 +21,7 @@ trait LookupItemStatus extends SingleWorkDirectives {
 
   def lookupStatus(workId: CanonicalId): Future[Route] =
     workLookup.byCanonicalId(workId).flatMap {
-      case Right(work: DisplayWork) =>
+      case Right(work: CatalogueWork) =>
         itemUpdateService
           .updateItems(work)
           .map { items =>

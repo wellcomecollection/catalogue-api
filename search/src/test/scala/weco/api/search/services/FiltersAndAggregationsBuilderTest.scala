@@ -11,13 +11,13 @@ import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models._
+import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
   FormatFilter,
   GenreFilter,
   LanguagesFilter,
   WorkFilter
 }
-import weco.catalogue.display_model.models.WorkAggregationRequest
 
 class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
 

@@ -2,12 +2,12 @@ package weco.api.items.services
 
 import grizzled.slf4j.Logging
 import weco.sierra.http.SierraSource
-import weco.api.stacks.models.SierraItemIdentifier
-import weco.catalogue.display_model.models.{
+import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
+import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
-  DisplayItem,
   DisplayPhysicalLocation
 }
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
 import weco.sierra.models.errors.SierraItemLookupError
@@ -25,7 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraItemUpdater(sierraSource: SierraSource)(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
-    with Logging {
+    with Logging
+    with DisplayItemOps {
 
   import weco.api.stacks.models.SierraItemDataOps._
 
@@ -55,19 +56,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     item.copy(locations = updatedItemLocations)
   }
 
-  private def updateAccessConditions(
-    itemMap: Map[SierraItemNumber, DisplayItem],
-    accessConditionMap: Map[SierraItemNumber, AccessCondition]
-  ): Seq[DisplayItem] =
-    itemMap.map {
-      case (itemNumber, item) =>
-        accessConditionMap
-          .get(itemNumber)
-          .map(updateAccessCondition(item, _))
-          .getOrElse(item)
-    } toSeq
-
-  def getAccessConditions(
+  private def getAccessConditions(
     itemNumbers: Seq[SierraItemNumber]
   ): Future[Map[SierraItemNumber, AccessCondition]] =
     for {
@@ -88,26 +77,56 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     } yield accessConditions
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
+
+    // item number -> item
     val itemMap = items.map { item =>
-      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.get.head) -> item
+      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
     } toMap
 
-    val accessConditions = for {
-      accessConditionsMap <- getAccessConditions(itemMap.keys.toSeq)
+    val staleItems = itemMap
+      .filter { case (_, item) => item.isStale }
 
-      // It is possible for there to be a situation where Sierra does not know about
-      // an Item that is in the Catalogue API, but this situation should be very rare.
-      // For example an item has been deleted but the change has not yet propagated.
-      // In that case it gets method "NotRequestable".
-      missingItemsKeys = itemMap.filterNot {
-        case (sierraItemNumber, _) =>
-          accessConditionsMap.keySet.contains(sierraItemNumber)
-      } keySet
+    debug(
+      s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
+    )
 
-      missingItemsMap = missingItemsKeys
-        .map(_ -> AccessCondition(method = AccessMethod.NotRequestable)) toMap
-    } yield accessConditionsMap ++ missingItemsMap
+    for {
+      accessConditions <- getUpdatedAccessConditions(staleItems.keys.toSeq)
 
-    accessConditions.map(updateAccessConditions(itemMap, _))
+      updatedItems = itemMap.map {
+        case (sierraId, item) =>
+          accessConditions.get(sierraId) match {
+            case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+            case None            => item
+          }
+      }
+    } yield updatedItems.toSeq
   }
+
+  /** Given a series of item IDs, get the most up-to-date access condition
+    * information from Sierra.
+    *
+    */
+  private def getUpdatedAccessConditions(
+    itemIds: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, AccessCondition]] =
+    itemIds match {
+      case Nil => Future.successful(Map())
+
+      case _ =>
+        for {
+          accessConditionsMap <- getAccessConditions(itemIds)
+
+          // It is possible for there to be a situation where Sierra does not know about
+          // an Item that is in the Catalogue API, but this situation should be very rare.
+          // For example an item has been deleted but the change has not yet propagated.
+          // In that case it gets method "NotRequestable".
+          missingItemIds = itemIds
+            .filterNot { accessConditionsMap.keySet.contains(_) }
+
+          missingItemsMap = missingItemIds
+            .map(_ -> AccessCondition(method = AccessMethod.NotRequestable))
+            .toMap
+        } yield accessConditionsMap ++ missingItemsMap
+    }
 }

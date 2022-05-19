@@ -1,12 +1,13 @@
 package weco.api.search.services
 
-import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
-import weco.catalogue.internal_model.Implicits
+import io.circe.generic.extras.semiauto._
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models._
-import weco.catalogue.internal_model.image.{Image, ImageState}
+import weco.api.search.models.index.IndexedImage
+import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -16,14 +17,19 @@ class ImagesService(
 )(
   implicit
   val ec: ExecutionContext
-) extends SearchService[Image[ImageState.Indexed], Image[ImageState.Indexed], ImageAggregations, ImageSearchOptions] {
+) extends SearchService[
+      IndexedImage,
+      IndexedImage,
+      ImageAggregations,
+      ImageSearchOptions
+    ] {
 
   private val nVisuallySimilarImages = 5
 
-  implicit val decoder: Decoder[Image[ImageState.Indexed]] =
-    Implicits._decImageIndexed
-  implicit val decoderV: Decoder[Image[ImageState.Indexed]] =
-    Implicits._decImageIndexed
+  implicit val decoder: Decoder[IndexedImage] =
+    deriveConfiguredDecoder
+  implicit val decoderV: Decoder[IndexedImage] =
+    decoder
 
   override protected def createAggregations(
     searchResponse: SearchResponse
@@ -35,9 +41,9 @@ class ImagesService(
 
   def retrieveSimilarImages(
     index: Index,
-    image: Image[ImageState.Indexed],
+    imageId: String,
     similarityMetric: SimilarityMetric = SimilarityMetric.Blended
-  ): Future[List[Image[ImageState.Indexed]]] = {
+  ): Future[List[IndexedImage]] = {
     val builder = similarityMetric match {
       case SimilarityMetric.Blended =>
         requestBuilder.requestWithBlendedSimilarity
@@ -47,7 +53,7 @@ class ImagesService(
         requestBuilder.requestWithSimilarColors
     }
 
-    val searchRequest = builder(index, image.id, nVisuallySimilarImages)
+    val searchRequest = builder(index, imageId, nVisuallySimilarImages)
 
     elasticsearchService
       .findBySearch(searchRequest)(decoder)

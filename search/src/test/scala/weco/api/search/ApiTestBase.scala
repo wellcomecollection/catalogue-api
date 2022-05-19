@@ -13,11 +13,15 @@ trait ApiTestBase extends ApiFixture {
   val rootPath: String = ""
 
   def emptyJsonResult: String =
-    s"""
-       |{
-       |  ${resultList(totalPages = 0, totalResults = 0)},
-       |  "results": []
-       |}""".stripMargin
+    """
+      |{
+      |  "type": "ResultList",
+      |  "pageSize": 10,
+      |  "totalPages": 0,
+      |  "totalResults": 0,
+      |  "results": []
+      |}
+      |""".stripMargin
 
   def badRequest(description: String) =
     s"""{
@@ -59,7 +63,7 @@ trait ApiTestBase extends ApiFixture {
     }"""
 
   def deleted =
-    s"""{
+    """{
       "type": "Error",
       "errorType": "http",
       "httpStatus": 410,
