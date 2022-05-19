@@ -1,6 +1,7 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
+import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
@@ -33,7 +34,8 @@ class ItemUpdateServiceTest
     with IdentifiersGenerators
     with ItemsApiGenerators
     with SierraIdentifierGenerators
-    with SierraSourceFixture {
+    with SierraSourceFixture
+    with IntegrationPatience {
 
   def withSierraItemUpdater[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
