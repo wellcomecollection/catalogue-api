@@ -85,16 +85,19 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     val staleItems = itemMap
       .filter { case (_, item) => isStale(item) }
 
-    debug(s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}")
+    debug(
+      s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
+    )
 
     for {
       accessConditions <- getUpdatedAccessConditions(staleItems.keys.toSeq)
 
-      updatedItems = itemMap.map { case (sierraId, item) =>
-        accessConditions.get(sierraId) match {
-          case Some(updatedAc) => updateAccessCondition(item, updatedAc)
-          case None            => item
-        }
+      updatedItems = itemMap.map {
+        case (sierraId, item) =>
+          accessConditions.get(sierraId) match {
+            case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+            case None            => item
+          }
       }
     } yield updatedItems.toSeq
   }
@@ -103,24 +106,27 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     * information from Sierra.
     *
     */
-  private def getUpdatedAccessConditions(itemIds: Seq[SierraItemNumber]): Future[Map[SierraItemNumber, AccessCondition]] =
+  private def getUpdatedAccessConditions(
+    itemIds: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, AccessCondition]] =
     itemIds match {
       case Nil => Future.successful(Map())
 
-      case _ => for {
-        accessConditionsMap <- getAccessConditions(itemIds)
+      case _ =>
+        for {
+          accessConditionsMap <- getAccessConditions(itemIds)
 
-        // It is possible for there to be a situation where Sierra does not know about
-        // an Item that is in the Catalogue API, but this situation should be very rare.
-        // For example an item has been deleted but the change has not yet propagated.
-        // In that case it gets method "NotRequestable".
-        missingItemIds = itemIds
-          .filterNot { accessConditionsMap.keySet.contains(_) }
+          // It is possible for there to be a situation where Sierra does not know about
+          // an Item that is in the Catalogue API, but this situation should be very rare.
+          // For example an item has been deleted but the change has not yet propagated.
+          // In that case it gets method "NotRequestable".
+          missingItemIds = itemIds
+            .filterNot { accessConditionsMap.keySet.contains(_) }
 
-        missingItemsMap = missingItemIds
-          .map(_ -> AccessCondition(method = AccessMethod.NotRequestable))
-          .toMap
-      } yield accessConditionsMap ++ missingItemsMap
+          missingItemsMap = missingItemIds
+            .map(_ -> AccessCondition(method = AccessMethod.NotRequestable))
+            .toMap
+        } yield accessConditionsMap ++ missingItemsMap
     }
 
   /** There are two cases we care about where the data in the catalogue API
@@ -157,7 +163,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
 
     val isOnlineRequest = methodId.contains("online-request")
-    val hasRequestableStatus = statusId.contains("open") || statusId.contains("open-with-advisory") || statusId.contains("restricted") || statusId.isEmpty
+    val hasRequestableStatus = statusId.contains("open") || statusId.contains(
+      "open-with-advisory"
+    ) || statusId.contains("restricted") || statusId.isEmpty
 
     val isRequestable = isOnlineRequest && hasRequestableStatus
 
