@@ -33,9 +33,9 @@ class ItemUpdateServiceTest
     with JsonAssertions
     with IdentifiersGenerators
     with ItemsApiGenerators
-    with IntegrationPatience
     with SierraIdentifierGenerators
-    with SierraSourceFixture {
+    with SierraSourceFixture
+    with IntegrationPatience {
 
   def withSierraItemUpdater[R](
     responses: Seq[(HttpRequest, HttpResponse)] = Seq()
