@@ -390,7 +390,14 @@ class SierraRequestsServiceTest
           (
             createListHoldsRequest(patron),
             createListHoldsResponse(patron, items = List())
-          )
+          ),
+          // If the requests service thought the access condition was stale or
+          // that the item might be requestable, we'd expect to see it make
+          // a third API call to Sierra, to get fresh item data.
+          //
+          // If it tries to make that request during this test, the test will fail
+          // because the in-memory Sierra API client doesn't have a request/response
+          // defined in this list.
         )
 
         val future = withSierraService(responses) {
