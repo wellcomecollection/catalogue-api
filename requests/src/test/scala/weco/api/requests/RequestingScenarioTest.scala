@@ -18,10 +18,9 @@ import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
-import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
+import weco.sierra.models.identifiers.SierraItemNumber
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class RequestingScenarioTest
     extends AnyFeatureSpec
@@ -1427,77 +1426,6 @@ class RequestingScenarioTest
 
     api.routes
   }
-
-  def createListHoldsRequest(patron: SierraPatronNumber): HttpRequest =
-    HttpRequest(
-      method = HttpMethods.GET,
-      uri =
-        s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-    )
-
-  def createListHoldsResponse(
-    patron: SierraPatronNumber,
-    items: Seq[SierraItemNumber]
-  ): HttpResponse =
-    HttpResponse(
-      entity = HttpEntity(
-        contentType = ContentTypes.`application/json`,
-        s"""
-           |{
-           |  "total": ${items.size},
-           |  "start": 0,
-           |  "entries": [
-           |    ${items
-             .map(it => createListHoldEntry(patron, it))
-             .mkString(",")}
-           |  ]
-           |}
-           |""".stripMargin
-      )
-    )
-
-  private def createListHoldEntry(
-    patron: SierraPatronNumber,
-    item: SierraItemNumber
-  ): String =
-    s"""
-       |{
-       |  "id": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/holds/${randomInt(
-         from = 0,
-         to = 10000
-       )}",
-       |  "record": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/items/${item.withoutCheckDigit}",
-       |  "patron": "https://libsys.wellcomelibrary.org/iii/sierra-api/v6/patrons/${patron.withoutCheckDigit}",
-       |  "frozen": false,
-       |  "placed": "2021-05-07",
-       |  "notWantedBeforeDate": "2021-05-07",
-       |  "pickupLocation": {"code":"sotop", "name":"Rare Materials Room"},
-       |  "status": {"code": "0", "name": "on hold."}
-       |}
-       |""".stripMargin
-
-  def createHoldRequest(
-    patron: SierraPatronNumber,
-    item: SierraItemNumber,
-    pickupDate: LocalDate
-  ): HttpRequest =
-    HttpRequest(
-      method = HttpMethods.POST,
-      uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-      entity = HttpEntity(
-        contentType = ContentTypes.`application/json`,
-        s"""
-           |{
-           |  "recordType": "i",
-           |  "recordNumber": ${item.withoutCheckDigit},
-           |  "note": "Requested for: ${DateTimeFormatter
-             .ofPattern("yyyy-MM-dd")
-             .format(pickupDate)}",
-           |  "pickupLocation": "unspecified"
-           |}
-           |""".stripMargin
-      )
-    )
 
   private def catalogueItemResponse(
     itemId: CanonicalId,
