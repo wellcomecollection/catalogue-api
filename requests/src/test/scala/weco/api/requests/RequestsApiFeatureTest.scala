@@ -16,6 +16,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.json.utils.JsonAssertions
 import weco.api.requests.fixtures.RequestsApiFixture
+import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -26,6 +27,7 @@ class RequestsApiFeatureTest
     with RequestsApiFixture
     with JsonAssertions
     with IntegrationPatience
+    with IdentifiersGenerators
     with SierraIdentifierGenerators
     with ScalatestRouteTest {
 
