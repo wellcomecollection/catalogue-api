@@ -1,7 +1,7 @@
 package weco.api.stacks.models
 
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.DisplayPhysicalLocation
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayPhysicalLocation}
 import weco.catalogue.display_model.work.DisplayItem
 
 trait DisplayItemOps {
@@ -9,6 +9,13 @@ trait DisplayItemOps {
 
     def sourceIdentifier: Option[DisplayIdentifier] =
       item.identifiers.headOption
+
+    /** Get the physical access condition for an item.
+      *
+      * In practice we know an item will only ever have a single access condition.
+      */
+    def physicalAccessCondition: Option[DisplayAccessCondition] =
+      item.locations.collect { case loc: DisplayPhysicalLocation => loc }.flatMap(_.accessConditions).headOption
 
     /** There are two cases we care about where the data in the catalogue API
       * might be stale:
@@ -30,28 +37,28 @@ trait DisplayItemOps {
       * https://github.com/wellcomecollection/wellcomecollection.org/blob/fbec553332d061a6cdec5580c591ca810833e629/catalogue/webapp/components/PhysicalItems/PhysicalItems.tsx#L25-L28
       *
       */
-    def isStale: Boolean = {
+    def isStale: Boolean =
+      physicalAccessCondition.forall(_.isStale)
+  }
 
-      // In practice we know an item only has one access condition
-      val accessCondition = item.locations
-        .collect { case loc: DisplayPhysicalLocation => loc }
-        .flatMap(_.accessConditions)
-        .headOption
+  implicit class DisplayAccessConditionOps(accessCondition: DisplayAccessCondition) {
+    private def statusId: Option[String] =
+      accessCondition.status.map(_.id)
 
-      val statusId = accessCondition
-        .flatMap(_.status)
-        .map(_.id)
+    private def methodId: String =
+      accessCondition.method.id
 
-      val methodId = accessCondition.map(_.method.id)
-
-      val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
-
+    def isRequestable: Boolean = {
       val isOnlineRequest = methodId.contains("online-request")
       val hasRequestableStatus = statusId.contains("open") || statusId.contains(
         "open-with-advisory"
       ) || statusId.contains("restricted") || statusId.isEmpty
 
-      val isRequestable = isOnlineRequest && hasRequestableStatus
+      isOnlineRequest && hasRequestableStatus
+    }
+
+    def isStale: Boolean = {
+      val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
 
       isTemporarilyUnavailable || isRequestable
     }
