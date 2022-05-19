@@ -37,10 +37,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -122,10 +119,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               status = StatusCodes.InternalServerError,
               entity = HttpEntity(
@@ -160,10 +154,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
+            createListHoldsRequest(patron),
             HttpResponse(
               entity = HttpEntity(
                 contentType = ContentTypes.`application/json`,
@@ -244,21 +235,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              method = HttpMethods.POST,
-              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "note": "Requested for: 18-02-2022",
-                   |  "pickupLocation": "unspecified"
-                   |}
-                   |""".stripMargin
-              )
-            ),
+            createHoldRequest(patron, item, pickupDate),
             HttpResponse(status = StatusCodes.NoContent)
           )
         )
@@ -393,21 +370,7 @@ class SierraRequestsServiceTest
 
         val responses = Seq(
           (
-            HttpRequest(
-              method = HttpMethods.POST,
-              uri = s"http://sierra:1234/v5/patrons/$patron/holds/requests",
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "recordType": "i",
-                   |  "recordNumber": ${item.withoutCheckDigit},
-                   |  "note": "Requested for: 18-02-2022",
-                   |  "pickupLocation": "unspecified"
-                   |}
-                   |""".stripMargin
-              )
-            ),
+            createHoldRequest(patron, item, pickupDate),
             HttpResponse(
               status = StatusCodes.InternalServerError,
               entity = HttpEntity(
@@ -425,22 +388,8 @@ class SierraRequestsServiceTest
             )
           ),
           (
-            HttpRequest(
-              uri =
-                s"http://sierra:1234/v5/patrons/$patron/holds?limit=100&offset=0&fields=id,record,pickupLocation,notNeededAfterDate,note,status"
-            ),
-            HttpResponse(
-              entity = HttpEntity(
-                contentType = ContentTypes.`application/json`,
-                s"""
-                   |{
-                   |  "total": 0,
-                   |  "start": 0,
-                   |  "entries": []
-                   |}
-                   |""".stripMargin
-              )
-            )
+            createListHoldsRequest(patron),
+            createListHoldsResponse(patron, items = List())
           )
         )
 
