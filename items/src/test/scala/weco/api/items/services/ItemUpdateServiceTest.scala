@@ -1,6 +1,7 @@
 package weco.api.items.services
 
 import akka.http.scaladsl.model._
+import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
@@ -12,11 +13,7 @@ import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -32,6 +29,7 @@ class ItemUpdateServiceTest
     with JsonAssertions
     with IdentifiersGenerators
     with ItemsApiGenerators
+    with IntegrationPatience
     with SierraIdentifierGenerators
     with SierraSourceFixture {
 
