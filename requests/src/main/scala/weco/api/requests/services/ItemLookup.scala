@@ -31,7 +31,8 @@ class ItemLookup(client: HttpClient with HttpGet)(
   implicit
   as: ActorSystem,
   ec: ExecutionContext
-) extends Logging with DisplayItemOps {
+) extends Logging
+    with DisplayItemOps {
 
   implicit val um: Unmarshaller[HttpEntity, CatalogueWorkResults] =
     CirceMarshalling.fromDecoder[CatalogueWorkResults]

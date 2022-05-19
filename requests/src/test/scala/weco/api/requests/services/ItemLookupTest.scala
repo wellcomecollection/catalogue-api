@@ -60,8 +60,10 @@ class ItemLookupTest
             _ shouldBe Right(
               DisplayItem(
                 id = Some(item.id.underlying),
-                identifiers = (item.sourceIdentifier +: item.otherIdentifiers).map(DisplayIdentifier(_)).toList,
-                locations = List(),
+                identifiers = (item.sourceIdentifier +: item.otherIdentifiers)
+                  .map(DisplayIdentifier(_))
+                  .toList,
+                locations = List()
               )
             )
           }

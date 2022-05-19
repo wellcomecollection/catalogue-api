@@ -3,7 +3,10 @@ package weco.api.items.services
 import grizzled.slf4j.Logging
 import weco.sierra.http.SierraSource
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}

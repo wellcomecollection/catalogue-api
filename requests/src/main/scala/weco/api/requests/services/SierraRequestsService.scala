@@ -24,7 +24,8 @@ class SierraRequestsService(
   sierraSource: SierraSource,
   holdLimit: Int
 )(implicit ec: ExecutionContext)
-    extends Logging with DisplayItemOps {
+    extends Logging
+    with DisplayItemOps {
 
   import weco.api.stacks.models.SierraItemDataOps._
 

@@ -9,7 +9,11 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.SierraServiceFixture
 import weco.api.requests.models.{HoldAccepted, HoldRejected}
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayAccessMethod, DisplayAccessStatus}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayAccessMethod,
+  DisplayAccessStatus
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -356,7 +360,9 @@ class SierraRequestsServiceTest
         }
       }
 
-      it("rejects a hold if the Catalogue API item is neither stale nor requestable") {
+      it(
+        "rejects a hold if the Catalogue API item is neither stale nor requestable"
+      ) {
         val patron = SierraPatronNumber("1234567")
         val item = createSierraItemNumber
         val pickupDateString = "2022-02-18"
@@ -390,7 +396,7 @@ class SierraRequestsServiceTest
           (
             createListHoldsRequest(patron),
             createListHoldsResponse(patron, items = List())
-          ),
+          )
           // If the requests service thought the access condition was stale or
           // that the item might be requestable, we'd expect to see it make
           // a third API call to Sierra, to get fresh item data.

@@ -1,7 +1,10 @@
 package weco.api.stacks.models
 
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 
 trait DisplayItemOps {
@@ -15,7 +18,10 @@ trait DisplayItemOps {
       * In practice we know an item will only ever have a single access condition.
       */
     def physicalAccessCondition: Option[DisplayAccessCondition] =
-      item.locations.collect { case loc: DisplayPhysicalLocation => loc }.flatMap(_.accessConditions).headOption
+      item.locations
+        .collect { case loc: DisplayPhysicalLocation => loc }
+        .flatMap(_.accessConditions)
+        .headOption
 
     /** There are two cases we care about where the data in the catalogue API
       * might be stale:
@@ -41,7 +47,9 @@ trait DisplayItemOps {
       physicalAccessCondition.forall(_.isStale)
   }
 
-  implicit class DisplayAccessConditionOps(accessCondition: DisplayAccessCondition) {
+  implicit class DisplayAccessConditionOps(
+    accessCondition: DisplayAccessCondition
+  ) {
     private def statusId: Option[String] =
       accessCondition.status.map(_.id)
 
@@ -58,7 +66,8 @@ trait DisplayItemOps {
     }
 
     def isStale: Boolean = {
-      val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
+      val isTemporarilyUnavailable =
+        statusId.contains("temporarily-unavailable")
 
       isTemporarilyUnavailable || isRequestable
     }

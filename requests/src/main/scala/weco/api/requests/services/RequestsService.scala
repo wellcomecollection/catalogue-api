@@ -1,12 +1,20 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
-import weco.api.requests.models.{HoldAccepted, HoldRejected, RequestedItemWithWork}
+import weco.api.requests.models.{
+  HoldAccepted,
+  HoldRejected,
+  RequestedItemWithWork
+}
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
 import weco.api.stacks.models.DisplayItemOps
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{CanonicalId, IdentifierType, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.{
+  CanonicalId,
+  IdentifierType,
+  SourceIdentifier
+}
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -18,19 +26,20 @@ class RequestsService(
   sierraService: SierraRequestsService,
   itemLookup: ItemLookup
 )(implicit executionContext: ExecutionContext)
-    extends Logging with DisplayItemOps {
+    extends Logging
+    with DisplayItemOps {
 
   def makeRequest(
     itemId: CanonicalId,
     pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
-  ): Future[Either[HoldRejected, HoldAccepted]] = {
+  ): Future[Either[HoldRejected, HoldAccepted]] =
     for {
       item <- itemLookup.byCanonicalId(itemId)
 
       sourceIdentifier = item match {
         case Right(item) => item.sourceIdentifier
-        case _ => None
+        case _           => None
       }
 
       result <- (item, sourceIdentifier) match {
@@ -55,7 +64,6 @@ class RequestsService(
           Future.failed(e.err)
       }
     } yield result
-  }
 
   def getRequests(
     patronNumber: SierraPatronNumber

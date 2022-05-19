@@ -1,6 +1,13 @@
 package weco.api.requests.fixtures
 
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, Uri}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpMethods,
+  HttpRequest,
+  HttpResponse,
+  Uri
+}
 import weco.akka.fixtures.Akka
 import weco.api.requests.services.SierraRequestsService
 import weco.fixtures.{RandomGenerators, TestWith}
@@ -13,7 +20,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SierraServiceFixture extends HttpFixtures with Akka with RandomGenerators {
+trait SierraServiceFixture
+    extends HttpFixtures
+    with Akka
+    with RandomGenerators {
   def createItemRequest(itemNumber: SierraItemNumber): HttpRequest = {
     val fieldList = SierraSource.requiredItemFields.mkString(",")
 
@@ -53,8 +63,8 @@ trait SierraServiceFixture extends HttpFixtures with Akka with RandomGenerators 
            |  "recordType": "i",
            |  "recordNumber": ${item.withoutCheckDigit},
            |  "note": "Requested for: ${DateTimeFormatter
-          .ofPattern("dd-MM-yyyy")
-          .format(pickupDate)}",
+             .ofPattern("dd-MM-yyyy")
+             .format(pickupDate)}",
            |  "pickupLocation": "unspecified"
            |}
            |""".stripMargin
@@ -101,8 +111,8 @@ trait SierraServiceFixture extends HttpFixtures with Akka with RandomGenerators 
            |  "start": 0,
            |  "entries": [
            |    ${items
-          .map(it => createListHoldEntry(patron, it))
-          .mkString(",")}
+             .map(it => createListHoldEntry(patron, it))
+             .mkString(",")}
            |  ]
            |}
            |""".stripMargin
