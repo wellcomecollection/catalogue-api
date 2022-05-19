@@ -2,7 +2,7 @@ package weco.api.items.services
 
 import grizzled.slf4j.Logging
 import weco.sierra.http.SierraSource
-import weco.api.stacks.models.SierraItemIdentifier
+import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayPhysicalLocation
@@ -25,7 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraItemUpdater(sierraSource: SierraSource)(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
-    with Logging {
+    with Logging
+    with DisplayItemOps {
 
   import weco.api.stacks.models.SierraItemDataOps._
 
@@ -83,7 +84,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     } toMap
 
     val staleItems = itemMap
-      .filter { case (_, item) => isStale(item) }
+      .filter { case (_, item) => item.isStale }
 
     debug(
       s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
@@ -128,47 +129,4 @@ class SierraItemUpdater(sierraSource: SierraSource)(
             .toMap
         } yield accessConditionsMap ++ missingItemsMap
     }
-
-  /** There are two cases we care about where the data in the catalogue API
-    * might be stale:
-    *
-    *   1) An item was on request for a user, but has been returned to the stores.
-    *      Another user could now request the item, but the catalogue API will
-    *      tell you it's temporarily unavailable.
-    *
-    *   2) An item is in the closed stores, and been requested by a user.
-    *      Another user can no longer request the item, but the catalogue API will
-    *      tell you it's available.
-    *
-    * In all other cases, we can use the access conditions in the catalogue API.
-    * There may be a small delay in updating an item's information, but this is
-    * relatively tolerable, and allows us to simplify the logic in this API for
-    * determining item status.
-    *
-    */
-  private def isStale(item: DisplayItem): Boolean = {
-
-    // In practice we know an item only has one access condition
-    val accessCondition = item.locations
-      .collect { case loc: DisplayPhysicalLocation => loc }
-      .flatMap(_.accessConditions)
-      .headOption
-
-    val statusId = accessCondition
-      .flatMap(_.status)
-      .map(_.id)
-
-    val methodId = accessCondition.map(_.method.id)
-
-    val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
-
-    val isOnlineRequest = methodId.contains("online-request")
-    val hasRequestableStatus = statusId.contains("open") || statusId.contains(
-      "open-with-advisory"
-    ) || statusId.contains("restricted") || statusId.isEmpty
-
-    val isRequestable = isOnlineRequest && hasRequestableStatus
-
-    isTemporarilyUnavailable || isRequestable
-  }
 }

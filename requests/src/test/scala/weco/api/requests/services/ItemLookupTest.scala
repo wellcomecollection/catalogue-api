@@ -10,6 +10,7 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
 import weco.http.client.{HttpGet, MemoryHttpClient}
@@ -56,7 +57,15 @@ class ItemLookupTest
             lookup.byCanonicalId(item.id)
 
           whenReady(future) {
-            _ shouldBe Right(DisplayIdentifier(item.sourceIdentifier))
+            _ shouldBe Right(
+              DisplayItem(
+                id = Some(item.id.underlying),
+                identifiers = (item.sourceIdentifier +: item.otherIdentifiers)
+                  .map(DisplayIdentifier(_))
+                  .toList,
+                locations = List()
+              )
+            )
           }
         }
       }
