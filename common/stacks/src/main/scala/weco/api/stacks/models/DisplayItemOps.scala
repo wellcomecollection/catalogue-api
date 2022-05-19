@@ -1,10 +1,7 @@
 package weco.api.stacks.models
 
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{
-  DisplayAccessCondition,
-  DisplayPhysicalLocation
-}
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
 import weco.catalogue.display_model.work.DisplayItem
 
 trait DisplayItemOps {
@@ -12,6 +9,16 @@ trait DisplayItemOps {
 
     def sourceIdentifier: Option[DisplayIdentifier] =
       item.identifiers.headOption
+
+    /** Get the physical location type for an item.
+      *
+      * In practice we know an item will only have at most one physical location.
+      */
+    def physicalLocationType: Option[DisplayLocationType] =
+      item.locations
+        .collect { case loc: DisplayPhysicalLocation => loc }
+        .map(_.locationType)
+        .headOption
 
     /** Get the physical access condition for an item.
       *

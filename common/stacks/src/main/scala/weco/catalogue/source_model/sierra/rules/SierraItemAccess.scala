@@ -8,13 +8,8 @@
 package weco.catalogue.source_model.sierra.rules
 
 import grizzled.slf4j.Logging
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-  LocationType,
-  PhysicalLocationType
-}
+import weco.catalogue.display_model.locations.DisplayLocationType
+import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
 import weco.catalogue.source_model.sierra.source.{OpacMsg, Status}
 import weco.sierra.models.SierraQueryOps
 import weco.sierra.models.data.SierraItemData
@@ -40,7 +35,7 @@ import scala.util.Try
   */
 object SierraItemAccess extends SierraQueryOps with Logging {
   def apply(
-    location: Option[PhysicalLocationType],
+    location: Option[DisplayLocationType],
     itemData: SierraItemData
   ): (AccessCondition, Option[String]) = {
     val accessCondition = createAccessCondition(
@@ -48,7 +43,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       status = itemData.status,
       opacmsg = itemData.opacmsg,
       rulesForRequestingResult = SierraRulesForRequesting(itemData),
-      location = location,
+      locationTypeId = location.map(_.id),
       itemData = itemData
     )
 
@@ -79,10 +74,10 @@ object SierraItemAccess extends SierraQueryOps with Logging {
     status: Option[String],
     opacmsg: Option[String],
     rulesForRequestingResult: RulesForRequestingResult,
-    location: Option[PhysicalLocationType],
+    locationTypeId: Option[String],
     itemData: SierraItemData
   ): AccessCondition =
-    (holdCount, status, opacmsg, rulesForRequestingResult, location) match {
+    (holdCount, status, opacmsg, rulesForRequestingResult, locationTypeId) match {
 
       // Items in the closed stores that are requestable get the "Online request" condition.
       //
@@ -92,7 +87,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.Available),
           Some(OpacMsg.OnlineRequest),
           Requestable,
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         AccessCondition(
           method = AccessMethod.OnlineRequest,
           status = AccessStatus.Open
@@ -115,7 +110,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.Available),
           Some(OpacMsg.OpenShelves),
           NotRequestable.OnOpenShelves(_),
-          Some(LocationType.OpenShelves)) =>
+          Some("open-shelves")) =>
         AccessCondition(method = AccessMethod.OpenShelves)
 
       // There are some items that are labelled "bound in above" or "contained in above".
@@ -135,7 +130,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.Available),
           Some(OpacMsg.ManualRequest),
           NotRequestable.NeedsManualRequest(_),
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         // Some items like this have a display note that explains how the manual request
         // works, e.g.
         //
@@ -165,8 +160,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(OpacMsg.Unavailable),
           NotRequestable.ItemClosed(_),
           locationType)
-          if locationType.isEmpty || locationType.contains(
-            LocationType.ClosedStores) =>
+          if locationType.isEmpty || locationType.contains("closed-stores") =>
         AccessCondition(
           method = AccessMethod.NotRequestable,
           status = AccessStatus.Closed)
@@ -210,7 +204,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.Available),
           Some(OpacMsg.Restricted),
           Requestable,
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         AccessCondition(
           method = AccessMethod.OnlineRequest,
           status = AccessStatus.Restricted)
@@ -223,7 +217,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.PermissionRequired),
           Some(OpacMsg.ByAppointment),
           NotRequestable.NoPublicMessage(_),
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         AccessCondition(
           method = AccessMethod.ManualRequest,
           status = AccessStatus.ByAppointment)
@@ -233,7 +227,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           Some(Status.PermissionRequired),
           Some(OpacMsg.DonorPermission),
           _: NotRequestable,
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         AccessCondition(
           method = AccessMethod.ManualRequest,
           status = AccessStatus.PermissionRequired)
@@ -277,7 +271,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       // It is possible for an item to have a non-zero hold count but still be available
       // for requesting, e.g. some of our long-lived test holds didn't get cleared properly.
       // If an item seems to be stuck on a non-zero hold count, ask somebody to check Sierra.
-      case (Some(holdCount), _, _, _, Some(LocationType.ClosedStores))
+      case (Some(holdCount), _, _, _, Some("closed-stores"))
           if holdCount > 0 =>
         AccessCondition(
           method = AccessMethod.NotRequestable,
@@ -291,7 +285,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           _,
           _,
           NotRequestable.InUseByAnotherReader(_),
-          Some(LocationType.ClosedStores)) =>
+          Some("closed-stores")) =>
         AccessCondition(
           method = AccessMethod.NotRequestable,
           status = Some(AccessStatus.TemporarilyUnavailable),
@@ -307,7 +301,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
           _,
           _,
           NotRequestable.InUseByAnotherReader(_),
-          Some(LocationType.OpenShelves)) =>
+          Some("open-shelves")) =>
         val noteText = itemData.dueDate match {
           case Some(d) =>
             s"This item is temporarily unavailable. It is due for return on ${d.format(displayFormat)}."
@@ -322,7 +316,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
 
       // When an item is on display in an exhibition, it is not available for request.
       // In this case, the Reserves Note(s) should give some more detail.
-      case (_, _, _, _, Some(LocationType.OnExhibition))
+      case (_, _, _, _, Some("on-exhibition"))
           if itemData.varFields.withFieldTag("r").nonEmpty =>
         // Reserves Notes normally contain text at either end that is not
         // relevant for end users wishing to understand how to access the item.

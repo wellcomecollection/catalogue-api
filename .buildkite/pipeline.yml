@@ -14,11 +14,6 @@ steps:
     agents:
       queue: nano
 
-  - command: .buildkite/scripts/check_vendored_code.py
-    label: "check vendored code"
-    agents:
-      queue: nano
-
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
     agents:
