@@ -59,14 +59,13 @@ class RequestsService(
   ): Future[List[(SierraHold, RequestedItemWithWork)]] =
     for {
       holdsMap <- sierraService.getHolds(patronNumber)
-
       itemLookupResults <- itemLookup.bySourceIdentifier(holdsMap.keys.toSeq)
 
-      itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
-        case (Right(item), _) => Some(item)
+      itemsFound = itemLookupResults.zip(holdsMap.keys).collect {
+        case (Right(item), _) => item
         case (Left(itemLookupError: ItemLookupError), srcId) =>
           error(s"Error looking up item $srcId.", itemLookupError.err)
-          None
+          throw itemLookupError.err
       }
 
       itemHoldTuples = itemsFound.flatMap { itemLookup =>
