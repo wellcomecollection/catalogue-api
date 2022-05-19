@@ -59,8 +59,8 @@ class RequestsService(
       holdsMap <- sierraService.getHolds(patronNumber)
       itemLookupResults <- itemLookup.bySourceIdentifier(holdsMap.keys.toSeq)
 
-      itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
-        case (Right(item), _) => Some(item)
+      itemsFound = itemLookupResults.zip(holdsMap.keys).collect {
+        case (Right(item), _) => item
         case (Left(itemLookupError: ItemLookupError), srcId) =>
           error(s"Error looking up item $srcId.", itemLookupError.err)
           throw itemLookupError.err
