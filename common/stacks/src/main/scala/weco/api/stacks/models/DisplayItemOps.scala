@@ -1,10 +1,14 @@
 package weco.api.stacks.models
 
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations.DisplayPhysicalLocation
 import weco.catalogue.display_model.work.DisplayItem
 
 trait DisplayItemOps {
   implicit class DisplayItemOps(item: DisplayItem) {
+
+    def sourceIdentifier: Option[DisplayIdentifier] =
+      item.identifiers.headOption
 
     /** There are two cases we care about where the data in the catalogue API
       * might be stale:

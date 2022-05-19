@@ -6,8 +6,7 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
-import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.api.stacks.models.{CatalogueWork, DisplayItemOps}
 import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
@@ -32,18 +31,15 @@ class ItemLookup(client: HttpClient with HttpGet)(
   implicit
   as: ActorSystem,
   ec: ExecutionContext
-) extends Logging {
+) extends Logging with DisplayItemOps {
 
   implicit val um: Unmarshaller[HttpEntity, CatalogueWorkResults] =
     CirceMarshalling.fromDecoder[CatalogueWorkResults]
 
-  /** Returns the SourceIdentifier of the item that corresponds to this
-    * canonical ID.
-    *
-    */
+  /** Returns the item for this canonical ID. */
   def byCanonicalId(
     itemId: CanonicalId
-  ): Future[Either[ItemLookupError, DisplayIdentifier]] = {
+  ): Future[Either[ItemLookupError, DisplayItem]] = {
     val path = Path("works")
     val params = Map(
       "include" -> "identifiers,items",
@@ -60,10 +56,10 @@ class ItemLookup(client: HttpClient with HttpGet)(
           Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
             val items = results.results.flatMap(_.items)
 
-            items
-              .find(_.id.contains(itemId.underlying))
-              .flatMap(item => item.identifiers.headOption) match {
-              case Some(identifier) => Right(identifier)
+            val matchingItem = items.find(_.id.contains(itemId.underlying))
+
+            matchingItem match {
+              case Some(item) => Right(item)
               case None =>
                 Left(
                   ItemNotFoundError(
