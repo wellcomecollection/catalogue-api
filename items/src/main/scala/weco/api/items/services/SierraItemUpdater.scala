@@ -55,19 +55,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     item.copy(locations = updatedItemLocations)
   }
 
-  private def updateAccessConditions(
-    itemMap: Map[SierraItemNumber, DisplayItem],
-    accessConditionMap: Map[SierraItemNumber, AccessCondition]
-  ): Seq[DisplayItem] =
-    itemMap.map {
-      case (itemNumber, item) =>
-        accessConditionMap
-          .get(itemNumber)
-          .map(updateAccessCondition(item, _))
-          .getOrElse(item)
-    } toSeq
-
-  def getAccessConditions(
+  private def getAccessConditions(
     itemNumbers: Seq[SierraItemNumber]
   ): Future[Map[SierraItemNumber, AccessCondition]] =
     for {
@@ -88,26 +76,91 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     } yield accessConditions
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
+
+    // item number -> item
     val itemMap = items.map { item =>
       SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
     } toMap
 
-    val accessConditions = for {
-      accessConditionsMap <- getAccessConditions(itemMap.keys.toSeq)
+    val staleItems = itemMap
+      .filter { case (_, item) => isStale(item) }
 
-      // It is possible for there to be a situation where Sierra does not know about
-      // an Item that is in the Catalogue API, but this situation should be very rare.
-      // For example an item has been deleted but the change has not yet propagated.
-      // In that case it gets method "NotRequestable".
-      missingItemsKeys = itemMap.filterNot {
-        case (sierraItemNumber, _) =>
-          accessConditionsMap.keySet.contains(sierraItemNumber)
-      } keySet
+    debug(s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}")
 
-      missingItemsMap = missingItemsKeys
-        .map(_ -> AccessCondition(method = AccessMethod.NotRequestable)) toMap
-    } yield accessConditionsMap ++ missingItemsMap
+    for {
+      accessConditions <- getUpdatedAccessConditions(staleItems.keys.toSeq)
 
-    accessConditions.map(updateAccessConditions(itemMap, _))
+      updatedItems = itemMap.map { case (sierraId, item) =>
+        accessConditions.get(sierraId) match {
+          case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+          case None            => item
+        }
+      }
+    } yield updatedItems.toSeq
+  }
+
+  /** Given a series of item IDs, get the most up-to-date access condition
+    * information from Sierra.
+    *
+    */
+  private def getUpdatedAccessConditions(itemIds: Seq[SierraItemNumber]): Future[Map[SierraItemNumber, AccessCondition]] =
+    itemIds match {
+      case Nil => Future.successful(Map())
+
+      case _ => for {
+        accessConditionsMap <- getAccessConditions(itemIds)
+
+        // It is possible for there to be a situation where Sierra does not know about
+        // an Item that is in the Catalogue API, but this situation should be very rare.
+        // For example an item has been deleted but the change has not yet propagated.
+        // In that case it gets method "NotRequestable".
+        missingItemIds = itemIds
+          .filterNot { accessConditionsMap.keySet.contains(_) }
+
+        missingItemsMap = missingItemIds
+          .map(_ -> AccessCondition(method = AccessMethod.NotRequestable))
+          .toMap
+      } yield accessConditionsMap ++ missingItemsMap
+    }
+
+  /** There are two cases we care about where the data in the catalogue API
+    * might be stale:
+    *
+    *   1) An item was on request for a user, but has been returned to the stores.
+    *      Another user could now request the item, but the catalogue API will
+    *      tell you it's temporarily unavailable.
+    *
+    *   2) An item is in the closed stores, and been requested by a user.
+    *      Another user can no longer request the item, but the catalogue API will
+    *      tell you it's available.
+    *
+    * In all other cases, we can use the access conditions in the catalogue API.
+    * There may be a small delay in updating an item's information, but this is
+    * relatively tolerable, and allows us to simplify the logic in this API for
+    * determining item status.
+    *
+    */
+  private def isStale(item: DisplayItem): Boolean = {
+
+    // In practice we know an item only has one access condition
+    val accessCondition = item.locations
+      .collect { case loc: DisplayPhysicalLocation => loc }
+      .flatMap(_.accessConditions)
+      .headOption
+
+    val statusId = accessCondition
+      .flatMap(_.status)
+      .map(_.id)
+
+    val methodId = accessCondition.map(_.method.id)
+
+    val isTemporarilyUnavailable = statusId.contains("temporarily-unavailable")
+
+    val isOnlineRequest = methodId.contains("online-request")
+    val hasRequestableStatus = statusId.contains("open") || statusId.contains("open-with-advisory") || statusId.contains("restricted") || statusId.isEmpty
+
+    val isRequestable = isOnlineRequest && hasRequestableStatus
+
+    isTemporarilyUnavailable || isRequestable
   }
 }
