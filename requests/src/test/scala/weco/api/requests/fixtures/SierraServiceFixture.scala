@@ -63,7 +63,7 @@ trait SierraServiceFixture
            |  "recordType": "i",
            |  "recordNumber": ${item.withoutCheckDigit},
            |  "note": "Requested for: ${DateTimeFormatter
-             .ofPattern("dd-MM-yyyy")
+             .ofPattern("yyyy-MM-dd")
              .format(pickupDate)}",
            |  "pickupLocation": "unspecified"
            |}
