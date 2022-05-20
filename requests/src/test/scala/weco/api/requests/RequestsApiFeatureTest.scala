@@ -382,8 +382,8 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
-            createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit),
-            createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)
+            itemNumber1.withCheckDigit,
+            itemNumber2.withCheckDigit
           ),
           HttpResponse(
             entity = HttpEntity(
