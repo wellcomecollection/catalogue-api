@@ -180,8 +180,8 @@ object WorksRequestBuilder
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
           field = "data.items.locations.accessConditions.status.type",
-          includes = includes.map(_.name),
-          excludes = excludes.map(_.name)
+          includes = includes,
+          excludes = excludes
         )
       case ItemsFilter(itemIds) =>
         should(

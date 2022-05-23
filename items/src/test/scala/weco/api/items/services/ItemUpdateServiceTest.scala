@@ -8,7 +8,6 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.{
   CatalogueAccessMethod,
-  CatalogueAccessStatus,
   CatalogueWork
 }
 import weco.catalogue.display_model.identifiers.{

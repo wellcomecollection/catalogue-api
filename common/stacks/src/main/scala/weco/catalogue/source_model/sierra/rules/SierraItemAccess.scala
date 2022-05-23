@@ -1,8 +1,8 @@
 package weco.catalogue.source_model.sierra.rules
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus, CatalogueLocationType}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueLocationType}
+import weco.catalogue.display_model.locations.{CatalogueAccessStatus, DisplayAccessCondition, DisplayLocationType}
 import weco.catalogue.source_model.sierra.source.{OpacMsg, Status}
 import weco.sierra.models.SierraQueryOps
 import weco.sierra.models.data.SierraItemData

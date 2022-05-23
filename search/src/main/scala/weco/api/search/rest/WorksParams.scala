@@ -4,7 +4,7 @@ import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
 import weco.api.search.models.request._
-import weco.catalogue.internal_model.locations.AccessStatus
+import weco.catalogue.display_model.locations.CatalogueAccessStatus
 
 import java.time.LocalDate
 
@@ -279,17 +279,10 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(AvailabilitiesFilter)
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
-    decodeIncludesAndExcludes(
-      "open" -> AccessStatus.Open,
-      "open-with-advisory" -> AccessStatus.OpenWithAdvisory,
-      "restricted" -> AccessStatus.Restricted,
-      "closed" -> AccessStatus.Closed,
-      "licensed-resources" -> AccessStatus.LicensedResources(),
-      "unavailable" -> AccessStatus.Unavailable,
-      "permission-required" -> AccessStatus.PermissionRequired
-    ).emap {
-      case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
-    }
+    decodeIncludesAndExcludes(CatalogueAccessStatus.indexValues)
+      .emap {
+        case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
+      }
 
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
     decodeOneOfCommaSeparated(

@@ -2,8 +2,8 @@ package weco.catalogue.source_model.sierra.rules
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
+import weco.api.stacks.models.CatalogueAccessMethod
+import weco.catalogue.display_model.locations.{CatalogueAccessStatus, DisplayAccessCondition, DisplayLocationType}
 import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.FixedField
 

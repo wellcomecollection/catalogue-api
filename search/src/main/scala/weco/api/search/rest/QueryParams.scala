@@ -112,10 +112,9 @@ trait QueryParamsUtils extends Directives {
   }
 
   def decodeIncludesAndExcludes[T](
-    values: (String, T)*
+    mapping: Map[String, T]
   ): Decoder[(List[T], List[T])] = {
-    val mapping = values.toMap
-    val validStrs = values.map(_._1).toList
+    val validStrs = mapping.keys.toList
     decodeCommaSeparated
       .emap { strs =>
         val (excludeStrs, includeStrs) = strs.partition(_.startsWith("!"));
@@ -135,7 +134,7 @@ trait QueryParamsUtils extends Directives {
   def stringListFilter[T](applyFilter: Seq[String] => T): Decoder[T] =
     decodeCommaSeparated.emap(strs => Right(applyFilter(strs)))
 
-  def invalidValuesMsg(
+  private def invalidValuesMsg(
     values: List[String],
     validValues: List[String]
   ): String = {
@@ -159,7 +158,7 @@ trait QueryParamsUtils extends Directives {
           .toDirective[Tuple1[T]]
     }
 
-  def mapStringsToValues[T](
+  private def mapStringsToValues[T](
     strs: List[String],
     mapping: Map[String, T]
   ): Either[List[String], List[T]] = {
