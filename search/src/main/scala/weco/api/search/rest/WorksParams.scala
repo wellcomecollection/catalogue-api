@@ -1,19 +1,12 @@
 package weco.api.search.rest
 
-import java.time.LocalDate
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ProductionDateSortRequest,
-  SortRequest,
-  SortingOrder,
-  WorkAggregationRequest,
-  WorkInclude,
-  WorksIncludes
-}
+import weco.api.search.models.request._
 import weco.catalogue.internal_model.locations.AccessStatus
-import weco.catalogue.internal_model.work.WorkType
+
+import java.time.LocalDate
 
 case class SingleWorkParams(
   include: Option[WorksIncludes]
@@ -144,8 +137,8 @@ case class MultipleWorksParams(
 }
 
 object MultipleWorksParams extends QueryParamsUtils {
-  import SingleWorkParams.includesDecoder
   import CommonDecoders._
+  import SingleWorkParams.includesDecoder
 
   // This is a custom akka-http directive which extracts MultipleWorksParams
   // data from the query string, returning an invalid response when any given
@@ -256,11 +249,7 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(FormatFilter)
 
   implicit val workTypeFilter: Decoder[WorkTypeFilter] =
-    decodeOneOfCommaSeparated(
-      "Collection" -> WorkType.Collection,
-      "Series" -> WorkType.Series,
-      "Section" -> WorkType.Section
-    ).emap(values => Right(WorkTypeFilter(values)))
+    stringListFilter(WorkTypeFilter)
 
   implicit val itemLocationTypeIdFilter: Decoder[ItemLocationTypeIdFilter] =
     stringListFilter(ItemLocationTypeIdFilter)
