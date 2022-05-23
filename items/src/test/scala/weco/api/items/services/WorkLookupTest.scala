@@ -8,8 +8,16 @@ import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
-import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
-import weco.catalogue.display_model.locations.{CatalogueAccessStatus, DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
+import weco.catalogue.display_model.locations.{
+  CatalogueAccessStatus,
+  DisplayAccessCondition,
+  DisplayLocationType,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.fixtures.TestWith

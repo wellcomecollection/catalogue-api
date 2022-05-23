@@ -1,9 +1,17 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.{CatalogueAccessMethod, DisplayItemOps, SierraItemIdentifier}
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  DisplayItemOps,
+  SierraItemIdentifier
+}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError

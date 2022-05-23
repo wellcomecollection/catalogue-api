@@ -281,7 +281,8 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
     decodeIncludesAndExcludes(CatalogueAccessStatus.indexValues)
       .emap {
-        case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
+        case (includes, excludes) =>
+          Right(AccessStatusFilter(includes, excludes))
       }
 
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
