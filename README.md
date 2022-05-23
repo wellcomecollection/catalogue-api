@@ -16,7 +16,7 @@ These APIs are freely available, and allow anybody to use our data.
 
 -	The **search API** is for running ad hoc searches, and it powers the collections search at [wellcomecollection.org/collections][search].
 	We have [documentation][search_docs] for external developers who want to use this API.
-	
+
 	To help us develop the search API, we have a tool called **rank**.
 	This helps us measure the quality of our search ranking, by checking that certain queries return known-relevant results.
 
@@ -35,6 +35,8 @@ These APIs are used on the Wellcome Collection website, but they require authent
 -	Library members can [request items from the library stores][requests].
 	The **requests API** allows them to manage their requests on the Wellcome Collection website: either placing requests, or checking the status of their outstanding requests.
 	It forward requests to our library management systems, so that library staff know which items to retrieve from the stores.
+
+See [notes on the requesting flow](docs/requesting_flow.md) for more information.
 
 [search]: https://wellcomecollection.org/collections
 [search_docs]: https://developers.wellcomecollection.org/catalogue
