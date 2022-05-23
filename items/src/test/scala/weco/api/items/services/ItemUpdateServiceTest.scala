@@ -13,7 +13,6 @@ import weco.catalogue.display_model.identifiers.{
 }
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.fixtures.{RandomGenerators, TestWith}
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -158,8 +157,8 @@ class ItemUpdateServiceTest
   class DummyItemUpdater(
     itemTransform: Seq[DisplayItem] => Seq[DisplayItem] = identity
   ) extends ItemUpdater {
-    override val identifierType: IdentifierType =
-      IdentifierType.SierraSystemNumber
+    override val identifierType: DisplayIdentifierType =
+      DisplayIdentifierType.SierraSystemNumber
 
     override def updateItems(
       items: Seq[DisplayItem]
