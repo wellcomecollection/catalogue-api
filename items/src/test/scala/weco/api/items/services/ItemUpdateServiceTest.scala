@@ -6,17 +6,12 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.{
-  CatalogueAccessMethod,
-  CatalogueAccessStatus,
-  CatalogueWork
-}
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus, CatalogueWork}
+import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdentifierType
-import weco.fixtures.TestWith
+import weco.fixtures.{RandomGenerators, TestWith}
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -29,10 +24,10 @@ class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
-    with IdentifiersGenerators
     with ItemsApiGenerators
-    with SierraIdentifierGenerators
+    with RandomGenerators
     with SierraSourceFixture
+    with SierraIdentifierGenerators
     with IntegrationPatience {
 
   def withSierraItemUpdater[R](
@@ -176,23 +171,12 @@ class ItemUpdateServiceTest
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
-    val orderedItems = List(
+    val orderedItems = (1 to 3).map(_ =>
       DisplayItem(
         id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+        identifiers = List(createSierraSystemSourceIdentifier)
       )
-    )
+    ).toList
 
     val reversedItems = orderedItems.reverse
 
@@ -230,23 +214,12 @@ class ItemUpdateServiceTest
       id = randomCanonicalId,
       title = None,
       identifiers = Nil,
-      items = List(
+      items = (1 to 3).map(_ =>
         DisplayItem(
           id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+          identifiers = List(createSierraSystemSourceIdentifier)
         )
-      )
+      ).toList
     )
 
     withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
@@ -353,17 +326,27 @@ class ItemUpdateServiceTest
         )
       )
 
-    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
-      value = sierraItemNumber.withCheckDigit,
-      ontologyType = "Item"
+    val itemSourceIdentifier = DisplayIdentifier(
+      identifierType = DisplayIdentifierType(
+        id = "sierra-system-number",
+        label = "Sierra system number"
+      ),
+      value = sierraItemNumber.withCheckDigit
     )
 
     DisplayItem(
       id = Some(randomAlphanumeric(length = 8)),
-      identifiers = List(
-        DisplayIdentifier(itemSourceIdentifier)
-      ),
+      identifiers = List(itemSourceIdentifier),
       locations = List(physicalItemLocation)
     )
   }
+
+  def createSierraSystemSourceIdentifier: DisplayIdentifier =
+    DisplayIdentifier(
+      identifierType = DisplayIdentifierType(
+        id = "sierra-system-number",
+        label = "Sierra system number"
+      ),
+      value = randomAlphanumeric()
+    )
 }

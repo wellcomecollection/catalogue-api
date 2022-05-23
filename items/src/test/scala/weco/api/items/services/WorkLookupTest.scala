@@ -12,7 +12,10 @@ import weco.api.stacks.models.{
   CatalogueAccessStatus,
   CatalogueWork
 }
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayLocationType,
@@ -20,10 +23,6 @@ import weco.catalogue.display_model.locations.{
 }
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.{
-  IdentifierType,
-  SourceIdentifier
-}
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -53,11 +52,15 @@ class WorkLookupTest
   it("returns a work with matching ID") {
     val canonicalId = createCanonicalId
     val title = "a test item"
-    val identifierType = IdentifierType.MiroImageNumber
+    val workIdentifierTypeId = "miro-image-number"
+    val workIdentifierTypeLabel = "Miro image number"
     val sourceIdentifier = randomAlphanumeric()
     val itemId = randomAlphanumeric()
     val itemNumber = "i52945510"
     val locationLabel = "where the item is"
+
+    val itemIdentifierTypeId = "sierra-system-number"
+    val itemIdentifierTypeLabel = "Sierra system number"
 
     // Note: this is deliberately a hard-coded JSON string rather than the
     // helpers we use in other tests so we can be sure we really can decode
@@ -76,8 +79,8 @@ class WorkLookupTest
               "identifiers": [
                 {
                   "identifierType": {
-                    "id": "${identifierType.id}",
-                    "label": "${identifierType.label}",
+                    "id": "$workIdentifierTypeId",
+                    "label": "$workIdentifierTypeLabel",
                     "type": "IdentifierType"
                   },
                   "value": "$sourceIdentifier",
@@ -90,8 +93,8 @@ class WorkLookupTest
                   "identifiers": [
                     {
                       "identifierType": {
-                        "id": "sierra-system-number",
-                        "label": "Sierra system number",
+                        "id": "$itemIdentifierTypeId",
+                        "label": "$itemIdentifierTypeLabel",
                         "type": "IdentifierType"
                       },
                       "value": "$itemNumber",
@@ -152,11 +155,11 @@ class WorkLookupTest
           title = Some(title),
           identifiers = List(
             DisplayIdentifier(
-              sourceIdentifier = SourceIdentifier(
-                identifierType = identifierType,
-                value = sourceIdentifier,
-                ontologyType = "Work"
-              )
+              identifierType = DisplayIdentifierType(
+                id = workIdentifierTypeId,
+                label = workIdentifierTypeLabel
+              ),
+              value = sourceIdentifier
             )
           ),
           items = List(
@@ -164,11 +167,11 @@ class WorkLookupTest
               id = Some(itemId),
               identifiers = List(
                 DisplayIdentifier(
-                  sourceIdentifier = SourceIdentifier(
-                    identifierType = IdentifierType.SierraSystemNumber,
-                    value = itemNumber,
-                    ontologyType = "Item"
-                  )
+                  identifierType = DisplayIdentifierType(
+                    id = itemIdentifierTypeId,
+                    label = itemIdentifierTypeLabel
+                  ),
+                  value = itemNumber
                 )
               ),
               locations = List(

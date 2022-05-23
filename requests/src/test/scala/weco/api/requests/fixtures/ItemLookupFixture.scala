@@ -3,7 +3,8 @@ package weco.api.requests.fixtures
 import akka.http.scaladsl.model._
 import weco.akka.fixtures.Akka
 import weco.api.requests.services.ItemLookup
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
@@ -36,6 +37,6 @@ trait ItemLookupFixture extends Akka with HttpFixtures {
       )
     )
 
-  def catalogueSourceIdsRequest(ids: SourceIdentifier*): HttpRequest =
+  def catalogueSourceIdsRequest(ids: DisplayIdentifier*): HttpRequest =
     catalogueItemsRequest(ids.map(_.value): _*)
 }

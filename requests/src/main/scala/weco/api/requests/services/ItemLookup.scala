@@ -8,8 +8,9 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.RequestedItemWithWork
 import weco.api.stacks.models.{CatalogueWork, DisplayItemOps}
 import weco.catalogue.display_model.Implicits._
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
@@ -102,7 +103,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
     *
     */
   def bySourceIdentifier(
-    itemIdentifiers: Seq[SourceIdentifier]
+    itemIdentifiers: Seq[DisplayIdentifier]
   ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] =
     itemIdentifiers match {
       // If there are no identifiers, return the result immediately.  This is quite
@@ -113,7 +114,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
     }
 
   private def searchBySourceIdentifier(
-    itemIdentifiers: Seq[SourceIdentifier]
+    itemIdentifiers: Seq[DisplayIdentifier]
   ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] = {
     require(itemIdentifiers.nonEmpty)
 

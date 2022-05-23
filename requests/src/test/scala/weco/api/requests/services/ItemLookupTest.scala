@@ -9,10 +9,10 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.{CanonicalId, SourceIdentifier}
+import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.fixtures.RandomGenerators
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,10 +22,10 @@ class ItemLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
-    with IdentifiersGenerators
     with ScalaFutures
     with IntegrationPatience
-    with ItemLookupFixture {
+    with ItemLookupFixture
+    with RandomGenerators {
 
   describe("byCanonicalId") {
     it("finds a work with the same item ID") {
@@ -61,7 +61,6 @@ class ItemLookupTest
               DisplayItem(
                 id = Some(item.id.underlying),
                 identifiers = (item.sourceIdentifier +: item.otherIdentifiers)
-                  .map(DisplayIdentifier(_))
                   .toList,
                 locations = List()
               )
@@ -401,11 +400,23 @@ class ItemLookupTest
     }
   }
 
+  private def createSourceIdentifier: DisplayIdentifier =
+    DisplayIdentifier(
+      identifierType = DisplayIdentifierType(
+        id = "miro-image-number",
+        label = "Miro image number"
+      ),
+    value = randomAlphanumeric(length = 10),
+    )
+
+  private def createCanonicalId: CanonicalId =
+    CanonicalId(randomAlphanumeric(length = 8))
+
   sealed trait ItemStub
   case class IdentifiedItemStub(
     id: CanonicalId = createCanonicalId,
-    sourceIdentifier: SourceIdentifier = createSourceIdentifier,
-    otherIdentifiers: Seq[SourceIdentifier] = List()
+    sourceIdentifier: DisplayIdentifier = createSourceIdentifier,
+    otherIdentifiers: Seq[DisplayIdentifier] = List()
   ) extends ItemStub
   case class UnidentifiedItemStub() extends ItemStub
 

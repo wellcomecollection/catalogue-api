@@ -1,10 +1,6 @@
 package weco.api.stacks.models
 
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.internal_model.identifiers.{
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
 import weco.sierra.models.identifiers.SierraItemNumber
 
 import java.net.URI
@@ -22,19 +18,19 @@ object SierraItemIdentifier {
         throw new Exception("Failed to create SierraItemNumber", e)
     }
 
-  def toSourceIdentifier(itemNumber: SierraItemNumber): SourceIdentifier =
-    SourceIdentifier(
-      identifierType = IdentifierType.SierraSystemNumber,
-      value = itemNumber.withCheckDigit,
-      ontologyType = "Item"
+  def toSourceIdentifier(itemNumber: SierraItemNumber): DisplayIdentifier =
+    DisplayIdentifier(
+      identifierType = DisplayIdentifierType(
+        id = "sierra-system-number",
+        label = "Sierra system number"
+      ),
+      value = itemNumber.withCheckDigit
     )
 
   def fromSourceIdentifier(
     sourceIdentifier: DisplayIdentifier
   ): SierraItemNumber = {
-    require(
-      sourceIdentifier.identifierType.id == IdentifierType.SierraSystemNumber.id
-    )
+    require(sourceIdentifier.identifierType.id == "sierra-system-number")
 
     // We expect the SourceIdentifier to have a Sierra ID with a prefix
     // and a check digit, e.g. i18234495

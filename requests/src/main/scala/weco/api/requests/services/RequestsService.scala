@@ -1,20 +1,12 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
-import weco.api.requests.models.{
-  HoldAccepted,
-  HoldRejected,
-  RequestedItemWithWork
-}
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
+import weco.api.requests.models.{HoldAccepted, HoldRejected, RequestedItemWithWork}
 import weco.api.stacks.models.DisplayItemOps
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdentifierType,
-  SourceIdentifier
-}
+import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -90,13 +82,7 @@ class RequestsService(
 
         val itemId = identifiers.head
 
-        val sierraId = SourceIdentifier(
-          identifierType = IdentifierType(itemId.identifierType.id),
-          value = itemId.value,
-          ontologyType = "Item"
-        )
-
-        holdsMap.get(sierraId).map { hold =>
+        holdsMap.get(itemId).map { hold =>
           (hold, itemLookup)
         }
       }
