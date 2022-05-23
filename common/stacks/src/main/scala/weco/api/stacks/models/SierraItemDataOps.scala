@@ -7,7 +7,9 @@ import weco.sierra.models.data.SierraItemData
 
 object SierraItemDataOps {
   implicit class ItemDataOps(itemData: SierraItemData) {
-    def accessCondition(location: Option[DisplayLocationType]): AccessCondition = {
+    def accessCondition(
+      location: Option[DisplayLocationType]
+    ): AccessCondition = {
       val (accessCondition, _) = SierraItemAccess(
         location = location,
         itemData = itemData

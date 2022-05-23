@@ -3,7 +3,11 @@ package weco.api.items.services
 import grizzled.slf4j.Logging
 import weco.sierra.http.SierraSource
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
@@ -54,7 +58,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
   }
 
   private def getAccessConditions(
-                                   existingItems: Map[SierraItemNumber, Option[DisplayLocationType]]
+    existingItems: Map[SierraItemNumber, Option[DisplayLocationType]]
   ): Future[Map[SierraItemNumber, AccessCondition]] =
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)

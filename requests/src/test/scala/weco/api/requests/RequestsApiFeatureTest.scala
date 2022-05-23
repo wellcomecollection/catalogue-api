@@ -381,7 +381,10 @@ class RequestsApiFeatureTest
 
       val catalogueResponses = Seq(
         (
-          catalogueItemsRequest(itemNumber1.withCheckDigit, itemNumber2.withCheckDigit),
+          catalogueItemsRequest(
+            itemNumber1.withCheckDigit,
+            itemNumber2.withCheckDigit
+          ),
           HttpResponse(
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
