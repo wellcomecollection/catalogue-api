@@ -2,7 +2,11 @@ package weco.api.requests.services
 
 import grizzled.slf4j.Logging
 import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
-import weco.api.requests.models.{HoldAccepted, HoldRejected, RequestedItemWithWork}
+import weco.api.requests.models.{
+  HoldAccepted,
+  HoldRejected,
+  RequestedItemWithWork
+}
 import weco.api.stacks.models.DisplayItemOps
 import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.identifiers.DisplayIdentifier

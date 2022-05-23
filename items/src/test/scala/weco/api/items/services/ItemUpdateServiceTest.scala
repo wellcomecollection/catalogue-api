@@ -178,12 +178,15 @@ class ItemUpdateServiceTest
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
-    val orderedItems = (1 to 3).map(_ =>
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers = List(createSierraSystemSourceIdentifier)
+    val orderedItems = (1 to 3)
+      .map(
+        _ =>
+          DisplayItem(
+            id = Some(randomCanonicalId),
+            identifiers = List(createSierraSystemSourceIdentifier)
+          )
       )
-    ).toList
+      .toList
 
     val reversedItems = orderedItems.reverse
 
@@ -221,12 +224,15 @@ class ItemUpdateServiceTest
       id = randomCanonicalId,
       title = None,
       identifiers = Nil,
-      items = (1 to 3).map(_ =>
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers = List(createSierraSystemSourceIdentifier)
+      items = (1 to 3)
+        .map(
+          _ =>
+            DisplayItem(
+              id = Some(randomCanonicalId),
+              identifiers = List(createSierraSystemSourceIdentifier)
+            )
         )
-      ).toList
+        .toList
     )
 
     withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {

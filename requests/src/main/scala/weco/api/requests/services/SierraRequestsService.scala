@@ -5,7 +5,10 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData

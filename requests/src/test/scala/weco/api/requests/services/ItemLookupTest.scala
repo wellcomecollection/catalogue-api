@@ -9,7 +9,10 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
-import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.RandomGenerators
@@ -60,8 +63,8 @@ class ItemLookupTest
             _ shouldBe Right(
               DisplayItem(
                 id = Some(item.id.underlying),
-                identifiers = (item.sourceIdentifier +: item.otherIdentifiers)
-                  .toList,
+                identifiers =
+                  (item.sourceIdentifier +: item.otherIdentifiers).toList,
                 locations = List()
               )
             )
@@ -406,7 +409,7 @@ class ItemLookupTest
         id = "miro-image-number",
         label = "Miro image number"
       ),
-    value = randomAlphanumeric(length = 10),
+      value = randomAlphanumeric(length = 10)
     )
 
   private def createCanonicalId: CanonicalId =
