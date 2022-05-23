@@ -7,7 +7,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.CatalogueWork
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  CatalogueAccessStatus,
+  CatalogueWork
+}
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
@@ -20,12 +24,7 @@ import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-  LocationType
-}
+import weco.catalogue.internal_model.locations.LocationType
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -181,10 +180,8 @@ class WorkLookupTest
                   ),
                   accessConditions = List(
                     DisplayAccessCondition(
-                      AccessCondition(
-                        status = AccessStatus.TemporarilyUnavailable,
-                        method = AccessMethod.NotRequestable
-                      )
+                      status = CatalogueAccessStatus.TemporarilyUnavailable,
+                      method = CatalogueAccessMethod.NotRequestable
                     )
                   )
                 )
