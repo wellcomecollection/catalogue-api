@@ -9,8 +9,12 @@ package weco.catalogue.source_model.sierra.rules
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.display_model.locations.DisplayLocationType
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus, LocationType}
+import weco.catalogue.internal_model.locations.{
+  AccessCondition,
+  AccessMethod,
+  AccessStatus,
+  LocationType
+}
 import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.{FixedField, VarField}
 
@@ -18,10 +22,6 @@ class SierraItemAccessTest
     extends AnyFunSpec
     with Matchers
     with SierraDataGenerators {
-  val ClosedStores = DisplayLocationType(LocationType.ClosedStores)
-  val OnExhibition = DisplayLocationType(LocationType.OnExhibition)
-  val OpenShelves = DisplayLocationType(LocationType.OpenShelves)
-  
   describe("an item in the closed stores") {
     describe("with no holds") {
       describe("can be requested online") {
@@ -44,7 +44,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -72,7 +72,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -107,7 +107,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -191,7 +191,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -221,7 +221,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -253,7 +253,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -292,7 +292,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -324,7 +324,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -353,7 +353,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -382,7 +382,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -413,7 +413,7 @@ class SierraItemAccessTest
           )
 
           val (ac, _) = SierraItemAccess(
-            location = Some(ClosedStores),
+            location = Some(LocationType.ClosedStores),
             itemData = itemData
           )
 
@@ -448,7 +448,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -482,7 +482,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -519,7 +519,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -552,7 +552,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -597,7 +597,7 @@ class SierraItemAccessTest
         )
 
         val (ac, note) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -637,7 +637,7 @@ class SierraItemAccessTest
         )
 
         val (ac, note) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -677,7 +677,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -710,7 +710,7 @@ class SierraItemAccessTest
         )
 
         val (_, Some(note)) = SierraItemAccess(
-          location = Some(ClosedStores),
+          location = Some(LocationType.ClosedStores),
           itemData = itemData
         )
 
@@ -740,7 +740,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(OpenShelves),
+          location = Some(LocationType.OpenShelves),
           itemData = itemData
         )
 
@@ -773,7 +773,7 @@ class SierraItemAccessTest
         )
 
         val (ac, _) = SierraItemAccess(
-          location = Some(OpenShelves),
+          location = Some(LocationType.OpenShelves),
           itemData = itemData
         )
 
@@ -801,7 +801,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OpenShelves),
+        location = Some(LocationType.OpenShelves),
         itemData = itemData
       )
 
@@ -843,7 +843,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OpenShelves),
+        location = Some(LocationType.OpenShelves),
         itemData = itemData
       )
 
@@ -873,7 +873,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OnExhibition),
+        location = Some(LocationType.OnExhibition),
         itemData = itemData
       )
 
@@ -900,7 +900,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OnExhibition),
+        location = Some(LocationType.OnExhibition),
         itemData = itemData
       )
 
@@ -933,7 +933,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OnExhibition),
+        location = Some(LocationType.OnExhibition),
         itemData = itemData
       )
       // To avoid confusion for staff, and in the interest of completeness, notes that are identical
@@ -967,7 +967,7 @@ class SierraItemAccessTest
       )
 
       val (ac, _) = SierraItemAccess(
-        location = Some(OnExhibition),
+        location = Some(LocationType.OnExhibition),
         itemData = itemData
       )
 
@@ -994,7 +994,7 @@ class SierraItemAccessTest
     )
 
     val (ac, _) = SierraItemAccess(
-      location = Some(ClosedStores),
+      location = Some(LocationType.ClosedStores),
       itemData = itemData
     )
 

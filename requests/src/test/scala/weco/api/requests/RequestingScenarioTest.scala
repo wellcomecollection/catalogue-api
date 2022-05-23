@@ -1453,17 +1453,7 @@ class RequestingScenarioTest
            |              "type": "Identifier"
            |            }
            |          ],
-           |          "locations": [
-           |            {
-           |              "locationType": {
-           |                "id": "closed-stores",
-           |                "label": "Closed stores",
-           |                "type": "LocationType"
-           |              },
-           |              "label": "Closed stores",
-           |              "type": "PhysicalLocation"
-           |            }
-           |          ],
+           |          "locations": [],
            |          "type": "Item"
            |        }
            |      ]
