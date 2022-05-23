@@ -17,6 +17,9 @@ import weco.sierra.models.data.SierraItemData
   * If it returns None, that means we couldn't make a positive determination about
   * whether this item was requestable, rather than knowing it's definitely requestable.
   *
+  * We remove rules that would end in a "definitely not requestable" state, because
+  * those items should be filtered out by the front end.
+  *
   */
 object SierraRulesForRequesting {
   def apply(itemData: SierraItemData): Option[NotRequestable] =
