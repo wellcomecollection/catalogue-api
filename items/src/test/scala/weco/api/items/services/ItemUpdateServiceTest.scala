@@ -6,18 +6,16 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.CatalogueWork
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  CatalogueAccessStatus,
+  CatalogueWork
+}
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.generators.IdentifiersGenerators
 import weco.catalogue.internal_model.identifiers.IdentifierType
-import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -119,9 +117,9 @@ class ItemUpdateServiceTest
   def temporarilyUnavailableItem(
     sierraItemNumber: SierraItemNumber
   ): DisplayItem = {
-    val temporarilyUnavailableOnline = AccessCondition(
-      method = AccessMethod.NotRequestable,
-      status = AccessStatus.TemporarilyUnavailable
+    val temporarilyUnavailableOnline = DisplayAccessCondition(
+      method = CatalogueAccessMethod.NotRequestable,
+      status = CatalogueAccessStatus.TemporarilyUnavailable
     )
 
     createPhysicalItemWith(
@@ -131,8 +129,8 @@ class ItemUpdateServiceTest
   }
 
   def availableItem(sierraItemNumber: SierraItemNumber) = {
-    val availableOnline = AccessCondition(
-      method = AccessMethod.OnlineRequest
+    val availableOnline = DisplayAccessCondition(
+      method = CatalogueAccessMethod.OnlineRequest
     )
 
     createPhysicalItemWith(
@@ -141,21 +139,22 @@ class ItemUpdateServiceTest
     )
   }
 
-  val onHoldAccessCondition = AccessCondition(
-    method = AccessMethod.NotRequestable,
-    status = Some(TemporarilyUnavailable),
+  val onHoldAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.NotRequestable,
+    status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
     note = Some(
       "Item is in use by another reader. Please ask at Library Enquiry Desk."
-    )
+    ),
+    terms = None
   )
 
-  val onlineRequestAccessCondition = AccessCondition(
-    method = AccessMethod.OnlineRequest,
-    status = AccessStatus.Open
+  val onlineRequestAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.OnlineRequest,
+    status = CatalogueAccessStatus.Open
   )
 
-  val notRequestableAccessCondition = AccessCondition(
-    method = AccessMethod.NotRequestable
+  val notRequestableAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.NotRequestable
   )
 
   class DummyItemUpdater(
@@ -329,9 +328,7 @@ class ItemUpdateServiceTest
                 .asInstanceOf[DisplayPhysicalLocation]
                 .accessConditions
                 .head
-              updatedAccessCondition shouldBe DisplayAccessCondition(
-                expectedAccessCondition
-              )
+              updatedAccessCondition shouldBe expectedAccessCondition
 
               digitalItem shouldBe dummyDigitalItem
             }
@@ -343,12 +340,12 @@ class ItemUpdateServiceTest
 
   def createPhysicalItemWith(
     sierraItemNumber: SierraItemNumber,
-    accessCondition: AccessCondition
+    accessCondition: DisplayAccessCondition
   ): DisplayItem = {
 
     val physicalItemLocation =
       DisplayPhysicalLocation(
-        accessConditions = List(DisplayAccessCondition(accessCondition)),
+        accessConditions = List(accessCondition),
         label = randomAlphanumeric(),
         locationType = DisplayLocationType(
           id = "closed-stores",
