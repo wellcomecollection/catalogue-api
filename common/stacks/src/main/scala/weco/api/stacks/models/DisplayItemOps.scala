@@ -10,23 +10,26 @@ trait DisplayItemOps {
     def sourceIdentifier: Option[DisplayIdentifier] =
       item.identifiers.headOption
 
+    /** Get the physical location for an item.
+      *
+      * In practice we know an item will only have at most one physical location.
+      */
+    private def physicalLocation: Option[DisplayPhysicalLocation] =
+      item.locations.collectFirst { case loc: DisplayPhysicalLocation => loc }
+
     /** Get the physical location type for an item.
       *
       * In practice we know an item will only have at most one physical location.
       */
     def physicalLocationType: Option[DisplayLocationType] =
-      item.locations
-        .collect { case loc: DisplayPhysicalLocation => loc }
-        .map(_.locationType)
-        .headOption
+      physicalLocation.map(_.locationType)
 
     /** Get the physical access condition for an item.
       *
       * In practice we know an item will only ever have a single access condition.
       */
     def physicalAccessCondition: Option[DisplayAccessCondition] =
-      item.locations
-        .collect { case loc: DisplayPhysicalLocation => loc }
+      physicalLocation
         .flatMap(_.accessConditions)
         .headOption
 
