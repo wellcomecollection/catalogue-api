@@ -63,7 +63,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      accessConditions = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[AccessCondition]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -83,8 +83,12 @@ class SierraItemUpdater(sierraSource: SierraSource)(
             .toMap
         case Left(itemLookupError) =>
           error(s"Item lookup failed: $itemLookupError")
-          Map.empty[SierraItemNumber, AccessCondition]
+          Map.empty[SierraItemNumber, Option[AccessCondition]]
       }
+
+      accessConditions = maybeAccessConditions
+        .collect { case (itemId, Some(ac)) => itemId -> ac }
+
     } yield accessConditions
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
