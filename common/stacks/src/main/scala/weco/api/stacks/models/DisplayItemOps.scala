@@ -33,9 +33,7 @@ trait DisplayItemOps {
       * In practice we know an item will only ever have a single access condition.
       */
     def physicalAccessCondition: Option[DisplayAccessCondition] =
-      physicalLocation
-        .flatMap(_.accessConditions)
-        .headOption
+      physicalLocation.flatMap(_.accessConditions.headOption)
 
     /** There are two cases we care about where the data in the catalogue API
       * might be stale:
