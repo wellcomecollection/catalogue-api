@@ -20,4 +20,12 @@ object DisplayAccessCondition {
       terms = accessCondition.terms,
       note = accessCondition.note
     )
+
+  def apply(method: DisplayAccessMethod, status: DisplayAccessStatus): DisplayAccessCondition =
+    DisplayAccessCondition(
+      method = method,
+      status = Some(status),
+      terms = None,
+      note = None,
+    )
 }
