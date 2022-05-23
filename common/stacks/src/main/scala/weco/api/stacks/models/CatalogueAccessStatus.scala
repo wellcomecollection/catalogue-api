@@ -9,5 +9,8 @@ object CatalogueAccessStatus {
   // It only implements the subset of statuses used in the API.
   val Open = DisplayAccessStatus(id = "open", label = "Open")
   val Restricted = DisplayAccessStatus(id = "restricted", label = "Restricted")
-  val TemporarilyUnavailable = DisplayAccessStatus(id = "temporarily-unavailable", label = "Temporarily unavailable")
+  val TemporarilyUnavailable = DisplayAccessStatus(
+    id = "temporarily-unavailable",
+    label = "Temporarily unavailable"
+  )
 }

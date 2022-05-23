@@ -11,12 +11,15 @@ case class DisplayAccessCondition(
 )
 
 object DisplayAccessCondition {
-  def apply(method: DisplayAccessMethod, status: DisplayAccessStatus): DisplayAccessCondition =
+  def apply(
+    method: DisplayAccessMethod,
+    status: DisplayAccessStatus
+  ): DisplayAccessCondition =
     DisplayAccessCondition(
       method = method,
       status = Some(status),
       terms = None,
-      note = None,
+      note = None
     )
 
   def apply(method: DisplayAccessMethod): DisplayAccessCondition =
@@ -24,6 +27,6 @@ object DisplayAccessCondition {
       method = method,
       status = None,
       terms = None,
-      note = None,
+      note = None
     )
 }

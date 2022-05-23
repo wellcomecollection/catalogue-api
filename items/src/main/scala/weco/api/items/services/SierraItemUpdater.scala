@@ -1,8 +1,16 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.{CatalogueAccessMethod, DisplayItemOps, SierraItemIdentifier}
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType, DisplayPhysicalLocation}
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  DisplayItemOps,
+  SierraItemIdentifier
+}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType,
+  DisplayPhysicalLocation
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.sierra.http.SierraSource
@@ -56,7 +64,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[SierraItemNumber, Option[DisplayAccessCondition]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -133,7 +143,11 @@ class SierraItemUpdater(sierraSource: SierraSource)(
           missingItemIds = itemIds.keySet.diff(accessConditionsMap.keySet)
 
           missingItemsMap = missingItemIds
-            .map(_ -> DisplayAccessCondition(method = CatalogueAccessMethod.NotRequestable))
+            .map(
+              _ -> DisplayAccessCondition(
+                method = CatalogueAccessMethod.NotRequestable
+              )
+            )
             .toMap
         } yield accessConditionsMap ++ missingItemsMap
     }

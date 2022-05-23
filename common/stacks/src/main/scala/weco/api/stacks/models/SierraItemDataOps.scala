@@ -1,6 +1,9 @@
 package weco.api.stacks.models
 
-import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType
+}
 import weco.catalogue.source_model.sierra.rules.SierraItemAccess
 import weco.sierra.models.data.SierraItemData
 
