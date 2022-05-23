@@ -28,4 +28,12 @@ object DisplayAccessCondition {
       terms = None,
       note = None,
     )
+
+  def apply(method: DisplayAccessMethod): DisplayAccessCondition =
+    DisplayAccessCondition(
+      method = method,
+      status = None,
+      terms = None,
+      note = None,
+    )
 }
