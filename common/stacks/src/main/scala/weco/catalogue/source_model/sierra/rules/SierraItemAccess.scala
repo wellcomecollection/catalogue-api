@@ -25,6 +25,9 @@ import weco.sierra.models.data.SierraItemData
   *
   * If it returns None, that means we should use the access condition from the catalogue API.
   *
+  * We remove rules that would end in a "definitely not requestable" state, because
+  * those items should be filtered out by the front end.
+  *
   */
 object SierraItemAccess extends SierraQueryOps with Logging {
   def apply(
