@@ -19,6 +19,8 @@ object SierraItemDataOps {
     }
 
     def allowsOnlineRequesting(location: Option[DisplayLocationType]): Boolean =
-      accessCondition(location).map(_.method).contains(AccessMethod.OnlineRequest)
+      accessCondition(location)
+        .map(_.method)
+        .contains(AccessMethod.OnlineRequest)
   }
 }
