@@ -3,6 +3,7 @@ package weco.api.stacks.models
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
+  DisplayLocationType,
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.DisplayItem
@@ -13,15 +14,26 @@ trait DisplayItemOps {
     def sourceIdentifier: Option[DisplayIdentifier] =
       item.identifiers.headOption
 
+    /** Get the physical location for an item.
+      *
+      * In practice we know an item will only have at most one physical location.
+      */
+    private def physicalLocation: Option[DisplayPhysicalLocation] =
+      item.locations.collectFirst { case loc: DisplayPhysicalLocation => loc }
+
+    /** Get the physical location type for an item.
+      *
+      * In practice we know an item will only have at most one physical location.
+      */
+    def physicalLocationType: Option[DisplayLocationType] =
+      physicalLocation.map(_.locationType)
+
     /** Get the physical access condition for an item.
       *
       * In practice we know an item will only ever have a single access condition.
       */
     def physicalAccessCondition: Option[DisplayAccessCondition] =
-      item.locations
-        .collect { case loc: DisplayPhysicalLocation => loc }
-        .flatMap(_.accessConditions)
-        .headOption
+      physicalLocation.flatMap(_.accessConditions.headOption)
 
     /** There are two cases we care about where the data in the catalogue API
       * might be stale:

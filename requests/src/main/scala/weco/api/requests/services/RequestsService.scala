@@ -43,12 +43,14 @@ class RequestsService(
       }
 
       result <- (item, sourceIdentifier) match {
-        case (Right(_), Some(sourceIdentifier))
+        case (Right(item), Some(sourceIdentifier))
             if sourceIdentifier.identifierType.id == SierraSystemNumber.id =>
           sierraService.placeHold(
             patron = patronNumber,
             sourceIdentifier = sourceIdentifier,
-            pickupDate = pickupDate
+            pickupDate = pickupDate,
+            locationType = item.physicalLocationType,
+            accessCondition = item.physicalAccessCondition
           )
 
         case (Right(_), Some(sourceIdentifier)) =>
