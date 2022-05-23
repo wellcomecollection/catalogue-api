@@ -9,7 +9,7 @@ object SierraItemDataOps {
   implicit class ItemDataOps(itemData: SierraItemData) {
     def accessCondition(
       location: Option[DisplayLocationType]
-    ): AccessCondition = {
+    ): Option[AccessCondition] = {
       val (accessCondition, _) = SierraItemAccess(
         location = location,
         itemData = itemData
@@ -19,6 +19,8 @@ object SierraItemDataOps {
     }
 
     def allowsOnlineRequesting(location: Option[DisplayLocationType]): Boolean =
-      accessCondition(location).method == AccessMethod.OnlineRequest
+      accessCondition(location)
+        .map(_.method)
+        .contains(AccessMethod.OnlineRequest)
   }
 }
