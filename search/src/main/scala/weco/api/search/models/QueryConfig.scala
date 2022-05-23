@@ -4,8 +4,7 @@ import com.sksamuel.elastic4s.ElasticApi.{existsQuery, search}
 import com.sksamuel.elastic4s.ElasticDsl.SearchHandler
 import com.sksamuel.elastic4s.circe._
 import com.sksamuel.elastic4s.{ElasticClient, Index}
-import weco.catalogue.internal_model.Implicits._
-import weco.catalogue.internal_model.image.{Image, ImageState, InferredData}
+import weco.json.JsonUtil._
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -35,6 +34,13 @@ object QueryConfig {
   val defaultPaletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5))
   val defaultPaletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
 
+  private case class InferredData(
+    binSizes: List[List[Int]],
+    binMinima: List[Float]
+  )
+  private case class State(inferredData: Option[InferredData])
+  private case class IndexedImage(state: State)
+
   private def getPaletteParamsFromIndex(
     elasticClient: ElasticClient,
     index: Index
@@ -51,8 +57,8 @@ object QueryConfig {
             .map { response =>
               response.hits.hits.headOption
                 .flatMap {
-                  _.to[Image[ImageState.Indexed]].state.inferredData.flatMap {
-                    case InferredData(_, _, _, _, binSizes, binMinima, _)
+                  _.to[IndexedImage].state.inferredData.flatMap {
+                    case InferredData(binSizes, binMinima)
                         if binSizes.size == 3 &&
                           binSizes.forall(_.size == 3) &&
                           binMinima.size == 3 =>
