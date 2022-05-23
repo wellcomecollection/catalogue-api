@@ -24,7 +24,6 @@ import weco.catalogue.internal_model.identifiers.{
   IdentifierType,
   SourceIdentifier
 }
-import weco.catalogue.internal_model.locations.LocationType
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -176,7 +175,8 @@ class WorkLookupTest
                 DisplayPhysicalLocation(
                   label = locationLabel,
                   locationType = DisplayLocationType(
-                    locationType = LocationType.ClosedStores
+                    id = "closed-stores",
+                    label = "Closed stores"
                   ),
                   accessConditions = List(
                     DisplayAccessCondition(
