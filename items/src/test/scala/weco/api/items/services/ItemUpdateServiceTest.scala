@@ -6,8 +6,15 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus, CatalogueWork}
-import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  CatalogueAccessStatus,
+  CatalogueWork
+}
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
 import weco.catalogue.internal_model.identifiers.IdentifierType
@@ -327,10 +334,7 @@ class ItemUpdateServiceTest
       )
 
     val itemSourceIdentifier = DisplayIdentifier(
-      identifierType = DisplayIdentifierType(
-        id = "sierra-system-number",
-        label = "Sierra system number"
-      ),
+      identifierType = DisplayIdentifierType.SierraSystemNumber,
       value = sierraItemNumber.withCheckDigit
     )
 
@@ -343,10 +347,7 @@ class ItemUpdateServiceTest
 
   def createSierraSystemSourceIdentifier: DisplayIdentifier =
     DisplayIdentifier(
-      identifierType = DisplayIdentifierType(
-        id = "sierra-system-number",
-        label = "Sierra system number"
-      ),
+      identifierType = DisplayIdentifierType.SierraSystemNumber,
       value = randomAlphanumeric()
     )
 }

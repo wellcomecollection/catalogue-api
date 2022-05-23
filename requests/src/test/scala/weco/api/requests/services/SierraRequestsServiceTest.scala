@@ -16,8 +16,6 @@ import weco.catalogue.display_model.locations.{
   DisplayAccessMethod,
   DisplayAccessStatus
 }
-import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.fields.{SierraHold, SierraHoldStatus, SierraLocation}
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -79,15 +77,13 @@ class SierraRequestsServiceTest
           val future = service.getHolds(patron)
 
           whenReady(future) { result =>
-            val item1SrcId = SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              ontologyType = "Item",
+            val item1SrcId = DisplayIdentifier(
+              identifierType = DisplayIdentifierType.SierraSystemNumber,
               value = item1.withCheckDigit
             )
 
-            val item2SrcId = SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              ontologyType = "Item",
+            val item2SrcId = DisplayIdentifier(
+              identifierType = DisplayIdentifierType.SierraSystemNumber,
               value = item2.withCheckDigit
             )
 
@@ -202,9 +198,8 @@ class SierraRequestsServiceTest
           val future = service.getHolds(patron)
 
           whenReady(future) { result =>
-            val itemSrcId = SourceIdentifier(
-              identifierType = SierraSystemNumber,
-              ontologyType = "Item",
+            val itemSrcId = DisplayIdentifier(
+              identifierType = DisplayIdentifierType.SierraSystemNumber,
               value = item.withCheckDigit
             )
 
@@ -235,10 +230,7 @@ class SierraRequestsServiceTest
         val pickupDate = LocalDate.parse(pickupDateString)
 
         val sourceIdentifier = DisplayIdentifier(
-          identifierType = DisplayIdentifierType(
-            id = "sierra-system-number",
-            label = "Sierra system number"
-          ),
+          identifierType = DisplayIdentifierType.SierraSystemNumber,
           value = item.withCheckDigit
         )
 
@@ -269,10 +261,7 @@ class SierraRequestsServiceTest
         val pickupDate = LocalDate.parse(pickupDateString)
 
         val sourceIdentifier = DisplayIdentifier(
-          identifierType = DisplayIdentifierType(
-            id = "sierra-system-number",
-            label = "Sierra system number"
-          ),
+          identifierType = DisplayIdentifierType.SierraSystemNumber,
           value = itemNumber.withCheckDigit
         )
 
@@ -377,10 +366,7 @@ class SierraRequestsServiceTest
         val pickupDate = LocalDate.parse(pickupDateString)
 
         val sourceIdentifier = DisplayIdentifier(
-          identifierType = DisplayIdentifierType(
-            id = "sierra-system-number",
-            label = "Sierra system number"
-          ),
+          identifierType = DisplayIdentifierType.SierraSystemNumber,
           value = item.withCheckDigit
         )
 
