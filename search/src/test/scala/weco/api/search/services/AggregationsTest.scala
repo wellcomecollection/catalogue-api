@@ -5,7 +5,11 @@ import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.fixtures.{IndexFixtures, JsonHelpers, TestDocumentFixtures}
+import weco.api.search.fixtures.{
+  IndexFixtures,
+  JsonHelpers,
+  TestDocumentFixtures
+}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest

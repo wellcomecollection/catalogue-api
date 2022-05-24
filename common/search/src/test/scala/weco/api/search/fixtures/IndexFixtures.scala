@@ -5,19 +5,22 @@ import com.sksamuel.elastic4s.requests.indexes.admin.IndexExistsResponse
 import com.sksamuel.elastic4s.{ElasticDsl, Index, Response}
 import org.scalatest.{Assertion, Suite}
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
-import weco.fixtures.{Fixture, LocalResources, TestWith, fixture}
+import weco.fixtures.{fixture, Fixture, LocalResources, TestWith}
 
-trait IndexFixtures extends ElasticsearchFixtures with LocalResources { this: Suite =>
+trait IndexFixtures extends ElasticsearchFixtures with LocalResources {
+  this: Suite =>
   private def withIndex[R](sourceName: String): Fixture[Index, R] =
     fixture[Index, R](
       create = {
         val index = createIndex
 
-        elasticClient.execute(
-          ElasticDsl
-            .createIndex(index.name)
-            .source(readResource(sourceName))
-        ).await
+        elasticClient
+          .execute(
+            ElasticDsl
+              .createIndex(index.name)
+              .source(readResource(sourceName))
+          )
+          .await
 
         // Elasticsearch is eventually consistent, so the future
         // completing doesn't actually mean that the index exists yet
