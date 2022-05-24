@@ -4,11 +4,10 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
-import weco.catalogue.internal_model.index.IndexFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

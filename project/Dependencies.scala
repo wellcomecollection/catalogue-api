@@ -13,13 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "6594.efe29f4fedf849ac4297b3b99dfdb6b8515803d6"
   }
-
-  val internalModel: Seq[ModuleID] = library(
-    name = "internal_model",
-    version = versions.internalModel
-  )
 
   val jsonLibrary: Seq[ModuleID] = library(
     name = "json",
@@ -146,8 +140,7 @@ object ExternalDependencies {
 
 object CatalogueDependencies {
   val displayModelDependencies: Seq[ModuleID] =
-    WellcomeDependencies.internalModel ++
-      WellcomeDependencies.fixturesLibrary ++
+    WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
       ExternalDependencies.scalacheckDependencies ++
       WellcomeDependencies.httpLibrary

@@ -1,19 +1,4 @@
 steps:
-  - label: "check internal model compatibility"
-    plugins:
-      - wellcomecollection/aws-assume-role#v0.2.2:
-          role: "arn:aws:iam::756629837203:role/catalogue-ci"
-      - docker-compose#v3.5.0:
-          run: internal_model_tool
-          env:
-            - AWS_ACCESS_KEY_ID
-            - AWS_SECRET_ACCESS_KEY
-            - AWS_SESSION_TOKEN
-            - AWS_REGION=eu-west-1
-            - AWS_DEFAULT_REGION=eu-west-1
-    agents:
-      queue: nano
-
   - command: .buildkite/scripts/run_autoformat.py
     label: "autoformat"
     agents:

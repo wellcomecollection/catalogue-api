@@ -15,11 +15,6 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   MultiMatchQuery
 }
 
-import weco.catalogue.internal_model.index.WorksAnalysis.{
-  languages,
-  whitespaceAnalyzer
-}
-
 case object ImageSimilarity {
   def blended: (String, Index) => Query =
     lshQuery("state.inferredData.lshEncodedFeatures", "inferredData.palette")
@@ -98,6 +93,9 @@ case object ImagesMultiMatcher {
       )
     )
 
+  private val languages =
+    List("arabic", "bengali", "french", "german", "hindi", "italian")
+
   def apply(q: String): BoolQuery =
     boolQuery()
       .should(
@@ -107,7 +105,7 @@ case object ImagesMultiMatcher {
           text = q,
           `type` = Some(BEST_FIELDS),
           operator = Some(OR),
-          analyzer = Some(whitespaceAnalyzer.name)
+          analyzer = Some("whitespace_analyzer")
         ).boost(1000),
         MultiMatchQuery(
           q,

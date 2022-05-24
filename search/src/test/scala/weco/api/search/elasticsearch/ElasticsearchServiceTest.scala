@@ -23,8 +23,8 @@ import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Seconds, Span}
+import weco.api.search.fixtures.IndexFixtures
 import weco.catalogue.display_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.fixtures.{RandomGenerators, TestWith}
