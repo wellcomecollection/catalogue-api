@@ -13,7 +13,6 @@ import weco.catalogue.display_model.identifiers.{
   DisplayIdentifier,
   DisplayIdentifierType
 }
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -28,7 +27,7 @@ class RequestsService(
     with DisplayItemOps {
 
   def makeRequest(
-    itemId: CanonicalId,
+    itemId: String,
     pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =

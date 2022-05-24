@@ -4,7 +4,6 @@ import io.circe.Json
 
 import java.time.LocalDate
 import weco.api.requests.models.{HoldNote, RequestedItemWithWork}
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.sierra.models.fields.SierraHold
 
 case class DisplayResultsList(
@@ -27,7 +26,7 @@ object DisplayResultsList {
 
 case class DisplayRequest(
   workTitle: Option[String],
-  workId: CanonicalId,
+  workId: String,
   item: Json,
   pickupDate: Option[LocalDate],
   pickupLocation: DisplayLocationDescription,
