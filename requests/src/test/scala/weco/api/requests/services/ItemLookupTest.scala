@@ -9,12 +9,12 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.catalogue.display_model.identifiers.{
   DisplayIdentifier,
   DisplayIdentifierType
 }
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.RandomGenerators
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -27,6 +27,7 @@ class ItemLookupTest
     with EitherValues
     with ScalaFutures
     with IntegrationPatience
+    with IdentifiersGenerators
     with ItemLookupFixture
     with RandomGenerators {
 
@@ -62,7 +63,7 @@ class ItemLookupTest
           whenReady(future) {
             _ shouldBe Right(
               DisplayItem(
-                id = Some(item.id.underlying),
+                id = Some(item.id),
                 identifiers =
                   (item.sourceIdentifier +: item.otherIdentifiers).toList,
                 locations = List()
@@ -412,19 +413,16 @@ class ItemLookupTest
       value = randomAlphanumeric(length = 10)
     )
 
-  private def createCanonicalId: CanonicalId =
-    CanonicalId(randomAlphanumeric(length = 8))
-
   sealed trait ItemStub
   case class IdentifiedItemStub(
-    id: CanonicalId = createCanonicalId,
+    id: String = createCanonicalId,
     sourceIdentifier: DisplayIdentifier = createSourceIdentifier,
     otherIdentifiers: Seq[DisplayIdentifier] = List()
   ) extends ItemStub
   case class UnidentifiedItemStub() extends ItemStub
 
   case class WorkStub(
-    id: CanonicalId = createCanonicalId,
+    id: String = createCanonicalId,
     items: Seq[ItemStub],
     sourceIdentifier: String = randomAlphanumeric(),
     title: Option[String] = Some(s"title-${randomAlphanumeric()}")

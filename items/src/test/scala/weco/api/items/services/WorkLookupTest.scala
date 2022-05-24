@@ -19,7 +19,7 @@ import weco.catalogue.display_model.locations.{
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 
@@ -52,7 +52,7 @@ class WorkLookupTest
     val workIdentifierTypeId = "miro-image-number"
     val workIdentifierTypeLabel = "Miro image number"
     val sourceIdentifier = randomAlphanumeric()
-    val itemId = randomAlphanumeric()
+    val itemId = createCanonicalId
     val itemNumber = "i52945510"
     val locationLabel = "where the item is"
 
@@ -148,7 +148,7 @@ class WorkLookupTest
     whenReady(future) {
       _ shouldBe Right(
         CatalogueWork(
-          id = canonicalId.underlying,
+          id = canonicalId,
           title = Some(title),
           identifiers = List(
             DisplayIdentifier(

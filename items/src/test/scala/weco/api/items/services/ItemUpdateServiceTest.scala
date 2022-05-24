@@ -7,13 +7,14 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.catalogue.display_model.identifiers.{
   DisplayIdentifier,
   DisplayIdentifierType
 }
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.fixtures.{RandomGenerators, TestWith}
+import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
@@ -27,8 +28,8 @@ class ItemUpdateServiceTest
     with Matchers
     with JsonAssertions
     with ItemsApiGenerators
-    with RandomGenerators
     with SierraSourceFixture
+    with IdentifiersGenerators
     with SierraIdentifierGenerators
     with IntegrationPatience {
 
@@ -167,9 +168,6 @@ class ItemUpdateServiceTest
     }
   }
 
-  def randomCanonicalId: String =
-    randomAlphanumeric()
-
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
@@ -177,7 +175,7 @@ class ItemUpdateServiceTest
       .map(
         _ =>
           DisplayItem(
-            id = Some(randomCanonicalId),
+            id = Some(createCanonicalId),
             identifiers = List(createSierraSystemSourceIdentifier)
           )
       )
@@ -186,14 +184,14 @@ class ItemUpdateServiceTest
     val reversedItems = orderedItems.reverse
 
     val workWithItemsForward = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = orderedItems
     )
 
     val workWithItemsBackward = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = orderedItems.reverse
@@ -216,14 +214,14 @@ class ItemUpdateServiceTest
     val brokenItemUpdater = new DummyItemUpdater(badUpdate)
 
     val workWithItems = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = (1 to 3)
         .map(
           _ =>
             DisplayItem(
-              id = Some(randomCanonicalId),
+              id = Some(createCanonicalId),
               identifiers = List(createSierraSystemSourceIdentifier)
             )
         )
@@ -247,7 +245,7 @@ class ItemUpdateServiceTest
     val workWithAvailableItemNumber = createSierraItemNumber
 
     val workWithUnavailableItem = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = List(
@@ -257,7 +255,7 @@ class ItemUpdateServiceTest
     )
 
     val workWithAvailableItem = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = List(
@@ -340,7 +338,7 @@ class ItemUpdateServiceTest
     )
 
     DisplayItem(
-      id = Some(randomAlphanumeric(length = 8)),
+      id = Some(createCanonicalId),
       identifiers = List(itemSourceIdentifier),
       locations = List(physicalItemLocation)
     )

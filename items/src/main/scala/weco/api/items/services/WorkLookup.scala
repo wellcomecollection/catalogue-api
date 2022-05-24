@@ -6,7 +6,6 @@ import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.catalogue.display_model.Implicits._
@@ -14,12 +13,13 @@ import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait WorkLookupError
+sealed trait WorkLookupError {
+  val id: String
+}
 
-case class WorkNotFoundError(id: CanonicalId) extends WorkLookupError
-case class WorkGoneError(id: CanonicalId) extends WorkLookupError
-case class UnknownWorkError(id: CanonicalId, err: Throwable)
-    extends WorkLookupError
+case class WorkNotFoundError(id: String) extends WorkLookupError
+case class WorkGoneError(id: String) extends WorkLookupError
+case class UnknownWorkError(id: String, err: Throwable) extends WorkLookupError
 
 class WorkLookup(client: HttpClient with HttpGet)(
   implicit as: ActorSystem,
@@ -33,7 +33,7 @@ class WorkLookup(client: HttpClient with HttpGet)(
     *
     */
   def byCanonicalId(
-    id: CanonicalId
+    id: String
   ): Future[Either[WorkLookupError, CatalogueWork]] = {
     val path = Path(s"works/$id")
     val params = Map("include" -> "identifiers,items")

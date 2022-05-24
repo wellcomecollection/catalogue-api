@@ -5,7 +5,6 @@ import akka.http.scaladsl.server.Route
 import weco.api.items.models.DisplayItemsList
 import weco.api.items.services._
 import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,7 +18,7 @@ trait LookupItemStatus extends ErrorDirectives {
 
   val workLookup: WorkLookup
 
-  def lookupStatus(workId: CanonicalId): Future[Route] =
+  def lookupStatus(workId: String): Future[Route] =
     workLookup.byCanonicalId(workId).flatMap {
       case Right(work: CatalogueWork) =>
         itemUpdateService

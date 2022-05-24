@@ -10,7 +10,6 @@ import weco.api.stacks.models.{CatalogueWork, DisplayItemOps}
 import weco.catalogue.display_model.Implicits._
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
@@ -40,12 +39,12 @@ class ItemLookup(client: HttpClient with HttpGet)(
 
   /** Returns the item for this canonical ID. */
   def byCanonicalId(
-    itemId: CanonicalId
+    itemId: String
   ): Future[Either[ItemLookupError, DisplayItem]] = {
     val path = Path("works")
     val params = Map(
       "include" -> "identifiers,items",
-      "items" -> itemId.underlying,
+      "items" -> itemId,
       "pageSize" -> "1"
     )
 
@@ -58,7 +57,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
           Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
             val items = results.results.flatMap(_.items)
 
-            val matchingItem = items.find(_.id.contains(itemId.underlying))
+            val matchingItem = items.find(_.id.contains(itemId))
 
             matchingItem match {
               case Some(item) => Right(item)
@@ -157,7 +156,7 @@ class ItemLookup(client: HttpClient with HttpGet)(
                 case Some((work, item)) =>
                   Right(
                     RequestedItemWithWork(
-                      workId = CanonicalId(work.id),
+                      workId = work.id,
                       workTitle = work.title,
                       item = item
                     )

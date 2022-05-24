@@ -4,7 +4,6 @@ import akka.http.scaladsl.model._
 import weco.akka.fixtures.Akka
 import weco.api.requests.services.ItemLookup
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.http.fixtures.HttpFixtures
@@ -23,7 +22,7 @@ trait ItemLookupFixture extends Akka with HttpFixtures {
       testWith(new ItemLookup(client))
     }
 
-  def catalogueItemRequest(id: CanonicalId): HttpRequest =
+  def catalogueItemRequest(id: String): HttpRequest =
     HttpRequest(
       uri = Uri(
         s"http://catalogue:9001/works?include=identifiers,items&items=$id&pageSize=1"

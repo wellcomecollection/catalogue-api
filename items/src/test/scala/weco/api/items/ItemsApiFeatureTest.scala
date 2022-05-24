@@ -5,13 +5,10 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
-
-import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
@@ -26,8 +23,8 @@ class ItemsApiFeatureTest
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
       val resourceName = "work-with-temporarily-unavailable-item.json"
-      val workId = CanonicalId("eccsqg7j")
-      val itemId = CanonicalId("otdlfo0u")
+      val workId = "eccsqg7j"
+      val itemId = "otdlfo0u"
       val sierraItemNumber = SierraItemNumber("1024083")
 
       val catalogueResponses = Seq(
@@ -113,7 +110,7 @@ class ItemsApiFeatureTest
 
     it("returns an empty list if a work has no items") {
       val resourceName = "work-with-no-items.json"
-      val workId = CanonicalId("eccsqg7j")
+      val workId = "eccsqg7j"
 
       val catalogueResponses = Seq(
         (
@@ -179,10 +176,7 @@ class ItemsApiFeatureTest
     }
 
     it("returns a 404 if the ID is not a valid canonical ID") {
-      val id = randomAlphanumeric(length = 10)
-      Try {
-        CanonicalId(id)
-      } shouldBe a[Failure[_]]
+      val id = "<script>alert('boo!');"
 
       val catalogueResponses = Seq(
         (

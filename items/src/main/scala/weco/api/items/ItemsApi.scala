@@ -5,11 +5,10 @@ import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
 import weco.api.items.services.{ItemUpdateService, WorkLookup}
 import weco.api.search.models.ApiConfig
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.FutureDirectives
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Success, Try}
 
 class ItemsApi(
   val itemUpdateService: ItemUpdateService,
@@ -19,23 +18,23 @@ class ItemsApi(
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
 ) extends LookupItemStatus
+    with IdentifierDirectives
     with FutureDirectives
     with Tracing {
   val routes: Route = concat(
     pathPrefix("works") {
-      path(Segment) { id: String =>
-        Try { CanonicalId(id) } match {
-          case Success(workId) =>
-            get {
-              withFuture {
-                transactFuture("GET /works/{workId}/items") {
-                  lookupStatus(workId)
-                }
+      path(Segment) {
+        case id if looksLikeCanonicalId(id) =>
+          get {
+            withFuture {
+              transactFuture("GET /works/{workId}/items") {
+                lookupStatus(id)
               }
             }
+          }
 
-          case _ => notFound(s"Work not found for identifier $id")
-        }
+        case id =>
+          notFound(s"Work not found for identifier $id")
       }
     }
   )

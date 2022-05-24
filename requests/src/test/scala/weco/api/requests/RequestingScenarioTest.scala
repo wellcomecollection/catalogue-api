@@ -14,8 +14,7 @@ import weco.api.requests.services.{
   RequestsService,
   SierraRequestsService
 }
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -1428,7 +1427,7 @@ class RequestingScenarioTest
   }
 
   private def catalogueItemResponse(
-    itemId: CanonicalId,
+    itemId: String,
     itemNumber: SierraItemNumber
   ): HttpResponse =
     HttpResponse(

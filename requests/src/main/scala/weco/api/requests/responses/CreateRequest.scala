@@ -6,7 +6,6 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.HoldRejected
 import weco.api.requests.services.RequestsService
 import HoldRejected.SourceSystemNotSupported
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
@@ -19,7 +18,7 @@ trait CreateRequest extends ErrorDirectives with Logging {
   val requestsService: RequestsService
 
   def createRequest(
-    itemId: CanonicalId,
+    itemId: String,
     pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
   ): Future[Route] =
@@ -50,7 +49,7 @@ trait CreateRequest extends ErrorDirectives with Logging {
 
   private def handleError(
     reason: HoldRejected,
-    itemId: CanonicalId
+    itemId: String
   ): (StatusCode, Option[String]) =
     reason match {
       case HoldRejected.UserIsSelfRegistered =>
