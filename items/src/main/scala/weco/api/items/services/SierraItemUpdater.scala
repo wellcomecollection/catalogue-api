@@ -6,13 +6,13 @@ import weco.api.stacks.models.{
   DisplayItemOps,
   SierraItemIdentifier
 }
+import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayLocationType,
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
@@ -34,7 +34,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
   import weco.api.stacks.models.SierraItemDataOps._
 
-  val identifierType = IdentifierType.SierraSystemNumber
+  val identifierType = DisplayIdentifierType.SierraSystemNumber
 
   /** Updates the AccessCondition for a single item
     *

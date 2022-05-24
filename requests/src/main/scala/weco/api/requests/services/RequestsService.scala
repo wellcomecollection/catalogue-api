@@ -9,9 +9,11 @@ import weco.api.requests.models.{
 }
 import weco.api.stacks.models.DisplayItemOps
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -40,7 +42,7 @@ class RequestsService(
 
       result <- (item, sourceIdentifier) match {
         case (Right(item), Some(sourceIdentifier))
-            if sourceIdentifier.identifierType.id == SierraSystemNumber.id =>
+            if sourceIdentifier.identifierType.id == DisplayIdentifierType.SierraSystemNumber.id =>
           sierraService.placeHold(
             patron = patronNumber,
             sourceIdentifier = sourceIdentifier,

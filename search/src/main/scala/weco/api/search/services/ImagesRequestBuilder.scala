@@ -15,7 +15,6 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.models._
 import weco.api.search.models.request.ImageAggregationRequest
 import weco.api.search.rest.PaginationQuery
-import weco.catalogue.internal_model.locations.License
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
@@ -60,14 +59,21 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       )
 
   private def toAggregation(aggReq: ImageAggregationRequest) = aggReq match {
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many licenses as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 11 different licenses; I've used
+    // 20 here so we have some headroom if we add new licenses in future.
     case ImageAggregationRequest.License =>
       TermsAggregation("license")
-        .size(License.values.size)
+        .size(20)
         .field("aggregatableValues.locations.license")
+
     case ImageAggregationRequest.SourceContributorAgents =>
       TermsAggregation("sourceContributorAgents")
         .size(20)
         .field("aggregatableValues.source.contributors.agent.label")
+
     case ImageAggregationRequest.SourceGenres =>
       TermsAggregation("sourceGenres")
         .size(20)

@@ -1,19 +1,12 @@
 package weco.api.search.rest
 
-import java.time.LocalDate
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ProductionDateSortRequest,
-  SortRequest,
-  SortingOrder,
-  WorkAggregationRequest,
-  WorkInclude,
-  WorksIncludes
-}
-import weco.catalogue.internal_model.locations.AccessStatus
-import weco.catalogue.internal_model.work.WorkType
+import weco.api.search.models.request._
+import weco.catalogue.display_model.locations.CatalogueAccessStatus
+
+import java.time.LocalDate
 
 case class SingleWorkParams(
   include: Option[WorksIncludes]
@@ -144,8 +137,8 @@ case class MultipleWorksParams(
 }
 
 object MultipleWorksParams extends QueryParamsUtils {
-  import SingleWorkParams.includesDecoder
   import CommonDecoders._
+  import SingleWorkParams.includesDecoder
 
   // This is a custom akka-http directive which extracts MultipleWorksParams
   // data from the query string, returning an invalid response when any given
@@ -256,11 +249,7 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(FormatFilter)
 
   implicit val workTypeFilter: Decoder[WorkTypeFilter] =
-    decodeOneOfCommaSeparated(
-      "Collection" -> WorkType.Collection,
-      "Series" -> WorkType.Series,
-      "Section" -> WorkType.Section
-    ).emap(values => Right(WorkTypeFilter(values)))
+    stringListFilter(WorkTypeFilter)
 
   implicit val itemLocationTypeIdFilter: Decoder[ItemLocationTypeIdFilter] =
     stringListFilter(ItemLocationTypeIdFilter)
@@ -290,17 +279,11 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(AvailabilitiesFilter)
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
-    decodeIncludesAndExcludes(
-      "open" -> AccessStatus.Open,
-      "open-with-advisory" -> AccessStatus.OpenWithAdvisory,
-      "restricted" -> AccessStatus.Restricted,
-      "closed" -> AccessStatus.Closed,
-      "licensed-resources" -> AccessStatus.LicensedResources(),
-      "unavailable" -> AccessStatus.Unavailable,
-      "permission-required" -> AccessStatus.PermissionRequired
-    ).emap {
-      case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
-    }
+    decodeIncludesAndExcludes(CatalogueAccessStatus.indexValues)
+      .emap {
+        case (includes, excludes) =>
+          Right(AccessStatusFilter(includes, excludes))
+      }
 
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
     decodeOneOfCommaSeparated(

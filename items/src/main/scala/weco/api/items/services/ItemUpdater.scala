@@ -1,11 +1,11 @@
 package weco.api.items.services
 
+import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdentifierType
 
 import scala.concurrent.Future
 
 trait ItemUpdater {
-  val identifierType: IdentifierType
+  val identifierType: DisplayIdentifierType
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]]
 }

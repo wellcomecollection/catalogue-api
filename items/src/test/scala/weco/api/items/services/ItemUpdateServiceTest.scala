@@ -6,18 +6,13 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.{
-  CatalogueAccessMethod,
-  CatalogueAccessStatus,
-  CatalogueWork
-}
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
 import weco.catalogue.display_model.identifiers.{
   DisplayIdentifier,
   DisplayIdentifierType
 }
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdentifierType
 import weco.fixtures.{RandomGenerators, TestWith}
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -162,8 +157,8 @@ class ItemUpdateServiceTest
   class DummyItemUpdater(
     itemTransform: Seq[DisplayItem] => Seq[DisplayItem] = identity
   ) extends ItemUpdater {
-    override val identifierType: IdentifierType =
-      IdentifierType.SierraSystemNumber
+    override val identifierType: DisplayIdentifierType =
+      DisplayIdentifierType.SierraSystemNumber
 
     override def updateItems(
       items: Seq[DisplayItem]

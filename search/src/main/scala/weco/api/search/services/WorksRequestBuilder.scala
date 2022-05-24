@@ -14,8 +14,6 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 import weco.api.search.rest.PaginationQuery
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work._
 
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions] {
@@ -46,9 +44,14 @@ object WorksRequestBuilder
     )
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many formats as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 23 different formats; I've used
+    // 30 here so we have some headroom if we add new formats in future.
     case WorkAggregationRequest.Format =>
       TermsAggregation("format")
-        .size(Format.values.size)
+        .size(30)
         .field("aggregatableValues.workType")
 
     case WorkAggregationRequest.ProductionDate =>
@@ -78,14 +81,24 @@ object WorksRequestBuilder
         .size(200)
         .field("aggregatableValues.languages")
 
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many licenses as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 11 different licenses; I've used
+    // 20 here so we have some headroom if we add new licenses in future.
     case WorkAggregationRequest.License =>
       TermsAggregation("license")
-        .size(License.values.size)
+        .size(20)
         .field("aggregatableValues.items.locations.license")
 
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many availabilities as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 3 different availabilities; I've used
+    // 10 here so we have some headroom if we add new ones in future.
     case WorkAggregationRequest.Availabilities =>
       TermsAggregation("availabilities")
-        .size(Availability.values.size)
+        .size(10)
         .field("aggregatableValues.availabilities")
   }
 
@@ -135,10 +148,7 @@ object WorksRequestBuilder
       case FormatFilter(formatIds) =>
         termsQuery(field = "data.format.id", values = formatIds)
       case WorkTypeFilter(types) =>
-        termsQuery(
-          field = "data.workType",
-          values = types.map(WorkType.getName)
-        )
+        termsQuery(field = "data.workType", values = types)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
@@ -170,8 +180,8 @@ object WorksRequestBuilder
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
           field = "data.items.locations.accessConditions.status.type",
-          includes = includes.map(_.name),
-          excludes = excludes.map(_.name)
+          includes = includes,
+          excludes = excludes
         )
       case ItemsFilter(itemIds) =>
         should(
