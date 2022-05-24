@@ -1,13 +1,8 @@
 package weco.catalogue.source_model.sierra.rules
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.CatalogueLocationType
-import weco.catalogue.display_model.locations.DisplayLocationType
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus,
-}
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus, CatalogueLocationType}
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
 import weco.catalogue.source_model.sierra.source.{OpacMsg, Status}
 import weco.sierra.models.SierraQueryOps
 import weco.sierra.models.data.SierraItemData
@@ -33,7 +28,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
   def apply(
     location: Option[DisplayLocationType],
     itemData: SierraItemData
-  ): (Option[AccessCondition], Option[String]) = {
+  ): (Option[DisplayAccessCondition], Option[String]) = {
     val accessCondition = createAccessCondition(
       holdCount = itemData.holdCount,
       status = itemData.status,
@@ -72,7 +67,7 @@ object SierraItemAccess extends SierraQueryOps with Logging {
     rulesForRequestingResult: Option[NotRequestable],
     locationTypeId: Option[String],
     itemData: SierraItemData
-  ): Option[AccessCondition] =
+  ): Option[DisplayAccessCondition] =
     (holdCount, status, opacmsg, rulesForRequestingResult, locationTypeId) match {
 
       // Items in the closed stores that aren't prevented from being requested get
@@ -86,9 +81,9 @@ object SierraItemAccess extends SierraQueryOps with Logging {
         None,
         Some(CatalogueLocationType.ClosedStores)) =>
         Some(
-          AccessCondition(
-            method = AccessMethod.OnlineRequest,
-            status = AccessStatus.Open
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.OnlineRequest,
+            status = CatalogueAccessStatus.Open
           )
         )
 
@@ -103,9 +98,9 @@ object SierraItemAccess extends SierraQueryOps with Logging {
         None,
         Some(CatalogueLocationType.ClosedStores)) =>
         Some(
-          AccessCondition(
-            method = AccessMethod.OnlineRequest,
-            status = AccessStatus.Restricted
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.OnlineRequest,
+            status = CatalogueAccessStatus.Restricted
           )
         )
 
@@ -125,11 +120,12 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       case (Some(holdCount), _, _, _, Some(CatalogueLocationType.ClosedStores))
         if holdCount > 0 =>
         Some(
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
         )
 
@@ -141,11 +137,12 @@ object SierraItemAccess extends SierraQueryOps with Logging {
         Some(NotRequestable.InUseByAnotherReader(_)),
         Some(CatalogueLocationType.ClosedStores)) =>
         Some(
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
         )
 

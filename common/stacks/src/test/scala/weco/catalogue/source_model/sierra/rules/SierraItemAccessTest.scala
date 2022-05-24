@@ -2,8 +2,8 @@ package weco.catalogue.source_model.sierra.rules
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.catalogue.display_model.locations.DisplayLocationType
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod, AccessStatus}
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueAccessStatus}
+import weco.catalogue.display_model.locations.{DisplayAccessCondition, DisplayLocationType}
 import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.FixedField
 
@@ -48,9 +48,9 @@ class SierraItemAccessTest
             itemData = itemData
           )
 
-          ac.get shouldBe AccessCondition(
-            method = AccessMethod.OnlineRequest,
-            status = AccessStatus.Open)
+          ac.get shouldBe DisplayAccessCondition(
+            method = CatalogueAccessMethod.OnlineRequest,
+            status = CatalogueAccessStatus.Open)
         }
 
         it("if it's restricted") {
@@ -77,9 +77,9 @@ class SierraItemAccessTest
           )
 
           ac.get shouldBe
-            AccessCondition(
-              method = AccessMethod.OnlineRequest,
-              status = AccessStatus.Restricted)
+            DisplayAccessCondition(
+              method = CatalogueAccessMethod.OnlineRequest,
+              status = CatalogueAccessStatus.Restricted)
         }
       }
 
@@ -142,11 +142,12 @@ class SierraItemAccessTest
         )
 
         ac.get shouldBe
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
       }
 
@@ -176,11 +177,12 @@ class SierraItemAccessTest
         )
 
         ac.get shouldBe
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
       }
 
@@ -213,11 +215,12 @@ class SierraItemAccessTest
         )
 
         ac.get shouldBe
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
       }
 
@@ -246,11 +249,12 @@ class SierraItemAccessTest
         )
 
         ac.get shouldBe
-          AccessCondition(
-            method = AccessMethod.NotRequestable,
-            status = Some(AccessStatus.TemporarilyUnavailable),
+          DisplayAccessCondition(
+            method = CatalogueAccessMethod.NotRequestable,
+            status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk.")
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+            terms = None
           )
       }
     }
