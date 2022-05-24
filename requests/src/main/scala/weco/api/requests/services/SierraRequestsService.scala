@@ -9,7 +9,6 @@ import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
   DisplayLocationType
 }
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData
@@ -263,7 +262,7 @@ class SierraRequestsService(
 
   def getHolds(
     patronNumber: SierraPatronNumber
-  ): Future[Map[SourceIdentifier, SierraHold]] =
+  ): Future[Map[DisplayIdentifier, SierraHold]] =
     for {
       holds <- sierraSource
         .listHolds(patronNumber)
