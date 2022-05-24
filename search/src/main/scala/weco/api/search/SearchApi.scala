@@ -1,30 +1,14 @@
 package weco.api.search
 
-import akka.http.scaladsl.server.{
-  MalformedQueryParamRejection,
-  RejectionHandler,
-  Route,
-  ValidationRejection
-}
+import akka.http.scaladsl.server.{MalformedQueryParamRejection, RejectionHandler, Route, ValidationRejection}
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import weco.api.search.elasticsearch.{
-  ElasticsearchService,
-  ImagesMultiMatcher,
-  WorksMultiMatcher
-}
-import weco.api.search.models.{
-  ApiConfig,
-  ElasticConfig,
-  QueryConfig,
-  SearchTemplate,
-  SearchTemplateResponse
-}
+import weco.api.search.elasticsearch.{ElasticsearchService, ImagesMultiMatcher, WorksMultiMatcher}
+import weco.api.search.models._
 import weco.api.search.rest._
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.rest.IdentifierDirectives
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Success, Try}
 
 class SearchApi(
   elasticClient: ElasticClient,
@@ -32,7 +16,7 @@ class SearchApi(
   queryConfig: QueryConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
-    extends CustomDirectives {
+    extends CustomDirectives with IdentifierDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {
     ignoreTrailingSlash {
@@ -40,28 +24,25 @@ class SearchApi(
         path("works") {
           MultipleWorksParams.parse { worksController.multipleWorks }
         },
-        path("works" / Segment) { id: String =>
-          Try { CanonicalId(id) } match {
-            case Success(workId) =>
-              SingleWorkParams.parse {
-                worksController.singleWork(workId, _)
-              }
+        path("works" / Segment) {
+          case id if looksLikeCanonicalId(id) =>
+            SingleWorkParams.parse {
+              worksController.singleWork(id, _)
+            }
 
-            case _ => notFound(s"Work not found for identifier $id")
-          }
+          case id =>
+            notFound(s"Work not found for identifier $id")
         },
         path("images") {
           MultipleImagesParams.parse { imagesController.multipleImages }
         },
-        path("images" / Segment) { id: String =>
-          Try { CanonicalId(id) } match {
-            case Success(imageId) =>
-              SingleImageParams.parse {
-                imagesController.singleImage(imageId, _)
-              }
+        path("images" / Segment) {
+          case id if looksLikeCanonicalId(id) =>
+            SingleImageParams.parse {
+              imagesController.singleImage(id, _)
+            }
 
-            case _ => notFound(s"Image not found for identifier $id")
-          }
+          case id => notFound(s"Image not found for identifier $id")
         },
         path("search-templates.json") {
           getSearchTemplates

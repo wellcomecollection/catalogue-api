@@ -6,13 +6,12 @@ import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.requests.services.RequestsService
 import weco.api.search.models.ApiConfig
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Success, Try}
 
 class RequestsApi(
   val requestsService: RequestsService
@@ -21,7 +20,8 @@ class RequestsApi(
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
 ) extends CreateRequest
-    with LookupPendingRequests {
+    with LookupPendingRequests
+    with IdentifierDirectives {
 
   val routes: Route = concat(
     RequestsApi
@@ -33,8 +33,8 @@ class RequestsApi(
                 // TODO: We get the work ID as part of the item request, although right now
                 // it's only for future-proofing, in case it's useful later.
                 // Should we query based on the work ID?
-                Try { CanonicalId(itemRequest.itemId) } match {
-                  case Success(itemId) =>
+                itemRequest.itemId match {
+                  case itemId if looksLikeCanonicalId(itemId) =>
                     withFuture {
                       createRequest(
                         itemId = itemId,
@@ -43,10 +43,8 @@ class RequestsApi(
                       )
                     }
 
-                  case _ =>
-                    notFound(
-                      s"Item not found for identifier ${itemRequest.itemId}"
-                    )
+                  case itemId =>
+                    notFound(s"Item not found for identifier $itemId")
                 }
             }
           } ~ get {
