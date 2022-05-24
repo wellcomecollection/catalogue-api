@@ -14,7 +14,7 @@ object PipelineElasticClientBuilder {
   // We don't want to require a Terraform plan/apply to pick up the change --
   // ElasticConfig is the single source of truth for the API index -- so instead
   // we let the services decide which set of secrets to read, which in turn sets
-  // which cluster they readd from.
+  // which cluster they read from.
 
   def apply(serviceName: String): ElasticClient = {
     implicit val secretsClient: SecretsManagerClient =
