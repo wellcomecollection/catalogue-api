@@ -52,7 +52,7 @@ class WorkLookupTest
     val workIdentifierTypeId = "miro-image-number"
     val workIdentifierTypeLabel = "Miro image number"
     val sourceIdentifier = randomAlphanumeric()
-    val itemId = randomAlphanumeric()
+    val itemId = createCanonicalId
     val itemNumber = "i52945510"
     val locationLabel = "where the item is"
 

@@ -6,12 +6,9 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.display_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
-
-import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
@@ -179,10 +176,7 @@ class ItemsApiFeatureTest
     }
 
     it("returns a 404 if the ID is not a valid canonical ID") {
-      val id = randomAlphanumeric(length = 10)
-      Try {
-        CanonicalId(id)
-      } shouldBe a[Failure[_]]
+      val id = "<script>alert('boo!');"
 
       val catalogueResponses = Seq(
         (
