@@ -1,9 +1,18 @@
 package weco.api.search
 
-import akka.http.scaladsl.server.{MalformedQueryParamRejection, RejectionHandler, Route, ValidationRejection}
+import akka.http.scaladsl.server.{
+  MalformedQueryParamRejection,
+  RejectionHandler,
+  Route,
+  ValidationRejection
+}
 import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import weco.api.search.elasticsearch.{ElasticsearchService, ImagesMultiMatcher, WorksMultiMatcher}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  ImagesMultiMatcher,
+  WorksMultiMatcher
+}
 import weco.api.search.models._
 import weco.api.search.rest._
 import weco.catalogue.display_model.rest.IdentifierDirectives
@@ -16,7 +25,8 @@ class SearchApi(
   queryConfig: QueryConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
-    extends CustomDirectives with IdentifierDirectives {
+    extends CustomDirectives
+    with IdentifierDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {
     ignoreTrailingSlash {

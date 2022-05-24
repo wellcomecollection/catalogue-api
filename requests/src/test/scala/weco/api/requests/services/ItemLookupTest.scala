@@ -10,7 +10,10 @@ import org.scalatest.matchers.should.Matchers
 import weco.api.requests.fixtures.ItemLookupFixture
 import weco.api.requests.models.RequestedItemWithWork
 import weco.catalogue.display_model.generators.IdentifiersGenerators
-import weco.catalogue.display_model.identifiers.{DisplayIdentifier, DisplayIdentifierType}
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.display_model.work.DisplayItem
 import weco.fixtures.RandomGenerators
 import weco.http.client.{HttpGet, MemoryHttpClient}
