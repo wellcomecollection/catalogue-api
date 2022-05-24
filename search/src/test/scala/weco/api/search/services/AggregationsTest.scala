@@ -5,12 +5,10 @@ import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
-import weco.api.search.fixtures.{JsonHelpers, TestDocumentFixtures}
+import weco.api.search.fixtures.{IndexFixtures, JsonHelpers, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.catalogue.internal_model.index.IndexFixtures
-import weco.catalogue.internal_model.work.Format
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -102,9 +100,7 @@ class AggregationsTest
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
-          filters = List(
-            FormatFilter(List(Format.Books.id))
-          )
+          filters = List(FormatFilter(List("a")))
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           aggs.format should not be empty
@@ -147,7 +143,7 @@ class AggregationsTest
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
-            FormatFilter(List(Format.Books.id)),
+            FormatFilter(List("a")),
             SubjectFilter(Seq("pGkJTZWwn4"))
           )
         )
@@ -191,7 +187,7 @@ class AggregationsTest
           aggregations =
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
-            FormatFilter(List(Format.Books.id)),
+            FormatFilter(List("a")),
             SubjectFilter(Seq("6IZ2DrUzFk"))
           )
         )

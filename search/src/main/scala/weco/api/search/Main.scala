@@ -6,7 +6,6 @@ import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.models.{
   ApiConfig,
-  CheckModel,
   PipelineClusterElasticConfig,
   QueryConfig
 }
@@ -33,9 +32,6 @@ object Main extends WellcomeTypesafeApp {
 
     val elasticClient = PipelineElasticClientBuilder("catalogue_api")
     val elasticConfig = PipelineClusterElasticConfig()
-
-    CheckModel.checkModel(elasticConfig.worksIndex.name)(elasticClient)
-    CheckModel.checkModel(elasticConfig.imagesIndex.name)(elasticClient)
 
     val queryConfig =
       QueryConfig.fetchFromIndex(elasticClient, elasticConfig.imagesIndex)

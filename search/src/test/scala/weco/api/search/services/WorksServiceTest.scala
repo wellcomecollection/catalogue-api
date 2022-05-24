@@ -9,11 +9,10 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
-import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.catalogue.internal_model.index.IndexFixtures
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
