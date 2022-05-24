@@ -12,7 +12,6 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
-import weco.catalogue.internal_model.identifiers.CanonicalId
 import weco.catalogue.internal_model.index.IndexFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,7 +42,7 @@ class ImagesServiceTest
           IndexedImage(display = getDisplayImage("images.everything"))
 
         val future = imagesService.findById(
-          id = CanonicalId(getTestImageId("images.everything"))
+          id = getTestImageId("images.everything")
         )(index)
         val actualImage = whenReady(future) {
           _.right.value
@@ -55,7 +54,7 @@ class ImagesServiceTest
 
     it("returns a DocumentNotFoundError if no image can be found") {
       withLocalImagesIndex { index =>
-        val id = CanonicalId("nopenope")
+        val id = "nopenope"
         val future = imagesService.findById(id)(index)
 
         whenReady(future) {
@@ -66,7 +65,8 @@ class ImagesServiceTest
 
     it("returns an ElasticsearchError if Elasticsearch returns an error") {
       val index = createIndex
-      val future = imagesService.findById(CanonicalId("nopenope"))(index)
+      val id = "nopenope"
+      val future = imagesService.findById(id)(index)
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]

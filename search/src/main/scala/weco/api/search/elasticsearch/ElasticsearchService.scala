@@ -12,7 +12,6 @@ import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import weco.Tracing
-import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -22,12 +21,12 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 ) extends Logging
     with Tracing {
 
-  def findById[T](id: CanonicalId)(
+  def findById[T](id: String)(
     index: Index
   )(implicit decoder: Decoder[T]): Future[Either[ElasticsearchError, T]] =
     for {
       response: Response[GetResponse] <- withActiveTrace(elasticClient.execute {
-        get(index, id.underlying)
+        get(index, id)
       })
 
       result = response.toEither match {
