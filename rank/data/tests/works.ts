@@ -166,11 +166,11 @@ const tests: Test[] = [
       'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     eval: equalTo1,
     cases: [
-      { query: 'at-tib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'nuğūm', ratings: ['jtbenqbq'], knownFailure: true },
+      { query: 'at-tib', ratings: ['qmm9mauk'] },
+      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'] },
+      { query: 'nuğūm', ratings: ['jtbenqbq'] },
       { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
-      { query: 'arbeiten', ratings: ['xn7yyrqf'], knownFailure: true },
+      { query: 'arbeiten', ratings: ['xn7yyrqf'] },
       {
         query: 'savoire',
         ratings: ['tbuwy9bk'],
@@ -190,7 +190,7 @@ const tests: Test[] = [
     metric: {
       recall: {
         relevant_rating_threshold: 3,
-        k: 100,
+        k: 1000,
       },
     },
   },
