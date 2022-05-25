@@ -149,6 +149,9 @@ class ItemLookup(client: HttpClient with HttpGet)(
         val works =
           worksPage.results.sortBy(_.identifiers.headOption.map(_.value))
         getRequestedItemsFromWorks(itemIdentifiers, works) match {
+          // If we don't have any more results, or if we've only looked for one ID,
+          // we know that these works are all available for the requested item identifiers.
+          // That means that any missing items here are not available in the catalogue API.
           case RequestedItemsFromWorks(found, notFound)
               if worksPage.totalResults <= pageSize || itemIdentifiers.size == 1 =>
             Future.successful(
@@ -162,6 +165,10 @@ class ItemLookup(client: HttpClient with HttpGet)(
                   )
               )
             )
+          // The alternative case is that there are more results available (ie they span more than 1 page).
+          // In this case, we make a single search for each item, thereby guaranteeing that
+          // we'll find a work with that item if it exists in the catalogue API. Pagination is unnecessary
+          // because a search for a single item ID will necessarily only return works containing the corresponding item.
           case RequestedItemsFromWorks(foundSubset, notYetFound) =>
             val individualItemRequests = notYetFound.map(
               itemId => searchBySourceIdentifier(Seq(itemId))
