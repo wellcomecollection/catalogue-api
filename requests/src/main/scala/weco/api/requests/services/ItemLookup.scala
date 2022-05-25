@@ -120,13 +120,15 @@ class ItemLookup(client: HttpClient with HttpGet)(
     val pageSize = 100
 
     def getWorksPage(
-      itemIds: Seq[DisplayIdentifier]
+      itemIds: Seq[DisplayIdentifier],
+      page: Int
     ): Future[CatalogueWorkResults] = {
       val path = Path("works")
       val params = Map(
         "include" -> "identifiers,items",
         "items.identifiers" -> itemIds.map(_.value).mkString(","),
-        "pageSize" -> pageSize.toString
+        "pageSize" -> pageSize.toString,
+        "page" -> page.toString
       )
       client.get(path, params).flatMap { response =>
         response.status match {
@@ -144,77 +146,44 @@ class ItemLookup(client: HttpClient with HttpGet)(
       }
     }
 
-    getWorksPage(itemIdentifiers)
-      .flatMap { worksPage =>
-        val works =
-          worksPage.results.sortBy(_.identifiers.headOption.map(_.value))
-        getRequestedItemsFromWorks(itemIdentifiers, works) match {
-          // If we don't have any more results, or if we've only looked for one ID,
-          // we know that these works are all available for the requested item identifiers.
-          // That means that any missing items here are not available in the catalogue API.
-          case RequestedItemsFromWorks(found, notFound)
-              if worksPage.totalResults <= pageSize || itemIdentifiers.size == 1 =>
-            Future.successful(
-              found.map(Right(_)) ++ notFound.map(
-                itemId =>
-                  Left(
-                    ItemNotFoundError(
-                      itemId.value,
-                      err = new Throwable(s"Could not find item $itemId")
-                    )
-                  )
+    def getWorks(
+      itemIdentifiers: Seq[DisplayIdentifier],
+      page: Int = 1,
+      works: Seq[CatalogueWork] = Nil
+    ): Future[Seq[CatalogueWork]] =
+      getWorksPage(itemIdentifiers, page).flatMap {
+        case CatalogueWorkResults(totalResults, results)
+            if totalResults <= page * pageSize =>
+          Future.successful(works ++ results)
+        case CatalogueWorkResults(_, results) =>
+          getWorks(itemIdentifiers, page + 1, works ++ results)
+      }
+
+    getWorks(itemIdentifiers)
+      .map { unsortedWorks =>
+        val works = unsortedWorks.sortBy(_.identifiers.headOption.map(_.value))
+        itemIdentifiers.map { itemId =>
+          val matchingRequestedItemWithWork = works.view.flatMap { work =>
+            work.items.find(_.identifiers.headOption.contains(itemId)).map {
+              item =>
+                RequestedItemWithWork(item, work)
+            }
+          }.headOption
+
+          matchingRequestedItemWithWork match {
+            case Some(requestedItem) => Right(requestedItem)
+            case None =>
+              Left(
+                ItemNotFoundError(
+                  itemId.value,
+                  err = new Throwable(s"Could not find item $itemId")
+                )
               )
-            )
-          // The alternative case is that there are more results available (ie they span more than 1 page).
-          // In this case, we make a single search for each item, thereby guaranteeing that
-          // we'll find a work with that item if it exists in the catalogue API. Pagination is unnecessary
-          // because a search for a single item ID will necessarily only return works containing the corresponding item.
-          case RequestedItemsFromWorks(foundSubset, notYetFound) =>
-            val individualItemRequests = notYetFound.map(
-              itemId => searchBySourceIdentifier(Seq(itemId))
-            )
-            Future
-              .sequence(individualItemRequests)
-              .map(results => foundSubset.map(Right(_)) ++ results.flatten)
+          }
         }
       }
       .recover {
         case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
       }
-  }
-
-  private case class RequestedItemsFromWorks(
-    found: Seq[RequestedItemWithWork],
-    notFound: Seq[DisplayIdentifier]
-  )
-  private def getRequestedItemsFromWorks(
-    itemIdentifiers: Seq[DisplayIdentifier],
-    works: Seq[CatalogueWork]
-  ): RequestedItemsFromWorks = {
-    val matchingItems = for {
-      work <- works
-      itemId <- itemIdentifiers
-      item <- work.getItem(itemId)
-    } yield (item, work)
-    val notFound = itemIdentifiers.filterNot(
-      itemId =>
-        matchingItems.exists(_._1.identifiers.headOption.contains(itemId))
-    )
-    RequestedItemsFromWorks(
-      found = matchingItems
-      // If the item is on multiple works, choose the first one
-        .groupBy(_._1.identifiers.headOption)
-        .flatMap(_._2.headOption)
-        .map {
-          case (item, work) => RequestedItemWithWork(item, work)
-        }
-        .toSeq,
-      notFound
-    )
-  }
-
-  implicit class WorkOps(work: CatalogueWork) {
-    def getItem(itemIdentifier: DisplayIdentifier): Option[DisplayItem] =
-      work.items.find(_.identifiers.headOption.contains(itemIdentifier))
   }
 }

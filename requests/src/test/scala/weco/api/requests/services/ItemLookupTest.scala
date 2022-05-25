@@ -128,6 +128,7 @@ class ItemLookupTest
       val responses = Seq(
         (
           catalogueSourceIdsRequest(
+            page = 1,
             item1.sourceIdentifier,
             item2.sourceIdentifier
           ),
@@ -175,6 +176,7 @@ class ItemLookupTest
       val responses = Seq(
         (
           catalogueSourceIdsRequest(
+            page = 1,
             item1.sourceIdentifier,
             item2.sourceIdentifier
           ),
@@ -223,6 +225,7 @@ class ItemLookupTest
       val responses = Seq(
         (
           catalogueSourceIdsRequest(
+            page = 1,
             item1.sourceIdentifier,
             item4.sourceIdentifier,
             item3.sourceIdentifier
@@ -249,12 +252,12 @@ class ItemLookupTest
           workTitle = workA.title,
           item = itemAsJson(item1)
         )
-        result(1).value shouldBe RequestedItemWithWork(
+        result(1).left.value shouldBe a[ItemNotFoundError]
+        result(2).value shouldBe RequestedItemWithWork(
           workId = workB.id,
           workTitle = workB.title,
           item = itemAsJson(item3)
         )
-        result(2).left.value shouldBe a[ItemNotFoundError]
       }
     }
 
@@ -268,15 +271,15 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueSourceIdsRequest(item1.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item1.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueSourceIdsRequest(item2.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item2.sourceIdentifier),
           catalogueWorkResponse(Seq(workB, workA))
         ),
         (
-          catalogueSourceIdsRequest(item3.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item3.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -318,27 +321,27 @@ class ItemLookupTest
 
       val responses = Seq(
         (
-          catalogueSourceIdsRequest(item1.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item1.sourceIdentifier),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueSourceIdsRequest(item1.otherIdentifiers.head),
+          catalogueSourceIdsRequest(page = 1, item1.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA))
         ),
         (
-          catalogueSourceIdsRequest(item2.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item2.sourceIdentifier),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueSourceIdsRequest(item2.otherIdentifiers.head),
+          catalogueSourceIdsRequest(page = 1, item2.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
-          catalogueSourceIdsRequest(item3.sourceIdentifier),
+          catalogueSourceIdsRequest(page = 1, item3.sourceIdentifier),
           catalogueWorkResponse(Seq(workB))
         ),
         (
-          catalogueSourceIdsRequest(item3.otherIdentifiers.head),
+          catalogueSourceIdsRequest(page = 1, item3.otherIdentifiers.head),
           catalogueWorkResponse(Seq(workB))
         )
       )
@@ -382,6 +385,7 @@ class ItemLookupTest
       val responses = Seq(
         (
           catalogueSourceIdsRequest(
+            page = 1,
             item2.sourceIdentifier,
             item3.sourceIdentifier
           ),
@@ -389,12 +393,16 @@ class ItemLookupTest
         ),
         (
           catalogueSourceIdsRequest(
-            item2.sourceIdentifier
+            page = 2,
+            item2.sourceIdentifier,
+            item3.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workA, workB))
         ),
         (
           catalogueSourceIdsRequest(
+            page = 3,
+            item2.sourceIdentifier,
             item3.sourceIdentifier
           ),
           catalogueWorkResponse(Seq(workB))

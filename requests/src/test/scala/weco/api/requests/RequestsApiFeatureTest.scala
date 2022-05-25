@@ -114,6 +114,7 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
+            page = 1,
             itemNumber1.withCheckDigit,
             itemNumber2.withCheckDigit
           ),
@@ -382,6 +383,7 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
+            page = 1,
             itemNumber1.withCheckDigit,
             itemNumber2.withCheckDigit
           ),
