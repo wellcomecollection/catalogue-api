@@ -172,8 +172,11 @@ const tests: Test[] = [
       { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
       { query: 'arbeiten', ratings: ['xn7yyrqf'] },
       // we know that something strange has happened to the french and italian
-      // stemming tests, but stemming _is_ still happening
-      // see https://github.com/wellcomecollection/catalogue-api/issues/469
+      // stemming tests, but stemming _is_ still happening. These tests aren't
+      // motivated by a specific user request or need - they're general
+      // assumptions about how search works which we want to verify.
+      // See https://github.com/wellcomecollection/catalogue-api/issues/469
+
       {
         query: 'savoire',
         ratings: ['tbuwy9bk'],
