@@ -10,7 +10,6 @@ import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.api.search.models.{ApiConfig, ElasticConfig, QueryConfig}
 
 trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {

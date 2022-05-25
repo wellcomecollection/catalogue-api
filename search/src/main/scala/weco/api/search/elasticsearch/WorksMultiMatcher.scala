@@ -12,10 +12,6 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   MatchQuery,
   MultiMatchQuery
 }
-import weco.catalogue.internal_model.index.WorksAnalysis.{
-  languages,
-  whitespaceAnalyzer
-}
 
 case object WorksMultiMatcher {
   val titleFields = Seq(
@@ -30,6 +26,9 @@ case object WorksMultiMatcher {
   ): Seq[FieldWithOptionalBoost] =
     fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
 
+  private val languages =
+    List("arabic", "bengali", "french", "german", "hindi", "italian")
+
   def apply(q: String): BoolQuery =
     boolQuery()
       .should(
@@ -38,7 +37,7 @@ case object WorksMultiMatcher {
           queryName = Some("identifiers"),
           `type` = Some(BEST_FIELDS),
           operator = Some(OR),
-          analyzer = Some(whitespaceAnalyzer.name),
+          analyzer = Some("whitespace_analyzer"),
           fields = fieldsWithBoost(
             boost = 1000,
             Seq(

@@ -7,8 +7,8 @@ import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.fixtures.IndexFixtures
 import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
-import weco.catalogue.internal_model.index.IndexFixtures
 import weco.json.JsonUtil._
 
 class ElasticsearchIteratorTest

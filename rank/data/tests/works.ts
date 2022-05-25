@@ -171,13 +171,27 @@ const tests: Test[] = [
       'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     eval: equalTo1,
     cases: [
-      { query: 'at-tib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'nuğūm', ratings: ['jtbenqbq'], knownFailure: true },
+      { query: 'at-tib', ratings: ['qmm9mauk'] },
+      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'] },
+      { query: 'nuğūm', ratings: ['jtbenqbq'] },
       { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
-      { query: 'arbeiten', ratings: ['xn7yyrqf'], knownFailure: true },
-      { query: 'travaillons', ratings: ['jb823ud6'] },
-      { query: 'conosceva', ratings: ['va2vy7wb'] },
+      { query: 'arbeiten', ratings: ['xn7yyrqf'] },
+      // we know that something strange has happened to the french and italian
+      // stemming tests, but stemming _is_ still happening. These tests aren't
+      // motivated by a specific user request or need - they're general
+      // assumptions about how search works which we want to verify.
+      // See https://github.com/wellcomecollection/catalogue-api/issues/469
+
+      {
+        query: 'savoire',
+        ratings: ['tbuwy9bk'],
+        description: 'french stemming',
+      },
+      {
+        query: 'conosceva',
+        ratings: ['j3w6u4t2', 'mt8bj5zk', 'vhf56vvz'],
+        description: 'italian stemming',
+      },
       { query: 'sharh', ratings: ['frd5y363'] },
       {
         query: 'arkaprakāśa',
@@ -187,7 +201,7 @@ const tests: Test[] = [
     metric: {
       recall: {
         relevant_rating_threshold: 3,
-        k: 100,
+        k: 1000,
       },
     },
   },
