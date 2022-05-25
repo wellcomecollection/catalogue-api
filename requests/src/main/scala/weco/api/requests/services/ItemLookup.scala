@@ -24,6 +24,7 @@ case class ItemNotFoundError(id: Any, err: Throwable) extends ItemLookupError
 case class UnknownItemError(id: Any, err: Throwable) extends ItemLookupError
 
 case class CatalogueWorkResults(
+  totalResults: Int,
   results: Seq[CatalogueWork]
 )
 
@@ -116,75 +117,97 @@ class ItemLookup(client: HttpClient with HttpGet)(
     itemIdentifiers: Seq[DisplayIdentifier]
   ): Future[Seq[Either[ItemLookupError, RequestedItemWithWork]]] = {
     require(itemIdentifiers.nonEmpty)
+    val pageSize = 100
 
-    val path = Path("works")
-    val params = Map(
-      "include" -> "identifiers,items",
-      "items.identifiers" -> itemIdentifiers.map(_.value).mkString(","),
-      "pageSize" -> "100"
-    )
+    def getWorksPage(
+      itemIds: Seq[DisplayIdentifier]
+    ): Future[CatalogueWorkResults] = {
+      val path = Path("works")
+      val params = Map(
+        "include" -> "identifiers,items",
+        "items.identifiers" -> itemIds.map(_.value).mkString(","),
+        "pageSize" -> pageSize.toString
+      )
+      client.get(path, params).flatMap { response =>
+        response.status match {
+          case StatusCodes.OK =>
+            info(s"OK for GET to $path with $params")
+            Unmarshal(response.entity).to[CatalogueWorkResults]
+          case errorStatus =>
+            val err = new Throwable(s"$errorStatus from the catalogue API")
+            error(
+              s"Unexpected status from GET to $path with $params: $errorStatus",
+              err
+            )
+            Future.failed(err)
+        }
+      }
+    }
 
-    val httpResult = for {
-      response <- client.get(path = path, params = params)
-
-      result <- response.status match {
-        case StatusCodes.OK =>
-          info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
-            // Sort by source identifier value.  A work's identifiers are always non-empty,
-            // so calling .head is safe here.
-            val works = results.results.sortBy(_.identifiers.head.value)
-
-            val items: Seq[(CatalogueWork, DisplayItem)] = works
-              .flatMap { w =>
-                w.items.map(item => (w, item))
-              }
-
-            itemIdentifiers.map { itemId =>
-              val matchingWorks = items.filter {
-                case (_, item) =>
-                  // Not all items have identifiers, e.g. METS items are unidentified.
-                  item.identifiers.headOption match {
-                    case Some(sourceId) =>
-                      sourceId.value == itemId.value && sourceId.identifierType.id == itemId.identifierType.id
-
-                    case None => false
-                  }
-              }
-
-              matchingWorks.headOption match {
-                case Some((work, item)) =>
-                  Right(
-                    RequestedItemWithWork(
-                      workId = work.id,
-                      workTitle = work.title,
-                      item = item
-                    )
-                  )
-
-                case None =>
+    getWorksPage(itemIdentifiers)
+      .flatMap { worksPage =>
+        val works =
+          worksPage.results.sortBy(_.identifiers.headOption.map(_.value))
+        getRequestedItemsFromWorks(itemIdentifiers, works) match {
+          case RequestedItemsFromWorks(found, notFound)
+              if worksPage.totalResults <= pageSize || itemIdentifiers.size == 1 =>
+            Future.successful(
+              found.map(Right(_)) ++ notFound.map(
+                itemId =>
                   Left(
                     ItemNotFoundError(
                       itemId.value,
                       err = new Throwable(s"Could not find item $itemId")
                     )
                   )
-              }
-            }
-          }
-
-        case status =>
-          val err = new Throwable(s"$status from the catalogue API")
-          error(
-            s"Unexpected status from GET to $path with $params: $status",
-            err
-          )
-          Future(itemIdentifiers.map(id => Left(UnknownItemError(id, err))))
+              )
+            )
+          case RequestedItemsFromWorks(foundSubset, notYetFound) =>
+            val individualItemRequests = notYetFound.map(
+              itemId => searchBySourceIdentifier(Seq(itemId))
+            )
+            Future
+              .sequence(individualItemRequests)
+              .map(results => foundSubset.map(Right(_)) ++ results.flatten)
+        }
       }
-    } yield result
+      .recover {
+        case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
+      }
+  }
 
-    httpResult.recover {
-      case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
-    }
+  private case class RequestedItemsFromWorks(
+    found: Seq[RequestedItemWithWork],
+    notFound: Seq[DisplayIdentifier]
+  )
+  private def getRequestedItemsFromWorks(
+    itemIdentifiers: Seq[DisplayIdentifier],
+    works: Seq[CatalogueWork]
+  ): RequestedItemsFromWorks = {
+    val matchingItems = for {
+      work <- works
+      itemId <- itemIdentifiers
+      item <- work.getItem(itemId)
+    } yield (item, work)
+    val notFound = itemIdentifiers.filterNot(
+      itemId =>
+        matchingItems.exists(_._1.identifiers.headOption.contains(itemId))
+    )
+    RequestedItemsFromWorks(
+      found = matchingItems
+      // If the item is on multiple works, choose the first one
+        .groupBy(_._1.identifiers.headOption)
+        .flatMap(_._2.headOption)
+        .map {
+          case (item, work) => RequestedItemWithWork(item, work)
+        }
+        .toSeq,
+      notFound
+    )
+  }
+
+  implicit class WorkOps(work: CatalogueWork) {
+    def getItem(itemIdentifier: DisplayIdentifier): Option[DisplayItem] =
+      work.items.find(_.identifiers.headOption.contains(itemIdentifier))
   }
 }

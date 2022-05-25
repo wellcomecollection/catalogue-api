@@ -249,12 +249,12 @@ class ItemLookupTest
           workTitle = workA.title,
           item = itemAsJson(item1)
         )
-        result(1).left.value shouldBe a[ItemNotFoundError]
-        result(2).value shouldBe RequestedItemWithWork(
+        result(1).value shouldBe RequestedItemWithWork(
           workId = workB.id,
           workTitle = workB.title,
           item = itemAsJson(item3)
         )
+        result(2).left.value shouldBe a[ItemNotFoundError]
       }
     }
 
@@ -368,6 +368,68 @@ class ItemLookupTest
       }
     }
 
+    it("finds all items which are on a very large number of works") {
+      val item1 = IdentifiedItemStub()
+      val item2 = IdentifiedItemStub()
+      val item3 = IdentifiedItemStub()
+
+      val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
+      val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
+      val moreItem1works = (1 to 234).map(
+        n => WorkStub(sourceIdentifier = n.toString, items = List(item1))
+      )
+
+      val responses = Seq(
+        (
+          catalogueSourceIdsRequest(
+            item2.sourceIdentifier,
+            item3.sourceIdentifier
+          ),
+          catalogueWorkResponse(Seq(workA, workB) ++ moreItem1works)
+        ),
+        (
+          catalogueSourceIdsRequest(
+            item2.sourceIdentifier
+          ),
+          catalogueWorkResponse(Seq(workA, workB))
+        ),
+        (
+          catalogueSourceIdsRequest(
+            item3.sourceIdentifier
+          ),
+          catalogueWorkResponse(Seq(workB))
+        )
+      )
+
+      val future = withItemLookup(responses) {
+        _.bySourceIdentifier(
+          Seq(
+            item2.sourceIdentifier,
+            item3.sourceIdentifier
+          )
+        )
+      }
+
+      whenReady(future) {
+        _ shouldBe List(
+          Right(
+            RequestedItemWithWork(
+              workId = workA.id,
+              workTitle = workA.title,
+              item = itemAsJson(item2)
+            )
+          ),
+          Right(
+            RequestedItemWithWork(
+              workId = workB.id,
+              workTitle = workB.title,
+              item = itemAsJson(item3)
+            )
+          )
+        )
+      }
+    }
+
     it("returns an error if the API lookup fails") {
       val brokenClient = new MemoryHttpClient(responses = Seq()) with HttpGet {
         override val baseUri: Uri = Uri("http://catalogue:9001")
@@ -428,12 +490,20 @@ class ItemLookupTest
     title: Option[String] = Some(s"title-${randomAlphanumeric()}")
   )
 
-  private def catalogueWorkResponse(works: Seq[WorkStub]): HttpResponse =
+  val pageSize = 100
+  private def catalogueWorkResponse(
+    works: Seq[WorkStub],
+    page: Int = 1
+  ): HttpResponse =
     HttpResponse(
       entity = createJsonHttpEntityWith(
         s"""
            |{
-           |  "results": [ ${works.map(catalogueWorkJson).mkString(",")} ]
+           |  "totalResults": $pageSize,
+           |  "results": [ ${works
+             .slice((page - 1) * pageSize, page * pageSize)
+             .map(catalogueWorkJson)
+             .mkString(",")} ]
            |}
            |""".stripMargin
       )
