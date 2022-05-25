@@ -499,7 +499,7 @@ class ItemLookupTest
       entity = createJsonHttpEntityWith(
         s"""
            |{
-           |  "totalResults": $pageSize,
+           |  "totalResults": ${works.size},
            |  "results": [ ${works
              .slice((page - 1) * pageSize, page * pageSize)
              .map(catalogueWorkJson)

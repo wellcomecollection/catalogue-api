@@ -122,6 +122,7 @@ class RequestsApiFeatureTest
               contentType = ContentTypes.`application/json`,
               s"""
                  |{
+                 |  "totalResults": 2,
                  |  "results": [
                  |    {
                  |      "id": "$workId1",

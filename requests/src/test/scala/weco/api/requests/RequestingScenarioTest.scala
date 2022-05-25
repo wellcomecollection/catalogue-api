@@ -43,6 +43,7 @@ class RequestingScenarioTest
           HttpResponse(
             entity = createJsonHttpEntityWith(s"""
                  |{
+                 |  "totalResults": 1,
                  |  "results": [
                  |    {
                  |      "id": "kltbsiza",
@@ -123,6 +124,7 @@ class RequestingScenarioTest
             entity = createJsonHttpEntityWith(
               """
                 |{
+                |  "totalResults": 0,
                 |  "results": []
                 |}
                 |""".stripMargin
@@ -1434,6 +1436,7 @@ class RequestingScenarioTest
       entity = createJsonHttpEntityWith(
         s"""
            |{
+           |  "totalResults": 1,
            |  "results": [
            |    {
            |      "id": "rbhv3mnj",
