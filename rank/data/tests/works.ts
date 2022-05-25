@@ -171,8 +171,16 @@ const tests: Test[] = [
       { query: 'nuğūm', ratings: ['jtbenqbq'], knownFailure: true },
       { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
       { query: 'arbeiten', ratings: ['xn7yyrqf'], knownFailure: true },
-      { query: 'travaillons', ratings: ['jb823ud6'] },
-      { query: 'conosceva', ratings: ['va2vy7wb'] },
+      {
+        query: 'savoire',
+        ratings: ['tbuwy9bk'],
+        description: 'french stemming',
+      },
+      {
+        query: 'conosceva',
+        ratings: ['j3w6u4t2', 'mt8bj5zk', 'vhf56vvz'],
+        description: 'italian stemming',
+      },
       { query: 'sharh', ratings: ['frd5y363'] },
       {
         query: 'arkaprakāśa',
