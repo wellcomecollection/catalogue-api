@@ -1,7 +1,5 @@
-import { equalTo0, equalTo1 } from './pass'
-
 import { Test } from '../../types/test'
-import { filterCaseRatings } from './queryAugmentation'
+import { equalTo1 } from './pass'
 
 const tests: Test[] = [
   {
@@ -11,6 +9,14 @@ const tests: Test[] = [
       'Ensure that the query brings back the works we expect at the top of the list',
     eval: equalTo1,
     cases: [
+      {
+        // https://github.com/wellcomecollection/catalogue-api/issues/466
+        query: 'information law',
+        ratings: ['zkg7xqm7'],
+        knownFailure: true,
+        description:
+          'Multi-word exact matches at the start of a title should be prioritised',
+      },
       {
         query: 'DJmjW2cU',
         ratings: ['djmjw2cu'],
