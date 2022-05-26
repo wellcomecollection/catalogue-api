@@ -13,7 +13,7 @@ To run tests in the app, run `yarn dev`, and go to `http://localhost:3000/dev`.
 
 ## CI
 
-TODO: tests should automatically run against the pipeline cluster in CI when we deploy a new pipeline to stage.
+Tests are automatically run against the pipeline cluster in CI when we deploy a new pipeline to stage.
 
 ## Performance
 
