@@ -10,6 +10,7 @@ const tests: Test[] = [
     eval: equalTo1,
     cases: [
       {
+        // https://github.com/wellcomecollection/catalogue-api/issues/466
         query: 'information law',
         ratings: ['zkg7xqm7'],
         knownFailure: true,
