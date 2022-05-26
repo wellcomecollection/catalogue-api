@@ -114,6 +114,7 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
+            page = 1,
             itemNumber1.withCheckDigit,
             itemNumber2.withCheckDigit
           ),
@@ -122,6 +123,7 @@ class RequestsApiFeatureTest
               contentType = ContentTypes.`application/json`,
               s"""
                  |{
+                 |  "totalResults": 2,
                  |  "results": [
                  |    {
                  |      "id": "$workId1",
@@ -381,6 +383,7 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
+            page = 1,
             itemNumber1.withCheckDigit,
             itemNumber2.withCheckDigit
           ),

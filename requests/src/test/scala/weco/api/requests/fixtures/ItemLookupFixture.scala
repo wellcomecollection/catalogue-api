@@ -29,13 +29,17 @@ trait ItemLookupFixture extends Akka with HttpFixtures {
       )
     )
 
-  def catalogueItemsRequest(ids: String*): HttpRequest =
+  def catalogueItemsRequest(page: Int, ids: String*): HttpRequest =
     HttpRequest(
       uri = Uri(
-        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids.mkString(",")}&pageSize=100"
+        s"http://catalogue:9001/works?include=identifiers,items&items.identifiers=${ids
+          .mkString(",")}&pageSize=100&page=$page"
       )
     )
 
-  def catalogueSourceIdsRequest(ids: DisplayIdentifier*): HttpRequest =
-    catalogueItemsRequest(ids.map(_.value): _*)
+  def catalogueSourceIdsRequest(
+    page: Int,
+    ids: DisplayIdentifier*
+  ): HttpRequest =
+    catalogueItemsRequest(page, ids.map(_.value): _*)
 }
