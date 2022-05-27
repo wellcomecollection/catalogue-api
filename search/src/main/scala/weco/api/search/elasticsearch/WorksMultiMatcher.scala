@@ -51,11 +51,11 @@ case object WorksMultiMatcher {
         SpanFirstQuery(
           SpanTermQuery(
             field = "data.title.shingles",
-            value = q,
+            value = q
           ),
           boost = Some(1000),
           queryName = Some("start of title"),
-          end=1
+          end = 1
         ),
         MultiMatchQuery(
           q,
