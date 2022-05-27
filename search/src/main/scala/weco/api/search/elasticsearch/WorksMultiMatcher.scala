@@ -42,7 +42,7 @@ case object WorksMultiMatcher {
         //
         //      Human genetic information : science, law, and ethics
         //      International journal of law and information technology
-        //      Information law : compliance for librarians and information professionals 
+        //      Information law : compliance for librarians and information professionals
         //
         // and somebody searches for "Information law", all other things being equal,
         // we want to prioritise the third result.
