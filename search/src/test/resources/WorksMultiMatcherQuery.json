@@ -2,6 +2,18 @@
   "bool": {
     "should": [
       {
+        "span_first": {
+          "match": {
+            "span_term": {
+              "data.title.shingles": "{{query}}"
+            }
+          },
+          "end": 1,
+          "boost": 1000,
+          "_name": "start of title"
+        }
+      },
+      {
         "multi_match": {
           "query": "{{query}}",
           "fields": [

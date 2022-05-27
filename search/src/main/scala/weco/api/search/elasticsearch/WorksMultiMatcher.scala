@@ -12,6 +12,10 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   MatchQuery,
   MultiMatchQuery
 }
+import com.sksamuel.elastic4s.requests.searches.span.{
+  SpanFirstQuery,
+  SpanTermQuery
+}
 
 case object WorksMultiMatcher {
   val titleFields = Seq(
@@ -32,6 +36,15 @@ case object WorksMultiMatcher {
   def apply(q: String): BoolQuery =
     boolQuery()
       .should(
+        SpanFirstQuery(
+          SpanTermQuery(
+            field = "data.title.shingles",
+            value = q,
+          ),
+          boost = Some(1000),
+          queryName = Some("start of title"),
+          end=1
+        ),
         MultiMatchQuery(
           q,
           queryName = Some("identifiers"),
