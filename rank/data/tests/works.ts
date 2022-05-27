@@ -13,7 +13,6 @@ const tests: Test[] = [
         // https://github.com/wellcomecollection/catalogue-api/issues/466
         query: 'information law',
         ratings: ['zkg7xqm7'],
-        knownFailure: true,
         description:
           'Multi-word exact matches at the start of a title should be prioritised',
       },
