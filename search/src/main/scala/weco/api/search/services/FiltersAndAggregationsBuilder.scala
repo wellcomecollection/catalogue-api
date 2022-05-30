@@ -89,7 +89,7 @@ class WorkFiltersAndAggregationsBuilder(
       case _: FormatFilter       => List(WorkAggregationRequest.Format)
       case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
       case _: GenreFilter        => List(WorkAggregationRequest.Genre)
-      case _: SubjectLabelFilter      => List(WorkAggregationRequest.Subject)
+      case _: SubjectLabelFilter => List(WorkAggregationRequest.Subject)
       case _: ContributorsFilter => List(WorkAggregationRequest.Contributor)
       case _: LicenseFilter      => List(WorkAggregationRequest.License)
       case _: AvailabilitiesFilter =>

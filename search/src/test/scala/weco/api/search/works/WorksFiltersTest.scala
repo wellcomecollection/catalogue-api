@@ -365,7 +365,12 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
     val testCases = Table(
       ("filterName", "query", "expectedIds", "clue"),
-      ("subjects.label", "Sanitation.", Seq(sanitationWork), "single match single subject"),
+      (
+        "subjects.label",
+        "Sanitation.",
+        Seq(sanitationWork),
+        "single match single subject"
+      ),
       (
         "subjects.label",
         "London (England)",
@@ -422,7 +427,12 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
-            (filterName, query: String, expectedIds: Seq[String], clue: String) =>
+            (
+              filterName,
+              query: String,
+              expectedIds: Seq[String],
+              clue: String
+            ) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
