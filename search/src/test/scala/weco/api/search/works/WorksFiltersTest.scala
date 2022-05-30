@@ -345,7 +345,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     }
   }
 
-  describe("filtering works by subject") {
+  describe("filtering works") {
     val sanitationWork = "works.examples.subject-filters-tests.0"
     val londonWork = "works.examples.subject-filters-tests.1"
     val psychologyWork = "works.examples.subject-filters-tests.2"
@@ -364,42 +364,80 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       )
 
     val testCases = Table(
-      ("query", "expectedIds", "clue"),
-      ("Sanitation.", Seq(sanitationWork), "single match single subject"),
+      ("filterName", "query", "expectedIds", "clue"),
       (
+        "subjects.label",
+        "Sanitation.",
+        Seq(sanitationWork),
+        "single match single subject"
+      ),
+      (
+        "subjects.label",
         "London (England)",
         Seq(londonWork, mostThingsWork),
         "multi match single subject"
       ),
       (
+        "subjects.label",
         "Sanitation.,London (England)",
         Seq(sanitationWork, londonWork, mostThingsWork),
         "comma separated"
       ),
       (
+        "subjects.label",
         """Sanitation.,"Psychology, Pathological"""",
         Seq(sanitationWork, psychologyWork, mostThingsWork),
         "commas in quotes"
       ),
       (
+        "subjects.label",
         """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
         Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
         "escaped quotes in quotes"
+      ),
+      (
+        "subjects",
+        "sanitati",
+        Seq(sanitationWork),
+        "searching for a single canonical ID"
+      ),
+      (
+        "subjects",
+        "sanitati,darwin01",
+        Seq(sanitationWork, darwinWork, mostThingsWork),
+        "searching for a multiple canonical IDs"
+      ),
+      (
+        "subjects.identifiers",
+        "mesh-sanitation",
+        Seq(sanitationWork),
+        "searching for a single source identifier"
+      ),
+      (
+        "subjects.identifiers",
+        "mesh-sanitation,lcnames-darwin",
+        Seq(sanitationWork, darwinWork, mostThingsWork),
+        "searching for multiple source identifiers"
       )
     )
 
-    it("filters by subjects as a comma separated list") {
+    it("filters by subjects") {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
-            (query: String, expectedIds: Seq[String], clue: String) =>
+            (
+              filterName,
+              query: String,
+              expectedIds: Seq[String],
+              clue: String
+            ) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
                   path =
-                    s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
+                    s"$rootPath/works?$filterName=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
                   Status.OK -> worksListResponse(expectedIds)
                 }

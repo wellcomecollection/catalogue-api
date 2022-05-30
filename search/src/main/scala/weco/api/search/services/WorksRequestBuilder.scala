@@ -158,8 +158,14 @@ object WorksRequestBuilder
         termsQuery(field = "data.languages.id", values = languageIds)
       case GenreFilter(genreQueries) =>
         termsQuery("data.genres.label.keyword", genreQueries)
-      case SubjectFilter(subjectQueries) =>
-        termsQuery("data.subjects.label.keyword", subjectQueries)
+
+      case SubjectIdFilter(ids) =>
+        termsQuery("query.subjects.id", ids)
+      case SubjectIdentifiersFilter(sourceIdentifiers) =>
+        termsQuery("query.subjects.identifiers.value", sourceIdentifiers)
+      case SubjectLabelFilter(labels) =>
+        termsQuery("query.subjects.label", labels)
+
       case ContributorsFilter(contributorQueries) =>
         termsQuery("data.contributors.agent.label.keyword", contributorQueries)
       case LicenseFilter(licenseIds) =>
