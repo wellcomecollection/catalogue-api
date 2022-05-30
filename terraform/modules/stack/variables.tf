@@ -24,16 +24,16 @@ variable "elastic_cloud_vpce_sg_id" {
 
 variable "desired_task_counts" {
   type = object({
-    search = number,
-    items  = number,
+    search   = number,
+    items    = number,
     concepts = number
   })
 }
 
 variable "container_images" {
   type = object({
-    search = string,
-    items  = string,
+    search   = string,
+    items    = string,
     concepts = string
   })
 }

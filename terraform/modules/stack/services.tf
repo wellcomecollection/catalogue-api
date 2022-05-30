@@ -7,8 +7,8 @@ locals {
 
   container_ports = {
     concepts = 7777
-    search = 8888
-    items  = 9999
+    search   = 8888
+    items    = 9999
   }
 }
 
@@ -94,10 +94,10 @@ module "concepts_api" {
   security_group_ids          = local.ecs_security_groups
 
   environment = {
-    PORT           = local.container_ports.concepts
+    PORT = local.container_ports.concepts
   }
 
-  secrets = { }
+  secrets = {}
 
   subnets                = local.routable_private_subnets
   cluster_arn            = var.cluster_arn
