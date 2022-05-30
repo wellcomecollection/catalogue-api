@@ -6,6 +6,7 @@ locals {
   ]
 
   container_ports = {
+    concepts = 7777
     search = 8888
     items  = 9999
   }
@@ -81,3 +82,26 @@ module "items_api" {
   deployment_service_env = var.environment_name
 }
 
+module "concepts_api" {
+  source                  = "../service"
+  service_name            = "${var.environment_name}-concepts-api"
+  deployment_service_name = "concepts-api"
+
+  container_port              = local.container_ports.concepts
+  container_image             = var.container_images.concepts
+  desired_task_count          = var.desired_task_counts.concepts
+  load_balancer_listener_port = local.concepts_lb_port
+  security_group_ids          = local.ecs_security_groups
+
+  environment = {
+    PORT           = local.container_ports.concepts
+  }
+
+  secrets = { }
+
+  subnets                = local.routable_private_subnets
+  cluster_arn            = var.cluster_arn
+  vpc_id                 = var.vpc_id
+  load_balancer_arn      = aws_lb.catalogue_api.arn
+  deployment_service_env = var.environment_name
+}

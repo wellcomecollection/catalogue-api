@@ -7,11 +7,13 @@ module "catalogue_api_prod" {
   container_images = {
     search = "${local.search_repository}:env.prod"
     items  = "${local.items_repository}:env.prod"
+    concepts = "${local.concepts_repository}:env.prod"
   }
 
   desired_task_counts = {
     search = 3
     items  = 3
+    concepts = 3
   }
 
   vpc_id                   = local.vpc_id
@@ -39,11 +41,13 @@ module "catalogue_api_stage" {
   container_images = {
     search = "${local.search_repository}:env.stage"
     items  = "${local.items_repository}:env.stage"
+    concepts = "${local.concepts_repository}:env.stage"
   }
 
   desired_task_counts = {
     search = 1
     items  = 1
+    concepts = 1
   }
 
   vpc_id                   = local.vpc_id
