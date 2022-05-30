@@ -1,5 +1,5 @@
 # Build this with the repo root as the build context
-FROM public.ecr.aws/docker/library/node:16-alpine AS monorepo-builder
+FROM public.ecr.aws/docker/library/node:16-alpine
 
 WORKDIR /app
 
