@@ -15,6 +15,8 @@ from provider import current_branch, is_default_branch
 from sbt_dependency_tree import Repository
 
 
+non_scala_projects = ["diff_tool", "concepts"]
+
 def should_run_sbt_project(repo, project_name, changed_paths):
     project = repo.get_project(project_name)
 
@@ -46,10 +48,10 @@ def should_run_sbt_project(repo, project_name, changed_paths):
         if path.startswith("docs/"):
             continue
 
-        if path.endswith((".py", ".tf", ".md")):
+        if path.endswith((".py", ".tf", ".md", ".js", ".ts")):
             continue
 
-        if path.startswith("diff_tool"):
+        if any(path.startswith(project) for project in non_scala_projects):
             continue
 
         if os.path.basename(path) in {".terraform.lock.hcl", ".wellcome_project"}:
