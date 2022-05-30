@@ -1,6 +1,13 @@
-import app from "./src/app";
+import createApp from "./src/app";
+import { getElasticClient } from "./src/elasticsearch";
 
-const port = process.env.PORT ?? 3000;
-app.listen(port, () => {
-  console.log(`Concepts API listening on port ${port}`);
+getElasticClient({
+  serviceName: "concepts_api",
+  pipelineDate: "2022-05-30",
+}).then((elastic) => {
+  const app = createApp({ elastic });
+  const port = process.env.PORT ?? 3000;
+  app.listen(port, () => {
+    console.log(`Concepts API listening on port ${port}`);
+  });
 });
