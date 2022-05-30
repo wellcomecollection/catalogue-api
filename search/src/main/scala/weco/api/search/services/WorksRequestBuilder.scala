@@ -30,6 +30,7 @@ object WorksRequestBuilder
       .sortBy { sortBy }
       .limit { searchOptions.pageSize }
       .from { PaginationQuery.safeGetFrom(searchOptions) }
+      .sourceInclude("display", "type")
   }
 
   private def filteredAggregationBuilder(
