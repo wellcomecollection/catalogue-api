@@ -17,6 +17,7 @@ from sbt_dependency_tree import Repository
 
 non_scala_projects = ["diff_tool", "concepts"]
 
+
 def should_run_sbt_project(repo, project_name, changed_paths):
     project = repo.get_project(project_name)
 
