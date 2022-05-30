@@ -30,6 +30,7 @@ class ElasticsearchIterator(
       .scroll[HasDisplay](
         search(config.index)
           .query(termQuery("type", "Visible"))
+          .sourceInclude("display")
       )
       .map(_.display.noSpaces)
   }

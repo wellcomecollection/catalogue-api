@@ -38,6 +38,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
+      .sourceInclude("display")
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
