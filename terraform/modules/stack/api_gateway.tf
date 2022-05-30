@@ -28,7 +28,7 @@ resource "aws_api_gateway_deployment" "default" {
       module.single_work_route.all_ids,
       module.items_route.all_ids,
       module.concepts_route.all_ids,
-      module.single_concept_route.all_ids
+      module.single_concept_route.all_ids,
       module.default_route.all_ids,
       module.v1_root_gone.all_ids,
       module.v1_gone.all_ids
