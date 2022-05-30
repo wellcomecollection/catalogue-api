@@ -44,6 +44,12 @@ steps:
     agents:
       queue: "scala"
 
+  - label: "Test concepts API"
+    plugins:
+      - docker-compose#v3.9.0:
+          run: concepts_api
+          command: ["yarn", "test"]
+
   - command: .buildkite/scripts/run_job.py snapshot_generator
     label: "Snapshot generator"
     agents:
