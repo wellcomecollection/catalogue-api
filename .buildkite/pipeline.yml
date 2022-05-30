@@ -47,8 +47,21 @@ steps:
   - label: "Test concepts API"
     plugins:
       - docker-compose#v3.9.0:
-          run: concepts_api
+          run: concepts
           command: ["yarn", "test"]
+
+  - label: "Publish concepts API (ECR)"
+    #    if: build.branch == "main"
+    if: build.branch == "concepts-ci"
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      - ecr#v2.1.1:
+          login: true
+      - docker-compose#v3.9.0:
+          push:
+            - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
+            - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
 
   - command: .buildkite/scripts/run_job.py snapshot_generator
     label: "Snapshot generator"
