@@ -7,7 +7,7 @@ COPY ./yarn.lock ./package.json ./
 COPY ./concepts ./concepts
 
 WORKDIR concepts
-RUN yarn install --frozen-lockfile --production && yarn cache clean
+RUN yarn install --frozen-lockfile && yarn cache clean
 
 CMD ["yarn", "start"]
 
