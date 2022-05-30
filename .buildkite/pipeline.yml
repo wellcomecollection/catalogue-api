@@ -52,8 +52,7 @@ steps:
           command: ["yarn", "test"]
 
   - label: "Publish concepts API (ECR)"
-    #    if: build.branch == "main"
-    if: build.branch == "concepts-ci"
+    if: build.branch == "main"
     depends_on:
       - "concepts-test"
     plugins:
