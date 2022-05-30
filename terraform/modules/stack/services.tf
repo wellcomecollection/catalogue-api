@@ -102,6 +102,11 @@ module "concepts_api" {
 
   secrets = {}
 
+  // TODO increase these when this is a production service
+  // These are the minima allowed by Fargate
+  app_cpu    = 256
+  app_memory = 512
+
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
   subnets                = local.routable_private_subnets
