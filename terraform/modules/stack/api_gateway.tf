@@ -27,6 +27,8 @@ resource "aws_api_gateway_deployment" "default" {
       module.single_image_route.all_ids,
       module.single_work_route.all_ids,
       module.items_route.all_ids,
+      module.concepts_route.all_ids,
+      module.single_concept_route.all_ids,
       module.default_route.all_ids,
       module.v1_root_gone.all_ids,
       module.v1_gone.all_ids
@@ -140,6 +142,39 @@ module "items_route" {
   path_param       = "workId"
   integration_path = "/works/{workId}"
   lb_port          = local.items_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+// /v2/concepts
+module "concepts_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.v2.id
+  path_part   = "concepts"
+  http_method = "ANY"
+
+  integration_path = "/concepts"
+  lb_port          = local.concepts_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+// /v2/concepts/{conceptId}
+module "single_concept_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = module.concepts_route.resource_id
+  path_part   = "{conceptId}"
+  http_method = "ANY"
+
+  path_param       = "conceptId"
+  integration_path = "/concepts/{conceptId}"
+  lb_port          = local.concepts_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
   external_hostname = var.external_hostname
