@@ -35,23 +35,23 @@ steps:
     priority: 1
 
   - command: .buildkite/scripts/run_job.py items
-    label: "Stacks: Items API"
+    label: "Items API"
     agents:
       queue: "scala"
 
   - command: .buildkite/scripts/run_job.py requests
-    label: "Stacks: Requests API"
+    label: "Requests API"
     agents:
       queue: "scala"
 
-  - label: "Test concepts API"
+  - label: "Concepts API (test)"
     key: "concepts-test"
     plugins:
       - docker-compose#v3.9.0:
           run: concepts
           command: ["yarn", "test"]
 
-  - label: "Publish concepts API (ECR)"
+  - label: "Concepts API (push image)"
     if: build.branch == "main"
     depends_on:
       - "concepts-test"
