@@ -45,6 +45,7 @@ steps:
       queue: "scala"
 
   - label: "Test concepts API"
+    key: "concepts-test"
     plugins:
       - docker-compose#v3.9.0:
           run: concepts
@@ -53,6 +54,8 @@ steps:
   - label: "Publish concepts API (ECR)"
     #    if: build.branch == "main"
     if: build.branch == "concepts-ci"
+    depends_on:
+      - "concepts-test"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
