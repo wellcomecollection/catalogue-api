@@ -30,7 +30,7 @@ const conceptController = ({
     });
 
     for (const work of worksIndexResponse.body.hits.hits) {
-      for (const subject of work.display.subjects) {
+      for (const subject of work._source.display.subjects) {
         if (subject.id === id) {
           res.status(200).json({
             id,

@@ -6,13 +6,15 @@ type ClientParameters = {
   serviceName: string;
 };
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const getElasticClientConfig = async ({
   pipelineDate,
   serviceName,
 }: ClientParameters): Promise<ClientOptions> => {
   const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}`;
   const [host, port, protocol, username, password] = await Promise.all([
-    getSecret(`${secretPrefix}/private_host`),
+    getSecret(`${secretPrefix}/${isProduction ? "private" : "public"}_host`),
     getSecret(`${secretPrefix}/port`),
     getSecret(`${secretPrefix}/protocol`),
     getSecret(`${secretPrefix}/${serviceName}/es_username`),
