@@ -1,5 +1,5 @@
 import createApp from "./src/app";
-import { getElasticClient } from "./src/elasticsearch";
+import { getElasticClient } from "./src/services/elasticsearch";
 
 getElasticClient({
   serviceName: "concepts_api",
