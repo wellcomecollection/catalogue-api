@@ -5,7 +5,11 @@ type Clients = {
   elastic: ElasticClient;
 };
 
-const createApp = (clients: Clients) => {
+type Context = {
+  pipelineDate: string;
+};
+
+const createApp = (clients: Clients, context: Context) => {
   const app = express();
 
   app.get("/concepts", (req, res) => {
