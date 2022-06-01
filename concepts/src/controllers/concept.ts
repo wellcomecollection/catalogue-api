@@ -2,11 +2,11 @@ import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import { Concept } from "../types";
-import { ErrorResponse, errorResponse } from "./responses";
+import { HttpError } from "./error";
 
 type Params = { id: string };
 
-type ConceptHandler = RequestHandler<Params, Concept | ErrorResponse>;
+type ConceptHandler = RequestHandler<Params, Concept>;
 
 type Dependencies = { elasticClient: ElasticClient; index: string };
 
@@ -43,13 +43,11 @@ const conceptController = ({
       }
     }
 
-    res.status(404).json(
-      errorResponse({
-        status: 404,
-        label: "Not Found",
-        description: "Concept not found",
-      })
-    );
+    throw new HttpError({
+      status: 404,
+      label: "Not Found",
+      description: `Concept not found: ${id}`,
+    });
   });
 
 export default conceptController;

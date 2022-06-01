@@ -1,6 +1,6 @@
 import express from "express";
 import type { Client as ElasticClient } from "@elastic/elasticsearch";
-import { conceptController } from "./controllers";
+import { conceptController, errorHandler } from "./controllers";
 
 type Clients = {
   elastic: ElasticClient;
@@ -28,6 +28,8 @@ const createApp = (clients: Clients, context: Context) => {
       index: elasticIndex,
     })
   );
+
+  app.use(errorHandler);
 
   return app;
 };
