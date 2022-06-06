@@ -23,40 +23,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |      ],
                  |      "availabilities" : [
                  |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "id" : "oo9fg6ic",
-                 |      "identifiers" : [
-                 |        {
-                 |          "identifierType" : {
-                 |            "id" : "miro-image-number",
-                 |            "label" : "Miro image number",
-                 |            "type" : "IdentifierType"
-                 |          },
-                 |          "type" : "Identifier",
-                 |          "value" : "cQYSxE7gRG"
-                 |        },
-                 |        {
-                 |          "identifierType" : {
-                 |            "id" : "sierra-system-number",
-                 |            "label" : "Sierra system number",
-                 |            "type" : "IdentifierType"
-                 |          },
-                 |          "type" : "Identifier",
-                 |          "value" : "ji3JH82kKu"
-                 |        }
-                 |      ],
-                 |      "title" : "A work with all the include-able fields",
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "alternativeTitles" : [
-                 |      ],
-                 |      "availabilities" : [
-                 |        {
                  |          "id" : "open-shelves",
                  |          "label" : "Open shelves",
                  |          "type" : "Availability"
@@ -67,25 +33,25 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
-                 |      "id" : "ou9z1esm",
+                 |      "id" : "jfzz4ou9",
                  |      "identifiers" : [
                  |        {
                  |          "identifierType" : {
-                 |            "id" : "calm-record-id",
-                 |            "label" : "Calm RecordIdentifier",
+                 |            "id" : "miro-image-number",
+                 |            "label" : "Miro image number",
                  |            "type" : "IdentifierType"
                  |          },
                  |          "type" : "Identifier",
-                 |          "value" : "gcgP8jfZZ4"
+                 |          "value" : "Is1ajgcgP8"
                  |        },
                  |        {
                  |          "identifierType" : {
-                 |            "id" : "sierra-system-number",
-                 |            "label" : "Sierra system number",
+                 |            "id" : "miro-image-number",
+                 |            "label" : "Miro image number",
                  |            "type" : "IdentifierType"
                  |          },
                  |          "type" : "Identifier",
-                 |          "value" : "ef8BdXe1K5"
+                 |          "value" : "FhqVjVef8B"
                  |        }
                  |      ],
                  |      "title" : "A work with all the include-able fields",
@@ -101,7 +67,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |          "type" : "Availability"
                  |        }
                  |      ],
-                 |      "id" : "wchkoofm",
+                 |      "id" : "nlqnlwch",
                  |      "identifiers" : [
                  |        {
                  |          "identifierType" : {
@@ -110,8 +76,28 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |            "type" : "IdentifierType"
                  |          },
                  |          "type" : "Identifier",
-                 |          "value" : "mGMGKNlQnl"
+                 |          "value" : "jfcicmGMGK"
                  |        },
+                 |        {
+                 |          "identifierType" : {
+                 |            "id" : "sierra-system-number",
+                 |            "label" : "Sierra system number",
+                 |            "type" : "IdentifierType"
+                 |          },
+                 |          "type" : "Identifier",
+                 |          "value" : "aGKxAEeG0H"
+                 |        }
+                 |      ],
+                 |      "title" : "A work with all the include-able fields",
+                 |      "type" : "Work"
+                 |    },
+                 |    {
+                 |      "alternativeTitles" : [
+                 |      ],
+                 |      "availabilities" : [
+                 |      ],
+                 |      "id" : "tmdfbk5k",
+                 |      "identifiers" : [
                  |        {
                  |          "identifierType" : {
                  |            "id" : "miro-image-number",
@@ -119,7 +105,16 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |            "type" : "IdentifierType"
                  |          },
                  |          "type" : "Identifier",
-                 |          "value" : "eG0HzUX6yZ"
+                 |          "value" : "Aic5qOhRoS"
+                 |        },
+                 |        {
+                 |          "identifierType" : {
+                 |            "id" : "sierra-system-number",
+                 |            "label" : "Sierra system number",
+                 |            "type" : "IdentifierType"
+                 |          },
+                 |          "type" : "Identifier",
+                 |          "value" : "UfcQYSxE7g"
                  |        }
                  |      ],
                  |      "title" : "A work with all the include-able fields",
@@ -144,7 +139,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=identifiers"
+            path = s"$rootPath/works/tmdfbk5k?include=identifiers"
           ) {
             Status.OK ->
               s"""
@@ -152,13 +147,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |  "alternativeTitles" : [
                  |  ],
                  |  "availabilities" : [
-                 |    {
-                 |      "id" : "closed-stores",
-                 |      "label" : "Closed stores",
-                 |      "type" : "Availability"
-                 |    }
                  |  ],
-                 |  "id" : "oo9fg6ic",
+                 |  "id" : "tmdfbk5k",
                  |  "identifiers" : [
                  |    {
                  |      "identifierType" : {
@@ -166,8 +156,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        "label" : "Miro image number",
                  |        "type" : "IdentifierType"
                  |      },
-                 |      "type" : "Identifier",
-                 |      "value" : "cQYSxE7gRG"
+                 |      "value" : "Aic5qOhRoS",
+                 |      "type" : "Identifier"
                  |    },
                  |    {
                  |      "identifierType" : {
@@ -175,8 +165,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |        "label" : "Sierra system number",
                  |        "type" : "IdentifierType"
                  |      },
-                 |      "type" : "Identifier",
-                 |      "value" : "ji3JH82kKu"
+                 |      "value" : "UfcQYSxE7g",
+                 |      "type" : "Identifier"
                  |    }
                  |  ],
                  |  "title" : "A work with all the include-able fields",
@@ -195,7 +185,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works/oo9fg6ic?include=items"
+          path = s"$rootPath/works/tmdfbk5k?include=items"
         ) {
           Status.OK ->
             s"""
@@ -203,13 +193,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                |  "alternativeTitles" : [
                |  ],
                |  "availabilities" : [
-               |    {
-               |      "id" : "closed-stores",
-               |      "label" : "Closed stores",
-               |      "type" : "Availability"
-               |    }
                |  ],
-               |  "id" : "oo9fg6ic",
+               |  "id" : "tmdfbk5k",
                |  "items" : [
                |    {
                |      "id" : "ca3anii6",
@@ -300,177 +285,172 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=subjects") {
             Status.OK ->
-              s"""
-                 |{
-                 |  "pageSize" : 10,
-                 |  "results" : [
-                 |    {
-                 |      "alternativeTitles" : [
-                 |      ],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "id" : "oo9fg6ic",
-                 |      "subjects" : [
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "g08I834KKSXk1WG",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "WfqE6xFakoqsVT1",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "GlsNpYpthDMBLQZ",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "ArEtlVdV0j",
-                 |          "type" : "Subject"
-                 |        },
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "OR7nUmbDY87Uw1L",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "vlTE5cIHQR23GK9",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "tQdPt3acHhNKnNq",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "hG54NzomzM",
-                 |          "type" : "Subject"
-                 |        }
-                 |      ],
-                 |      "title" : "A work with all the include-able fields",
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "alternativeTitles" : [
-                 |      ],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "open-shelves",
-                 |          "label" : "Open shelves",
-                 |          "type" : "Availability"
-                 |        },
-                 |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "id" : "ou9z1esm",
-                 |      "subjects" : [
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "31h63sJtsRuBvzw",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "4YQmyoWabAgXxwl",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "S5TtSeuKJt4fspO",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "osW8hKQNGv",
-                 |          "type" : "Subject"
-                 |        },
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "eEWECb7cJuhQpXN",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "FDoA7rpYPiDfifs",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "BwXAEPbWRaGNi2H",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "h5tlAUKxcP",
-                 |          "type" : "Subject"
-                 |        }
-                 |      ],
-                 |      "title" : "A work with all the include-able fields",
-                 |      "type" : "Work"
-                 |    },
-                 |    {
-                 |      "alternativeTitles" : [
-                 |      ],
-                 |      "availabilities" : [
-                 |        {
-                 |          "id" : "closed-stores",
-                 |          "label" : "Closed stores",
-                 |          "type" : "Availability"
-                 |        }
-                 |      ],
-                 |      "id" : "wchkoofm",
-                 |      "subjects" : [
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "RSdhZCyeulPkNaP",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "0ClgfwapmD7jxio",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "pplRbppKZMbAm0v",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "5LLMVvWxgX",
-                 |          "type" : "Subject"
-                 |        },
-                 |        {
-                 |          "concepts" : [
-                 |            {
-                 |              "label" : "2EMkmWOjlKvfRGK",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "p22pTPNg1Fb7hLZ",
-                 |              "type" : "Concept"
-                 |            },
-                 |            {
-                 |              "label" : "CWP2ToHCa1SqaQC",
-                 |              "type" : "Concept"
-                 |            }
-                 |          ],
-                 |          "label" : "PSF4EIy1m2",
-                 |          "type" : "Subject"
-                 |        }
-                 |      ],
-                 |      "title" : "A work with all the include-able fields",
-                 |      "type" : "Work"
-                 |    }
-                 |  ],
-                 |  "totalPages" : 1,
-                 |  "totalResults" : 3,
-                 |  "type" : "ResultList"
-                 |}
-                 |""".stripMargin
+              """
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "jfzz4ou9",
+                      "subjects" : [
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "hKQNGv31h63sJts",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "RuBvzw4YQmyoWab",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "AgXxwlS5TtSeuKJ",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "dXe1K5osW8",
+                          "type" : "Subject"
+                        },
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "AUKxcPeEWECb7cJ",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "uhQpXNFDoA7rpYP",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "iDfifsBwXAEPbWR",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "t4fspOh5tl",
+                          "type" : "Subject"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "nlqnlwch",
+                      "subjects" : [
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "VvWxgXRSdhZCyeu",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "lPkNaP0Clgfwapm",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "D7jxiopplRbppKZ",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "zUX6yZ5LLM",
+                          "type" : "Subject"
+                        },
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "EIy1m22EMkmWOjl",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "KvfRGKp22pTPNg1",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "Fb7hLZCWP2ToHCa",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "MbAm0vPSF4",
+                          "type" : "Subject"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "subjects" : [
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "goKOwWLrIbnrzZj",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "i3JH82kKuArEtlV",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "dV0jg08I834KKSX",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "RGOo9Fg6ic",
+                          "type" : "Subject"
+                        },
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "FakoqsVT1GlsNpY",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "pthDMBLQZhG54Nz",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "omzMOR7nUmbDY87",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "k1WGWfqE6x",
+                          "type" : "Subject"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                 """
           }
       }
     }
@@ -484,7 +464,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=subjects"
+            path = s"$rootPath/works/tmdfbk5k?include=subjects"
           ) {
             Status.OK ->
               s"""
@@ -492,48 +472,43 @@ class WorksIncludesTest extends ApiWorksTestBase {
                  |  "alternativeTitles" : [
                  |  ],
                  |  "availabilities" : [
-                 |    {
-                 |      "id" : "closed-stores",
-                 |      "label" : "Closed stores",
-                 |      "type" : "Availability"
-                 |    }
                  |  ],
-                 |  "id" : "oo9fg6ic",
+                 |  "id" : "tmdfbk5k",
                  |  "subjects" : [
                  |    {
                  |      "concepts" : [
                  |        {
-                 |          "label" : "g08I834KKSXk1WG",
+                 |          "label" : "goKOwWLrIbnrzZj",
                  |          "type" : "Concept"
                  |        },
                  |        {
-                 |          "label" : "WfqE6xFakoqsVT1",
+                 |          "label" : "i3JH82kKuArEtlV",
                  |          "type" : "Concept"
                  |        },
                  |        {
-                 |          "label" : "GlsNpYpthDMBLQZ",
+                 |          "label" : "dV0jg08I834KKSX",
                  |          "type" : "Concept"
                  |        }
                  |      ],
-                 |      "label" : "ArEtlVdV0j",
+                 |      "label" : "RGOo9Fg6ic",
                  |      "type" : "Subject"
                  |    },
                  |    {
                  |      "concepts" : [
                  |        {
-                 |          "label" : "OR7nUmbDY87Uw1L",
+                 |          "label" : "FakoqsVT1GlsNpY",
                  |          "type" : "Concept"
                  |        },
                  |        {
-                 |          "label" : "vlTE5cIHQR23GK9",
+                 |          "label" : "pthDMBLQZhG54Nz",
                  |          "type" : "Concept"
                  |        },
                  |        {
-                 |          "label" : "tQdPt3acHhNKnNq",
+                 |          "label" : "omzMOR7nUmbDY87",
                  |          "type" : "Concept"
                  |        }
                  |      ],
-                 |      "label" : "hG54NzomzM",
+                 |      "label" : "k1WGWfqE6x",
                  |      "type" : "Subject"
                  |    }
                  |  ],
@@ -565,58 +540,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "genres" : [
-                        {
-                          "concepts" : [
-                            {
-                              "label" : "nFnK1Qv0bPiYMZq",
-                              "type" : "Concept"
-                            },
-                            {
-                              "label" : "uffyNPDgAW3Gj5M",
-                              "type" : "Concept"
-                            },
-                            {
-                              "label" : "4V6Fk1Uu2KL5QXs",
-                              "type" : "Concept"
-                            }
-                          ],
-                          "label" : "4fR1f4tFlV",
-                          "type" : "Genre"
-                        },
-                        {
-                          "concepts" : [
-                            {
-                              "label" : "WE1MLX8biK5UW9S",
-                              "type" : "Concept"
-                            },
-                            {
-                              "label" : "VIX0fEgCIWtB2H6",
-                              "type" : "Concept"
-                            },
-                            {
-                              "label" : "8ssuRzRpFAch6oM",
-                              "type" : "Concept"
-                            }
-                          ],
-                          "label" : "RV8G10Obxx",
-                          "type" : "Genre"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -631,41 +554,41 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         {
                           "concepts" : [
                             {
-                              "label" : "TK6GyLzSreGLHq3",
+                              "label" : "MAgtlZTK6GyLzSr",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "k05FqagUauios0I",
+                              "label" : "eGLHq3k05FqagUa",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "zDAQA5geMZT0FFS",
+                              "label" : "uios0IzDAQA5geM",
                               "type" : "Concept"
                             }
                           ],
-                          "label" : "dKsPMAgtlZ",
+                          "label" : "aGNi2HdKsP",
                           "type" : "Genre"
                         },
                         {
                           "concepts" : [
                             {
-                              "label" : "xfQFhVctBFwsNPA",
+                              "label" : "ZGNVldxfQFhVctB",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "X3Wg9bz6n2QtjPU",
+                              "label" : "FwsNPAX3Wg9bz6n",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "bfZXARrSCGUFES8",
+                              "label" : "2QtjPUbfZXARrSC",
                               "type" : "Concept"
                             }
                           ],
-                          "label" : "0zAAZGNVld",
+                          "label" : "ZT0FFS0zAA",
                           "type" : "Genre"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     },
@@ -683,41 +606,88 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         {
                           "concepts" : [
                             {
-                              "label" : "2wBgqY0L1ZF1PYZ",
+                              "label" : "WAxFOW2wBgqY0L1",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "IWOP5xioqrw7Ohi",
+                              "label" : "ZF1PYZIWOP5xioq",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "AUBgzynPVyy1Bmo",
+                              "label" : "rw7OhiAUBgzynPV",
                               "type" : "Concept"
                             }
                           ],
-                          "label" : "D06AWAxFOW",
+                          "label" : "1SqaQCD06A",
                           "type" : "Genre"
                         },
                         {
                           "concepts" : [
                             {
-                              "label" : "HcLRRBkyn24xZvM",
+                              "label" : "e6G99aHcLRRBkyn",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "lY5yFST4hzY1cKo",
+                              "label" : "24xZvMlY5yFST4h",
                               "type" : "Concept"
                             },
                             {
-                              "label" : "WGXrGHlOd9kGPDW",
+                              "label" : "zY1cKoWGXrGHlOd",
                               "type" : "Concept"
                             }
                           ],
-                          "label" : "iqJbe6G99a",
+                          "label" : "yy1BmoiqJb",
                           "type" : "Genre"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "genres" : [
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "IHQR23GK9tQdPt3",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "acHhNKnNq4fR1f4",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "tFlVnFnK1Qv0bPi",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "Uw1LvlTE5c",
+                          "type" : "Genre"
+                        },
+                        {
+                          "concepts" : [
+                            {
+                              "label" : "DgAW3Gj5M4V6Fk1",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "Uu2KL5QXsRV8G10",
+                              "type" : "Concept"
+                            },
+                            {
+                              "label" : "ObxxWE1MLX8biK5",
+                              "type" : "Concept"
+                            }
+                          ],
+                          "label" : "YMZquffyNP",
+                          "type" : "Genre"
+                        }
+                      ],
+                      "id" : "tmdfbk5k",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     }
@@ -740,7 +710,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=genres"
+            path = s"$rootPath/works/tmdfbk5k?include=genres"
           ) {
             Status.OK ->
               s"""
@@ -748,51 +718,46 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
                   "genres" : [
                     {
                       "concepts" : [
                         {
-                          "label" : "nFnK1Qv0bPiYMZq",
+                          "label" : "IHQR23GK9tQdPt3",
                           "type" : "Concept"
                         },
                         {
-                          "label" : "uffyNPDgAW3Gj5M",
+                          "label" : "acHhNKnNq4fR1f4",
                           "type" : "Concept"
                         },
                         {
-                          "label" : "4V6Fk1Uu2KL5QXs",
+                          "label" : "tFlVnFnK1Qv0bPi",
                           "type" : "Concept"
                         }
                       ],
-                      "label" : "4fR1f4tFlV",
+                      "label" : "Uw1LvlTE5c",
                       "type" : "Genre"
                     },
                     {
                       "concepts" : [
                         {
-                          "label" : "WE1MLX8biK5UW9S",
+                          "label" : "DgAW3Gj5M4V6Fk1",
                           "type" : "Concept"
                         },
                         {
-                          "label" : "VIX0fEgCIWtB2H6",
+                          "label" : "Uu2KL5QXsRV8G10",
                           "type" : "Concept"
                         },
                         {
-                          "label" : "8ssuRzRpFAch6oM",
+                          "label" : "ObxxWE1MLX8biK5",
                           "type" : "Concept"
                         }
                       ],
-                      "label" : "RV8G10Obxx",
+                      "label" : "YMZquffyNP",
                       "type" : "Genre"
                     }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "title" : "A work with all the include-able fields",
                   "type" : "Work"
                 }
@@ -824,40 +789,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "contributors" : [
-                        {
-                          "agent" : {
-                            "label" : "person-o8xazs",
-                            "type" : "Person"
-                          },
-                          "roles" : [
-                          ],
-                          "type" : "Contributor"
-                        },
-                        {
-                          "agent" : {
-                            "label" : "person-6am8fhYNr",
-                            "type" : "Person"
-                          },
-                          "roles" : [
-                          ],
-                          "type" : "Contributor"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -871,7 +802,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "contributors" : [
                         {
                           "agent" : {
-                            "label" : "person-2bLQeClX",
+                            "label" : "person-UFES8H2",
                             "type" : "Person"
                           },
                           "roles" : [
@@ -880,7 +811,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         },
                         {
                           "agent" : {
-                            "label" : "person-epg6BQO",
+                            "label" : "person-LQeClX",
                             "type" : "Person"
                           },
                           "roles" : [
@@ -888,7 +819,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Contributor"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     },
@@ -905,7 +836,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "contributors" : [
                         {
                           "agent" : {
-                            "label" : "person-Lu2Xsa",
+                            "label" : "person-kGPDWLL",
                             "type" : "Person"
                           },
                           "roles" : [
@@ -914,7 +845,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         },
                         {
                           "agent" : {
-                            "label" : "person-m0dL6XAj",
+                            "label" : "person-2Xsatm0",
                             "type" : "Person"
                           },
                           "roles" : [
@@ -922,7 +853,36 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Contributor"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "contributors" : [
+                        {
+                          "agent" : {
+                            "label" : "person-W9SVIX0fEg",
+                            "type" : "Person"
+                          },
+                          "roles" : [
+                          ],
+                          "type" : "Contributor"
+                        },
+                        {
+                          "agent" : {
+                            "label" : "person-IWtB2H6",
+                            "type" : "Person"
+                          },
+                          "roles" : [
+                          ],
+                          "type" : "Contributor"
+                        }
+                      ],
+                      "id" : "tmdfbk5k",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     }
@@ -945,7 +905,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=contributors"
+            path = s"$rootPath/works/tmdfbk5k?include=contributors"
           ) {
             Status.OK ->
               s"""
@@ -953,16 +913,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
                   "contributors" : [
                     {
                       "agent" : {
-                        "label" : "person-o8xazs",
+                        "label" : "person-W9SVIX0fEg",
                         "type" : "Person"
                       },
                       "roles" : [
@@ -971,7 +926,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                     },
                     {
                       "agent" : {
-                        "label" : "person-6am8fhYNr",
+                        "label" : "person-IWtB2H6",
                         "type" : "Person"
                       },
                       "roles" : [
@@ -979,7 +934,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "type" : "Contributor"
                     }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "title" : "A work with all the include-able fields",
                   "type" : "Work"
                 }
@@ -1011,66 +966,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "production" : [
-                        {
-                          "agents" : [
-                            {
-                              "label" : "6lVoGuWXqO",
-                              "type" : "Person"
-                            }
-                          ],
-                          "dates" : [
-                            {
-                              "label" : "9eqzv",
-                              "type" : "Period"
-                            }
-                          ],
-                          "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
-                          "places" : [
-                            {
-                              "label" : "NRzQw5sJ89",
-                              "type" : "Place"
-                            }
-                          ],
-                          "type" : "ProductionEvent"
-                        },
-                        {
-                          "agents" : [
-                            {
-                              "label" : "Ap8e8SuyMV",
-                              "type" : "Person"
-                            }
-                          ],
-                          "dates" : [
-                            {
-                              "label" : "HQTT2",
-                              "type" : "Period"
-                            }
-                          ],
-                          "label" : "roF4g2k9frr0xAeKZIqbV783c",
-                          "places" : [
-                            {
-                              "label" : "9SMhIH2DH1",
-                              "type" : "Place"
-                            }
-                          ],
-                          "type" : "ProductionEvent"
-                        }
-                      ],
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -1081,25 +976,25 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "production" : [
                         {
                           "agents" : [
                             {
-                              "label" : "kEl0aPDS91",
+                              "label" : "CtekEl0aPD",
                               "type" : "Person"
                             }
                           ],
                           "dates" : [
                             {
-                              "label" : "lOaLK",
+                              "label" : "tepg6",
                               "type" : "Period"
                             }
                           ],
-                          "label" : "O1Lux1bNFDaOKTsDKbwserVib",
+                          "label" : "BQOO1Lux1bNFDaOKTsDKbwser",
                           "places" : [
                             {
-                              "label" : "co3T5a2Cte",
+                              "label" : "Vibco3T5a2",
                               "type" : "Place"
                             }
                           ],
@@ -1108,20 +1003,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         {
                           "agents" : [
                             {
-                              "label" : "tTXh5eC6hh",
+                              "label" : "H9vtTXh5eC",
                               "type" : "Person"
                             }
                           ],
                           "dates" : [
                             {
-                              "label" : "PPPss",
+                              "label" : "S91lO",
                               "type" : "Period"
                             }
                           ],
-                          "label" : "Lw3A3d2SgHOvziH7duUdynba2",
+                          "label" : "aLKLw3A3d2SgHOvziH7duUdyn",
                           "places" : [
                             {
-                              "label" : "c8ykXyKH9v",
+                              "label" : "ba2c8ykXyK",
                               "type" : "Place"
                             }
                           ],
@@ -1141,25 +1036,25 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
                       "production" : [
                         {
                           "agents" : [
                             {
-                              "label" : "e7X4srn7yL",
+                              "label" : "Pe7X4srn7y",
                               "type" : "Person"
                             }
                           ],
                           "dates" : [
                             {
-                              "label" : "EuJLA",
+                              "label" : "dL6XA",
                               "type" : "Period"
                             }
                           ],
-                          "label" : "dGFZw7o2IL5cpTq2szbf8JXFR",
+                          "label" : "jdGFZw7o2IL5cpTq2szbf8JXF",
                           "places" : [
                             {
-                              "label" : "L51HaiqMvP",
+                              "label" : "RL51HaiqMv",
                               "type" : "Place"
                             }
                           ],
@@ -1168,20 +1063,75 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         {
                           "agents" : [
                             {
-                              "label" : "THk4Fal6yy",
+                              "label" : "ITHk4Fal6y",
                               "type" : "Person"
                             }
                           ],
                           "dates" : [
                             {
-                              "label" : "c6PAy",
+                              "label" : "LEuJL",
                               "type" : "Period"
                             }
                           ],
-                          "label" : "gnoMEDJADyhgl97NLnSGT3Ooi",
+                          "label" : "AgnoMEDJADyhgl97NLnSGT3Oo",
                           "places" : [
                             {
-                              "label" : "RibBOUDMpI",
+                              "label" : "iRibBOUDMp",
+                              "type" : "Place"
+                            }
+                          ],
+                          "type" : "ProductionEvent"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "production" : [
+                        {
+                          "agents" : [
+                            {
+                              "label" : "dUXSLHjmev",
+                              "type" : "Person"
+                            }
+                          ],
+                          "dates" : [
+                            {
+                              "label" : "8ssuR",
+                              "type" : "Period"
+                            }
+                          ],
+                          "label" : "zRpFAch6oMgo8xazsI6am8fhY",
+                          "places" : [
+                            {
+                              "label" : "Nr11C9xxYE",
+                              "type" : "Place"
+                            }
+                          ],
+                          "type" : "ProductionEvent"
+                        },
+                        {
+                          "agents" : [
+                            {
+                              "label" : "frr0xAeKZI",
+                              "type" : "Person"
+                            }
+                          ],
+                          "dates" : [
+                            {
+                              "label" : "7aEhJ",
+                              "type" : "Period"
+                            }
+                          ],
+                          "label" : "0QNRzQw5sJ896lVoGuWXqO9eq",
+                          "places" : [
+                            {
+                              "label" : "zvroF4g2k9",
                               "type" : "Place"
                             }
                           ],
@@ -1210,7 +1160,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=production"
+            path = s"$rootPath/works/tmdfbk5k?include=production"
           ) {
             Status.OK ->
               s"""
@@ -1218,31 +1168,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "production" : [
                     {
                       "agents" : [
                         {
-                          "label" : "6lVoGuWXqO",
+                          "label" : "dUXSLHjmev",
                           "type" : "Person"
                         }
                       ],
                       "dates" : [
                         {
-                          "label" : "9eqzv",
+                          "label" : "8ssuR",
                           "type" : "Period"
                         }
                       ],
-                      "label" : "11C9xxYEdUXSLHjmev7aEhJ0Q",
+                      "label" : "zRpFAch6oMgo8xazsI6am8fhY",
                       "places" : [
                         {
-                          "label" : "NRzQw5sJ89",
+                          "label" : "Nr11C9xxYE",
                           "type" : "Place"
                         }
                       ],
@@ -1251,20 +1196,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
                     {
                       "agents" : [
                         {
-                          "label" : "Ap8e8SuyMV",
+                          "label" : "frr0xAeKZI",
                           "type" : "Person"
                         }
                       ],
                       "dates" : [
                         {
-                          "label" : "HQTT2",
+                          "label" : "7aEhJ",
                           "type" : "Period"
                         }
                       ],
-                      "label" : "roF4g2k9frr0xAeKZIqbV783c",
+                      "label" : "0QNRzQw5sJ896lVoGuWXqO9eq",
                       "places" : [
                         {
-                          "label" : "9SMhIH2DH1",
+                          "label" : "zvroF4g2k9",
                           "type" : "Place"
                         }
                       ],
@@ -1300,37 +1245,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "languages" : [
-                        {
-                          "id" : "Iry",
-                          "label" : "y1sdDDR",
-                          "type" : "Language"
-                        },
-                        {
-                          "id" : "CyK",
-                          "label" : "QFKzgro69P",
-                          "type" : "Language"
-                        },
-                        {
-                          "id" : "kIH",
-                          "label" : "HMjgKFaY5",
-                          "type" : "Language"
-                        }
-                      ],
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -1341,21 +1255,21 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "languages" : [
                         {
-                          "id" : "CoB",
-                          "label" : "HnJZViP",
+                          "id" : "6hh",
+                          "label" : "PPssCoB",
                           "type" : "Language"
                         },
                         {
-                          "id" : "XHQ",
-                          "label" : "S7Jxv9xrQ6",
+                          "id" : "EHn",
+                          "label" : "ZViPXHQHS",
                           "type" : "Language"
                         },
                         {
-                          "id" : "Lp6",
-                          "label" : "OUAue10NVp",
+                          "id" : "7Jx",
+                          "label" : "9xrQ6L",
                           "type" : "Language"
                         }
                       ],
@@ -1372,21 +1286,47 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
                       "languages" : [
                         {
-                          "id" : "dCh",
-                          "label" : "shi6cu",
+                          "id" : "yc6",
+                          "label" : "AydChzs",
                           "type" : "Language"
                         },
                         {
-                          "id" : "x20",
-                          "label" : "O7GkIFx8",
+                          "id" : "hi6",
+                          "label" : "ux209O7",
                           "type" : "Language"
                         },
                         {
-                          "id" : "vXQ",
-                          "label" : "PLHOqPv",
+                          "id" : "GkI",
+                          "label" : "x8vXQy",
+                          "type" : "Language"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "languages" : [
+                        {
+                          "id" : "qbV",
+                          "label" : "83c9SMhIH",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "2DH",
+                          "label" : "Ap8e8Su",
+                          "type" : "Language"
+                        },
+                        {
+                          "id" : "yMV",
+                          "label" : "QTT2Ir",
                           "type" : "Language"
                         }
                       ],
@@ -1410,7 +1350,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=languages"
+            path = s"$rootPath/works/tmdfbk5k?include=languages"
           ) {
             Status.OK ->
               s"""
@@ -1418,27 +1358,22 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "languages" : [
                     {
-                      "id" : "Iry",
-                      "label" : "y1sdDDR",
+                      "id" : "qbV",
+                      "label" : "83c9SMhIH",
                       "type" : "Language"
                     },
                     {
-                      "id" : "CyK",
-                      "label" : "QFKzgro69P",
+                      "id" : "2DH",
+                      "label" : "Ap8e8Su",
                       "type" : "Language"
                     },
                     {
-                      "id" : "kIH",
-                      "label" : "HMjgKFaY5",
+                      "id" : "yMV",
+                      "label" : "QTT2Ir",
                       "type" : "Language"
                     }
                   ],
@@ -1468,56 +1403,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "notes" : [
-                        {
-                          "contents" : [
-                            "j9BpOrhd8m"
-                          ],
-                          "noteType" : {
-                            "id" : "general-note",
-                            "label" : "Notes",
-                            "type" : "NoteType"
-                          },
-                          "type" : "Note"
-                        },
-                        {
-                          "contents" : [
-                            "ov3fzhoi",
-                            "zybrlE"
-                          ],
-                          "noteType" : {
-                            "id" : "location-of-duplicates",
-                            "label" : "Location of duplicates",
-                            "type" : "NoteType"
-                          },
-                          "type" : "Note"
-                        },
-                        {
-                          "contents" : [
-                            "YEJhvwXauL"
-                          ],
-                          "noteType" : {
-                            "id" : "funding-info",
-                            "label" : "Funding information",
-                            "type" : "NoteType"
-                          },
-                          "type" : "Note"
-                        }
-                      ],
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -1528,13 +1413,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "notes" : [
                         {
                           "contents" : [
-                            "GvRAnRE2",
-                            "kW4LcPBC1S",
-                            "uRC7Fyj"
+                            "0NVp7GvR"
                           ],
                           "noteType" : {
                             "id" : "general-note",
@@ -1545,7 +1428,9 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         },
                         {
                           "contents" : [
-                            "nCURCTNo7c"
+                            "6uOUAu",
+                            "RE2canCUR",
+                            "No7cLokW4L"
                           ],
                           "noteType" : {
                             "id" : "location-of-duplicates",
@@ -1568,12 +1453,22 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
                       "notes" : [
                         {
                           "contents" : [
-                            "CsB8YxC3",
-                            "Isn6KqXfd"
+                            "MM9NU3A"
+                          ],
+                          "noteType" : {
+                            "id" : "general-note",
+                            "label" : "Notes",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "6KqXfdMBn"
                           ],
                           "noteType" : {
                             "id" : "location-of-duplicates",
@@ -1584,7 +1479,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         },
                         {
                           "contents" : [
-                            "n6NMM9"
+                            "LHOqPv8Cs",
+                            "YxC3RLI"
                           ],
                           "noteType" : {
                             "id" : "funding-info",
@@ -1592,14 +1488,48 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "type" : "NoteType"
                           },
                           "type" : "Note"
-                        },
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "notes" : [
                         {
                           "contents" : [
-                            "3Au9wn3b"
+                            "hy1sdDDR"
                           ],
                           "noteType" : {
                             "id" : "general-note",
                             "label" : "Notes",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "FaY5fj9BpO"
+                          ],
+                          "noteType" : {
+                            "id" : "location-of-duplicates",
+                            "label" : "Location of duplicates",
+                            "type" : "NoteType"
+                          },
+                          "type" : "Note"
+                        },
+                        {
+                          "contents" : [
+                            "KLQFKzgro",
+                            "PkIHAHMj"
+                          ],
+                          "noteType" : {
+                            "id" : "funding-info",
+                            "label" : "Funding information",
                             "type" : "NoteType"
                           },
                           "type" : "Note"
@@ -1625,7 +1555,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=notes"
+            path = s"$rootPath/works/tmdfbk5k?include=notes"
           ) {
             Status.OK ->
               s"""
@@ -1633,17 +1563,12 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "notes" : [
                     {
                       "contents" : [
-                        "j9BpOrhd8m"
+                        "hy1sdDDR"
                       ],
                       "noteType" : {
                         "id" : "general-note",
@@ -1654,8 +1579,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                     },
                     {
                       "contents" : [
-                        "ov3fzhoi",
-                        "zybrlE"
+                        "FaY5fj9BpO"
                       ],
                       "noteType" : {
                         "id" : "location-of-duplicates",
@@ -1666,7 +1590,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                     },
                     {
                       "contents" : [
-                        "YEJhvwXauL"
+                        "KLQFKzgro",
+                        "PkIHAHMj"
                       ],
                       "noteType" : {
                         "id" : "funding-info",
@@ -1704,30 +1629,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "images" : [
-                        {
-                          "id" : "01bta4ru",
-                          "type" : "Image"
-                        },
-                        {
-                          "id" : "odhob23o",
-                          "type" : "Image"
-                        }
-                      ],
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -1738,14 +1639,14 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "images" : [
                         {
-                          "id" : "i8qttsmr",
+                          "id" : "qgsnmxvd",
                           "type" : "Image"
                         },
                         {
-                          "id" : "o1f5oxzt",
+                          "id" : "44dibycc",
                           "type" : "Image"
                         }
                       ],
@@ -1762,14 +1663,33 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Availability"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
                       "images" : [
                         {
-                          "id" : "jo80nlaw",
+                          "id" : "sckojo80",
                           "type" : "Image"
                         },
                         {
                           "id" : "gbgygwvo",
+                          "type" : "Image"
+                        }
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "images" : [
+                        {
+                          "id" : "jh1bfhkx",
+                          "type" : "Image"
+                        },
+                        {
+                          "id" : "nvapnemk",
                           "type" : "Image"
                         }
                       ],
@@ -1795,7 +1715,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=images"
+            path = s"$rootPath/works/tmdfbk5k?include=images"
           ) {
             Status.OK ->
               s"""
@@ -1803,20 +1723,15 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "images" : [
                     {
-                      "id" : "01bta4ru",
+                      "id" : "jh1bfhkx",
                       "type" : "Image"
                     },
                     {
-                      "id" : "odhob23o",
+                      "id" : "nvapnemk",
                       "type" : "Image"
                     }
                   ],
@@ -1837,7 +1752,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=parts"
+            path = s"$rootPath/works/tmdfbk5k?include=parts"
           ) {
             Status.OK ->
               s"""
@@ -1845,17 +1760,12 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "parts" : [
                     {
-                      "id" : "b1gnd7b0",
-                      "title" : "title-tnetMtnM6n",
+                      "id" : "a7om88xm",
+                      "title" : "title-nN4RHJX7OP",
                       "totalDescendentParts" : 0,
                       "totalParts" : 0,
                       "type" : "Work"
@@ -1876,7 +1786,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=partOf"
+            path = s"$rootPath/works/tmdfbk5k?include=partOf"
           ) {
             Status.OK ->
               s"""
@@ -1884,26 +1794,21 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "partOf" : [
                     {
-                      "id" : "dza7om88",
+                      "id" : "nrvdy0jg",
                       "partOf" : [
                         {
-                          "id" : "nelnrvdy",
-                          "title" : "title-grMS5Hy6x3",
+                          "id" : "0cs6cerb",
+                          "title" : "title-b1iZslIT5y",
                           "totalDescendentParts" : 5,
                           "totalParts" : 1,
                           "type" : "Work"
                         }
                       ],
-                      "title" : "title-BnN4RHJX7O",
+                      "title" : "title-MS5Hy6x38N",
                       "totalDescendentParts" : 4,
                       "totalParts" : 3,
                       "type" : "Work"
@@ -1924,7 +1829,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=precededBy"
+            path = s"$rootPath/works/tmdfbk5k?include=precededBy"
           ) {
             Status.OK ->
               s"""
@@ -1932,17 +1837,12 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "precededBy" : [
                     {
-                      "id" : "uxg4ed5m",
-                      "title" : "title-a7Ze4ZWUMQ",
+                      "id" : "1gnd7b0m",
+                      "title" : "title-tnetMtnM6n",
                       "totalDescendentParts" : 0,
                       "totalParts" : 0,
                       "type" : "Work"
@@ -1963,7 +1863,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=succeededBy"
+            path = s"$rootPath/works/tmdfbk5k?include=succeededBy"
           ) {
             Status.OK ->
               s"""
@@ -1971,17 +1871,12 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "succeededBy" : [
                     {
-                      "id" : "mdfbk5kj",
-                      "title" : "title-QgPzDrUplG",
+                      "id" : "uxg4ed5m",
+                      "title" : "title-Ia7Ze4ZWUM",
                       "totalDescendentParts" : 0,
                       "totalParts" : 0,
                       "type" : "Work"
@@ -2013,77 +1908,6 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       ],
                       "availabilities" : [
                         {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "Availability"
-                        }
-                      ],
-                      "holdings" : [
-                        {
-                          "enumeration" : [
-                            "iIHvpnyCp",
-                            "gbKXe6",
-                            "6XI29tA",
-                            "1KbU70mrqZ",
-                            "9N8dAz6",
-                            "bAErlg"
-                          ],
-                          "location" : {
-                            "accessConditions" : [
-                            ],
-                            "label" : "locationLabel",
-                            "license" : {
-                              "id" : "cc-by",
-                              "label" : "Attribution 4.0 International (CC BY 4.0)",
-                              "type" : "License",
-                              "url" : "http://creativecommons.org/licenses/by/4.0/"
-                            },
-                            "locationType" : {
-                              "id" : "closed-stores",
-                              "label" : "Closed stores",
-                              "type" : "LocationType"
-                            },
-                            "shelfmark" : "Shelfmark: wTJbrfYCV2",
-                            "type" : "PhysicalLocation"
-                          },
-                          "type" : "Holdings"
-                        },
-                        {
-                          "enumeration" : [
-                            "mVMvzez7JF",
-                            "7FYx3e0",
-                            "ZI12L0U9K8",
-                            "yAtfsUkFIG",
-                            "BSj9Gf",
-                            "Mi4wC1H",
-                            "ZomzsnWpc",
-                            "aAA6nO9h",
-                            "XJqcYm9tl",
-                            "p1QVJo"
-                          ],
-                          "note" : "BxSAn4PBcz",
-                          "type" : "Holdings"
-                        },
-                        {
-                          "enumeration" : [
-                            "Gbjg3Ifi",
-                            "HlycAdT2L",
-                            "laGIDVwG",
-                            "CtLHFeu"
-                          ],
-                          "note" : "dQ5Aoz3",
-                          "type" : "Holdings"
-                        }
-                      ],
-                      "id" : "oo9fg6ic",
-                      "title" : "A work with all the include-able fields",
-                      "type" : "Work"
-                    },
-                    {
-                      "alternativeTitles" : [
-                      ],
-                      "availabilities" : [
-                        {
                           "id" : "open-shelves",
                           "label" : "Open shelves",
                           "type" : "Availability"
@@ -2097,54 +1921,48 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "holdings" : [
                         {
                           "enumeration" : [
-                            "dJnvNoiufK"
-                          ],
-                          "location" : {
-                            "accessConditions" : [
-                            ],
-                            "label" : "locationLabel",
-                            "locationType" : {
-                              "id" : "open-shelves",
-                              "label" : "Open shelves",
-                              "type" : "LocationType"
-                            },
-                            "shelfmark" : "Shelfmark: yDmwtJxhA",
-                            "type" : "PhysicalLocation"
-                          },
-                          "note" : "ZZrd6sRqV",
-                          "type" : "Holdings"
-                        },
-                        {
-                          "enumeration" : [
+                            "ZThZZrd6",
+                            "RqVgEX",
+                            "JnvNoiuf",
+                            "WNuyDmwtJx",
+                            "AIELEn",
+                            "rWrk5Fv",
                             "CEKkIZfsA",
                             "Pwunml",
-                            "w7s12i",
-                            "Rh1E6F0o"
+                            "w7s12i"
                           ],
                           "location" : {
                             "accessConditions" : [
                             ],
                             "label" : "locationLabel",
                             "license" : {
-                              "id" : "pdm",
-                              "label" : "Public Domain Mark",
+                              "id" : "ogl",
+                              "label" : "Open Government Licence",
                               "type" : "License",
-                              "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
                             },
                             "locationType" : {
                               "id" : "open-shelves",
                               "label" : "Open shelves",
                               "type" : "LocationType"
                             },
-                            "shelfmark" : "Shelfmark: 2jPTlqN",
+                            "shelfmark" : "Shelfmark: 1E6F0oBW",
                             "type" : "PhysicalLocation"
                           },
-                          "note" : "EnBrWrk5",
+                          "note" : "libcScRo1F",
                           "type" : "Holdings"
                         },
                         {
                           "enumeration" : [
-                            "o8l1009JS"
+                            "hldbPB44o8",
+                            "1009JS",
+                            "Ibf5YS",
+                            "xm2Kats",
+                            "MXhTGxz9",
+                            "fcN5BFmTAn",
+                            "zGP9LZNM0",
+                            "Cw6Z9r",
+                            "1RAcTOrmR"
                           ],
                           "location" : {
                             "accessConditions" : [
@@ -2155,12 +1973,38 @@ class WorksIncludesTest extends ApiWorksTestBase {
                               "label" : "Closed stores",
                               "type" : "LocationType"
                             },
+                            "shelfmark" : "Shelfmark: uH8tqe0Ga",
+                            "type" : "PhysicalLocation"
+                          },
+                          "note" : "PTlqNXqKK",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "D4qF34g",
+                            "XCYEAsAu4Y"
+                          ],
+                          "location" : {
+                            "accessConditions" : [
+                            ],
+                            "label" : "locationLabel",
+                            "license" : {
+                              "id" : "ogl",
+                              "label" : "Open Government Licence",
+                              "type" : "License",
+                              "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                            },
+                            "locationType" : {
+                              "id" : "open-shelves",
+                              "label" : "Open shelves",
+                              "type" : "LocationType"
+                            },
                             "type" : "PhysicalLocation"
                           },
                           "type" : "Holdings"
                         }
                       ],
-                      "id" : "ou9z1esm",
+                      "id" : "jfzz4ou9",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     },
@@ -2254,7 +2098,60 @@ class WorksIncludesTest extends ApiWorksTestBase {
                           "type" : "Holdings"
                         }
                       ],
-                      "id" : "wchkoofm",
+                      "id" : "nlqnlwch",
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "holdings" : [
+                        {
+                          "enumeration" : [
+                            "RTIPEagBbz",
+                            "ToDhoB",
+                            "3OoUAz",
+                            "AFPJNg",
+                            "liIHvp",
+                            "yCpsgbKX",
+                            "6B6XI29t",
+                            "C1KbU70mrq",
+                            "m9N8dAz",
+                            "1bAErlgjqn"
+                          ],
+                          "note" : "8o5wdlW2gc",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "mVMvzez7JF",
+                            "7FYx3e0",
+                            "ZI12L0U9K8",
+                            "yAtfsUkFIG",
+                            "BSj9Gf",
+                            "Mi4wC1H",
+                            "ZomzsnWpc",
+                            "aAA6nO9h",
+                            "XJqcYm9tl",
+                            "p1QVJo"
+                          ],
+                          "note" : "xSAn4PBcz",
+                          "type" : "Holdings"
+                        },
+                        {
+                          "enumeration" : [
+                            "Gbjg3Ifi",
+                            "HlycAdT2L",
+                            "laGIDVwG",
+                            "CtLHFeu"
+                          ],
+                          "note" : "dQ5Aoz3",
+                          "type" : "Holdings"
+                        }
+                      ],
+                      "id" : "tmdfbk5k",
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
                     }
@@ -2275,7 +2172,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/oo9fg6ic?include=holdings"
+            path = s"$rootPath/works/tmdfbk5k?include=holdings"
           ) {
             Status.OK ->
               s"""
@@ -2283,43 +2180,26 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "alternativeTitles" : [
                   ],
                   "availabilities" : [
-                    {
-                      "id" : "closed-stores",
-                      "label" : "Closed stores",
-                      "type" : "Availability"
-                    }
                   ],
                   "holdings" : [
                     {
+                      "note" : "8o5wdlW2gc",
                       "enumeration" : [
-                        "iIHvpnyCp",
-                        "gbKXe6",
-                        "6XI29tA",
-                        "1KbU70mrqZ",
-                        "9N8dAz6",
-                        "bAErlg"
+                        "RTIPEagBbz",
+                        "ToDhoB",
+                        "3OoUAz",
+                        "AFPJNg",
+                        "liIHvp",
+                        "yCpsgbKX",
+                        "6B6XI29t",
+                        "C1KbU70mrq",
+                        "m9N8dAz",
+                        "1bAErlgjqn"
                       ],
-                      "location" : {
-                        "accessConditions" : [
-                        ],
-                        "label" : "locationLabel",
-                        "license" : {
-                          "id" : "cc-by",
-                          "label" : "Attribution 4.0 International (CC BY 4.0)",
-                          "type" : "License",
-                          "url" : "http://creativecommons.org/licenses/by/4.0/"
-                        },
-                        "locationType" : {
-                          "id" : "closed-stores",
-                          "label" : "Closed stores",
-                          "type" : "LocationType"
-                        },
-                        "shelfmark" : "Shelfmark: wTJbrfYCV2",
-                        "type" : "PhysicalLocation"
-                      },
                       "type" : "Holdings"
                     },
                     {
+                      "note" : "xSAn4PBcz",
                       "enumeration" : [
                         "mVMvzez7JF",
                         "7FYx3e0",
@@ -2332,21 +2212,20 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         "XJqcYm9tl",
                         "p1QVJo"
                       ],
-                      "note" : "BxSAn4PBcz",
                       "type" : "Holdings"
                     },
                     {
+                      "note" : "dQ5Aoz3",
                       "enumeration" : [
                         "Gbjg3Ifi",
                         "HlycAdT2L",
                         "laGIDVwG",
                         "CtLHFeu"
                       ],
-                      "note" : "dQ5Aoz3",
                       "type" : "Holdings"
                     }
                   ],
-                  "id" : "oo9fg6ic",
+                  "id" : "tmdfbk5k",
                   "title" : "A work with all the include-able fields",
                   "type" : "Work"
                 }

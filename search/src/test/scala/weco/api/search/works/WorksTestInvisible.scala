@@ -6,7 +6,7 @@ class WorksTestInvisible extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.invisible.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/ocx5hlvi") {
+        assertJsonResponse(routes, path = s"$rootPath/works/rczekocx") {
           Status.Gone -> deleted
         }
     }

@@ -15,7 +15,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         assertJsonResponse(
           routes,
           path =
-            s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
+            s"$rootPath/works?genres.label=Uw1LvlTE5c&subjects.label=RGOo9Fg6ic"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq("work.visible.everything.0")
@@ -561,7 +561,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -577,7 +577,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG,mGMGKNlQnl"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,jfcicmGMGK"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -594,7 +594,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=eG0HzUX6yZ"
+            path = s"$rootPath/works?identifiers=aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.1")
@@ -610,7 +610,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=eG0HzUX6yZ,ji3JH82kKu"
+            path = s"$rootPath/works?identifiers=UfcQYSxE7g,aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -627,7 +627,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG,eG0HzUX6yZ"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -732,7 +732,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           ) {
             Status.OK -> worksListResponse(
               ids = Seq(
-                "work.visible.everything.0",
                 "work.visible.everything.1",
                 "work.visible.everything.2"
               )
@@ -748,7 +747,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?partOf=dza7om88") {
+          assertJsonResponse(routes, path = s"$rootPath/works?partOf=nrvdy0jg") {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
             )
@@ -763,7 +762,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?partOf=title-BnN4RHJX7O"
+            path = s"$rootPath/works?partOf=title-MS5Hy6x38N"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -794,13 +793,13 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=kdcpazds,atsdmxht",
+        path = s"$rootPath/works?items=kdcpazds,iba49lem",
         expectedIds =
           Seq("work.visible.everything.1", "work.visible.everything.2")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=atsdmxht,ca3anii6",
+        path = s"$rootPath/works?items=iba49lem,ca3anii6",
         expectedIds =
           Seq("work.visible.everything.2", "work.visible.everything.0")
       )
