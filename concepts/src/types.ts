@@ -1,3 +1,5 @@
+import { PaginationResponse } from "./controllers/pagination";
+
 export type Concept = {
   id: string;
   identifiers: Identifier[];
@@ -7,13 +9,8 @@ export type Concept = {
 
 export type ResultList<Result> = {
   type: "ResultList";
-  pageSize: number;
-  totalPages: number;
-  totalResults: number;
   results: Result[];
-  nextPage?: string;
-  prevPage?: string;
-};
+} & PaginationResponse;
 
 export type Identifier = {
   identifierType: {

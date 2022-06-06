@@ -4,9 +4,9 @@ import asyncHandler from "express-async-handler";
 import { Concept } from "../types";
 import { HttpError } from "./error";
 
-type Params = { id: string };
+type PathParams = { id: string };
 
-type ConceptHandler = RequestHandler<Params, Concept>;
+type ConceptHandler = RequestHandler<PathParams, Concept>;
 
 type Dependencies = { elasticClient: ElasticClient; index: string };
 
@@ -35,7 +35,7 @@ const conceptController = ({
           res.status(200).json({
             id,
             label: subject.label,
-            identifiers: [subject.identifiers],
+            identifiers: subject.identifiers,
             type: "Subject",
           });
           return;
