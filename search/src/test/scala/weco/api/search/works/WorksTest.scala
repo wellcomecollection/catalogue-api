@@ -73,8 +73,10 @@ class WorksTest extends ApiWorksTestBase {
               "totalResults": ${visibleWorks.length},
               "nextPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                ${getVisibleWork("works.visible.0").display.withIncludes(WorksIncludes.none)},
-                ${getVisibleWork("works.visible.1").display.withIncludes(WorksIncludes.none)}
+                ${getVisibleWork("works.visible.0").display
+            .withIncludes(WorksIncludes.none)},
+                ${getVisibleWork("works.visible.1").display
+            .withIncludes(WorksIncludes.none)}
               ]
             }
           """
@@ -90,8 +92,10 @@ class WorksTest extends ApiWorksTestBase {
               "prevPage": "$publicRootUri/works?page=1&pageSize=2",
               "nextPage": "$publicRootUri/works?page=3&pageSize=2",
               "results": [
-                ${getVisibleWork("works.visible.2").display.withIncludes(WorksIncludes.none)},
-                ${getVisibleWork("works.visible.3").display.withIncludes(WorksIncludes.none)}
+                ${getVisibleWork("works.visible.2").display
+            .withIncludes(WorksIncludes.none)},
+                ${getVisibleWork("works.visible.3").display
+            .withIncludes(WorksIncludes.none)}
               ]
             }
           """
@@ -106,7 +110,8 @@ class WorksTest extends ApiWorksTestBase {
               "totalResults": ${visibleWorks.length},
               "prevPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                ${getVisibleWork("works.visible.4").display.withIncludes(WorksIncludes.none)}
+                ${getVisibleWork("works.visible.4").display
+            .withIncludes(WorksIncludes.none)}
               ]
             }
           """

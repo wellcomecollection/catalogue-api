@@ -9,7 +9,10 @@ class WorksRedirectsTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.redirected.0")
 
-        assertRedirectResponse(routes, path = s"$rootPath/works/$redirectSource") {
+        assertRedirectResponse(
+          routes,
+          path = s"$rootPath/works/$redirectSource"
+        ) {
           Status.Found -> s"${apiConfig.publicRootPath}/works/$redirectTarget"
         }
     }
