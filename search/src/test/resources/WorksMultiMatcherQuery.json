@@ -17,9 +17,8 @@
         "multi_match": {
           "query": "{{query}}",
           "fields": [
-            "state.canonicalId^1000.0",
-            "state.sourceIdentifier.value^1000.0",
-            "data.otherIdentifiers.value^1000.0",
+            "query.id^1000.0",
+            "query.identifiers.value^1000.0",
             "data.items.id.canonicalId^1000.0",
             "data.items.id.sourceIdentifier.value^1000.0",
             "data.items.id.otherIdentifiers.value^1000.0",
