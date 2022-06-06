@@ -1,13 +1,16 @@
 package weco.api.search.works
 
 class WorksRedirectsTest extends ApiWorksTestBase {
+  val redirectSource = "4nwkprdt"
+  val redirectTarget = "mv6kix0n"
+
   it("returns a TemporaryRedirect if looking up a redirected work") {
     withWorksApi {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.redirected.0")
 
-        assertRedirectResponse(routes, path = s"$rootPath/works/yemd0v8n") {
-          Status.Found -> s"${apiConfig.publicRootPath}/works/qklbwm3u"
+        assertRedirectResponse(routes, path = s"$rootPath/works/$redirectSource") {
+          Status.Found -> s"${apiConfig.publicRootPath}/works/$redirectTarget"
         }
     }
   }
@@ -19,9 +22,9 @@ class WorksRedirectsTest extends ApiWorksTestBase {
 
         assertRedirectResponse(
           routes,
-          path = s"$rootPath/works/yemd0v8n?include=identifiers"
+          path = s"$rootPath/works/$redirectSource?include=identifiers"
         ) {
-          Status.Found -> s"${apiConfig.publicRootPath}/works/qklbwm3u?include=identifiers"
+          Status.Found -> s"${apiConfig.publicRootPath}/works/$redirectTarget?include=identifiers"
         }
     }
   }

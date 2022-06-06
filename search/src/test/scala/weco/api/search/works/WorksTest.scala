@@ -1,5 +1,7 @@
 package weco.api.search.works
 
+import weco.api.search.models.request.WorksIncludes
+
 class WorksTest extends ApiWorksTestBase {
   it("returns a list of works") {
     withWorksApi {
@@ -17,14 +19,14 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.visible.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/7sjip63h") {
+        assertJsonResponse(routes, path = s"$rootPath/works/2twopft1") {
           Status.OK -> s"""
             {
-             "id": "7sjip63h",
-             "title": "title-dgZfc8BAUa",
-             "alternativeTitles": [],
-             "availabilities": [],
-             "type": "Work"
+              "id" : "2twopft1",
+              "title" : "title-vaMzxd8prf",
+              "alternativeTitles": [],
+              "availabilities": [],
+              "type": "Work"
             }
           """
         }
@@ -36,12 +38,12 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "work-with-edition-and-duration")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/kgxrtrir") {
+        assertJsonResponse(routes, path = s"$rootPath/works/gsruvqwf") {
           Status.OK ->
             """
               |{
-              |  "id" : "kgxrtrir",
-              |  "title" : "title-YGQYiF7SAh",
+              |  "id" : "gsruvqwf",
+              |  "title" : "title-4pIj0kgXrt",
               |  "alternativeTitles" : [],
               |  "availabilities" : [],
               |  "edition" : "Special edition",
@@ -71,20 +73,8 @@ class WorksTest extends ApiWorksTestBase {
               "totalResults": ${visibleWorks.length},
               "nextPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                {
-                 "id": "7sjip63h",
-                 "title": "title-dgZfc8BAUa",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                },
-                {
-                 "id": "ob2ruvbb",
-                 "title": "title-QPNB7ZuKSW",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                }
+                ${getVisibleWork("works.visible.0").display.withIncludes(WorksIncludes.none)},
+                ${getVisibleWork("works.visible.1").display.withIncludes(WorksIncludes.none)}
               ]
             }
           """
@@ -100,20 +90,8 @@ class WorksTest extends ApiWorksTestBase {
               "prevPage": "$publicRootUri/works?page=1&pageSize=2",
               "nextPage": "$publicRootUri/works?page=3&pageSize=2",
               "results": [
-                {
-                 "id": "pft15vam",
-                 "title": "title-d8prf0oY4u",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                },
-                {
-                 "id": "vbi1ii19",
-                 "title": "title-GGR8UNWutF",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                }
+                ${getVisibleWork("works.visible.2").display.withIncludes(WorksIncludes.none)},
+                ${getVisibleWork("works.visible.3").display.withIncludes(WorksIncludes.none)}
               ]
             }
           """
@@ -128,13 +106,7 @@ class WorksTest extends ApiWorksTestBase {
               "totalResults": ${visibleWorks.length},
               "prevPage": "$publicRootUri/works?page=2&pageSize=2",
               "results": [
-                {
-                 "id": "yqts0coj",
-                 "title": "title-qPyuxbr589",
-                 "alternativeTitles": [],
-                 "availabilities": [],
-                 "type": "Work"
-                }
+                ${getVisibleWork("works.visible.4").display.withIncludes(WorksIncludes.none)}
               ]
             }
           """
@@ -171,11 +143,11 @@ class WorksTest extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "work-thumbnail")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/b2tsq547") {
-          Status.OK -> s"""
+        assertJsonResponse(routes, path = s"$rootPath/works/sahqcluh") {
+          Status.OK -> """
             {
-              "id" : "b2tsq547",
-              "title" : "title-ZNHa9f6J8i",
+              "id" : "sahqcluh",
+              "title" : "title-LSfnjHB2TS",
               "alternativeTitles" : [],
               "thumbnail" : {
                 "locationType" : {
@@ -183,9 +155,7 @@ class WorksTest extends ApiWorksTestBase {
                   "label" : "IIIF Presentation API",
                   "type" : "LocationType"
                 },
-                "url" : "https://iiif.wellcomecollection.org/image/VKc.jpg/info.json",
-                "credit" : "Credit line: xg9Ouz",
-                "linkText" : "Link text: lieZAgiK4B",
+                "url" : "https://iiif.wellcomecollection.org/image/547.jpg/info.json",
                 "license" : {
                   "id" : "cc-by",
                   "label" : "Attribution 4.0 International (CC BY 4.0)",
