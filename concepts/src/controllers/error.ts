@@ -3,7 +3,7 @@ import { ErrorRequestHandler } from "express";
 export type ErrorResponse = {
   httpStatus: number;
   label: string;
-  description: string;
+  description?: string;
   errorType: "http";
   type: "Error";
 };
@@ -11,7 +11,7 @@ export type ErrorResponse = {
 export class HttpError extends Error {
   public readonly status: number;
   public readonly label: string;
-  public readonly description: string;
+  public readonly description?: string;
 
   constructor({
     status,
@@ -20,9 +20,9 @@ export class HttpError extends Error {
   }: {
     status: number;
     label: string;
-    description: string;
+    description?: string;
   }) {
-    super(description);
+    super(label);
     Object.setPrototypeOf(this, HttpError.prototype);
 
     this.status = status;
@@ -48,7 +48,6 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
       : new HttpError({
           status: 500,
           label: "Server error",
-          description: "Expected server error: " + err.toString(),
         });
 
   res.status(httpError.status).json(httpError.responseJson);
