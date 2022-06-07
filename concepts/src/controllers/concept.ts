@@ -46,7 +46,7 @@ const conceptController = ({
     throw new HttpError({
       status: 404,
       label: "Not Found",
-      description: `Concept not found: ${id}`,
+      description: `Concept not found for identifier ${id}`,
     });
   });
 
