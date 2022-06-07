@@ -41,7 +41,7 @@ const parsePaginationQueryParameters = (
   if (page !== undefined && page < 1) {
     throw new HttpError({
       status: 400,
-      label: "Bad request",
+      label: "Bad Request",
       description: "page: must be greater than 1",
     });
   }
