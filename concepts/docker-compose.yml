@@ -9,7 +9,7 @@ services:
       - elastic
     build:
       context: ..
-      dockerfile: ./Dockerfile
+      dockerfile: ./concepts/Dockerfile # Needs to be relative to the context
 
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:7.17.0"
