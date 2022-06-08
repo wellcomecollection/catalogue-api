@@ -1,20 +1,21 @@
-import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
-import { Concept } from "../types";
+import { Clients, Concept } from "../types";
 import { HttpError } from "./error";
+import { Config } from "../../config";
 
 type PathParams = { id: string };
 
 type ConceptHandler = RequestHandler<PathParams, Concept>;
 
-type Dependencies = { elasticClient: ElasticClient; index: string };
+const conceptController = (
+  clients: Clients,
+  config: Config
+): ConceptHandler => {
+  const index = `works-indexed-${config.pipelineDate}`;
+  const elasticClient = clients.elastic;
 
-const conceptController = ({
-  elasticClient,
-  index,
-}: Dependencies): ConceptHandler =>
-  asyncHandler(async (req, res) => {
+  return asyncHandler(async (req, res) => {
     const id = req.params.id;
     const worksIndexResponse = await elasticClient.search({
       index,
@@ -49,5 +50,6 @@ const conceptController = ({
       description: `Concept not found for identifier ${id}`,
     });
   });
+};
 
 export default conceptController;

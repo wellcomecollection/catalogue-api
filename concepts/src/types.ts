@@ -1,4 +1,9 @@
 import { PaginationResponse } from "./controllers/pagination";
+import { Client as ElasticClient } from "@elastic/elasticsearch";
+
+export type Clients = {
+  elastic: ElasticClient;
+};
 
 export type Concept = {
   id: string;

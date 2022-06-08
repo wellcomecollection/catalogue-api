@@ -1,38 +1,17 @@
 import express from "express";
-import type { Client as ElasticClient } from "@elastic/elasticsearch";
 import {
   conceptController,
   conceptsController,
   errorHandler,
 } from "./controllers";
+import { Config } from "../config";
+import { Clients } from "./types";
 
-type Clients = {
-  elastic: ElasticClient;
-};
-
-type Context = {
-  pipelineDate: string;
-};
-
-const createApp = (clients: Clients, context: Context) => {
+const createApp = (clients: Clients, config: Config) => {
   const app = express();
 
-  const elasticIndex = `works-indexed-${context.pipelineDate}`;
-  app.get(
-    "/concepts",
-    conceptsController({
-      elasticClient: clients.elastic,
-      index: elasticIndex,
-    })
-  );
-
-  app.get(
-    "/concepts/:id",
-    conceptController({
-      elasticClient: clients.elastic,
-      index: elasticIndex,
-    })
-  );
+  app.get("/concepts", conceptsController(clients, config));
+  app.get("/concepts/:id", conceptController(clients, config));
 
   app.use(errorHandler);
 

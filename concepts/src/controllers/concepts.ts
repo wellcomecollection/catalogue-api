@@ -1,14 +1,14 @@
-import { Client as ElasticClient } from "@elastic/elasticsearch";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import levenshtein from "leven";
 import * as R from "ramda";
-import { Concept, ResultList } from "../types";
+import { Clients, Concept, ResultList } from "../types";
 import {
-  getPaginationResponse,
   paginationElasticBody,
   PaginationQueryParameters,
+  paginationResponseGetter,
 } from "./pagination";
+import { Config } from "../../config";
 
 type QueryParams = { query?: string } & PaginationQueryParameters;
 
@@ -19,13 +19,15 @@ type ConceptHandler = RequestHandler<
   QueryParams
 >;
 
-type Dependencies = { elasticClient: ElasticClient; index: string };
+const conceptsController = (
+  clients: Clients,
+  config: Config
+): ConceptHandler => {
+  const index = `works-indexed-${config.pipelineDate}`;
+  const elasticClient = clients.elastic;
+  const getPaginationResponse = paginationResponseGetter(config.publicRootUrl);
 
-const conceptsController = ({
-  elasticClient,
-  index,
-}: Dependencies): ConceptHandler =>
-  asyncHandler(async (req, res) => {
+  return asyncHandler(async (req, res) => {
     const query = req.query.query;
     const elasticResponse = await elasticClient.search({
       index,
@@ -103,5 +105,6 @@ const conceptsController = ({
       ...paginationResponse,
     });
   });
+};
 
 export default conceptsController;
