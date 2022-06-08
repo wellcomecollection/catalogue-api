@@ -32,13 +32,27 @@ const conceptsController = ({
       body: {
         ...paginationElasticBody(req.query),
         _source: ["display.subjects"],
-        query: query
-          ? {
-              match: {
-                "data.subjects.label": query,
+        query: {
+          bool: {
+            must: [
+              {
+                term: { type: "Visible" },
               },
-            }
-          : { term: { type: "Visible" } },
+              {
+                exists: { field: "query.subjects.id" },
+              },
+            ],
+            should: query
+              ? [
+                  {
+                    match: {
+                      "data.subjects.label": query,
+                    },
+                  },
+                ]
+              : [],
+          },
+        },
       },
     });
 
