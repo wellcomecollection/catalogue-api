@@ -97,7 +97,8 @@ module "concepts_api" {
   load_balancer_listener_port = local.concepts_lb_port
 
   environment = {
-    PORT = local.container_ports.concepts
+    PORT            = local.container_ports.concepts
+    PUBLIC_ROOT_URL = local.catalogue_api_public_root
   }
 
   secrets = {}
