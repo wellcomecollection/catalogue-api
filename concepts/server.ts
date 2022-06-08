@@ -1,13 +1,14 @@
 import createApp from "./src/app";
 import { getElasticClient } from "./src/services/elasticsearch";
+import { getConfig } from "./config";
 
-const pipelineDate = "2022-05-30";
+const config = getConfig();
 
 getElasticClient({
-  serviceName: "catalogue_api", // TODO an elasticsearch user for the concepts API
-  pipelineDate,
+  serviceName: config.serviceName,
+  pipelineDate: config.pipelineDate,
 }).then((elastic) => {
-  const app = createApp({ elastic }, { pipelineDate });
+  const app = createApp({ elastic }, config);
   const port = process.env.PORT ?? 3000;
   app.listen(port, () => {
     console.log(`Concepts API listening on port ${port}`);

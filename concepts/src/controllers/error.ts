@@ -42,13 +42,15 @@ export class HttpError extends Error {
 }
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  const httpError =
-    err instanceof HttpError
-      ? err
-      : new HttpError({
-          status: 500,
-          label: "Server error",
-        });
-
-  res.status(httpError.status).json(httpError.responseJson);
+  if (err instanceof HttpError) {
+    res.status(err.status).json(err.responseJson);
+  } else {
+    // Log this to prevent it getting swallowed
+    console.trace(err);
+    const httpError = new HttpError({
+      status: 500,
+      label: "Server Error",
+    });
+    res.status(httpError.status).json(httpError.responseJson);
+  }
 };
