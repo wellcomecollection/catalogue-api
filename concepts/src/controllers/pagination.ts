@@ -1,4 +1,5 @@
 import { URL, URLSearchParams } from "url";
+import path from "path";
 import { HttpError } from "./error";
 
 const limits = {
@@ -59,32 +60,35 @@ const parsePaginationQueryParameters = (
   return { page, pageSize };
 };
 
-export const getPaginationResponse = ({
-  requestUrl,
-  totalResults,
-}: {
-  requestUrl: URL;
-  totalResults: number;
-}): PaginationResponse => {
-  const { page = 1, pageSize = defaultPageSize } =
-    parsePaginationQueryParameters(requestUrl.searchParams);
-  const totalPages = Math.ceil(totalResults / pageSize);
-  return {
-    pageSize,
-    totalPages,
+export const paginationResponseGetter =
+  (publicRootUrl: URL) =>
+  ({
+    requestUrl,
     totalResults,
-    prevPage: pageLink(page - 1, totalPages, requestUrl),
-    nextPage: pageLink(page + 1, totalPages, requestUrl),
+  }: {
+    requestUrl: URL;
+    totalResults: number;
+  }): PaginationResponse => {
+    const { page = 1, pageSize = defaultPageSize } =
+      parsePaginationQueryParameters(requestUrl.searchParams);
+    const totalPages = Math.ceil(totalResults / pageSize);
+    return {
+      pageSize,
+      totalPages,
+      totalResults,
+      prevPage: pageLink(page - 1, totalPages, requestUrl, publicRootUrl),
+      nextPage: pageLink(page + 1, totalPages, requestUrl, publicRootUrl),
+    };
   };
-};
 
 const pageLink = (
   page: number,
   totalPages: number,
-  requestUrl: URL
+  requestUrl: URL,
+  publicRootUrl: URL
 ): string | undefined => {
   if (pageExists(page, totalPages)) {
-    const linkUrl = new URL(requestUrl.href);
+    const linkUrl = extractPublicUrl(requestUrl, publicRootUrl);
     linkUrl.searchParams.set("page", page.toString());
     return linkUrl.href;
   }
@@ -96,6 +100,15 @@ const parseNumberParam = (
 ): number | undefined => {
   const number = parseInt(params.get(key) ?? "");
   return isNaN(number) ? undefined : number;
+};
+
+const extractPublicUrl = (requestUrl: URL, publicRootUrl: URL): URL => {
+  const publicUrl = new URL(requestUrl.href);
+  publicUrl.host = publicRootUrl.host;
+  publicUrl.port = publicRootUrl.port;
+  publicUrl.protocol = publicRootUrl.protocol;
+  publicUrl.pathname = path.join(publicRootUrl.pathname, requestUrl.pathname);
+  return publicUrl;
 };
 
 const pageExists = (page: number, totalPages: number): boolean =>

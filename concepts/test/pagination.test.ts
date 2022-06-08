@@ -1,6 +1,6 @@
 import { URL } from "url";
 import {
-  getPaginationResponse,
+  paginationResponseGetter,
   paginationElasticBody,
 } from "../src/controllers/pagination";
 
@@ -22,8 +22,15 @@ describe("pagination tools", () => {
   });
 
   describe("getPaginationResponse", () => {
+    const publicRootUrl = "https://test.public.url/root";
+    const getPaginationResponse = paginationResponseGetter(
+      new URL(publicRootUrl)
+    );
+
     it("returns appropriate links to prev/next pages if they exist", () => {
-      const requestUrl = new URL("https://test.test/docs?page=4&pageSize=25");
+      const requestUrl = new URL(
+        "https://test.private:123/docs?page=4&pageSize=25"
+      );
       const totalResults = 100;
       const response = getPaginationResponse({ requestUrl, totalResults });
 
@@ -32,17 +39,17 @@ describe("pagination tools", () => {
       expect(response.totalResults).toBe(totalResults);
       expect(response.nextPage).toBeUndefined();
       expect(response.prevPage).toBe(
-        "https://test.test/docs?page=3&pageSize=25"
+        `${publicRootUrl}/docs?page=3&pageSize=25`
       );
     });
 
     it("uses defaults where appropriate", () => {
-      const requestUrl = new URL("https://test.test/docs");
+      const requestUrl = new URL("https://test.private:123/docs");
       const totalResults = 100;
       const response = getPaginationResponse({ requestUrl, totalResults });
 
       expect(response.pageSize).toBe(10);
-      expect(response.nextPage).toBe("https://test.test/docs?page=2");
+      expect(response.nextPage).toBe(`${publicRootUrl}/docs?page=2`);
     });
   });
 });
