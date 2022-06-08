@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  concepts:
+    image: uk.ac.wellcome/concepts:${CONTAINER_TAG:-test}
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
+
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.17.0"
+    networks:
+      - elastic
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "http.host=0.0.0.0"
+      - "transport.host=0.0.0.0"
+      - "cluster.name=wellcome"
+      - "logger.level=DEBUG"
+      - "discovery.type=single-node"
+
+networks:
+  elastic:
