@@ -1,6 +1,6 @@
 {
   "description" : "works with items with other identifiers",
-  "createdAt" : "2022-06-01T09:53:16.325356Z",
+  "createdAt" : "2022-06-09T10:25:50.451711Z",
   "id" : "qjnwiqbs",
   "document" : {
     "debug" : {
@@ -215,11 +215,26 @@
       "identifiers.value" : [
         "Jj1GugWgka"
       ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+        "nuywbjoj"
+      ],
+      "items.identifiers.value" : [
+        "nDSV5vB01p",
+        "xJJHLpGvU7"
+      ],
       "subjects.id" : [
       ],
       "subjects.identifiers.value" : [
       ],
       "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.concepts.label" : [
       ],
       "partOf.id" : [
       ],

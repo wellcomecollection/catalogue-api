@@ -1,6 +1,6 @@
 {
   "description" : "works with different subjects",
-  "createdAt" : "2022-06-01T09:53:16.141854Z",
+  "createdAt" : "2022-06-09T10:25:50.373522Z",
   "id" : "mihwfxry",
   "document" : {
     "debug" : {
@@ -179,12 +179,27 @@
       "identifiers.value" : [
         "HypKD9r1zH"
       ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
       "subjects.id" : [
       ],
       "subjects.identifiers.value" : [
       ],
       "subjects.label" : [
         "realAnalysis"
+      ],
+      "subjects.concepts.label" : [
+        "W7WKCBWrkxlOWWB",
+        "Kbkm5UMJEwTIE8u",
+        "H8GnKqkwP9ugIes"
+      ],
+      "genres.concepts.label" : [
       ],
       "partOf.id" : [
       ],
