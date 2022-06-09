@@ -20,7 +20,7 @@ object WorksRequestBuilder
 
   import ElasticsearchRequestBuilder._
 
-  val idSort: FieldSort = fieldSort("state.canonicalId").order(SortOrder.ASC)
+  val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
     implicit val s = searchOptions
@@ -176,11 +176,7 @@ object WorksRequestBuilder
       case IdentifiersFilter(identifiers) =>
         should(
           termsQuery(
-            field = "state.sourceIdentifier.value",
-            values = identifiers
-          ),
-          termsQuery(
-            field = "data.otherIdentifiers.value",
+            field = "query.identifiers.value",
             values = identifiers
           )
         )
@@ -236,11 +232,11 @@ object WorksRequestBuilder
              separate non-analysed version of title for term matching.
              */
             matchPhraseQuery(
-              field = "state.relations.ancestors.title",
+              field = "query.partOf.title",
               value = search_term
             ),
             termQuery(
-              field = "state.relations.ancestors.id",
+              field = "query.partOf.id",
               value = search_term
             )
           ),
@@ -248,12 +244,12 @@ object WorksRequestBuilder
         )
       case PartOfTitleFilter(search_term) =>
         termQuery(
-          field = "state.relations.ancestors.title.keyword",
+          field = "query.partOf.title.keyword",
           value = search_term
         )
       case AvailabilitiesFilter(availabilityIds) =>
         termsQuery(
-          field = "state.availabilities.id",
+          field = "query.availabilities.id",
           values = availabilityIds
         )
     }

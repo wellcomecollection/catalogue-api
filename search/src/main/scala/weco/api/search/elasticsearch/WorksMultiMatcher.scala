@@ -66,9 +66,8 @@ case object WorksMultiMatcher {
           fields = fieldsWithBoost(
             boost = 1000,
             Seq(
-              "state.canonicalId",
-              "state.sourceIdentifier.value",
-              "data.otherIdentifiers.value",
+              "query.id",
+              "query.identifiers.value",
               "data.items.id.canonicalId",
               "data.items.id.sourceIdentifier.value",
               "data.items.id.otherIdentifiers.value",
