@@ -1,6 +1,6 @@
 {
   "description" : "a work with licensed digital items",
-  "createdAt" : "2022-06-01T09:53:16.012766Z",
+  "createdAt" : "2022-06-09T10:25:50.324823Z",
   "id" : "vwg1cj2y",
   "document" : {
     "debug" : {
@@ -132,11 +132,23 @@
       "identifiers.value" : [
         "FIC2DNd6NA"
       ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
       "subjects.id" : [
       ],
       "subjects.identifiers.value" : [
       ],
       "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.concepts.label" : [
       ],
       "partOf.id" : [
       ],

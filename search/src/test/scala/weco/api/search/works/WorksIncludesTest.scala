@@ -1620,7 +1620,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
 
           assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
             Status.OK ->
-              s"""
+              """
                 {
                   "pageSize" : 10,
                   "results" : [
@@ -1642,11 +1642,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "jfzz4ou9",
                       "images" : [
                         {
-                          "id" : "qgsnmxvd",
+                          "id" : "y3fstphe",
                           "type" : "Image"
                         },
                         {
-                          "id" : "44dibycc",
+                          "id" : "whuucljo",
                           "type" : "Image"
                         }
                       ],
@@ -1666,11 +1666,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "nlqnlwch",
                       "images" : [
                         {
-                          "id" : "sckojo80",
+                          "id" : "do1dzyoo",
                           "type" : "Image"
                         },
                         {
-                          "id" : "gbgygwvo",
+                          "id" : "jfro7laj",
                           "type" : "Image"
                         }
                       ],
@@ -1685,11 +1685,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "tmdfbk5k",
                       "images" : [
                         {
-                          "id" : "jh1bfhkx",
+                          "id" : "eoedbdmz",
                           "type" : "Image"
                         },
                         {
-                          "id" : "nvapnemk",
+                          "id" : "w1yfrq9a",
                           "type" : "Image"
                         }
                       ],
@@ -1718,7 +1718,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
             path = s"$rootPath/works/tmdfbk5k?include=images"
           ) {
             Status.OK ->
-              s"""
+              """
                 {
                   "alternativeTitles" : [
                   ],
@@ -1727,11 +1727,11 @@ class WorksIncludesTest extends ApiWorksTestBase {
                   "id" : "tmdfbk5k",
                   "images" : [
                     {
-                      "id" : "jh1bfhkx",
+                      "id" : "eoedbdmz",
                       "type" : "Image"
                     },
                     {
-                      "id" : "nvapnemk",
+                      "id" : "w1yfrq9a",
                       "type" : "Image"
                     }
                   ],

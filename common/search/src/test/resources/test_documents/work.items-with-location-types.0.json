@@ -1,6 +1,6 @@
 {
   "description" : "items with different location types",
-  "createdAt" : "2022-06-01T09:53:16.751359Z",
+  "createdAt" : "2022-06-09T10:25:50.648903Z",
   "id" : "kdwct2lf",
   "document" : {
     "debug" : {
@@ -199,11 +199,25 @@
       "identifiers.value" : [
         "vUprsjrX3O"
       ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+        "hhcrbqav"
+      ],
+      "items.identifiers.value" : [
+        "LIHkQjFHQR"
+      ],
       "subjects.id" : [
       ],
       "subjects.identifiers.value" : [
       ],
       "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.concepts.label" : [
       ],
       "partOf.id" : [
       ],

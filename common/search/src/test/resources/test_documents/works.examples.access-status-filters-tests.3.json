@@ -1,6 +1,6 @@
 {
   "description" : "examples for the access status tests",
-  "createdAt" : "2022-06-01T09:53:17.848376Z",
+  "createdAt" : "2022-06-09T10:25:51.032867Z",
   "id" : "wys5lz5r",
   "document" : {
     "debug" : {
@@ -231,11 +231,25 @@
       "identifiers.value" : [
         "GWT6gTiZ6K"
       ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+        "6joq4ujd"
+      ],
+      "items.identifiers.value" : [
+        "zf5rF0XzQw"
+      ],
       "subjects.id" : [
       ],
       "subjects.identifiers.value" : [
       ],
       "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.concepts.label" : [
       ],
       "partOf.id" : [
       ],

@@ -56,7 +56,7 @@ class WorksQueryTest
       }
     }
 
-    it("searches the items.canonicalId as keyword") {
+    it("searches the canonical ID on items") {
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
@@ -68,7 +68,7 @@ class WorksQueryTest
       }
     }
 
-    it("searches the items.sourceIdentifiers") {
+    it("searches the source identifiers on items") {
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
@@ -101,7 +101,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "jh1bfhkx",
+          query = "eoedbdmz",
           expectedMatches = List("work.visible.everything.0")
         )
       }

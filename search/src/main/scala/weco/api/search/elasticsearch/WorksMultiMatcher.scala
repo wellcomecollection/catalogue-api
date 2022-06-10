@@ -68,12 +68,10 @@ case object WorksMultiMatcher {
             Seq(
               "query.id",
               "query.identifiers.value",
-              "data.items.id.canonicalId",
-              "data.items.id.sourceIdentifier.value",
-              "data.items.id.otherIdentifiers.value",
-              "data.imageData.id.canonicalId",
-              "data.imageData.id.sourceIdentifier.value",
-              "data.imageData.id.otherIdentifiers.value",
+              "query.items.id",
+              "query.items.identifiers.value",
+              "query.images.id",
+              "query.images.identifiers.value",
               "data.referenceNumber"
             )
           )
@@ -121,8 +119,8 @@ case object WorksMultiMatcher {
           operator = Some(AND),
           fields = Seq(
             (Some(1000), "data.contributors.agent.label"),
-            (Some(10), "data.subjects.concepts.label"),
-            (Some(10), "data.genres.concepts.label"),
+            (Some(10), "query.subjects.concepts.label"),
+            (Some(10), "query.genres.concepts.label"),
             (Some(10), "data.production.*.label"),
             (None, "data.description"),
             (None, "data.physicalDescription"),
