@@ -101,7 +101,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "jh1bfhkx",
+          query = "eoedbdmz",
           expectedMatches = List("work.visible.everything.0")
         )
       }
