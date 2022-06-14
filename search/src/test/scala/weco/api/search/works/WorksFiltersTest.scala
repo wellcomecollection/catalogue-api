@@ -15,7 +15,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         assertJsonResponse(
           routes,
           path =
-            s"$rootPath/works?genres.label=4fR1f4tFlV&subjects.label=ArEtlVdV0j"
+            s"$rootPath/works?genres.label=Uw1LvlTE5c&subjects.label=RGOo9Fg6ic"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq("work.visible.everything.0")
@@ -345,7 +345,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     }
   }
 
-  describe("filtering works by subject") {
+  describe("filtering works") {
     val sanitationWork = "works.examples.subject-filters-tests.0"
     val londonWork = "works.examples.subject-filters-tests.1"
     val psychologyWork = "works.examples.subject-filters-tests.2"
@@ -364,42 +364,80 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       )
 
     val testCases = Table(
-      ("query", "expectedIds", "clue"),
-      ("Sanitation.", Seq(sanitationWork), "single match single subject"),
+      ("filterName", "query", "expectedIds", "clue"),
       (
+        "subjects.label",
+        "Sanitation.",
+        Seq(sanitationWork),
+        "single match single subject"
+      ),
+      (
+        "subjects.label",
         "London (England)",
         Seq(londonWork, mostThingsWork),
         "multi match single subject"
       ),
       (
+        "subjects.label",
         "Sanitation.,London (England)",
         Seq(sanitationWork, londonWork, mostThingsWork),
         "comma separated"
       ),
       (
+        "subjects.label",
         """Sanitation.,"Psychology, Pathological"""",
         Seq(sanitationWork, psychologyWork, mostThingsWork),
         "commas in quotes"
       ),
       (
+        "subjects.label",
         """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
         Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
         "escaped quotes in quotes"
+      ),
+      (
+        "subjects",
+        "sanitati",
+        Seq(sanitationWork),
+        "searching for a single canonical ID"
+      ),
+      (
+        "subjects",
+        "sanitati,darwin01",
+        Seq(sanitationWork, darwinWork, mostThingsWork),
+        "searching for a multiple canonical IDs"
+      ),
+      (
+        "subjects.identifiers",
+        "mesh-sanitation",
+        Seq(sanitationWork),
+        "searching for a single source identifier"
+      ),
+      (
+        "subjects.identifiers",
+        "mesh-sanitation,lcnames-darwin",
+        Seq(sanitationWork, darwinWork, mostThingsWork),
+        "searching for multiple source identifiers"
       )
     )
 
-    it("filters by subjects as a comma separated list") {
+    it("filters by subjects") {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, works: _*)
 
           forAll(testCases) {
-            (query: String, expectedIds: Seq[String], clue: String) =>
+            (
+              filterName,
+              query: String,
+              expectedIds: Seq[String],
+              clue: String
+            ) =>
               withClue(clue) {
                 assertJsonResponse(
                   routes,
                   path =
-                    s"$rootPath/works?subjects.label=${URLEncoder.encode(query, "UTF-8")}"
+                    s"$rootPath/works?$filterName=${URLEncoder.encode(query, "UTF-8")}"
                 ) {
                   Status.OK -> worksListResponse(expectedIds)
                 }
@@ -523,7 +561,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -539,7 +577,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG,mGMGKNlQnl"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,jfcicmGMGK"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -556,7 +594,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=eG0HzUX6yZ"
+            path = s"$rootPath/works?identifiers=aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.1")
@@ -572,7 +610,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=eG0HzUX6yZ,ji3JH82kKu"
+            path = s"$rootPath/works?identifiers=UfcQYSxE7g,aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -589,7 +627,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=cQYSxE7gRG,eG0HzUX6yZ"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,aGKxAEeG0H"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -694,7 +732,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           ) {
             Status.OK -> worksListResponse(
               ids = Seq(
-                "work.visible.everything.0",
                 "work.visible.everything.1",
                 "work.visible.everything.2"
               )
@@ -710,7 +747,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?partOf=dza7om88") {
+          assertJsonResponse(routes, path = s"$rootPath/works?partOf=nrvdy0jg") {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
             )
@@ -725,7 +762,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?partOf=title-BnN4RHJX7O"
+            path = s"$rootPath/works?partOf=title-MS5Hy6x38N"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -756,13 +793,13 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=kdcpazds,atsdmxht",
+        path = s"$rootPath/works?items=kdcpazds,iba49lem",
         expectedIds =
           Seq("work.visible.everything.1", "work.visible.everything.2")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=atsdmxht,ca3anii6",
+        path = s"$rootPath/works?items=iba49lem,ca3anii6",
         expectedIds =
           Seq("work.visible.everything.2", "work.visible.everything.0")
       )

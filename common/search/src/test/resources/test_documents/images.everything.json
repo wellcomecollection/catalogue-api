@@ -1,7 +1,7 @@
 {
   "description" : "an image with every include",
-  "createdAt" : "2022-05-13T12:41:40.043Z",
-  "id" : "qpvx7gyp",
+  "createdAt" : "2022-06-09T12:37:30.308161Z",
+  "id" : "alwtbvyg",
   "document" : {
     "version" : 1,
     "state" : {
@@ -12,7 +12,7 @@
         "ontologyType" : "Work",
         "value" : "fsu0ycdrBi"
       },
-      "canonicalId" : "qpvx7gyp",
+      "canonicalId" : "alwtbvyg",
       "inferredData" : {
         "features1" : [
           -0.0013488842,
@@ -4521,7 +4521,7 @@
     },
     "modifiedTime" : "1955-08-08T03:38:40Z",
     "display" : {
-      "id" : "qpvx7gyp",
+      "id" : "alwtbvyg",
       "thumbnail" : {
         "locationType" : {
           "id" : "iiif-image",
@@ -4645,8 +4645,8 @@
         "{\"label\":\"Beatrice Buffalo\",\"type\":\"Person\"}"
       ],
       "source.genres.label" : [
-        "{\"label\":\"Crumbly cabbages\",\"concepts\":[{\"label\":\"VTMxwlsU4ID8FJO\",\"type\":\"Concept\"},{\"label\":\"smLVneLxGixuwYM\",\"type\":\"Concept\"},{\"label\":\"WEKRGOyVEETAXu2\",\"type\":\"Concept\"}],\"type\":\"Genre\"}",
-        "{\"label\":\"Deadly durians\",\"concepts\":[{\"label\":\"wVgSyRdeyNrYD8Z\",\"type\":\"Concept\"},{\"label\":\"5K6TPbywqiK3tTT\",\"type\":\"Concept\"},{\"label\":\"s2UdfxnodZzKVgW\",\"type\":\"Concept\"}],\"type\":\"Genre\"}"
+        "{\"label\":\"Crumbly cabbages\",\"concepts\":[],\"type\":\"Genre\"}",
+        "{\"label\":\"Deadly durians\",\"concepts\":[],\"type\":\"Genre\"}"
       ]
     }
   }

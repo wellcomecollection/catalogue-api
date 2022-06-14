@@ -20,7 +20,7 @@ object WorksRequestBuilder
 
   import ElasticsearchRequestBuilder._
 
-  val idSort: FieldSort = fieldSort("state.canonicalId").order(SortOrder.ASC)
+  val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
     implicit val s = searchOptions
@@ -30,6 +30,7 @@ object WorksRequestBuilder
       .sortBy { sortBy }
       .limit { searchOptions.pageSize }
       .from { PaginationQuery.safeGetFrom(searchOptions) }
+      .sourceInclude("display", "type")
   }
 
   private def filteredAggregationBuilder(
@@ -157,8 +158,14 @@ object WorksRequestBuilder
         termsQuery(field = "data.languages.id", values = languageIds)
       case GenreFilter(genreQueries) =>
         termsQuery("data.genres.label.keyword", genreQueries)
-      case SubjectFilter(subjectQueries) =>
-        termsQuery("data.subjects.label.keyword", subjectQueries)
+
+      case SubjectIdFilter(ids) =>
+        termsQuery("query.subjects.id", ids)
+      case SubjectIdentifiersFilter(sourceIdentifiers) =>
+        termsQuery("query.subjects.identifiers.value", sourceIdentifiers)
+      case SubjectLabelFilter(labels) =>
+        termsQuery("query.subjects.label", labels)
+
       case ContributorsFilter(contributorQueries) =>
         termsQuery("data.contributors.agent.label.keyword", contributorQueries)
       case LicenseFilter(licenseIds) =>
@@ -169,11 +176,7 @@ object WorksRequestBuilder
       case IdentifiersFilter(identifiers) =>
         should(
           termsQuery(
-            field = "state.sourceIdentifier.value",
-            values = identifiers
-          ),
-          termsQuery(
-            field = "data.otherIdentifiers.value",
+            field = "query.identifiers.value",
             values = identifiers
           )
         )
@@ -229,11 +232,11 @@ object WorksRequestBuilder
              separate non-analysed version of title for term matching.
              */
             matchPhraseQuery(
-              field = "state.relations.ancestors.title",
+              field = "query.partOf.title",
               value = search_term
             ),
             termQuery(
-              field = "state.relations.ancestors.id",
+              field = "query.partOf.id",
               value = search_term
             )
           ),
@@ -241,12 +244,12 @@ object WorksRequestBuilder
         )
       case PartOfTitleFilter(search_term) =>
         termQuery(
-          field = "state.relations.ancestors.title.keyword",
+          field = "query.partOf.title.keyword",
           value = search_term
         )
       case AvailabilitiesFilter(availabilityIds) =>
         termsQuery(
-          field = "state.availabilities.id",
+          field = "query.availabilities.id",
           values = availabilityIds
         )
     }

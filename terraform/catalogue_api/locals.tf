@@ -6,8 +6,9 @@ locals {
 
   elastic_cloud_vpce_sg_id = data.terraform_remote_state.infra_critical.outputs["ec_catalogue_privatelink_sg_id"]
 
-  search_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_search_repository_url"]
-  items_repository  = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
+  search_repository   = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_search_repository_url"]
+  items_repository    = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
+  concepts_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_concepts_repository_url"]
 
   apm_secret_config = {
     apm_server_url = "catalogue/api/apm_server_url"

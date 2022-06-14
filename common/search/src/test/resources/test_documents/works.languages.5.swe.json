@@ -1,43 +1,39 @@
 {
   "description" : "one of a list of works with a variety of languages",
-  "createdAt" : "2022-05-04T07:15:03.039Z",
-  "id" : "ry03jkbp",
+  "createdAt" : "2022-06-09T10:25:50.308055Z",
+  "id" : "qfscz1rj",
   "document" : {
     "debug" : {
       "source" : {
         "identifier" : {
           "identifierType" : {
-            "id" : "sierra-system-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "tcJYhrQ0RM"
+          "value" : "Gk6juMbOeK"
         },
-        "version" : 39,
-        "modifiedTime" : "2022-05-03T18:28:48Z"
+        "version" : 98,
+        "modifiedTime" : "2036-09-06T23:29:13Z"
       },
-      "mergedTime" : "2022-05-03T18:28:48Z",
-      "indexedTime" : "2022-05-04T07:15:03.038Z",
+      "mergedTime" : "2036-09-06T23:29:13Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ]
     },
     "state" : {
       "sourceIdentifier" : {
         "identifierType" : {
-          "id" : "sierra-system-number"
+          "id" : "calm-record-id"
         },
         "ontologyType" : "Work",
-        "value" : "tcJYhrQ0RM"
+        "value" : "Gk6juMbOeK"
       },
-      "canonicalId" : "ry03jkbp",
-      "mergedTime" : "2022-05-03T18:28:48Z",
-      "sourceModifiedTime" : "2022-05-03T18:28:48Z",
-      "indexedTime" : "2022-05-04T07:15:03.038Z",
+      "canonicalId" : "qfscz1rj",
+      "mergedTime" : "2036-09-06T23:29:13Z",
+      "sourceModifiedTime" : "2036-09-06T23:29:13Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
       "availabilities" : [
       ],
-      "derivedData" : {
-        "contributorAgents" : [
-        ]
-      },
       "relations" : {
         "ancestors" : [
         ],
@@ -90,7 +86,7 @@
       "workType" : "Standard"
     },
     "display" : {
-      "id" : "ry03jkbp",
+      "id" : "qfscz1rj",
       "title" : "A work with languages Swedish",
       "alternativeTitles" : [
       ],
@@ -99,11 +95,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "tcJYhrQ0RM",
+          "value" : "Gk6juMbOeK",
           "type" : "Identifier"
         }
       ],
@@ -139,6 +135,36 @@
       "succeededBy" : [
       ],
       "type" : "Work"
+    },
+    "query" : {
+      "id" : "qfscz1rj",
+      "identifiers.value" : [
+        "Gk6juMbOeK"
+      ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "subjects.id" : [
+      ],
+      "subjects.identifiers.value" : [
+      ],
+      "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.concepts.label" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+      ]
     },
     "aggregatableValues" : {
       "workType" : [

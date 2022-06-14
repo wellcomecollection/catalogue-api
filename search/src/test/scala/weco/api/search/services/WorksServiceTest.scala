@@ -368,7 +368,7 @@ class WorksServiceTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, "works.visible.0")
 
-        val future = worksService.findById(id = "7sjip63h")(index)
+        val future = worksService.findById(id = "2twopft1")(index)
 
         whenReady(future) {
           _ shouldBe Right(getVisibleWork("works.visible.0"))

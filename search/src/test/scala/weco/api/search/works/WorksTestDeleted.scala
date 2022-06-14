@@ -6,7 +6,7 @@ class WorksTestDeleted extends ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.deleted.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/batmoife") {
+        assertJsonResponse(routes, path = s"$rootPath/works/pnwuzuig") {
           Status.Gone -> deleted
         }
     }
