@@ -11,6 +11,9 @@ catalogue_api:
     - id: items
       services:
         - id: items-api
+    - id: concepts
+      services:
+        - id: concepts-api
     - id: snapshot_generator
       services:
         - id: snapshot-generator

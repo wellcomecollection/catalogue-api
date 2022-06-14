@@ -26,7 +26,7 @@ echo "ES_RANK_USER: $ES_RANK_USER"
 docker run \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    public.ecr.aws/docker/library/node:14-alpine \
+    public.ecr.aws/docker/library/node:14-slim \
     yarn
 
 # Copy candidate queries into place.
@@ -59,7 +59,7 @@ docker run \
     --env ES_RANK_USER=$ES_RANK_USER \
     --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
     --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
-    public.ecr.aws/docker/library/node:14-alpine \
+    public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
         --index="$WORKS_INDEX" \
@@ -75,7 +75,7 @@ docker run \
     --env ES_RANK_USER=$ES_RANK_USER \
     --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
     --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
-    public.ecr.aws/docker/library/node:14-alpine \
+    public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
         --index="$IMAGES_INDEX" \

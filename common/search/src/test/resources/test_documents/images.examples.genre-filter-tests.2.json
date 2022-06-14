@@ -1,7 +1,7 @@
 {
   "description" : "examples for the genre filter tests",
-  "createdAt" : "2022-05-13T12:41:40.001Z",
-  "id" : "yvgczrqk",
+  "createdAt" : "2022-06-09T12:37:30.192896Z",
+  "id" : "a5vdwjyw",
   "document" : {
     "version" : 1,
     "state" : {
@@ -12,7 +12,7 @@
         "ontologyType" : "Work",
         "value" : "WgSJWe8gdU"
       },
-      "canonicalId" : "yvgczrqk",
+      "canonicalId" : "a5vdwjyw",
       "inferredData" : {
         "features1" : [
           -0.01164634,
@@ -4479,7 +4479,7 @@
     },
     "modifiedTime" : "2008-11-21T17:51:58Z",
     "display" : {
-      "id" : "yvgczrqk",
+      "id" : "a5vdwjyw",
       "thumbnail" : {
         "locationType" : {
           "id" : "iiif-image",
@@ -4573,8 +4573,8 @@
       "source.contributors.agent.label" : [
       ],
       "source.genres.label" : [
-        "{\"label\":\"Emu entrepreneurship\",\"concepts\":[{\"label\":\"u7ZcdvICxoSK1Dr\",\"type\":\"Concept\"},{\"label\":\"j431aOG9wNgvIxQ\",\"type\":\"Concept\"},{\"label\":\"sPO5NW41ZZ2VTHa\",\"type\":\"Concept\"}],\"type\":\"Genre\"}",
-        "{\"label\":\"Falcon finances\",\"concepts\":[{\"label\":\"orJvBB7A7s6BgvM\",\"type\":\"Concept\"},{\"label\":\"PyqMVLhLFJmbaaq\",\"type\":\"Concept\"},{\"label\":\"rFzY1hfYkJfAizG\",\"type\":\"Concept\"}],\"type\":\"Genre\"}"
+        "{\"label\":\"Emu entrepreneurship\",\"concepts\":[],\"type\":\"Genre\"}",
+        "{\"label\":\"Falcon finances\",\"concepts\":[],\"type\":\"Genre\"}"
       ]
     }
   }

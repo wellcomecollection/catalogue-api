@@ -6,7 +6,9 @@
   "author": "digital@wellcomecollection.org",
   "license": "MIT",
   "private": true,
-  "workspaces": [],
+  "workspaces": [
+    "concepts"
+  ],
   "scripts": {
     "prepare": "husky install"
   },

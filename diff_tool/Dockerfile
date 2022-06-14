@@ -1,4 +1,4 @@
-FROM 760097843905.dkr.ecr.eu-west-1.amazonaws.com/python:3.7-alpine
+FROM public.ecr.aws/docker/library/python:3.7-alpine
 
 LABEL maintainer = "Wellcome Collection <dev@wellcomecollection.org>"
 LABEL description = "A Docker image for deploying our Docker images to AWS"

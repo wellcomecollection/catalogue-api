@@ -1,5 +1,6 @@
 package weco.api.search.works
 
+import io.circe.Json
 import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
@@ -9,6 +10,12 @@ trait ApiWorksTestBase
     extends ApiTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
+
+  def getMinimalDisplayWorks(ids: Seq[String]): Seq[Json] =
+    ids
+      .map { getVisibleWork }
+      .map(_.display.withIncludes(WorksIncludes.none))
+      .sortBy(w => getKey(w, "id").get.asString)
 
   def worksListResponse(
     ids: Seq[String],

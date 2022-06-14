@@ -17,15 +17,12 @@
         "multi_match": {
           "query": "{{query}}",
           "fields": [
-            "state.canonicalId^1000.0",
-            "state.sourceIdentifier.value^1000.0",
-            "data.otherIdentifiers.value^1000.0",
-            "data.items.id.canonicalId^1000.0",
-            "data.items.id.sourceIdentifier.value^1000.0",
-            "data.items.id.otherIdentifiers.value^1000.0",
-            "data.imageData.id.canonicalId^1000.0",
-            "data.imageData.id.sourceIdentifier.value^1000.0",
-            "data.imageData.id.otherIdentifiers.value^1000.0",
+            "query.id^1000.0",
+            "query.identifiers.value^1000.0",
+            "query.items.id^1000.0",
+            "query.items.identifiers.value^1000.0",
+            "query.images.id^1000.0",
+            "query.images.identifiers.value^1000.0",
             "data.referenceNumber^1000.0"
           ],
           "type": "best_fields",
@@ -84,8 +81,8 @@
           "query": "{{query}}",
           "fields": [
             "data.contributors.agent.label^1000.0",
-            "data.subjects.concepts.label^10.0",
-            "data.genres.concepts.label^10.0",
+            "query.subjects.concepts.label^10.0",
+            "query.genres.concepts.label^10.0",
             "data.production.*.label^10.0",
             "data.description",
             "data.physicalDescription",

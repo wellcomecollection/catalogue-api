@@ -311,15 +311,6 @@
               }
             },
             "dynamic" : "false"
-          },
-          "derivedData" : {
-            "type" : "object",
-            "properties" : {
-              "contributorAgents" : {
-                "type" : "keyword"
-              }
-            },
-            "dynamic" : "false"
           }
         }
       },
@@ -957,6 +948,120 @@
       "display" : {
         "type" : "object",
         "enabled": false
+      },
+      "query": {
+        "type": "object",
+        "properties": {
+          "id" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "identifiers.value" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "images.id" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "images.identifiers.value" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "items.id" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "items.identifiers.value" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "subjects.id" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "subjects.identifiers.value" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "subjects.label" : {
+            "type" : "keyword"
+          },
+          "subjects.concepts.label" : {
+            "type" : "text",
+            "analyzer" : "asciifolding_analyzer",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword"
+              },
+              "lowercaseKeyword" : {
+                "type" : "keyword",
+                "normalizer" : "lowercase_normalizer"
+              }
+            }
+          },
+          "genres.concepts.label" : {
+            "type" : "text",
+            "analyzer" : "asciifolding_analyzer",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword"
+              },
+              "lowercaseKeyword" : {
+                "type" : "keyword",
+                "normalizer" : "lowercase_normalizer"
+              }
+            }
+          },
+          "partOf.id" : {
+            "type" : "keyword",
+            "normalizer" : "lowercase_normalizer"
+          },
+          "partOf.title" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "normalizer" : "lowercase_normalizer"
+              },
+              "english" : {
+                "type" : "text",
+                "analyzer" : "english_analyzer"
+              },
+              "shingles" : {
+                "type" : "text",
+                "analyzer" : "shingle_asciifolding_analyzer"
+              },
+              "arabic" : {
+                "type" : "text",
+                "analyzer" : "arabic_analyzer"
+              },
+              "bengali" : {
+                "type" : "text",
+                "analyzer" : "bengali_analyzer"
+              },
+              "french" : {
+                "type" : "text",
+                "analyzer" : "french_analyzer"
+              },
+              "german" : {
+                "type" : "text",
+                "analyzer" : "german_analyzer"
+              },
+              "hindi" : {
+                "type" : "text",
+                "analyzer" : "hindi_analyzer"
+              },
+              "italian" : {
+                "type" : "text",
+                "analyzer" : "italian_analyzer"
+              }
+            }
+          },
+          "availabilities.id" : {
+            "type" : "keyword"
+          }
+        }
       },
       "aggregatableValues" : {
         "type" : "object",
