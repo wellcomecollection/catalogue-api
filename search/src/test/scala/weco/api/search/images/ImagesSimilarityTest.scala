@@ -77,7 +77,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
         ) {
           Status.BadRequest -> badRequest(
             description =
-              "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres']"
+              "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres', 'source.subjects']"
           )
         }
     }

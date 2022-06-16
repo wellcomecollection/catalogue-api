@@ -160,7 +160,7 @@ object WorksRequestBuilder
         termsQuery("data.genres.label.keyword", genreQueries)
 
       case SubjectLabelFilter(labels) =>
-        termsQuery("query.subjects.label", labels)
+        termsQuery("data.subjects.label.keyword", labels)
 
       case ContributorsFilter(contributorQueries) =>
         termsQuery("query.contributors.agent.label.keyword", contributorQueries)

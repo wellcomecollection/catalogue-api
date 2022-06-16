@@ -276,9 +276,9 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(AvailabilitiesFilter)
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
-    decodeIncludesAndExcludes(CatalogueAccessStatus.indexValues)
+    decodeIncludesAndExcludes(CatalogueAccessStatus.values)
       .emap {
-        case (includes, excludes) =>
+        case IncludesAndExcludes(includes, excludes) =>
           Right(AccessStatusFilter(includes, excludes))
       }
 
