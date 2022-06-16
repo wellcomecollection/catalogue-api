@@ -126,7 +126,6 @@ trait QueryParamsUtils extends Directives {
   ): Decoder[IncludesAndExcludes] =
     decodeCommaSeparated
       .emap { strs =>
-
         // We get the invalid strings first, so we can report on them in the order
         // they were given if any aren't allowed.
         val invalidStrs = strs

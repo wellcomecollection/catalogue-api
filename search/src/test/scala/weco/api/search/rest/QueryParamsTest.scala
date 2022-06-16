@@ -8,21 +8,28 @@ import weco.api.search.rest.QueryParamsUtils.IncludesAndExcludes
 class QueryParamsTest extends AnyFunSpec with Matchers {
 
   describe("includes / excludes") {
-    val decoder = QueryParamsUtils.decodeIncludesAndExcludes(validStrs = Set("a", "b"))
+    val decoder =
+      QueryParamsUtils.decodeIncludesAndExcludes(validStrs = Set("a", "b"))
 
     def decode(str: String) =
       decoder.decodeJson(Json.fromString(str))
 
     it("decodes includes") {
-      decode("a,b") shouldBe Right(IncludesAndExcludes(includes = List("a", "b"), excludes = Nil))
+      decode("a,b") shouldBe Right(
+        IncludesAndExcludes(includes = List("a", "b"), excludes = Nil)
+      )
     }
 
     it("decodes excludes") {
-      decode("!a,!b") shouldBe Right(IncludesAndExcludes(includes = Nil, excludes = List("a", "b")))
+      decode("!a,!b") shouldBe Right(
+        IncludesAndExcludes(includes = Nil, excludes = List("a", "b"))
+      )
     }
 
     it("decodes a mixture of includes and excludes") {
-      decode("a,!b") shouldBe Right(IncludesAndExcludes(includes = List("a"), excludes = List("b")))
+      decode("a,!b") shouldBe Right(
+        IncludesAndExcludes(includes = List("a"), excludes = List("b"))
+      )
     }
 
     it("fails decoding when unrecognised values") {
