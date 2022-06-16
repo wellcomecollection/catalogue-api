@@ -6,7 +6,8 @@ import io.circe.Json
 case class ImageAggregations(
   license: Option[Aggregation[Json]] = None,
   sourceContributorAgents: Option[Aggregation[Json]] = None,
-  sourceGenres: Option[Aggregation[Json]] = None
+  sourceGenres: Option[Aggregation[Json]] = None,
+  sourceSubjects: Option[Aggregation[Json]] = None
 )
 
 object ImageAggregations extends ElasticAggregations {
@@ -18,7 +19,8 @@ object ImageAggregations extends ElasticAggregations {
           license = e4sAggregations.decodeJsonAgg("license"),
           sourceContributorAgents =
             e4sAggregations.decodeJsonAgg("sourceContributorAgents"),
-          sourceGenres = e4sAggregations.decodeJsonAgg("sourceGenres")
+          sourceGenres = e4sAggregations.decodeJsonAgg("sourceGenres"),
+          sourceSubjects = e4sAggregations.decodeJsonAgg("sourceSubjects")
         )
       )
     } else {

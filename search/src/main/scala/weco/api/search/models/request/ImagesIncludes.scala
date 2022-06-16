@@ -9,6 +9,7 @@ object ImageInclude {
   case object SourceContributors extends ImageInclude
   case object SourceLanguages extends ImageInclude
   case object SourceGenres extends ImageInclude
+  case object SourceSubjects extends ImageInclude
 }
 
 sealed trait ImageIncludes {
@@ -18,6 +19,7 @@ sealed trait ImageIncludes {
   val `source.contributors`: Boolean
   val `source.languages`: Boolean
   val `source.genres`: Boolean
+  val `source.subjects`: Boolean
 }
 
 case class SingleImageIncludes(
@@ -26,7 +28,8 @@ case class SingleImageIncludes(
   withSimilarColors: Boolean,
   `source.contributors`: Boolean,
   `source.languages`: Boolean,
-  `source.genres`: Boolean
+  `source.genres`: Boolean,
+  `source.subjects`: Boolean
 ) extends ImageIncludes
 
 object SingleImageIncludes {
@@ -39,7 +42,8 @@ object SingleImageIncludes {
       withSimilarColors = includes.contains(WithSimilarColors),
       `source.contributors` = includes.contains(SourceContributors),
       `source.languages` = includes.contains(SourceLanguages),
-      `source.genres` = includes.contains(SourceGenres)
+      `source.genres` = includes.contains(SourceGenres),
+      `source.subjects` = includes.contains(SourceSubjects)
     )
 
   def none: SingleImageIncludes = SingleImageIncludes()
@@ -48,7 +52,8 @@ object SingleImageIncludes {
 case class MultipleImagesIncludes(
   `source.contributors`: Boolean,
   `source.languages`: Boolean,
-  `source.genres`: Boolean
+  `source.genres`: Boolean,
+  `source.subjects`: Boolean
 ) extends ImageIncludes {
   val visuallySimilar: Boolean = false
   val withSimilarFeatures: Boolean = false
@@ -62,7 +67,8 @@ object MultipleImagesIncludes {
     MultipleImagesIncludes(
       `source.contributors` = includes.contains(SourceContributors),
       `source.languages` = includes.contains(SourceLanguages),
-      `source.genres` = includes.contains(SourceGenres)
+      `source.genres` = includes.contains(SourceGenres),
+      `source.subjects` = includes.contains(SourceSubjects)
     )
 
   def none: MultipleImagesIncludes = MultipleImagesIncludes()

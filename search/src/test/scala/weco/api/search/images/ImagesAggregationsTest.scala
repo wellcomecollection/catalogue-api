@@ -182,4 +182,89 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
         }
     }
   }
+
+  it("aggregates by the subject") {
+    val images = Seq(
+      "images.subjects.screwdrivers-1",
+      "images.subjects.screwdrivers-2",
+      "images.subjects.sounds",
+      "images.subjects.squirrel,screwdriver",
+      "images.subjects.squirrel,sample",
+    )
+    val displayImages = images
+      .map(getDisplayImage)
+      .sortBy(w => getKey(w, "id").get.asString)
+      .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
+
+    withImagesApi {
+      case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, images: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?aggregations=source.subjects.label"
+        ) {
+          Status.OK -> s"""
+            {
+              ${resultList(totalResults = images.size)},
+              "aggregations": {
+                "type" : "Aggregations",
+                "source.subjects.label": {
+                  "type" : "Aggregation",
+                  "buckets": [
+                    {
+                      "count" : 3,
+                      "data" : {
+                        "concepts" : [
+                        ],
+                        "id" : "subject1",
+                        "label" : "Simple screwdrivers",
+                        "type" : "Subject"
+                      },
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "count" : 2,
+                      "data" : {
+                        "concepts" : [
+                        ],
+                        "label" : "Squashed squirrels",
+                        "type" : "Subject"
+                      },
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "count" : 1,
+                      "data" : {
+                        "concepts" : [
+                        ],
+                        "id" : "subject2",
+                        "label" : "Struck samples",
+                        "type" : "Subject"
+                      },
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "count" : 1,
+                      "data" : {
+                        "concepts" : [
+                        ],
+                        "label" : "Square sounds",
+                        "type" : "Subject"
+                      },
+                      "type" : "AggregationBucket"
+                    }
+                  ]
+                }
+              },
+              "results": [
+                ${displayImages.mkString(",")}
+              ]
+            }
+          """
+        }
+    }
+  }
+
+  // aggregate by subjects
 }

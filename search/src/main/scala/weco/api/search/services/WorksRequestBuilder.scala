@@ -159,10 +159,6 @@ object WorksRequestBuilder
       case GenreFilter(genreQueries) =>
         termsQuery("data.genres.label.keyword", genreQueries)
 
-      case SubjectIdFilter(ids) =>
-        termsQuery("query.subjects.id", ids)
-      case SubjectIdentifiersFilter(sourceIdentifiers) =>
-        termsQuery("query.subjects.identifiers.value", sourceIdentifiers)
       case SubjectLabelFilter(labels) =>
         termsQuery("query.subjects.label", labels)
 
@@ -189,18 +185,14 @@ object WorksRequestBuilder
       case ItemsFilter(itemIds) =>
         should(
           termsQuery(
-            field = "data.items.id.canonicalId",
+            field = "query.items.id",
             values = itemIds
           )
         )
       case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
         should(
           termsQuery(
-            field = "data.items.id.sourceIdentifier.value",
-            values = itemSourceIdentifiers
-          ),
-          termsQuery(
-            field = "data.items.id.otherIdentifiers.value",
+            field = "query.items.identifiers.value",
             values = itemSourceIdentifiers
           )
         )
