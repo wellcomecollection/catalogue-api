@@ -189,7 +189,7 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
       "images.subjects.screwdrivers-2",
       "images.subjects.sounds",
       "images.subjects.squirrel,screwdriver",
-      "images.subjects.squirrel,sample",
+      "images.subjects.squirrel,sample"
     )
     val displayImages = images
       .map(getDisplayImage)

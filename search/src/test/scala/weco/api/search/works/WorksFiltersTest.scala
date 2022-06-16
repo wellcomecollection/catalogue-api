@@ -394,7 +394,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
         Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
         "escaped quotes in quotes"
-      ),
+      )
     )
 
     it("filters by subjects") {

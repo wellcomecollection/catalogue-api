@@ -5,8 +5,16 @@ import akka.http.scaladsl.server.{Directive, Directives, ValidationRejection}
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.github.tototoshi.csv.CSVParser
 import io.circe.{Decoder, Json}
-import weco.api.search.rest.MultipleWorksParams.{decodeCommaSeparated, stringListFilter}
-import weco.api.search.models.{ContributorsFilter, GenreFilter, LicenseFilter, SubjectLabelFilter}
+import weco.api.search.rest.MultipleWorksParams.{
+  decodeCommaSeparated,
+  stringListFilter
+}
+import weco.api.search.models.{
+  ContributorsFilter,
+  GenreFilter,
+  LicenseFilter,
+  SubjectLabelFilter
+}
 
 trait QueryParams
 

@@ -31,7 +31,7 @@ object SingleImageParams extends QueryParamsUtils {
       "source.contributors" -> ImageInclude.SourceContributors,
       "source.languages" -> ImageInclude.SourceLanguages,
       "source.genres" -> ImageInclude.SourceGenres,
-      "source.subjects" -> ImageInclude.SourceSubjects,
+      "source.subjects" -> ImageInclude.SourceSubjects
     ).emap(values => Right(SingleImageIncludes(values: _*)))
 }
 
@@ -128,6 +128,6 @@ object MultipleImagesParams extends QueryParamsUtils {
       "locations.license" -> ImageAggregationRequest.License,
       "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgents,
       "source.genres.label" -> ImageAggregationRequest.SourceGenres,
-      "source.subjects.label" -> ImageAggregationRequest.SourceSubjects,
+      "source.subjects.label" -> ImageAggregationRequest.SourceSubjects
     )
 }

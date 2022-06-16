@@ -150,7 +150,11 @@ class ImagesFiltersTest extends ApiImagesTestBase {
 
   describe("filtering images by source subjects") {
     val images = Seq(
-      "screwdrivers-1", "screwdrivers-2", "sounds", "squirrel,sample", "squirrel,screwdriver"
+      "screwdrivers-1",
+      "screwdrivers-2",
+      "sounds",
+      "squirrel,sample",
+      "squirrel,screwdriver"
     ).map(s => s"images.subjects.$s")
 
     it("filters by subjects") {
@@ -160,10 +164,15 @@ class ImagesFiltersTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.subjects.label=Simple%20screwdrivers"
+            path =
+              s"$rootPath/images?source.subjects.label=Simple%20screwdrivers"
           ) {
             Status.OK -> imagesListResponse(
-              ids = Seq("images.subjects.screwdrivers-1", "images.subjects.screwdrivers-2", "images.subjects.squirrel,screwdriver")
+              ids = Seq(
+                "images.subjects.screwdrivers-1",
+                "images.subjects.screwdrivers-2",
+                "images.subjects.squirrel,screwdriver"
+              )
             )
           }
       }
@@ -181,7 +190,8 @@ class ImagesFiltersTest extends ApiImagesTestBase {
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
-                "images.subjects.sounds","images.subjects.squirrel,sample"
+                "images.subjects.sounds",
+                "images.subjects.squirrel,sample"
               )
             )
           }
