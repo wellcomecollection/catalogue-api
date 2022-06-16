@@ -1,6 +1,6 @@
 {
   "description" : "images with different contributors",
-  "createdAt" : "2022-06-09T12:37:29.705257Z",
+  "createdAt" : "2022-06-16T10:05:58.998Z",
   "id" : "0taf9mko",
   "document" : {
     "version" : 1,
@@ -4539,9 +4539,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4551,6 +4559,8 @@
         "{\"label\":\"parrots\",\"type\":\"Organisation\"}"
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

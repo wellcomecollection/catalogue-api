@@ -1,6 +1,6 @@
 {
   "description" : "a work with a collection path",
-  "createdAt" : "2022-06-09T10:25:50.494497Z",
+  "createdAt" : "2022-06-16T09:57:45.999Z",
   "id" : "dtqmc0yn",
   "document" : {
     "debug" : {
@@ -143,15 +143,19 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

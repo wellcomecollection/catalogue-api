@@ -1,6 +1,6 @@
 {
   "description" : "images linked with the same work",
-  "createdAt" : "2022-06-09T12:37:30.327555Z",
+  "createdAt" : "2022-06-16T10:05:59.277Z",
   "id" : "ca2bzfap",
   "document" : {
     "version" : 1,
@@ -4491,9 +4491,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4501,6 +4509,8 @@
       "source.contributors.agent.label" : [
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

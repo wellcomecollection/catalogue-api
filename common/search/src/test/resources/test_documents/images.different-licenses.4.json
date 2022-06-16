@@ -1,6 +1,6 @@
 {
   "description" : "images with different licenses",
-  "createdAt" : "2022-06-09T12:37:29.026819Z",
+  "createdAt" : "2022-06-16T10:05:58.834Z",
   "id" : "qotyzauo",
   "document" : {
     "version" : 1,
@@ -4514,9 +4514,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4525,6 +4533,8 @@
       "source.contributors.agent.label" : [
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

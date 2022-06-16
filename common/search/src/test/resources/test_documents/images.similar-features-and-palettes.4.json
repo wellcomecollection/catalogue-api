@@ -1,6 +1,6 @@
 {
   "description" : "images with similar features and palettes",
-  "createdAt" : "2022-06-09T12:37:29.829518Z",
+  "createdAt" : "2022-06-16T10:05:59.068Z",
   "id" : "vcflqowx",
   "document" : {
     "version" : 1,
@@ -4491,9 +4491,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4501,6 +4509,8 @@
       "source.contributors.agent.label" : [
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

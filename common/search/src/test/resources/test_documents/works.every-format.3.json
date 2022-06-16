@@ -1,6 +1,6 @@
 {
   "description" : "works with every format",
-  "createdAt" : "2022-06-09T10:25:50.507961Z",
+  "createdAt" : "2022-06-16T09:57:46.004Z",
   "id" : "i77xk8vj",
   "document" : {
     "debug" : {
@@ -148,15 +148,19 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

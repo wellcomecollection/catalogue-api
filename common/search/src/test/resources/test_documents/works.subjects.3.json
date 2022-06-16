@@ -1,6 +1,6 @@
 {
   "description" : "works with different subjects",
-  "createdAt" : "2022-06-09T10:25:50.375477Z",
+  "createdAt" : "2022-06-16T09:57:45.961Z",
   "id" : "xcssabt1",
   "document" : {
     "debug" : {
@@ -234,13 +234,11 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
-        "paleoNeuroBiology",
-        "realAnalysis"
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
         "qbmTfcJnlkosWvA",
@@ -251,6 +249,10 @@
         "H8GnKqkwP9ugIes"
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

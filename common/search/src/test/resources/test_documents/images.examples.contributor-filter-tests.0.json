@@ -1,6 +1,6 @@
 {
   "description" : "examples for the contributor filter tests",
-  "createdAt" : "2022-06-09T12:37:30.096119Z",
+  "createdAt" : "2022-06-16T10:05:59.196Z",
   "id" : "7avdcsvd",
   "document" : {
     "version" : 1,
@@ -4503,9 +4503,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4514,6 +4522,8 @@
         "{\"label\":\"Machiavelli, Niccolo\",\"type\":\"Person\"}"
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

@@ -1,6 +1,6 @@
 {
   "description" : "examples for the subject filter tests",
-  "createdAt" : "2022-06-09T10:25:50.805340Z",
+  "createdAt" : "2022-06-16T09:57:46.086Z",
   "id" : "b1r485o0",
   "document" : {
     "debug" : {
@@ -209,14 +209,11 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
-        "darwin01"
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
-        "lcnames-darwin"
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
-        "Darwin \"Jones\", Charles"
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
         "40zJbSlLwDNn2Et",
@@ -224,6 +221,10 @@
         "KOlZmZXOWd5kJ1F"
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

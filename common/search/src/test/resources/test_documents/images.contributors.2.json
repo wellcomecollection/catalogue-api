@@ -1,6 +1,6 @@
 {
   "description" : "images with different contributors",
-  "createdAt" : "2022-06-09T12:37:29.710509Z",
+  "createdAt" : "2022-06-16T10:05:59Z",
   "id" : "krb6vjce",
   "document" : {
     "version" : 1,
@@ -4523,9 +4523,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4535,6 +4543,8 @@
         "{\"label\":\"parrots\",\"type\":\"Meeting\"}"
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

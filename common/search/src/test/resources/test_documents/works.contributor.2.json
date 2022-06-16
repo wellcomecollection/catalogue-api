@@ -1,6 +1,6 @@
 {
   "description" : "works with different contributor",
-  "createdAt" : "2022-06-09T10:25:50.432822Z",
+  "createdAt" : "2022-06-16T09:57:45.980Z",
   "id" : "z08k6cnn",
   "document" : {
     "debug" : {
@@ -186,15 +186,21 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
+        "007",
+        "MI5"
       ],
       "partOf.id" : [
       ],

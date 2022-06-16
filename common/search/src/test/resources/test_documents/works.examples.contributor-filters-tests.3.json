@@ -1,6 +1,6 @@
 {
   "description" : "examples for the contributor filter tests",
-  "createdAt" : "2022-06-09T10:25:50.835470Z",
+  "createdAt" : "2022-06-16T09:57:46.094Z",
   "id" : "6q7wkowr",
   "document" : {
     "debug" : {
@@ -165,15 +165,20 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
+        "Darwin \"Jones\", Charles"
       ],
       "partOf.id" : [
       ],

@@ -1,6 +1,6 @@
 {
   "description" : "examples for the genre filter tests",
-  "createdAt" : "2022-06-09T12:37:30.192896Z",
+  "createdAt" : "2022-06-16T10:05:59.224Z",
   "id" : "a5vdwjyw",
   "document" : {
     "version" : 1,
@@ -4563,9 +4563,19 @@
             "type" : "Genre"
           }
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+        "Emu entrepreneurship",
+        "Falcon finances"
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4575,6 +4585,8 @@
       "source.genres.label" : [
         "{\"label\":\"Emu entrepreneurship\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"Falcon finances\",\"concepts\":[],\"type\":\"Genre\"}"
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

@@ -1,6 +1,6 @@
 {
   "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2022-06-09T10:25:51.081357Z",
+  "createdAt" : "2022-06-16T09:57:46.153Z",
   "id" : "lkq8nygj",
   "document" : {
     "debug" : {
@@ -157,15 +157,20 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+        "che"
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],
