@@ -176,6 +176,20 @@ object WorksRequestBuilder
           includes = includes,
           excludes = excludes
         )
+      case ItemsFilter(itemIds) =>
+        should(
+          termsQuery(
+            field = "query.items.id",
+            values = itemIds
+          )
+        )
+      case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
+        should(
+          termsQuery(
+            field = "query.items.identifiers.value",
+            values = itemSourceIdentifiers
+          )
+        )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
         termsQuery("query.items.locations.locationType.id", itemLocationTypeIds)
 

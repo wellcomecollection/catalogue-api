@@ -40,6 +40,9 @@ case class LicenseFilter(licenseIds: Seq[String])
 
 case class IdentifiersFilter(values: Seq[String]) extends WorkFilter
 
+case class ItemsFilter(values: Seq[String]) extends WorkFilter
+case class ItemsIdentifiersFilter(values: Seq[String]) extends WorkFilter
+
 case class AccessStatusFilter(
   includes: List[String],
   excludes: List[String]
