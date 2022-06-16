@@ -29,7 +29,7 @@ class QueryParamsTest extends AnyFunSpec with Matchers {
       val result = decode("b,c,!d")
       result shouldBe a[Left[_, _]]
       result.left.get.message shouldBe
-        "'c', 'd' are not valid values. Please choose one of: ['a', 'b']"
+        "'c', '!d' are not valid values. Please choose one of: ['a', 'b']"
     }
   }
 }
