@@ -19,7 +19,7 @@ We often want to test against indices that have new or altered analyzers, mappin
 - Run `yarn getIndexConfig` to fetch mappings and other config from existing indices in the rank cluster. The config for your chosen indices will be written to [`./data/indices/`](./data/indices/).
 - Edit the file(s) to your needs, using existing mappings as a starting point.
 - Run `yarn createIndex` to create the new index in the rank cluster from the edited mappings. Add the `--reindex` flag to immediately start a reindex.
-- If you need to monitor the state of a reindex, run `yarn checkReindex`.
+- If you need to monitor the state of a reindex, run `yarn checkTask`.
 - If you need to delete a candidate index, run `yarn deleteIndex`
 - If you need to update a candidate index, run `yarn updateIndex`
 

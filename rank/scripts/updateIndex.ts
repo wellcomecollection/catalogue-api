@@ -1,4 +1,4 @@
-import { error, success } from './utils'
+import { code, error, info, success } from './utils'
 
 import { getNamespaceFromIndexName } from '../types/searchTemplate'
 import { getRankClient } from '../services/elasticsearch'
@@ -83,6 +83,26 @@ async function go() {
   } else {
     error(`Couldn't reopen ${indexName} with error:`)
     console.info(openIndedxRes.error)
+  }
+
+  const updateByQuery = await prompts({
+    type: 'confirm',
+    name: 'value',
+    message: 'Do you want to run the updateByQuery task now?',
+    initial: true,
+  }).then(({ value }) => value)
+
+  if (updateByQuery) {
+    const { body: updateByQueryRes } = await rankClient.updateByQuery({
+      wait_for_completion: false,
+      index: indexName,
+      conflicts: 'proceed',
+    })
+
+    const taskID = updateByQueryRes.task
+    success(`Update started successfully with task ID ${taskID}`)
+    info('You can monitor the task by running:')
+    code('yarn checkTask')
   }
 }
 
