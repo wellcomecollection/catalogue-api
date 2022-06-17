@@ -1,6 +1,6 @@
 {
   "description" : "a work with a production event in 1976",
-  "createdAt" : "2022-06-06T11:16:20.588375Z",
+  "createdAt" : "2022-06-16T09:57:45.597Z",
   "id" : "5vjghupy",
   "document" : {
     "debug" : {
@@ -175,15 +175,19 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

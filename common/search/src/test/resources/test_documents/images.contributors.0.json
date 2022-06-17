@@ -1,6 +1,6 @@
 {
   "description" : "images with different contributors",
-  "createdAt" : "2022-06-09T12:37:29.696127Z",
+  "createdAt" : "2022-06-16T10:05:58.995Z",
   "id" : "vfhrlsz5",
   "document" : {
     "version" : 1,
@@ -4501,9 +4501,17 @@
         ],
         "genres" : [
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4512,6 +4520,8 @@
         "{\"label\":\"carrots\",\"type\":\"Agent\"}"
       ],
       "source.genres.label" : [
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

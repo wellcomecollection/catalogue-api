@@ -181,7 +181,6 @@ const tests: Test[] = [
       // motivated by a specific user request or need - they're general
       // assumptions about how search works which we want to verify.
       // See https://github.com/wellcomecollection/catalogue-api/issues/469
-
       {
         query: 'savoire',
         ratings: ['tbuwy9bk'],

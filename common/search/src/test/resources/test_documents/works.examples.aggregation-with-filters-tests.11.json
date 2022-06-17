@@ -1,6 +1,6 @@
 {
   "description" : "examples for the aggregation-with-filters tests",
-  "createdAt" : "2022-06-09T10:25:50.675814Z",
+  "createdAt" : "2022-06-16T09:57:46.052Z",
   "id" : "4elqjncu",
   "document" : {
     "debug" : {
@@ -195,12 +195,11 @@
       ],
       "items.identifiers.value" : [
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
       ],
-      "subjects.label" : [
-        "Vo8KntFwFf"
+      "items.locations.locationType.id" : [
       ],
       "subjects.concepts.label" : [
         "n6eIKIFN34LcQUS",
@@ -208,6 +207,10 @@
         "IvUnhx12Z5Ks7r7"
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

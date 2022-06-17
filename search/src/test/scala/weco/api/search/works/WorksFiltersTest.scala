@@ -394,30 +394,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
         Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
         "escaped quotes in quotes"
-      ),
-      (
-        "subjects",
-        "sanitati",
-        Seq(sanitationWork),
-        "searching for a single canonical ID"
-      ),
-      (
-        "subjects",
-        "sanitati,darwin01",
-        Seq(sanitationWork, darwinWork, mostThingsWork),
-        "searching for a multiple canonical IDs"
-      ),
-      (
-        "subjects.identifiers",
-        "mesh-sanitation",
-        Seq(sanitationWork),
-        "searching for a single source identifier"
-      ),
-      (
-        "subjects.identifiers",
-        "mesh-sanitation,lcnames-darwin",
-        Seq(sanitationWork, darwinWork, mostThingsWork),
-        "searching for multiple source identifiers"
       )
     )
 

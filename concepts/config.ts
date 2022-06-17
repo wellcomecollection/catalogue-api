@@ -10,7 +10,7 @@ const environmentSchema = z.object({
 const environment = environmentSchema.parse(process.env);
 
 const config = {
-  pipelineDate: "2022-05-30",
+  pipelineDate: "2022-06-17",
   serviceName: "catalogue_api", // TODO provision an elasticsearch user for the concepts API
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 } as const;

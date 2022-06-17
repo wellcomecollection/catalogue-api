@@ -1,6 +1,6 @@
 {
   "description" : "a list of work with all the include-able fields",
-  "createdAt" : "2022-06-09T10:25:50.170626Z",
+  "createdAt" : "2022-06-16T10:10:34.559443Z",
   "id" : "jfzz4ou9",
   "document" : {
     "debug" : {
@@ -1089,13 +1089,17 @@
         "haLIuxnEwk",
         "KFWEKKm2rQ"
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
+        "cc-by",
+        "cc-by",
+        "cc-by"
       ],
-      "subjects.label" : [
-        "dXe1K5osW8",
-        "t4fspOh5tl"
+      "items.locations.locationType.id" : [
+        "iiif-presentation",
+        "iiif-presentation",
+        "iiif-presentation"
       ],
       "subjects.concepts.label" : [
         "hKQNGv31h63sJts",
@@ -1112,6 +1116,15 @@
         "ZGNVldxfQFhVctB",
         "FwsNPAX3Wg9bz6n",
         "2QtjPUbfZXARrSC"
+      ],
+      "languages.id" : [
+        "6hh",
+        "EHn",
+        "7Jx"
+      ],
+      "contributors.agent.label" : [
+        "person-UFES8H2",
+        "person-LQeClX"
       ],
       "partOf.id" : [
         "k4gltrjv",

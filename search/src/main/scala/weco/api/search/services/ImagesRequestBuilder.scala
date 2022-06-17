@@ -79,6 +79,11 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       TermsAggregation("sourceGenres")
         .size(20)
         .field("aggregatableValues.source.genres.label")
+
+    case ImageAggregationRequest.SourceSubjects =>
+      TermsAggregation("sourceSubjects")
+        .size(20)
+        .field("aggregatableValues.source.subjects.label")
   }
 
   def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
@@ -97,11 +102,10 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
           "source.canonicalWork.data.contributors.agent.label.keyword",
           contributorQueries
         )
-      case GenreFilter(genreQueries) =>
-        termsQuery(
-          "source.canonicalWork.data.genres.label.keyword",
-          genreQueries
-        )
+      case GenreFilter(genreLabels) =>
+        termsQuery("query.source.genres.label", genreLabels)
+      case SubjectLabelFilter(subjectLabels) =>
+        termsQuery("query.source.subjects.label", subjectLabels)
     }
 
   def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =

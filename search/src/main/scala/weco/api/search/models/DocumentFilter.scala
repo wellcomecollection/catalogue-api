@@ -26,10 +26,9 @@ case class GenreFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter
 
-case class SubjectIdFilter(ids: Seq[String]) extends WorkFilter
-case class SubjectIdentifiersFilter(sourceIdentifiers: Seq[String])
+case class SubjectLabelFilter(labels: Seq[String])
     extends WorkFilter
-case class SubjectLabelFilter(labels: Seq[String]) extends WorkFilter
+    with ImageFilter
 
 case class ContributorsFilter(contributorQueries: Seq[String])
     extends WorkFilter

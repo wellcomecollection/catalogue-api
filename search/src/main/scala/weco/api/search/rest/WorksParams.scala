@@ -73,8 +73,6 @@ case class WorkFilterParams(
   `production.dates.to`: Option[LocalDate],
   languages: Option[LanguagesFilter],
   `genres.label`: Option[GenreFilter],
-  `subjects`: Option[SubjectIdFilter],
-  `subjects.identifiers`: Option[SubjectIdentifiersFilter],
   `subjects.label`: Option[SubjectLabelFilter],
   `contributors.agent.label`: Option[ContributorsFilter],
   identifiers: Option[IdentifiersFilter],
@@ -117,8 +115,6 @@ case class MultipleWorksParams(
       dateFilter,
       filterParams.languages,
       filterParams.`genres.label`,
-      filterParams.`subjects`,
-      filterParams.`subjects.identifiers`,
       filterParams.`subjects.label`,
       filterParams.`contributors.agent.label`,
       filterParams.identifiers,
@@ -199,8 +195,6 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
           "genres.label".as[GenreFilter].?,
-          "subjects".as[SubjectIdFilter].?,
-          "subjects.identifiers".as[SubjectIdentifiersFilter].?,
           "subjects.label".as[SubjectLabelFilter].?,
           "contributors.agent.label".as[ContributorsFilter].?,
           "identifiers".as[IdentifiersFilter].?,
@@ -215,8 +209,6 @@ object MultipleWorksParams extends QueryParamsUtils {
               dateTo,
               languages,
               genres,
-              subjects,
-              subjectIdentifiers,
               subjectLabels,
               contributors,
               identifiers,
@@ -231,8 +223,6 @@ object MultipleWorksParams extends QueryParamsUtils {
               dateTo,
               languages,
               genres,
-              subjects,
-              subjectIdentifiers,
               subjectLabels,
               contributors,
               identifiers,
@@ -267,15 +257,6 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val languagesFilter: Decoder[LanguagesFilter] =
     stringListFilter(LanguagesFilter)
 
-  implicit val subjectIdFilter: Decoder[SubjectIdFilter] =
-    stringListFilter(SubjectIdFilter)
-
-  implicit val subjectIdentifiersFilter: Decoder[SubjectIdentifiersFilter] =
-    stringListFilter(SubjectIdentifiersFilter)
-
-  implicit val subjectLabelFilter: Decoder[SubjectLabelFilter] =
-    stringListFilter(SubjectLabelFilter)
-
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
 
@@ -295,9 +276,9 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(AvailabilitiesFilter)
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
-    decodeIncludesAndExcludes(CatalogueAccessStatus.indexValues)
+    decodeIncludesAndExcludes(CatalogueAccessStatus.values)
       .emap {
-        case (includes, excludes) =>
+        case IncludesAndExcludes(includes, excludes) =>
           Right(AccessStatusFilter(includes, excludes))
       }
 

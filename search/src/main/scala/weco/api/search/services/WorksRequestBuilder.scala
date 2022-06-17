@@ -155,60 +155,44 @@ object WorksRequestBuilder
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
         RangeQuery("data.production.dates.range.from", lte = lte, gte = gte)
       case LanguagesFilter(languageIds) =>
-        termsQuery(field = "data.languages.id", values = languageIds)
+        termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
         termsQuery("data.genres.label.keyword", genreQueries)
 
-      case SubjectIdFilter(ids) =>
-        termsQuery("query.subjects.id", ids)
-      case SubjectIdentifiersFilter(sourceIdentifiers) =>
-        termsQuery("query.subjects.identifiers.value", sourceIdentifiers)
       case SubjectLabelFilter(labels) =>
-        termsQuery("query.subjects.label", labels)
+        termsQuery("data.subjects.label.keyword", labels)
 
       case ContributorsFilter(contributorQueries) =>
-        termsQuery("data.contributors.agent.label.keyword", contributorQueries)
-      case LicenseFilter(licenseIds) =>
-        termsQuery(
-          field = "data.items.locations.license.id",
-          values = licenseIds
-        )
+        termsQuery("query.contributors.agent.label.keyword", contributorQueries)
+
       case IdentifiersFilter(identifiers) =>
-        should(
-          termsQuery(
-            field = "query.identifiers.value",
-            values = identifiers
-          )
-        )
+        termsQuery("query.identifiers.value", identifiers)
+
+      case LicenseFilter(licenseIds) =>
+        termsQuery("query.items.locations.license.id", licenseIds)
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
-          field = "data.items.locations.accessConditions.status.type",
+          field = "query.items.locations.accessConditions.status.id",
           includes = includes,
           excludes = excludes
         )
       case ItemsFilter(itemIds) =>
         should(
           termsQuery(
-            field = "data.items.id.canonicalId",
+            field = "query.items.id",
             values = itemIds
           )
         )
       case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
         should(
           termsQuery(
-            field = "data.items.id.sourceIdentifier.value",
-            values = itemSourceIdentifiers
-          ),
-          termsQuery(
-            field = "data.items.id.otherIdentifiers.value",
+            field = "query.items.identifiers.value",
             values = itemSourceIdentifiers
           )
         )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
-        termsQuery(
-          field = "data.items.locations.locationType.id",
-          values = itemLocationTypeIds
-        )
+        termsQuery("query.items.locations.locationType.id", itemLocationTypeIds)
+
       case PartOfFilter(search_term) =>
         /*
          The partOf filter matches on either the id or the title of any ancestor.
