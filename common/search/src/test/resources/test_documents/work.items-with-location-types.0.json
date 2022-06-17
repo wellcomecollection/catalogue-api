@@ -1,6 +1,6 @@
 {
   "description" : "items with different location types",
-  "createdAt" : "2022-06-09T10:25:50.648903Z",
+  "createdAt" : "2022-06-16T09:57:46.037Z",
   "id" : "kdwct2lf",
   "document" : {
     "debug" : {
@@ -209,15 +209,21 @@
       "items.identifiers.value" : [
         "LIHkQjFHQR"
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
+        "cc-by"
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
+        "iiif-image"
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

@@ -1,6 +1,6 @@
 {
   "description" : "examples for the access status tests",
-  "createdAt" : "2022-06-09T10:25:51.030520Z",
+  "createdAt" : "2022-06-16T09:57:46.136Z",
   "id" : "stsp385v",
   "document" : {
     "debug" : {
@@ -234,15 +234,22 @@
       "items.identifiers.value" : [
         "VBNn8SqD7q"
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
+        "restricted"
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
+        "cc-by"
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
+        "iiif-presentation"
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],

@@ -1,0 +1,2 @@
+# See https://docs.github.com/en/repositories/working-with-files/managing-files/customizing-how-changed-files-appear-on-github
+common/search/src/test/resources/test_documents/*.json linguist-generated=true

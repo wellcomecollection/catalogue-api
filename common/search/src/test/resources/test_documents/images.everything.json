@@ -1,6 +1,6 @@
 {
   "description" : "an image with every include",
-  "createdAt" : "2022-06-09T12:37:30.308161Z",
+  "createdAt" : "2022-06-16T10:05:59.267Z",
   "id" : "alwtbvyg",
   "document" : {
     "version" : 1,
@@ -4633,9 +4633,19 @@
             "type" : "Genre"
           }
         ],
+        "subjects" : [
+        ],
         "type" : "Work"
       },
       "type" : "Image"
+    },
+    "query" : {
+      "source.subjects.label" : [
+      ],
+      "source.genres.label" : [
+        "Crumbly cabbages",
+        "Deadly durians"
+      ]
     },
     "aggregatableValues" : {
       "locations.license" : [
@@ -4647,6 +4657,8 @@
       "source.genres.label" : [
         "{\"label\":\"Crumbly cabbages\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"Deadly durians\",\"concepts\":[],\"type\":\"Genre\"}"
+      ],
+      "source.subjects.label" : [
       ]
     }
   }

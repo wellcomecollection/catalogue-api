@@ -1,6 +1,6 @@
 {
   "description" : "works with items with other identifiers",
-  "createdAt" : "2022-06-09T10:25:50.453249Z",
+  "createdAt" : "2022-06-16T09:57:45.987Z",
   "id" : "zbejhda8",
   "document" : {
     "debug" : {
@@ -227,15 +227,21 @@
         "Px23iBj3EH",
         "QCHJJ4MhQv"
       ],
-      "subjects.id" : [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "subjects.identifiers.value" : [
+      "items.locations.license.id" : [
+        "cc-by"
       ],
-      "subjects.label" : [
+      "items.locations.locationType.id" : [
+        "iiif-presentation"
       ],
       "subjects.concepts.label" : [
       ],
       "genres.concepts.label" : [
+      ],
+      "languages.id" : [
+      ],
+      "contributors.agent.label" : [
       ],
       "partOf.id" : [
       ],
