@@ -41,25 +41,20 @@ case object ImageSimilarity {
 
 case object ImagesMultiMatcher {
 
-  def toWorkField(
-    field: String
-  ): Seq[String] =
-    Seq(s"source.canonicalWork.$field", s"source.redirectedWork.$field")
-
-  def boostedWorkFields(
+  private def boostedWorkFields(
     boost: Option[Double] = None,
     fields: Seq[String]
   ): Seq[FieldWithOptionalBoost] =
-    fields.flatMap(toWorkField).map(FieldWithOptionalBoost(_, boost))
+    fields.map(f => FieldWithOptionalBoost(s"source.$f", boost))
 
-  val titleFields = Seq(
+  private val titleFields = Seq(
     "data.alternativeTitles",
     "data.title.english",
     "data.title.shingles",
     "data.title"
   )
 
-  val idFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
+  private val idFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
     fields = Seq(
       "id.canonicalId",
       "id.sourceIdentifier.value",
@@ -70,7 +65,7 @@ case object ImagesMultiMatcher {
     "state.sourceIdentifier.value"
   ).map(FieldWithOptionalBoost(_, None))
 
-  val dataFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
+  private val dataFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
     boost = Some(1000.0),
     fields = Seq("data.contributors.agent.label")
   ) ++
@@ -117,19 +112,11 @@ case object ImagesMultiMatcher {
         dismax(
           queries = Seq(
             BoolQuery(
-              queryName = Some("redirected title prefix"),
-              boost = Some(1000.0),
-              must = List(
-                prefixQuery("source.redirectedWork.data.title.keyword", q),
-                matchPhraseQuery("source.redirectedWork.data.title", q)
-              )
-            ),
-            BoolQuery(
               queryName = Some("canonical title prefix"),
               boost = Some(1000.0),
               must = List(
-                prefixQuery("source.canonicalWork.data.title.keyword", q),
-                matchPhraseQuery("source.canonicalWork.data.title", q)
+                prefixQuery("source.data.title.keyword", q),
+                matchPhraseQuery("source.data.title", q)
               )
             ),
             MultiMatchQuery(

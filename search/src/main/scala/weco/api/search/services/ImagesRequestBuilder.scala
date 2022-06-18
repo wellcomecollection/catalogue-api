@@ -99,7 +99,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         termsQuery(field = "locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "source.canonicalWork.data.contributors.agent.label.keyword",
+          "source.data.contributors.agent.label.keyword",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>

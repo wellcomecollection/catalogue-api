@@ -60,6 +60,7 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
       case Right(resp) =>
         Right(
           resp.aggregations
+//            .getAgg("work_type")
             .decodeAgg[String]("work_type")
             .get
             .buckets

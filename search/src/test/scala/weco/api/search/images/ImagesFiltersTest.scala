@@ -44,24 +44,6 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       }
     }
 
-    it("does not filter by contributors from the redirected source work") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2)
-              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
-          )
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.contributors.agent.label=Hypatia"
-          ) {
-            Status.OK -> emptyJsonResult
-          }
-      }
-    }
-
     it("filters by multiple contributors") {
       withImagesApi {
         case (imagesIndex, routes) =>
