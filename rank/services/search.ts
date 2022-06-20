@@ -8,28 +8,31 @@ import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
 
 type Props = {
-  query: string
+  searchTerms: string
   queryEnv: QueryEnv
   index: Index
+  explain: boolean
 }
 
 export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  query: decodeString(q, 'query'),
+  searchTerms: decodeString(q, 'query'),
   queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
   index: decodeString(q, 'index') as Index,
+  explain: decodeString(q, 'explain') === 'true',
 })
 
 async function service({
   queryEnv,
   index,
-  query,
+  searchTerms,
+  explain,
 }: Props): Promise<SearchResponse> {
   const template = await getTemplate(queryEnv, index)
   const searchResp = await getRankClient()
     .searchTemplate<SearchResponse>({
       index: template.index,
       body: {
-        explain: true,
+        explain,
         source: {
           query: template.query,
           track_total_hits: true,
@@ -39,7 +42,7 @@ async function service({
             fields: { '*': { number_of_fragments: 0 } },
           },
         },
-        params: { query, size: 100 },
+        params: { query: searchTerms, size: 100 },
       },
     })
     .then((res) => res.body)

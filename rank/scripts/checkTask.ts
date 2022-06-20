@@ -6,7 +6,10 @@ import { getRankClient } from '../services/elasticsearch'
 async function go() {
   const client = getRankClient()
   const reindexTasks = await client.cat.tasks({
-    actions: 'indices:data/write/reindex',
+    actions: [
+      'indices:data/write/reindex',
+      'indices:data/write/update/byquery',
+    ],
   })
 
   // the task response comes back as a whitespace delimeted string like:
@@ -32,9 +35,12 @@ async function go() {
 
     const timer = setInterval(async function () {
       taskResponse = await client.tasks.get({ task_id })
+      const createdOrUpdatedCount =
+        taskResponse.body.task.status.created +
+        taskResponse.body.task.status.updated
       progress.increment()
-      progress.update(taskResponse.body.task.status.created)
-      if (taskResponse.body.task.status.created >= progress.getTotal()) {
+      progress.update(createdOrUpdatedCount)
+      if (createdOrUpdatedCount >= progress.getTotal()) {
         clearInterval(timer)
         progress.stop()
         info('')
