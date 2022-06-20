@@ -2,25 +2,44 @@ import { info, success } from './utils'
 
 import cliProgress from 'cli-progress'
 import { getRankClient } from '../services/elasticsearch'
+import prompts from 'prompts'
+import yargs from 'yargs'
 
 async function go() {
   const client = getRankClient()
-  const reindexTasks = await client.cat.tasks({
-    actions: [
-      'indices:data/write/reindex',
-      'indices:data/write/update/byquery',
-    ],
-  })
+  let task_id
+  const args = yargs(process.argv)
+    .options({
+      task: {
+        type: 'string',
+        description: 'The task to check',
+      },
+    })
+    .exitProcess(false)
+    .parseSync()
 
-  // the task response comes back as a whitespace delimeted string like:
-  //   action  task_id  parent_task_id  type  start_time  timestamp  running_time  ip  node
-  // from which we extract the task_id
-  // see https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-tasks.html
-  const task_id = reindexTasks.body.split(' ')[1]
+  if (args.task) {
+    task_id = args.task
+  } else {
+    const tasks = await client.cat
+      .tasks({ format: 'json', h: 'action,task_id' })
+      .then((res) => res.body)
+
+    task_id = await prompts({
+      type: 'select',
+      name: 'task_id',
+      message: 'Select a task',
+      choices: tasks.map((task) => ({
+        title: task.task_id,
+        description: task.action,
+        value: task.task_id,
+      })),
+    }).then(({ task_id }) => task_id)
+  }
 
   var taskResponse = await client.tasks.get({ task_id })
   if (taskResponse.body.completed) {
-    success('Reindex complete!')
+    success('Task complete!')
   } else {
     info(`Still working on ${taskResponse.body.task.description}\n`)
 
@@ -44,7 +63,7 @@ async function go() {
         clearInterval(timer)
         progress.stop()
         info('')
-        success('Reindex complete!')
+        success('Task complete!')
       }
     }, 1000) // refresh progress every 1s
   }

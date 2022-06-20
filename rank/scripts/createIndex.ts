@@ -82,7 +82,7 @@ async function go() {
 
     success('Reindex started successfully')
     info('You can monitor the reindex by running:')
-    code('yarn checkTask')
+    code(`yarn checkTask --task ${reindexResp.task.task_id}`)
   }
 }
 
