@@ -36,8 +36,8 @@ async function go() {
       .join(', ')
     const displayString = [
       `${i + 1}.\t${chalk.bold(chalk.cyan(title))}`,
-      reference ? `${reference}` : null,
-      dates ? `${dates}` : null,
+      reference ? reference : null,
+      dates ? dates : null,
       url,
     ]
       .filter((n) => n)
