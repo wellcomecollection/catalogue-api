@@ -28,7 +28,6 @@ const pretty = (json: unknown) => {
   return JSON.stringify(json, null, 2)
 }
 
-
 async function gatherArgs(options) {
   const args = yargs(process.argv)
     .options(options)
@@ -48,8 +47,9 @@ async function gatherArgs(options) {
             name: 'value',
             message: key,
             choices: value['choices'].map((choice) => ({
-              title: choice,
-              value: choice,
+              title: choice.title ? choice.title : choice,
+              value: choice.value ? choice.value : choice,
+              description: choice.description ? choice.description : null,
             })),
           }).then(({ value }) => value)
         : // otherwise, only allow them to choose a single option from the list
@@ -58,8 +58,9 @@ async function gatherArgs(options) {
             name: 'value',
             message: key,
             choices: value['choices'].map((choice) => ({
-              title: choice,
-              value: choice,
+              title: choice.title ? choice.title : choice,
+              value: choice.value ? choice.value : choice,
+              description: choice.description ? choice.description : null,
             })),
           }).then(({ value }) => value)
     }
@@ -67,7 +68,6 @@ async function gatherArgs(options) {
 
   return args
 }
-
 
 const histogram = (arr: number[], binWidth: number = 250) => {
   var max = Math.max(...arr)

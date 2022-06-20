@@ -102,7 +102,7 @@ async function go() {
     const taskID = updateByQueryRes.task
     success(`Update started successfully with task ID ${taskID}`)
     info('You can monitor the task by running:')
-    code('yarn checkTask')
+    code(`yarn checkTask --task ${taskID}`)
   }
 }
 
