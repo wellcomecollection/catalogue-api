@@ -24,7 +24,7 @@ async function go() {
     const tasks = await client.cat
       .tasks()
       .then((res) => res.body)
-      // the task response comes back as a list of whitespace delimeted string like:
+      // the task response comes back as a list of whitespace delimited strings like:
       //   action  task_id  parent_task_id  type  start_time  timestamp  running_time  ip  node
       // from which we extract the task_id
       // see https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-tasks.html
