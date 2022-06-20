@@ -22,22 +22,8 @@ async function go() {
     task_id = args.task
   } else {
     const tasks = await client.cat
-      .tasks()
+      .tasks({ format: 'json', h: 'action,task_id' })
       .then((res) => res.body)
-      // the task response comes back as a list of whitespace delimeted string like:
-      //   action  task_id  parent_task_id  type  start_time  timestamp  running_time  ip  node
-      // from which we extract the task_id
-      // see https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-tasks.html
-      .then((body) => body.split('\n'))
-      .then((lines) =>
-        lines.map((line) => {
-          const [action, task_id] = line.split(' ')
-          return { action, task_id }
-        })
-      )
-      .then((tasks) =>
-        tasks.filter((task) => task.task_id && task.task_id !== '')
-      )
 
     task_id = await prompts({
       type: 'select',
