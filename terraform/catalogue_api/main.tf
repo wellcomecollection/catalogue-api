@@ -45,9 +45,9 @@ module "catalogue_api_stage" {
   }
 
   desired_task_counts = {
-    search   = 1
-    items    = 1
-    concepts = 1
+    search   = 3
+    items    = 3
+    concepts = 3
   }
 
   vpc_id                   = local.vpc_id

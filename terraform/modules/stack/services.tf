@@ -36,6 +36,9 @@ module "search_api" {
     metrics_namespace = "search-api"
   }
 
+  app_cpu    = 256
+  app_memory = 512
+
   secrets = var.apm_secret_config
 
   # Below this line is boilerplate that should be the same across
@@ -75,6 +78,9 @@ module "items_api" {
   }
 
   secrets = merge(var.apm_secret_config, var.sierra_secret_config)
+
+  app_cpu    = 256
+  app_memory = 512
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
