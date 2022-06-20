@@ -73,11 +73,9 @@ variable "deployment_service_env" {
 }
 
 variable "app_cpu" {
-  type    = number
-  default = 512
+  type = number
 }
 
 variable "app_memory" {
-  type    = number
-  default = 1024
+  type = number
 }
