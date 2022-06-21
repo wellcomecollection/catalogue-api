@@ -157,10 +157,10 @@ object WorksRequestBuilder
       case LanguagesFilter(languageIds) =>
         termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
-        termsQuery("data.genres.label.keyword", genreQueries)
+        termsQuery("query.genres.label.keyword", genreQueries)
 
       case SubjectLabelFilter(labels) =>
-        termsQuery("data.subjects.label.keyword", labels)
+        termsQuery("query.subjects.label.keyword", labels)
 
       case ContributorsFilter(contributorQueries) =>
         termsQuery("query.contributors.agent.label.keyword", contributorQueries)
