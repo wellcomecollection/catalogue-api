@@ -36,8 +36,8 @@ module "search_api" {
     metrics_namespace = "search-api"
   }
 
-  app_cpu    = 256
-  app_memory = 512
+  app_cpu    = var.environment_name == "prod" ? 512 : 256
+  app_memory = var.environment_name == "prod" ? 1024 : 512
 
   secrets = var.apm_secret_config
 
