@@ -86,9 +86,13 @@ trait DisplayItemOps {
       //
       // We only want to refresh the data if the item is on hold for another reader.
       val isTemporarilyUnavailable =
-        statusId.contains("temporarily-unavailable") && !(
-          accessCondition.note.contains("This item is undergoing internal assessment or conservation work.") ||
-            accessCondition.note.contains("This item is being digitised and is currently unavailable."))
+        statusId.contains("temporarily-unavailable") && !(accessCondition.note
+          .contains(
+            "This item is undergoing internal assessment or conservation work."
+          ) ||
+          accessCondition.note.contains(
+            "This item is being digitised and is currently unavailable."
+          ))
 
       isTemporarilyUnavailable || isRequestable
     }
