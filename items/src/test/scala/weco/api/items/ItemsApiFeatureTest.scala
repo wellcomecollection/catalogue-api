@@ -142,6 +142,91 @@ class ItemsApiFeatureTest
       }
     }
 
+    it("keeps items as temporarily unavailable if they're at conservation") {
+      val resourceName = "work-with-at-conservation-items.json"
+      val workId = "n8czw8g7"
+
+      val catalogueResponses = Seq(
+        (
+          catalogueWorkRequest(workId),
+          catalogueWorkResponse(resourceName)
+        )
+      )
+
+      withItemsApi(catalogueResponses) { _ =>
+        val path = s"/works/$workId"
+
+        val expectedJson =
+          s"""
+             |{
+             |  "type" : "ItemsList",
+             |  "totalResults" : 1,
+             |  "results" : [
+             |    {
+             |      "id": "u8br9f3t",
+             |      "identifiers": [
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-system-number",
+             |            "label": "Sierra system number",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "i19520189",
+             |          "type": "Identifier"
+             |        },
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-identifier",
+             |            "label": "Sierra identifier",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "1952018",
+             |          "type": "Identifier"
+             |        }
+             |      ],
+             |      "locations": [
+             |        {
+             |          "locationType": {
+             |            "id": "closed-stores",
+             |            "label": "Closed stores",
+             |            "type": "LocationType"
+             |          },
+             |          "label": "Closed stores",
+             |          "accessConditions": [
+             |            {
+             |              "method": {
+             |                "id": "not-requestable",
+             |                "label": "Not requestable",
+             |                "type": "AccessMethod"
+             |              },
+             |              "status": {
+             |                "id": "temporarily-unavailable",
+             |                "label": "Temporarily unavailable",
+             |                "type": "AccessStatus"
+             |              },
+             |              "note": "This item is undergoing internal assessment or conservation work.",
+             |              "type": "AccessCondition"
+             |            }
+             |          ],
+             |          "type": "PhysicalLocation"
+             |        }
+             |      ],
+             |      "type": "Item"
+             |    }
+             |  ]
+             |}
+              """.stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedJson)
+          }
+        }
+      }
+    }
+
     it("returns a 404 if there is no work with this ID") {
       val id = createCanonicalId
 
