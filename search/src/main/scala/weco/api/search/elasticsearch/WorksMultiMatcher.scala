@@ -9,7 +9,6 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryB
 }
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
-  MatchQuery,
   MultiMatchQuery
 }
 import com.sksamuel.elastic4s.requests.searches.span.{
@@ -29,9 +28,6 @@ case object WorksMultiMatcher {
     fields: Seq[String]
   ): Seq[FieldWithOptionalBoost] =
     fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
-
-  private val languages =
-    List("arabic", "bengali", "french", "german", "hindi", "italian")
 
   def apply(q: String): BoolQuery =
     boolQuery()
@@ -72,7 +68,8 @@ case object WorksMultiMatcher {
               "query.items.identifiers.value",
               "query.images.id",
               "query.images.identifiers.value",
-              "data.referenceNumber"
+              "data.referenceNumber",
+              "search.identifiers"
             )
           )
         ),
@@ -93,7 +90,14 @@ case object WorksMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
-              fields = languages.map(
+              fields = List(
+                "arabic",
+                "bengali",
+                "french",
+                "german",
+                "hindi",
+                "italian"
+              ).map(
                 language =>
                   FieldWithOptionalBoost(
                     s"search.titlesAndContributors.$language",
@@ -105,12 +109,33 @@ case object WorksMultiMatcher {
             )
           )
         ),
-        MatchQuery(
-          queryName = Some("relations"),
-          field = "search.relations",
-          value = q,
-          operator = Some(AND),
-          boost = Some(1000)
+        bool(
+          shouldQueries = List(
+            MultiMatchQuery(
+              q,
+              queryName = Some("relations text"),
+              `type` = Some(CROSS_FIELDS),
+              operator = Some(OR),
+              fields = Seq(
+                FieldWithOptionalBoost("data.title", boost = Some(100)),
+                FieldWithOptionalBoost("data.description", boost = Some(10))
+              )
+            )
+          ),
+          mustQueries = List(
+            MultiMatchQuery(
+              q,
+              queryName = Some("relations paths"),
+              operator = Some(OR),
+              fields = Seq(
+                FieldWithOptionalBoost("data.collectionPath.path.clean", None),
+                FieldWithOptionalBoost("data.collectionPath.label.path.clean", None),
+                FieldWithOptionalBoost("data.collectionPath.label", None),
+                FieldWithOptionalBoost("data.collectionPath.path.keyword", None)
+              )
+            )
+          ),
+          notQueries = Nil
         ),
         MultiMatchQuery(
           q,
