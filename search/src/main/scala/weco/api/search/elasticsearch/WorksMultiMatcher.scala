@@ -129,7 +129,10 @@ case object WorksMultiMatcher {
               operator = Some(OR),
               fields = Seq(
                 FieldWithOptionalBoost("data.collectionPath.path.clean", None),
-                FieldWithOptionalBoost("data.collectionPath.label.path.clean", None),
+                FieldWithOptionalBoost(
+                  "data.collectionPath.label.path.clean",
+                  None
+                ),
                 FieldWithOptionalBoost("data.collectionPath.label", None),
                 FieldWithOptionalBoost("data.collectionPath.path.keyword", None)
               )
