@@ -31,7 +31,12 @@ async function go() {
     (mod) => mod.default
   )
 
-  const remoteIndex = `${getNamespaceFromIndexName(localIndex)}-candidate`
+  const remoteIndex = await prompts({
+    type: 'text',
+    name: 'value',
+    message: 'What should the new index be called?',
+    initial: `${getNamespaceFromIndexName(localIndex)}-candidate`,
+  }).then(({ value }) => value)
 
   const client = getRankClient()
   const { body: putIndexRes } = await client.indices.create({
@@ -82,7 +87,7 @@ async function go() {
 
     success('Reindex started successfully')
     info('You can monitor the reindex by running:')
-    code(`yarn checkTask --task ${reindexResp.task.task_id}`)
+    code(`yarn checkTask --task ${reindexResp.task}`)
   }
 }
 
