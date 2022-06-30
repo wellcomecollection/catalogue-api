@@ -78,8 +78,21 @@ trait DisplayItemOps {
     }
 
     def isStale: Boolean = {
+      // Temporarily unavailable can be used for a couple of things:
+      //
+      //    1) We use it for items that are on hold for another reader
+      //    2) We use it when an item is removed for conservation work, e.g. digitisation
+      //       or re-appraisal
+      //
+      // We only want to refresh the data if the item is on hold for another reader.
       val isTemporarilyUnavailable =
-        statusId.contains("temporarily-unavailable")
+        statusId.contains("temporarily-unavailable") && !(accessCondition.note
+          .contains(
+            "This item is undergoing internal assessment or conservation work."
+          ) ||
+          accessCondition.note.contains(
+            "This item is being digitised and is currently unavailable."
+          ))
 
       isTemporarilyUnavailable || isRequestable
     }
