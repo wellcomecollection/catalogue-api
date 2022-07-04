@@ -23,7 +23,8 @@
             "query.items.identifiers.value^1000.0",
             "query.images.id^1000.0",
             "query.images.identifiers.value^1000.0",
-            "data.referenceNumber^1000.0"
+            "data.referenceNumber^1000.0",
+            "search.identifiers^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
@@ -67,13 +68,36 @@
         }
       },
       {
-        "match": {
-          "search.relations": {
-            "query": "{{query}}",
-            "_name": "relations",
-            "boost": 1000,
-            "operator": "AND"
-          }
+        "bool": {
+          "should": [
+            {
+              "multi_match": {
+                "query": "{{query}}",
+                "fields": [
+                  "data.title^100.0",
+                  "data.description^10.0"
+                ],
+                "type": "cross_fields",
+                "operator": "Or",
+                "_name": "relations text"
+              }
+            }
+          ],
+          "must": [
+            {
+              "multi_match": {
+                "fields": [
+                  "data.collectionPath.path.clean",
+                  "data.collectionPath.label.path.clean",
+                  "data.collectionPath.label",
+                  "data.collectionPath.path.keyword"
+                ],
+                "query": "{{query}}",
+                "operator": "Or",
+                "_name": "relations paths"
+              }
+            }
+          ]
         }
       },
       {

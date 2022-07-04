@@ -32,6 +32,11 @@ const tests: Test[] = [
         description: 'Reference number as ID',
       },
       {
+        query: 'seq88sr4 qfk4vbp8',
+        ratings: ['seq88sr4','qfk4vbp8'],
+        description: 'multiple IDs',
+      },
+      {
         query: 'Cassils Time lapse',
         ratings: ['ftqy78zj'],
         description: 'Contributor and title in the same query',
@@ -118,13 +123,16 @@ const tests: Test[] = [
         query: 'wa/hmm durham',
         ratings: ['euf49qkx', 'tpxy78kr', 'gu3z98y4', 'ad3rfubw'],
         description: 'Archive refno and a word from the title',
-        knownFailure: true,
       },
       {
         query: 'wa/hmm benin',
         ratings: ['qfdvkegw', 'je5pm2gj', 'dppjjtqz'],
         description: 'Archive refno and a word from the description',
-        knownFailure: true,
+      },
+      {
+        query: 'WA/HMM/CM benin',
+        ratings: ['qfdvkegw', 'je5pm2gj', 'dppjjtqz'],
+        description: 'Archive refno and a word from the description',
       },
       {
         query: 'eugenics society annual reports',
@@ -171,7 +179,7 @@ const tests: Test[] = [
       'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     eval: equalTo1,
     cases: [
-      { query: 'at-tib', ratings: ['qmm9mauk'] },
+      { query: 'at-tib', ratings: ['qmm9mauk'], knownFailure: true },
       { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'] },
       { query: 'nuğūm', ratings: ['jtbenqbq'] },
       { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
