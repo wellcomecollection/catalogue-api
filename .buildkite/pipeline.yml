@@ -48,7 +48,7 @@ steps:
     key: "concepts-test"
     plugins:
       - docker-compose#v3.9.0:
-          run: concepts
+          run: "concepts"
           command: ["yarn", "test"]
 
   - label: "Concepts API (push image)"
