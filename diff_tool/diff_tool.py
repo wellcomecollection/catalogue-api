@@ -62,6 +62,14 @@ class ApiDiffer:
     def get_html_diff(self):
         """
         Fetches a URL from the prod/staging API, and returns a (status, HTML diff).
+
+        The possible statuses are:
+
+            * different status = as in HTTP status
+            * match = same JSON
+            * different result count = everything is the same except totalResults/totalPages
+            * different JSON = something is different
+
         """
 
         (prod_status, prod_json) = self.call_api(PROD_URL)
@@ -85,17 +93,23 @@ class ApiDiffer:
             prod_pretty = json.dumps(prod_json, indent=2, sort_keys=True)
             stage_pretty = json.dumps(stage_json, indent=2, sort_keys=True)
 
-            return (
-                "different JSON",
-                list(
-                    difflib.unified_diff(
-                        prod_pretty.splitlines(),
-                        stage_pretty.splitlines(),
-                        fromfile="prod",
-                        tofile="stage",
-                    )
-                ),
+            diff_lines = list(
+                difflib.unified_diff(
+                    prod_pretty.splitlines(),
+                    stage_pretty.splitlines(),
+                    fromfile="prod",
+                    tofile="stage",
+                )
             )
+
+            if prod_json.keys() == stage_json.keys() and all(
+                prod_json[k] == stage_json[k]
+                for k in prod_json
+                if k not in {"totalPages", "totalResults"}
+            ):
+                return ("different result count", diff_lines)
+            else:
+                return ("different JSON", diff_lines)
 
     def call_api(self, api_base):
         url = f"https://{api_base}{self.path}"
@@ -141,6 +155,12 @@ def _display_in_console(stats, diffs):
 
         if diff_line["status"] == "match":
             click.echo(click.style(f"✓ {display_diff_line}", fg="green"))
+        elif diff_line["status"] == "different result count":
+            click.echo(
+                click.style(
+                    f"! {display_diff_line} (result count differs)", fg="yellow"
+                )
+            )
         else:
             click.echo(click.style(f"✖ {display_diff_line}", fg="red"))
 
