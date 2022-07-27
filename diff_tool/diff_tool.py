@@ -136,10 +136,16 @@ def _display_in_console(stats, diffs):
     click.echo(
         tabulate(
             [
-                ["Production"] + list(stats["prod"]["work_types"].values()),
-                ["Staging"] + list(stats["staging"]["work_types"].values()),
+                ["Production"]
+                + [humanize.intcomma(v) for v in stats["prod"]["work_types"].values()],
+                ["Staging"]
+                + [
+                    humanize.intcomma(v)
+                    for v in stats["staging"]["work_types"].values()
+                ],
             ],
             headers=stats["prod"]["work_types"].keys(),
+            colalign=("left", "right", "right", "right", "right", "right"),
         )
     )
 
