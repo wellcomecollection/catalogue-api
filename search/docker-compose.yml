@@ -12,3 +12,4 @@ services:
       - "cluster.name=wellcome"
       - "logger.level=DEBUG"
       - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
