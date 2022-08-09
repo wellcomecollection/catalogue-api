@@ -33,7 +33,7 @@ const tests: Test[] = [
       },
       {
         query: 'seq88sr4 qfk4vbp8',
-        ratings: ['seq88sr4','qfk4vbp8'],
+        ratings: ['seq88sr4', 'qfk4vbp8'],
         description: 'multiple IDs',
       },
       {
@@ -179,10 +179,10 @@ const tests: Test[] = [
       'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     eval: equalTo1,
     cases: [
-      { query: 'at-tib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'] },
-      { query: 'nuğūm', ratings: ['jtbenqbq'] },
-      { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
+      { query: 'al-tibb', ratings: ['t4jqq9ue'], knownFailure: true },
+      { query: 'Al-ṭibb', ratings: ['t4jqq9ue'], knownFailure: true },
+      { query: 'nuğūm', ratings: ['m94cyux7'], knownFailure: true },
+      { query: 'nujum', ratings: ['m94cyux7'], knownFailure: true },
       { query: 'arbeiten', ratings: ['xn7yyrqf'] },
       // we know that something strange has happened to the french and italian
       // stemming tests, but stemming _is_ still happening. These tests aren't
