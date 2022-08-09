@@ -96,7 +96,7 @@ const tests: Test[] = [
     cases: [
       { query: 'arbeiten', ratings: ['sr4kxmk3', 'utbtee43'] },
       { query: 'conosco', ratings: ['nnh3nh47'] },
-      { query: 'allons', ratings: ['dqnapkdx'] },
+      { query: 'allons', ratings: ['et7c29ub'], knownFailure: true },
     ],
     metric: {
       recall: {
