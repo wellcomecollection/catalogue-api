@@ -95,8 +95,8 @@ const tests: Test[] = [
     eval: equalTo1,
     cases: [
       { query: 'arbeiten', ratings: ['sr4kxmk3', 'utbtee43'] },
-      { query: 'conosco', ratings: ['nnh3nh47'] },
-      { query: 'allons', ratings: ['et7c29ub'], knownFailure: true },
+      { query: 'conosco', ratings: ['nnh3nh47'], knownFailure: true },
+      { query: 'allons', ratings: ['dqnapkdx'], knownFailure: true },
     ],
     metric: {
       recall: {
