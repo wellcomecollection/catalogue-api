@@ -117,19 +117,20 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         colorQuery(field = "state.inferredData.palette", hexColors)
     }
 
-  def requestWithBlendedSimilarity: (Index, String, Int) => SearchRequest =
+  def requestWithBlendedSimilarity: (Index, String, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.blended)
 
-  def requestWithSimilarFeatures: (Index, String, Int) => SearchRequest =
-    similarityRequest(ImageSimilarity.features)
+  def requestWithSimilarFeatures: (Index, String, Int, Double) => SearchRequest =
+    similarityRequest( ImageSimilarity.features)
 
-  def requestWithSimilarColors: (Index, String, Int) => SearchRequest =
+  def requestWithSimilarColors: (Index, String, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
     query: (String, Index) => Query
-  )(index: Index, id: String, n: Int): SearchRequest =
+  )(index: Index, id: String, n: Int, minScore: Double): SearchRequest =
     search(index)
       .query(query(id, index))
       .size(n)
+      .minScore(minScore)
 }
