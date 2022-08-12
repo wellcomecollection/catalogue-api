@@ -16,7 +16,7 @@ CCR is a memory intensive operation for both the leader and follower clusters - 
    3. Add the pipeline cluster as a new remote cluster, using the endpoint URL from the Elastic Cloud "Overview" page for the pipeline deployment.
    4. Set the leader and follower indices to `works-indexed-${pipeline date}`, and create the follower index.
    5. Replication has now begun - even if Kibana is showing that it hasn't! If you wait a while and look in "Index Management", you should see the new index fill up.
-   6. Once complete, pause replication for the follower index.
+   6. Once complete, pause replication for the follower index. You can do this even when the index is still yellow (that just means that not every shard is replicated, and finishing that process does not require CCR).
 4. Repeat step 3 for the images index: `images-indexed-${pipeline date}`.
 5. Scale the production pipeline ES cluster back down (8gb).
 
