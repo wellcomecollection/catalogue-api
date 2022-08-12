@@ -95,7 +95,8 @@ class ImagesServiceTest
         val future =
           imagesService.retrieveSimilarImages(
             index,
-            imageId = getTestImageId("images.similar-features-and-palettes.0")
+            imageId = getTestImageId("images.similar-features-and-palettes.0"),
+            minScore = Some(0)
           )
 
         whenReady(future) {
@@ -123,7 +124,8 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-features.0"),
-              similarityMetric = SimilarityMetric.Features
+              similarityMetric = SimilarityMetric.Features,
+              minScore = Some(0)
             )
 
         whenReady(future) {
@@ -151,7 +153,8 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-palettes.0"),
-              similarityMetric = SimilarityMetric.Colors
+              similarityMetric = SimilarityMetric.Colors,
+              minScore = Some(0)
             )
 
         whenReady(future) {
@@ -171,13 +174,15 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            similarityMetric = SimilarityMetric.Colors
+            similarityMetric = SimilarityMetric.Colors,
+            minScore = Some(0)
           )
         val blendedResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            similarityMetric = SimilarityMetric.Blended
+            similarityMetric = SimilarityMetric.Blended,
+            minScore = Some(0)
           )
         whenReady(colorResultsFuture) { colorResults =>
           whenReady(blendedResultsFuture) { blendedResults =>
@@ -195,7 +200,8 @@ class ImagesServiceTest
         whenReady(
           imagesService.retrieveSimilarImages(
             index,
-            imageId = getTestImageId("images.everything")
+            imageId = getTestImageId("images.everything"),
+            minScore = Some(0)
           )
         ) {
           _ shouldBe empty
@@ -208,7 +214,8 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            imageId = "nopenope"
+            imageId = "nopenope",
+            minScore = Some(0)
           )
 
       whenReady(future) {
