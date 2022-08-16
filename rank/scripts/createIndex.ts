@@ -72,8 +72,16 @@ async function go() {
   }).then(({ value }) => value)
 
   if (reindex) {
+    const { nDocsRequested } = await prompts({
+      type: 'number',
+      name: 'nDocsRequested',
+      message:
+        'How many documents do you want to reindex? (0 for all documents)',
+      initial: 0,
+    })
     const { body: reindexResp } = await client.reindex({
       wait_for_completion: false,
+      max_docs: nDocsRequested === 0 ? undefined : nDocsRequested,
       body: {
         source: {
           index: localIndex,
