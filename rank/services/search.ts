@@ -18,7 +18,7 @@ export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
   searchTerms: decodeString(q, 'query'),
   queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
   index: decodeString(q, 'index') as Index,
-  explain: decodeString(q, 'explain') === 'true',
+  explain: q['explain'] === 'true',
 })
 
 async function service({
