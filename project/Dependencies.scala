@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "32.16.1" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "32.16.4" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -106,7 +106,7 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val akka = "2.6.14"
+    val akka = "2.6.19"
     val akkaHttp = "10.2.4"
     val aws2 = "2.11.14"
   }

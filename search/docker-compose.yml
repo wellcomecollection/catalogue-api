@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   elasticsearch:
-    image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.0"
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.17.5"
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -12,3 +12,4 @@ services:
       - "cluster.name=wellcome"
       - "logger.level=DEBUG"
       - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
