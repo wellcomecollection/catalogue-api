@@ -42,7 +42,8 @@ class ImagesService(
   def retrieveSimilarImages(
     index: Index,
     imageId: String,
-    similarityMetric: SimilarityMetric = SimilarityMetric.Blended
+    similarityMetric: SimilarityMetric = SimilarityMetric.Blended,
+    minScore: Option[Double] = None
   ): Future[List[IndexedImage]] = {
     val builder = similarityMetric match {
       case SimilarityMetric.Blended =>
@@ -53,7 +54,18 @@ class ImagesService(
         requestBuilder.requestWithSimilarColors
     }
 
-    val searchRequest = builder(index, imageId, nVisuallySimilarImages)
+    // default minimum scores for each similarity metric determined using this notebook
+    // https://github.com/wellcomecollection/data-science/blob/47245826c70bf2d76c63d2c4b3ace6c824673784/notebooks/similarity_problems/notebooks/01-similarity-scores.ipynb
+    val defaultMinScore: Double = similarityMetric match {
+      case SimilarityMetric.Blended  => 300
+      case SimilarityMetric.Features => 300
+      case SimilarityMetric.Colors   => 20
+    }
+
+    val minScoreValue: Double = minScore.getOrElse(defaultMinScore)
+
+    val searchRequest =
+      builder(index, imageId, nVisuallySimilarImages, minScoreValue)
 
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
