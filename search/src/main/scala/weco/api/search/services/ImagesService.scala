@@ -54,6 +54,8 @@ class ImagesService(
         requestBuilder.requestWithSimilarColors
     }
 
+    // default minimum scores for each similarity metric determined using this notebook
+    // https://github.com/wellcomecollection/data-science/blob/47245826c70bf2d76c63d2c4b3ace6c824673784/notebooks/similarity_problems/notebooks/01-similarity-scores.ipynb
     val defaultMinScore: Double = similarityMetric match {
       case SimilarityMetric.Blended  => 300
       case SimilarityMetric.Features => 300
