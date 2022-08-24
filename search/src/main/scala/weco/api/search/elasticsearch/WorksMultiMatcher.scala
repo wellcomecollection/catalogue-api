@@ -130,7 +130,7 @@ case object WorksMultiMatcher {
               fields = Seq(
                 FieldWithOptionalBoost("data.collectionPath.path.clean", None),
                 FieldWithOptionalBoost(
-                  "data.collectionPath.label.path.clean",
+                  "data.collectionPath.label.cleanPath",
                   None
                 ),
                 FieldWithOptionalBoost("data.collectionPath.label", None),
