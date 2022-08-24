@@ -73,10 +73,7 @@
             {
               "multi_match": {
                 "query": "{{query}}",
-                "fields": [
-                  "data.title^100.0",
-                  "data.description^10.0"
-                ],
+                "fields": ["data.title^100.0", "data.description^10.0"],
                 "type": "cross_fields",
                 "operator": "Or",
                 "_name": "relations text"
@@ -88,7 +85,7 @@
               "multi_match": {
                 "fields": [
                   "data.collectionPath.path.clean",
-                  "data.collectionPath.label.path.clean",
+                  "data.collectionPath.label.cleanPath",
                   "data.collectionPath.label",
                   "data.collectionPath.path.keyword"
                 ],
