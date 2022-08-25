@@ -98,7 +98,7 @@ object WellcomeDependencies {
 
 object ExternalDependencies {
   lazy val versions = new {
-    val circe = "0.14.2"
+    val circeOptics = "0.14.1"
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.6"
@@ -112,7 +112,7 @@ object ExternalDependencies {
   }
 
   val circeOpticsDependencies = Seq(
-    "io.circe" %% "circe-optics" % versions.circe
+    "io.circe" %% "circe-optics" % versions.circeOptics
   )
 
   val scalacheckDependencies = Seq(
