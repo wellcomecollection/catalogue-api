@@ -98,7 +98,7 @@ object WellcomeDependencies {
 
 object ExternalDependencies {
   lazy val versions = new {
-    val circe = "0.13.0"
+    val circe = "0.14.2"
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.6"
