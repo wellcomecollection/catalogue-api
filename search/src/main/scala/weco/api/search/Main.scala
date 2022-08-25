@@ -7,7 +7,7 @@ import weco.Tracing
 import weco.api.search.config.builders.{
   MetricsBuilder,
   PipelineElasticClientBuilder
- }
+}
 import weco.api.search.models.{
   ApiConfig,
   PipelineClusterElasticConfig,
