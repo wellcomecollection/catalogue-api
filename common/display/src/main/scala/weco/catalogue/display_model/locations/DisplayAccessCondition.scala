@@ -1,7 +1,6 @@
 package weco.catalogue.display_model.locations
 
 import io.circe.generic.extras.JsonKey
-import weco.catalogue.internal_model.locations.AccessCondition
 
 case class DisplayAccessCondition(
   method: DisplayAccessMethod,
@@ -12,12 +11,22 @@ case class DisplayAccessCondition(
 )
 
 object DisplayAccessCondition {
-
-  def apply(accessCondition: AccessCondition): DisplayAccessCondition =
+  def apply(
+    method: DisplayAccessMethod,
+    status: DisplayAccessStatus
+  ): DisplayAccessCondition =
     DisplayAccessCondition(
-      method = DisplayAccessMethod(accessCondition.method),
-      status = accessCondition.status.map(DisplayAccessStatus.apply),
-      terms = accessCondition.terms,
-      note = accessCondition.note
+      method = method,
+      status = Some(status),
+      terms = None,
+      note = None
+    )
+
+  def apply(method: DisplayAccessMethod): DisplayAccessCondition =
+    DisplayAccessCondition(
+      method = method,
+      status = None,
+      terms = None,
+      note = None
     )
 }

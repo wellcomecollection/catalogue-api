@@ -1,7 +1,5 @@
 package weco.api.search.models
 
-import weco.catalogue.internal_model.locations.AccessStatus
-import weco.catalogue.internal_model.work.WorkType
 import java.time.LocalDate
 
 sealed trait WorkFilter
@@ -13,7 +11,7 @@ case class ItemLocationTypeIdFilter(locationTypeIds: Seq[String])
 
 case class FormatFilter(formatIds: Seq[String]) extends WorkFilter
 
-case class WorkTypeFilter(types: List[WorkType]) extends WorkFilter
+case class WorkTypeFilter(types: Seq[String]) extends WorkFilter
 
 case class DateRangeFilter(
   fromDate: Option[LocalDate],
@@ -28,7 +26,9 @@ case class GenreFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter
 
-case class SubjectFilter(subjectQuery: Seq[String]) extends WorkFilter
+case class SubjectLabelFilter(labels: Seq[String])
+    extends WorkFilter
+    with ImageFilter
 
 case class ContributorsFilter(contributorQueries: Seq[String])
     extends WorkFilter
@@ -44,8 +44,8 @@ case class ItemsFilter(values: Seq[String]) extends WorkFilter
 case class ItemsIdentifiersFilter(values: Seq[String]) extends WorkFilter
 
 case class AccessStatusFilter(
-  includes: List[AccessStatus],
-  excludes: List[AccessStatus]
+  includes: List[String],
+  excludes: List[String]
 ) extends WorkFilter
 
 case class PartOfFilter(id: String) extends WorkFilter

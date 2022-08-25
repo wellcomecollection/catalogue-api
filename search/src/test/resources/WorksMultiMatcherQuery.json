@@ -2,19 +2,29 @@
   "bool": {
     "should": [
       {
+        "span_first": {
+          "match": {
+            "span_term": {
+              "data.title.shingles": "{{query}}"
+            }
+          },
+          "end": 1,
+          "boost": 1000,
+          "_name": "start of title"
+        }
+      },
+      {
         "multi_match": {
           "query": "{{query}}",
           "fields": [
-            "state.canonicalId^1000.0",
-            "state.sourceIdentifier.value^1000.0",
-            "data.otherIdentifiers.value^1000.0",
-            "data.items.id.canonicalId^1000.0",
-            "data.items.id.sourceIdentifier.value^1000.0",
-            "data.items.id.otherIdentifiers.value^1000.0",
-            "data.imageData.id.canonicalId^1000.0",
-            "data.imageData.id.sourceIdentifier.value^1000.0",
-            "data.imageData.id.otherIdentifiers.value^1000.0",
-            "data.referenceNumber^1000.0"
+            "query.id^1000.0",
+            "query.identifiers.value^1000.0",
+            "query.items.id^1000.0",
+            "query.items.identifiers.value^1000.0",
+            "query.images.id^1000.0",
+            "query.images.identifiers.value^1000.0",
+            "data.referenceNumber^1000.0",
+            "search.identifiers^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
@@ -58,13 +68,33 @@
         }
       },
       {
-        "match": {
-          "search.relations": {
-            "query": "{{query}}",
-            "_name": "relations",
-            "boost": 1000,
-            "operator": "AND"
-          }
+        "bool": {
+          "should": [
+            {
+              "multi_match": {
+                "query": "{{query}}",
+                "fields": ["data.title^100.0", "data.description^10.0"],
+                "type": "cross_fields",
+                "operator": "Or",
+                "_name": "relations text"
+              }
+            }
+          ],
+          "must": [
+            {
+              "multi_match": {
+                "fields": [
+                  "data.collectionPath.path.clean",
+                  "data.collectionPath.label.cleanPath",
+                  "data.collectionPath.label",
+                  "data.collectionPath.path.keyword"
+                ],
+                "query": "{{query}}",
+                "operator": "Or",
+                "_name": "relations paths"
+              }
+            }
+          ]
         }
       },
       {
@@ -72,8 +102,8 @@
           "query": "{{query}}",
           "fields": [
             "data.contributors.agent.label^1000.0",
-            "data.subjects.concepts.label^10.0",
-            "data.genres.concepts.label^10.0",
+            "query.subjects.concepts.label^10.0",
+            "query.genres.concepts.label^10.0",
             "data.production.*.label^10.0",
             "data.description",
             "data.physicalDescription",

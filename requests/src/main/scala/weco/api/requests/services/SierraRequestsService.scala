@@ -5,8 +5,10 @@ import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
-import weco.catalogue.display_model.locations.DisplayAccessCondition
-import weco.catalogue.internal_model.identifiers.SourceIdentifier
+import weco.catalogue.display_model.locations.{
+  DisplayAccessCondition,
+  DisplayLocationType
+}
 import weco.http.client.{HttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData
@@ -33,6 +35,7 @@ class SierraRequestsService(
     patron: SierraPatronNumber,
     pickupDate: Option[LocalDate],
     sourceIdentifier: DisplayIdentifier,
+    locationType: Option[DisplayLocationType] = None,
     accessCondition: Option[DisplayAccessCondition] = None
   ): Future[Either[HoldRejected, HoldAccepted]] = {
     val item = SierraItemIdentifier.fromSourceIdentifier(sourceIdentifier)
@@ -105,7 +108,7 @@ class SierraRequestsService(
             case holds if holds.size >= holdLimit =>
               Future.successful(Left(HoldRejected.UserIsAtHoldLimit))
             case _ =>
-              checkIfItemCanBeRequested(item, accessCondition)
+              checkIfItemCanBeRequested(item, locationType, accessCondition)
                 .flatMap {
                   case None     => checkIfUserCanMakeRequests(patron)
                   case rejected => Future.successful(rejected)
@@ -126,7 +129,7 @@ class SierraRequestsService(
         // If the item really doesn't exist, we'll find out pretty quickly.
         //
         case Left(SierraErrorCode(132, 433, 500, _, _)) =>
-          checkIfSierraItemCanBeRequested(item).map {
+          checkIfItemCanBeRequested(item, locationType, accessCondition).map {
             case Some(rejected) => Left(rejected)
             case None           => Left(HoldRejected.UnknownReason)
           }
@@ -147,6 +150,7 @@ class SierraRequestsService(
 
   private def checkIfItemCanBeRequested(
     item: SierraItemNumber,
+    locationType: Option[DisplayLocationType],
     accessCondition: Option[DisplayAccessCondition]
   ): Future[Option[HoldRejected]] =
     accessCondition match {
@@ -156,11 +160,12 @@ class SierraRequestsService(
       case Some(ac) if !ac.isStale && !ac.isRequestable =>
         Future.successful(Some(HoldRejected.ItemCannotBeRequested))
 
-      case _ => checkIfSierraItemCanBeRequested(item)
+      case _ => checkIfSierraItemCanBeRequested(item, locationType)
     }
 
   private def checkIfSierraItemCanBeRequested(
-    item: SierraItemNumber
+    item: SierraItemNumber,
+    locationType: Option[DisplayLocationType]
   ): Future[Option[HoldRejected]] =
     sierraSource.lookupItem(item).map {
 
@@ -204,7 +209,7 @@ class SierraRequestsService(
       // Usually we won't display the "Online request" button for an item that doesn't
       // pass the rules for requesting.  We could hit this branch if the data has been
       // updated in Sierra to prevent requesting, but this hasn't updated in the API yet.
-      case Right(itemData) if !itemData.allowsOnlineRequesting =>
+      case Right(itemData) if !itemData.allowsOnlineRequesting(locationType) =>
         warn(
           s"User tried to place a hold on item $item, which is blocked by rules for requesting"
         )
@@ -257,7 +262,7 @@ class SierraRequestsService(
 
   def getHolds(
     patronNumber: SierraPatronNumber
-  ): Future[Map[SourceIdentifier, SierraHold]] =
+  ): Future[Map[DisplayIdentifier, SierraHold]] =
     for {
       holds <- sierraSource
         .listHolds(patronNumber)

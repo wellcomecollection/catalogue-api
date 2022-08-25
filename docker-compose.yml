@@ -9,8 +9,8 @@ services:
     image: diff_tool
     build:
       context: ./diff_tool
-  internal_model_tool:
-    image: internal_model_tool
+  concepts:
+    image: uk.ac.wellcome/concepts:${CONTAINER_TAG:-test}
     build:
-      context: ./
-      dockerfile: ./internal_model_tool/Dockerfile
+      context: .
+      dockerfile: ./concepts/Dockerfile

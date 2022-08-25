@@ -71,3 +71,11 @@ variable "deployment_service_env" {
   description = "Used by weco-deploy to determine which services to deploy in conjunction with deployment_service_name"
   default     = "prod"
 }
+
+variable "app_cpu" {
+  type = number
+}
+
+variable "app_memory" {
+  type = number
+}

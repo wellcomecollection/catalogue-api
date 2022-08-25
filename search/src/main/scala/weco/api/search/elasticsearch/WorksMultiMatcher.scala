@@ -9,12 +9,11 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryB
 }
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
-  MatchQuery,
   MultiMatchQuery
 }
-import weco.catalogue.internal_model.index.WorksAnalysis.{
-  languages,
-  whitespaceAnalyzer
+import com.sksamuel.elastic4s.requests.searches.span.{
+  SpanFirstQuery,
+  SpanTermQuery
 }
 
 case object WorksMultiMatcher {
@@ -33,25 +32,44 @@ case object WorksMultiMatcher {
   def apply(q: String): BoolQuery =
     boolQuery()
       .should(
+        // This prioritises exact matches at the start of titles.
+        //
+        // e.g. if we had three works
+        //
+        //      Human genetic information : science, law, and ethics
+        //      International journal of law and information technology
+        //      Information law : compliance for librarians and information professionals
+        //
+        // and somebody searches for "Information law", all other things being equal,
+        // we want to prioritise the third result.
+        //
+        // See https://github.com/wellcomecollection/catalogue-api/issues/466
+        SpanFirstQuery(
+          SpanTermQuery(
+            field = "data.title.shingles",
+            value = q
+          ),
+          boost = Some(1000),
+          queryName = Some("start of title"),
+          end = 1
+        ),
         MultiMatchQuery(
           q,
           queryName = Some("identifiers"),
           `type` = Some(BEST_FIELDS),
           operator = Some(OR),
-          analyzer = Some(whitespaceAnalyzer.name),
+          analyzer = Some("whitespace_analyzer"),
           fields = fieldsWithBoost(
             boost = 1000,
             Seq(
-              "state.canonicalId",
-              "state.sourceIdentifier.value",
-              "data.otherIdentifiers.value",
-              "data.items.id.canonicalId",
-              "data.items.id.sourceIdentifier.value",
-              "data.items.id.otherIdentifiers.value",
-              "data.imageData.id.canonicalId",
-              "data.imageData.id.sourceIdentifier.value",
-              "data.imageData.id.otherIdentifiers.value",
-              "data.referenceNumber"
+              "query.id",
+              "query.identifiers.value",
+              "query.items.id",
+              "query.items.identifiers.value",
+              "query.images.id",
+              "query.images.identifiers.value",
+              "data.referenceNumber",
+              "search.identifiers"
             )
           )
         ),
@@ -72,7 +90,14 @@ case object WorksMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
-              fields = languages.map(
+              fields = List(
+                "arabic",
+                "bengali",
+                "french",
+                "german",
+                "hindi",
+                "italian"
+              ).map(
                 language =>
                   FieldWithOptionalBoost(
                     s"search.titlesAndContributors.$language",
@@ -84,12 +109,36 @@ case object WorksMultiMatcher {
             )
           )
         ),
-        MatchQuery(
-          queryName = Some("relations"),
-          field = "search.relations",
-          value = q,
-          operator = Some(AND),
-          boost = Some(1000)
+        bool(
+          shouldQueries = List(
+            MultiMatchQuery(
+              q,
+              queryName = Some("relations text"),
+              `type` = Some(CROSS_FIELDS),
+              operator = Some(OR),
+              fields = Seq(
+                FieldWithOptionalBoost("data.title", boost = Some(100)),
+                FieldWithOptionalBoost("data.description", boost = Some(10))
+              )
+            )
+          ),
+          mustQueries = List(
+            MultiMatchQuery(
+              q,
+              queryName = Some("relations paths"),
+              operator = Some(OR),
+              fields = Seq(
+                FieldWithOptionalBoost("data.collectionPath.path.clean", None),
+                FieldWithOptionalBoost(
+                  "data.collectionPath.label.cleanPath",
+                  None
+                ),
+                FieldWithOptionalBoost("data.collectionPath.label", None),
+                FieldWithOptionalBoost("data.collectionPath.path.keyword", None)
+              )
+            )
+          ),
+          notQueries = Nil
         ),
         MultiMatchQuery(
           q,
@@ -98,8 +147,8 @@ case object WorksMultiMatcher {
           operator = Some(AND),
           fields = Seq(
             (Some(1000), "data.contributors.agent.label"),
-            (Some(10), "data.subjects.concepts.label"),
-            (Some(10), "data.genres.concepts.label"),
+            (Some(10), "query.subjects.concepts.label"),
+            (Some(10), "query.genres.concepts.label"),
             (Some(10), "data.production.*.label"),
             (None, "data.description"),
             (None, "data.physicalDescription"),

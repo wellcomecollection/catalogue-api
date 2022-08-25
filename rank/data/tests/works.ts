@@ -1,7 +1,5 @@
-import { equalTo0, equalTo1 } from './pass'
-
 import { Test } from '../../types/test'
-import { filterCaseRatings } from './queryAugmentation'
+import { equalTo1 } from './pass'
 
 const tests: Test[] = [
   {
@@ -11,6 +9,13 @@ const tests: Test[] = [
       'Ensure that the query brings back the works we expect at the top of the list',
     eval: equalTo1,
     cases: [
+      {
+        // https://github.com/wellcomecollection/catalogue-api/issues/466
+        query: 'information law',
+        ratings: ['zkg7xqm7'],
+        description:
+          'Multi-word exact matches at the start of a title should be prioritised',
+      },
       {
         query: 'DJmjW2cU',
         ratings: ['djmjw2cu'],
@@ -25,6 +30,11 @@ const tests: Test[] = [
         query: '2599i',
         ratings: ['xxskepr5'],
         description: 'Reference number as ID',
+      },
+      {
+        query: 'seq88sr4 qfk4vbp8',
+        ratings: ['seq88sr4', 'qfk4vbp8'],
+        description: 'multiple IDs',
       },
       {
         query: 'Cassils Time lapse',
@@ -113,13 +123,16 @@ const tests: Test[] = [
         query: 'wa/hmm durham',
         ratings: ['euf49qkx', 'tpxy78kr', 'gu3z98y4', 'ad3rfubw'],
         description: 'Archive refno and a word from the title',
-        knownFailure: true,
       },
       {
         query: 'wa/hmm benin',
         ratings: ['qfdvkegw', 'je5pm2gj', 'dppjjtqz'],
         description: 'Archive refno and a word from the description',
-        knownFailure: true,
+      },
+      {
+        query: 'WA/HMM/CM benin',
+        ratings: ['qfdvkegw', 'je5pm2gj', 'dppjjtqz'],
+        description: 'Archive refno and a word from the description',
       },
       {
         query: 'eugenics society annual reports',
@@ -166,13 +179,26 @@ const tests: Test[] = [
       'Ensure that the query returns results for search terms which are misspelled or differently transliterated.',
     eval: equalTo1,
     cases: [
-      { query: 'at-tib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'Aṭ-ṭib', ratings: ['qmm9mauk'], knownFailure: true },
-      { query: 'nuğūm', ratings: ['jtbenqbq'], knownFailure: true },
-      { query: 'nujum', ratings: ['jtbenqbq'], knownFailure: true },
-      { query: 'arbeiten', ratings: ['xn7yyrqf'], knownFailure: true },
-      { query: 'travaillons', ratings: ['jb823ud6'] },
-      { query: 'conosceva', ratings: ['va2vy7wb'] },
+      { query: 'al-tibb', ratings: ['t4jqq9ue'], knownFailure: true },
+      { query: 'Al-ṭibb', ratings: ['t4jqq9ue'], knownFailure: true },
+      { query: 'nuğūm', ratings: ['m94cyux7'], knownFailure: true },
+      { query: 'nujum', ratings: ['m94cyux7'], knownFailure: true },
+      { query: 'arbeiten', ratings: ['xn7yyrqf'] },
+      // we know that something strange has happened to the french and italian
+      // stemming tests, but stemming _is_ still happening. These tests aren't
+      // motivated by a specific user request or need - they're general
+      // assumptions about how search works which we want to verify.
+      // See https://github.com/wellcomecollection/catalogue-api/issues/469
+      {
+        query: 'savoire',
+        ratings: ['tbuwy9bk'],
+        description: 'french stemming',
+      },
+      {
+        query: 'conosceva',
+        ratings: ['j3w6u4t2', 'mt8bj5zk', 'vhf56vvz'],
+        description: 'italian stemming',
+      },
       { query: 'sharh', ratings: ['frd5y363'] },
       {
         query: 'arkaprakāśa',
@@ -182,7 +208,7 @@ const tests: Test[] = [
     metric: {
       recall: {
         relevant_rating_threshold: 3,
-        k: 100,
+        k: 1000,
       },
     },
   },

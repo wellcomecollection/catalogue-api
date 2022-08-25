@@ -9,7 +9,12 @@ import weco.api.search.rest.MultipleWorksParams.{
   decodeCommaSeparated,
   stringListFilter
 }
-import weco.api.search.models.{ContributorsFilter, GenreFilter, LicenseFilter}
+import weco.api.search.models.{
+  ContributorsFilter,
+  GenreFilter,
+  LicenseFilter,
+  SubjectLabelFilter
+}
 
 trait QueryParams
 
@@ -22,6 +27,9 @@ object CommonDecoders {
 
   implicit val genreFilter: Decoder[GenreFilter] =
     stringListFilter(GenreFilter)
+
+  implicit val subjectsFilter: Decoder[SubjectLabelFilter] =
+    stringListFilter(SubjectLabelFilter)
 }
 
 trait QueryParamsUtils extends Directives {
@@ -111,31 +119,34 @@ trait QueryParamsUtils extends Directives {
     }
   }
 
-  def decodeIncludesAndExcludes[T](
-    values: (String, T)*
-  ): Decoder[(List[T], List[T])] = {
-    val mapping = values.toMap
-    val validStrs = values.map(_._1).toList
+  case class IncludesAndExcludes(includes: List[String], excludes: List[String])
+
+  def decodeIncludesAndExcludes(
+    validStrs: Set[String]
+  ): Decoder[IncludesAndExcludes] =
     decodeCommaSeparated
       .emap { strs =>
-        val (excludeStrs, includeStrs) = strs.partition(_.startsWith("!"));
-        val includes = mapStringsToValues(includeStrs, mapping);
-        val excludes = mapStringsToValues(excludeStrs.map(_.tail), mapping);
-        (includes, excludes) match {
-          case (Right(includes), Right(excludes)) => Right((includes, excludes))
-          case _ =>
-            val invalidStrs = (
-              includes.left.getOrElse(Nil) ++ excludes.left.getOrElse(Nil)
-            ).distinct
-            Left(invalidValuesMsg(invalidStrs, validStrs))
-        }
+        // We get the invalid strings first, so we can report on them in the order
+        // they were given if any aren't allowed.
+        val invalidStrs = strs
+          .filterNot { s =>
+            validStrs.contains(s) || validStrs.contains(s.replaceAll("!", ""))
+          }
+
+        val (excludeStrs, includes) = strs.partition(_.startsWith("!"));
+        val excludes = excludeStrs.map(s => s.replaceFirst("!", ""))
+
+        Either.cond(
+          invalidStrs.isEmpty,
+          right = IncludesAndExcludes(includes, excludes),
+          left = invalidValuesMsg(invalidStrs, validStrs.toList)
+        )
       }
-  }
 
   def stringListFilter[T](applyFilter: Seq[String] => T): Decoder[T] =
     decodeCommaSeparated.emap(strs => Right(applyFilter(strs)))
 
-  def invalidValuesMsg(
+  private def invalidValuesMsg(
     values: List[String],
     validValues: List[String]
   ): String = {
@@ -159,7 +170,7 @@ trait QueryParamsUtils extends Directives {
           .toDirective[Tuple1[T]]
     }
 
-  def mapStringsToValues[T](
+  private def mapStringsToValues[T](
     strs: List[String],
     mapping: Map[String, T]
   ): Either[List[String], List[T]] = {

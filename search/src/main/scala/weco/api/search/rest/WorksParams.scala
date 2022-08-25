@@ -1,19 +1,12 @@
 package weco.api.search.rest
 
-import java.time.LocalDate
 import akka.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ProductionDateSortRequest,
-  SortRequest,
-  SortingOrder,
-  WorkAggregationRequest,
-  WorkInclude,
-  WorksIncludes
-}
-import weco.catalogue.internal_model.locations.AccessStatus
-import weco.catalogue.internal_model.work.WorkType
+import weco.api.search.models.request._
+import weco.catalogue.display_model.locations.CatalogueAccessStatus
+
+import java.time.LocalDate
 
 case class SingleWorkParams(
   include: Option[WorksIncludes]
@@ -80,7 +73,7 @@ case class WorkFilterParams(
   `production.dates.to`: Option[LocalDate],
   languages: Option[LanguagesFilter],
   `genres.label`: Option[GenreFilter],
-  `subjects.label`: Option[SubjectFilter],
+  `subjects.label`: Option[SubjectLabelFilter],
   `contributors.agent.label`: Option[ContributorsFilter],
   identifiers: Option[IdentifiersFilter],
   partOf: Option[PartOfFilter],
@@ -144,8 +137,8 @@ case class MultipleWorksParams(
 }
 
 object MultipleWorksParams extends QueryParamsUtils {
-  import SingleWorkParams.includesDecoder
   import CommonDecoders._
+  import SingleWorkParams.includesDecoder
 
   // This is a custom akka-http directive which extracts MultipleWorksParams
   // data from the query string, returning an invalid response when any given
@@ -202,7 +195,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
           "genres.label".as[GenreFilter].?,
-          "subjects.label".as[SubjectFilter].?,
+          "subjects.label".as[SubjectLabelFilter].?,
           "contributors.agent.label".as[ContributorsFilter].?,
           "identifiers".as[IdentifiersFilter].?,
           "partOf".as[PartOfFilter].?,
@@ -216,7 +209,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               dateTo,
               languages,
               genres,
-              subjects,
+              subjectLabels,
               contributors,
               identifiers,
               partOf,
@@ -230,7 +223,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               dateTo,
               languages,
               genres,
-              subjects,
+              subjectLabels,
               contributors,
               identifiers,
               partOf,
@@ -256,20 +249,13 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(FormatFilter)
 
   implicit val workTypeFilter: Decoder[WorkTypeFilter] =
-    decodeOneOfCommaSeparated(
-      "Collection" -> WorkType.Collection,
-      "Series" -> WorkType.Series,
-      "Section" -> WorkType.Section
-    ).emap(values => Right(WorkTypeFilter(values)))
+    stringListFilter(WorkTypeFilter)
 
   implicit val itemLocationTypeIdFilter: Decoder[ItemLocationTypeIdFilter] =
     stringListFilter(ItemLocationTypeIdFilter)
 
   implicit val languagesFilter: Decoder[LanguagesFilter] =
     stringListFilter(LanguagesFilter)
-
-  implicit val subjectFilter: Decoder[SubjectFilter] =
-    stringListFilter(SubjectFilter)
 
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
@@ -290,17 +276,11 @@ object MultipleWorksParams extends QueryParamsUtils {
     stringListFilter(AvailabilitiesFilter)
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
-    decodeIncludesAndExcludes(
-      "open" -> AccessStatus.Open,
-      "open-with-advisory" -> AccessStatus.OpenWithAdvisory,
-      "restricted" -> AccessStatus.Restricted,
-      "closed" -> AccessStatus.Closed,
-      "licensed-resources" -> AccessStatus.LicensedResources(),
-      "unavailable" -> AccessStatus.Unavailable,
-      "permission-required" -> AccessStatus.PermissionRequired
-    ).emap {
-      case (includes, excludes) => Right(AccessStatusFilter(includes, excludes))
-    }
+    decodeIncludesAndExcludes(CatalogueAccessStatus.values)
+      .emap {
+        case IncludesAndExcludes(includes, excludes) =>
+          Right(AccessStatusFilter(includes, excludes))
+      }
 
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
     decodeOneOfCommaSeparated(

@@ -9,11 +9,9 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
-import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.models.{QueryConfig, SimilarityMetric}
-import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.index.IndexFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,7 +41,7 @@ class ImagesServiceTest
           IndexedImage(display = getDisplayImage("images.everything"))
 
         val future = imagesService.findById(
-          id = CanonicalId(getTestImageId("images.everything"))
+          id = getTestImageId("images.everything")
         )(index)
         val actualImage = whenReady(future) {
           _.right.value
@@ -55,7 +53,7 @@ class ImagesServiceTest
 
     it("returns a DocumentNotFoundError if no image can be found") {
       withLocalImagesIndex { index =>
-        val id = CanonicalId("nopenope")
+        val id = "nopenope"
         val future = imagesService.findById(id)(index)
 
         whenReady(future) {
@@ -66,7 +64,8 @@ class ImagesServiceTest
 
     it("returns an ElasticsearchError if Elasticsearch returns an error") {
       val index = createIndex
-      val future = imagesService.findById(CanonicalId("nopenope"))(index)
+      val id = "nopenope"
+      val future = imagesService.findById(id)(index)
 
       whenReady(future) { err =>
         err.left.value shouldBe a[IndexNotFoundError]
@@ -96,7 +95,8 @@ class ImagesServiceTest
         val future =
           imagesService.retrieveSimilarImages(
             index,
-            imageId = getTestImageId("images.similar-features-and-palettes.0")
+            imageId = getTestImageId("images.similar-features-and-palettes.0"),
+            minScore = Some(0)
           )
 
         whenReady(future) {
@@ -124,7 +124,8 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-features.0"),
-              similarityMetric = SimilarityMetric.Features
+              similarityMetric = SimilarityMetric.Features,
+              minScore = Some(0)
             )
 
         whenReady(future) {
@@ -152,7 +153,8 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-palettes.0"),
-              similarityMetric = SimilarityMetric.Colors
+              similarityMetric = SimilarityMetric.Colors,
+              minScore = Some(0)
             )
 
         whenReady(future) {
@@ -172,13 +174,15 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            similarityMetric = SimilarityMetric.Colors
+            similarityMetric = SimilarityMetric.Colors,
+            minScore = Some(0)
           )
         val blendedResultsFuture = imagesService
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            similarityMetric = SimilarityMetric.Blended
+            similarityMetric = SimilarityMetric.Blended,
+            minScore = Some(0)
           )
         whenReady(colorResultsFuture) { colorResults =>
           whenReady(blendedResultsFuture) { blendedResults =>
@@ -196,7 +200,8 @@ class ImagesServiceTest
         whenReady(
           imagesService.retrieveSimilarImages(
             index,
-            imageId = getTestImageId("images.everything")
+            imageId = getTestImageId("images.everything"),
+            minScore = Some(0)
           )
         ) {
           _ shouldBe empty
@@ -209,7 +214,8 @@ class ImagesServiceTest
         imagesService
           .retrieveSimilarImages(
             Index("doesn't exist"),
-            imageId = "nopenope"
+            imageId = "nopenope",
+            minScore = Some(0)
           )
 
       whenReady(future) {

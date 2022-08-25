@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "32.16.1" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "32.16.5" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -13,13 +13,7 @@ object WellcomeDependencies {
     val monitoring = defaultVersion
     val storage = defaultVersion
     val elasticsearch = defaultVersion
-    val internalModel = "6594.efe29f4fedf849ac4297b3b99dfdb6b8515803d6"
   }
-
-  val internalModel: Seq[ModuleID] = library(
-    name = "internal_model",
-    version = versions.internalModel
-  )
 
   val jsonLibrary: Seq[ModuleID] = library(
     name = "json",
@@ -112,8 +106,8 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val akka = "2.6.14"
-    val akkaHttp = "10.2.4"
+    val akka = "2.6.19"
+    val akkaHttp = "10.2.9"
     val aws2 = "2.11.14"
   }
 
@@ -146,8 +140,7 @@ object ExternalDependencies {
 
 object CatalogueDependencies {
   val displayModelDependencies: Seq[ModuleID] =
-    WellcomeDependencies.internalModel ++
-      WellcomeDependencies.fixturesLibrary ++
+    WellcomeDependencies.fixturesLibrary ++
       WellcomeDependencies.jsonLibrary ++
       ExternalDependencies.scalacheckDependencies ++
       WellcomeDependencies.httpLibrary

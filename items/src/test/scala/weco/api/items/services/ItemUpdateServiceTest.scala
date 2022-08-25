@@ -6,18 +6,14 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.CatalogueWork
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
+import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
+import weco.catalogue.display_model.generators.IdentifiersGenerators
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
+}
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.IdentifierType
-import weco.catalogue.internal_model.locations.AccessStatus.TemporarilyUnavailable
-import weco.catalogue.internal_model.locations.{
-  AccessCondition,
-  AccessMethod,
-  AccessStatus
-}
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -31,10 +27,10 @@ class ItemUpdateServiceTest
     extends AnyFunSpec
     with Matchers
     with JsonAssertions
-    with IdentifiersGenerators
     with ItemsApiGenerators
-    with SierraIdentifierGenerators
     with SierraSourceFixture
+    with IdentifiersGenerators
+    with SierraIdentifierGenerators
     with IntegrationPatience {
 
   def withSierraItemUpdater[R](
@@ -119,9 +115,9 @@ class ItemUpdateServiceTest
   def temporarilyUnavailableItem(
     sierraItemNumber: SierraItemNumber
   ): DisplayItem = {
-    val temporarilyUnavailableOnline = AccessCondition(
-      method = AccessMethod.NotRequestable,
-      status = AccessStatus.TemporarilyUnavailable
+    val temporarilyUnavailableOnline = DisplayAccessCondition(
+      method = CatalogueAccessMethod.NotRequestable,
+      status = CatalogueAccessStatus.TemporarilyUnavailable
     )
 
     createPhysicalItemWith(
@@ -131,8 +127,8 @@ class ItemUpdateServiceTest
   }
 
   def availableItem(sierraItemNumber: SierraItemNumber) = {
-    val availableOnline = AccessCondition(
-      method = AccessMethod.OnlineRequest
+    val availableOnline = DisplayAccessCondition(
+      method = CatalogueAccessMethod.OnlineRequest
     )
 
     createPhysicalItemWith(
@@ -141,28 +137,29 @@ class ItemUpdateServiceTest
     )
   }
 
-  val onHoldAccessCondition = AccessCondition(
-    method = AccessMethod.NotRequestable,
-    status = Some(TemporarilyUnavailable),
+  val onHoldAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.NotRequestable,
+    status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
     note = Some(
       "Item is in use by another reader. Please ask at Library Enquiry Desk."
-    )
+    ),
+    terms = None
   )
 
-  val onlineRequestAccessCondition = AccessCondition(
-    method = AccessMethod.OnlineRequest,
-    status = AccessStatus.Open
+  val onlineRequestAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.OnlineRequest,
+    status = CatalogueAccessStatus.Open
   )
 
-  val notRequestableAccessCondition = AccessCondition(
-    method = AccessMethod.NotRequestable
+  val notRequestableAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.NotRequestable
   )
 
   class DummyItemUpdater(
     itemTransform: Seq[DisplayItem] => Seq[DisplayItem] = identity
   ) extends ItemUpdater {
-    override val identifierType: IdentifierType =
-      IdentifierType.SierraSystemNumber
+    override val identifierType: DisplayIdentifierType =
+      DisplayIdentifierType.SierraSystemNumber
 
     override def updateItems(
       items: Seq[DisplayItem]
@@ -171,41 +168,30 @@ class ItemUpdateServiceTest
     }
   }
 
-  def randomCanonicalId: String =
-    randomAlphanumeric()
-
   it("maintains the order of items") {
     val itemUpdater = new DummyItemUpdater()
 
-    val orderedItems = List(
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-      ),
-      DisplayItem(
-        id = Some(randomCanonicalId),
-        identifiers =
-          List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+    val orderedItems = (1 to 3)
+      .map(
+        _ =>
+          DisplayItem(
+            id = Some(createCanonicalId),
+            identifiers = List(createSierraSystemSourceIdentifier)
+          )
       )
-    )
+      .toList
 
     val reversedItems = orderedItems.reverse
 
     val workWithItemsForward = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = orderedItems
     )
 
     val workWithItemsBackward = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = orderedItems.reverse
@@ -228,26 +214,18 @@ class ItemUpdateServiceTest
     val brokenItemUpdater = new DummyItemUpdater(badUpdate)
 
     val workWithItems = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
-      items = List(
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
-        ),
-        DisplayItem(
-          id = Some(randomCanonicalId),
-          identifiers =
-            List(DisplayIdentifier(createSierraSystemSourceIdentifier))
+      items = (1 to 3)
+        .map(
+          _ =>
+            DisplayItem(
+              id = Some(createCanonicalId),
+              identifiers = List(createSierraSystemSourceIdentifier)
+            )
         )
-      )
+        .toList
     )
 
     withItemUpdateService(itemUpdaters = List(brokenItemUpdater)) {
@@ -267,7 +245,7 @@ class ItemUpdateServiceTest
     val workWithAvailableItemNumber = createSierraItemNumber
 
     val workWithUnavailableItem = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = List(
@@ -277,7 +255,7 @@ class ItemUpdateServiceTest
     )
 
     val workWithAvailableItem = CatalogueWork(
-      id = randomCanonicalId,
+      id = createCanonicalId,
       title = None,
       identifiers = Nil,
       items = List(
@@ -329,9 +307,7 @@ class ItemUpdateServiceTest
                 .asInstanceOf[DisplayPhysicalLocation]
                 .accessConditions
                 .head
-              updatedAccessCondition shouldBe DisplayAccessCondition(
-                expectedAccessCondition
-              )
+              updatedAccessCondition shouldBe expectedAccessCondition
 
               digitalItem shouldBe dummyDigitalItem
             }
@@ -343,12 +319,12 @@ class ItemUpdateServiceTest
 
   def createPhysicalItemWith(
     sierraItemNumber: SierraItemNumber,
-    accessCondition: AccessCondition
+    accessCondition: DisplayAccessCondition
   ): DisplayItem = {
 
     val physicalItemLocation =
       DisplayPhysicalLocation(
-        accessConditions = List(DisplayAccessCondition(accessCondition)),
+        accessConditions = List(accessCondition),
         label = randomAlphanumeric(),
         locationType = DisplayLocationType(
           id = "closed-stores",
@@ -356,17 +332,21 @@ class ItemUpdateServiceTest
         )
       )
 
-    val itemSourceIdentifier = createSierraSystemSourceIdentifierWith(
-      value = sierraItemNumber.withCheckDigit,
-      ontologyType = "Item"
+    val itemSourceIdentifier = DisplayIdentifier(
+      identifierType = DisplayIdentifierType.SierraSystemNumber,
+      value = sierraItemNumber.withCheckDigit
     )
 
     DisplayItem(
-      id = Some(randomAlphanumeric(length = 8)),
-      identifiers = List(
-        DisplayIdentifier(itemSourceIdentifier)
-      ),
+      id = Some(createCanonicalId),
+      identifiers = List(itemSourceIdentifier),
       locations = List(physicalItemLocation)
     )
   }
+
+  def createSierraSystemSourceIdentifier: DisplayIdentifier =
+    DisplayIdentifier(
+      identifierType = DisplayIdentifierType.SierraSystemNumber,
+      value = randomAlphanumeric()
+    )
 }

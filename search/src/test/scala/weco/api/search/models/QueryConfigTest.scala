@@ -3,8 +3,7 @@ package weco.api.search.models
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.fixtures.TestDocumentFixtures
-import weco.catalogue.internal_model.index.IndexFixtures
+import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.elasticsearch.ElasticClientBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global

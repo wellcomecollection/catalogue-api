@@ -1,0 +1,23 @@
+{
+  "name": "@weco/catalogue-api",
+  "version": "2.0.0",
+  "description": "APIs for the Wellcome Collection catalogue",
+  "repository": "git@github.com:wellcomecollection/catalogue-api.git",
+  "author": "digital@wellcomecollection.org",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "concepts"
+  ],
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.2",
+    "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}

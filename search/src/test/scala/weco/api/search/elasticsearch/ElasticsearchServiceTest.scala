@@ -23,9 +23,8 @@ import org.scalatest.concurrent.PatienceConfiguration.Timeout
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Seconds, Span}
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
-import weco.catalogue.internal_model.index.IndexFixtures
+import weco.api.search.fixtures.IndexFixtures
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.elasticsearch.test.fixtures.ElasticsearchFixtures
 import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.fixtures.{RandomGenerators, TestWith}
@@ -42,8 +41,8 @@ class ElasticsearchServiceTest
     with IdentifiersGenerators
     with ElasticsearchFixtures {
 
-  case class ExampleThing(id: CanonicalId, name: String)
-  case class DifferentExampleThing(id: CanonicalId, age: Int)
+  case class ExampleThing(id: String, name: String)
+  case class DifferentExampleThing(id: String, age: Int)
 
   val badElasticClient: ElasticClient = ElasticClientBuilder.create(
     hostname = "noresolve",
@@ -82,7 +81,7 @@ class ElasticsearchServiceTest
           thingsToIndex.map { thing =>
             val jsonDoc = toJson(thing).get
             indexInto(index.name)
-              .id(thing.id.underlying)
+              .id(thing.id)
               .doc(jsonDoc)
           }
         ).refreshImmediately

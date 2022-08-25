@@ -16,8 +16,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.json.utils.JsonAssertions
 import weco.api.requests.fixtures.RequestsApiFixture
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -64,11 +63,11 @@ class RequestsApiFeatureTest
       val itemNumber1 = createSierraItemNumber
       val itemNumber2 = createSierraItemNumber
 
-      val workId1 = CanonicalId(randomAlphanumeric(length = 8))
-      val workId2 = CanonicalId(randomAlphanumeric(length = 8))
+      val workId1 = createCanonicalId
+      val workId2 = createCanonicalId
 
-      val itemId1 = CanonicalId(randomAlphanumeric(length = 8))
-      val itemId2 = CanonicalId(randomAlphanumeric(length = 8))
+      val itemId1 = createCanonicalId
+      val itemId2 = createCanonicalId
 
       val workTitle1 = randomAlphanumeric()
       val workTitle2 = randomAlphanumeric()
@@ -115,6 +114,7 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
+            page = 1,
             itemNumber1.withCheckDigit,
             itemNumber2.withCheckDigit
           ),
@@ -123,6 +123,7 @@ class RequestsApiFeatureTest
               contentType = ContentTypes.`application/json`,
               s"""
                  |{
+                 |  "totalResults": 2,
                  |  "results": [
                  |    {
                  |      "id": "$workId1",
@@ -382,8 +383,9 @@ class RequestsApiFeatureTest
       val catalogueResponses = Seq(
         (
           catalogueItemsRequest(
-            createSierraSystemSourceIdentifierWith(itemNumber1.withCheckDigit),
-            createSierraSystemSourceIdentifierWith(itemNumber2.withCheckDigit)
+            page = 1,
+            itemNumber1.withCheckDigit,
+            itemNumber2.withCheckDigit
           ),
           HttpResponse(
             entity = HttpEntity(

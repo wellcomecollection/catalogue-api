@@ -4,11 +4,10 @@ import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{Assertion, EitherValues}
-import weco.api.search.fixtures.TestDocumentFixtures
+import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
-import weco.catalogue.internal_model.index.IndexFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -27,7 +26,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "7sjip63h",
+          query = "2twopft1",
           expectedMatches = List("works.visible.0")
         )
       }
@@ -39,7 +38,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "ejTwv1NdpH",
+          query = "Uaequ81tpB",
           expectedMatches = List("works.visible.0")
         )
       }
@@ -51,13 +50,13 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "ji3JH82kKu",
+          query = "UfcQYSxE7g",
           expectedMatches = List("work.visible.everything.0")
         )
       }
     }
 
-    it("searches the items.canonicalId as keyword") {
+    it("searches the canonical ID on items") {
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
@@ -69,7 +68,7 @@ class WorksQueryTest
       }
     }
 
-    it("searches the items.sourceIdentifiers") {
+    it("searches the source identifiers on items") {
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
@@ -90,7 +89,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "MdWdPx74hN",
+          query = "xJJHLpGvU7",
           expectedMatches = List("works.items-with-other-identifiers.0")
         )
       }
@@ -102,7 +101,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "01bta4ru",
+          query = "eoedbdmz",
           expectedMatches = List("work.visible.everything.0")
         )
       }
@@ -114,7 +113,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "54gqQEhJQx",
+          query = "auL5Gzybrl",
           expectedMatches = List("work.visible.everything.0")
         )
       }
@@ -126,7 +125,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "7sjip63h",
+          query = "2twopft1",
           expectedMatches = List("works.visible.0")
         )
       }
@@ -138,7 +137,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "7sjip63h",
+          query = "2twopft1",
           expectedMatches = List("works.visible.0")
         )
 
@@ -156,7 +155,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "7SJIP63H",
+          query = "2TWOPFT1",
           expectedMatches = List("works.visible.0")
         )
       }
@@ -168,7 +167,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "7SJIP63H ob2ruvbb",
+          query = "2TWOPFT1 dph7sjip",
           expectedMatches = List("works.visible.0", "works.visible.1")
         )
       }
@@ -180,13 +179,13 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "ejTwv1NdpH",
+          query = "2twopft1",
           expectedMatches = List("works.visible.0")
         )
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "ejTwv",
+          query = "2two",
           expectedMatches = List()
         )
       }
@@ -198,7 +197,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "person-o8xazs",
+          query = "person-W9SVIX0fEg",
           expectedMatches = List("work.visible.everything.0")
         )
       }
@@ -210,7 +209,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "nFnK1Qv0bPiYMZq",
+          query = "IHQR23GK9tQdPt3",
           expectedMatches = List("work.visible.everything.0")
         )
       }
@@ -222,7 +221,7 @@ class WorksQueryTest
 
         assertResultsMatchForAllowedQueryTypes(
           index,
-          query = "g08I834KKSXk1WG",
+          query = "goKOwWLrIbnrzZj",
           expectedMatches = List("work.visible.everything.0")
         )
       }

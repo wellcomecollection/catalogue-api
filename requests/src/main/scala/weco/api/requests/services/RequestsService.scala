@@ -1,21 +1,18 @@
 package weco.api.requests.services
 
 import grizzled.slf4j.Logging
+import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
 import weco.api.requests.models.{
   HoldAccepted,
   HoldRejected,
   RequestedItemWithWork
 }
-import weco.api.requests.models.HoldRejected.SourceSystemNotSupported
 import weco.api.stacks.models.DisplayItemOps
-import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.catalogue.display_model.Implicits._
-import weco.catalogue.internal_model.identifiers.{
-  CanonicalId,
-  IdentifierType,
-  SourceIdentifier
+import weco.catalogue.display_model.identifiers.{
+  DisplayIdentifier,
+  DisplayIdentifierType
 }
-import weco.catalogue.internal_model.identifiers.IdentifierType.SierraSystemNumber
 import weco.sierra.models.fields.SierraHold
 import weco.sierra.models.identifiers.SierraPatronNumber
 
@@ -30,7 +27,7 @@ class RequestsService(
     with DisplayItemOps {
 
   def makeRequest(
-    itemId: CanonicalId,
+    itemId: String,
     pickupDate: Option[LocalDate],
     patronNumber: SierraPatronNumber
   ): Future[Either[HoldRejected, HoldAccepted]] =
@@ -43,12 +40,14 @@ class RequestsService(
       }
 
       result <- (item, sourceIdentifier) match {
-        case (Right(_), Some(sourceIdentifier))
-            if sourceIdentifier.identifierType.id == SierraSystemNumber.id =>
+        case (Right(item), Some(sourceIdentifier))
+            if sourceIdentifier.identifierType.id == DisplayIdentifierType.SierraSystemNumber.id =>
           sierraService.placeHold(
             patron = patronNumber,
             sourceIdentifier = sourceIdentifier,
-            pickupDate = pickupDate
+            pickupDate = pickupDate,
+            locationType = item.physicalLocationType,
+            accessCondition = item.physicalAccessCondition
           )
 
         case (Right(_), Some(sourceIdentifier)) =>
@@ -88,13 +87,7 @@ class RequestsService(
 
         val itemId = identifiers.head
 
-        val sierraId = SourceIdentifier(
-          identifierType = IdentifierType(itemId.identifierType.id),
-          value = itemId.value,
-          ontologyType = "Item"
-        )
-
-        holdsMap.get(sierraId).map { hold =>
+        holdsMap.get(itemId).map { hold =>
           (hold, itemLookup)
         }
       }

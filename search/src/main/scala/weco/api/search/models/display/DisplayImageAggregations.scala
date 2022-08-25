@@ -10,6 +10,7 @@ case class DisplayImageAggregations(
   license: Option[DisplayAggregation],
   `source.contributors.agent.label`: Option[DisplayAggregation],
   `source.genres.label`: Option[DisplayAggregation],
+  `source.subjects.label`: Option[DisplayAggregation],
   @JsonKey("type") ontologyType: String = "Aggregations"
 )
 
@@ -22,6 +23,7 @@ object DisplayImageAggregations {
       license = aggs.license.map(DisplayAggregation(_)),
       `source.contributors.agent.label` =
         aggs.sourceContributorAgents.map(DisplayAggregation(_)),
-      `source.genres.label` = aggs.sourceGenres.map(DisplayAggregation(_))
+      `source.genres.label` = aggs.sourceGenres.map(DisplayAggregation(_)),
+      `source.subjects.label` = aggs.sourceSubjects.map(DisplayAggregation(_))
     )
 }

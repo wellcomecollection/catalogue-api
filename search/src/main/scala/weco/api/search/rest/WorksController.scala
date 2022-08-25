@@ -8,7 +8,6 @@ import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
 import weco.api.search.models.request.WorksIncludes
 import weco.api.search.services.WorksService
-import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,7 +47,7 @@ class WorksController(
       }
     }
 
-  def singleWork(id: CanonicalId, params: SingleWorkParams): Route =
+  def singleWork(id: String, params: SingleWorkParams): Route =
     get {
       withFuture {
         transactFuture("GET /works/{workId}") {

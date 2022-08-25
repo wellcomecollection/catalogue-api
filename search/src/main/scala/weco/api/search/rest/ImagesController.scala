@@ -12,7 +12,6 @@ import weco.api.search.models.request.{
 }
 import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
-import weco.catalogue.internal_model.identifiers.CanonicalId
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -26,7 +25,7 @@ class ImagesController(
     with CatalogueJsonUtil
     with Tracing {
 
-  def singleImage(id: CanonicalId, params: SingleImageParams): Route =
+  def singleImage(id: String, params: SingleImageParams): Route =
     get {
       withFuture {
         transactFuture("GET /images/{imageId}") {
@@ -37,7 +36,7 @@ class ImagesController(
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(imagesIndex, id.underlying, metric)
+                      .retrieveSimilarImages(imagesIndex, id, metric)
                       .map(metric -> _)
                   }
                   .map(_.toMap)

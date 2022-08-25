@@ -14,15 +14,13 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 import weco.api.search.rest.PaginationQuery
-import weco.catalogue.internal_model.locations.License
-import weco.catalogue.internal_model.work._
 
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions] {
 
   import ElasticsearchRequestBuilder._
 
-  val idSort: FieldSort = fieldSort("state.canonicalId").order(SortOrder.ASC)
+  val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
     implicit val s = searchOptions
@@ -32,6 +30,7 @@ object WorksRequestBuilder
       .sortBy { sortBy }
       .limit { searchOptions.pageSize }
       .from { PaginationQuery.safeGetFrom(searchOptions) }
+      .sourceInclude("display", "type")
   }
 
   private def filteredAggregationBuilder(
@@ -46,9 +45,14 @@ object WorksRequestBuilder
     )
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many formats as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 23 different formats; I've used
+    // 30 here so we have some headroom if we add new formats in future.
     case WorkAggregationRequest.Format =>
       TermsAggregation("format")
-        .size(Format.values.size)
+        .size(30)
         .field("aggregatableValues.workType")
 
     case WorkAggregationRequest.ProductionDate =>
@@ -78,14 +82,24 @@ object WorksRequestBuilder
         .size(200)
         .field("aggregatableValues.languages")
 
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many licenses as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 11 different licenses; I've used
+    // 20 here so we have some headroom if we add new licenses in future.
     case WorkAggregationRequest.License =>
       TermsAggregation("license")
-        .size(License.values.size)
+        .size(20)
         .field("aggregatableValues.items.locations.license")
 
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many availabilities as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 3 different availabilities; I've used
+    // 10 here so we have some headroom if we add new ones in future.
     case WorkAggregationRequest.Availabilities =>
       TermsAggregation("availabilities")
-        .size(Availability.values.size)
+        .size(10)
         .field("aggregatableValues.availabilities")
   }
 
@@ -135,67 +149,50 @@ object WorksRequestBuilder
       case FormatFilter(formatIds) =>
         termsQuery(field = "data.format.id", values = formatIds)
       case WorkTypeFilter(types) =>
-        termsQuery(
-          field = "data.workType",
-          values = types.map(WorkType.getName)
-        )
+        termsQuery(field = "data.workType", values = types)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
         RangeQuery("data.production.dates.range.from", lte = lte, gte = gte)
       case LanguagesFilter(languageIds) =>
-        termsQuery(field = "data.languages.id", values = languageIds)
+        termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
         termsQuery("data.genres.label.keyword", genreQueries)
-      case SubjectFilter(subjectQueries) =>
-        termsQuery("data.subjects.label.keyword", subjectQueries)
+
+      case SubjectLabelFilter(labels) =>
+        termsQuery("data.subjects.label.keyword", labels)
+
       case ContributorsFilter(contributorQueries) =>
-        termsQuery("data.contributors.agent.label.keyword", contributorQueries)
-      case LicenseFilter(licenseIds) =>
-        termsQuery(
-          field = "data.items.locations.license.id",
-          values = licenseIds
-        )
+        termsQuery("query.contributors.agent.label.keyword", contributorQueries)
+
       case IdentifiersFilter(identifiers) =>
-        should(
-          termsQuery(
-            field = "state.sourceIdentifier.value",
-            values = identifiers
-          ),
-          termsQuery(
-            field = "data.otherIdentifiers.value",
-            values = identifiers
-          )
-        )
+        termsQuery("query.identifiers.value", identifiers)
+
+      case LicenseFilter(licenseIds) =>
+        termsQuery("query.items.locations.license.id", licenseIds)
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
-          field = "data.items.locations.accessConditions.status.type",
-          includes = includes.map(_.name),
-          excludes = excludes.map(_.name)
+          field = "query.items.locations.accessConditions.status.id",
+          includes = includes,
+          excludes = excludes
         )
       case ItemsFilter(itemIds) =>
         should(
           termsQuery(
-            field = "data.items.id.canonicalId",
+            field = "query.items.id",
             values = itemIds
           )
         )
       case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
         should(
           termsQuery(
-            field = "data.items.id.sourceIdentifier.value",
-            values = itemSourceIdentifiers
-          ),
-          termsQuery(
-            field = "data.items.id.otherIdentifiers.value",
+            field = "query.items.identifiers.value",
             values = itemSourceIdentifiers
           )
         )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
-        termsQuery(
-          field = "data.items.locations.locationType.id",
-          values = itemLocationTypeIds
-        )
+        termsQuery("query.items.locations.locationType.id", itemLocationTypeIds)
+
       case PartOfFilter(search_term) =>
         /*
          The partOf filter matches on either the id or the title of any ancestor.
@@ -219,11 +216,11 @@ object WorksRequestBuilder
              separate non-analysed version of title for term matching.
              */
             matchPhraseQuery(
-              field = "state.relations.ancestors.title",
+              field = "query.partOf.title",
               value = search_term
             ),
             termQuery(
-              field = "state.relations.ancestors.id",
+              field = "query.partOf.id",
               value = search_term
             )
           ),
@@ -231,12 +228,12 @@ object WorksRequestBuilder
         )
       case PartOfTitleFilter(search_term) =>
         termQuery(
-          field = "state.relations.ancestors.title.keyword",
+          field = "query.partOf.title.keyword",
           value = search_term
         )
       case AvailabilitiesFilter(availabilityIds) =>
         termsQuery(
-          field = "state.availabilities.id",
+          field = "query.availabilities.id",
           values = availabilityIds
         )
     }

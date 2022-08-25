@@ -15,7 +15,6 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.models._
 import weco.api.search.models.request.ImageAggregationRequest
 import weco.api.search.rest.PaginationQuery
-import weco.catalogue.internal_model.locations.License
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
@@ -39,6 +38,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
+      .sourceInclude("display")
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
@@ -60,18 +60,30 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       )
 
   private def toAggregation(aggReq: ImageAggregationRequest) = aggReq match {
+    // Note: we want these aggregations to return every possible value, so we
+    // want this to be as many licenses as we support in the catalogue pipeline.
+    //
+    // At time of writing (May 2022), we have 11 different licenses; I've used
+    // 20 here so we have some headroom if we add new licenses in future.
     case ImageAggregationRequest.License =>
       TermsAggregation("license")
-        .size(License.values.size)
+        .size(20)
         .field("aggregatableValues.locations.license")
+
     case ImageAggregationRequest.SourceContributorAgents =>
       TermsAggregation("sourceContributorAgents")
         .size(20)
         .field("aggregatableValues.source.contributors.agent.label")
+
     case ImageAggregationRequest.SourceGenres =>
       TermsAggregation("sourceGenres")
         .size(20)
         .field("aggregatableValues.source.genres.label")
+
+    case ImageAggregationRequest.SourceSubjects =>
+      TermsAggregation("sourceSubjects")
+        .size(20)
+        .field("aggregatableValues.source.subjects.label")
   }
 
   def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
@@ -87,14 +99,13 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         termsQuery(field = "locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "source.canonicalWork.data.contributors.agent.label.keyword",
+          "source.data.contributors.agent.label.keyword",
           contributorQueries
         )
-      case GenreFilter(genreQueries) =>
-        termsQuery(
-          "source.canonicalWork.data.genres.label.keyword",
-          genreQueries
-        )
+      case GenreFilter(genreLabels) =>
+        termsQuery("query.source.genres.label", genreLabels)
+      case SubjectLabelFilter(subjectLabels) =>
+        termsQuery("query.source.subjects.label", subjectLabels)
     }
 
   def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
@@ -106,19 +117,22 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         colorQuery(field = "state.inferredData.palette", hexColors)
     }
 
-  def requestWithBlendedSimilarity: (Index, String, Int) => SearchRequest =
+  def requestWithBlendedSimilarity
+    : (Index, String, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.blended)
 
-  def requestWithSimilarFeatures: (Index, String, Int) => SearchRequest =
+  def requestWithSimilarFeatures
+    : (Index, String, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.features)
 
-  def requestWithSimilarColors: (Index, String, Int) => SearchRequest =
+  def requestWithSimilarColors: (Index, String, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
     query: (String, Index) => Query
-  )(index: Index, id: String, n: Int): SearchRequest =
+  )(index: Index, id: String, n: Int, minScore: Double): SearchRequest =
     search(index)
       .query(query(id, index))
       .size(n)
+      .minScore(minScore)
 }

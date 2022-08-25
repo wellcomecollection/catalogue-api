@@ -86,6 +86,7 @@ trait CatalogueJsonUtil {
         .removeKeyRecursivelyIf(!includes.`source.contributors`, "contributors")
         .removeKeyRecursivelyIf(!includes.`source.genres`, "genres")
         .removeKeyRecursivelyIf(!includes.`source.languages`, "languages")
+        .removeKeyRecursivelyIf(!includes.`source.subjects`, "subjects")
   }
 
   implicit class ImplicitCatalogueJsonOps(j: Json) {

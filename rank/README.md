@@ -12,14 +12,18 @@ Clone this repo and run:
 - `yarn env` to populate a local `.env` file.  
    This assumes you're part of the Wellcome Collection team on Vercel. You'll be asked to link your local repo to the project in order to fetch the necessary secrets. The project name is `rank`.
 
+## Docs 📖
+
+Rank documentation lives alongside the rest of the search docs in gitbook. You can see the markdown docs [here](../docs/search/rank/).
+
 ### Developing
 
 To start affecting search relevance, you might want to
 
-- [develop the queries](./docs/developing.md#queries)
-- [develop the mappings](./docs/developing.md#mappings)
-- [create new tests](./docs/developing.md#test-cases)
+- [develop the queries](../docs/search/rank/developing.md#queries)
+- [develop the mappings](../docs/search/rank/developing.md#mappings)
+- [create new tests](../docs/search/rank/developing.md#test-cases)
 
 ### Evaluating relevance
 
-See [the docs](./docs/testing.md) for instructions on running the rank tests.
+See [the instructions](../docs/search/rank/testing.md) for running the rank tests.

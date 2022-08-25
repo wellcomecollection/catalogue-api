@@ -1,15 +1,19 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.sierra.http.SierraSource
-import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
+import weco.api.stacks.models.{
+  CatalogueAccessMethod,
+  DisplayItemOps,
+  SierraItemIdentifier
+}
+import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
+  DisplayLocationType,
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.DisplayItem
-import weco.catalogue.internal_model.identifiers.IdentifierType
-import weco.catalogue.internal_model.locations.{AccessCondition, AccessMethod}
+import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -30,7 +34,7 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
   import weco.api.stacks.models.SierraItemDataOps._
 
-  val identifierType = IdentifierType.SierraSystemNumber
+  val identifierType = DisplayIdentifierType.SierraSystemNumber
 
   /** Updates the AccessCondition for a single item
     *
@@ -43,13 +47,11 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     */
   private def updateAccessCondition(
     item: DisplayItem,
-    accessCondition: AccessCondition
+    accessCondition: DisplayAccessCondition
   ): DisplayItem = {
     val updatedItemLocations = item.locations.map {
       case physicalLocation: DisplayPhysicalLocation =>
-        physicalLocation.copy(
-          accessConditions = List(DisplayAccessCondition(accessCondition))
-        )
+        physicalLocation.copy(accessConditions = List(accessCondition))
       case location => location
     }
 
@@ -57,23 +59,39 @@ class SierraItemUpdater(sierraSource: SierraSource)(
   }
 
   private def getAccessConditions(
-    itemNumbers: Seq[SierraItemNumber]
-  ): Future[Map[SierraItemNumber, AccessCondition]] =
+    existingItems: Map[SierraItemNumber, Option[DisplayLocationType]]
+  ): Future[Map[SierraItemNumber, DisplayAccessCondition]] =
     for {
-      itemEither <- sierraSource.lookupItemEntries(itemNumbers)
+      itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      accessConditions = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
-          entries.map(item => item.id -> item.accessCondition).toMap
+          entries
+            .map(item => {
+              val location = existingItems.get(item.id).flatten
+              item.id -> item.accessCondition(location)
+            })
+            .toMap
         case Left(
             SierraItemLookupError.MissingItems(missingItems, itemsReturned)
             ) =>
           warn(s"Item lookup missing items: $missingItems")
-          itemsReturned.map(item => item.id -> item.accessCondition).toMap
+          itemsReturned
+            .map(item => {
+              val location = existingItems.get(item.id).flatten
+              item.id -> item.accessCondition(location)
+            })
+            .toMap
         case Left(itemLookupError) =>
           error(s"Item lookup failed: $itemLookupError")
-          Map.empty[SierraItemNumber, AccessCondition]
+          Map.empty[SierraItemNumber, Option[DisplayAccessCondition]]
       }
+
+      accessConditions = maybeAccessConditions
+        .collect { case (itemId, Some(ac)) => itemId -> ac }
+
     } yield accessConditions
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
@@ -85,13 +103,14 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
     val staleItems = itemMap
       .filter { case (_, item) => item.isStale }
+      .map { case (itemId, item) => itemId -> item.physicalLocationType }
 
     debug(
       s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
     )
 
     for {
-      accessConditions <- getUpdatedAccessConditions(staleItems.keys.toSeq)
+      accessConditions <- getUpdatedAccessConditions(staleItems)
 
       updatedItems = itemMap.map {
         case (sierraId, item) =>
@@ -108,10 +127,10 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     *
     */
   private def getUpdatedAccessConditions(
-    itemIds: Seq[SierraItemNumber]
-  ): Future[Map[SierraItemNumber, AccessCondition]] =
-    itemIds match {
-      case Nil => Future.successful(Map())
+    itemIds: Map[SierraItemNumber, Option[DisplayLocationType]]
+  ): Future[Map[SierraItemNumber, DisplayAccessCondition]] =
+    itemIds.size match {
+      case 0 => Future.successful(Map())
 
       case _ =>
         for {
@@ -121,11 +140,14 @@ class SierraItemUpdater(sierraSource: SierraSource)(
           // an Item that is in the Catalogue API, but this situation should be very rare.
           // For example an item has been deleted but the change has not yet propagated.
           // In that case it gets method "NotRequestable".
-          missingItemIds = itemIds
-            .filterNot { accessConditionsMap.keySet.contains(_) }
+          missingItemIds = itemIds.keySet.diff(accessConditionsMap.keySet)
 
           missingItemsMap = missingItemIds
-            .map(_ -> AccessCondition(method = AccessMethod.NotRequestable))
+            .map(
+              _ -> DisplayAccessCondition(
+                method = CatalogueAccessMethod.NotRequestable
+              )
+            )
             .toMap
         } yield accessConditionsMap ++ missingItemsMap
     }

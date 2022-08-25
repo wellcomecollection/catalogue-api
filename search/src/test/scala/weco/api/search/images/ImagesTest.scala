@@ -99,33 +99,4 @@ class ImagesTest extends ApiImagesTestBase {
         }
     }
   }
-
-  it("returns matching results when using workdata from the redirected work") {
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        indexTestDocuments(
-          imagesIndex,
-          "images.examples.bread-baguette",
-          "images.examples.bread-focaccia",
-          "images.examples.bread-schiacciata"
-        )
-
-        assertJsonResponse(routes, s"$rootPath/images?query=bread") {
-          Status.OK -> imagesListResponse(
-            ids = List(
-              "images.examples.bread-schiacciata",
-              "images.examples.bread-baguette",
-              "images.examples.bread-focaccia"
-            ),
-            strictOrdering = true
-          )
-        }
-
-        assertJsonResponse(routes, s"$rootPath/images?query=schiacciata") {
-          Status.OK -> imagesListResponse(
-            ids = List("images.examples.bread-schiacciata")
-          )
-        }
-    }
-  }
 }

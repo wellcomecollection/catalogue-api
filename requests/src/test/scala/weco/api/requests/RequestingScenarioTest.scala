@@ -14,8 +14,7 @@ import weco.api.requests.services.{
   RequestsService,
   SierraRequestsService
 }
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -44,6 +43,7 @@ class RequestingScenarioTest
           HttpResponse(
             entity = createJsonHttpEntityWith(s"""
                  |{
+                 |  "totalResults": 1,
                  |  "results": [
                  |    {
                  |      "id": "kltbsiza",
@@ -124,6 +124,7 @@ class RequestingScenarioTest
             entity = createJsonHttpEntityWith(
               """
                 |{
+                |  "totalResults": 0,
                 |  "results": []
                 |}
                 |""".stripMargin
@@ -1428,13 +1429,14 @@ class RequestingScenarioTest
   }
 
   private def catalogueItemResponse(
-    itemId: CanonicalId,
+    itemId: String,
     itemNumber: SierraItemNumber
   ): HttpResponse =
     HttpResponse(
       entity = createJsonHttpEntityWith(
         s"""
            |{
+           |  "totalResults": 1,
            |  "results": [
            |    {
            |      "id": "rbhv3mnj",
@@ -1453,7 +1455,17 @@ class RequestingScenarioTest
            |              "type": "Identifier"
            |            }
            |          ],
-           |          "locations": [],
+           |          "locations": [
+           |            {
+           |              "locationType": {
+           |                "id": "closed-stores",
+           |                "label": "Closed stores",
+           |                "type": "LocationType"
+           |              },
+           |              "label": "Closed stores",
+           |              "type": "PhysicalLocation"
+           |            }
+           |          ],
            |          "type": "Item"
            |        }
            |      ]

@@ -5,13 +5,10 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
-import weco.catalogue.internal_model.generators.IdentifiersGenerators
-import weco.catalogue.internal_model.identifiers.CanonicalId
+import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
-
-import scala.util.{Failure, Try}
 
 class ItemsApiFeatureTest
     extends AnyFunSpec
@@ -26,8 +23,8 @@ class ItemsApiFeatureTest
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
       val resourceName = "work-with-temporarily-unavailable-item.json"
-      val workId = CanonicalId("eccsqg7j")
-      val itemId = CanonicalId("otdlfo0u")
+      val workId = "eccsqg7j"
+      val itemId = "otdlfo0u"
       val sierraItemNumber = SierraItemNumber("1024083")
 
       val catalogueResponses = Seq(
@@ -113,7 +110,7 @@ class ItemsApiFeatureTest
 
     it("returns an empty list if a work has no items") {
       val resourceName = "work-with-no-items.json"
-      val workId = CanonicalId("eccsqg7j")
+      val workId = "eccsqg7j"
 
       val catalogueResponses = Seq(
         (
@@ -131,6 +128,91 @@ class ItemsApiFeatureTest
              |  "type" : "ItemsList",
              |  "totalResults" : 0,
              |  "results" : [
+             |  ]
+             |}
+              """.stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedJson)
+          }
+        }
+      }
+    }
+
+    it("keeps items as temporarily unavailable if they're at conservation") {
+      val resourceName = "work-with-at-conservation-items.json"
+      val workId = "n8czw8g7"
+
+      val catalogueResponses = Seq(
+        (
+          catalogueWorkRequest(workId),
+          catalogueWorkResponse(resourceName)
+        )
+      )
+
+      withItemsApi(catalogueResponses) { _ =>
+        val path = s"/works/$workId"
+
+        val expectedJson =
+          s"""
+             |{
+             |  "type" : "ItemsList",
+             |  "totalResults" : 1,
+             |  "results" : [
+             |    {
+             |      "id": "u8br9f3t",
+             |      "identifiers": [
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-system-number",
+             |            "label": "Sierra system number",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "i19520189",
+             |          "type": "Identifier"
+             |        },
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-identifier",
+             |            "label": "Sierra identifier",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "1952018",
+             |          "type": "Identifier"
+             |        }
+             |      ],
+             |      "locations": [
+             |        {
+             |          "locationType": {
+             |            "id": "closed-stores",
+             |            "label": "Closed stores",
+             |            "type": "LocationType"
+             |          },
+             |          "label": "Closed stores",
+             |          "accessConditions": [
+             |            {
+             |              "method": {
+             |                "id": "not-requestable",
+             |                "label": "Not requestable",
+             |                "type": "AccessMethod"
+             |              },
+             |              "status": {
+             |                "id": "temporarily-unavailable",
+             |                "label": "Temporarily unavailable",
+             |                "type": "AccessStatus"
+             |              },
+             |              "note": "This item is undergoing internal assessment or conservation work.",
+             |              "type": "AccessCondition"
+             |            }
+             |          ],
+             |          "type": "PhysicalLocation"
+             |        }
+             |      ],
+             |      "type": "Item"
+             |    }
              |  ]
              |}
               """.stripMargin
@@ -179,10 +261,7 @@ class ItemsApiFeatureTest
     }
 
     it("returns a 404 if the ID is not a valid canonical ID") {
-      val id = randomAlphanumeric(length = 10)
-      Try {
-        CanonicalId(id)
-      } shouldBe a[Failure[_]]
+      val id = "<script>alert('boo!');"
 
       val catalogueResponses = Seq(
         (

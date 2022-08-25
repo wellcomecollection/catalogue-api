@@ -44,24 +44,6 @@ class ImagesFiltersTest extends ApiImagesTestBase {
       }
     }
 
-    it("does not filter by contributors from the redirected source work") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2)
-              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
-          )
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.contributors.agent.label=Hypatia"
-          ) {
-            Status.OK -> emptyJsonResult
-          }
-      }
-    }
-
     it("filters by multiple contributors") {
       withImagesApi {
         case (imagesIndex, routes) =>
@@ -141,6 +123,57 @@ class ImagesFiltersTest extends ApiImagesTestBase {
               ids = Seq(
                 "images.examples.genre-filter-tests.0",
                 "images.examples.genre-filter-tests.2"
+              )
+            )
+          }
+      }
+    }
+  }
+
+  describe("filtering images by source subjects") {
+    val images = Seq(
+      "screwdrivers-1",
+      "screwdrivers-2",
+      "sounds",
+      "squirrel,sample",
+      "squirrel,screwdriver"
+    ).map(s => s"images.subjects.$s")
+
+    it("filters by subjects") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, images: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?source.subjects.label=Simple%20screwdrivers"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.subjects.screwdrivers-1",
+                "images.subjects.screwdrivers-2",
+                "images.subjects.squirrel,screwdriver"
+              )
+            )
+          }
+      }
+    }
+
+    it("filters by multiple subjects") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, images: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?source.subjects.label=Square%20sounds,Struck%20samples"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.subjects.sounds",
+                "images.subjects.squirrel,sample"
               )
             )
           }
