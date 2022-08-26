@@ -1,4 +1,6 @@
-import { RankDetail } from '../../types/elasticsearch'
+import { estypes } from '@elastic/elasticsearch'
+
+type RankDetail = estypes.RankEvalRankEvalMetricDetail
 
 type Pass = {
   score: number // should be a range between 0 => 1

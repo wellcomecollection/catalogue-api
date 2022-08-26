@@ -1,14 +1,14 @@
 import { GetServerSideProps, NextPage } from 'next'
+import type { estypes } from '@elastic/elasticsearch'
 import { Index, Namespace, QueryEnv } from '../types/searchTemplate'
 
 import Hit from '../components/Hit'
 import QueryForm from '../components/QueryForm'
-import { SearchResponse } from '../types/elasticsearch'
 import absoluteUrl from 'next-absolute-url'
 import { listIndices } from '../services/search-templates'
 
 type Props = {
-  data: SearchResponse
+  data: estypes.SearchResponse
   search: {
     query?: string
     namespace?: Namespace
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
   const queryEnv = qs.queryEnv ? qs.queryEnv.toString() : 'candidate'
   const index = qs.index ? qs.index.toString() : indices[0]
 
-  let data: SearchResponse = null
+  let data: estypes.SearchResponse = null
   if (query) {
     const { origin } = absoluteUrl(req)
     const reqQs = Object.entries({ query, index, queryEnv })

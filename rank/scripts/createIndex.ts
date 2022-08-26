@@ -39,7 +39,7 @@ async function go() {
   }).then(({ value }) => value)
 
   const client = getRankClient()
-  const { body: putIndexRes } = await client.indices.create({
+  const putIndexRes = await client.indices.create({
     index: remoteIndex,
     body: {
       ...indexConfig,
@@ -56,10 +56,13 @@ async function go() {
   if (putIndexRes.acknowledged) {
     success(`Created index ${remoteIndex}`)
   } else {
+    // Don't think the client has the right types for this
+    // @ts-ignore
     if (putIndexRes.error.type === 'resource_already_exists_exception') {
       error(`${remoteIndex} already exists!`)
     } else {
       error(`Couldn't create ${remoteIndex} with error:`)
+      // @ts-ignore
       console.info(putIndexRes.error)
     }
   }
@@ -79,7 +82,7 @@ async function go() {
         'How many documents do you want to reindex? (0 for all documents)',
       initial: 0,
     })
-    const { body: reindexResp } = await client.reindex({
+    const reindexResp = await client.reindex({
       wait_for_completion: false,
       max_docs: nDocsRequested === 0 ? undefined : nDocsRequested,
       body: {

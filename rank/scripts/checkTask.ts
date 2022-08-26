@@ -21,9 +21,10 @@ async function go() {
   if (args.task) {
     task_id = args.task
   } else {
-    const tasks = await client.cat
-      .tasks({ format: 'json', h: 'action,task_id' })
-      .then((res) => res.body)
+    const tasks = await client.cat.tasks({
+      format: 'json',
+      h: 'action,task_id',
+    })
 
     task_id = await prompts({
       type: 'select',
@@ -37,26 +38,25 @@ async function go() {
     }).then(({ task_id }) => task_id)
   }
 
-  var taskResponse = await client.tasks.get({ task_id })
-  if (taskResponse.body.completed) {
+  let taskResponse = await client.tasks.get({ task_id })
+  if (taskResponse.completed) {
     success('Task complete!')
   } else {
-    info(`Still working on ${taskResponse.body.task.description}\n`)
+    info(`Still working on ${taskResponse.task.description}\n`)
 
     const progress = new cliProgress.SingleBar(
       {},
       cliProgress.Presets.shades_classic
     )
     progress.start(
-      taskResponse.body.task.status.total,
-      taskResponse.body.task.status.created
+      taskResponse.task.status.total,
+      taskResponse.task.status.created
     )
 
     const timer = setInterval(async function () {
       taskResponse = await client.tasks.get({ task_id })
       const createdOrUpdatedCount =
-        taskResponse.body.task.status.created +
-        taskResponse.body.task.status.updated
+        taskResponse.task.status.created + taskResponse.task.status.updated
       progress.update(createdOrUpdatedCount)
       if (createdOrUpdatedCount >= progress.getTotal()) {
         clearInterval(timer)
