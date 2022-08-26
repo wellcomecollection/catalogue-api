@@ -69,7 +69,7 @@ async function service({
     },
   })
 
-  const results = Object.entries(res.body.details).map(([query, detail]) => {
+  const results = Object.entries(res.details).map(([query, detail]) => {
     const testCase = test.cases.find((c) => c.query === query)
     return {
       query,
