@@ -1,8 +1,7 @@
 import { Index, QueryEnv } from '../types/searchTemplate'
 
-import { Decoder } from './decoder'
+import { Decoder, decodeString } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
-import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
 import { estypes } from '@elastic/elasticsearch'
@@ -26,9 +25,9 @@ async function service({
   index,
   searchTerms,
   explain,
-}: Props): Promise<estypes.SearchTemplateResponse> {
+}: Props): Promise<estypes.SearchTemplateResponse<Record<string, any>>> {
   const template = await getTemplate(queryEnv, index)
-  const searchResp = await getRankClient().searchTemplate({
+  return await getRankClient().searchTemplate({
     index: template.index,
     body: {
       explain,
@@ -44,8 +43,6 @@ async function service({
       params: { query: searchTerms, size: 100 },
     },
   })
-
-  return searchResp
 }
 
 export default service
