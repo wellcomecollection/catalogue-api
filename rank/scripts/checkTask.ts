@@ -57,7 +57,6 @@ async function go() {
       const createdOrUpdatedCount =
         taskResponse.body.task.status.created +
         taskResponse.body.task.status.updated
-      progress.increment()
       progress.update(createdOrUpdatedCount)
       if (createdOrUpdatedCount >= progress.getTotal()) {
         clearInterval(timer)

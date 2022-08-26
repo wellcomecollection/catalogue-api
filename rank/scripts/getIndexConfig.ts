@@ -48,7 +48,7 @@ async function go() {
     info(
       `To create a new index with a candidate mapping, edit one of the files in ./data/indices and run`
     )
-    code(`yarn createIndex --reindex`)
+    code(`yarn createIndex`)
   }
 }
 
