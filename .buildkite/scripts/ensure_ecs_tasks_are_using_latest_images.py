@@ -203,20 +203,18 @@ def check_if_tasks_match_expected_containers(sess, *, cluster, expected_containe
             continue
 
         actual_task_containers = {
-            c['name']: {
-                'uri': c['image'],
-                'digest': c['imageDigest']
-            }
-            for c in t['containers']
+            c["name"]: {"uri": c["image"], "digest": c["imageDigest"]}
+            for c in t["containers"]
         }
 
         if actual_task_containers != expected_task_containers:
             result[service].append(
-                f'Incorrect containers in task {task_id}.\n'
-                f'Expected:\n' +
-                json.dumps(expected_task_containers, indent=2, sort_keys=True) + '\n' +
-                f'Actual:\n' +
-                json.dumps(actual_task_containers, indent=2, sort_keys=True)
+                f"Incorrect containers in task {task_id}.\n"
+                f"Expected:\n"
+                + json.dumps(expected_task_containers, indent=2, sort_keys=True)
+                + "\n"
+                + f"Actual:\n"
+                + json.dumps(actual_task_containers, indent=2, sort_keys=True)
             )
 
     return result
@@ -242,17 +240,15 @@ if __name__ == "__main__":
         sess, cluster=args["cluster"], expected_containers=expected_containers
     )
     if result == {}:
-        print('All tasks are up-to-date, nothing to do 🎉')
+        print("All tasks are up-to-date, nothing to do 🎉")
         sys.exit(0)
     else:
-        print('Tasks are not up-to-date, triggering a deployment')
-        ecs = sess.client('ecs')
+        print("Tasks are not up-to-date, triggering a deployment")
+        ecs = sess.client("ecs")
         for stale_service in result:
             ecs_client.update_service(
-                    cluster=cluster,
-                    service=stale_service,
-                    forceNewDeployment=True
-                )
+                cluster=cluster, service=stale_service, forceNewDeployment=True
+            )
 
     while True:
         now = datetime.datetime.now().isoformat()
@@ -262,7 +258,7 @@ if __name__ == "__main__":
             sess, cluster=args["cluster"], expected_containers=expected_containers
         )
         if result == {}:
-            print('All tasks are up-to-date, all done 🎉')
+            print("All tasks are up-to-date, all done 🎉")
             sys.exit(0)
 
         print(result)
