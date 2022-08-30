@@ -38,12 +38,6 @@ def parse_args():
     parser.add_argument(
         "--role-arn", help="An AWS role to assume when performing ECS operations."
     )
-    parser.add_argument(
-        "--timeout",
-        help="How many minutes to wait before failing the deployment",
-        type=int,
-        default=15,
-    )
 
     args = parser.parse_args()
 
@@ -51,7 +45,6 @@ def parse_args():
         "cluster": args.cluster,
         "services": [serv.strip() for serv in args.services.split(",")],
         "role_arn": args.role_arn,
-        "timeout": args.timeout,
     }
 
 
