@@ -19,6 +19,10 @@ task definition.
 
     Trigger a rolling deployment until all the tasks are using the new digest.
 
+    Note: this will wait forever for a deployment to complete; you should
+    configure a timeout in Buildkite or CI if you want to be notified of
+    the changes failing to deploy.
+
 """
 
 import argparse
