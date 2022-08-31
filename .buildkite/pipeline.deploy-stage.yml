@@ -3,7 +3,7 @@ steps:
     branches: "main"
     plugins:
       - docker#v3.5.0:
-          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.6
+          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.7
           workdir: /repo
           mount-ssh-agent: true
           command: [
@@ -20,7 +20,7 @@ steps:
     branches: "main"
     plugins:
       - docker#v3.5.0:
-          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.6
+          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.7
           workdir: /repo
           mount-ssh-agent: true
           command: [
@@ -59,7 +59,7 @@ steps:
         USE_STAGE_APIS: true
 
   - label: "Rank tests: Catalogue API (stage)"
-    command: ./.buildkite/scripts/test_rank.sh 
+    command: ./.buildkite/scripts/test_rank.sh
     env:
       QUERY_ENV: "staging"
 
