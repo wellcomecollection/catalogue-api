@@ -8,9 +8,9 @@ case class ElasticConfig(
 )
 
 trait ElasticConfigBase {
-  // We use this to share config across API applications
+  // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
-  val pipelineDate = "2022-08-24"  // Note: remember to update the TypeScript config also
+  val pipelineDate = "2022-08-24" // Note: remember to update the TypeScript config also
 }
 
 object PipelineClusterElasticConfig extends ElasticConfigBase {
