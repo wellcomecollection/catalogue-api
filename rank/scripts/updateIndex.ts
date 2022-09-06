@@ -39,17 +39,17 @@ async function go() {
 
   const rankClient = getRankClient()
 
-  const { body: closeIndexRes } = await rankClient.indices.close({
+  const closeIndexRes = await rankClient.indices.close({
     index: indexName,
   })
   if (closeIndexRes.acknowledged) {
     success(`Closed ${indexName}`)
   } else {
     error(`Couldn't close ${indexName} with error:`)
-    console.info(closeIndexRes.error)
+    console.info(closeIndexRes)
   }
 
-  const { body: putSettingsRes } = await rankClient.indices.putSettings({
+  const putSettingsRes = await rankClient.indices.putSettings({
     index: indexName,
     body: {
       ...indexConfig.settings,
@@ -59,10 +59,10 @@ async function go() {
     success(`Posted settings to ${indexName}`)
   } else {
     error(`Couldn't post settings to ${indexName} with error:`)
-    console.info(putSettingsRes.error)
+    console.info(putSettingsRes)
   }
 
-  const { body: putMappingRes } = await rankClient.indices.putMapping({
+  const putMappingRes = await rankClient.indices.putMapping({
     index: indexName,
     body: {
       ...indexConfig.mappings,
@@ -72,17 +72,17 @@ async function go() {
     success(`Posted mappings to ${indexName}`)
   } else {
     error(`Couldn't post mappings to ${indexName} with error:`)
-    console.info(putMappingRes.error)
+    console.info(putMappingRes)
   }
 
-  const { body: openIndedxRes } = await rankClient.indices.open({
+  const openIndexRes = await rankClient.indices.open({
     index: indexName,
   })
-  if (openIndedxRes.acknowledged) {
+  if (openIndexRes.acknowledged) {
     success(`Reopened ${indexName}`)
   } else {
     error(`Couldn't reopen ${indexName} with error:`)
-    console.info(openIndedxRes.error)
+    console.info(openIndexRes)
   }
 
   const updateByQuery = await prompts({
@@ -93,7 +93,7 @@ async function go() {
   }).then(({ value }) => value)
 
   if (updateByQuery) {
-    const { body: updateByQueryRes } = await rankClient.updateByQuery({
+    const updateByQueryRes = await rankClient.updateByQuery({
       wait_for_completion: false,
       index: indexName,
       conflicts: 'proceed',

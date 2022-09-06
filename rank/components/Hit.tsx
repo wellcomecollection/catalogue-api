@@ -1,8 +1,7 @@
 import { FC, useState } from 'react'
+import type { estypes } from '@elastic/elasticsearch'
 
-import { Hit as HitType } from '../types/elasticsearch'
-
-type Props = { hit: HitType }
+type Props = { hit: estypes.SearchHit<Record<string, any>> }
 const Hit: FC<Props> = ({ hit }) => {
   const [showExplanation, setShowExplanation] = useState(false)
   const [showMatches, setShowMatches] = useState(false)

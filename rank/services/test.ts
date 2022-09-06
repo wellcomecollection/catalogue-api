@@ -3,7 +3,6 @@ import { TestCase, TestResult } from '../types/test'
 
 import { Decoder } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
-import { RankEvalResponse } from '../types/elasticsearch'
 import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
@@ -54,11 +53,13 @@ async function service({
     }
   })
 
-  const res = await getRankClient().rankEval<RankEvalResponse>({
+  const res = await getRankClient().rankEval({
     index: template.index,
     body: {
       requests,
       metric,
+      // The types do not support this use case :(
+      // @ts-ignore
       templates: [
         {
           id: template.id,
@@ -68,7 +69,7 @@ async function service({
     },
   })
 
-  const results = Object.entries(res.body.details).map(([query, detail]) => {
+  const results = Object.entries(res.details).map(([query, detail]) => {
     const testCase = test.cases.find((c) => c.query === query)
     return {
       query,

@@ -16,7 +16,7 @@ async function go() {
 
   info(`deleting index ${index}`)
   const rankClient = getRankClient()
-  const { body: deleteIndexRes } = await rankClient.indices
+  const deleteIndexRes = await rankClient.indices
     .delete({ index })
     .catch((err) => {
       error(err.meta.body)

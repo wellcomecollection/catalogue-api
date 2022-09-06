@@ -4,12 +4,13 @@ import {
   namespaces,
   queryEnvs,
 } from '../types/searchTemplate'
-import {getQueries, listIndices} from '../services/search-templates'
+import { getQueries, listIndices } from '../services/search-templates'
 import { histogram, info } from './utils'
 
 import bars from 'bars'
 import { getRankClient } from '../services/elasticsearch'
 import prompts from 'prompts'
+import { MsearchMultiSearchItem } from '@elastic/elasticsearch/lib/api/types'
 
 global.fetch = require('node-fetch')
 
@@ -66,8 +67,10 @@ async function go() {
         },
       ])
       const client = await getRankClient()
-      const { body: searchResp } = await client.msearch({ body })
-      return searchResp.responses.map((r) => r.took)
+      const searchResp = await client.msearch({ body })
+      return searchResp.responses
+        .filter((r): r is MsearchMultiSearchItem => !('error' in r))
+        .map((r) => r.took)
     })
   )
 

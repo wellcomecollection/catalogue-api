@@ -1,11 +1,10 @@
 import { Index, QueryEnv } from '../types/searchTemplate'
 
-import { Decoder } from './decoder'
+import { Decoder, decodeString } from './decoder'
 import { ParsedUrlQuery } from 'querystring'
-import { SearchResponse } from '../types/elasticsearch'
-import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
+import { estypes } from '@elastic/elasticsearch'
 
 type Props = {
   searchTerms: string
@@ -26,28 +25,24 @@ async function service({
   index,
   searchTerms,
   explain,
-}: Props): Promise<SearchResponse> {
+}: Props): Promise<estypes.SearchTemplateResponse<Record<string, any>>> {
   const template = await getTemplate(queryEnv, index)
-  const searchResp = await getRankClient()
-    .searchTemplate<SearchResponse>({
-      index: template.index,
-      body: {
-        explain,
-        source: {
-          query: template.query,
-          track_total_hits: true,
-          highlight: {
-            pre_tags: ['<span class="bg-yellow-200">'],
-            post_tags: ['</span>'],
-            fields: { '*': { number_of_fragments: 0 } },
-          },
+  return await getRankClient().searchTemplate({
+    index: template.index,
+    body: {
+      explain,
+      source: JSON.stringify({
+        query: template.query,
+        track_total_hits: true,
+        highlight: {
+          pre_tags: ['<span class="bg-yellow-200">'],
+          post_tags: ['</span>'],
+          fields: { '*': { number_of_fragments: 0 } },
         },
-        params: { query: searchTerms, size: 100 },
-      },
-    })
-    .then((res) => res.body)
-
-  return searchResp
+      }),
+      params: { query: searchTerms, size: 100 },
+    },
+  })
 }
 
 export default service
