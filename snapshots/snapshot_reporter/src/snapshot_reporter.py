@@ -118,11 +118,9 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
             f"No snapshot found within the last day. See logs: {kibana_logs_link}"
         )
 
-
     if recent_updates["count"]:
         snapshot_message += f"\n• There {'have' if recent_updates['count'] > 1 else 'has'} been {humanize.intcomma(recent_updates['count'])} update{'s' if recent_updates['count'] > 1 else ''} in the last {recent_updates['hours']} hours."
-        update_blocks = [
-        ]
+        update_blocks = []
     else:
         delta = datetime.datetime.now(datetime.timezone.utc) - recent_updates["latest"]
         message = f":warning: There haven't been any updates in the last {recent_updates['hours']} hours. The last update was at {format_date(recent_updates['latest'])} ({humanize.naturaldelta(delta)} ago)."
