@@ -85,14 +85,8 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
     def _snapshot_message(snapshot):
         index_name = snapshot["snapshotResult"]["indexName"]
         snapshot_document_count = snapshot["snapshotResult"]["documentCount"]
-        s3_size = snapshot["snapshotResult"]["s3Size"]["bytes"]
 
         requested_at = parser.parse(snapshot["snapshotJob"]["requestedAt"])
-
-        started_at = parser.parse(snapshot["snapshotResult"]["startedAt"])
-        finished_at = parser.parse(snapshot["snapshotResult"]["finishedAt"])
-
-        time_took = finished_at - started_at
 
         # In general, a snapshot should have the same number of works as the
         # catalogue API.  There might be some drift, if new works appear in the
@@ -108,8 +102,6 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
         return "\n".join(
             [
                 f"The latest snapshot is of index *{index_name}*, taken *{format_date(requested_at)}*.",
-                f"• It is {humanize.naturalsize(s3_size)}",
-                f"• It took {humanize.naturaldelta(time_took)} to create",
                 f"• It contains {humanize.intcomma(snapshot_document_count)} documents ({api_comparison})",
             ]
         )
@@ -126,15 +118,10 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
             f"No snapshot found within the last day. See logs: {kibana_logs_link}"
         )
 
-    snapshot_blocks = [
-        {"type": "header", "text": {"type": "plain_text", "text": snapshot_heading}},
-        {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
-    ]
 
     if recent_updates["count"]:
-        message = f"There {'have' if recent_updates['count'] > 1 else 'has'} been {humanize.intcomma(recent_updates['count'])} update{'s' if recent_updates['count'] > 1 else ''} in the last {recent_updates['hours']} hours."
+        snapshot_message += f"\n• There {'have' if recent_updates['count'] > 1 else 'has'} been {humanize.intcomma(recent_updates['count'])} update{'s' if recent_updates['count'] > 1 else ''} in the last {recent_updates['hours']} hours."
         update_blocks = [
-            {"type": "section", "text": {"type": "mrkdwn", "text": message}}
         ]
     else:
         delta = datetime.datetime.now(datetime.timezone.utc) - recent_updates["latest"]
@@ -142,6 +129,11 @@ def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
         update_blocks = [
             {"type": "section", "text": {"type": "mrkdwn", "text": message}}
         ]
+
+    snapshot_blocks = [
+        {"type": "header", "text": {"type": "plain_text", "text": snapshot_heading}},
+        {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
+    ]
 
     return {"blocks": snapshot_blocks + update_blocks}
 
