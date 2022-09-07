@@ -42,7 +42,7 @@ object ElasticsearchErrorHandler extends Logging {
             userError(
               s"Only the first $size works are available in the API. " +
                 "If you want more works, you can download a snapshot of the complete catalogue: " +
-                "https://developers.wellcomecollection.org/datasets",
+                "https://developers.wellcomecollection.org/docs/datasets",
               e.elasticError
             )
           case _ =>

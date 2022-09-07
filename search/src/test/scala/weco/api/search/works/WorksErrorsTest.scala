@@ -224,7 +224,7 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     describe("trying to get more works than ES allows") {
       val description = "Only the first 10000 works are available in the API. " +
         "If you want more works, you can download a snapshot of the complete catalogue: " +
-        "https://developers.wellcomecollection.org/datasets"
+        "https://developers.wellcomecollection.org/docs/datasets"
 
       it("a very large page") {
         withWorksApi {
