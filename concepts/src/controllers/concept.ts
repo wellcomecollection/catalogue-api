@@ -37,7 +37,7 @@ const conceptController = (
             id,
             label: subject.label,
             identifiers: subject.identifiers,
-            type: "Subject",
+            type: subject.type,
           });
           return;
         }
