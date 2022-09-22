@@ -21,11 +21,23 @@ const conceptController = (
       index,
       body: {
         size: 1,
-        _source: ["display.subjects"],
+        _source: ["display.contributors.agent", "display.subjects"],
         query: {
-          term: {
-            "query.subjects.id": id,
-          },
+          bool: {
+            should: [
+              {
+                term: {
+                  "query.subjects.id": id
+                }
+              },
+              {
+                term: {
+                  "query.contributors.agent.id": id
+                }
+              }
+            ],
+            minimum_should_match: 1
+          }
         },
       },
     });
@@ -38,6 +50,18 @@ const conceptController = (
             label: subject.label,
             identifiers: subject.identifiers,
             type: subject.type,
+          });
+          return;
+        }
+      }
+
+      for (const contributor of work._source.display.contributors) {
+        if (contributor.agent.id === id) {
+          res.status(200).json({
+            id,
+            label: contributor.agent.label,
+            identifiers: contributor.agent.identifiers,
+            type: contributor.agent.type,
           });
           return;
         }
