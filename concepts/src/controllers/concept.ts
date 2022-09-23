@@ -39,6 +39,16 @@ const conceptController = (
             minimum_should_match: 1
           }
         },
+        // We don't care much about how we sort here, we just care that we have a sort
+        // that will be consistent across Elasticsearch churn.
+        //
+        // e.g. the concept with ID v3m7uhy9 is labelled as "Darwin, Charles, 1809-1882"
+        // and "Darwin, Charles, 1809-1882 Influence" on different works.  For the prototype
+        // it doesn't matter which we pick, but if we don't specify a sort then we're at the
+        // mercy of Elasticsearch to choose, and it may change over time.
+        //
+        // See https://wellcome.slack.com/archives/C02ANCYL90E/p1663920016045829
+        sort: ['query.id']
       },
     });
 
