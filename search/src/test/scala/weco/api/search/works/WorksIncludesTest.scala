@@ -926,6 +926,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         "label" : "person-W9SVIX0fEg",
                         "type" : "Person"
                       },
+                      "primary" : true,
                       "roles" : [
                       ],
                       "type" : "Contributor"
@@ -935,6 +936,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         "label" : "person-IWtB2H6",
                         "type" : "Person"
                       },
+                      "primary" : true,
                       "roles" : [
                       ],
                       "type" : "Contributor"
