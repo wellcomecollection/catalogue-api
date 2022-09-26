@@ -19,11 +19,7 @@ class QueryConfigTest
         indexTestDocuments(index, "images.similar-features-and-palettes.0")
 
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
-        result.paletteBinSizes shouldBe List(
-          List(1, 7, 5),
-          List(0, 5, 7),
-          List(6, 5, 1)
-        )
+        result.paletteBinSizes shouldBe List(List(7, 5, 0), List(5, 7, 6), List(5, 1, 2))
 
         // Casting to string here is to avoid weirdness when comparing Doubles;
         // if you compare to List(0.34999806, 0.7922977, 0.3721038), Scala will
