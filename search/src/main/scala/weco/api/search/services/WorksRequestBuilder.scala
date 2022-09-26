@@ -147,9 +147,9 @@ object WorksRequestBuilder
       case VisibleWorkFilter =>
         termQuery(field = "type", value = "Visible")
       case FormatFilter(formatIds) =>
-        termsQuery(field = "data.format.id", values = formatIds)
+        termsQuery(field = "query.format.id", values = formatIds)
       case WorkTypeFilter(types) =>
-        termsQuery(field = "data.workType", values = types)
+        termsQuery(field = "query.workType", values = types)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
@@ -157,10 +157,10 @@ object WorksRequestBuilder
       case LanguagesFilter(languageIds) =>
         termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
-        termsQuery("data.genres.label.keyword", genreQueries)
+        termsQuery("query.genres.label.keyword", genreQueries)
 
       case SubjectLabelFilter(labels) =>
-        termsQuery("data.subjects.label.keyword", labels)
+        termsQuery("query.subjects.label.keyword", labels)
 
       case ContributorsFilter(contributorQueries) =>
         termsQuery("query.contributors.agent.label.keyword", contributorQueries)
