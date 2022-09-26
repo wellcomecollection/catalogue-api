@@ -1,6 +1,6 @@
 {
   "description" : "a list of work with all the include-able fields",
-  "createdAt" : "2022-06-16T10:10:34.553910Z",
+  "createdAt" : "2022-09-20T13:36:01.567542Z",
   "id" : "nlqnlwch",
   "document" : {
     "debug" : {
@@ -240,7 +240,8 @@
             "type" : "Person"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         },
         {
           "id" : {
@@ -256,7 +257,8 @@
             "type" : "Person"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         }
       ],
       "thumbnail" : null,
@@ -612,6 +614,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         },
         {
@@ -621,6 +624,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         }
       ],
@@ -1060,6 +1064,8 @@
     },
     "query" : {
       "id" : "nlqnlwch",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "jfcicmGMGK",
         "aGKxAEeG0H"
@@ -1092,6 +1098,12 @@
         "iiif-presentation",
         "iiif-presentation"
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+        "zUX6yZ5LLM",
+        "MbAm0vPSF4"
+      ],
       "subjects.concepts.label" : [
         "VvWxgXRSdhZCyeu",
         "lPkNaP0Clgfwapm",
@@ -1099,6 +1111,10 @@
         "EIy1m22EMkmWOjl",
         "KvfRGKp22pTPNg1",
         "Fb7hLZCWP2ToHCa"
+      ],
+      "genres.label" : [
+        "1SqaQCD06A",
+        "yy1BmoiqJb"
       ],
       "genres.concepts.label" : [
         "WAxFOW2wBgqY0L1",
@@ -1112,6 +1128,8 @@
         "yc6",
         "hi6",
         "GkI"
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
         "person-kGPDWLL",

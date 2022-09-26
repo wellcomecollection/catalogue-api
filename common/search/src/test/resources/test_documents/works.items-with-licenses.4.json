@@ -1,6 +1,6 @@
 {
   "description" : "a work with licensed digital items",
-  "createdAt" : "2022-06-16T09:57:45.947Z",
+  "createdAt" : "2022-09-20T13:36:01.996144Z",
   "id" : "vwg1cj2y",
   "document" : {
     "debug" : {
@@ -129,6 +129,8 @@
     },
     "query" : {
       "id" : "vwg1cj2y",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "FIC2DNd6NA"
       ],
@@ -146,11 +148,19 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

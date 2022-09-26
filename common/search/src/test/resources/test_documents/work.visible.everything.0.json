@@ -1,6 +1,6 @@
 {
   "description" : "a list of work with all the include-able fields",
-  "createdAt" : "2022-06-16T10:10:34.499475Z",
+  "createdAt" : "2022-09-20T13:36:01.476500Z",
   "id" : "tmdfbk5k",
   "document" : {
     "debug" : {
@@ -237,7 +237,8 @@
             "type" : "Person"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         },
         {
           "id" : {
@@ -253,7 +254,8 @@
             "type" : "Person"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         }
       ],
       "thumbnail" : null,
@@ -583,6 +585,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         },
         {
@@ -592,6 +595,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         }
       ],
@@ -991,6 +995,8 @@
     },
     "query" : {
       "id" : "tmdfbk5k",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "Aic5qOhRoS",
         "UfcQYSxE7g"
@@ -1023,6 +1029,12 @@
         "iiif-presentation",
         "iiif-presentation"
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+        "RGOo9Fg6ic",
+        "k1WGWfqE6x"
+      ],
       "subjects.concepts.label" : [
         "goKOwWLrIbnrzZj",
         "i3JH82kKuArEtlV",
@@ -1030,6 +1042,10 @@
         "FakoqsVT1GlsNpY",
         "pthDMBLQZhG54Nz",
         "omzMOR7nUmbDY87"
+      ],
+      "genres.label" : [
+        "Uw1LvlTE5c",
+        "YMZquffyNP"
       ],
       "genres.concepts.label" : [
         "IHQR23GK9tQdPt3",
@@ -1043,6 +1059,8 @@
         "qbV",
         "2DH",
         "yMV"
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
         "person-W9SVIX0fEg",

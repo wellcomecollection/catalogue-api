@@ -1,6 +1,6 @@
 {
   "description" : "one of a list of works with a variety of languages",
-  "createdAt" : "2022-06-16T09:57:45.938Z",
+  "createdAt" : "2022-09-20T13:36:01.936389Z",
   "id" : "edfiesed",
   "document" : {
     "debug" : {
@@ -156,6 +156,8 @@
     },
     "query" : {
       "id" : "edfiesed",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "tQZYPmQieO"
       ],
@@ -173,7 +175,13 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
@@ -181,6 +189,8 @@
         "eng",
         "swe",
         "tur"
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

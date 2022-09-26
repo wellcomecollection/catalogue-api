@@ -1,6 +1,6 @@
 {
   "description" : "works with different subjects",
-  "createdAt" : "2022-06-16T09:57:45.958Z",
+  "createdAt" : "2022-09-20T13:36:02.103050Z",
   "id" : "6uwysojy",
   "document" : {
     "debug" : {
@@ -176,6 +176,8 @@
     },
     "query" : {
       "id" : "6uwysojy",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "pzLgxSR5EK"
       ],
@@ -193,14 +195,23 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+        "paleoNeuroBiology"
+      ],
       "subjects.concepts.label" : [
         "qbmTfcJnlkosWvA",
         "mEQcU7atgIJPhTv",
         "2pMEZn8L2YCE8E9"
       ],
+      "genres.label" : [
+      ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

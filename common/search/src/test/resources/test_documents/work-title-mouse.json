@@ -1,6 +1,6 @@
 {
   "description" : "a work with 'mouse' in the title",
-  "createdAt" : "2022-06-16T09:57:45.571Z",
+  "createdAt" : "2022-09-20T13:36:00.927265Z",
   "id" : "lnn17cwk",
   "document" : {
     "debug" : {
@@ -130,6 +130,8 @@
     },
     "query" : {
       "id" : "lnn17cwk",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "EhPpSB8mq7"
       ],
@@ -147,11 +149,19 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

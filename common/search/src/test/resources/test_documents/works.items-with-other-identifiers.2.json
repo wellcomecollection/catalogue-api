@@ -1,6 +1,6 @@
 {
   "description" : "works with items with other identifiers",
-  "createdAt" : "2022-06-16T09:57:45.987Z",
+  "createdAt" : "2022-09-20T13:36:02.281714Z",
   "id" : "zbejhda8",
   "document" : {
     "debug" : {
@@ -213,6 +213,8 @@
     },
     "query" : {
       "id" : "zbejhda8",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "l7ykrmHfSg"
       ],
@@ -235,11 +237,19 @@
       "items.locations.locationType.id" : [
         "iiif-presentation"
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

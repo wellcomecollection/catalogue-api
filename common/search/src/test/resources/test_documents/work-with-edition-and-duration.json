@@ -1,6 +1,6 @@
 {
   "description" : "a work with optional top-level fields",
-  "createdAt" : "2022-06-16T09:57:45.551Z",
+  "createdAt" : "2022-09-20T13:36:00.801840Z",
   "id" : "gsruvqwf",
   "document" : {
     "debug" : {
@@ -131,6 +131,8 @@
     },
     "query" : {
       "id" : "gsruvqwf",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "7YNi35xO0f"
       ],
@@ -148,11 +150,19 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

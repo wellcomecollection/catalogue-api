@@ -1,6 +1,6 @@
 {
   "description" : "examples for the access status tests",
-  "createdAt" : "2022-06-16T09:57:46.136Z",
+  "createdAt" : "2022-09-20T13:36:03.480750Z",
   "id" : "jwvfegzn",
   "document" : {
     "debug" : {
@@ -219,6 +219,8 @@
     },
     "query" : {
       "id" : "jwvfegzn",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "FvAY3kDPeO"
       ],
@@ -241,11 +243,19 @@
       "items.locations.locationType.id" : [
         "iiif-presentation"
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

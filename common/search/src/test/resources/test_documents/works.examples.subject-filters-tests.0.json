@@ -1,6 +1,6 @@
 {
   "description" : "examples for the subject filter tests",
-  "createdAt" : "2022-06-16T09:57:46.085Z",
+  "createdAt" : "2022-09-20T13:36:03.103102Z",
   "id" : "tayys6jp",
   "document" : {
     "debug" : {
@@ -214,6 +214,8 @@
     },
     "query" : {
       "id" : "tayys6jp",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "3OfWNE6m5y"
       ],
@@ -231,14 +233,24 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+        "sanitati"
+      ],
+      "subjects.label" : [
+        "Sanitation."
+      ],
       "subjects.concepts.label" : [
         "bCBtOF9X3cVR8q4",
         "GIgcsJhdmKTFidD",
         "lsqnu7hZZtHlWPI"
       ],
+      "genres.label" : [
+      ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],
@@ -257,7 +269,7 @@
       "production.dates" : [
       ],
       "subjects.label" : [
-        "{\"id\":\"sanitati\",\"label\":\"Sanitation.\",\"concepts\":[],\"type\":\"Subject\"}"
+        "{\"label\":\"Sanitation.\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages" : [
       ],
