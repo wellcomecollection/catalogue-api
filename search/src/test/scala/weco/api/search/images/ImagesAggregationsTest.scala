@@ -238,8 +238,7 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
                       "data" : {
                         "concepts" : [
                         ],
-                        "id" : "subject2",
-                        "label" : "Struck samples",
+                        "label" : "Square sounds",
                         "type" : "Subject"
                       },
                       "type" : "AggregationBucket"
@@ -249,7 +248,8 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
                       "data" : {
                         "concepts" : [
                         ],
-                        "label" : "Square sounds",
+                        "id" : "subject2",
+                        "label" : "Struck samples",
                         "type" : "Subject"
                       },
                       "type" : "AggregationBucket"
