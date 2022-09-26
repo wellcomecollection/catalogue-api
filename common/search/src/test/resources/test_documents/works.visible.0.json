@@ -1,6 +1,6 @@
 {
   "description" : "an arbitrary list of visible works",
-  "createdAt" : "2022-06-16T09:57:45.439Z",
+  "createdAt" : "2022-09-20T13:35:59.600065Z",
   "id" : "2twopft1",
   "document" : {
     "debug" : {
@@ -129,6 +129,8 @@
     },
     "query" : {
       "id" : "2twopft1",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "Uaequ81tpB"
       ],
@@ -146,11 +148,19 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

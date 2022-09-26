@@ -1,6 +1,6 @@
 {
   "description" : "examples for the access status tests",
-  "createdAt" : "2022-06-16T09:57:46.136Z",
+  "createdAt" : "2022-09-20T13:36:03.479676Z",
   "id" : "stsp385v",
   "document" : {
     "debug" : {
@@ -221,6 +221,8 @@
     },
     "query" : {
       "id" : "stsp385v",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "PD8H80xrR5"
       ],
@@ -243,11 +245,19 @@
       "items.locations.locationType.id" : [
         "iiif-presentation"
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
       ],

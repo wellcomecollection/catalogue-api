@@ -1,6 +1,6 @@
 {
   "description" : "works with different contributor",
-  "createdAt" : "2022-06-16T09:57:45.981Z",
+  "createdAt" : "2022-09-20T13:36:02.235156Z",
   "id" : "gtfjchvo",
   "document" : {
     "debug" : {
@@ -73,7 +73,8 @@
             "type" : "Organisation"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         },
         {
           "id" : {
@@ -87,7 +88,8 @@
             "type" : "Organisation"
           },
           "roles" : [
-          ]
+          ],
+          "primary" : true
         }
       ],
       "thumbnail" : null,
@@ -122,6 +124,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         },
         {
@@ -131,6 +134,7 @@
           },
           "roles" : [
           ],
+          "primary" : true,
           "type" : "Contributor"
         }
       ],
@@ -175,6 +179,8 @@
     },
     "query" : {
       "id" : "gtfjchvo",
+      "format.id" : null,
+      "workType" : "Standard",
       "identifiers.value" : [
         "xKXAvquihJ"
       ],
@@ -192,11 +198,19 @@
       ],
       "items.locations.locationType.id" : [
       ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
       "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
       ],
       "genres.concepts.label" : [
       ],
       "languages.id" : [
+      ],
+      "contributors.agent.id" : [
       ],
       "contributors.agent.label" : [
         "MI5",

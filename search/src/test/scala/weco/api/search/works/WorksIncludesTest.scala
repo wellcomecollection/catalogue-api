@@ -805,6 +805,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-UFES8H2",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -814,6 +815,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-LQeClX",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -839,6 +841,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-kGPDWLL",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -848,6 +851,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-2Xsatm0",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -868,6 +872,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-W9SVIX0fEg",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -877,6 +882,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                             "label" : "person-IWtB2H6",
                             "type" : "Person"
                           },
+                          "primary" : true,
                           "roles" : [
                           ],
                           "type" : "Contributor"
@@ -920,6 +926,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         "label" : "person-W9SVIX0fEg",
                         "type" : "Person"
                       },
+                      "primary" : true,
                       "roles" : [
                       ],
                       "type" : "Contributor"
@@ -929,6 +936,7 @@ class WorksIncludesTest extends ApiWorksTestBase {
                         "label" : "person-IWtB2H6",
                         "type" : "Person"
                       },
+                      "primary" : true,
                       "roles" : [
                       ],
                       "type" : "Contributor"

@@ -64,7 +64,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?include=source.languages"
+            path = s"$rootPath/images?include=source.subjects"
           ) {
             Status.OK ->
               """
@@ -72,49 +72,58 @@ class ImagesIncludesTest extends ApiImagesTestBase {
                   "pageSize" : 10,
                   "results" : [
                     {
-                      "id" : "xnb29lxt",
-                      "locations" : [
-                        {
-                          "accessConditions" : [
-                          ],
-                          "license" : {
-                            "id" : "cc-by",
-                            "label" : "Attribution 4.0 International (CC BY 4.0)",
-                            "type" : "License",
-                            "url" : "http://creativecommons.org/licenses/by/4.0/"
-                          },
-                          "locationType" : {
-                            "id" : "iiif-image",
-                            "label" : "IIIF Image API",
-                            "type" : "LocationType"
-                          },
-                          "type" : "DigitalLocation",
-                          "url" : "https://iiif.wellcomecollection.org/image/Icx.jpg/info.json"
-                        }
-                      ],
-                      "source" : {
-                        "id" : "eealituc",
-                        "languages" : [
-                        ],
-                        "title" : "title-CsSvOQ3XSc",
-                        "type" : "Work"
-                      },
+                      "id" : "l6hqqw3i",
                       "thumbnail" : {
-                        "accessConditions" : [
-                        ],
-                        "license" : {
-                          "id" : "cc-by",
-                          "label" : "Attribution 4.0 International (CC BY 4.0)",
-                          "type" : "License",
-                          "url" : "http://creativecommons.org/licenses/by/4.0/"
-                        },
                         "locationType" : {
                           "id" : "iiif-image",
                           "label" : "IIIF Image API",
                           "type" : "LocationType"
                         },
-                        "type" : "DigitalLocation",
-                        "url" : "https://iiif.wellcomecollection.org/image/Icx.jpg/info.json"
+                        "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+                        "credit" : "Credit line: fW9LIc6n",
+                        "license" : {
+                          "id" : "cc-by",
+                          "label" : "Attribution 4.0 International (CC BY 4.0)",
+                          "url" : "http://creativecommons.org/licenses/by/4.0/",
+                          "type" : "License"
+                        },
+                        "accessConditions" : [
+                        ],
+                        "type" : "DigitalLocation"
+                      },
+                      "locations" : [
+                        {
+                          "locationType" : {
+                            "id" : "iiif-image",
+                            "label" : "IIIF Image API",
+                            "type" : "LocationType"
+                          },
+                          "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+                          "credit" : "Credit line: fW9LIc6n",
+                          "license" : {
+                            "id" : "cc-by",
+                            "label" : "Attribution 4.0 International (CC BY 4.0)",
+                            "url" : "http://creativecommons.org/licenses/by/4.0/",
+                            "type" : "License"
+                          },
+                          "accessConditions" : [
+                          ],
+                          "type" : "DigitalLocation"
+                        }
+                      ],
+                      "aspectRatio" : 0.022521317,
+                      "source" : {
+                        "id" : "kxd5hg2c",
+                        "title" : "title-UXbrIVN9As",
+                        "subjects" : [
+                          {
+                            "label" : "Square sounds",
+                            "concepts" : [
+                            ],
+                            "type" : "Subject"
+                          }
+                        ],
+                        "type" : "Work"
                       },
                       "type" : "Image"
                     }
@@ -194,14 +203,15 @@ class ImagesIncludesTest extends ApiImagesTestBase {
             Status.OK ->
               """
                 {
-                  "id" : "xnb29lxt",
+                  "id" : "l6hqqw3i",
                   "thumbnail" : {
                     "locationType" : {
                       "id" : "iiif-image",
                       "label" : "IIIF Image API",
                       "type" : "LocationType"
                     },
-                    "url" : "https://iiif.wellcomecollection.org/image/Icx.jpg/info.json",
+                    "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+                    "credit" : "Credit line: fW9LIc6n",
                     "license" : {
                       "id" : "cc-by",
                       "label" : "Attribution 4.0 International (CC BY 4.0)",
@@ -219,7 +229,8 @@ class ImagesIncludesTest extends ApiImagesTestBase {
                         "label" : "IIIF Image API",
                         "type" : "LocationType"
                       },
-                      "url" : "https://iiif.wellcomecollection.org/image/Icx.jpg/info.json",
+                      "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+                      "credit" : "Credit line: fW9LIc6n",
                       "license" : {
                         "id" : "cc-by",
                         "label" : "Attribution 4.0 International (CC BY 4.0)",
@@ -231,9 +242,10 @@ class ImagesIncludesTest extends ApiImagesTestBase {
                       "type" : "DigitalLocation"
                     }
                   ],
+                  "aspectRatio" : 0.022521317,
                   "source" : {
-                    "id" : "eealituc",
-                    "title" : "title-CsSvOQ3XSc",
+                    "id" : "kxd5hg2c",
+                    "title" : "title-UXbrIVN9As",
                     "subjects" : [
                       {
                         "label" : "Square sounds",
