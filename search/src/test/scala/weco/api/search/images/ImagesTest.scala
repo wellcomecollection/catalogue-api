@@ -53,19 +53,7 @@ class ImagesTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?query=q5rilm5u"
-        ) {
-          Status.OK -> imagesListResponse(workImages)
-        }
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?query=q5rilm5u"
-        ) {
-          Status.OK -> imagesListResponse(workImages)
-        }
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?query=q5rilm5u"
+          path = s"$rootPath/images?query=osxxkxkl"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }

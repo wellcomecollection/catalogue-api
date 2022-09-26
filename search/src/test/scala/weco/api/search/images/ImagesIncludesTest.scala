@@ -64,7 +64,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?include=source.languages"
+            path = s"$rootPath/images?include=source.subjects"
           ) {
             Status.OK ->
               """
