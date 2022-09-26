@@ -1,46 +1,52 @@
 {
-  "id": "a5lj9duc",
-  "locations": [
+  "aspectRatio" : 0.022521317,
+  "id" : "qdgvzuta",
+  "locations" : [
     {
-      "accessConditions": [],
-      "license": {
-        "id": "cc-by",
-        "label": "Attribution 4.0 International (CC BY 4.0)",
-        "type": "License",
-        "url": "http://creativecommons.org/licenses/by/4.0/"
+      "accessConditions" : [
+      ],
+      "credit" : "Credit line: 8xUIkOUNEx",
+      "license" : {
+        "id" : "cc-by",
+        "label" : "Attribution 4.0 International (CC BY 4.0)",
+        "type" : "License",
+        "url" : "http://creativecommons.org/licenses/by/4.0/"
       },
-      "linkText": "Link text: 4N3l8IuPN0",
-      "locationType": {
-        "id": "iiif-image",
-        "label": "IIIF Image API",
-        "type": "LocationType"
+      "linkText" : "Link text: nBF2HJMW",
+      "locationType" : {
+        "id" : "iiif-image",
+        "label" : "IIIF Image API",
+        "type" : "LocationType"
       },
-      "type": "DigitalLocation",
-      "url": "https://iiif.wellcomecollection.org/image/RlZ.jpg/info.json"
+      "type" : "DigitalLocation",
+      "url" : "https://iiif.wellcomecollection.org/image/gBU.jpg/info.json"
     }
   ],
-  "source": {
-    "id": "anys7vbv",
-    "title": "title-vpbsaVsvTg",
-    "type": "Work"
+  "source" : {
+    "id" : "aplbcmay",
+    "title" : "title-aXPBgcVGR3",
+    "type" : "Work"
   },
-  "thumbnail": {
-    "accessConditions": [],
-    "license": {
-      "id": "cc-by",
-      "label": "Attribution 4.0 International (CC BY 4.0)",
-      "type": "License",
-      "url": "http://creativecommons.org/licenses/by/4.0/"
+  "thumbnail" : {
+    "accessConditions" : [
+    ],
+    "credit" : "Credit line: 8xUIkOUNEx",
+    "license" : {
+      "id" : "cc-by",
+      "label" : "Attribution 4.0 International (CC BY 4.0)",
+      "type" : "License",
+      "url" : "http://creativecommons.org/licenses/by/4.0/"
     },
-    "linkText": "Link text: 4N3l8IuPN0",
-    "locationType": {
-      "id": "iiif-image",
-      "label": "IIIF Image API",
-      "type": "LocationType"
+    "linkText" : "Link text: nBF2HJMW",
+    "locationType" : {
+      "id" : "iiif-image",
+      "label" : "IIIF Image API",
+      "type" : "LocationType"
     },
-    "type": "DigitalLocation",
-    "url": "https://iiif.wellcomecollection.org/image/RlZ.jpg/info.json"
+    "type" : "DigitalLocation",
+    "url" : "https://iiif.wellcomecollection.org/image/gBU.jpg/info.json"
   },
-  "type": "Image",
-  "visuallySimilar": []
+  "type" : "Image",
+  "visuallySimilar" : [
+  ]
 }
