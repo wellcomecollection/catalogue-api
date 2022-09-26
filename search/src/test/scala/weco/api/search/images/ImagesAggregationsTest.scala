@@ -217,7 +217,6 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
                       "data" : {
                         "concepts" : [
                         ],
-                        "id" : "subject1",
                         "label" : "Simple screwdrivers",
                         "type" : "Subject"
                       },
@@ -248,7 +247,6 @@ class ImagesAggregationsTest extends ApiImagesTestBase {
                       "data" : {
                         "concepts" : [
                         ],
-                        "id" : "subject2",
                         "label" : "Struck samples",
                         "type" : "Subject"
                       },
