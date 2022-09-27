@@ -36,11 +36,9 @@ export function getNamespaceFromIndexName(
   index: Index,
   fallback: Namespace = 'works'
 ): Namespace | undefined {
-  // we prefix our index names with ccr--
-  const noCcr = index.replace('ccr--', '')
-  return noCcr.startsWith('works')
+  return index.startsWith('works')
     ? 'works'
-    : noCcr.startsWith('images')
+    : index.startsWith('images')
     ? 'images'
     : fallback
 }
