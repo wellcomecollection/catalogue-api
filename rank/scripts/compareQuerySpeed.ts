@@ -7,10 +7,10 @@ import {
 import { getQueries, listIndices } from '../services/search-templates'
 import { histogram, info } from './utils'
 
+import { MsearchMultiSearchItem } from '@elastic/elasticsearch/lib/api/types'
 import bars from 'bars'
 import { getRankClient } from '../services/elasticsearch'
 import prompts from 'prompts'
-import { MsearchMultiSearchItem } from '@elastic/elasticsearch/lib/api/types'
 
 global.fetch = require('node-fetch')
 
@@ -48,7 +48,7 @@ async function go() {
   }
 
   info('Loading real search terms for querying')
-  const { terms } = await import(`../data/terms/${namespace}.json`).then(
+  const { terms } = await import(`../terms/${namespace}.json`).then(
     (mod) => mod.default
   )
 

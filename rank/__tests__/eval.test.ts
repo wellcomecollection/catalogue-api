@@ -26,6 +26,7 @@ declare global {
     }
   }
 }
+
 expect.extend({
   toPass(result: TestResult['results'][number]) {
     if (result.knownFailure) {

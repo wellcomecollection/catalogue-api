@@ -1,7 +1,7 @@
-import { Eval, Pass } from '../data/tests/pass'
+import { Eval, Pass } from '../tests/pass'
 import { Query, QueryEnv } from './searchTemplate'
 
-import { Metric } from './elasticsearch'
+import { RankEvalRankEvalMetric as Metric } from '@elastic/elasticsearch/lib/api/types'
 
 export type TestCase = {
   query: string

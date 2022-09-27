@@ -3,7 +3,7 @@ import { code, gatherArgs, info } from './utils'
 
 import { exec } from 'child_process'
 import { listIndices } from '../services/search-templates'
-import { tests as possibleTests } from '../data/tests'
+import { tests as possibleTests } from '../tests'
 
 global.fetch = require('node-fetch')
 

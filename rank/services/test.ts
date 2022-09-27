@@ -6,7 +6,7 @@ import { ParsedUrlQuery } from 'querystring'
 import { decodeString } from './decoder'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
-import { tests } from '../data/tests'
+import { tests } from '../tests'
 
 type Props = {
   testId: string
