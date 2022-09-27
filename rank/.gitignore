@@ -29,3 +29,10 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# ignore the data directories: /terms, /queries, and /mappings, but not the gitkeep files within them
+terms/*
+queries/*
+mappings/*
+!/**/.gitkeep
+

@@ -1,5 +1,5 @@
-import { Query } from '../../types/searchTemplate'
-import { Test } from '../../types/test'
+import { Query } from '../types/searchTemplate'
+import { Test } from '../types/test'
 
 const filterCaseRatings = (test: Test, query: Query): Query => {
   // To avoid running exceptionally long recall queries for our negative

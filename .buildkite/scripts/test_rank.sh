@@ -33,8 +33,8 @@ docker run \
 # TODO: This is a short-term fix to unbreak the build, find a better
 # way to do this.
 ROOT=$(git rev-parse --show-toplevel)
-cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/public/WorksMultiMatcherQuery.json"
-cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/public/ImagesMultiMatcherQuery.json"
+cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/queries/WorksMultiMatcherQuery.json"
+cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/queries/ImagesMultiMatcherQuery.json"
 
 case $QUERY_ENV in
     candidate | staging)
