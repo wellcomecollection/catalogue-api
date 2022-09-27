@@ -86,6 +86,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
             Right(response)
 
           case Left(err) =>
+            warn(s"Error while making request=${request.show}, error=${err}")
             Left(ElasticsearchError(err))
         }
     }
