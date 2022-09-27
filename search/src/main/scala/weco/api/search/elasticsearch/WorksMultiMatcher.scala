@@ -46,7 +46,7 @@ case object WorksMultiMatcher {
         // See https://github.com/wellcomecollection/catalogue-api/issues/466
         SpanFirstQuery(
           SpanTermQuery(
-            field = "data.title.shingles",
+            field = "query.title.shingles",
             value = q
           ),
           boost = Some(1000),
@@ -117,8 +117,8 @@ case object WorksMultiMatcher {
               `type` = Some(CROSS_FIELDS),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("data.title", boost = Some(100)),
-                FieldWithOptionalBoost("data.description", boost = Some(10))
+                FieldWithOptionalBoost("query.title", boost = Some(100)),
+                FieldWithOptionalBoost("query.description", boost = Some(10))
               )
             )
           ),
@@ -146,16 +146,16 @@ case object WorksMultiMatcher {
           `type` = Some(CROSS_FIELDS),
           operator = Some(AND),
           fields = Seq(
-            (Some(1000), "data.contributors.agent.label"),
+            (Some(1000), "query.contributors.agent.label"),
             (Some(10), "query.subjects.concepts.label"),
             (Some(10), "query.genres.concepts.label"),
             (Some(10), "data.production.*.label"),
-            (None, "data.description"),
-            (None, "data.physicalDescription"),
-            (None, "data.language.label"),
-            (None, "data.edition"),
-            (None, "data.notes.contents"),
-            (None, "data.lettering")
+            (None, "query.description"),
+            (None, "query.physicalDescription"),
+            (None, "query.languages.label"),
+            (None, "query.edition"),
+            (None, "query.notes.contents"),
+            (None, "query.lettering")
           ).map(f => FieldWithOptionalBoost(f._2, f._1.map(_.toDouble)))
         )
       )
