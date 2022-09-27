@@ -50,8 +50,7 @@ export async function getCandidateQueries() {
             '../../search/src/test/resources/ImagesMultiMatcherQuery.json'
           ),
         ]
-      : // These are copied over during build stage
-        [
+      : [
           import('../queries/WorksMultiMatcherQuery.json'),
           import('../queries/ImagesMultiMatcherQuery.json'),
         ]
