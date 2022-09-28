@@ -6,11 +6,12 @@ It uses [elasticsearch's `rank_eval` API](https://www.elastic.co/guide/en/elasti
 
 ## Getting started
 
-Clone this repo and run:
+Clone this repo, and run:
 
+- `cd rank`
 - `yarn` to install packages
-- `yarn env` to populate a local `.env` file.  
-   This assumes you're part of the Wellcome Collection team on Vercel. You'll be asked to link your local repo to the project in order to fetch the necessary secrets. The project name is `rank`.
+- `yarn env` to populate a local `.env` file. You'll need to be signed into a Wellcome Collection AWS account with access to the `platform-dev` role to do this.
+- `yarn rank` to run the relevance tests
 
 ## Docs 📖
 

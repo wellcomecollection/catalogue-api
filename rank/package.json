@@ -1,6 +1,7 @@
 {
   "scripts": {
     "copyQueries": "ts-node ./scripts/copyQueries",
+    "env": "AWS_PROFILE=platform-dev bash ./scripts/getEnv.sh",
     "test": "jest",
     "rank": "ts-node -r dotenv/config ./scripts/rank",
     "search": "ts-node -r dotenv/config ./scripts/search",
