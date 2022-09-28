@@ -4,17 +4,33 @@ Rank allows us to confidently test incremental changes to search relevance on [w
 
 It uses [elasticsearch's `rank_eval` API](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-rank-eval.html) to measure how well a query returns the "expected" results for a set of known search terms. If the queries return the results we expect, we know we're meeting a baseline performance requirement. Better scores on those examples should mean better search satisfaction IRL, and more illustrative examples mean more classes of search behaviour/intention are met.
 
-## Getting started
+## Running locally
 
-Clone this repo and run:
+Clone this repo, `cd` into `rank`, and run:
 
 - `yarn` to install packages
-- `yarn env` to populate a local `.env` file.  
-   This assumes you're part of the Wellcome Collection team on Vercel. You'll be asked to link your local repo to the project in order to fetch the necessary secrets. The project name is `rank`.
+- `yarn rank` to run the relevance tests
+
+<details>
+  <summary>Matching the CI environment with docker</summary>
+
+The following command will match the environment used in CI exactly, explicitly using the AWS credentials in your `~/.aws` directory to fetch credentials for the ES cluster.
+
+```sh
+docker run -it \
+  -v $HOME/.aws:/root/.aws \
+  -v $(pwd):/catalogue-api \
+  --workdir /catalogue-api/rank \
+  --env AWS_PROFILE=platform-dev \
+  public.ecr.aws/docker/library/node:14-slim \
+  yarn rank
+```
+
+</details>
 
 ## Docs 📖
 
-Rank documentation lives alongside the rest of the search docs in gitbook. You can see the markdown docs [here](../docs/search/rank/).
+Rank documentation lives alongside the rest of the search docs in gitbook. You can see the markdown docs [here](../docs/search/rank/README.md).
 
 ### Developing
 

@@ -17,12 +17,12 @@ Rank allows us to test the performance (precision, recall, etc) of new candidate
 
 We use real-world search terms from our own analytics systems to assess the performance of our queries. To fetch a set of search terms for testing, run:
 
-```
+```sh
 yarn getSearchTerms
 ```
 
 To compare the speed of candidate/production queries using those search terms, run:
 
-```
+```sh
 yarn compareQuerySpeed
 ```
