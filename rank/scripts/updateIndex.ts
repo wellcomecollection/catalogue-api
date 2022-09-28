@@ -37,7 +37,7 @@ async function go() {
     (mod) => mod.default
   )
 
-  const rankClient = getRankClient()
+  const rankClient = await getRankClient()
 
   const closeIndexRes = await rankClient.indices.close({
     index: indexName,

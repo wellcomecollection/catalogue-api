@@ -19,7 +19,8 @@ async function go() {
   }).then(({ value }) => value)
 
   chosenNamespaces.map(async (namespace) => {
-    const searchResp = await getReportingClient().search<Record<string, any>>({
+    const client = await getReportingClient()
+    const searchResp = await client.search<Record<string, any>>({
       index: 'metrics-conversion-prod',
       body: {
         size: 5000,

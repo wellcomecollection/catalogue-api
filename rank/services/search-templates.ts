@@ -11,7 +11,8 @@ import {
 import { getRankClient } from './elasticsearch'
 
 export async function listIndices(): Promise<Index[]> {
-  const body = await getRankClient().cat.indices({ h: ['index'] })
+  const client = await getRankClient()
+  const body = await client.cat.indices({ h: ['index'] })
   const indices = (body as unknown as string) // The types are wrong here
     .split('\n')
     .filter(

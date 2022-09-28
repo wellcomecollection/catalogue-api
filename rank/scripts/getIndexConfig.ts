@@ -17,7 +17,7 @@ async function go() {
   }).then(({ value }) => value)
 
   if (indices.length > 0) {
-    const client = getRankClient()
+    const client = await getRankClient()
     const settingsReq = client.indices.getSettings({ index: indices })
     const mappingsReq = client.indices.getMapping({ index: indices })
     const [{ body: settingsRes }, { body: mappingsRes }] = await Promise.all([

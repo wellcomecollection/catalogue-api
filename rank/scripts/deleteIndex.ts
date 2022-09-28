@@ -15,7 +15,7 @@ async function go() {
   }).then(({ value }) => value)
 
   info(`deleting index ${index}`)
-  const rankClient = getRankClient()
+  const rankClient = await getRankClient()
   const deleteIndexRes = await rankClient.indices
     .delete({ index })
     .catch((err) => {
