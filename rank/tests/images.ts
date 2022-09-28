@@ -1,7 +1,5 @@
-import { equalTo0, equalTo1 } from './pass'
-
-import { Test } from '../../types/test'
-import { filterCaseRatings } from './queryAugmentation'
+import { Test } from '../types/test'
+import { equalTo1 } from './pass'
 
 const tests: Test[] = [
   {

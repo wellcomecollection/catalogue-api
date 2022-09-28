@@ -48,8 +48,8 @@ async function go() {
       .map((hit) => hit._source.page.query.query)
       .filter((term, i, ar) => ar.indexOf(term) === i) // keep unique
 
-    fs.writeFileSync(p([`../data/terms/${namespace}.json`]), pretty({ terms }))
-    success(`Wrote terms to ./data/terms/${namespace}.json\n`)
+    fs.writeFileSync(p([`../terms/${namespace}.json`]), pretty({ terms }))
+    success(`Wrote terms to ./terms/${namespace}.json\n`)
   })
 }
 

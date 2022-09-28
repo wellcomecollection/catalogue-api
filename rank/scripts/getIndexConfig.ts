@@ -39,14 +39,11 @@ async function go() {
       }
       success(`Fetched config for ${index}`)
 
-      fs.writeFileSync(
-        p([`../data/indices/${index}.json`]),
-        pretty(indexConfig)
-      )
-      success(`Wrote config to ./data/indices/${index}.json\n`)
+      fs.writeFileSync(p([`../mappings/${index}.json`]), pretty(indexConfig))
+      success(`Wrote config to ./mappings/${index}.json\n`)
     }
     info(
-      `To create a new index with a candidate mapping, edit one of the files in ./data/indices and run`
+      `To create a new index with a candidate mapping, edit one of the files in ./mappings and run`
     )
     code(`yarn createIndex`)
   }

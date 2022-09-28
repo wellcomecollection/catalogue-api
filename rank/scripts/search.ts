@@ -25,7 +25,7 @@ async function go() {
     message: 'What are you looking for?',
   }).then(({ value }) => value)
 
-  const results = await search({ index, queryEnv, searchTerms, explain: false })
+  const results = await search({ index, queryEnv, searchTerms })
 
   results.hits.hits.map((hit, i) => {
     const title = hit._source.display.title

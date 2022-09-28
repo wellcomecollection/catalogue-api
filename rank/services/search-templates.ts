@@ -50,10 +50,9 @@ export async function getCandidateQueries() {
             '../../search/src/test/resources/ImagesMultiMatcherQuery.json'
           ),
         ]
-      : // These are copied over during build stage
-        [
-          import('../public/WorksMultiMatcherQuery.json'),
-          import('../public/ImagesMultiMatcherQuery.json'),
+      : [
+          import('../queries/WorksMultiMatcherQuery.json'),
+          import('../queries/ImagesMultiMatcherQuery.json'),
         ]
 
   const queries = await Promise.all(imports).then(([works, images]) => ({

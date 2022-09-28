@@ -1,4 +1,4 @@
-import { Test } from '../../types/test'
+import { Test } from '../types/test'
 import { equalTo1 } from './pass'
 
 const tests: Test[] = [
