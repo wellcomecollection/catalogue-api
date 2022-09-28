@@ -4,24 +4,6 @@ set -o errexit
 set -o nounset
 set -o verbose
 
-# use aws cli to fetch secrets from aws secrets manager
-ES_RANK_USER=$(aws secretsmanager get-secret-value \
-        --secret-id elasticsearch/rank/buildkite_user \
-        --query SecretString \
-        --output text
-)
-ES_RANK_PASSWORD=$(aws secretsmanager get-secret-value \
-        --secret-id elasticsearch/rank/buildkite_password \
-        --query SecretString \
-        --output text
-)
-ES_RANK_CLOUD_ID=$(aws secretsmanager get-secret-value \
-        --secret-id elasticsearch/rank/cloud_id \
-        --query SecretString \
-        --output text
-)
-echo "ES_RANK_USER: $ES_RANK_USER"
-
 # install packages
 docker run \
     -v $(pwd):/catalogue-api \
@@ -54,11 +36,9 @@ URL="https://${SUBDOMAIN}.wellcomecollection.org/catalogue/v2/_elasticConfig"
 # run works tests
 WORKS_INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 docker run \
+    -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    --env ES_RANK_USER=$ES_RANK_USER \
-    --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
-    --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
@@ -70,11 +50,9 @@ docker run \
 # run images tests
 IMAGES_INDEX=$(curl -s "${URL}" | jq -r .imagesIndex)
 docker run \
+    -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    --env ES_RANK_USER=$ES_RANK_USER \
-    --env ES_RANK_PASSWORD=$ES_RANK_PASSWORD \
-    --env ES_RANK_CLOUD_ID=$ES_RANK_CLOUD_ID \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \

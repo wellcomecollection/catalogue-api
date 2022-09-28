@@ -1,16 +1,16 @@
 {
   "scripts": {
-    "checkTask": "ts-node -r dotenv/config ./scripts/checkTask",
-    "compareQuerySpeed": "ts-node -r dotenv/config ./scripts/compareQuerySpeed",
+    "checkTask": "ts-node ./scripts/checkTask",
+    "compareQuerySpeed": "ts-node ./scripts/compareQuerySpeed",
     "copyQueries": "ts-node ./scripts/copyQueries",
-    "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
-    "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
-    "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
-    "getSearchTerms": "ts-node -r dotenv/config ./scripts/getSearchTerms",
-    "rank": "ts-node -r dotenv/config ./scripts/rank",
-    "search": "ts-node -r dotenv/config ./scripts/search",
+    "createIndex": "ts-node ./scripts/createIndex",
+    "deleteIndex": "ts-node ./scripts/deleteIndex",
+    "getIndexConfig": "ts-node ./scripts/getIndexConfig",
+    "getSearchTerms": "ts-node ./scripts/getSearchTerms",
+    "rank": "ts-node ./scripts/rank",
+    "search": "ts-node ./scripts/search",
     "test": "jest",
-    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
+    "updateIndex": "ts-node ./scripts/updateIndex"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.2.1",
@@ -25,7 +25,6 @@
     "bars": "jstrace/bars",
     "chalk": "^4.1.1",
     "cli-progress": "^3.9.1",
-    "dotenv": "^10.0.0",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.6",
