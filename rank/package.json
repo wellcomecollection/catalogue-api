@@ -1,16 +1,16 @@
 {
   "scripts": {
-    "copyQueries": "ts-node ./scripts/copyQueries",
-    "test": "jest",
-    "rank": "ts-node -r dotenv/config ./scripts/rank",
-    "search": "ts-node -r dotenv/config ./scripts/search",
     "checkTask": "ts-node -r dotenv/config ./scripts/checkTask",
-    "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
+    "compareQuerySpeed": "ts-node -r dotenv/config ./scripts/compareQuerySpeed",
+    "copyQueries": "ts-node ./scripts/copyQueries",
     "createIndex": "ts-node -r dotenv/config ./scripts/createIndex",
     "deleteIndex": "ts-node -r dotenv/config ./scripts/deleteIndex",
-    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex",
+    "getIndexConfig": "ts-node -r dotenv/config ./scripts/getIndexConfig",
     "getSearchTerms": "ts-node -r dotenv/config ./scripts/getSearchTerms",
-    "compareQuerySpeed": "ts-node -r dotenv/config ./scripts/compareQuerySpeed"
+    "rank": "ts-node -r dotenv/config ./scripts/rank",
+    "search": "ts-node -r dotenv/config ./scripts/search",
+    "test": "jest",
+    "updateIndex": "ts-node -r dotenv/config ./scripts/updateIndex"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.2.1",
@@ -21,12 +21,13 @@
     "@types/yargs": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
     "@typescript-eslint/parser": "^4.28.0",
+    "aws-sdk": "^2.1225.0",
     "bars": "jstrace/bars",
     "chalk": "^4.1.1",
     "cli-progress": "^3.9.1",
     "dotenv": "^10.0.0",
-    "eslint-config-prettier": "^8.3.0",
     "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
     "jest": "^27.0.6",
     "next": "^11.0.0",
     "prettier": "^2.3.1",

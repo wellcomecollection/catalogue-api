@@ -1,67 +1,34 @@
 import { Client } from '@elastic/elasticsearch'
-
-const {
-  ES_RANK_USER,
-  ES_RANK_PASSWORD,
-  ES_RANK_CLOUD_ID,
-  ES_RATINGS_USER,
-  ES_RATINGS_PASSWORD,
-  ES_RATINGS_CLOUD_ID,
-  ES_REPORTING_USER,
-  ES_REPORTING_PASSWORD,
-  ES_REPORTING_CLOUD_ID,
-} = process.env
+import { getSecret } from './secrets'
 
 let rankClient
-export function getRankClient(): Client {
-  if (!ES_RANK_CLOUD_ID) throw Error(`Missing variable ES_RANK_CLOUD_ID`);
-  if (!ES_RANK_USER)     throw Error(`Missing variable ES_RANK_USER`);
-  if (!ES_RANK_PASSWORD) throw Error(`Missing variable ES_RANK_PASSWORD`);
-  
+export async function getRankClient(): Promise<Client> {
+  const id = await getSecret('elasticsearch/rank/ES_RANK_CLOUD_ID')
+  const username = await getSecret('elasticsearch/rank/ES_RANK_USER')
+  const password = await getSecret('elasticsearch/rank/ES_RANK_PASSWORD')
+
   if (!rankClient) {
     rankClient = new Client({
-      cloud: {
-        id: ES_RANK_CLOUD_ID!,
-      },
-      auth: {
-        username: ES_RANK_USER!,
-        password: ES_RANK_PASSWORD!,
-      },
+      cloud: { id },
+      auth: { username, password },
     })
   }
   return rankClient
 }
 
 let reportingClient
-export function getReportingClient(): Client {
+export async function getReportingClient(): Promise<Client> {
+  const id = await getSecret('elasticsearch/rank/ES_REPORTING_CLOUD_ID')
+  const username = await getSecret('elasticsearch/rank/ES_REPORTING_USER')
+  const password = await getSecret('elasticsearch/rank/ES_REPORTING_PASSWORD')
+
   if (!reportingClient) {
     reportingClient = new Client({
-      cloud: {
-        id: ES_REPORTING_CLOUD_ID!,
-      },
-      auth: {
-        username: ES_REPORTING_USER!,
-        password: ES_REPORTING_PASSWORD!,
-      },
+      cloud: { id },
+      auth: { username, password },
     })
   }
   return reportingClient
 }
 
-let ratingClient
-export function getRatingClient(): Client {
-  if (!ratingClient) {
-    ratingClient = new Client({
-      cloud: {
-        id: ES_RATINGS_CLOUD_ID!,
-      },
-      auth: {
-        username: ES_RATINGS_USER!,
-        password: ES_RATINGS_PASSWORD!,
-      },
-    })
-  }
-  return ratingClient
-}
-
-export { rankClient, reportingClient, ratingClient }
+export { rankClient, reportingClient }
