@@ -27,3 +27,12 @@ for prefix in prefixes:
                 os.path.basename(path),
             ),
         )
+
+os.rename(
+    "./common/search/src/test/resources/test_documents/WorksIndexConfig.json",
+    "./common/search/src/test/resources/WorksIndexConfig.json",
+)
+os.rename(
+    "./common/search/src/test/resources/test_documents/ImagesIndexConfig.json",
+    "./common/search/src/test/resources/ImagesIndexConfig.json",
+)
