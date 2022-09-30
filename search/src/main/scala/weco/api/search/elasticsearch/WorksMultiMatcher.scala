@@ -17,10 +17,19 @@ import com.sksamuel.elastic4s.requests.searches.span.{
 }
 
 case object WorksMultiMatcher {
-  val titleFields = Seq(
-    "search.titlesAndContributors",
-    "search.titlesAndContributors.english",
-    "search.titlesAndContributors.shingles"
+  val titleAndContributorFields = Seq(
+    "query.title",
+    "query.alternativeTitles",
+    "query.contributors.agent.label"
+  )
+
+  val nonEnglishLanguages = List(
+    "arabic",
+    "bengali",
+    "french",
+    "german",
+    "hindi",
+    "italian"
   )
 
   def fieldsWithBoost(
@@ -61,14 +70,14 @@ case object WorksMultiMatcher {
           analyzer = Some("whitespace_analyzer"),
           fields = fieldsWithBoost(
             boost = 1000,
-            Seq(
+            fields = Seq(
               "query.id",
               "query.identifiers.value",
               "query.items.id",
               "query.items.identifiers.value",
               "query.images.id",
               "query.images.identifiers.value",
-              "query.referenceNumber",
+              "query.referenceNumber"
             )
           )
         ),
@@ -82,27 +91,31 @@ case object WorksMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("title and contributor exact spellings"),
-              fields = fieldsWithBoost(boost = 100, fields = titleFields),
+              fields = fieldsWithBoost(
+                boost = 100,
+                fields = titleAndContributorFields.flatMap(field =>
+                  Seq(
+                    field,
+                    s"$field.english",
+                    s"$field.shingles"
+                  )
+                )
+              ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             ),
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
-              fields = List(
-                "arabic",
-                "bengali",
-                "french",
-                "german",
-                "hindi",
-                "italian"
-              ).map(
-                language =>
-                  FieldWithOptionalBoost(
-                    s"search.titlesAndContributors.$language",
-                    None
+              fields =
+                titleAndContributorFields.flatMap(field =>
+                  nonEnglishLanguages.map(language =>
+                    FieldWithOptionalBoost(
+                      field = s"$field.$language",
+                      boost = None
+                    )
                   )
-              ),
+                ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             )
@@ -127,13 +140,13 @@ case object WorksMultiMatcher {
               queryName = Some("relations paths"),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("data.collectionPath.path.clean", None),
+                FieldWithOptionalBoost("query.collectionPath.path.clean", None),
                 FieldWithOptionalBoost(
-                  "data.collectionPath.label.cleanPath",
+                  "query.collectionPath.label.cleanPath",
                   None
                 ),
-                FieldWithOptionalBoost("data.collectionPath.label", None),
-                FieldWithOptionalBoost("data.collectionPath.path.keyword", None)
+                FieldWithOptionalBoost("query.collectionPath.label", None),
+                FieldWithOptionalBoost("query.collectionPath.path.keyword", None)
               )
             )
           ),
@@ -148,14 +161,14 @@ case object WorksMultiMatcher {
             (Some(1000), "query.contributors.agent.label"),
             (Some(10), "query.subjects.concepts.label"),
             (Some(10), "query.genres.concepts.label"),
-            (Some(10), "data.production.*.label"),
+            (Some(10), "query.production.label"),
             (None, "query.description"),
             (None, "query.physicalDescription"),
             (None, "query.languages.label"),
             (None, "query.edition"),
             (None, "query.notes.contents"),
             (None, "query.lettering")
-          ).map(f => FieldWithOptionalBoost(f._2, f._1.map(_.toDouble)))
+          ).map { case (boost, field) => FieldWithOptionalBoost(field, boost.map(_.toDouble)) }
         )
       )
       .minimumShouldMatch(1)
