@@ -68,8 +68,7 @@ case object WorksMultiMatcher {
               "query.items.identifiers.value",
               "query.images.id",
               "query.images.identifiers.value",
-              "data.referenceNumber",
-              "search.identifiers"
+              "query.referenceNumber",
             )
           )
         ),

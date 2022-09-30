@@ -24,7 +24,6 @@
             "query.images.id^1000.0",
             "query.images.identifiers.value^1000.0",
             "data.referenceNumber^1000.0",
-            "search.identifiers^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
