@@ -1,6 +1,6 @@
 {
   "description" : "a work with licensed digital items",
-  "createdAt" : "2022-09-26T11:29:27.784973Z",
+  "createdAt" : "2022-09-30T08:11:41.498839Z",
   "id" : "yodfctxx",
   "document" : {
     "debug" : {
@@ -182,6 +182,8 @@
         "HfU454vgiI"
       ],
       "title" : "title-AIpgBtHAhx",
+      "alternativeTitles" : [
+      ],
       "description" : null,
       "physicalDescription" : null,
       "edition" : null,
@@ -222,12 +224,19 @@
       ],
       "contributors.agent.label" : [
       ],
+      "production.label" : [
+      ],
+      "production.dates.range.from" : [
+      ],
       "partOf.id" : [
       ],
       "partOf.title" : [
       ],
       "availabilities.id" : [
-      ]
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
     },
     "aggregatableValues" : {
       "workType" : [

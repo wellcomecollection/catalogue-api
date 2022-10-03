@@ -1,6 +1,6 @@
 {
   "description" : "a list of work with all the include-able fields",
-  "createdAt" : "2022-09-26T11:29:27.526306Z",
+  "createdAt" : "2022-09-30T08:11:41.258175Z",
   "id" : "tmdfbk5k",
   "document" : {
     "debug" : {
@@ -1002,6 +1002,8 @@
         "UfcQYSxE7g"
       ],
       "title" : "A work with all the include-able fields",
+      "alternativeTitles" : [
+      ],
       "description" : null,
       "physicalDescription" : null,
       "edition" : null,
@@ -1082,6 +1084,16 @@
         "person-W9SVIX0fEg",
         "person-IWtB2H6"
       ],
+      "production.label" : [
+        "Nr11C9xxYE",
+        "dUXSLHjmev",
+        "8ssuR",
+        "zvroF4g2k9",
+        "frr0xAeKZI",
+        "7aEhJ"
+      ],
+      "production.dates.range.from" : [
+      ],
       "partOf.id" : [
         "0cs6cerb",
         "nrvdy0jg"
@@ -1091,7 +1103,10 @@
         "title-MS5Hy6x38N"
       ],
       "availabilities.id" : [
-      ]
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
     },
     "aggregatableValues" : {
       "workType" : [

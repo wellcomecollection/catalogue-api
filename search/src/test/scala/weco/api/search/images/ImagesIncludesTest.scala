@@ -112,6 +112,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
                         }
                       ],
                       "aspectRatio" : 0.022521317,
+                      "averageColor" : "#FFF94E",
                       "source" : {
                         "id" : "kxd5hg2c",
                         "title" : "title-UXbrIVN9As",
@@ -243,6 +244,7 @@ class ImagesIncludesTest extends ApiImagesTestBase {
                     }
                   ],
                   "aspectRatio" : 0.022521317,
+                  "averageColor" : "#FFF94E",
                   "source" : {
                     "id" : "kxd5hg2c",
                     "title" : "title-UXbrIVN9As",

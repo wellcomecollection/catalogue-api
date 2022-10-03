@@ -113,7 +113,7 @@ object WorksRequestBuilder
   private def sort(implicit searchOptions: WorkSearchOptions) =
     searchOptions.sortBy
       .map {
-        case ProductionDateSortRequest => "data.production.dates.range.from"
+        case ProductionDateSortRequest => "query.production.dates.range.from"
       }
       .map { FieldSort(_).order(sortOrder) }
 
@@ -153,7 +153,7 @@ object WorksRequestBuilder
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
-        RangeQuery("data.production.dates.range.from", lte = lte, gte = gte)
+        RangeQuery("query.production.dates.range.from", lte = lte, gte = gte)
       case LanguagesFilter(languageIds) =>
         termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>

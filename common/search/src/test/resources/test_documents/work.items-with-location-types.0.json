@@ -1,6 +1,6 @@
 {
   "description" : "items with different location types",
-  "createdAt" : "2022-09-26T11:29:28.189533Z",
+  "createdAt" : "2022-09-30T08:11:41.942541Z",
   "id" : "kdwct2lf",
   "document" : {
     "debug" : {
@@ -202,6 +202,8 @@
         "vUprsjrX3O"
       ],
       "title" : "title-sLaubb73X6",
+      "alternativeTitles" : [
+      ],
       "description" : null,
       "physicalDescription" : null,
       "edition" : null,
@@ -244,12 +246,19 @@
       ],
       "contributors.agent.label" : [
       ],
+      "production.label" : [
+      ],
+      "production.dates.range.from" : [
+      ],
       "partOf.id" : [
       ],
       "partOf.title" : [
       ],
       "availabilities.id" : [
-      ]
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
     },
     "aggregatableValues" : {
       "workType" : [

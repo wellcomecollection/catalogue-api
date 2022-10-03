@@ -18,16 +18,16 @@ import com.sksamuel.elastic4s.requests.searches.span.{
 
 case object WorksMultiMatcher {
   val titleFields = Seq(
-    "search.titlesAndContributors",
-    "search.titlesAndContributors.english",
-    "search.titlesAndContributors.shingles"
+    "query.titlesAndContributors",
+    "query.titlesAndContributors.english",
+    "query.titlesAndContributors.shingles"
   )
 
   def fieldsWithBoost(
     boost: Int,
     fields: Seq[String]
   ): Seq[FieldWithOptionalBoost] =
-    fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
+    fields.map(FieldWithBoost(_, boost))
 
   def apply(q: String): BoolQuery =
     boolQuery()
@@ -61,15 +61,17 @@ case object WorksMultiMatcher {
           analyzer = Some("whitespace_analyzer"),
           fields = fieldsWithBoost(
             boost = 1000,
-            Seq(
+            fields = Seq(
               "query.id",
               "query.identifiers.value",
               "query.items.id",
               "query.items.identifiers.value",
               "query.images.id",
               "query.images.identifiers.value",
-              "data.referenceNumber",
-              "search.identifiers"
+              "query.referenceNumber",
+              // TODO: Do we need to be querying this field at this point?
+              // Could we delete it and query the individual fields instead?
+              "query.allIdentifiers"
             )
           )
         ),
@@ -83,7 +85,10 @@ case object WorksMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("title and contributor exact spellings"),
-              fields = fieldsWithBoost(boost = 100, fields = titleFields),
+              fields = fieldsWithBoost(
+                boost = 100,
+                fields = titleFields
+              ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             ),
@@ -99,10 +104,7 @@ case object WorksMultiMatcher {
                 "italian"
               ).map(
                 language =>
-                  FieldWithOptionalBoost(
-                    s"search.titlesAndContributors.$language",
-                    None
-                  )
+                  FieldWithoutBoost(s"query.titlesAndContributors.$language")
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
@@ -117,8 +119,8 @@ case object WorksMultiMatcher {
               `type` = Some(CROSS_FIELDS),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("query.title", boost = Some(100)),
-                FieldWithOptionalBoost("query.description", boost = Some(10))
+                FieldWithBoost("query.title", boost = 100),
+                FieldWithBoost("query.description", boost = 10)
               )
             )
           ),
@@ -128,13 +130,10 @@ case object WorksMultiMatcher {
               queryName = Some("relations paths"),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("data.collectionPath.path.clean", None),
-                FieldWithOptionalBoost(
-                  "data.collectionPath.label.cleanPath",
-                  None
-                ),
-                FieldWithOptionalBoost("data.collectionPath.label", None),
-                FieldWithOptionalBoost("data.collectionPath.path.keyword", None)
+                FieldWithoutBoost("query.collectionPath.path.clean"),
+                FieldWithoutBoost("query.collectionPath.label.cleanPath"),
+                FieldWithoutBoost("query.collectionPath.label"),
+                FieldWithoutBoost("query.collectionPath.path.keyword")
               )
             )
           ),
@@ -149,14 +148,17 @@ case object WorksMultiMatcher {
             (Some(1000), "query.contributors.agent.label"),
             (Some(10), "query.subjects.concepts.label"),
             (Some(10), "query.genres.concepts.label"),
-            (Some(10), "data.production.*.label"),
+            (Some(10), "query.production.label"),
             (None, "query.description"),
             (None, "query.physicalDescription"),
             (None, "query.languages.label"),
             (None, "query.edition"),
             (None, "query.notes.contents"),
             (None, "query.lettering")
-          ).map(f => FieldWithOptionalBoost(f._2, f._1.map(_.toDouble)))
+          ).map {
+            case (boost, field) =>
+              FieldWithOptionalBoost(field, boost.map(_.toDouble))
+          }
         )
       )
       .minimumShouldMatch(1)

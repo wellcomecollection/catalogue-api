@@ -23,8 +23,8 @@
             "query.items.identifiers.value^1000.0",
             "query.images.id^1000.0",
             "query.images.identifiers.value^1000.0",
-            "data.referenceNumber^1000.0",
-            "search.identifiers^1000.0"
+            "query.referenceNumber^1000.0",
+            "query.allIdentifiers^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
@@ -39,9 +39,9 @@
               "multi_match": {
                 "query": "{{query}}",
                 "fields": [
-                  "search.titlesAndContributors^100.0",
-                  "search.titlesAndContributors.english^100.0",
-                  "search.titlesAndContributors.shingles^100.0"
+                  "query.titlesAndContributors^100.0",
+                  "query.titlesAndContributors.english^100.0",
+                  "query.titlesAndContributors.shingles^100.0"
                 ],
                 "type": "best_fields",
                 "operator": "And",
@@ -52,12 +52,12 @@
               "multi_match": {
                 "query": "{{query}}",
                 "fields": [
-                  "search.titlesAndContributors.arabic",
-                  "search.titlesAndContributors.bengali",
-                  "search.titlesAndContributors.french",
-                  "search.titlesAndContributors.german",
-                  "search.titlesAndContributors.hindi",
-                  "search.titlesAndContributors.italian"
+                  "query.titlesAndContributors.arabic",
+                  "query.titlesAndContributors.bengali",
+                  "query.titlesAndContributors.french",
+                  "query.titlesAndContributors.german",
+                  "query.titlesAndContributors.hindi",
+                  "query.titlesAndContributors.italian"
                 ],
                 "type": "best_fields",
                 "operator": "And",
@@ -84,10 +84,10 @@
             {
               "multi_match": {
                 "fields": [
-                  "data.collectionPath.path.clean",
-                  "data.collectionPath.label.cleanPath",
-                  "data.collectionPath.label",
-                  "data.collectionPath.path.keyword"
+                  "query.collectionPath.path.clean",
+                  "query.collectionPath.label.cleanPath",
+                  "query.collectionPath.label",
+                  "query.collectionPath.path.keyword"
                 ],
                 "query": "{{query}}",
                 "operator": "Or",
@@ -104,7 +104,7 @@
             "query.contributors.agent.label^1000.0",
             "query.subjects.concepts.label^10.0",
             "query.genres.concepts.label^10.0",
-            "data.production.*.label^10.0",
+            "query.production.label^10.0",
             "query.description",
             "query.physicalDescription",
             "query.languages.label",

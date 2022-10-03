@@ -42,10 +42,13 @@ case object ImageSimilarity {
 case object ImagesMultiMatcher {
 
   private def boostedWorkFields(
-    boost: Option[Double] = None,
+    boost: Int,
     fields: Seq[String]
   ): Seq[FieldWithOptionalBoost] =
-    fields.map(f => FieldWithOptionalBoost(s"source.$f", boost))
+    fields.map(f => FieldWithBoost(s"source.$f", boost))
+
+  private def workFields(fields: Seq[String]): Seq[FieldWithOptionalBoost] =
+    fields.map(f => FieldWithoutBoost(s"source.$f"))
 
   private val titleFields = Seq(
     "data.alternativeTitles",
@@ -54,7 +57,7 @@ case object ImagesMultiMatcher {
     "data.title"
   )
 
-  private val idFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
+  private val idFields: Seq[FieldWithOptionalBoost] = workFields(
     fields = Seq(
       "id.canonicalId",
       "id.sourceIdentifier.value",
@@ -63,21 +66,21 @@ case object ImagesMultiMatcher {
   ) ++ Seq(
     "state.canonicalId",
     "state.sourceIdentifier.value"
-  ).map(FieldWithOptionalBoost(_, None))
+  ).map(FieldWithoutBoost(_))
 
   private val dataFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
-    boost = Some(1000.0),
+    boost = 1000,
     fields = Seq("data.contributors.agent.label")
   ) ++
     boostedWorkFields(
-      boost = Some(10.0),
+      boost = 10,
       fields = Seq(
         "data.subjects.concepts.label",
         "data.genres.concepts.label",
         "data.production.*.label"
       )
     ) ++
-    boostedWorkFields(
+    workFields(
       fields = Seq(
         "data.description",
         "data.physicalDescription",
@@ -123,7 +126,7 @@ case object ImagesMultiMatcher {
               q,
               queryName = Some("title exact spellings"),
               fields = boostedWorkFields(
-                boost = Some(100.0),
+                boost = 100,
                 fields = titleFields
               ),
               `type` = Some(BEST_FIELDS),
@@ -135,7 +138,7 @@ case object ImagesMultiMatcher {
               `type` = Some(BEST_FIELDS),
               operator = Some(AND),
               fields = boostedWorkFields(
-                boost = Some(100.0),
+                boost = 100,
                 fields = languages
                   .flatMap(
                     language =>

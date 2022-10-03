@@ -1,6 +1,6 @@
 {
   "description" : "works with every format",
-  "createdAt" : "2022-09-26T11:29:28.027416Z",
+  "createdAt" : "2022-09-30T08:11:41.773015Z",
   "id" : "sdb22mdv",
   "document" : {
     "debug" : {
@@ -143,6 +143,8 @@
         "qjgnqBCXUR"
       ],
       "title" : "title-8D1YQhdjF0",
+      "alternativeTitles" : [
+      ],
       "description" : null,
       "physicalDescription" : null,
       "edition" : null,
@@ -181,12 +183,19 @@
       ],
       "contributors.agent.label" : [
       ],
+      "production.label" : [
+      ],
+      "production.dates.range.from" : [
+      ],
       "partOf.id" : [
       ],
       "partOf.title" : [
       ],
       "availabilities.id" : [
-      ]
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
     },
     "aggregatableValues" : {
       "workType" : [
