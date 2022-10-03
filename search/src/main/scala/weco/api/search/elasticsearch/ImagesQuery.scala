@@ -40,21 +40,11 @@ case object ImageSimilarity {
 }
 
 case object ImagesMultiMatcher {
-
-  private def boostedWorkFields(
-    boost: Int,
-    fields: Seq[String]
-  ): Seq[FieldWithOptionalBoost] =
-    fields.map(f => FieldWithBoost(s"source.$f", boost))
-
-  private def workFields(fields: Seq[String]): Seq[FieldWithOptionalBoost] =
-    fields.map(f => FieldWithoutBoost(s"source.$f"))
-
   private val titleFields = Seq(
-    "data.alternativeTitles",
-    "data.title.english",
-    "data.title.shingles",
-    "data.title"
+    "query.source.alternativeTitles",
+    "query.source.title.english",
+    "query.source.title.shingles",
+    "query.source.title"
   )
 
   private val idFields: Seq[FieldWithOptionalBoost] =
@@ -121,9 +111,8 @@ case object ImagesMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("title exact spellings"),
-              fields = boostedWorkFields(
-                boost = 100,
-                fields = titleFields
+              fields = titleFields.map(field =>
+                FieldWithBoost(field, boost = 100)
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
@@ -133,17 +122,15 @@ case object ImagesMultiMatcher {
               queryName = Some("non-english text"),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND),
-              fields = boostedWorkFields(
-                boost = 100,
-                fields = languages
-                  .flatMap(
-                    language =>
-                      Seq(
-                        s"query.source.title.$language",
-                        s"query.source.notes.$language",
-                        s"query.source.lettering.$language"
-                      )
+              fields = languages.flatMap(
+                language =>
+                  Seq(
+                    s"query.source.title.$language",
+                    s"query.source.notes.$language",
+                    s"query.source.lettering.$language"
                   )
+              ).map(field =>
+                FieldWithBoost(field, boost = 100)
               )
             )
           )
