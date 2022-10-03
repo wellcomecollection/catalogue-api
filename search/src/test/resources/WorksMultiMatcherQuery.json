@@ -23,7 +23,8 @@
             "query.items.identifiers.value^1000.0",
             "query.images.id^1000.0",
             "query.images.identifiers.value^1000.0",
-            "query.referenceNumber^1000.0"
+            "query.referenceNumber^1000.0",
+            "query.allIdentifiers^1000.0"
           ],
           "type": "best_fields",
           "analyzer": "whitespace_analyzer",
@@ -38,15 +39,9 @@
               "multi_match": {
                 "query": "{{query}}",
                 "fields": [
-                  "query.title^100.0",
-                  "query.title.english^100.0",
-                  "query.title.shingles^100.0",
-                  "query.alternativeTitles^100.0",
-                  "query.alternativeTitles.english^100.0",
-                  "query.alternativeTitles.shingles^100.0",
-                  "query.contributors.agent.label^100.0",
-                  "query.contributors.agent.label.english^100.0",
-                  "query.contributors.agent.label.shingles^100.0"
+                  "query.titlesAndContributors^100.0",
+                  "query.titlesAndContributors.english^100.0",
+                  "query.titlesAndContributors.shingles^100.0"
                 ],
                 "type": "best_fields",
                 "operator": "And",
@@ -57,24 +52,12 @@
               "multi_match": {
                 "query": "{{query}}",
                 "fields": [
-                  "search.title.arabic",
-                  "search.title.bengali",
-                  "search.title.french",
-                  "search.title.german",
-                  "search.title.hindi",
-                  "search.title.italian",
-                  "search.alternativeTitles.arabic",
-                  "search.alternativeTitles.bengali",
-                  "search.alternativeTitles.french",
-                  "search.alternativeTitles.german",
-                  "search.alternativeTitles.hindi",
-                  "search.alternativeTitles.italian",
-                  "search.contributors.agent.label.arabic",
-                  "search.contributors.agent.label.bengali",
-                  "search.contributors.agent.label.french",
-                  "search.contributors.agent.label.german",
-                  "search.contributors.agent.label.hindi",
-                  "search.contributors.agent.label.italian"
+                  "query.titlesAndContributors.arabic",
+                  "query.titlesAndContributors.bengali",
+                  "query.titlesAndContributors.french",
+                  "query.titlesAndContributors.german",
+                  "query.titlesAndContributors.hindi",
+                  "query.titlesAndContributors.italian"
                 ],
                 "type": "best_fields",
                 "operator": "And",
