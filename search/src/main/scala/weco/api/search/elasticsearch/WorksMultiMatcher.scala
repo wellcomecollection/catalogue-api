@@ -36,7 +36,7 @@ case object WorksMultiMatcher {
     boost: Int,
     fields: Seq[String]
   ): Seq[FieldWithOptionalBoost] =
-    fields.map(FieldWithOptionalBoost(_, Some(boost.toDouble)))
+    fields.map(FieldWithBoost(_, boost))
 
   def apply(q: String): BoolQuery =
     boolQuery()
@@ -110,10 +110,7 @@ case object WorksMultiMatcher {
               fields =
                 titleAndContributorFields.flatMap(field =>
                   nonEnglishLanguages.map(language =>
-                    FieldWithOptionalBoost(
-                      field = s"$field.$language",
-                      boost = None
-                    )
+                    FieldWithoutBoost(s"$field.$language")
                   )
                 ),
               `type` = Some(BEST_FIELDS),
@@ -129,8 +126,8 @@ case object WorksMultiMatcher {
               `type` = Some(CROSS_FIELDS),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("query.title", boost = Some(100)),
-                FieldWithOptionalBoost("query.description", boost = Some(10))
+                FieldWithBoost("query.title", boost = 100),
+                FieldWithBoost("query.description", boost = 10)
               )
             )
           ),
@@ -140,13 +137,10 @@ case object WorksMultiMatcher {
               queryName = Some("relations paths"),
               operator = Some(OR),
               fields = Seq(
-                FieldWithOptionalBoost("query.collectionPath.path.clean", None),
-                FieldWithOptionalBoost(
-                  "query.collectionPath.label.cleanPath",
-                  None
-                ),
-                FieldWithOptionalBoost("query.collectionPath.label", None),
-                FieldWithOptionalBoost("query.collectionPath.path.keyword", None)
+                FieldWithoutBoost("query.collectionPath.path.clean"),
+                FieldWithoutBoost("query.collectionPath.label.cleanPath"),
+                FieldWithoutBoost("query.collectionPath.label"),
+                FieldWithoutBoost("query.collectionPath.path.keyword")
               )
             )
           ),
