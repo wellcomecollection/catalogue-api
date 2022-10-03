@@ -10,7 +10,7 @@ const environmentSchema = z.object({
 const environment = environmentSchema.parse(process.env);
 
 const config = {
-  pipelineDate: "2022-09-23",  // Note: remember to update the Scala config also
+  pipelineDate: "2022-10-03",  // Note: remember to update the Scala config also
   serviceName: "catalogue_api", // TODO provision an elasticsearch user for the concepts API
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 } as const;
