@@ -86,14 +86,14 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
+  private def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
     if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
       List(scoreSort(SortOrder.DESC), idSort)
     } else {
       List(idSort)
     }
 
-  def buildImageFilterQuery(filter: ImageFilter): Query =
+  private def buildImageFilterQuery(filter: ImageFilter): Query =
     filter match {
       case LicenseFilter(licenseIds) =>
         termsQuery(field = "locations.license.id", values = licenseIds)
@@ -108,10 +108,10 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         termsQuery("query.source.subjects.label", subjectLabels)
     }
 
-  def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
+  private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery }
 
-  def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
+  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
     queries.map {
       case ColorMustQuery(hexColors) =>
         colorQuery(field = "query.inferredData.palette", hexColors)
