@@ -19,7 +19,7 @@ import weco.api.search.rest.PaginationQuery
 class ImagesRequestBuilder(queryConfig: QueryConfig)
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
 
-  val idSort: FieldSort = fieldSort("state.canonicalId").order(SortOrder.ASC)
+  val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   lazy val colorQuery = new ColorQuery(
     binSizes = queryConfig.paletteBinSizes,
@@ -99,7 +99,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         termsQuery(field = "locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "source.data.contributors.agent.label.keyword",
+          "query.source.contributors.agent.label.keyword",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>
@@ -114,7 +114,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
     queries.map {
       case ColorMustQuery(hexColors) =>
-        colorQuery(field = "state.inferredData.palette", hexColors)
+        colorQuery(field = "query.inferredData.palette", hexColors)
     }
 
   def requestWithBlendedSimilarity

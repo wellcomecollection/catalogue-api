@@ -17,13 +17,13 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
 
 case object ImageSimilarity {
   def blended: (String, Index) => Query =
-    lshQuery("state.inferredData.lshEncodedFeatures", "inferredData.palette")
+    lshQuery("query.inferredData.lshEncodedFeatures", "query.inferredData.palette")
 
   def color: (String, Index) => Query =
-    lshQuery("state.inferredData.palette")
+    lshQuery("query.inferredData.palette")
 
   def features: (String, Index) => Query =
-    lshQuery("state.inferredData.lshEncodedFeatures")
+    lshQuery("query.inferredData.lshEncodedFeatures")
 
   private def lshQuery(fields: String*)(q: String, index: Index): Query = {
     val documentRef = DocumentRef(index, q)
@@ -57,39 +57,35 @@ case object ImagesMultiMatcher {
     "data.title"
   )
 
-  private val idFields: Seq[FieldWithOptionalBoost] = workFields(
-    fields = Seq(
-      "id.canonicalId",
-      "id.sourceIdentifier.value",
-      "data.otherIdentifiers.value"
-    )
-  ) ++ Seq(
-    "state.canonicalId",
-    "state.sourceIdentifier.value"
-  ).map(FieldWithoutBoost(_))
+  private val idFields: Seq[FieldWithOptionalBoost] =
+    Seq(
+      "query.source.id",
+      "query.source.identifiers.value",
+      "query.canonicalId",
+      "query.sourceIdentifier.value"
+    ).map(FieldWithoutBoost(_))
 
-  private val dataFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
-    boost = 1000,
-    fields = Seq("data.contributors.agent.label")
-  ) ++
-    boostedWorkFields(
-      boost = 10,
-      fields = Seq(
-        "data.subjects.concepts.label",
-        "data.genres.concepts.label",
-        "data.production.*.label"
-      )
-    ) ++
-    workFields(
-      fields = Seq(
-        "data.description",
-        "data.physicalDescription",
-        "data.language.label",
-        "data.edition",
-        "data.collectionPath.path",
-        "data.collectionPath.label"
-      )
-    )
+  private val dataFields: Seq[FieldWithOptionalBoost] = {
+    val boostedFields =
+      Seq(
+        (1000, "query.source.contributors.agent.label"),
+        (10, "query.source.subjects.concepts.label"),
+        (10, "query.source.genres.concepts.label"),
+        (10, "query.production.label"),
+      ).map { case (boost, field) => FieldWithBoost(field, boost) }
+
+    val unboostedFields =
+      Seq(
+        "query.source.description",
+        "query.source.physicalDescription",
+        "query.source.languages.label",
+        "query.source.edition",
+        "query.source.collectionPath.path",
+        "query.source.collectionPath.label",
+      ).map(FieldWithoutBoost(_))
+
+    boostedFields ++ unboostedFields
+  }
 
   private val languages =
     List("arabic", "bengali", "french", "german", "hindi", "italian")
@@ -118,8 +114,8 @@ case object ImagesMultiMatcher {
               queryName = Some("canonical title prefix"),
               boost = Some(1000.0),
               must = List(
-                prefixQuery("source.data.title.keyword", q),
-                matchPhraseQuery("source.data.title", q)
+                prefixQuery("query.source.title.keyword", q),
+                matchPhraseQuery("query.source.title", q)
               )
             ),
             MultiMatchQuery(
@@ -143,9 +139,9 @@ case object ImagesMultiMatcher {
                   .flatMap(
                     language =>
                       Seq(
-                        s"data.title.$language",
-                        s"data.notes.$language",
-                        s"data.lettering.$language"
+                        s"query.source.title.$language",
+                        s"query.source.notes.$language",
+                        s"query.source.lettering.$language"
                       )
                   )
               )
