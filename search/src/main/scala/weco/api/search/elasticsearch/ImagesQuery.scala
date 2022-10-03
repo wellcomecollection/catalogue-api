@@ -61,7 +61,7 @@ case object ImagesMultiMatcher {
     fields = Seq(
       "id.canonicalId",
       "id.sourceIdentifier.value",
-      "data.otherIdentifiers.value",
+      "data.otherIdentifiers.value"
     )
   ) ++ Seq(
     "state.canonicalId",

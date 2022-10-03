@@ -102,8 +102,10 @@ case object WorksMultiMatcher {
                 "german",
                 "hindi",
                 "italian"
-              ).map(language =>
-                FieldWithoutBoost(s"query.titlesAndContributors.$language")),
+              ).map(
+                language =>
+                  FieldWithoutBoost(s"query.titlesAndContributors.$language")
+              ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             )
@@ -153,7 +155,10 @@ case object WorksMultiMatcher {
             (None, "query.edition"),
             (None, "query.notes.contents"),
             (None, "query.lettering")
-          ).map { case (boost, field) => FieldWithOptionalBoost(field, boost.map(_.toDouble)) }
+          ).map {
+            case (boost, field) =>
+              FieldWithOptionalBoost(field, boost.map(_.toDouble))
+          }
         )
       )
       .minimumShouldMatch(1)
