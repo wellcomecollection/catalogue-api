@@ -63,14 +63,5 @@ class QueryConfigTest
         result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes
       }
     }
-
-    it("returns the default config if the data is not found") {
-      withLocalImagesIndex { index =>
-        indexTestDocuments(index, "images.inferred-data.none")
-
-        val result = QueryConfig.fetchFromIndex(elasticClient, index)
-        result.paletteBinSizes shouldBe QueryConfig.defaultPaletteBinSizes
-      }
-    }
   }
 }
