@@ -62,11 +62,9 @@ object QueryConfig {
                   val binSizes = inferredData.binSizes
                   val binMinima = inferredData.binMinima
 
-                  if (
-                    binSizes.size == 3 &&
-                    binSizes.forall(_.size == 3) &&
-                    binMinima.size == 3
-                  )
+                  if (binSizes.size == 3 &&
+                      binSizes.forall(_.size == 3) &&
+                      binMinima.size == 3)
                     Some((binSizes, binMinima))
                   else
                     None

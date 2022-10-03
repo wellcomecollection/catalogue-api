@@ -17,7 +17,10 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
 
 case object ImageSimilarity {
   def blended: (String, Index) => Query =
-    lshQuery("query.inferredData.lshEncodedFeatures", "query.inferredData.palette")
+    lshQuery(
+      "query.inferredData.lshEncodedFeatures",
+      "query.inferredData.palette"
+    )
 
   def color: (String, Index) => Query =
     lshQuery("query.inferredData.palette")
@@ -61,7 +64,7 @@ case object ImagesMultiMatcher {
         (1000, "query.source.contributors.agent.label"),
         (10, "query.source.subjects.concepts.label"),
         (10, "query.source.genres.concepts.label"),
-        (10, "query.source.production.label"),
+        (10, "query.source.production.label")
       ).map { case (boost, field) => FieldWithBoost(field, boost) }
 
     val unboostedFields =
@@ -71,7 +74,7 @@ case object ImagesMultiMatcher {
         "query.source.languages.label",
         "query.source.edition",
         "query.source.collectionPath.path",
-        "query.source.collectionPath.label",
+        "query.source.collectionPath.label"
       ).map(FieldWithoutBoost(_))
 
     boostedFields ++ unboostedFields
@@ -111,9 +114,8 @@ case object ImagesMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("title exact spellings"),
-              fields = titleFields.map(field =>
-                FieldWithBoost(field, boost = 100)
-              ),
+              fields =
+                titleFields.map(field => FieldWithBoost(field, boost = 100)),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             ),
@@ -122,16 +124,16 @@ case object ImagesMultiMatcher {
               queryName = Some("non-english text"),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND),
-              fields = languages.flatMap(
-                language =>
-                  Seq(
-                    s"query.source.title.$language",
-                    s"query.source.notes.$language",
-                    s"query.source.lettering.$language"
-                  )
-              ).map(field =>
-                FieldWithBoost(field, boost = 100)
-              )
+              fields = languages
+                .flatMap(
+                  language =>
+                    Seq(
+                      s"query.source.title.$language",
+                      s"query.source.notes.$language",
+                      s"query.source.lettering.$language"
+                    )
+                )
+                .map(field => FieldWithBoost(field, boost = 100))
             )
           )
         )
