@@ -51,7 +51,7 @@ case object ImagesMultiMatcher {
     Seq(
       "query.source.id",
       "query.source.identifiers.value",
-      "query.canonicalId",
+      "query.id",
       "query.sourceIdentifier.value"
     ).map(FieldWithoutBoost(_))
 
@@ -61,7 +61,7 @@ case object ImagesMultiMatcher {
         (1000, "query.source.contributors.agent.label"),
         (10, "query.source.subjects.concepts.label"),
         (10, "query.source.genres.concepts.label"),
-        (10, "query.production.label"),
+        (10, "query.source.production.label"),
       ).map { case (boost, field) => FieldWithBoost(field, boost) }
 
     val unboostedFields =
