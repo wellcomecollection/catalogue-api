@@ -17,19 +17,10 @@ import com.sksamuel.elastic4s.requests.searches.span.{
 }
 
 case object WorksMultiMatcher {
-  val titleAndContributorFields = Seq(
-    "query.title",
-    "query.alternativeTitles",
-    "query.contributors.agent.label"
-  )
-
-  val nonEnglishLanguages = List(
-    "arabic",
-    "bengali",
-    "french",
-    "german",
-    "hindi",
-    "italian"
+  val titleFields = Seq(
+    "query.titlesAndContributors",
+    "query.titlesAndContributors.english",
+    "query.titlesAndContributors.shingles"
   )
 
   def fieldsWithBoost(
@@ -77,7 +68,10 @@ case object WorksMultiMatcher {
               "query.items.identifiers.value",
               "query.images.id",
               "query.images.identifiers.value",
-              "query.referenceNumber"
+              "query.referenceNumber",
+              // TODO: Do we need to be querying this field at this point?
+              // Could we delete it and query the individual fields instead?
+              "query.allIdentifiers"
             )
           )
         ),
@@ -93,13 +87,7 @@ case object WorksMultiMatcher {
               queryName = Some("title and contributor exact spellings"),
               fields = fieldsWithBoost(
                 boost = 100,
-                fields = titleAndContributorFields.flatMap(field =>
-                  Seq(
-                    field,
-                    s"$field.english",
-                    s"$field.shingles"
-                  )
-                )
+                fields = titleFields
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
@@ -107,12 +95,15 @@ case object WorksMultiMatcher {
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
-              fields =
-                titleAndContributorFields.flatMap(field =>
-                  nonEnglishLanguages.map(language =>
-                    FieldWithoutBoost(s"$field.$language")
-                  )
-                ),
+              fields = List(
+                "arabic",
+                "bengali",
+                "french",
+                "german",
+                "hindi",
+                "italian"
+              ).map(language =>
+                FieldWithoutBoost(s"query.titlesAndContributors.$language")),
               `type` = Some(BEST_FIELDS),
               operator = Some(AND)
             )
