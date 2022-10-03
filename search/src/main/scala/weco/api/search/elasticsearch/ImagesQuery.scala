@@ -62,10 +62,11 @@ case object ImagesMultiMatcher {
       "id.canonicalId",
       "id.sourceIdentifier.value",
       "data.otherIdentifiers.value",
-      "state.canonicalId",
-      "state.sourceIdentifier.value"
     )
-  )
+  ) ++ Seq(
+    "state.canonicalId",
+    "state.sourceIdentifier.value"
+  ).map(FieldWithoutBoost(_))
 
   private val dataFields: Seq[FieldWithOptionalBoost] = boostedWorkFields(
     boost = 1000,
