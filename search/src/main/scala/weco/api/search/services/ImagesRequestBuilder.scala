@@ -96,16 +96,16 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   private def buildImageFilterQuery(filter: ImageFilter): Query =
     filter match {
       case LicenseFilter(licenseIds) =>
-        termsQuery(field = "locations.license.id", values = licenseIds)
+        termsQuery(field = "query.locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
           "query.source.contributors.agent.label.keyword",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>
-        termsQuery("query.source.genres.label", genreLabels)
+        termsQuery("query.source.genres.label.keyword", genreLabels)
       case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("query.source.subjects.label", subjectLabels)
+        termsQuery("query.source.subjects.label.keyword", subjectLabels)
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =

@@ -24,7 +24,7 @@
              "query.source.contributors.agent.label^1000.0",
              "query.source.subjects.concepts.label^10.0",
              "query.source.genres.concepts.label^10.0",
-             "query.source.production.*.label^10.0",
+             "query.source.production.label^10.0",
              "query.source.description",
              "query.source.physicalDescription",
              "query.source.languages.label",
