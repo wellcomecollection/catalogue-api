@@ -1,18 +1,78 @@
 {
   "description" : "images with different subjects",
-  "createdAt" : "2022-09-28T12:18:41.700432Z",
+  "createdAt" : "2022-10-03T10:11:21.084823Z",
   "id" : "yvttbbsh",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "1991-10-04T06:08:45Z",
+    "display" : {
+      "id" : "yvttbbsh",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "28lYxoBjJ2"
+        "url" : "https://iiif.wellcomecollection.org/image/ppA.jpg/info.json",
+        "credit" : "Credit line: syqIFybo",
+        "linkText" : "Link text: Grmz8NGr",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "yvttbbsh",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/ppA.jpg/info.json",
+          "credit" : "Credit line: syqIFybo",
+          "linkText" : "Link text: Grmz8NGr",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#52F034",
+      "source" : {
+        "id" : "v15v47lj",
+        "title" : "title-Vurfdp9iCx",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+        ],
+        "subjects" : [
+          {
+            "id" : "subject1",
+            "label" : "Simple screwdrivers",
+            "concepts" : [
+            ],
+            "type" : "Subject"
+          }
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "yvttbbsh",
+      "sourceIdentifier.value" : "28lYxoBjJ2",
       "inferredData" : {
         "features1" : [
           0.007788781,
@@ -4273,166 +4333,71 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/ppA.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : "Credit line: syqIFybo",
-        "linkText" : "Link text: Grmz8NGr",
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "v15v47lj",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
-          },
-          "ontologyType" : "Work",
-          "value" : "iUSpKYMbHQ"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-Vurfdp9iCx",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-          {
-            "id" : {
-              "canonicalId" : "subject1",
-              "sourceIdentifier" : {
-                "identifierType" : {
-                  "id" : "calm-record-id"
-                },
-                "ontologyType" : "Work",
-                "value" : "W0dy234BUh"
-              },
-              "otherIdentifiers" : [
-              ],
-              "type" : "Identified"
-            },
-            "label" : "Simple screwdrivers",
-            "concepts" : [
-            ]
-          }
-        ],
-        "genres" : [
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 96,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "1991-10-04T06:08:45Z",
-    "display" : {
-      "id" : "yvttbbsh",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/ppA.jpg/info.json",
-        "credit" : "Credit line: syqIFybo",
-        "linkText" : "Link text: Grmz8NGr",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/ppA.jpg/info.json",
-          "credit" : "Credit line: syqIFybo",
-          "linkText" : "Link text: Grmz8NGr",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#52F034",
       "source" : {
         "id" : "v15v47lj",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "iUSpKYMbHQ"
+        ],
         "title" : "title-Vurfdp9iCx",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
-          {
-            "id" : "subject1",
-            "label" : "Simple screwdrivers",
-            "concepts" : [
-            ],
-            "type" : "Subject"
-          }
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-        "Simple screwdrivers"
-      ],
-      "source.genres.label" : [
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+          "subject1"
+        ],
+        "subjects.label" : [
+          "Simple screwdrivers"
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

@@ -1,18 +1,133 @@
 {
   "description" : "an image with every include",
-  "createdAt" : "2022-09-28T12:18:41.551957Z",
+  "createdAt" : "2022-10-03T10:11:20.889177Z",
   "id" : "vihqhhlw",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "2038-09-13T07:22:31Z",
+    "display" : {
+      "id" : "vihqhhlw",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "Y3lHaLesNM"
+        "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "vihqhhlw",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#62C3E1",
+      "source" : {
+        "id" : "64m9ngi3",
+        "title" : "Apple agitator",
+        "contributors" : [
+          {
+            "agent" : {
+              "label" : "Adrian Aardvark",
+              "type" : "Person"
+            },
+            "roles" : [
+            ],
+            "primary" : true,
+            "type" : "Contributor"
+          },
+          {
+            "agent" : {
+              "label" : "Beatrice Buffalo",
+              "type" : "Person"
+            },
+            "roles" : [
+            ],
+            "primary" : true,
+            "type" : "Contributor"
+          }
+        ],
+        "languages" : [
+          {
+            "id" : "eng",
+            "label" : "English",
+            "type" : "Language"
+          },
+          {
+            "id" : "tur",
+            "label" : "Turkish",
+            "type" : "Language"
+          }
+        ],
+        "genres" : [
+          {
+            "label" : "Crumbly cabbages",
+            "concepts" : [
+              {
+                "label" : "7e43LU5UBsV6eUx",
+                "type" : "Concept"
+              },
+              {
+                "label" : "tYAMYu8atpK5r9f",
+                "type" : "Concept"
+              },
+              {
+                "label" : "MIIiXOTvA7k1G3t",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          },
+          {
+            "label" : "Deadly durians",
+            "concepts" : [
+              {
+                "label" : "8vRU8ofMjDg3BCM",
+                "type" : "Concept"
+              },
+              {
+                "label" : "fND9ydRYA5R7ZqS",
+                "type" : "Concept"
+              },
+              {
+                "label" : "6o5j5ZQn98Sw6Gx",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          }
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "vihqhhlw",
+      "sourceIdentifier.value" : "Y3lHaLesNM",
       "inferredData" : {
         "features1" : [
           0.007784206,
@@ -4273,298 +4388,83 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : null,
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "64m9ngi3",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
-          },
-          "ontologyType" : "Work",
-          "value" : "ns8A6AHw4x"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "Apple agitator",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-          {
-            "label" : "Crumbly cabbages",
-            "concepts" : [
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "7e43LU5UBsV6eUx",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "tYAMYu8atpK5r9f",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "MIIiXOTvA7k1G3t",
-                "type" : "Concept"
-              }
-            ]
-          },
-          {
-            "label" : "Deadly durians",
-            "concepts" : [
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "8vRU8ofMjDg3BCM",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "fND9ydRYA5R7ZqS",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "6o5j5ZQn98Sw6Gx",
-                "type" : "Concept"
-              }
-            ]
-          }
-        ],
-        "contributors" : [
-          {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "agent" : {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Adrian Aardvark",
-              "prefix" : null,
-              "numeration" : null,
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true
-          },
-          {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "agent" : {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Beatrice Buffalo",
-              "prefix" : null,
-              "numeration" : null,
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true
-          }
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-          {
-            "id" : "eng",
-            "label" : "English"
-          },
-          {
-            "id" : "tur",
-            "label" : "Turkish"
-          }
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 96,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "2038-09-13T07:22:31Z",
-    "display" : {
-      "id" : "vihqhhlw",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#62C3E1",
       "source" : {
         "id" : "64m9ngi3",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "ns8A6AHw4x"
+        ],
         "title" : "Apple agitator",
-        "contributors" : [
-          {
-            "agent" : {
-              "label" : "Adrian Aardvark",
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true,
-            "type" : "Contributor"
-          },
-          {
-            "agent" : {
-              "label" : "Beatrice Buffalo",
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true,
-            "type" : "Contributor"
-          }
+        "alternativeTitles" : [
         ],
-        "languages" : [
-          {
-            "id" : "eng",
-            "label" : "English",
-            "type" : "Language"
-          },
-          {
-            "id" : "tur",
-            "label" : "Turkish",
-            "type" : "Language"
-          }
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
-          {
-            "label" : "Crumbly cabbages",
-            "concepts" : [
-              {
-                "label" : "7e43LU5UBsV6eUx",
-                "type" : "Concept"
-              },
-              {
-                "label" : "tYAMYu8atpK5r9f",
-                "type" : "Concept"
-              },
-              {
-                "label" : "MIIiXOTvA7k1G3t",
-                "type" : "Concept"
-              }
-            ],
-            "type" : "Genre"
-          },
-          {
-            "label" : "Deadly durians",
-            "concepts" : [
-              {
-                "label" : "8vRU8ofMjDg3BCM",
-                "type" : "Concept"
-              },
-              {
-                "label" : "fND9ydRYA5R7ZqS",
-                "type" : "Concept"
-              },
-              {
-                "label" : "6o5j5ZQn98Sw6Gx",
-                "type" : "Concept"
-              }
-            ],
-            "type" : "Genre"
-          }
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-        "Crumbly cabbages",
-        "Deadly durians"
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+          "Crumbly cabbages",
+          "Deadly durians"
+        ],
+        "genres.concepts.label" : [
+          "7e43LU5UBsV6eUx",
+          "tYAMYu8atpK5r9f",
+          "MIIiXOTvA7k1G3t",
+          "8vRU8ofMjDg3BCM",
+          "fND9ydRYA5R7ZqS",
+          "6o5j5ZQn98Sw6Gx"
+        ],
+        "languages.id" : [
+          "eng",
+          "tur"
+        ],
+        "languages.label" : [
+          "English",
+          "Turkish"
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+          "Adrian Aardvark",
+          "Beatrice Buffalo"
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

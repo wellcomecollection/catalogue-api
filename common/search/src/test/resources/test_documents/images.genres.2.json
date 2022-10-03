@@ -1,18 +1,85 @@
 {
   "description" : "images with different genres",
-  "createdAt" : "2022-09-28T12:18:41.037489Z",
+  "createdAt" : "2022-10-03T10:11:19.959079Z",
   "id" : "vfagreai",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "2054-06-14T20:44:06Z",
+    "display" : {
+      "id" : "vfagreai",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "aU8xVpaIuX"
+        "url" : "https://iiif.wellcomecollection.org/image/3RI.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "vfagreai",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/3RI.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#F559FD",
+      "source" : {
+        "id" : "uhiqt84a",
+        "title" : "title-O3h9IBe9DR",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+          {
+            "label" : "Emu entrepreneurship",
+            "concepts" : [
+            ],
+            "type" : "Genre"
+          },
+          {
+            "label" : "Falcon finances",
+            "concepts" : [
+            ],
+            "type" : "Genre"
+          },
+          {
+            "label" : "Carrot counselling",
+            "concepts" : [
+            ],
+            "type" : "Genre"
+          }
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "vfagreai",
+      "sourceIdentifier.value" : "aU8xVpaIuX",
       "inferredData" : {
         "features1" : [
           0.011709183,
@@ -4273,172 +4340,72 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/3RI.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : null,
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "uhiqt84a",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
-          },
-          "ontologyType" : "Work",
-          "value" : "ZZ7uXQapfN"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-O3h9IBe9DR",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-          {
-            "label" : "Emu entrepreneurship",
-            "concepts" : [
-            ]
-          },
-          {
-            "label" : "Falcon finances",
-            "concepts" : [
-            ]
-          },
-          {
-            "label" : "Carrot counselling",
-            "concepts" : [
-            ]
-          }
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 85,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "2054-06-14T20:44:06Z",
-    "display" : {
-      "id" : "vfagreai",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/3RI.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/3RI.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#F559FD",
       "source" : {
         "id" : "uhiqt84a",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "ZZ7uXQapfN"
+        ],
         "title" : "title-O3h9IBe9DR",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
-          {
-            "label" : "Emu entrepreneurship",
-            "concepts" : [
-            ],
-            "type" : "Genre"
-          },
-          {
-            "label" : "Falcon finances",
-            "concepts" : [
-            ],
-            "type" : "Genre"
-          },
-          {
-            "label" : "Carrot counselling",
-            "concepts" : [
-            ],
-            "type" : "Genre"
-          }
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-        "Emu entrepreneurship",
-        "Falcon finances",
-        "Carrot counselling"
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+          "Emu entrepreneurship",
+          "Falcon finances",
+          "Carrot counselling"
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [
