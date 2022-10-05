@@ -19,7 +19,7 @@ import weco.api.search.rest.PaginationQuery
 class ImagesRequestBuilder(queryConfig: QueryConfig)
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
 
-  val idSort: FieldSort = fieldSort("state.canonicalId").order(SortOrder.ASC)
+  val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   lazy val colorQuery = new ColorQuery(
     binSizes = queryConfig.paletteBinSizes,
@@ -86,35 +86,35 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
+  private def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
     if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
       List(scoreSort(SortOrder.DESC), idSort)
     } else {
       List(idSort)
     }
 
-  def buildImageFilterQuery(filter: ImageFilter): Query =
+  private def buildImageFilterQuery(filter: ImageFilter): Query =
     filter match {
       case LicenseFilter(licenseIds) =>
-        termsQuery(field = "locations.license.id", values = licenseIds)
+        termsQuery(field = "query.locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "source.data.contributors.agent.label.keyword",
+          "query.source.contributors.agent.label.keyword",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>
-        termsQuery("query.source.genres.label", genreLabels)
+        termsQuery("query.source.genres.label.keyword", genreLabels)
       case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("query.source.subjects.label", subjectLabels)
+        termsQuery("query.source.subjects.label.keyword", subjectLabels)
     }
 
-  def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
+  private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery }
 
-  def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
+  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
     queries.map {
       case ColorMustQuery(hexColors) =>
-        colorQuery(field = "state.inferredData.palette", hexColors)
+        colorQuery(field = "query.inferredData.palette", hexColors)
     }
 
   def requestWithBlendedSimilarity

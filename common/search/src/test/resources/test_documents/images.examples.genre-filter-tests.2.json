@@ -1,18 +1,108 @@
 {
   "description" : "examples for the genre filter tests",
-  "createdAt" : "2022-09-28T12:18:41.473179Z",
+  "createdAt" : "2022-10-03T18:20:32.330Z",
   "id" : "balrhf7c",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "2038-05-08T13:36:28Z",
+    "display" : {
+      "id" : "balrhf7c",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "5VuoJhQX84"
+        "url" : "https://iiif.wellcomecollection.org/image/Tqk.jpg/info.json",
+        "credit" : "Credit line: d5cRENN",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "balrhf7c",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/Tqk.jpg/info.json",
+          "credit" : "Credit line: d5cRENN",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#70069A",
+      "source" : {
+        "id" : "adqtw0zc",
+        "title" : "title-mDNHnumOpV",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+          {
+            "label" : "Emu entrepreneurship",
+            "concepts" : [
+              {
+                "label" : "0yDw3OqXYzbeHSa",
+                "type" : "Concept"
+              },
+              {
+                "label" : "tOjA4ANmzZdbP5N",
+                "type" : "Concept"
+              },
+              {
+                "label" : "biQ0dLny2xee61i",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          },
+          {
+            "label" : "Falcon finances",
+            "concepts" : [
+              {
+                "label" : "VxHQ750JyidpMK0",
+                "type" : "Concept"
+              },
+              {
+                "label" : "bdnEKFDhqZ2Luvw",
+                "type" : "Concept"
+              },
+              {
+                "label" : "eD1GIn5IktaKxaF",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          }
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "balrhf7c",
+      "sourceIdentifier.value" : "5VuoJhQX84",
+      "locations.license.id" : [
+        "cc-by"
+      ],
       "inferredData" : {
         "features1" : [
           0.009058052,
@@ -4273,228 +4363,77 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/Tqk.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : "Credit line: d5cRENN",
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "adqtw0zc",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
-          },
-          "ontologyType" : "Work",
-          "value" : "ESvJaa68mx"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-mDNHnumOpV",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-          {
-            "label" : "Emu entrepreneurship",
-            "concepts" : [
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "0yDw3OqXYzbeHSa",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "tOjA4ANmzZdbP5N",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "biQ0dLny2xee61i",
-                "type" : "Concept"
-              }
-            ]
-          },
-          {
-            "label" : "Falcon finances",
-            "concepts" : [
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "VxHQ750JyidpMK0",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "bdnEKFDhqZ2Luvw",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "eD1GIn5IktaKxaF",
-                "type" : "Concept"
-              }
-            ]
-          }
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 92,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "2038-05-08T13:36:28Z",
-    "display" : {
-      "id" : "balrhf7c",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/Tqk.jpg/info.json",
-        "credit" : "Credit line: d5cRENN",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/Tqk.jpg/info.json",
-          "credit" : "Credit line: d5cRENN",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#70069A",
       "source" : {
         "id" : "adqtw0zc",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "ESvJaa68mx"
+        ],
         "title" : "title-mDNHnumOpV",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
-          {
-            "label" : "Emu entrepreneurship",
-            "concepts" : [
-              {
-                "label" : "0yDw3OqXYzbeHSa",
-                "type" : "Concept"
-              },
-              {
-                "label" : "tOjA4ANmzZdbP5N",
-                "type" : "Concept"
-              },
-              {
-                "label" : "biQ0dLny2xee61i",
-                "type" : "Concept"
-              }
-            ],
-            "type" : "Genre"
-          },
-          {
-            "label" : "Falcon finances",
-            "concepts" : [
-              {
-                "label" : "VxHQ750JyidpMK0",
-                "type" : "Concept"
-              },
-              {
-                "label" : "bdnEKFDhqZ2Luvw",
-                "type" : "Concept"
-              },
-              {
-                "label" : "eD1GIn5IktaKxaF",
-                "type" : "Concept"
-              }
-            ],
-            "type" : "Genre"
-          }
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-        "Emu entrepreneurship",
-        "Falcon finances"
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+          "Emu entrepreneurship",
+          "Falcon finances"
+        ],
+        "genres.concepts.label" : [
+          "0yDw3OqXYzbeHSa",
+          "tOjA4ANmzZdbP5N",
+          "biQ0dLny2xee61i",
+          "VxHQ750JyidpMK0",
+          "bdnEKFDhqZ2Luvw",
+          "eD1GIn5IktaKxaF"
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

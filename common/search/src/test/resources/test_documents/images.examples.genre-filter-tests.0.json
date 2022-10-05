@@ -1,18 +1,88 @@
 {
   "description" : "examples for the genre filter tests",
-  "createdAt" : "2022-09-28T12:18:41.469320Z",
+  "createdAt" : "2022-10-03T18:20:32.327Z",
   "id" : "pw03noef",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "1942-04-26T14:14:59Z",
+    "display" : {
+      "id" : "pw03noef",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "DopPxaIujZ"
+        "url" : "https://iiif.wellcomecollection.org/image/HYs.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "pw03noef",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/HYs.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#371301",
+      "source" : {
+        "id" : "inqoin52",
+        "title" : "title-CIrfuDmt9g",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+          {
+            "label" : "Carrot counselling",
+            "concepts" : [
+              {
+                "label" : "HmHsNobmHOJeC25",
+                "type" : "Concept"
+              },
+              {
+                "label" : "z5hm7UssDl0DCmo",
+                "type" : "Concept"
+              },
+              {
+                "label" : "teEQxDj1P37ZRV9",
+                "type" : "Concept"
+              }
+            ],
+            "type" : "Genre"
+          }
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "pw03noef",
+      "sourceIdentifier.value" : "DopPxaIujZ",
+      "locations.license.id" : [
+        "cc-by"
+      ],
       "inferredData" : {
         "features1" : [
           0.018266033,
@@ -4273,181 +4343,73 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/HYs.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : null,
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "inqoin52",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
-          },
-          "ontologyType" : "Work",
-          "value" : "naQ25FhTkn"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-CIrfuDmt9g",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-          {
-            "label" : "Carrot counselling",
-            "concepts" : [
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "HmHsNobmHOJeC25",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "z5hm7UssDl0DCmo",
-                "type" : "Concept"
-              },
-              {
-                "id" : {
-                  "type" : "Unidentifiable"
-                },
-                "label" : "teEQxDj1P37ZRV9",
-                "type" : "Concept"
-              }
-            ]
-          }
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 76,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "1942-04-26T14:14:59Z",
-    "display" : {
-      "id" : "pw03noef",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/HYs.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/HYs.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#371301",
       "source" : {
         "id" : "inqoin52",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "naQ25FhTkn"
+        ],
         "title" : "title-CIrfuDmt9g",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
-          {
-            "label" : "Carrot counselling",
-            "concepts" : [
-              {
-                "label" : "HmHsNobmHOJeC25",
-                "type" : "Concept"
-              },
-              {
-                "label" : "z5hm7UssDl0DCmo",
-                "type" : "Concept"
-              },
-              {
-                "label" : "teEQxDj1P37ZRV9",
-                "type" : "Concept"
-              }
-            ],
-            "type" : "Genre"
-          }
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-        "Carrot counselling"
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+          "Carrot counselling"
+        ],
+        "genres.concepts.label" : [
+          "HmHsNobmHOJeC25",
+          "z5hm7UssDl0DCmo",
+          "teEQxDj1P37ZRV9"
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

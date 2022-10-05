@@ -1,18 +1,77 @@
 {
   "description" : "images with different subjects",
-  "createdAt" : "2022-09-28T12:18:41.708175Z",
+  "createdAt" : "2022-10-03T18:20:32.469Z",
   "id" : "snvcbjf1",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "1956-01-10T18:31:39Z",
+    "display" : {
+      "id" : "snvcbjf1",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "4iqx6tuFFr"
+        "url" : "https://iiif.wellcomecollection.org/image/04q.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "snvcbjf1",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/04q.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#EE8285",
+      "source" : {
+        "id" : "sjnnyap0",
+        "title" : "title-Ufg7v6vARA",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+        ],
+        "subjects" : [
+          {
+            "id" : "subject1",
+            "label" : "Simple screwdrivers",
+            "concepts" : [
+            ],
+            "type" : "Subject"
+          }
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "snvcbjf1",
+      "sourceIdentifier.value" : "4iqx6tuFFr",
+      "locations.license.id" : [
+        "cc-by"
+      ],
       "inferredData" : {
         "features1" : [
           -0.009032088,
@@ -4273,162 +4332,71 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/04q.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : null,
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "sjnnyap0",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
-          },
-          "ontologyType" : "Work",
-          "value" : "NBzGbxLQcg"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-Ufg7v6vARA",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-          {
-            "id" : {
-              "canonicalId" : "subject1",
-              "sourceIdentifier" : {
-                "identifierType" : {
-                  "id" : "calm-record-id"
-                },
-                "ontologyType" : "Work",
-                "value" : "W0dy234BUh"
-              },
-              "otherIdentifiers" : [
-              ],
-              "type" : "Identified"
-            },
-            "label" : "Simple screwdrivers",
-            "concepts" : [
-            ]
-          }
-        ],
-        "genres" : [
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 73,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "1956-01-10T18:31:39Z",
-    "display" : {
-      "id" : "snvcbjf1",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/04q.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/04q.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#EE8285",
       "source" : {
         "id" : "sjnnyap0",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "NBzGbxLQcg"
+        ],
         "title" : "title-Ufg7v6vARA",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
-          {
-            "id" : "subject1",
-            "label" : "Simple screwdrivers",
-            "concepts" : [
-            ],
-            "type" : "Subject"
-          }
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-        "Simple screwdrivers"
-      ],
-      "source.genres.label" : [
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+          "subject1"
+        ],
+        "subjects.label" : [
+          "Simple screwdrivers"
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

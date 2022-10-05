@@ -1,18 +1,80 @@
 {
   "description" : "examples for the contributor filter tests",
-  "createdAt" : "2022-09-28T12:18:41.410252Z",
+  "createdAt" : "2022-10-03T18:20:32.304Z",
   "id" : "guv3wimu",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "1945-02-28T17:58:45Z",
+    "display" : {
+      "id" : "guv3wimu",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "2gLKwbmCNQ"
+        "url" : "https://iiif.wellcomecollection.org/image/Kwg.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "guv3wimu",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/Kwg.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#979643",
+      "source" : {
+        "id" : "y2dcec1e",
+        "title" : "title-PWicCq4pdZ",
+        "contributors" : [
+          {
+            "agent" : {
+              "label" : "Edward Said",
+              "type" : "Person"
+            },
+            "roles" : [
+            ],
+            "primary" : true,
+            "type" : "Contributor"
+          }
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "guv3wimu",
+      "sourceIdentifier.value" : "2gLKwbmCNQ",
+      "locations.license.id" : [
+        "cc-by"
+      ],
       "inferredData" : {
         "features1" : [
           -0.00977648,
@@ -4273,163 +4335,70 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/Kwg.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : null,
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "y2dcec1e",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
-          },
-          "ontologyType" : "Work",
-          "value" : "OY9Oj9SZ60"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-PWicCq4pdZ",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-        ],
-        "contributors" : [
-          {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "agent" : {
-              "id" : {
-                "type" : "Unidentifiable"
-              },
-              "label" : "Edward Said",
-              "prefix" : null,
-              "numeration" : null,
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true
-          }
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 11,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "1945-02-28T17:58:45Z",
-    "display" : {
-      "id" : "guv3wimu",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/Kwg.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/Kwg.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#979643",
       "source" : {
         "id" : "y2dcec1e",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "OY9Oj9SZ60"
+        ],
         "title" : "title-PWicCq4pdZ",
-        "contributors" : [
-          {
-            "agent" : {
-              "label" : "Edward Said",
-              "type" : "Person"
-            },
-            "roles" : [
-            ],
-            "primary" : true,
-            "type" : "Contributor"
-          }
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+          "Edward Said"
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

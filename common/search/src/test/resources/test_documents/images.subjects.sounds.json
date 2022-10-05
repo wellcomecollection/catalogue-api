@@ -1,18 +1,78 @@
 {
   "description" : "images with different subjects",
-  "createdAt" : "2022-09-28T12:18:41.692981Z",
+  "createdAt" : "2022-10-03T18:20:32.459Z",
   "id" : "l6hqqw3i",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "1939-03-06T12:18:50Z",
+    "display" : {
+      "id" : "l6hqqw3i",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "PooDEXS7Aa"
+        "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+        "credit" : "Credit line: fW9LIc6n",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "l6hqqw3i",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
+          "credit" : "Credit line: fW9LIc6n",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#FFF94E",
+      "source" : {
+        "id" : "kxd5hg2c",
+        "title" : "title-UXbrIVN9As",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+        ],
+        "subjects" : [
+          {
+            "label" : "Square sounds",
+            "concepts" : [
+            ],
+            "type" : "Subject"
+          }
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "l6hqqw3i",
+      "sourceIdentifier.value" : "PooDEXS7Aa",
+      "locations.license.id" : [
+        "cc-by"
+      ],
       "inferredData" : {
         "features1" : [
           -3.5376736E-4,
@@ -4273,153 +4333,70 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "cc-by"
-        },
-        "credit" : "Credit line: fW9LIc6n",
-        "linkText" : null,
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "kxd5hg2c",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
-          },
-          "ontologyType" : "Work",
-          "value" : "5p8Wr8IPBB"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-UXbrIVN9As",
-        "otherIdentifiers" : [
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-          {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "label" : "Square sounds",
-            "concepts" : [
-            ]
-          }
-        ],
-        "genres" : [
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 4,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "1939-03-06T12:18:50Z",
-    "display" : {
-      "id" : "l6hqqw3i",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-        "credit" : "Credit line: fW9LIc6n",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-          "credit" : "Credit line: fW9LIc6n",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#FFF94E",
       "source" : {
         "id" : "kxd5hg2c",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "5p8Wr8IPBB"
+        ],
         "title" : "title-UXbrIVN9As",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
-          {
-            "label" : "Square sounds",
-            "concepts" : [
-            ],
-            "type" : "Subject"
-          }
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-        "Square sounds"
-      ],
-      "source.genres.label" : [
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+        ],
+        "items.locations.locationType.id" : [
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+          "Square sounds"
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [

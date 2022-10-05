@@ -38,8 +38,8 @@ object QueryConfig {
     binSizes: List[List[Int]],
     binMinima: List[Float]
   )
-  private case class State(inferredData: Option[InferredData])
-  private case class IndexedImage(state: State)
+  private case class ImageQueryableValues(inferredData: InferredData)
+  private case class IndexedImage(query: ImageQueryableValues)
 
   private def getPaletteParamsFromIndex(
     elasticClient: ElasticClient,
@@ -48,7 +48,7 @@ object QueryConfig {
     elasticClient
       .execute(
         search(index).query(
-          existsQuery("state.inferredData.palette")
+          existsQuery("query.inferredData.palette")
         )
       )
       .flatMap { result =>
@@ -56,15 +56,18 @@ object QueryConfig {
           result.toEither
             .map { response =>
               response.hits.hits.headOption
-                .flatMap {
-                  _.to[IndexedImage].state.inferredData.flatMap {
-                    case InferredData(binSizes, binMinima)
-                        if binSizes.size == 3 &&
-                          binSizes.forall(_.size == 3) &&
-                          binMinima.size == 3 =>
-                      Some((binSizes, binMinima))
-                    case _ => None
-                  }
+                .flatMap { hit =>
+                  val inferredData = hit.to[IndexedImage].query.inferredData
+
+                  val binSizes = inferredData.binSizes
+                  val binMinima = inferredData.binMinima
+
+                  if (binSizes.size == 3 &&
+                      binSizes.forall(_.size == 3) &&
+                      binMinima.size == 3)
+                    Some((binSizes, binMinima))
+                  else
+                    None
                 }
             }
             .left

@@ -1,18 +1,74 @@
 {
   "description" : "images with different licenses",
-  "createdAt" : "2022-09-28T12:18:40.676424Z",
+  "createdAt" : "2022-10-03T18:20:32.027Z",
   "id" : "itecyzhr",
   "document" : {
-    "version" : 1,
-    "state" : {
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "miro-image-number"
+    "modifiedTime" : "2014-09-11T10:54:04Z",
+    "display" : {
+      "id" : "itecyzhr",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "ontologyType" : "Work",
-        "value" : "duCA9uvgRF"
+        "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
+        "credit" : "Credit line: ai3paD",
+        "linkText" : "Link text: 6RWJS5",
+        "license" : {
+          "id" : "pdm",
+          "label" : "Public Domain Mark",
+          "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
+          "type" : "License"
+        },
+        "accessConditions" : [
+        ],
+        "type" : "DigitalLocation"
       },
-      "canonicalId" : "itecyzhr",
+      "locations" : [
+        {
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
+          "credit" : "Credit line: ai3paD",
+          "linkText" : "Link text: 6RWJS5",
+          "license" : {
+            "id" : "pdm",
+            "label" : "Public Domain Mark",
+            "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
+            "type" : "License"
+          },
+          "accessConditions" : [
+          ],
+          "type" : "DigitalLocation"
+        }
+      ],
+      "aspectRatio" : 0.022521317,
+      "averageColor" : "#0EBB1F",
+      "source" : {
+        "id" : "gbjkwtuj",
+        "title" : "title-h7pFiQIGYP",
+        "contributors" : [
+        ],
+        "languages" : [
+        ],
+        "genres" : [
+        ],
+        "subjects" : [
+        ],
+        "type" : "Work"
+      },
+      "type" : "Image"
+    },
+    "query" : {
+      "id" : "itecyzhr",
+      "sourceIdentifier.value" : "duCA9uvgRF",
+      "locations.license.id" : [
+        "pdm"
+      ],
       "inferredData" : {
         "features1" : [
           -0.0031078744,
@@ -4273,177 +4329,73 @@
           0.9475815
         ],
         "aspectRatio" : 0.022521317
-      }
-    },
-    "locations" : [
-      {
-        "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
-        "locationType" : {
-          "id" : "iiif-image"
-        },
-        "license" : {
-          "id" : "pdm"
-        },
-        "credit" : "Credit line: ai3paD",
-        "linkText" : "Link text: 6RWJS5",
-        "accessConditions" : [
-        ]
-      }
-    ],
-    "source" : {
-      "id" : {
-        "canonicalId" : "gbjkwtuj",
-        "sourceIdentifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
-          },
-          "ontologyType" : "Work",
-          "value" : "5PbHWqvVKT"
-        },
-        "otherIdentifiers" : [
-        ]
       },
-      "data" : {
-        "title" : "title-h7pFiQIGYP",
-        "otherIdentifiers" : [
-          {
-            "identifierType" : {
-              "id" : "sierra-system-number"
-            },
-            "ontologyType" : "Work",
-            "value" : "wl5f79jCcV"
-          },
-          {
-            "identifierType" : {
-              "id" : "sierra-identifier"
-            },
-            "ontologyType" : "Work",
-            "value" : "2SddcxmnOc"
-          }
-        ],
-        "alternativeTitles" : [
-        ],
-        "format" : null,
-        "description" : null,
-        "physicalDescription" : null,
-        "lettering" : null,
-        "createdDate" : null,
-        "subjects" : [
-        ],
-        "genres" : [
-        ],
-        "contributors" : [
-        ],
-        "thumbnail" : null,
-        "production" : [
-        ],
-        "languages" : [
-        ],
-        "edition" : null,
-        "notes" : [
-        ],
-        "duration" : null,
-        "items" : [
-          {
-            "id" : {
-              "type" : "Unidentifiable"
-            },
-            "title" : null,
-            "note" : null,
-            "locations" : [
-              {
-                "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
-                "locationType" : {
-                  "id" : "iiif-image"
-                },
-                "license" : {
-                  "id" : "pdm"
-                },
-                "credit" : "Credit line: ai3paD",
-                "linkText" : "Link text: 6RWJS5",
-                "accessConditions" : [
-                ],
-                "type" : "DigitalLocation"
-              }
-            ]
-          }
-        ],
-        "holdings" : [
-        ],
-        "collectionPath" : null,
-        "referenceNumber" : null,
-        "imageData" : [
-        ],
-        "workType" : "Standard"
-      },
-      "version" : 51,
-      "type" : "ParentWork"
-    },
-    "modifiedTime" : "2014-09-11T10:54:04Z",
-    "display" : {
-      "id" : "itecyzhr",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
-        },
-        "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
-        "credit" : "Credit line: ai3paD",
-        "linkText" : "Link text: 6RWJS5",
-        "license" : {
-          "id" : "pdm",
-          "label" : "Public Domain Mark",
-          "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
-          "type" : "License"
-        },
-        "accessConditions" : [
-        ],
-        "type" : "DigitalLocation"
-      },
-      "locations" : [
-        {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
-          },
-          "url" : "https://iiif.wellcomecollection.org/image/rvA.jpg/info.json",
-          "credit" : "Credit line: ai3paD",
-          "linkText" : "Link text: 6RWJS5",
-          "license" : {
-            "id" : "pdm",
-            "label" : "Public Domain Mark",
-            "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
-            "type" : "License"
-          },
-          "accessConditions" : [
-          ],
-          "type" : "DigitalLocation"
-        }
-      ],
-      "aspectRatio" : 0.022521317,
-      "averageColor" : "#0EBB1F",
       "source" : {
         "id" : "gbjkwtuj",
+        "format.id" : null,
+        "workType" : "Standard",
+        "identifiers.value" : [
+          "5PbHWqvVKT",
+          "wl5f79jCcV",
+          "2SddcxmnOc"
+        ],
         "title" : "title-h7pFiQIGYP",
-        "contributors" : [
+        "alternativeTitles" : [
         ],
-        "languages" : [
+        "description" : null,
+        "physicalDescription" : null,
+        "edition" : null,
+        "notes.contents" : [
         ],
-        "genres" : [
+        "lettering" : null,
+        "images.id" : [
         ],
-        "subjects" : [
+        "images.identifiers.value" : [
         ],
-        "type" : "Work"
-      },
-      "type" : "Image"
-    },
-    "query" : {
-      "source.subjects.label" : [
-      ],
-      "source.genres.label" : [
-      ]
+        "items.id" : [
+        ],
+        "items.identifiers.value" : [
+        ],
+        "items.locations.accessConditions.status.id" : [
+        ],
+        "items.locations.license.id" : [
+          "pdm"
+        ],
+        "items.locations.locationType.id" : [
+          "iiif-image"
+        ],
+        "subjects.id" : [
+        ],
+        "subjects.label" : [
+        ],
+        "subjects.concepts.label" : [
+        ],
+        "genres.label" : [
+        ],
+        "genres.concepts.label" : [
+        ],
+        "languages.id" : [
+        ],
+        "languages.label" : [
+        ],
+        "contributors.agent.id" : [
+        ],
+        "contributors.agent.label" : [
+        ],
+        "production.label" : [
+        ],
+        "production.dates.range.from" : [
+        ],
+        "partOf.id" : [
+        ],
+        "partOf.title" : [
+        ],
+        "availabilities.id" : [
+        ],
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "referenceNumber" : null
+      }
     },
     "aggregatableValues" : {
       "locations.license" : [
