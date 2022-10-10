@@ -53,7 +53,8 @@ async function service({
     }
   })
 
-  const res = await getRankClient().rankEval({
+  const client = await getRankClient()
+  const res = await client.rankEval({
     index: template.index,
     body: {
       requests,

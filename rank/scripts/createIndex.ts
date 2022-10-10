@@ -38,7 +38,7 @@ async function go() {
     initial: `${getNamespaceFromIndexName(localIndex)}-candidate`,
   }).then(({ value }) => value)
 
-  const client = getRankClient()
+  const client = await getRankClient()
   const putIndexRes = await client.indices.create({
     index: remoteIndex,
     body: {

@@ -1,7 +1,7 @@
 import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
-import { gatherArgs, info, pretty } from './utils'
 
 import chalk from 'chalk'
+import { gatherArgs } from './utils'
 import { listIndices } from '../services/search-templates'
 import prompts from 'prompts'
 import search from '../services/search'

@@ -24,7 +24,8 @@ async function service({
   searchTerms,
 }: Props): Promise<estypes.SearchTemplateResponse<Record<string, any>>> {
   const template = await getTemplate(queryEnv, index)
-  return await getRankClient().searchTemplate({
+  const client = await getRankClient()
+  return await client.searchTemplate({
     index: template.index,
     body: {
       source: JSON.stringify({

@@ -6,7 +6,7 @@ import prompts from 'prompts'
 import yargs from 'yargs'
 
 async function go() {
-  const client = getRankClient()
+  const client = await getRankClient()
   let task_id
   const args = yargs(process.argv)
     .options({

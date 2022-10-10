@@ -31,9 +31,7 @@ expect.extend({
   toPass(result: TestResult['results'][number]) {
     if (result.knownFailure) {
       return {
-        message: () => {
-          return `"${result.query}" is a known failure`
-        },
+        message: () => `"${result.query}" is a known failure`,
         pass: true,
       }
     }
