@@ -1,6 +1,9 @@
 export const queryEnvs = ['production', 'staging', 'candidate'] as const
 export type QueryEnv = typeof queryEnvs[number]
 
+export const clusters = ['pipeline', 'rank'] as const
+export type Cluster = typeof clusters[number]
+
 export const namespaces = ['works', 'images'] as const
 export type Namespace = typeof namespaces[number]
 

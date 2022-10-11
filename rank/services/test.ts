@@ -1,5 +1,11 @@
-import { Index, QueryEnv, SearchTemplate } from '../types/searchTemplate'
+import {
+  Cluster,
+  Index,
+  QueryEnv,
+  SearchTemplate,
+} from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
+import { getPipelineClient, getRankClient } from './elasticsearch'
 
 import { Client } from '@elastic/elasticsearch'
 import { getTemplate } from './search-templates'
@@ -9,10 +15,12 @@ type Props = {
   testId: string
   queryEnv: QueryEnv
   index: Index
+  cluster: Cluster
 }
 
 async function service({
   queryEnv,
+  cluster,
   index,
   testId,
 }: Props): Promise<TestResult> {
@@ -50,7 +58,15 @@ async function service({
     }
   })
 
-  const client = await getRankClient()
+  let client: Client
+  if (cluster === 'pipeline') {
+    client = await getPipelineClient()
+  } else if (cluster === 'rank') {
+    client = await getRankClient()
+  } else {
+    throw new Error(`Unknown cluster ${cluster}`)
+  }
+
   const res = await client.rankEval({
     index: template.index,
     body: {

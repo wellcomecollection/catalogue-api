@@ -1,6 +1,8 @@
 import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
 import { code, gatherArgs, info } from './utils'
+import { getPipelineClient, getRankClient } from '../services/elasticsearch'
 
+import { Client } from '@elastic/elasticsearch'
 import { exec } from 'child_process'
 import { listIndices } from '../services/search-templates'
 import { tests as possibleTests } from '../tests'
@@ -8,7 +10,20 @@ import { tests as possibleTests } from '../tests'
 global.fetch = require('node-fetch')
 
 async function go() {
-  const indices: Index[] = await listIndices()
+  const { cluster } = await gatherArgs({
+    cluster: { type: 'string', choices: ['pipeline', 'rank'] },
+  })
+
+  let client: Client
+  if (cluster === 'pipeline') {
+    client = await getPipelineClient()
+  } else if (cluster === 'rank') {
+    client = await getRankClient()
+  } else {
+    throw new Error(`Unknown cluster ${cluster}`)
+  }
+
+  const indices: Index[] = await listIndices(client)
 
   const possibleTestIds = Object.values(possibleTests)
     .flatMap((testSet) => testSet.map((test) => test.id))
@@ -32,7 +47,7 @@ async function go() {
 
   // run the rank tests using the collected arguments
   const command =
-    `yarn test --index=${index} --queryEnv=${queryEnv} ` +
+    `yarn test --index=${index} --queryEnv=${queryEnv} --cluster=${cluster} ` +
     testIds.map((id) => `--testId=${id}`).join(' ')
 
   info('Running:')

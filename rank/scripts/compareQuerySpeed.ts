@@ -16,7 +16,8 @@ global.fetch = require('node-fetch')
 
 async function go() {
   const queries = await getQueries()
-  const indices = await listIndices()
+  const client = await getRankClient()
+  const indices = await listIndices(client)
 
   const namespace: string = await prompts({
     type: 'select',

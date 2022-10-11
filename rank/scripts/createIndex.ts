@@ -15,7 +15,8 @@ async function go() {
   const configFiles = readdirSync('./mappings/')
     .filter((fileName) => fileName.includes('.json'))
     .map((fileName) => parse(fileName).name)
-  const sourceIndices = await listIndices()
+  const client = await getRankClient()
+  const sourceIndices = await listIndices(client)
   const validIndices = sourceIndices.filter((value) =>
     configFiles.includes(value)
   )
@@ -38,7 +39,6 @@ async function go() {
     initial: `${getNamespaceFromIndexName(localIndex)}-candidate`,
   }).then(({ value }) => value)
 
-  const client = await getRankClient()
   const putIndexRes = await client.indices.create({
     index: remoteIndex,
     body: {
