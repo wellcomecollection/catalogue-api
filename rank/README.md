@@ -19,7 +19,7 @@ The following command will match the environment used in CI exactly, explicitly 
 ```sh
 docker run -it \
   -v $HOME/.aws:/root/.aws \
-  -v $(pwd):/catalogue-api \
+  -v $(git rev-parse --show-toplevel):/catalogue-api \
   --workdir /catalogue-api/rank \
   --env AWS_PROFILE=platform-dev \
   public.ecr.aws/docker/library/node:14-slim \

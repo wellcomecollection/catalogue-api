@@ -1,10 +1,7 @@
 import { Index, QueryEnv, SearchTemplate } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
 
-import { Decoder } from './decoder'
-import { ParsedUrlQuery } from 'querystring'
-import { decodeString } from './decoder'
-import { getRankClient } from './elasticsearch'
+import { Client } from '@elastic/elasticsearch'
 import { getTemplate } from './search-templates'
 import { tests } from '../tests'
 
@@ -90,12 +87,6 @@ async function service({
     results,
   }
 }
-
-export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  testId: decodeString(q, 'testId'),
-  queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
-  index: decodeString(q, 'index') as Index,
-})
 
 export default service
 export type { Props }

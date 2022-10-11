@@ -1,7 +1,5 @@
-import { Decoder, decodeString } from './decoder'
 import { Index, QueryEnv } from '../types/searchTemplate'
 
-import { ParsedUrlQuery } from 'querystring'
 import { estypes } from '@elastic/elasticsearch'
 import { getRankClient } from './elasticsearch'
 import { getTemplate } from './search-templates'
@@ -11,12 +9,6 @@ type Props = {
   queryEnv: QueryEnv
   index: Index
 }
-
-export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  searchTerms: decodeString(q, 'query'),
-  queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
-  index: decodeString(q, 'index') as Index,
-})
 
 async function service({
   queryEnv,
