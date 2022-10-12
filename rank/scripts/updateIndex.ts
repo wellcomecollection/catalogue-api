@@ -10,7 +10,8 @@ import { readdirSync } from 'fs'
 async function go() {
   // Users should be able to update indices by modifying mappings they've
   // fetched from the rank cluster, where those source indices still exist.
-  const sourceIndices = await listIndices()
+  const client = await getRankClient()
+  const sourceIndices = await listIndices(client)
 
   const indexName = await prompts({
     type: 'select',

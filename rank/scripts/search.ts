@@ -2,6 +2,7 @@ import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
 
 import chalk from 'chalk'
 import { gatherArgs } from './utils'
+import { getRankClient } from '../services/elasticsearch'
 import { listIndices } from '../services/search-templates'
 import prompts from 'prompts'
 import search from '../services/search'
@@ -9,7 +10,8 @@ import search from '../services/search'
 global.fetch = require('node-fetch')
 
 async function go() {
-  const indices: Index[] = await listIndices()
+  const client = await getRankClient()
+  const indices: Index[] = await listIndices(client)
 
   const args = await gatherArgs({
     index: { type: 'string', choices: indices },

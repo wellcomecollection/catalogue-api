@@ -1,10 +1,13 @@
-import { Index, QueryEnv, SearchTemplate } from '../types/searchTemplate'
+import {
+  Cluster,
+  Index,
+  QueryEnv,
+  SearchTemplate,
+} from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
+import { getPipelineClient, getRankClient } from './elasticsearch'
 
-import { Decoder } from './decoder'
-import { ParsedUrlQuery } from 'querystring'
-import { decodeString } from './decoder'
-import { getRankClient } from './elasticsearch'
+import { Client } from '@elastic/elasticsearch'
 import { getTemplate } from './search-templates'
 import { tests } from '../tests'
 
@@ -12,10 +15,12 @@ type Props = {
   testId: string
   queryEnv: QueryEnv
   index: Index
+  cluster: Cluster
 }
 
 async function service({
   queryEnv,
+  cluster,
   index,
   testId,
 }: Props): Promise<TestResult> {
@@ -53,7 +58,22 @@ async function service({
     }
   })
 
-  const client = await getRankClient()
+  let client: Client
+  if (cluster === 'pipeline') {
+    client = await getPipelineClient()
+  } else if (cluster === 'rank') {
+    client = await getRankClient()
+  } else {
+    throw new Error(`Unknown cluster ${cluster}`)
+  }
+
+  // fail if the index doesn't exist
+  try {
+    await client.indices.get({ index: template.index })
+  } catch (e) {
+    throw new Error(`${index} does not exist in the ${cluster} cluster!`)
+  }
+
   const res = await client.rankEval({
     index: template.index,
     body: {
@@ -90,12 +110,6 @@ async function service({
     results,
   }
 }
-
-export const decoder: Decoder<Props> = (q: ParsedUrlQuery) => ({
-  testId: decodeString(q, 'testId'),
-  queryEnv: decodeString(q, 'queryEnv') as QueryEnv,
-  index: decodeString(q, 'index') as Index,
-})
 
 export default service
 export type { Props }

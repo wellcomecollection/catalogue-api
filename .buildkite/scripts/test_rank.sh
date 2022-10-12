@@ -36,12 +36,16 @@ URL="https://${SUBDOMAIN}.wellcomecollection.org/catalogue/v2/_elasticConfig"
 # run works tests
 WORKS_INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 docker run \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
+        --cluster=pipeline \
         --index="$WORKS_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
@@ -50,12 +54,16 @@ docker run \
 # run images tests
 IMAGES_INDEX=$(curl -s "${URL}" | jq -r .imagesIndex)
 docker run \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
+        --cluster=pipeline \
         --index="$IMAGES_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \

@@ -31,4 +31,28 @@ export async function getReportingClient(): Promise<Client> {
   return reportingClient
 }
 
-export { rankClient, reportingClient }
+let pipelineClient
+export async function getPipelineClient(): Promise<Client> {
+  const pipelineDate = await fetch(
+    'https://api.wellcomecollection.org/catalogue/v2/_elasticConfig'
+  )
+    .then((res) => res.json())
+    .then((res) => res.worksIndex.split('-').slice(-3).join('-'))
+
+  const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}/`
+  const protocol = await getSecret(secretPrefix + 'protocol')
+  const host = await getSecret(secretPrefix + 'public_host')
+  const port = await getSecret(secretPrefix + 'port')
+  const username = await getSecret(secretPrefix + 'es_username')
+  const password = await getSecret(secretPrefix + 'es_password')
+
+  if (!pipelineClient) {
+    pipelineClient = new Client({
+      node: `${protocol}://${host}:${port}`,
+      auth: { username, password },
+    })
+  }
+  return pipelineClient
+}
+
+export { rankClient, reportingClient, pipelineClient }

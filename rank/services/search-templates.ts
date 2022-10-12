@@ -8,10 +8,10 @@ import {
   queryEnvs,
 } from '../types/searchTemplate'
 
+import { Client } from '@elastic/elasticsearch'
 import { getRankClient } from './elasticsearch'
 
-export async function listIndices(): Promise<Index[]> {
-  const client = await getRankClient()
+export async function listIndices(client: Client): Promise<Index[]> {
   const body = await client.cat.indices({ h: ['index'] })
   const indices = (body as unknown as string) // The types are wrong here
     .split('\n')
@@ -43,18 +43,10 @@ async function getEnvironmentQueries(env: QueryEnv) {
 }
 
 export async function getCandidateQueries() {
-  const imports =
-    process.env.NODE_ENV === 'development'
-      ? [
-          import('../../search/src/test/resources/WorksMultiMatcherQuery.json'),
-          import(
-            '../../search/src/test/resources/ImagesMultiMatcherQuery.json'
-          ),
-        ]
-      : [
-          import('../queries/WorksMultiMatcherQuery.json'),
-          import('../queries/ImagesMultiMatcherQuery.json'),
-        ]
+  const imports = [
+    import('../queries/WorksMultiMatcherQuery.json'),
+    import('../queries/ImagesMultiMatcherQuery.json'),
+  ]
 
   const queries = await Promise.all(imports).then(([works, images]) => ({
     works: works.default,
@@ -86,7 +78,8 @@ export async function getQueries() {
 export async function getTemplates(
   filterIds?: SearchTemplateString[]
 ): Promise<SearchTemplate[]> {
-  const indices = await listIndices()
+  const client = await getRankClient()
+  const indices = await listIndices(client)
   const ids =
     filterIds ??
     queryEnvs.flatMap((queryEnv) =>
