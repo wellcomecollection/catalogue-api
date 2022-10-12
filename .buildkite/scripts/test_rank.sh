@@ -36,6 +36,9 @@ URL="https://${SUBDOMAIN}.wellcomecollection.org/catalogue/v2/_elasticConfig"
 # run works tests
 WORKS_INDEX=$(curl -s "${URL}" | jq -r .worksIndex)
 docker run \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
@@ -51,6 +54,9 @@ docker run \
 # run images tests
 IMAGES_INDEX=$(curl -s "${URL}" | jq -r .imagesIndex)
 docker run \
+    -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+    -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
     -v $HOME/.aws:/root/.aws \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
