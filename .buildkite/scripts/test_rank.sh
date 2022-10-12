@@ -42,6 +42,7 @@ docker run \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
+        --cluster=pipeline \
         --index="$WORKS_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
@@ -56,6 +57,7 @@ docker run \
     public.ecr.aws/docker/library/node:14-slim \
     yarn test \
         --queryEnv=$QUERY_ENV \
+        --cluster=pipeline \
         --index="$IMAGES_INDEX" \
         --testId=alternative-spellings \
         --testId=precision \
