@@ -67,6 +67,13 @@ async function service({
     throw new Error(`Unknown cluster ${cluster}`)
   }
 
+  // fail if the index doesn't exist
+  try {
+    await client.indices.get({ index: template.index })
+  } catch (e) {
+    throw new Error(`${index} does not exist in the ${cluster} cluster!`)
+  }
+
   const res = await client.rankEval({
     index: template.index,
     body: {
