@@ -28,6 +28,14 @@ docker run -it \
 
 </details>
 
+## Choosing a cluster to run tests against
+
+Running rank locally allows you to test against the `pipeline` or `rank` cluster.
+
+You should almost always choose to run local experiments against the `rank` cluster with indices replicated from the `pipeline` cluster (see more details and instructions [here](../docs/search/rank/cluster.md)). The pipeline cluster is used directly by the API, so experimenting against it can be dangerous.
+
+To minimise the risks associated with automated cross cluster replication, we run rank in CI against the `pipeline` cluster. The tests in CI use known queries, so we're much less likely to affect the performance of the API.
+
 ## Docs 📖
 
 Rank documentation lives alongside the rest of the search docs in gitbook. You can see the markdown docs [here](../docs/search/rank/README.md).
