@@ -60,7 +60,7 @@ async function service({
 
   let client: Client
   if (cluster === 'pipeline') {
-    client = await getPipelineClient()
+    client = await getPipelineClient(queryEnv)
   } else if (cluster === 'rank') {
     client = await getRankClient()
   } else {

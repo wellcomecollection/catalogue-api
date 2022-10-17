@@ -10,13 +10,15 @@ import { tests as possibleTests } from '../tests'
 global.fetch = require('node-fetch')
 
 async function go() {
-  const { cluster } = await gatherArgs({
+  const { cluster, query } = await gatherArgs({
     cluster: { type: 'string', choices: ['pipeline', 'rank'] },
+    query: { type: 'string', choices: queryEnvs },
   })
 
+  const queryEnv = query as QueryEnv
   let client: Client
   if (cluster === 'pipeline') {
-    client = await getPipelineClient()
+    client = await getPipelineClient(queryEnv)
   } else if (cluster === 'rank') {
     client = await getRankClient()
   } else {
@@ -24,7 +26,6 @@ async function go() {
   }
 
   const indices: Index[] = await listIndices(client)
-
   const possibleTestIds = Object.values(possibleTests)
     .flatMap((testSet) => testSet.map((test) => test.id))
     // Some test IDs are common across suites - we don't want to display
@@ -33,7 +34,6 @@ async function go() {
 
   const args = await gatherArgs({
     index: { type: 'string', choices: indices },
-    query: { type: 'string', choices: queryEnvs },
     testId: {
       type: 'array',
       choices: possibleTestIds,
@@ -42,7 +42,6 @@ async function go() {
   })
 
   const index = args.index as Index
-  const queryEnv = args.query as QueryEnv
   const testIds = args.testId as string[]
 
   // run the rank tests using the collected arguments

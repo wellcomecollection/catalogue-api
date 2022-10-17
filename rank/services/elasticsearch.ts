@@ -1,5 +1,7 @@
 import { Client } from '@elastic/elasticsearch'
 import { getSecret } from './secrets'
+import { QueryEnv } from '../types/searchTemplate'
+import { apiUrl } from './search-templates'
 
 let rankClient
 export async function getRankClient(): Promise<Client> {
@@ -32,10 +34,8 @@ export async function getReportingClient(): Promise<Client> {
 }
 
 let pipelineClient
-export async function getPipelineClient(): Promise<Client> {
-  const pipelineDate = await fetch(
-    'https://api.wellcomecollection.org/catalogue/v2/_elasticConfig'
-  )
+export async function getPipelineClient(env: QueryEnv): Promise<Client> {
+  const pipelineDate = await fetch(`${apiUrl(env)}/_elasticConfig`)
     .then((res) => res.json())
     .then((res) => res.worksIndex.split('-').slice(-3).join('-'))
 

@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import path from 'path'
 import prompts from 'prompts'
-import yargs from 'yargs'
+import yargs, { Options } from 'yargs'
 
 const info = (message: string) => {
   console.log(chalk.blue(message))
