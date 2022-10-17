@@ -35,7 +35,7 @@ export async function getReportingClient(): Promise<Client> {
 
 let pipelineClient
 export async function getPipelineClient(env: QueryEnv): Promise<Client> {
-  const pipelineDate = await fetch(`${apiUrl(env)}/_elasticConfig`)
+  const pipelineDate = await fetch(`${apiUrl(env)}/catalogue/v2/_elasticConfig`)
     .then((res) => res.json())
     .then((res) => res.worksIndex.split('-').slice(-3).join('-'))
 
