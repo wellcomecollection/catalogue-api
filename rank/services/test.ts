@@ -18,6 +18,15 @@ type Props = {
   cluster: Cluster
 }
 
+const indexExists = async (client: Client, index: string): Promise<boolean> => {
+  try {
+    await client.indices.get({ index })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
 async function service({
   queryEnv,
   cluster,
@@ -59,6 +68,17 @@ async function service({
   })
 
   let client: Client
+  if (queryEnv === 'candidate') {
+    const prodClient = await getPipelineClient('production')
+    const stageClient = await getPipelineClient('staging')
+    if (await indexExists(prodClient, template.index)) {
+      client = prodClient
+    } else if (await indexExists(stageClient, template.index)) {
+      client = stageClient
+    } else {
+      throw new Error(`${index} does not exist in the ${cluster} cluster!`)
+    }
+  }
   if (cluster === 'pipeline') {
     client = await getPipelineClient(queryEnv)
   } else if (cluster === 'rank') {
@@ -68,9 +88,7 @@ async function service({
   }
 
   // fail if the index doesn't exist
-  try {
-    await client.indices.get({ index: template.index })
-  } catch (e) {
+  if (!(await indexExists(client, template.index))) {
     throw new Error(`${index} does not exist in the ${cluster} cluster!`)
   }
 
