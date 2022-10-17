@@ -76,7 +76,9 @@ async function service({
     } else if (await indexExists(stageClient, template.index)) {
       client = stageClient
     } else {
-      throw new Error(`${index} does not exist in the ${cluster} cluster!`)
+      throw new Error(
+        `${index} does not exist in any currently used ${cluster} cluster!`
+      )
     }
   } else if (cluster === 'pipeline') {
     client = await getPipelineClient(queryEnv)

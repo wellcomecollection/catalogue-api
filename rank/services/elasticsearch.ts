@@ -33,7 +33,7 @@ export async function getReportingClient(): Promise<Client> {
   return reportingClient
 }
 
-let pipelineClient
+const pipelineClients = {} as Record<QueryEnv, Client>
 export async function getPipelineClient(env: QueryEnv): Promise<Client> {
   const pipelineDate = await fetch(`${apiUrl(env)}/catalogue/v2/_elasticConfig`)
     .then((res) => res.json())
@@ -46,13 +46,11 @@ export async function getPipelineClient(env: QueryEnv): Promise<Client> {
   const username = await getSecret(secretPrefix + 'es_username')
   const password = await getSecret(secretPrefix + 'es_password')
 
-  if (!pipelineClient) {
-    pipelineClient = new Client({
+  if (!pipelineClients[env]) {
+    pipelineClients[env] = new Client({
       node: `${protocol}://${host}:${port}`,
       auth: { username, password },
     })
   }
-  return pipelineClient
+  return pipelineClients[env]
 }
-
-export { rankClient, reportingClient, pipelineClient }
