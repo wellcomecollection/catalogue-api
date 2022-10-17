@@ -3,13 +3,20 @@ import {
   Index,
   QueryEnv,
   SearchTemplate,
-  SearchTemplateString,
   getNamespaceFromIndexName,
-  queryEnvs,
 } from '../types/searchTemplate'
 
 import { Client } from '@elastic/elasticsearch'
-import { getRankClient } from './elasticsearch'
+
+export const apiUrl = (queryEnv: QueryEnv): string => {
+  if (queryEnv === 'production') {
+    return 'https://api.wellcomecollection.org'
+  }
+  if (queryEnv === 'staging') {
+    return 'https://api-stage.wellcomecollection.org'
+  }
+  throw new Error(`No API exists for environment ${queryEnv}!`)
+}
 
 export async function listIndices(client: Client): Promise<Index[]> {
   const body = await client.cat.indices({ h: ['index'] })
@@ -23,14 +30,7 @@ export async function listIndices(client: Client): Promise<Index[]> {
 }
 
 async function getEnvironmentQueries(env: QueryEnv) {
-  const apiUrl = {
-    production:
-      'https://api.wellcomecollection.org/catalogue/v2/search-templates.json',
-    staging:
-      'https://api-stage.wellcomecollection.org/catalogue/v2/search-templates.json',
-  }[env]
-
-  const res = await fetch(apiUrl)
+  const res = await fetch(`${apiUrl(env)}/catalogue/v2/search-templates.json`)
   const json: ApiSearchTemplateRes = await res.json()
   const queries = Object.fromEntries(
     json.templates.map((template) => {
@@ -75,27 +75,6 @@ export async function getQueries() {
   return queries
 }
 
-export async function getTemplates(
-  filterIds?: SearchTemplateString[]
-): Promise<SearchTemplate[]> {
-  const client = await getRankClient()
-  const indices = await listIndices(client)
-  const ids =
-    filterIds ??
-    queryEnvs.flatMap((queryEnv) =>
-      indices.map((index) => `${queryEnv}/${index}` as SearchTemplateString)
-    )
-
-  const queries = await getQueries()
-  const templates = ids.map((id) => {
-    const [queryEnv, index] = id.split('/')
-    const query = queries[queryEnv][getNamespaceFromIndexName(index)]
-    return new SearchTemplate(queryEnv as QueryEnv, index as Index, query)
-  })
-
-  return templates
-}
-
 export async function getTemplate(
   queryEnv: QueryEnv,
   index: Index
@@ -104,5 +83,3 @@ export async function getTemplate(
   const namespacedQuery = query[getNamespaceFromIndexName(index)]
   return new SearchTemplate(queryEnv, index, namespacedQuery)
 }
-
-export default getTemplates
