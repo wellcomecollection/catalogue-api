@@ -9,7 +9,7 @@ import {
 import { Client } from '@elastic/elasticsearch'
 
 export const apiUrl = (queryEnv: QueryEnv): string => {
-  if (queryEnv === 'production') {
+  if (queryEnv === 'production' || queryEnv === 'candidate') {
     return 'https://api.wellcomecollection.org'
   }
   if (queryEnv === 'staging') {
