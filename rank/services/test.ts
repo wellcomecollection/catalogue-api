@@ -68,7 +68,7 @@ async function service({
   })
 
   let client: Client
-  if (queryEnv === 'candidate') {
+  if (queryEnv === 'candidate' && cluster === 'pipeline') {
     const prodClient = await getPipelineClient('production')
     const stageClient = await getPipelineClient('staging')
     if (await indexExists(prodClient, template.index)) {
@@ -78,8 +78,7 @@ async function service({
     } else {
       throw new Error(`${index} does not exist in the ${cluster} cluster!`)
     }
-  }
-  if (cluster === 'pipeline') {
+  } else if (cluster === 'pipeline') {
     client = await getPipelineClient(queryEnv)
   } else if (cluster === 'rank') {
     client = await getRankClient()
