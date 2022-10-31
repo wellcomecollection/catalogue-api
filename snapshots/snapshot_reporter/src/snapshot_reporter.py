@@ -210,7 +210,7 @@ def get_recent_update_stats(session, *, hours):
         "hours": hours,
         "count": count_resp["count"],
         "latest": parser.parse(
-            search_resp["hits"]["hits"][0]["_source"]["state"]["indexedTime"]
+            search_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
         ),
     }
 
