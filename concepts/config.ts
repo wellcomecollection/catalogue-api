@@ -10,7 +10,7 @@ const environmentSchema = z.object({
 const environment = environmentSchema.parse(process.env);
 
 const config = {
-  pipelineDate: "2022-10-14", // Note: remember to update the Scala config also (weco.api.search.models.ElasticConfig)
+  pipelineDate: "2022-10-03", // Note: remember to update the Scala config also (weco.api.search.models.ElasticConfig)
   serviceName: "catalogue_api", // TODO provision an elasticsearch user for the concepts API
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 } as const;
