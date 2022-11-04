@@ -31,14 +31,14 @@ steps:
     agents:
       queue: "scala"
 
-  - label: "Concepts API"
+  - label: "Concepts API (run tests)"
     key: "concepts-test"
     plugins:
       - docker-compose#v3.9.0:
           run: "concepts"
           command: ["yarn", "test"]
 
-  - label: "Concepts API"
+  - label: "Concepts API (publish image)"
     depends_on:
       - "concepts-test"
     plugins:
