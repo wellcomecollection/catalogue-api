@@ -1,8 +1,4 @@
 {
   "id" : "search",
-  "folder" : "search",
-  "dependencyIds" : [
-    "display",
-    "search_common"
-  ]
+  "folder" : "search"
 }

@@ -1,8 +1,4 @@
 {
   "id" : "requests",
-  "folder" : "requests",
-  "dependencyIds" : [
-    "stacks",
-    "search_common"
-  ]
+  "folder" : "requests"
 }
