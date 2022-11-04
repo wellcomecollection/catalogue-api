@@ -14,7 +14,7 @@ object Metadata {
 
   def write(
     project: Project,
-    folder: String,
+    folder: String
   ) = {
     // Here we write a bit of metadata about the project, and the other
     // local projects it depends on.  This is used by the build scripts
