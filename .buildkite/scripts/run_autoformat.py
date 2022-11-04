@@ -14,7 +14,7 @@ from provider import current_branch, repo
 
 
 def has_git_changes():
-    return subprocess.call(['git', "diff", "--exit-code"]) != 0
+    return subprocess.call(["git", "diff", "--exit-code"]) != 0
 
 
 if __name__ == "__main__":
