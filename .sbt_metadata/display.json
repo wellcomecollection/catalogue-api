@@ -1,6 +1,4 @@
 {
   "id" : "display",
-  "folder" : "common/display",
-  "dependencyIds" : [
-  ]
+  "folder" : "common/display"
 }

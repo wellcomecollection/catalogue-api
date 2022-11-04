@@ -9,7 +9,7 @@ def setupProject(
   externalDependencies: Seq[ModuleID] = Seq()
 ): Project = {
 
-  Metadata.write(project, folder, localDependencies)
+  Metadata.write(project, folder)
 
   val dependsOn = localDependencies
     .map { project: Project =>

@@ -1,7 +1,4 @@
 {
   "id" : "stacks",
-  "folder" : "common/stacks",
-  "dependencyIds" : [
-    "display"
-  ]
+  "folder" : "common/stacks"
 }
