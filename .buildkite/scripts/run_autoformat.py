@@ -6,11 +6,16 @@ In particular, it runs the 'make format' task, and if there are any changes,
 it pushes a new commit to your pull request and aborts the current build.
 """
 
+import subprocess
 import sys
 
 from commands import run_build_script, git
 from git_utils import get_changed_paths
 from provider import current_branch, repo
+
+
+def has_git_changes():
+    return subprocess.call(['git', "diff", "--exit-code"]) != 0
 
 
 if __name__ == "__main__":
