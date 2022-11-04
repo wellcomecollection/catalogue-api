@@ -45,7 +45,7 @@ build_image() {
   fi
 
   echo "*** Building a Docker image"
-  ./builds/build_sbt_image.sh "$PROJECT_NAME" "$PROJECT_DIRECTORY" "$CURRENT_COMMIT"
+  ./builds/build_sbt_image.sh "$PROJECT_NAME" "$PROJECT_DIRECTORY" "$IMAGE_TAG"
 }
 
 publish_image_to_ecr() {
