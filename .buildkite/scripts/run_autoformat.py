@@ -10,7 +10,6 @@ import subprocess
 import sys
 
 from commands import run_build_script, git
-from git_utils import get_changed_paths
 from provider import current_branch, repo
 
 
