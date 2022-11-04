@@ -18,6 +18,3 @@ docker build \
   --file "$PROJECT_DIRECTORY/Dockerfile" \
   --tag "$PROJECT:$CURRENT_COMMIT" \
   "$PROJECT_DIRECTORY"
-
-mkdir -p "$ROOT/.releases"
-echo "$CURRENT_COMMIT" > "$ROOT/.releases/$PROJECT"

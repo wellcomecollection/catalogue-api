@@ -8,106 +8,55 @@ steps:
     # and trigger a new build; if so, we want that to happen ASAP.
     priority: 1
 
-  - group: "run tests"
-    steps:
+  - label: "{{ matrix.name }}"
+    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix.name }} {{ matrix.args }}"
 
-    - command: ./builds/run_sbt_tests.sh display
-      label: "display"
-      agents:
-        queue: "scala"
+    matrix:
+      adjustments:
+        - with:
+            name: "display"
+            args: "--is-library"
+        - with:
+            name: "search_common"
+            args: "--is-library"
+        - with:
+            name: "stacks"
+            args: "--is-library"
 
-    - command: ./builds/run_sbt_tests.sh search_common
-      label: "search_common"
-      agents:
-        queue: "scala"
+        - with:
+            name: "search"
 
-    - command: ./builds/run_sbt_tests.sh stacks
-      label: "stacks_common"
-      agents:
-        queue: "scala"
+        - with:
+            name: "items"
 
-    - command: ./builds/run_sbt_tests_with_docker_compose.sh search
-      label: "Works and images API"
-      key: "search-test"
-      agents:
-        queue: "scala"
+        - with:
+            name: "requests"
 
-      # We increase the priority of this task because it's the longest
-      # running task in this pipeline.  Increasing the priority means it
-      # will be assigned to the first available instance, rather than waiting
-      # for other, faster tasks to be started and new instances created.
-      priority: 1
+        - with:
+            name: "snapshot_generator"
 
-    - command: ./builds/run_sbt_tests.sh items
-      label: "Items API"
-      key: "items-test"
-      agents:
-        queue: "scala"
+    agents:
+      queue: "scala"
 
-    - command: ./builds/run_sbt_tests.sh requests
-      label: "Requests API"
-      key: "requests-test"
-      agents:
-        queue: "scala"
+  - label: "Concepts API"
+    key: "concepts-test"
+    plugins:
+      - docker-compose#v3.9.0:
+          run: "concepts"
+          command: ["yarn", "test"]
 
-    - label: "Concepts API"
-      key: "concepts-test"
-      plugins:
-        - docker-compose#v3.9.0:
-            run: "concepts"
-            command: ["yarn", "test"]
-
-    - command: ./builds/run_sbt_tests_with_docker_compose.sh snapshot_generator
-      label: "Snapshot generator"
-      key: "snapshots-test"
-      agents:
-        queue: "scala"
-
-  - group: "publish Docker images"
-    if: build.branch == "main"
-
-    steps:
-
-    - command: ./builds/publish_sbt_app.sh search
-      label: "Works and images API"
-      depends_on:
-        - "search-test"
-      agents:
-        queue: "scala"
-
-    - command: ./builds/publish_sbt_app.sh items
-      label: "Items API"
-      depends_on:
-        - "items-test"
-      agents:
-        queue: "scala"
-
-    - command: ./builds/publish_sbt_app.sh requests
-      label: "Requests API"
-      depends_on:
-        - "requests-test"
-      agents:
-        queue: "scala"
-
-    - label: "Concepts API"
-      depends_on:
-        - "concepts-test"
-      plugins:
-        - wellcomecollection/aws-assume-role#v0.2.2:
-            role: "arn:aws:iam::756629837203:role/catalogue-ci"
-        - ecr#v2.1.1:
-            login: true
-        - docker-compose#v3.9.0:
-            push:
-              - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
-              - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
-
-    - command: ./builds/publish_sbt_app.sh snapshot_generator snapshots/snapshot_generator
-      label: "Snapshot generator"
-      depends_on:
-        - "snapshots-test"
-      agents:
-        queue: "scala"
+  - label: "Concepts API"
+    depends_on:
+      - "concepts-test"
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      - ecr#v2.1.1:
+          login: true
+      - docker-compose#v3.9.0:
+          push:
+            - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
+            - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
 
   - command: .buildkite/scripts/test_rank.sh
     label: "rank"
