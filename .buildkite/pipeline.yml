@@ -12,6 +12,7 @@ steps:
     command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix.name }} {{ matrix.args }}"
 
     matrix:
+      setup:
       adjustments:
         - with:
             name: "display"
