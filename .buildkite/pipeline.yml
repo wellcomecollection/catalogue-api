@@ -23,7 +23,7 @@ steps:
     agents:
       queue: "scala"
 
-  - command: ./builds/run_sbt_tests.sh search
+  - command: ./builds/run_sbt_tests_with_docker_compose.sh search
     label: "Works and images API (test)"
     key: "search-test"
     agents:
@@ -43,7 +43,7 @@ steps:
     # for other, faster tasks to be started and new instances created.
     priority: 1
 
-  - command: ./builds/run_sbt_tests.sh items
+  - command: ./builds/run_sbt_tests_with_docker_compose.sh items
     label: "Items API (test)"
     key: "items-test"
     agents:
@@ -57,7 +57,7 @@ steps:
     agents:
       queue: "scala"
 
-  - command: ./builds/run_sbt_tests.sh requests
+  - command: ./builds/run_sbt_tests_with_docker_compose.sh requests
     label: "Requests API (test)"
     key: "requests-test"
     agents:
@@ -98,7 +98,7 @@ steps:
     agents:
       queue: "scala"
 
-  - command: ./builds/publish_sbt_app.sh snapshot_generator
+  - command: ./builds/run_sbt_tests_with_docker_compose.sh snapshot_generator
     label: "Snapshot generator (push image)"
     if: build.branch == "main"
     depends_on:
