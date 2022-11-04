@@ -43,7 +43,7 @@ steps:
     # for other, faster tasks to be started and new instances created.
     priority: 1
 
-  - command: ./builds/run_sbt_tests_with_docker_compose.sh items
+  - command: ./builds/run_sbt_tests.sh items
     label: "Items API (test)"
     key: "items-test"
     agents:
@@ -57,7 +57,7 @@ steps:
     agents:
       queue: "scala"
 
-  - command: ./builds/run_sbt_tests_with_docker_compose.sh requests
+  - command: ./builds/run_sbt_tests.sh requests
     label: "Requests API (test)"
     key: "requests-test"
     agents:
