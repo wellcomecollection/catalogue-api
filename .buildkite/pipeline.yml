@@ -116,14 +116,6 @@ steps:
 
   - wait
 
-  - command: .buildkite/scripts/tag_commit_as_latest.py
-    if: build.branch == "main"
-    label: "tag commit as latest"
-    agents:
-      queue: nano
-
-  - wait
-
   - label: trigger stage deploy
     branches: "main"
     trigger: "catalogue-api-deploy-stage"
