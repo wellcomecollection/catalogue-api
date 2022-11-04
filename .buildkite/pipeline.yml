@@ -9,7 +9,7 @@ steps:
     priority: 1
 
   - label: "{{ matrix }}"
-    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix }} --is-library"
+    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }} --is-library"
     matrix:
       - "display"
       - "search_common"
@@ -19,7 +19,7 @@ steps:
       queue: "scala"
 
   - label: "{{ matrix }}"
-    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix }}"
+    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }}"
 
     matrix:
       setup:
