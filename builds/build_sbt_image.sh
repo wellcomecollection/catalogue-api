@@ -5,8 +5,7 @@ set -o nounset
 set -o verbose
 
 PROJECT="$1"
-
-PROJECT_DIRECTORY=$(jq -r .folder ".sbt_metadata/$PROJECT.json")
+PROJECT_DIRECTORY="$2"
 
 CURRENT_COMMIT=$(git rev-parse HEAD)
 
