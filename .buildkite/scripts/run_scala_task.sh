@@ -49,7 +49,7 @@ build_image() {
 }
 
 publish_image_to_ecr() {
-  if [[ "${$BUILDKITE_BRANCH:-}" != "main" ]]
+  if [[ "${BUILDKITE_BRANCH:-}" != "main" ]]
   then
     echo "*** Skipping publishing to ECR because we're not on main"
     exit 0
