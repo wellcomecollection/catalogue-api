@@ -8,8 +8,8 @@ steps:
     # and trigger a new build; if so, we want that to happen ASAP.
     priority: 1
 
-  - label: "{{ matrix.name }}"
-    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix.name }} --is-library"
+  - label: "{{ matrix }}"
+    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix }} --is-library"
     matrix:
       - "display"
       - "search_common"
@@ -18,8 +18,8 @@ steps:
     agents:
       queue: "scala"
 
-  - label: "{{ matrix.name }}"
-    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix.name }}"
+  - label: "{{ matrix }}"
+    command: ".buildkite/scripts/run_scala_tasks.sh {{ matrix }}"
 
     matrix:
       setup:
