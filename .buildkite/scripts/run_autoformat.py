@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # If there are any changes, push to GitHub immediately and fail the
     # build.  This will abort the remaining jobs, and trigger a new build
     # with the reformatted code.
-    if get_changed_paths():
+    if has_git_changes():
         print("*** There were changes from formatting, creating a commit")
 
         git("config", "user.name", "Buildkite on behalf of Wellcome Collection")
