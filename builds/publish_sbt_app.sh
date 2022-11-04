@@ -8,7 +8,7 @@ if (( $# == 1 ))
 then
   PROJECT="$1"
   PROJECT_DIRECTORY="$1"
-else if (( $# == 2 ))
+elif (( $# == 2 ))
   PROJECT="$1"
   PROJECT_DIRECTORY="$2"
 else
