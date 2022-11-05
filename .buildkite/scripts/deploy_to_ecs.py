@@ -11,6 +11,14 @@ import time
 import boto3
 from botocore.exceptions import ClientError
 
+from ecs import (
+    describe_running_tasks_in_service,
+    describe_service,
+    describe_task_definition,
+    get_desired_task_count,
+    redeploy_ecs_service,
+)
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -28,13 +36,10 @@ def parse_args():
 def get_app_ecr_image_uri(sess, *, cluster, service):
     ecs = sess.client("ecs")
 
-    service_description = ecs.describe_services(cluster=cluster, services=[service])[
-        "services"
-    ][0]
-
-    task_definition = ecs.describe_task_definition(
-        taskDefinition=service_description["taskDefinition"]
-    )["taskDefinition"]
+    service = describe_service(sess, cluster=cluster, service=service)
+    task_definition = describe_task_definition(
+        sess, task_definition_arn=service["taskDefinition"]
+    )
 
     return next(
         container["image"]
@@ -89,54 +94,7 @@ def retag_ecr_image(sess, *, repository_name, old_tag, new_tag):
         if e.response["Error"]["Code"] != "ImageAlreadyExistsException":
             raise e
 
-    return manifests[0]['imageId']['imageDigest']
-
-
-def redeploy_ecs_service(sess, *, cluster, service):
-    """
-    Force a new deployment of an ECS service.
-    """
-    ecs = sess.client("ecs")
-
-    resp = ecs.update_service(cluster=cluster, service=service, forceNewDeployment=True)
-
-    return resp["service"]["deployments"][0]["id"]
-
-
-def describe_tasks_in_service(sess, *, cluster, service):
-    """
-    Given the name of a service, return a list of tasks running within
-    the service.
-    """
-    ecs_client = sess.client("ecs")
-
-    task_arns = []
-
-    paginator = ecs_client.get_paginator("list_tasks")
-    for page in paginator.paginate(cluster=cluster, serviceName=service):
-        task_arns.extend(page["taskArns"])
-
-    # If task_arns is empty we can't ask to describe them.
-    # TODO: This method can handle up to 100 task ARNs.  It seems unlikely
-    # we'd ever have more than that, hence not handling it properly.
-    if task_arns:
-        resp = ecs_client.describe_tasks(
-            cluster=cluster,
-            tasks=task_arns,
-            include=["TAGS"]
-        )
-
-        return resp["tasks"]
-    else:
-        return []
-
-
-def get_desired_task_count(sess, *, cluster, service):
-    ecs = sess.client("ecs")
-
-    resp = ecs.describe_services(cluster=cluster, services=[service])
-
-    return resp['services'][0]['desiredCount']
+    return manifests[0]["imageId"]["imageDigest"]
 
 
 class TaskChecker:
@@ -172,31 +130,49 @@ class TaskChecker:
         ecs = self.sess.client("ecs")
 
         for service in self.services:
-            running_tasks = describe_tasks_in_service(sess, cluster=self.cluster, service=service)
+            running_tasks = describe_running_tasks_in_service(
+                sess, cluster=self.cluster, service=service
+            )
 
             for task in running_tasks:
-                app_container = next(container for container in task['containers'] if container['name'] == 'app')
+                app_container = next(
+                    container
+                    for container in task["containers"]
+                    if container["name"] == "app"
+                )
 
-                task_id = task['taskArn'].split('/')[-1]
+                task_id = task["taskArn"].split("/")[-1]
 
                 # If this task is running an image with a different digest,
                 # then we know it's not up-to-date yet.
-                if app_container['imageDigest'] != ecr_image_digests[app_container['image']]:
+                if (
+                    app_container["imageDigest"]
+                    != ecr_image_digests[app_container["image"]]
+                ):
                     if task_id not in self.already_checked_tasks:
-                        print(f'{service}:\n\ttask {task_id} is running the wrong container')
-                        print(f'\texpected: {ecr_image_digests[app_container["image"]]}')
+                        print(
+                            f"{service}:\n\ttask {task_id} is running the wrong container"
+                        )
+                        print(
+                            f'\texpected: {ecr_image_digests[app_container["image"]]}'
+                        )
                         print(f'\tactual:   {app_container["imageDigest"]}')
                         self.already_checked_tasks.add(task_id)
                     is_up_to_date = False
                     continue
 
-                if any(container['lastStatus'] != 'RUNNING' for container in task['containers']):
-                    print(f'{service}: task {task_id} has containers in the wrong state')
+                if any(
+                    container["lastStatus"] != "RUNNING"
+                    for container in task["containers"]
+                ):
+                    print(
+                        f"{service}: task {task_id} has containers in the wrong state"
+                    )
                     is_up_to_date = False
                     continue
 
             if len(running_tasks) < self.desired_task_counts[service]:
-                print(f'{service}: not running enough tasks')
+                print(f"{service}: not running enough tasks")
                 is_up_to_date = False
 
         return is_up_to_date
@@ -219,10 +195,10 @@ if __name__ == "__main__":
         ecr_image_digests[image_uri] = retag_ecr_image(
             sess, repository_name=repository_name, old_tag="latest", new_tag=new_tag
         )
-    #
-    # for service in args['services']:
-    #     print(f"*** Forcing a redeployment of {service}")
-    #     redeploy_ecs_service(sess, cluster=args['cluster'], service=service)
+
+    for service in args['services']:
+        print(f"*** Forcing a redeployment of {service}")
+        redeploy_ecs_service(sess, cluster=args['cluster'], service=service)
 
     # Wait for 60 minutes to see if services deployed correctly
     now = time.time()
@@ -235,6 +211,7 @@ if __name__ == "__main__":
             sys.exit(0)
         else:
             print("Still waiting for deployment to complete, waiting another 15s")
+            print("")
             time.sleep(15)
 
     else:  # no break
