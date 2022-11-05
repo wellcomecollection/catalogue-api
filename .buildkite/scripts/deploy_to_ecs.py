@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 
 import boto3
 from botocore.exceptions import ClientError
@@ -223,5 +224,19 @@ if __name__ == "__main__":
     #     print(f"*** Forcing a redeployment of {service}")
     #     redeploy_ecs_service(sess, cluster=args['cluster'], service=service)
 
+    # Wait for 60 minutes to see if services deployed correctly
+    now = time.time()
     checker = TaskChecker(sess, **args, ecr_image_digests=ecr_image_digests)
-    print(checker.has_up_to_date_tasks())
+
+    while time.time() - now < 60 * 60:
+        res = checker.has_up_to_date_tasks()
+        if res:
+            print("Tasks are up-to-date, deployment complete!")
+            sys.exit(0)
+        else:
+            print("Still waiting for deployment to complete, waiting another 15s")
+            time.sleep(15)
+
+    else:  # no break
+        print("Tasks did not deploy in an hour, failing")
+        sys.exit(1)
