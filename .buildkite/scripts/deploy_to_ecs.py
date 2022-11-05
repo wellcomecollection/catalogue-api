@@ -196,9 +196,9 @@ if __name__ == "__main__":
             sess, repository_name=repository_name, old_tag="latest", new_tag=new_tag
         )
 
-    for service in args['services']:
+    for service in args["services"]:
         print(f"*** Forcing a redeployment of {service}")
-        redeploy_ecs_service(sess, cluster=args['cluster'], service=service)
+        redeploy_ecs_service(sess, cluster=args["cluster"], service=service)
 
     # Wait for 60 minutes to see if services deployed correctly
     now = time.time()
