@@ -21,11 +21,11 @@ steps:
   - label: "{{ matrix }} (app)"
     command: |
       ./builds/run_sbt_tests.sh {{ matrix }}
-      ./builds/build_sbt_image.sh {{ matrix }}
+      ./builds/build_sbt_image.sh {{ matrix }} "$BUILDKITE_COMMIT"
 
       if [[ "$BUILDKITE_BRANCH" == "main" ]]
       then
-        ./builds/publish_sbt_image_to_ecr.sh
+        ./builds/publish_sbt_image_to_ecr.sh {{ matrix }} "$BUILDKITE_COMMIT"
       fi
 
     matrix:
