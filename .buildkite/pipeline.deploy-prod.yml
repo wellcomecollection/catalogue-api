@@ -1,11 +1,11 @@
 steps:
   - label: "Diff tool: Compare stage & prod"
-     branches: "main"
-     plugins:
-       - docker-compose#v3.5.0:
-           run: diff_tool
-     agents:
-       queue: nano
+    branches: "main"
+    plugins:
+      - docker-compose#v3.5.0:
+          run: diff_tool
+    agents:
+      queue: nano
 
   - wait
 
