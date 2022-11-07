@@ -6,8 +6,7 @@ This script is mirrored in the catalogue-pipeline and storage-service repos.
 
 == How we use ECR tags ==
 
-We have three types
-of tag:
+We have three types of tag:
 
     - Every image has a tag starting ref, e.g. 'ref.f37d2c5'.
       This is the Git commit has that was used to build a given image.
@@ -68,7 +67,7 @@ EOF
 set -o errexit
 set -o nounset
 
-for repositoryName in "$1"
+for repositoryName in "$@"
 do
   # These commands are based on an AWS ECR guide:
   # https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-retag.html
