@@ -45,9 +45,6 @@ parse_args() {
   PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
   echo "PROJECT=$PROJECT_NAME, PROJECT_DIRECTORY=$PROJECT_DIRECTORY"
-  pwd
-  ls
-  ls $PROJECT_DIRECTORY
 
   if [[ -f "$PROJECT_DIRECTORY/Dockerfile" ]]
   then
@@ -58,13 +55,7 @@ parse_args() {
 }
 
 run_sbt_tests() {
-  echo "*** Running sbt tests"
-  if [[ -f "$PROJECT_DIRECTORY/docker-compose.yml" ]]
-  then
-    ./builds/run_sbt_tests_with_docker_compose.sh "$PROJECT_NAME"
-  else
-    ./builds/run_sbt_tests.sh "$PROJECT_NAME"
-  fi
+  ./builds/run_sbt_tests.sh "$PROJECT_NAME"
 }
 
 build_image() {

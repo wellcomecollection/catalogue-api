@@ -51,7 +51,11 @@ BUILDS_DIR="$ROOT/builds"
 
 # https://stackoverflow.com/a/31236568/1558022
 function relpath() {
-  python3 -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
+  python3 -c "import os, sys; print(os.path.relpath(*(sys.argv[1:])))" "$@";
+}
+
+function strip_whitespace() {
+  python3 -c "import sys; print(sys.stdin.read().strip())";
 }
 
 # The "show project/baseDirectory" command will return output like
@@ -72,8 +76,8 @@ function relpath() {
 BASE_DIR=$(
   $BUILDS_DIR/run_sbt_task_in_docker.sh "show $PROJECT/baseDirectory" \
     | tail -n 1 \
-    | awk '{print $2}'
+    | awk '{print $2}' \
+    | strip_whitespace
 )
 
 echo $(relpath "$BASE_DIR" "$ROOT")
-

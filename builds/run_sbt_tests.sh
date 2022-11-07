@@ -2,11 +2,17 @@
 
 set -o errexit
 set -o nounset
-set -o verbose
 
-PROJECT="$1"
+PROJECT_NAME="$1"
+PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
-ROOT=$(git rev-parse --show-toplevel)
-BUILDS_DIR="$ROOT/builds"
+echo "*** Running sbt tests"
+echo "$PROJECT_DIRECTORY"
+echo "$PROJECT_DIRECTORY/docker-compose.yml"
 
-$BUILDS_DIR/run_sbt_task_in_docker.sh "project $PROJECT" "test"
+if [[ -f "$PROJECT_DIRECTORY/docker-compose.yml" ]]
+then
+  ./builds/run_sbt_task_in_docker.sh "project $PROJECT_NAME" "dockerComposeTest"
+else
+  ./builds/run_sbt_task_in_docker.sh "project $PROJECT_NAME" "test"
+fi
