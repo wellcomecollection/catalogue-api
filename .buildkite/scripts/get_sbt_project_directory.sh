@@ -2,6 +2,8 @@
 <<EOF
 Finds the path to an sbt project directory.
 
+This script is mirrored in the catalogue-pipeline and storage-service repos.
+
 == Motivation ==
 
 In some of our repos, our projects are defined in the top level,
