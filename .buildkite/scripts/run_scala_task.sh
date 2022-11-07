@@ -19,7 +19,7 @@ parse_args() {
   elif (( $# == 2))
   then
     PROJECT_NAME="$1"
-    PROJECT_DIRECTORY="$1"
+    PROJECT_DIRECTORY="$2"
     PROJECT_TYPE="app"
   else
     echo "Usage: publish_sbt_app.sh <PROJECT> [<PROJECT_DIRECTORY> | --is-library]" >&2

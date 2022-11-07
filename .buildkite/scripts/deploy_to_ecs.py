@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
             if deployment["rolloutState"] == "COMPLETED":
                 print(
-                    f"Deployment of {OKBLUE}{service}{RESET} has {OKGREEN}completed{RESET} ({OKBLUE}{deployment_id}{RESET})"
+                    f"Deployment of {OKBLUE}{service}{RESET} has {OKGREEN}completed{RESET} ({OKGREEN}{deployment_id}{RESET})"
                 )
                 del pending_deployments[service]
             else:

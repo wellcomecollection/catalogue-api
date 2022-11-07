@@ -3,6 +3,7 @@
 import argparse
 
 import boto3
+from botocore.exceptions import ClientError
 
 
 OKBLUE = "\033[94m"
