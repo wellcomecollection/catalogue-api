@@ -1,4 +1,44 @@
 #!/usr/bin/env bash
+# Run a Scala task in Buildkite.  This includes:
+#
+#   - running tests
+#   - building a Docker image (if applicable)
+#   - publishing the Docker image to ECR (if on main)
+#
+# It's best illustrated with some usage examples:
+#
+#     run_scala_task.sh bag_verifier
+#
+#         This will run the tests for the 'bag_verifier' app, which is
+#         in the 'bag_verifier' folder in the root of the repo.
+#         It will build the image on pull requests, and on pushes to main
+#         it will also publish the image to ECR.
+#
+#     run_scala_task.sh snapshot_generator snapshots/snapshot_generator
+#
+#         This runs the tests for the 'snapshot_generator' app, which is
+#         in the 'snapshots/snapshot_generator' folder.  It also builds and
+#         publishes Docker images on pull requests/pushes to main, respectively.
+#
+#         This second argument is useful in larger repositories where not
+#         every app is in the top level.
+#
+#     run_scala_task.sh display --is-library
+#
+#         This runs the tests for the 'display' library, which is in the
+#         'display' folder in the root of the repo.  It does not build or
+#         publish Docker images, because we don't have them for libraries.
+#
+#     run_scala_task.sh pipeline_storage common/pipeline_storage --is-library
+#
+#         This runs the tests for the 'pipeline_storage' library, which is
+#         in the 'common/pipeline_storage' folder in the root of the repo.
+#         It doesn't build or publish Docker images.
+#
+#         This second argument is useful in larger repositories where not
+#         every library is in the top level.
+#
+# This script is mirrored in the catalogue-pipeline and storage-service repos.
 
 set -o errexit
 set -o nounset
@@ -11,6 +51,10 @@ parse_args() {
     PROJECT_NAME="$1"
     PROJECT_DIRECTORY="$1"
     PROJECT_TYPE="app"
+  elif (( $# == 3 )) && [[ "$3" == "--is-library" ]]
+    PROJECT_NAME="$1"
+    PROJECT_DIRECTORY="$2"
+    PROJECT_TYPE="library"
   elif (( $# == 2 )) && [[ "$2" == "--is-library" ]]
   then
     PROJECT_NAME="$1"
