@@ -50,4 +50,5 @@ do
   aws ecs wait services-stable \
     --cluster "$CLUSTER" \
     --service "$serviceName"
+  echo "Done! $serviceName is stable"
 done
