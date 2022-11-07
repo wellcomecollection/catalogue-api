@@ -22,9 +22,6 @@ steps:
     agents:
       queue: "scala"
 
-    agents:
-      queue: "scala"
-
   - label: "Concepts API (run tests)"
     key: "concepts-test"
     plugins:
