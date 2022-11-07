@@ -6,10 +6,11 @@ steps:
            run: diff_tool
      agents:
        queue: nano
-   - wait
 
-   - block: ":rocket: Deploy to prod?"
-     prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
+  - wait
+
+  - block: ":rocket: Deploy to prod?"
+    prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
 
   - label: "Deploy (catalogue prod)"
     branches: "main"
