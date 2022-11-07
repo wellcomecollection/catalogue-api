@@ -13,6 +13,7 @@ from ecs import (
     describe_task_definition,
     redeploy_ecs_service,
 )
+from retag_ecr_image import retag_ecr_image
 
 
 OKBLUE = "\033[94m"
@@ -57,39 +58,6 @@ def get_all_ecr_image_uris(sess, *, cluster, services):
         get_app_ecr_image_uri(sess, cluster=cluster, service=service)
         for service in services
     }
-
-
-def retag_ecr_image(sess, *, repository_name, old_tag, new_tag):
-    """
-    Given an ECR repository, tag the image `old_tag` as `new_tag`.
-    """
-    ecr = sess.client("ecr")
-
-    manifests = ecr.batch_get_image(
-        repositoryName=repository_name, imageIds=[{"imageTag": old_tag}]
-    )["images"]
-
-    if len(manifests) == 0:
-        raise RuntimeError(f"No matching images found for {repository_name}:{old_tag}!")
-
-    if len(manifests) > 1:
-        raise RuntimeError(
-            f"Multiple matching images found for {repository_name}:{old_tag}!"
-        )
-
-    old_image = manifests[0]
-
-    try:
-        ecr.put_image(
-            repositoryName=repository_name,
-            imageTag=new_tag,
-            imageManifest=old_image["imageManifest"],
-        )
-    except ClientError as e:
-        if e.response["Error"]["Code"] != "ImageAlreadyExistsException":
-            raise e
-
-    return old_image["imageId"]["imageDigest"]
 
 
 def pprint_time(seconds):
