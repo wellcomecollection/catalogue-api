@@ -1,20 +1,16 @@
 steps:
-  - label: "Diff tool: Compare stage & prod"
+  - label: "Deploy (catalogue stage)"
     branches: "main"
-    plugins:
-      - docker-compose#v3.5.0:
-          run: diff_tool
-    agents:
-      queue: nano
+    command: |
+      ENV_TAG="env.prod" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/concepts
+        uk.ac.wellcome/items
+        uk.ac.wellcome/search
 
-  - wait
-
-  - block: ":rocket: Deploy to prod?"
-    prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
-
-  - label: "Deploy (catalogue prod)"
-    branches: "main"
-    command: .buildkite/scripts/deploy_to_ecs.py catalogue-api-2021-04-26 prod-concepts-api,prod-items-api,prod-search-api
+      CLUSTER="catalogue-api-2021-04-26" .buildkite/scripts/redeploy_ecs_services.sh \
+        prod-concepts-api \
+        prod-items-api \
+        prod-search-api
 
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -23,9 +19,13 @@ steps:
     agents:
       queue: nano
 
-  - label: "Deploy (requests prod)"
+  - label: "Deploy (requests stage)"
     branches: "main"
-    command: .buildkite/scripts/deploy_to_ecs.py identity-prod requests-prod
+    command: |
+      ENV_TAG="env.prod" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/requests
+      CLUSTER="identity-prod" .buildkite/scripts/redeploy_ecs_services.sh \
+        requests-prod
 
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:

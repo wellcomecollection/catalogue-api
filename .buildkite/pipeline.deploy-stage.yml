@@ -1,7 +1,16 @@
 steps:
   - label: "Deploy (catalogue stage)"
     branches: "main"
-    command: .buildkite/scripts/deploy_to_ecs.py catalogue-api-2021-04-26 stage-concepts-api,stage-items-api,stage-search-api
+    command: |
+      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/concepts
+        uk.ac.wellcome/items
+        uk.ac.wellcome/search
+
+      CLUSTER="catalogue-api-2021-04-26" .buildkite/scripts/redeploy_ecs_services.sh \
+        stage-concepts-api \
+        stage-items-api \
+        stage-search-api
 
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -12,7 +21,11 @@ steps:
 
   - label: "Deploy (requests stage)"
     branches: "main"
-    command: .buildkite/scripts/deploy_to_ecs.py identity-stage requests-stage
+    command: |
+      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/requests
+      CLUSTER="identity-stage" .buildkite/scripts/redeploy_ecs_services.sh \
+        requests-stage
 
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
