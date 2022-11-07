@@ -57,6 +57,7 @@ parse_args() {
 
 run_sbt_tests() {
   echo "*** Running sbt tests"
+  echo "$PROJECT_DIRECTORY/docker-compose.yml"
   if [[ -f "$PROJECT_DIRECTORY/docker-compose.yml" ]]
   then
     ./builds/run_sbt_tests_with_docker_compose.sh "$PROJECT_NAME"
