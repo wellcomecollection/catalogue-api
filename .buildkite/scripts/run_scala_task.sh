@@ -42,7 +42,7 @@ parse_args() {
     exit 1
   fi
 
-  PROJECT_DIRECTORY=$(./builds/get_sbt_project_directory.sh "$PROJECT_NAME")
+  PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
   if [[ -f "$PROJECT_DIRECTORY/Dockerfile" ]]
   then
