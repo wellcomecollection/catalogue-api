@@ -7,8 +7,6 @@ PROJECT_NAME="$1"
 PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
 echo "*** Running sbt tests"
-echo "$PROJECT_DIRECTORY"
-echo "$PROJECT_DIRECTORY/docker-compose.yml"
 
 if [[ -f "$PROJECT_DIRECTORY/docker-compose.yml" ]]
 then
