@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import functools
-import json
-import os
-import subprocess
 import sys
 import time
 
@@ -12,12 +8,18 @@ import boto3
 from botocore.exceptions import ClientError
 
 from ecs import (
-    describe_running_tasks_in_service,
+    describe_deployment,
     describe_service,
     describe_task_definition,
-    get_desired_task_count,
     redeploy_ecs_service,
 )
+
+
+OKBLUE = "\033[94m"
+OKGREEN = "\033[92m"
+WARNING = "\033[93m"
+FAIL = "\033[91m"
+RESET = "\033[0m"
 
 
 def parse_args():
@@ -34,8 +36,6 @@ def parse_args():
 
 
 def get_app_ecr_image_uri(sess, *, cluster, service):
-    ecs = sess.client("ecs")
-
     service = describe_service(sess, cluster=cluster, service=service)
     task_definition = describe_task_definition(
         sess, task_definition_arn=service["taskDefinition"]
@@ -77,109 +77,38 @@ def retag_ecr_image(sess, *, repository_name, old_tag, new_tag):
             f"Multiple matching images found for {repository_name}:{old_tag}!"
         )
 
-    existing_manifest = manifests[0]["imageManifest"]
-
-    tag_operation = {
-        "source": f"{repository_name}:{old_tag}",
-        "target": f"{repository_name}:{new_tag}",
-    }
+    old_image = manifests[0]
 
     try:
         ecr.put_image(
             repositoryName=repository_name,
             imageTag=new_tag,
-            imageManifest=existing_manifest,
+            imageManifest=old_image["imageManifest"],
         )
     except ClientError as e:
         if e.response["Error"]["Code"] != "ImageAlreadyExistsException":
             raise e
 
-    return manifests[0]["imageId"]["imageDigest"]
+    return old_image["imageId"]["imageDigest"]
 
 
-class TaskChecker:
-    def __init__(self, sess, *, cluster, services, ecr_image_digests):
-        self.already_checked_tasks = set()
-        self.sess = sess
-        self.cluster = cluster
-        self.services = services
-        self.ecr_image_digests = ecr_image_digests
-
-        # How many tasks do we want in each service
-        self.desired_task_counts = {
-            service: get_desired_task_count(sess, cluster=cluster, service=service)
-            for service in services
-        }
-
-        # What's the ECR URI associated with the task definition
-        # in each service?
-        self.ecr_image_uris = {
-            service: get_app_ecr_image_uri(sess, cluster=cluster, service=service)
-            for service in services
-        }
-
-    def has_up_to_date_tasks(self):
-        """
-        Checks whether all the running tasks in a cluster/service are using
-        the correct versions of the images.
-        """
-        # Now loop through all these services, inspect the running tasks,
-        # and check if they match the service spec.
-        is_up_to_date = True
-
-        ecs = self.sess.client("ecs")
-
-        for service in self.services:
-            running_tasks = describe_running_tasks_in_service(
-                sess, cluster=self.cluster, service=service
-            )
-
-            for task in running_tasks:
-                app_container = next(
-                    container
-                    for container in task["containers"]
-                    if container["name"] == "app"
-                )
-
-                task_id = task["taskArn"].split("/")[-1]
-
-                # If this task is running an image with a different digest,
-                # then we know it's not up-to-date yet.
-                if (
-                    app_container["imageDigest"]
-                    != ecr_image_digests[app_container["image"]]
-                ):
-                    if task_id not in self.already_checked_tasks:
-                        print(
-                            f"{service}:\n\ttask {task_id} is running the wrong container"
-                        )
-                        print(
-                            f'\texpected: {ecr_image_digests[app_container["image"]]}'
-                        )
-                        print(f'\tactual:   {app_container["imageDigest"]}')
-                        self.already_checked_tasks.add(task_id)
-                    is_up_to_date = False
-                    continue
-
-                if any(
-                    container["lastStatus"] != "RUNNING"
-                    for container in task["containers"]
-                ):
-                    print(
-                        f"{service}: task {task_id} has containers in the wrong state"
-                    )
-                    is_up_to_date = False
-                    continue
-
-            if len(running_tasks) < self.desired_task_counts[service]:
-                print(f"{service}: not running enough tasks")
-                is_up_to_date = False
-
-        return is_up_to_date
+def pprint_time(seconds):
+    seconds = int(seconds)
+    if seconds > 60:
+        minutes = seconds // 60
+        seconds = seconds % 60
+        if seconds > 0:
+            return f"{minutes}m {seconds}s"
+        else:
+            return f"{minutes}m"
+    else:
+        return f"{seconds}s"
 
 
 if __name__ == "__main__":
     args = parse_args()
+
+    cluster = args["cluster"]
 
     sess = boto3.Session()
 
@@ -191,29 +120,60 @@ if __name__ == "__main__":
         repository_uri, new_tag = image_uri.split(":")
         _, repository_name = repository_uri.split("/", 1)
 
-        print(f"*** Tagging image {repository_name}:{new_tag} from latest")
+        print(f"Tagging image {OKBLUE}{repository_name}:{new_tag}{RESET} from latest")
         ecr_image_digests[image_uri] = retag_ecr_image(
             sess, repository_name=repository_name, old_tag="latest", new_tag=new_tag
         )
 
+    print("")
+
+    pending_deployments = {}
+
     for service in args["services"]:
-        print(f"*** Forcing a redeployment of {service}")
-        redeploy_ecs_service(sess, cluster=args["cluster"], service=service)
+        print(f"Starting a new deployment of {OKBLUE}{service}{RESET}")
+        pending_deployments[service] = redeploy_ecs_service(
+            sess, cluster=args["cluster"], service=service
+        )
+        print(
+            f"Started new deployment of {OKBLUE}{service}{RESET} with deployment {OKBLUE}{pending_deployments[service]}{RESET}"
+        )
+
+    print("")
+
+    print("Waiting for deployments to complete...")
 
     # Wait for 60 minutes to see if services deployed correctly
     now = time.time()
-    checker = TaskChecker(sess, **args, ecr_image_digests=ecr_image_digests)
 
-    while time.time() - now < 60 * 60:
-        res = checker.has_up_to_date_tasks()
-        if res:
-            print("Tasks are up-to-date, deployment complete!")
-            sys.exit(0)
-        else:
-            print("Still waiting for deployment to complete, waiting another 15s")
-            print("")
-            time.sleep(15)
+    while time.time() - now < 60 * 60 and pending_deployments:
+        time.sleep(15)
+        print("")
 
-    else:  # no break
-        print("Tasks did not deploy in an hour, failing")
+        for service, deployment_id in sorted(pending_deployments.items()):
+            deployment = describe_deployment(
+                sess, cluster=cluster, service=service, deployment_id=deployment_id
+            )
+
+            if deployment["rolloutState"] == "COMPLETED":
+                print(
+                    f"Deployment of {OKBLUE}{service}{RESET} has {OKGREEN}completed{RESET} ({OKBLUE}{deployment_id}{RESET})"
+                )
+                del pending_deployments[service]
+            else:
+                print(
+                    f"Deployment of {OKBLUE}{service}{RESET} is in state {WARNING}{deployment['rolloutState']}{RESET} "
+                    f"(running {OKGREEN}{deployment['runningCount']}{RESET}, pending {WARNING}{deployment['pendingCount']}{RESET})"
+                )
+
+        if pending_deployments:
+            time_elapsed = time.time() - now
+            print(f"Waiting another 15s, waited {pprint_time(time_elapsed)} so far")
+
+    print("")
+
+    if pending_deployments:
+        print(f"{FAIL}Not all services were deployed successfully{RESET}")
         sys.exit(1)
+    else:
+        print(f"{OKGREEN}All services deployed successfully{RESET}")
+        sys.exit(0)
