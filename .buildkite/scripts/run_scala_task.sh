@@ -44,6 +44,7 @@ parse_args() {
 
   PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
+  ls "$PROJECT_DIRECTORY"
   echo "PROJECT=$PROJECT_NAME, PROJECT_DIRECTORY=$PROJECT_DIRECTORY"
   ls "$PROJECT_DIRECTORY"
 
