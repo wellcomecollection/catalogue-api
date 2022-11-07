@@ -33,7 +33,7 @@ PROJECT_DIRECTORY=$(./builds/get_sbt_project_directory.sh "$PROJECT_NAME")
 
 echo "*** Building Docker image for sbt app"
 
-./builds/run_sbt_task_in_docker "project $PROJECT_NAME" ";stage"
+./builds/run_sbt_task_in_docker.sh "project $PROJECT_NAME" ";stage"
 
 docker build \
   --file "$PROJECT_DIRECTORY/Dockerfile" \
