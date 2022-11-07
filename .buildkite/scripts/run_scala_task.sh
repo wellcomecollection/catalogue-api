@@ -44,6 +44,8 @@ parse_args() {
 
   PROJECT_DIRECTORY=$(./.buildkite/scripts/get_sbt_project_directory.sh "$PROJECT_NAME")
 
+  echo "PROJECT=$PROJECT_NAME, PROJECT_DIRECTORY=$PROJECT_DIRECTORY"
+
   if [[ -f "$PROJECT_DIRECTORY/Dockerfile" ]]
   then
     PROJECT_TYPE="app"
