@@ -75,15 +75,7 @@ publish_image_to_ecr() {
     exit 0
   fi
 
-  echo "*** Publishing Docker image to ECR"
-
-  eval $(aws ecr get-login --no-include-email)
-
-  docker tag "$PROJECT_NAME:$IMAGE_TAG" "$ECR_REGISTRY/$PROJECT_NAME:$IMAGE_TAG"
-  docker push "$ECR_REGISTRY/$PROJECT_NAME:$IMAGE_TAG"
-
-  docker tag "$PROJECT_NAME:$IMAGE_TAG" "$ECR_REGISTRY/$PROJECT_NAME:latest"
-  docker push "$ECR_REGISTRY/$PROJECT_NAME:latest"
+  ./builds/publish_sbt_image_to_ecr.sh "$PROJECT_NAME" "$IMAGE_TAG"
 }
 
 parse_args "$@"

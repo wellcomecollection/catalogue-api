@@ -9,7 +9,7 @@ This script is mirrored in the catalogue-pipeline and storage-service repos.
 
 == Usage ==
 
-Pass the name of the sbt project as arg 1, and the image 2 as arg 2, e.g.
+Pass the name of the sbt project as arg 1, and the image tag as arg 2, e.g.
 
     $ build_sbt_image.sh file_indexer ref.19872ab
     $ build_sbt_image.sh snapshot_generator ref.1761817
@@ -19,7 +19,6 @@ EOF
 
 set -o errexit
 set -o nounset
-set -o verbose
 
 if (( $# == 2))
 then
