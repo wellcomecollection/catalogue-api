@@ -8,12 +8,27 @@ steps:
     # and trigger a new build; if so, we want that to happen ASAP.
     priority: 1
 
-  - label: "{{ matrix }}"
-    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }}"
+  - label: "{{ matrix }} (library)"
+    command: "./builds/run_sbt_tests.sh {{ matrix }}"
     matrix:
       - "display"
       - "search_common"
       - "stacks"
+
+    agents:
+      queue: "scala"
+
+  - label: "{{ matrix }} (app)"
+    command: |
+      ./builds/run_sbt_tests.sh {{ matrix }}
+      ./builds/build_sbt_image.sh {{ matrix }}
+
+      if [[ "$BUILDKITE_BRANCH" == "main" ]]
+      then
+        ./builds/publish_sbt_image_to_ecr.sh
+      fi
+
+    matrix:
       - "search"
       - "items"
       - "requests"
