@@ -20,29 +20,11 @@ This script is mirrored in the catalogue-pipeline and storage-service repos.
         It will build the image on pull requests, and on pushes to main
         it will also publish the image to ECR.
 
-    run_scala_task.sh snapshot_generator snapshots/snapshot_generator
-
-        This runs the tests for the 'snapshot_generator' app, which is
-        in the 'snapshots/snapshot_generator' folder.  It also builds and
-        publishes Docker images on pull requests/pushes to main, respectively.
-
-        This second argument is useful in larger repositories where not
-        every app is in the top level.
-
-    run_scala_task.sh display --is-library
+    run_scala_task.sh display
 
         This runs the tests for the 'display' library, which is in the
         'display' folder in the root of the repo.  It does not build or
         publish Docker images, because we don't have them for libraries.
-
-    run_scala_task.sh pipeline_storage common/pipeline_storage --is-library
-
-        This runs the tests for the 'pipeline_storage' library, which is
-        in the 'common/pipeline_storage' folder in the root of the repo.
-        It doesn't build or publish Docker images.
-
-        This second argument is useful in larger repositories where not
-        every library is in the top level.
 
 EOF
 
@@ -52,29 +34,21 @@ set -o nounset
 ECR_REGISTRY="760097843905.dkr.ecr.eu-west-1.amazonaws.com"
 
 parse_args() {
-  if (( $# == 1 ))
+  if (( $# == 1))
   then
     PROJECT_NAME="$1"
-    PROJECT_DIRECTORY="$1"
-    PROJECT_TYPE="app"
-  elif (( $# == 3 )) && [[ "$3" == "--is-library" ]]
+  else
+    echo "Usage: publish_sbt_app.sh <PROJECT>" >&2
+    exit 1
+  fi
+
+  PROJECT_DIRECTORY=$(./builds/get_sbt_project_directory.sh "$PROJECT_NAME")
+
+  if [[ -f "$PROJECT_DIRECTORY/Dockerfile" ]]
   then
-    PROJECT_NAME="$1"
-    PROJECT_DIRECTORY="$2"
-    PROJECT_TYPE="library"
-  elif (( $# == 2 )) && [[ "$2" == "--is-library" ]]
-  then
-    PROJECT_NAME="$1"
-    PROJECT_DIRECTORY="$1"
-    PROJECT_TYPE="library"
-  elif (( $# == 2))
-  then
-    PROJECT_NAME="$1"
-    PROJECT_DIRECTORY="$2"
     PROJECT_TYPE="app"
   else
-    echo "Usage: publish_sbt_app.sh <PROJECT> [<PROJECT_DIRECTORY> | --is-library]" >&2
-    exit 1
+    PROJECT_TYPE="library"
   fi
 }
 

@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o nounset
-set -o verbose
 
 ECR_REGISTRY="760097843905.dkr.ecr.eu-west-1.amazonaws.com"
 

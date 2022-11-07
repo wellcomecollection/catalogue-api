@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 <<EOF
-Redeploy an ECS service.
+Trigger a deployment of an ECS service.
 
 This script is mirrored in the catalogue-pipeline and storage-service repos.
 

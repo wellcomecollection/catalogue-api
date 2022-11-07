@@ -9,29 +9,18 @@ steps:
     priority: 1
 
   - label: "{{ matrix }}"
-    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }} --is-library"
+    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }}"
     matrix:
       - "display"
       - "search_common"
       - "stacks"
+      - "search"
+      - "items"
+      - "requests"
+      - "snapshot_generator"
 
     agents:
       queue: "scala"
-
-  - label: "{{ matrix }}"
-    command: ".buildkite/scripts/run_scala_task.sh {{ matrix }}"
-
-    matrix:
-      setup:
-        - "search"
-        - "items"
-        - "requests"
-
-    agents:
-      queue: "scala"
-
-  - label: "snapshot generator"
-    command: ".buildkite/scripts/run_scala_task.sh snapshot_generator snapshots/snapshot_generator"
 
     agents:
       queue: "scala"
