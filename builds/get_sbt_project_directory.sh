@@ -73,6 +73,8 @@ function strip_whitespace() {
 #
 # We want to grab the path from the final line.
 #
+# Note that this ends with a carriage return (\r), which we need to discard.
+#
 BASE_DIR=$(
   $BUILDS_DIR/run_sbt_task_in_docker.sh "show $PROJECT/baseDirectory" \
     | tail -n 1 \

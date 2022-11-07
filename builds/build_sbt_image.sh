@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 <<EOF
-Run the Docker image for an sbt project.
+Build the Docker image for an sbt project.
 
 This script will automatically detect the location of the Dockerfile based
 on the sbt project config.

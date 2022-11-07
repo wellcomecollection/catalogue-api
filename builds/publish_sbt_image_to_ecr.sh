@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 <<EOF
-Run a Docker image to ECR.
+Publish a Docker image to ECR.
 
 This is meant for use with sbt-based images -- we use Docker Compose for
 our Node apps.  The image will be published both with the given tag and
