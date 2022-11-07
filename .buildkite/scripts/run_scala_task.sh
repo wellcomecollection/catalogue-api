@@ -58,6 +58,7 @@ parse_args() {
     PROJECT_DIRECTORY="$1"
     PROJECT_TYPE="app"
   elif (( $# == 3 )) && [[ "$3" == "--is-library" ]]
+  then
     PROJECT_NAME="$1"
     PROJECT_DIRECTORY="$2"
     PROJECT_TYPE="library"
