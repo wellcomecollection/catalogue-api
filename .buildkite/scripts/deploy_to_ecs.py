@@ -5,7 +5,6 @@ import sys
 import time
 
 import boto3
-from botocore.exceptions import ClientError
 
 from ecs import (
     describe_deployment,

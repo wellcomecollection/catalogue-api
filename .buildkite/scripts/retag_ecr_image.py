@@ -54,7 +54,7 @@ def parse_args():
     args = parser.parse_args()
 
     return {
-        "repo_names": repo_names.image_ids.split(","),
+        "repo_names": args.repo_names.split(","),
         "old_tag": args.old_tag,
         "new_tag": args.new_tag,
     }
@@ -65,5 +65,5 @@ if __name__ == '__main__':
     args = parse_args()
 
     for name in args.repo_names:
-        print(f"Tagging image {OKBLUE}{name}:{new_tag}{RESET} from latest")
+        print(f"Tagging image {OKBLUE}{name}:{args.tag}{RESET} from latest")
         retag_ecr_image(sess, repository_name=name, old_tag="latest", new_tag=args.tag)
