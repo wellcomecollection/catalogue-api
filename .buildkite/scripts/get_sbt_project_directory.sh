@@ -34,10 +34,10 @@ to tell us the base directory for a given project.
 == Usage examples ==
 
     $ get_sbt_project_directory.sh items
-    /Users/alexwlchan/repos/catalogue-api/items
+    items
 
     $ get_sbt_project_directory.sh file_indexer
-    /Users/alexwlchan/repos/storage-service/indexer/file_indexer
+    file_indexer
 
 EOF
 
@@ -48,6 +48,11 @@ PROJECT="$1"
 
 ROOT=$(git rev-parse --show-toplevel)
 BUILDS_DIR="$ROOT/builds"
+
+# https://stackoverflow.com/a/31236568/1558022
+function relpath() {
+  python3 -c "import os,sys;print(os.path.relpath(*(sys.argv[1:])))" "$@";
+}
 
 # The "show project/baseDirectory" command will return output like
 #
@@ -64,6 +69,11 @@ BUILDS_DIR="$ROOT/builds"
 #
 # We want to grab the path from the final line.
 #
-$BUILDS_DIR/run_sbt_task_in_docker.sh "show $PROJECT/baseDirectory" \
-  | tail -n 1 \
-  | awk '{print $2}'
+BASE_DIR=$(
+  $BUILDS_DIR/run_sbt_task_in_docker.sh "show $PROJECT/baseDirectory" \
+    | tail -n 1 \
+    | awk '{print $2}'
+)
+
+echo $(relpath "$BASE_DIR" "$ROOT")
+
