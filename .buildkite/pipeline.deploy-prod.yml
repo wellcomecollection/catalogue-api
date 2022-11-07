@@ -11,7 +11,7 @@ steps:
    - block: ":rocket: Deploy to prod?"
      prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
 
-  - label: "Deploy (catalogue stage)"
+  - label: "Deploy (catalogue prod)"
     branches: "main"
     command: |
       ENV_TAG="env.prod" .buildkite/scripts/update_ecr_image_tag.sh \
@@ -31,7 +31,7 @@ steps:
     agents:
       queue: nano
 
-  - label: "Deploy (requests stage)"
+  - label: "Deploy (requests prod)"
     branches: "main"
     command: |
       ENV_TAG="env.prod" .buildkite/scripts/update_ecr_image_tag.sh \
