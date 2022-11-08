@@ -1,50 +1,36 @@
 steps:
   - label: "Deploy (catalogue stage)"
     branches: "main"
+    command: |
+      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/concepts
+        uk.ac.wellcome/items
+        uk.ac.wellcome/search
+
+      CLUSTER="catalogue-api-2021-04-26" .buildkite/scripts/deploy_ecs_services.sh \
+        stage-concepts-api \
+        stage-items-api \
+        stage-search-api
+
     plugins:
-      - docker#v3.5.0:
-          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.7
-          workdir: /repo
-          mount-ssh-agent: true
-          command:
-            [
-              "--project-id",
-              "catalogue_api",
-              "--confirm",
-              "release-deploy",
-              "--from-label",
-              "ref.$BUILDKITE_COMMIT",
-              "--environment-id",
-              "stage",
-              "--description",
-              $BUILDKITE_BUILD_URL,
-              "--confirmation-wait-for",
-              3600,
-            ]
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+
     agents:
       queue: nano
+
   - label: "Deploy (requests stage)"
     branches: "main"
+    command: |
+      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+        uk.ac.wellcome/requests
+      CLUSTER="identity-stage" .buildkite/scripts/redeploy_ecs_services.sh \
+        requests-stage
+
     plugins:
-      - docker#v3.5.0:
-          image: 760097843905.dkr.ecr.eu-west-1.amazonaws.com/wellcome/weco-deploy:5.7
-          workdir: /repo
-          mount-ssh-agent: true
-          command:
-            [
-              "--project-id",
-              "requests_api",
-              "--confirm",
-              "release-deploy",
-              "--from-label",
-              "ref.$BUILDKITE_COMMIT",
-              "--environment-id",
-              "stage",
-              "--description",
-              $BUILDKITE_BUILD_URL,
-              "--confirmation-wait-for",
-              3600,
-            ]
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::770700576653:role/identity-ci"
+
     agents:
       queue: nano
 

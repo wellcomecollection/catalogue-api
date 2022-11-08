@@ -11,22 +11,10 @@ shared_infra/.releases
 *.tfstate
 *.tfstate.backup
 *.tfstate.*.backup
-.releases
-.docker
 .lambda_zips
 .Dockerfile
 .pytest-cache
 .pytest_cache
-
-# Files which could contain secrets we do not want in the repo
-id_rsa
-id_rsa.pub
-/config
-credentials
-
-# These are files we used to keep for our Travis CI setup
-secrets
-secrets.zip
 
 ### Gatling ###
 /gatling/results/*
