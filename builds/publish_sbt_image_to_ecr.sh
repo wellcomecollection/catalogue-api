@@ -6,7 +6,7 @@ This is meant for use with sbt-based images -- we use Docker Compose for
 our Node apps.  The image will be published both with the given tag and
 the floating tag 'latest'.
 
-This script is mirrored in the catalogue-pipeline and storage-service repos.
+This script is mirrored in our other Scala repos.
 
 == Usage ==
 
@@ -15,7 +15,6 @@ Pass the name of the sbt project as arg 1, and the image tag as arg 2, e.g.
     $ publish_sbt_image_to_ecr.sh file_indexer ref.19872ab
     $ publish_sbt_image_to_ecr.sh snapshot_generator ref.1761817
     $ publish_sbt_image_to_ecr.sh transformer_mets ref.9811987
-
 
 EOF
 
@@ -29,7 +28,7 @@ then
   PROJECT_NAME="$1"
   IMAGE_TAG="$2"
 else
-  echo "Usage: build_sbt_image.sh <PROJECT> <IMAGE_TAG>" >&2
+  echo "Usage: publish_sbt_image_to_ecr.sh <PROJECT> <IMAGE_TAG>" >&2
   exit 1
 fi
 
