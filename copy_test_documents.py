@@ -9,9 +9,13 @@ extended to fetch from a remote repo on GitHub.
 import glob
 import os
 import shutil
+import sys
 
 
-PIPELINE_ROOT = os.path.join(os.environ["HOME"], "repos/pipeline")
+try:
+    PIPELINE_ROOT = sys.argv[1]
+except IndexError:
+    sys.exit(f"Usage: {__file__} <PATH_TO_PIPELINE_REPO>")
 
 prefixes = [
     "common/internal_model/src/test/resources",
