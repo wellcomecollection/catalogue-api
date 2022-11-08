@@ -22,9 +22,7 @@ set -o nounset
 # See https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---exit-code
 git diff --exit-code --quiet && has_changes=$? || has_changes=$?
 
-# ./builds/run_formatting.sh
-
-echo "$has_changes"
+./builds/run_formatting.sh
 
 if (( has_changes == 1 ))
 then
