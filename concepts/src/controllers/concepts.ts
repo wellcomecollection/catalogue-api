@@ -29,7 +29,7 @@ const conceptsController = (
 
   return asyncHandler(async (req, res) => {
     const query = req.query.query;
-    const elasticResponse = await elasticClient.search({
+    const elasticResponse = await elasticClient.search<any>({
       index,
       body: {
         ...paginationElasticBody(req.query),
@@ -61,7 +61,7 @@ const conceptsController = (
     // Because we're actually looking for unique concept IDs,
     // the pagination and page sizes end up being garbage - that's fine for now
     const accumulatedConcepts = new Set<string>();
-    const results: Concept[] = elasticResponse.body.hits.hits.flatMap(
+    const results: Concept[] = elasticResponse.hits.hits.flatMap(
       (document: any) => {
         const subjects: Array<Omit<Concept, "type">> =
           document._source.display.subjects;
@@ -95,9 +95,13 @@ const conceptsController = (
       req.url,
       `${req.protocol}://${req.headers.host}`
     );
+    const totalResults =
+      typeof elasticResponse.hits.total === "number"
+        ? elasticResponse.hits.total
+        : elasticResponse.hits.total?.value ?? 0;
     const paginationResponse = getPaginationResponse({
       requestUrl,
-      totalResults: elasticResponse.body.hits.total.value,
+      totalResults,
     });
     res.status(200).json({
       type: "ResultList",

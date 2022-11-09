@@ -17,7 +17,7 @@ const conceptController = (
 
   return asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const worksIndexResponse = await elasticClient.search({
+    const worksIndexResponse = await elasticClient.search<any>({
       index,
       body: {
         size: 1,
@@ -27,17 +27,17 @@ const conceptController = (
             should: [
               {
                 term: {
-                  "query.subjects.id": id
-                }
+                  "query.subjects.id": id,
+                },
               },
               {
                 term: {
-                  "query.contributors.agent.id": id
-                }
-              }
+                  "query.contributors.agent.id": id,
+                },
+              },
             ],
-            minimum_should_match: 1
-          }
+            minimum_should_match: 1,
+          },
         },
         // We don't care much about how we sort here, we just care that we have a sort
         // that will be consistent across Elasticsearch churn.
@@ -48,11 +48,11 @@ const conceptController = (
         // mercy of Elasticsearch to choose, and it may change over time.
         //
         // See https://wellcome.slack.com/archives/C02ANCYL90E/p1663920016045829
-        sort: ['query.id']
+        sort: ["query.id"],
       },
     });
 
-    for (const work of worksIndexResponse.body.hits.hits) {
+    for (const work of worksIndexResponse.hits.hits) {
       for (const subject of work._source.display.subjects) {
         if (subject.id === id) {
           res.status(200).json({
