@@ -33,7 +33,7 @@ fi
 if [[ "$PROJECT_NAME" == "requests" ]]
 then
   # identity
-  ECR_REGISTRY="756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
+  ECR_REGISTRY="770700576653.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
 else
   # catalogue
   ECR_REGISTRY="756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
