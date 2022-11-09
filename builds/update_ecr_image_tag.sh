@@ -2,7 +2,7 @@
 <<EOF
 Retag an image in ECR.
 
-This script is mirrored in the catalogue-pipeline and storage-service repos.
+This script is mirrored in our other Scala repos.
 
 == How we use ECR tags ==
 
@@ -82,5 +82,5 @@ do
   aws ecr put-image \
     --repository-name "$repositoryName" \
     --image-tag "$ENV_TAG" \
-    --image-manifest "$MANIFEST"
+    --image-manifest "$MANIFEST" >/dev/null
 done

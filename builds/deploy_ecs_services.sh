@@ -2,7 +2,7 @@
 <<EOF
 Trigger a deployment of an ECS service.
 
-This script is mirrored in the catalogue-pipeline and storage-service repos.
+This script is mirrored in our other Scala repos.
 
 == How we manage ECS services ==
 
@@ -41,7 +41,7 @@ do
   aws ecs update-service \
     --cluster "$CLUSTER" \
     --service "$serviceName" \
-    --force-new-deployment
+    --force-new-deployment >/dev/null
 done
 
 for serviceName in "$@"
