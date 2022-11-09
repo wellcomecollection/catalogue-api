@@ -21,8 +21,6 @@ EOF
 set -o errexit
 set -o nounset
 
-ECR_REGISTRY="760097843905.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
-
 if (( $# == 2))
 then
   PROJECT_NAME="$1"
@@ -31,6 +29,16 @@ else
   echo "Usage: publish_sbt_image_to_ecr.sh <PROJECT> <IMAGE_TAG>" >&2
   exit 1
 fi
+
+if [[ "$PROJECT_NAME" == "requests" ]]
+then
+  # identity
+  ECR_REGISTRY="756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
+else
+  # catalogue
+  ECR_REGISTRY="770700576653.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
+fi
+
 
 echo "*** Publishing Docker image to ECR"
 
