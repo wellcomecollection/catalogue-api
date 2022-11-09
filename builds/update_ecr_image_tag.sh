@@ -86,6 +86,9 @@ do
       | jq --raw-output --join-output '.images[0].imageManifest'
   )
 
+    echo "$LATEST_MANIFEST"
+    echo "$TAGGED_MANIFEST"
+
   if [[ "$LATEST_MANIFEST" != "$TAGGED_MANIFEST" ]]
   then
     aws ecr put-image \
