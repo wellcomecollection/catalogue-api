@@ -24,7 +24,7 @@ steps:
     command: |
       ENV_TAG="env.staging" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
-      CLUSTER="identity-stage" ./builds/redeploy_ecs_services.sh \
+      CLUSTER="identity-stage" ./builds/deploy_ecs_services.sh \
         requests-stage
 
     plugins:
