@@ -31,8 +31,31 @@ steps:
     matrix:
       - "search"
       - "items"
-      - "requests"
       - "snapshot_generator"
+
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+
+    agents:
+      queue: "scala"
+
+  - label: "{{ matrix }} (app)"
+    command: |
+      ./builds/run_sbt_tests.sh {{ matrix }}
+      ./builds/build_sbt_image.sh {{ matrix }} "$BUILDKITE_COMMIT"
+
+      if [[ "$BUILDKITE_BRANCH" == "main" ]]
+      then
+        ./builds/publish_sbt_image_to_ecr.sh {{ matrix }} "$BUILDKITE_COMMIT"
+      fi
+
+    matrix:
+      - "requests"
+
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::770700576653:role/identity-ci"
 
     agents:
       queue: "scala"
