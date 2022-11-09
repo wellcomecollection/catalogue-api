@@ -8,7 +8,10 @@ import {
 } from "./pagination";
 import { Config } from "../../config";
 
-type QueryParams = { query?: string } & PaginationQueryParameters;
+type QueryParams = {
+  query?: string;
+  "identifiers.identifierType.id"?: string;
+} & PaginationQueryParameters;
 
 type ConceptHandler = RequestHandler<
   never,
@@ -27,6 +30,7 @@ const conceptsController = (
 
   return asyncHandler(async (req, res) => {
     const queryString = req.query.query;
+    const identifierTypeFilter = req.query["identifiers.identifierType.id"];
     const searchResponse = await elasticClient.search<Displayable<Concept>>({
       index,
       body: {
@@ -39,7 +43,7 @@ const conceptsController = (
               ? [
                   {
                     match: {
-                      "query.identifiers": {
+                      "query.identifiers.value": {
                         query: queryString,
                         analyzer: "whitespace",
                         operator: "OR",
@@ -52,6 +56,15 @@ const conceptsController = (
                       query: queryString,
                       fields: ["query.label", "query.alternativeLabels"],
                       type: "cross_fields",
+                    },
+                  },
+                ]
+              : [],
+            filter: identifierTypeFilter
+              ? [
+                  {
+                    term: {
+                      "query.identifiers.identifierType": identifierTypeFilter,
                     },
                   },
                 ]
