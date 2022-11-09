@@ -127,12 +127,19 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.features)
 
-  def requestWithSimilarColors: (Index, String, IndexedImage, Int, Double) => SearchRequest =
+  def requestWithSimilarColors
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
     query: (String, IndexedImage, Index) => Query
-  )(index: Index, imageId: String, image: IndexedImage, n: Int, minScore: Double): SearchRequest =
+  )(
+    index: Index,
+    imageId: String,
+    image: IndexedImage,
+    n: Int,
+    minScore: Double
+  ): SearchRequest =
     search(index)
       .query(query(imageId, image, index))
       .size(n)

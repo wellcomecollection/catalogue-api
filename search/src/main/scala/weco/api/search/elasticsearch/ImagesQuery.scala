@@ -21,17 +21,15 @@ import io.circe.Json
 
 case object ImageSimilarity {
   def blended: (String, IndexedImage, Index) => Query =
-    // For now, we're replacing the blended lsh query with a single knn query 
-    // onthe image feature vector. We'll come back to blend the features and 
+    // For now, we're replacing the blended lsh query with a single knn query
+    // onthe image feature vector. We'll come back to blend the features and
     // colours after some more testing.
     //
     // lshQuery(
     //   "query.inferredData.lshEncodedFeatures",
     //   "query.inferredData.palette"
     // )
-
     knnQuery("query.inferredData.reducedFeatures")
-
 
   def color: (String, IndexedImage, Index) => Query =
     lshQuery("query.inferredData.palette")
