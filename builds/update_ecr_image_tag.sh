@@ -72,15 +72,27 @@ do
   # These commands are based on an AWS ECR guide:
   # https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-retag.html
   echo "Updating the $ENV_TAG tag in $repositoryName"
-  MANIFEST=$(
+  LATEST_MANIFEST=$(
     aws ecr batch-get-image \
       --repository-name "$repositoryName" \
       --image-ids imageTag=latest --output json \
       | jq --raw-output --join-output '.images[0].imageManifest'
   )
 
-  aws ecr put-image \
-    --repository-name "$repositoryName" \
-    --image-tag "$ENV_TAG" \
-    --image-manifest "$MANIFEST" >/dev/null
+  TAGGED_MANIFEST=$(
+    aws ecr batch-get-image \
+      --repository-name "$repositoryName" \
+      --image-ids imageTag="$ENV_TAG" --output json \
+      | jq --raw-output --join-output '.images[0].imageManifest'
+  )
+
+  if [[ "$LATEST_MANIFEST" != "$TAGGED_MANIFEST" ]]
+  then
+    aws ecr put-image \
+      --repository-name "$repositoryName" \
+      --image-tag "$ENV_TAG" \
+      --image-manifest "$LATEST_MANIFEST" >/dev/null
+  else
+    echo "Tag for $ENV_TAG is already up-to-date, skipping"
+  fi
 done
