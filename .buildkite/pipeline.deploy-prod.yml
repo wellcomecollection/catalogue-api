@@ -16,8 +16,8 @@ steps:
     branches: "main"
     command: |
       ENV_TAG="env.prod" ./builds/update_ecr_image_tag.sh \
-        uk.ac.wellcome/concepts
-        uk.ac.wellcome/items
+        uk.ac.wellcome/concepts \
+        uk.ac.wellcome/items \
         uk.ac.wellcome/search
 
       CLUSTER="catalogue-api-2021-04-26" ./builds/deploy_ecs_services.sh \
