@@ -36,7 +36,7 @@ class ImagesController(
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(imagesIndex, id, metric)
+                      .retrieveSimilarImages(imagesIndex, id, image, metric)
                       .map(metric -> _)
                   }
                   .map(_.toMap)

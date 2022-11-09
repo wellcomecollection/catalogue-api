@@ -7,6 +7,8 @@ import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.sort._
+import weco.api.search.models.index.IndexedImage
+
 import weco.api.search.elasticsearch.{
   ColorQuery,
   ImageSimilarity,
@@ -118,21 +120,21 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     }
 
   def requestWithBlendedSimilarity
-    : (Index, String, Int, Double) => SearchRequest =
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.blended)
 
   def requestWithSimilarFeatures
-    : (Index, String, Int, Double) => SearchRequest =
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.features)
 
-  def requestWithSimilarColors: (Index, String, Int, Double) => SearchRequest =
+  def requestWithSimilarColors: (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
-    query: (String, Index) => Query
-  )(index: Index, id: String, n: Int, minScore: Double): SearchRequest =
+    query: (String, IndexedImage, Index) => Query
+  )(index: Index, imageId: String, image: IndexedImage, n: Int, minScore: Double): SearchRequest =
     search(index)
-      .query(query(id, index))
+      .query(query(imageId, image, index))
       .size(n)
       .minScore(minScore)
 }

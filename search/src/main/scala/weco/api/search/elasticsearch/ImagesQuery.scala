@@ -10,26 +10,36 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryB
   BEST_FIELDS,
   CROSS_FIELDS
 }
+import weco.api.search.models.index.IndexedImage
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
   MultiMatchQuery
 }
+import com.sksamuel.elastic4s.requests.searches.queries.RawQuery
+import io.circe.syntax._
+import io.circe.Json
 
 case object ImageSimilarity {
-  def blended: (String, Index) => Query =
-    lshQuery(
-      "query.inferredData.lshEncodedFeatures",
-      "query.inferredData.palette"
-    )
+  def blended: (String, IndexedImage, Index) => Query =
+    // For now, we're replacing the blended lsh query with a single knn query 
+    // onthe image feature vector. We'll come back to blend the features and 
+    // colours after some more testing.
+    //
+    // lshQuery(
+    //   "query.inferredData.lshEncodedFeatures",
+    //   "query.inferredData.palette"
+    // )
 
-  def color: (String, Index) => Query =
+    knnQuery("query.inferredData.reducedFeatures")
+
+
+  def color: (String, IndexedImage, Index) => Query =
     lshQuery("query.inferredData.palette")
 
-  def features: (String, Index) => Query =
-    lshQuery("query.inferredData.lshEncodedFeatures")
-
-  private def lshQuery(fields: String*)(q: String, index: Index): Query = {
-    val documentRef = DocumentRef(index, q)
+  private def lshQuery(
+    fields: String*
+  )(imageId: String, image: IndexedImage, index: Index): Query = {
+    val documentRef = DocumentRef(index, imageId)
 
     moreLikeThisQuery(fields)
       .likeDocs(List(documentRef))
@@ -39,6 +49,24 @@ case object ImageSimilarity {
         maxQueryTerms = Some(1000),
         minShouldMatch = Some("1")
       )
+  }
+
+  def features: (String, IndexedImage, Index) => Query =
+    knnQuery("query.inferredData.reducedFeatures")
+
+  private def knnQuery(
+    field: String
+  )(imageId: String, image: IndexedImage, index: Index): Query = {
+    val query = Json.obj(
+      "knn" -> Json.obj(
+        "field" -> field.asJson,
+        "query_vector" -> image.reducedFeatures.asJson,
+        "k" -> 10.asJson,
+        "num_candidates" -> 100.asJson
+      )
+    )
+
+    RawQuery(query.noSpaces)
   }
 }
 

@@ -42,6 +42,7 @@ class ImagesService(
   def retrieveSimilarImages(
     index: Index,
     imageId: String,
+    image: IndexedImage,
     similarityMetric: SimilarityMetric = SimilarityMetric.Blended,
     minScore: Option[Double] = None
   ): Future[List[IndexedImage]] = {
@@ -65,7 +66,7 @@ class ImagesService(
     val minScoreValue: Double = minScore.getOrElse(defaultMinScore)
 
     val searchRequest =
-      builder(index, imageId, nVisuallySimilarImages, minScoreValue)
+      builder(index, imageId, image, nVisuallySimilarImages, minScoreValue)
 
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
