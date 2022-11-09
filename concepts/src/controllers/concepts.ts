@@ -1,8 +1,6 @@
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
-import levenshtein from "leven";
-import * as R from "ramda";
-import { Clients, Concept, ResultList } from "../types";
+import { Clients, Concept, Displayable, ResultList } from "../types";
 import {
   paginationElasticBody,
   PaginationQueryParameters,
@@ -23,72 +21,49 @@ const conceptsController = (
   clients: Clients,
   config: Config
 ): ConceptHandler => {
-  const index = `works-indexed-${config.pipelineDate}`;
+  const index = config.conceptsIndex;
   const elasticClient = clients.elastic;
   const getPaginationResponse = paginationResponseGetter(config.publicRootUrl);
 
   return asyncHandler(async (req, res) => {
-    const query = req.query.query;
-    const elasticResponse = await elasticClient.search<any>({
+    const queryString = req.query.query;
+    const searchResponse = await elasticClient.search<Displayable<Concept>>({
       index,
       body: {
         ...paginationElasticBody(req.query),
-        _source: ["display.subjects"],
+        _source: ["display"],
+        track_total_hits: true,
         query: {
           bool: {
-            must: [
-              {
-                term: { type: "Visible" },
-              },
-              {
-                exists: { field: "query.subjects.id" },
-              },
-            ],
-            should: query
+            should: queryString
               ? [
                   {
                     match: {
-                      "data.subjects.label": query,
+                      "query.identifiers": {
+                        query: queryString,
+                        analyzer: "whitespace",
+                        operator: "OR",
+                        boost: 1000,
+                      },
+                    },
+                  },
+                  {
+                    multi_match: {
+                      query: queryString,
+                      fields: ["query.label", "query.alternativeLabels"],
+                      type: "cross_fields",
                     },
                   },
                 ]
               : [],
           },
         },
+        sort: queryString ? ["_score"] : ["query.id"],
       },
     });
 
-    // Because we're actually looking for unique concept IDs,
-    // the pagination and page sizes end up being garbage - that's fine for now
-    const accumulatedConcepts = new Set<string>();
-    const results: Concept[] = elasticResponse.hits.hits.flatMap(
-      (document: any) => {
-        const subjects: Array<Omit<Concept, "type">> =
-          document._source.display.subjects;
-        // Hack alert: find the matching subject by sorting the subjects
-        // by Levenshtein distance to the query
-        const matchingSubject = R.sortBy(
-          R.compose(
-            R.partial(levenshtein, [query?.toLowerCase() ?? ""]),
-            R.prop("label")
-          ),
-          subjects
-        )[0];
-
-        if (accumulatedConcepts.has(matchingSubject.id)) {
-          return [];
-        } else {
-          accumulatedConcepts.add(matchingSubject.id);
-          return [
-            {
-              id: matchingSubject.id,
-              label: matchingSubject.label,
-              identifiers: matchingSubject.identifiers,
-              type: "Subject",
-            },
-          ];
-        }
-      }
+    const results = searchResponse.hits.hits.flatMap((hit) =>
+      hit._source ? [hit._source.display] : []
     );
 
     const requestUrl = new URL(
@@ -96,9 +71,9 @@ const conceptsController = (
       `${req.protocol}://${req.headers.host}`
     );
     const totalResults =
-      typeof elasticResponse.hits.total === "number"
-        ? elasticResponse.hits.total
-        : elasticResponse.hits.total?.value ?? 0;
+      typeof searchResponse.hits.total === "number"
+        ? searchResponse.hits.total
+        : searchResponse.hits.total?.value ?? 0;
     const paginationResponse = getPaginationResponse({
       requestUrl,
       totalResults,
