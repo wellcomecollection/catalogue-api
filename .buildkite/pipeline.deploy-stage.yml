@@ -2,12 +2,12 @@ steps:
   - label: "Deploy (catalogue stage)"
     branches: "main"
     command: |
-      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+      ENV_TAG="env.staging" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/concepts
         uk.ac.wellcome/items
         uk.ac.wellcome/search
 
-      CLUSTER="catalogue-api-2021-04-26" .buildkite/scripts/deploy_ecs_services.sh \
+      CLUSTER="catalogue-api-2021-04-26" ./builds/deploy_ecs_services.sh \
         stage-concepts-api \
         stage-items-api \
         stage-search-api
@@ -22,9 +22,9 @@ steps:
   - label: "Deploy (requests stage)"
     branches: "main"
     command: |
-      ENV_TAG="env.staging" .buildkite/scripts/update_ecr_image_tag.sh \
+      ENV_TAG="env.staging" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
-      CLUSTER="identity-stage" .buildkite/scripts/redeploy_ecs_services.sh \
+      CLUSTER="identity-stage" ./builds/redeploy_ecs_services.sh \
         requests-stage
 
     plugins:
