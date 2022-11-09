@@ -54,6 +54,11 @@ fi
 
 ROOT=$(git rev-parse --show-toplevel)
 
+# https://stackoverflow.com/a/31236568/1558022
+function relpath() {
+  python3 -c "import os, sys; print(os.path.relpath(*(sys.argv[1:])))" "$@";
+}
+
 # Note that the output from sbt ends with a carriage return (\r), which
 # we need to discard.
 BASE_DIR=$(
