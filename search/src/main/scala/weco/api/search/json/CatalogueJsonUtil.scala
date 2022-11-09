@@ -76,7 +76,7 @@ trait CatalogueJsonUtil {
             value match {
               case Some(v) => jsonObj.add(key, v.map(_.display).asJson)
               case None    => jsonObj
-            }
+          }
         )
       else
         json

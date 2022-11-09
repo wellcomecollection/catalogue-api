@@ -64,9 +64,11 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[SierraItemNumber, Option[
-        DisplayAccessCondition
-      ]] = itemEither match {
+      maybeAccessConditions: Map[
+        SierraItemNumber,
+        Option[
+          DisplayAccessCondition
+        ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
