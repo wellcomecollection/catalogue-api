@@ -9,24 +9,24 @@
     "test": "jest"
   },
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "^3.100.0",
-    "@elastic/elasticsearch": "7",
-    "@types/express": "^4.17.13",
-    "express": "^4.18.1",
+    "@aws-sdk/client-secrets-manager": "^3.204.0",
+    "@elastic/elasticsearch": "8.5.0",
+    "@types/express": "^4.17.14",
+    "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
-    "leven": "^3.1.0",
-    "ramda": "^0.28.0",
-    "ts-node": "^10.8.0",
-    "typescript": "^4.7.2",
-    "zod": "^3.17.3"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@tsconfig/node16": "^1.0.2",
-    "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.35",
-    "@types/ramda": "^0.28.14",
-    "jest": "^28.1.0",
-    "nodemon": "^2.0.16",
-    "ts-jest": "^28.0.3"
+    "@tsconfig/node18": "^1.0.1",
+    "@types/jest": "^29.2.2",
+    "@types/node": "^18.11.9",
+    "husky": "^8.0.2",
+    "jest": "^29.3.1",
+    "lint-staged": "^13.0.3",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "ts-jest": "^29.0.3"
   }
 }

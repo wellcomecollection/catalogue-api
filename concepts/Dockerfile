@@ -1,5 +1,5 @@
 # Build this with the repo root as the build context
-FROM public.ecr.aws/docker/library/node:16-alpine
+FROM public.ecr.aws/docker/library/node:18-alpine
 
 WORKDIR /app
 

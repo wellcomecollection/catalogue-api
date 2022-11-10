@@ -4,10 +4,7 @@ import { getConfig } from "./config";
 
 const config = getConfig();
 
-getElasticClient({
-  serviceName: config.serviceName,
-  pipelineDate: config.pipelineDate,
-}).then((elastic) => {
+getElasticClient({ pipelineDate: config.pipelineDate }).then((elastic) => {
   const app = createApp({ elastic }, config);
   const port = process.env.PORT ?? 3000;
   app.listen(port, () => {
