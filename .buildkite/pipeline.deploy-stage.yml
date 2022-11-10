@@ -2,7 +2,7 @@ steps:
   - label: "Deploy (catalogue stage)"
     branches: "main"
     command: |
-      ENV_TAG="env.staging" ./builds/update_ecr_image_tag.sh \
+      ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/concepts \
         uk.ac.wellcome/items \
         uk.ac.wellcome/search
@@ -22,7 +22,7 @@ steps:
   - label: "Deploy (requests stage)"
     branches: "main"
     command: |
-      ENV_TAG="env.staging" ./builds/update_ecr_image_tag.sh \
+      ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
       CLUSTER="identity-stage" ./builds/deploy_ecs_services.sh \
         requests-stage
