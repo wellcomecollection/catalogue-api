@@ -1,3 +1,4 @@
+import apm from "elastic-apm-node";
 import { ErrorRequestHandler } from "express";
 
 export type ErrorResponse = {
@@ -47,6 +48,9 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   } else {
     // Log this to prevent it getting swallowed
     console.trace(err);
+    if (apm.isStarted()) {
+      apm.captureError(err);
+    }
     const httpError = new HttpError({
       status: 500,
       label: "Server Error",
