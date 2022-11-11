@@ -2,6 +2,7 @@ import {
   SecretsManagerClient,
   GetSecretValueCommand,
 } from "@aws-sdk/client-secrets-manager";
+import log from "../services/logging";
 
 const client = new SecretsManagerClient({});
 
@@ -12,7 +13,7 @@ export const getSecret = async (id: string): Promise<string | undefined> => {
     );
     return result.SecretString;
   } catch (e) {
-    console.error(`Error fetching secret '${id}'`, e);
+    log.error(`Error fetching secret '${id}'`, e);
     return undefined;
   }
 };
