@@ -28,11 +28,16 @@ declare module "winston" {
 const logger = createLogger({
   transports: [new transports.Console()],
   format: formatter,
+  level: "http",
   levels: {
     ...config.npm.levels,
     fatal: 0,
-    trace: 5,
+    trace: 3,
   },
+});
+
+export const logStream = (level: string) => ({
+  write: (message: string) => logger.log({ level, message: message.trim() }),
 });
 
 export default logger;
