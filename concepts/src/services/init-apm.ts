@@ -1,5 +1,6 @@
 import apm from "elastic-apm-node";
 import z from "zod";
+import logging from "./logging";
 
 const apmEnvironmentVariables = z.object({
   apm_service_name: z.string().default("concepts-api"),
@@ -15,5 +16,6 @@ if (environment.apm_server_url && environment.apm_secret) {
     environment: environment.apm_environment,
     serverUrl: environment.apm_server_url,
     secretToken: environment.apm_secret,
+    logger: logging,
   });
 }
