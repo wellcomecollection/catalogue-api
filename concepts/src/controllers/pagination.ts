@@ -48,7 +48,7 @@ const parsePaginationQueryParameters = (
   }
   if (
     pageSize !== undefined &&
-    (pageSize >= limits.maxSize || pageSize <= limits.minSize)
+    (pageSize > limits.maxSize || pageSize < limits.minSize)
   ) {
     throw new HttpError({
       status: 400,
