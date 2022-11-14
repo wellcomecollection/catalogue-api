@@ -14,6 +14,8 @@ steps:
 
   - label: "Deploy (catalogue prod)"
     branches: "main"
+    concurrency: 1
+    concurrency_group: catalogue/deploy-prod
     command: |
       ENV_TAG="env.prod" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/concepts \
@@ -34,6 +36,8 @@ steps:
 
   - label: "Deploy (requests prod)"
     branches: "main"
+    concurrency: 1
+    concurrency_group: requests/deploy-prod
     command: |
       ENV_TAG="env.prod" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
