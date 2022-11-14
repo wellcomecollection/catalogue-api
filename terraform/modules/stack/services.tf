@@ -105,14 +105,15 @@ module "concepts_api" {
   environment = {
     PORT            = local.container_ports.concepts
     PUBLIC_ROOT_URL = local.catalogue_api_public_root
+
+    apm_service_name = "concepts-api"
+    apm_environment  = var.environment_name
   }
 
-  secrets = {}
+  secrets = var.apm_secret_config
 
-  // TODO increase these when this is a production service
-  // These are the minima allowed by Fargate
-  app_cpu    = 256
-  app_memory = 512
+  app_cpu    = var.environment_name == "prod" ? 512 : 256
+  app_memory = var.environment_name == "prod" ? 1024 : 512
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
