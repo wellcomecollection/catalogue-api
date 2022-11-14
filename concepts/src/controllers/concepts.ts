@@ -10,7 +10,7 @@ import { Config } from "../../config";
 
 type QueryParams = {
   query?: string;
-  "identifiers.identifierType.id"?: string;
+  "identifiers.identifierType"?: string;
 } & PaginationQueryParameters;
 
 type ConceptHandler = RequestHandler<
@@ -30,7 +30,7 @@ const conceptsController = (
 
   return asyncHandler(async (req, res) => {
     const queryString = req.query.query;
-    const identifierTypeFilter = req.query["identifiers.identifierType.id"];
+    const identifierTypeFilter = req.query["identifiers.identifierType"];
     const searchResponse = await elasticClient.search<Displayable<Concept>>({
       index,
       body: {
