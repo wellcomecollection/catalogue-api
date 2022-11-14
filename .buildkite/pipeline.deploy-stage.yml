@@ -1,6 +1,8 @@
 steps:
   - label: "Deploy (catalogue stage)"
     branches: "main"
+    concurrency: 1
+    concurrency_group: catalogue/deploy-stage
     command: |
       ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/concepts \
@@ -21,6 +23,8 @@ steps:
 
   - label: "Deploy (requests stage)"
     branches: "main"
+    concurrency: 1
+    concurrency_group: requests/deploy-stage
     command: |
       ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
