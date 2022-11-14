@@ -10,10 +10,13 @@ import {
 const formatter = format.combine(
   format.timestamp({ format: "HH:mm:ss.SSS" }),
   format.errors({ stack: true }),
-  format.printf(
-    ({ level, message, timestamp }) =>
-      `${timestamp} ${level.toUpperCase()} - ${message}`
-  )
+  format.printf(({ level, message, timestamp, stack }) => {
+    let log = `${timestamp} ${level.toUpperCase()} - ${message}`;
+    if (stack) {
+      log += "\n" + stack;
+    }
+    return log;
+  })
 );
 
 // This is here because APM demands that it is given a logger with
