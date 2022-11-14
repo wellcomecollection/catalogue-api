@@ -3,6 +3,7 @@ import {
   paginationResponseGetter,
   paginationElasticBody,
 } from "../src/controllers/pagination";
+import { HttpError } from "../src/controllers/error";
 
 describe("pagination tools", () => {
   describe("paginationElasticBody", () => {
@@ -50,6 +51,24 @@ describe("pagination tools", () => {
 
       expect(response.pageSize).toBe(10);
       expect(response.nextPage).toBe(`${publicRootUrl}/docs?page=2`);
+    });
+
+    it("returns an error if the requested page size exceeds the limits", () => {
+      const requestUrl = new URL("https://test.private:123/docs?pageSize=101");
+      const totalResults = 200;
+
+      expect(() => getPaginationResponse({ requestUrl, totalResults })).toThrow(
+        HttpError
+      );
+    });
+
+    it("evaluates the page size limits inclusively", () => {
+      const requestUrl = new URL("https://test.private:123/docs?&pageSize=100");
+      const totalResults = 200;
+
+      expect(() =>
+        getPaginationResponse({ requestUrl, totalResults })
+      ).not.toThrow();
     });
   });
 });
