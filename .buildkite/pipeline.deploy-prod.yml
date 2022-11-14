@@ -41,7 +41,7 @@ steps:
     command: |
       ENV_TAG="env.prod" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
-      CLUSTER="identity-prod" ./builds/redeploy_ecs_services.sh \
+      CLUSTER="identity-prod" ./builds/deploy_ecs_services.sh \
         requests-prod
 
     plugins:
