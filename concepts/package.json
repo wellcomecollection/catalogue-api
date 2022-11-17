@@ -22,15 +22,18 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@elastic/elasticsearch-mock": "^2.0.0",
     "@tsconfig/node18": "^1.0.1",
     "@types/jest": "^29.2.2",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
+    "@types/supertest": "^2.0.12",
     "husky": "^8.0.2",
     "jest": "^29.3.1",
     "lint-staged": "^13.0.3",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
+    "supertest": "^6.3.1",
     "ts-jest": "^29.0.3"
   }
 }
