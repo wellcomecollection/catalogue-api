@@ -42,11 +42,11 @@ module "search_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }
 
 module "items_api" {
@@ -81,11 +81,11 @@ module "items_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }
 
 module "concepts_api" {
@@ -112,9 +112,9 @@ module "concepts_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }

@@ -28,7 +28,7 @@ module "snapshot_generator" {
   min_capacity = 0
   max_capacity = 1
 
-  shared_logging_secrets  = var.shared_logging_secrets
+  shared_logging_secrets = var.shared_logging_secrets
 }
 
 module "snapshot_generator_scaling_alarm" {
