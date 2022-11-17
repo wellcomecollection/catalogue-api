@@ -28,8 +28,6 @@ module "snapshot_generator" {
   min_capacity = 0
   max_capacity = 1
 
-  deployment_service_env  = var.deployment_service_env
-  deployment_service_name = "snapshot-generator"
   shared_logging_secrets  = var.shared_logging_secrets
 }
 
