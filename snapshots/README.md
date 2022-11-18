@@ -19,18 +19,6 @@ Contains:
 
 ### Steps
 
-The snapshot_generator deploys alongside the Catalogue API (as specified in [`.wellcome_project`](../.wellcome_project)), in order that it remains in sync with the current display model. You will need to use the [`weco-deploy`](https://github.com/wellcomecollection/weco-deploy) tool.
+The snapshot_generator is deployed alongside the catalogue API using Buildkite.
 
-```
-weco-deploy --project-id catalogue_api deploy --environment-id prod
-```
-
-The snapshot_recorder, snapshot_scheduler & snapshot_reporter lambdas should be published as required using the relevant `make` commands. A terraform apply is then required to update those lambdas in AWS.
-
-For example:
-
-```
-make snapshot_reporter-publish
-cd snapshots/terraform
-terraform apply
-```
+New Lambda deployment packages are published to S3 by Buildkite; you need to run a `terraform apply` to use the new versions.
