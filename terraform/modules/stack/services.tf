@@ -17,9 +17,8 @@ locals {
 }
 
 module "search_api" {
-  source                  = "../service"
-  service_name            = "${var.environment_name}-search-api"
-  deployment_service_name = "search-api"
+  source       = "../service"
+  service_name = "${var.environment_name}-search-api"
 
   container_port              = local.container_ports.search
   container_image             = var.container_images.search
@@ -43,18 +42,16 @@ module "search_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
-  deployment_service_env = var.environment_name
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }
 
 module "items_api" {
-  source                  = "../service"
-  service_name            = "${var.environment_name}-items-api"
-  deployment_service_name = "items-api"
+  source       = "../service"
+  service_name = "${var.environment_name}-items-api"
 
   container_port              = local.container_ports.items
   container_image             = var.container_images.items
@@ -84,18 +81,16 @@ module "items_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
-  deployment_service_env = var.environment_name
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }
 
 module "concepts_api" {
-  source                  = "../service"
-  service_name            = "${var.environment_name}-concepts-api"
-  deployment_service_name = "concepts-api"
+  source       = "../service"
+  service_name = "${var.environment_name}-concepts-api"
 
   container_port              = local.container_ports.concepts
   container_image             = var.container_images.concepts
@@ -117,10 +112,9 @@ module "concepts_api" {
 
   # Below this line is boilerplate that should be the same across
   # all Fargate services.
-  subnets                = local.routable_private_subnets
-  security_group_ids     = local.ecs_security_groups
-  cluster_arn            = var.cluster_arn
-  vpc_id                 = var.vpc_id
-  load_balancer_arn      = aws_lb.catalogue_api.arn
-  deployment_service_env = var.environment_name
+  subnets            = local.routable_private_subnets
+  security_group_ids = local.ecs_security_groups
+  cluster_arn        = var.cluster_arn
+  vpc_id             = var.vpc_id
+  load_balancer_arn  = aws_lb.catalogue_api.arn
 }
