@@ -1,5 +1,8 @@
 steps:
-  - command: .buildkite/scripts/run_autoformat.py
+  - command: |
+      ./builds/run_formatting.sh
+      .buildkite/scripts/push_autoformatting_changes.sh
+      ./builds/run_linting.sh
     label: "autoformat"
     agents:
       queue: "scala"
@@ -8,51 +11,66 @@ steps:
     # and trigger a new build; if so, we want that to happen ASAP.
     priority: 1
 
-  - command: .buildkite/scripts/run_job.py display
-    label: "display"
+  - label: "{{ matrix }} (library)"
+    command: "./builds/run_sbt_tests.sh {{ matrix }}"
+    matrix:
+      - "display"
+      - "search_common"
+      - "stacks"
+
     agents:
       queue: "scala"
 
-  - command: .buildkite/scripts/run_job.py search_common
-    label: "search_common"
+  - label: "{{ matrix }} (app)"
+    command: |
+      ./builds/run_sbt_tests.sh {{ matrix }}
+      ./builds/build_sbt_image.sh {{ matrix }} "$BUILDKITE_COMMIT"
+
+      if [[ "$BUILDKITE_BRANCH" == "main" ]]
+      then
+        ./builds/publish_sbt_image_to_ecr.sh {{ matrix }} "$BUILDKITE_COMMIT"
+      fi
+
+    matrix:
+      - "search"
+      - "items"
+      - "snapshot_generator"
+
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+
     agents:
       queue: "scala"
 
-  - command: .buildkite/scripts/run_job.py stacks
-    label: "stacks_common"
+  - label: "{{ matrix }} (app)"
+    command: |
+      ./builds/run_sbt_tests.sh {{ matrix }}
+      ./builds/build_sbt_image.sh {{ matrix }} "$BUILDKITE_COMMIT"
+
+      if [[ "$BUILDKITE_BRANCH" == "main" ]]
+      then
+        ./builds/publish_sbt_image_to_ecr.sh {{ matrix }} "$BUILDKITE_COMMIT"
+      fi
+
+    matrix:
+      - "requests"
+
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::770700576653:role/identity-ci"
+
     agents:
       queue: "scala"
 
-  - command: .buildkite/scripts/run_job.py search
-    label: "Search API (Works & Images)"
-    agents:
-      queue: "scala"
-
-    # We increase the priority of this task because it's the longest
-    # running task in this pipeline.  Increasing the priority means it
-    # will be assigned to the first available instance, rather than waiting
-    # for other, faster tasks to be started and new instances created.
-    priority: 1
-
-  - command: .buildkite/scripts/run_job.py items
-    label: "Items API"
-    agents:
-      queue: "scala"
-
-  - command: .buildkite/scripts/run_job.py requests
-    label: "Requests API"
-    agents:
-      queue: "scala"
-
-  - label: "Concepts API (test)"
+  - label: "Concepts API (run tests)"
     key: "concepts-test"
     plugins:
       - docker-compose#v3.9.0:
           run: "concepts"
           command: ["yarn", "test"]
 
-  - label: "Concepts API (push image)"
-    if: build.branch == "main"
+  - label: "Concepts API (publish image)"
     depends_on:
       - "concepts-test"
     plugins:
@@ -65,11 +83,6 @@ steps:
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
 
-  - command: .buildkite/scripts/run_job.py snapshot_generator
-    label: "Snapshot generator"
-    agents:
-      queue: "scala"
-
   - command: .buildkite/scripts/test_rank.sh
     label: "rank"
     env:
@@ -77,14 +90,6 @@ steps:
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
-
-  - wait
-
-  - command: .buildkite/scripts/tag_commit_as_latest.py
-    if: build.branch == "main"
-    label: "tag commit as latest"
-    agents:
-      queue: nano
 
   - wait
 

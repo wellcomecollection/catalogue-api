@@ -1,7 +1,0 @@
-{
-  "id" : "search_common",
-  "folder" : "common/search",
-  "dependencyIds" : [
-    "display"
-  ]
-}

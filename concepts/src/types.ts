@@ -5,10 +5,15 @@ export type Clients = {
   elastic: ElasticClient;
 };
 
+export type Displayable<T = any> = {
+  display: T;
+};
+
 export type Concept = {
   id: string;
   identifiers: Identifier[];
   label: string;
+  alternativeLabels: [];
   type: ConceptType;
 };
 
@@ -27,4 +32,10 @@ export type Identifier = {
   type: "Identifier";
 };
 
-export type ConceptType = "Person" | "Organisation" | "Subject";
+export type ConceptType =
+  | "Concept"
+  | "Person"
+  | "Organisation"
+  | "Meeting"
+  | "Period"
+  | "Subject";

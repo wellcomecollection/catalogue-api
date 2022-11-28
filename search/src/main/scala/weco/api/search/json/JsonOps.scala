@@ -40,7 +40,7 @@ object JsonOps {
           jsonObj =>
             jsonObj.mapValues(
               v => v.removeKeyRecursively(key)
-            )
+          )
         )
   }
 }

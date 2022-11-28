@@ -186,7 +186,7 @@ def get_recent_update_stats(session, *, hours):
                     "filter": [
                         {
                             "range": {
-                                "state.indexedTime": {
+                                "debug.indexedTime": {
                                     "gte": indexed_after.strftime("%Y-%m-%dT%H:%M:%SZ")
                                 }
                             }
@@ -200,8 +200,8 @@ def get_recent_update_stats(session, *, hours):
     search_resp = pipeline_es_client.search(
         index=works_index_name,
         body={
-            "sort": [{"state.indexedTime": {"order": "desc"}}],
-            "_source": ["state.indexedTime"],
+            "sort": [{"debug.indexedTime": {"order": "desc"}}],
+            "_source": ["debug.indexedTime"],
             "size": 1,
         },
     )
@@ -210,7 +210,7 @@ def get_recent_update_stats(session, *, hours):
         "hours": hours,
         "count": count_resp["count"],
         "latest": parser.parse(
-            search_resp["hits"]["hits"][0]["_source"]["state"]["indexedTime"]
+            search_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
         ),
     }
 

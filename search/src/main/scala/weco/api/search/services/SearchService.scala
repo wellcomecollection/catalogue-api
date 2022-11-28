@@ -65,7 +65,6 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
       .request(searchOptions, index)
       .trackTotalHits(true)
     Tracing.currentTransaction.addQueryOptionLabels(searchOptions)
-    println(searchRequest)
     elasticsearchService.executeSearchRequest(searchRequest)
   }
 
