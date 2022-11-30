@@ -2,7 +2,7 @@
   "scripts": {
     "checkTask": "ts-node ./scripts/checkTask",
     "compareQuerySpeed": "ts-node ./scripts/compareQuerySpeed",
-    "copyQueries": "ts-node ./scripts/copyQueries",
+    "getQueries": "ts-node ./scripts/getQueries",
     "createIndex": "ts-node ./scripts/createIndex",
     "deleteIndex": "ts-node ./scripts/deleteIndex",
     "getIndexConfig": "ts-node ./scripts/getIndexConfig",

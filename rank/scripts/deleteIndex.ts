@@ -5,7 +5,8 @@ import { listIndices } from '../services/search-templates'
 import prompts from 'prompts'
 
 async function go() {
-  const sourceIndices = await listIndices()
+  const client = await getRankClient()
+  const sourceIndices = await listIndices(client)
 
   const index = await prompts({
     type: 'select',

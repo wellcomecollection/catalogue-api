@@ -22,7 +22,7 @@ async function go() {
 
   // the config should have the same namespace as the chosen index
   const indexNamespace = getNamespaceFromIndexName(indexName)
-  const configFiles = readdirSync('./mappings/')
+  const configFiles = readdirSync('./data/mappings/')
     .filter((fileName) => fileName.includes('.json'))
     .map((fileName) => parse(fileName).name)
     .filter((index) => indexNamespace == getNamespaceFromIndexName(index))
@@ -34,7 +34,7 @@ async function go() {
     choices: configFiles.map((choice) => ({ title: choice, value: choice })),
   }).then(({ value }) => value)
 
-  const indexConfig = await import(`../mappings/${configName}.json`).then(
+  const indexConfig = await import(`../data/mappings/${configName}.json`).then(
     (mod) => mod.default
   )
 

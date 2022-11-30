@@ -19,13 +19,13 @@ async function go() {
 
   if (indices.length > 0) {
     const client = await getRankClient()
-    const settingsReq = client.indices.getSettings({ index: indices })
-    const mappingsReq = client.indices.getMapping({ index: indices })
-    const [{ body: settingsRes }, { body: mappingsRes }] = await Promise.all([
-      settingsReq,
-      mappingsReq,
-    ])
+    const settingsRes = await client.indices
+      .getSettings({ index: indices })
 
+    const mappingsRes = await client.indices
+      .getMapping({ index: indices })
+
+    console.log(mappingsRes)
     for (const index of indices) {
       const mappings = mappingsRes[index].mappings
       const analysis = settingsRes[index].settings.index.analysis
@@ -40,11 +40,14 @@ async function go() {
       }
       success(`Fetched config for ${index}`)
 
-      fs.writeFileSync(p([`../mappings/${index}.json`]), pretty(indexConfig))
-      success(`Wrote config to ./mappings/${index}.json\n`)
+      fs.writeFileSync(
+        p([`../data/mappings/${index}.json`]),
+        pretty(indexConfig)
+      )
+      success(`Wrote config to ./data/mappings/${index}.json\n`)
     }
     info(
-      `To create a new index with a candidate mapping, edit one of the files in ./mappings and run`
+      `To create a new index with a candidate mapping, edit one of the files in ./data/mappings and run`
     )
     code(`yarn createIndex`)
   }

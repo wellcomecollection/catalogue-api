@@ -12,7 +12,7 @@ global.fetch = require('node-fetch')
 async function go() {
   // Users should be able to create new indices by modifying mappings they've
   // fetched from the rank cluster, where those source indices still exist.
-  const configFiles = readdirSync('./mappings/')
+  const configFiles = readdirSync('./data/mappings/')
     .filter((fileName) => fileName.includes('.json'))
     .map((fileName) => parse(fileName).name)
   const client = await getRankClient()
@@ -28,7 +28,7 @@ async function go() {
     choices: validIndices.map((index) => ({ title: index, value: index })),
   }).then(({ value }) => value)
 
-  const indexConfig = await import(`../mappings/${localIndex}.json`).then(
+  const indexConfig = await import(`../data/mappings/${localIndex}.json`).then(
     (mod) => mod.default
   )
 

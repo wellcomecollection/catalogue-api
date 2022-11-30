@@ -49,7 +49,7 @@ async function go() {
   }
 
   info('Loading real search terms for querying')
-  const { terms } = await import(`../terms/${namespace}.json`).then(
+  const { terms } = await import(`../data/terms/${namespace}.json`).then(
     (mod) => mod.default
   )
 
