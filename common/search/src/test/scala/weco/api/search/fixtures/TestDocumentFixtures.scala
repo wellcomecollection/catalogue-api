@@ -56,6 +56,11 @@ trait TestDocumentFixtures
       .map(doc => getKey(doc.document, "display").get)
       .head
 
+  def getQueryImage(id: String): Json =
+    getTestDocuments(Seq(id))
+      .map(doc => getKey(doc.document, "query").get)
+      .head
+
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =
     ids.map { id =>
       val doc = Try {

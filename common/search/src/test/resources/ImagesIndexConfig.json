@@ -79,8 +79,11 @@
                 "type": "dense_vector",
                 "dims": 2048
               },
-              "lshEncodedFeatures": {
-                "type": "keyword"
+              "reducedFeatures": {
+                "type": "dense_vector",
+                "dims": 1024,
+                "index": true,
+                "metric": "dot_product"
               },
               "palette": {
                 "type": "keyword"
@@ -650,33 +653,23 @@
         "char_filter": {
           "slashes_char_filter": {
             "type": "mapping",
-            "mappings": [
-              "/=> __"
-            ]
+            "mappings": ["/=> __"]
           }
         },
         "normalizer": {
           "lowercase_normalizer": {
-            "filter": [
-              "lowercase"
-            ],
+            "filter": ["lowercase"],
             "type": "custom"
           }
         },
         "analyzer": {
           "hindi_analyzer": {
-            "filter": [
-              "lowercase",
-              "hindi_stemmer"
-            ],
+            "filter": ["lowercase", "hindi_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           },
           "asciifolding_analyzer": {
-            "filter": [
-              "lowercase",
-              "asciifolding_token_filter"
-            ],
+            "filter": ["lowercase", "asciifolding_token_filter"],
             "type": "custom",
             "tokenizer": "standard"
           },
@@ -685,10 +678,7 @@
             "tokenizer": "path_hierarchy"
           },
           "arabic_analyzer": {
-            "filter": [
-              "lowercase",
-              "arabic_stemmer"
-            ],
+            "filter": ["lowercase", "arabic_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           },
@@ -703,37 +693,23 @@
             "tokenizer": "standard"
           },
           "bengali_analyzer": {
-            "filter": [
-              "lowercase",
-              "bengali_stemmer"
-            ],
+            "filter": ["lowercase", "bengali_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           },
           "german_analyzer": {
-            "filter": [
-              "lowercase",
-              "german_stemmer"
-            ],
+            "filter": ["lowercase", "german_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           },
           "slashes_analyzer": {
-            "filter": [
-              "lowercase",
-              "asciifolding_token_filter"
-            ],
-            "char_filter": [
-              "slashes_char_filter"
-            ],
+            "filter": ["lowercase", "asciifolding_token_filter"],
+            "char_filter": ["slashes_char_filter"],
             "type": "custom",
             "tokenizer": "standard"
           },
           "clean_path_analyzer": {
-            "filter": [
-              "lowercase",
-              "asciifolding_token_filter"
-            ],
+            "filter": ["lowercase", "asciifolding_token_filter"],
             "type": "custom",
             "tokenizer": "path_hierarchy"
           },
@@ -747,10 +723,7 @@
             "tokenizer": "standard"
           },
           "french_analyzer": {
-            "filter": [
-              "lowercase",
-              "french_stemmer"
-            ],
+            "filter": ["lowercase", "french_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           },
@@ -759,10 +732,7 @@
             "tokenizer": "whitespace"
           },
           "italian_analyzer": {
-            "filter": [
-              "lowercase",
-              "italian_stemmer"
-            ],
+            "filter": ["lowercase", "italian_stemmer"],
             "type": "custom",
             "tokenizer": "standard"
           }

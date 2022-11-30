@@ -38,7 +38,10 @@ class ImagesServiceTest
         indexTestDocuments(index, "images.everything")
 
         val expectedImage =
-          IndexedImage(display = getDisplayImage("images.everything"))
+          IndexedImage(
+            display = getDisplayImage("images.everything"),
+            query = getQueryImage("images.everything")
+          )
 
         val future = imagesService.findById(
           id = getTestImageId("images.everything")
@@ -88,7 +91,8 @@ class ImagesServiceTest
           i =>
             IndexedImage(
               display =
-                getDisplayImage(s"images.similar-features-and-palettes.$i")
+                getDisplayImage(s"images.similar-features-and-palettes.$i"),
+              query = getQueryImage(s"images.similar-features-and-palettes.$i")
             )
         )
 
@@ -96,6 +100,11 @@ class ImagesServiceTest
           imagesService.retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
+            image = IndexedImage(
+              display =
+                getDisplayImage(s"images.similar-features-and-palettes.0"),
+              query = getQueryImage(s"images.similar-features-and-palettes.0")
+            ),
             minScore = Some(0)
           )
 
@@ -115,7 +124,8 @@ class ImagesServiceTest
         val expectedImages = (1 to 5).map(
           i =>
             IndexedImage(
-              display = getDisplayImage(s"images.similar-features.$i")
+              display = getDisplayImage(s"images.similar-features.$i"),
+              query = getQueryImage(s"images.similar-features.$i")
             )
         )
 
@@ -124,6 +134,10 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-features.0"),
+              image = IndexedImage(
+                display = getDisplayImage(s"images.similar-features.0"),
+                query = getQueryImage(s"images.similar-features.0")
+              ),
               similarityMetric = SimilarityMetric.Features,
               minScore = Some(0)
             )
@@ -144,7 +158,8 @@ class ImagesServiceTest
         val expectedImages = (1 to 5).map(
           i =>
             IndexedImage(
-              display = getDisplayImage(s"images.similar-palettes.$i")
+              display = getDisplayImage(s"images.similar-palettes.$i"),
+              query = getQueryImage(s"images.similar-palettes.$i")
             )
         )
 
@@ -153,6 +168,10 @@ class ImagesServiceTest
             .retrieveSimilarImages(
               index,
               imageId = getTestImageId("images.similar-palettes.0"),
+              image = IndexedImage(
+                display = getDisplayImage(s"images.similar-palettes.0"),
+                query = getQueryImage(s"images.similar-palettes.0")
+              ),
               similarityMetric = SimilarityMetric.Colors,
               minScore = Some(0)
             )
@@ -174,6 +193,11 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
+            image = IndexedImage(
+              display =
+                getDisplayImage(s"images.similar-features-and-palettes.0"),
+              query = getQueryImage(s"images.similar-features-and-palettes.0")
+            ),
             similarityMetric = SimilarityMetric.Colors,
             minScore = Some(0)
           )
@@ -181,6 +205,11 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.similar-features-and-palettes.0"),
+            image = IndexedImage(
+              display =
+                getDisplayImage(s"images.similar-features-and-palettes.0"),
+              query = getQueryImage(s"images.similar-features-and-palettes.0")
+            ),
             similarityMetric = SimilarityMetric.Blended,
             minScore = Some(0)
           )
@@ -201,6 +230,10 @@ class ImagesServiceTest
           imagesService.retrieveSimilarImages(
             index,
             imageId = getTestImageId("images.everything"),
+            image = IndexedImage(
+              display = getDisplayImage("images.everything"),
+              query = getQueryImage("images.everything")
+            ),
             minScore = Some(0)
           )
         ) {
@@ -215,6 +248,10 @@ class ImagesServiceTest
           .retrieveSimilarImages(
             Index("doesn't exist"),
             imageId = "nopenope",
+            image = IndexedImage(
+              display = getDisplayImage("images.everything"),
+              query = getQueryImage("images.everything")
+            ),
             minScore = Some(0)
           )
 
