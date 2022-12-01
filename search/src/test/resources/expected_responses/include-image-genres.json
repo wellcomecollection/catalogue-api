@@ -1,85 +1,77 @@
 {
-  "id" : "vihqhhlw",
-  "thumbnail" : {
-    "locationType" : {
-      "id" : "iiif-image",
-      "label" : "IIIF Image API",
-      "type" : "LocationType"
-    },
-    "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
-    "license" : {
-      "id" : "cc-by",
-      "label" : "Attribution 4.0 International (CC BY 4.0)",
-      "url" : "http://creativecommons.org/licenses/by/4.0/",
-      "type" : "License"
-    },
-    "accessConditions" : [
-    ],
-    "type" : "DigitalLocation"
-  },
-  "locations" : [
+  "pageSize" : 10,
+  "results" : [
     {
-      "locationType" : {
-        "id" : "iiif-image",
-        "label" : "IIIF Image API",
-        "type" : "LocationType"
-      },
-      "url" : "https://iiif.wellcomecollection.org/image/g3s.jpg/info.json",
-      "license" : {
-        "id" : "cc-by",
-        "label" : "Attribution 4.0 International (CC BY 4.0)",
-        "url" : "http://creativecommons.org/licenses/by/4.0/",
-        "type" : "License"
-      },
-      "accessConditions" : [
+      "aspectRatio" : 0.8347602,
+      "averageColor" : "#9CF6FD",
+      "id" : "kksawdxv",
+      "locations" : [
+        {
+          "accessConditions" : [
+          ],
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "type" : "License",
+            "url" : "http://creativecommons.org/licenses/by/4.0/"
+          },
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
+          },
+          "type" : "DigitalLocation",
+          "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json"
+        }
       ],
-      "type" : "DigitalLocation"
+      "source" : {
+        "contributors" : [
+          {
+            "agent" : {
+              "label" : "Adrian Aardvark",
+              "type" : "Person"
+            },
+            "primary" : true,
+            "roles" : [
+            ],
+            "type" : "Contributor"
+          },
+          {
+            "agent" : {
+              "label" : "Beatrice Buffalo",
+              "type" : "Person"
+            },
+            "primary" : true,
+            "roles" : [
+            ],
+            "type" : "Contributor"
+          }
+        ],
+        "id" : "oisbrmto",
+        "title" : "Apple agitator",
+        "type" : "Work"
+      },
+      "thumbnail" : {
+        "accessConditions" : [
+        ],
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "type" : "License",
+          "url" : "http://creativecommons.org/licenses/by/4.0/"
+        },
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
+        },
+        "type" : "DigitalLocation",
+        "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json"
+      },
+      "type" : "Image"
     }
   ],
-  "aspectRatio" : 0.022521317,
-  "averageColor" : "#62C3E1",
-  "source" : {
-    "id" : "64m9ngi3",
-    "title" : "Apple agitator",
-    "genres" : [
-      {
-        "label" : "Crumbly cabbages",
-        "concepts" : [
-          {
-            "label" : "7e43LU5UBsV6eUx",
-            "type" : "Concept"
-          },
-          {
-            "label" : "tYAMYu8atpK5r9f",
-            "type" : "Concept"
-          },
-          {
-            "label" : "MIIiXOTvA7k1G3t",
-            "type" : "Concept"
-          }
-        ],
-        "type" : "Genre"
-      },
-      {
-        "label" : "Deadly durians",
-        "concepts" : [
-          {
-            "label" : "8vRU8ofMjDg3BCM",
-            "type" : "Concept"
-          },
-          {
-            "label" : "fND9ydRYA5R7ZqS",
-            "type" : "Concept"
-          },
-          {
-            "label" : "6o5j5ZQn98Sw6Gx",
-            "type" : "Concept"
-          }
-        ],
-        "type" : "Genre"
-      }
-    ],
-    "type" : "Work"
-  },
-  "type" : "Image"
+  "totalPages" : 1,
+  "totalResults" : 1,
+  "type" : "ResultList"
 }
