@@ -7,6 +7,7 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import io.circe.parser.parse
 import io.circe.Json
+import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
@@ -83,20 +84,51 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
     routes: Route,
     path: String,
     unordered: Boolean = false
-  )(expectedResponse: (StatusCode, String)) =
-    eventually {
-      expectedResponse match {
-        case (expectedStatus, expectedJson) =>
+  )(expectedResponse: (StatusCode, String)): Assertion =
+    expectedResponse match {
+      case (expectedStatus, expectedJson) =>
+        def responseJson: Json = eventually {
           Get(path) ~> routes ~> check {
             contentType shouldEqual ContentTypes.`application/json`
-            parseJson(responseAs[String], unordered) shouldEqual parseJson(
-              expectedJson,
-              unordered
-            )
             status shouldEqual expectedStatus
+            parseJson(responseAs[String], unordered)
           }
+        }
+        responseJson shouldEqual parseJson(expectedJson, unordered)
+    }
+
+  def assertJsonResponseLike(
+    routes: Route,
+    path: String,
+    assertion: Json => Assertion
+  ): Assertion = {
+    def responseJson = eventually {
+      Get(path) ~> routes ~> check {
+        status shouldEqual Status.OK
+        contentType shouldEqual ContentTypes.`application/json`
+        parseJson(responseAs[String])
       }
     }
+    assertion(responseJson)
+  }
+
+  def assertJsonResponseContains(
+    routes: Route,
+    path: String,
+    locator: Json => Json,
+    expectedJson: String
+  ): Assertion = {
+    def responseJson = eventually {
+      Get(path) ~> routes ~> check {
+        status shouldEqual Status.OK
+        contentType shouldEqual ContentTypes.`application/json`
+        parseJson(responseAs[String])
+      }
+    }
+    locator(responseJson) shouldEqual parseJson(
+      expectedJson
+    )
+  }
 
   def assertRedirectResponse(routes: Route, path: String)(
     expectedResponse: (StatusCode, String)
