@@ -54,32 +54,9 @@ function relpath() {
   python3 -c "import os, sys; print(os.path.relpath(*(sys.argv[1:])))" "$@";
 }
 
-function strip_whitespace() {
-  python3 -c "import sys; print(sys.stdin.read().strip())";
-}
-
-# The "show project/baseDirectory" command will return output like
-#
-#     [info] welcome to sbt 1.4.1 (Homebrew Java 16.0.2)
-#     [info] loading global plugins from /Users/alexwlchan/.sbt/1.0/plugins
-#     [info] loading project definition from /Users/alexwlchan/repos/catalogue-api/project/project
-#     [info] loading settings for project catalogue-api-build from build.sbt,plugins.sbt ...
-#     [info] loading project definition from /Users/alexwlchan/repos/catalogue-api/project
-#     [info] loading settings for project catalogue-api from build.sbt ...
-#     [info] set current project to catalogue-api (in build file:/Users/alexwlchan/repos/catalogue-api/)
-#     [info] Running in build environment: dev
-#     [info] Installing the s3:// URLStreamHandler via java.net.URL.setURLStreamHandlerFactory
-#     [info] /Users/alexwlchan/repos/catalogue-api/snapshots/snapshot_generator
-#
-# We want to grab the path from the final line.
-#
-# Note that this ends with a carriage return (\r), which we need to discard.
-#
 BASE_DIR=$(
-  $BUILDS_DIR/run_sbt_task_in_docker.sh "show $PROJECT/baseDirectory" \
-    | tail -n 1 \
-    | awk '{print $2}' \
-    | strip_whitespace
+  $BUILDS_DIR/run_sbt_task_in_docker.sh -error "project $PROJECT" "print baseDirectory" \
+    | tr -d '\n'
 )
 
 echo $(relpath "$BASE_DIR" "$ROOT")
