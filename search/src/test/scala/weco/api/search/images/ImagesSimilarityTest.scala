@@ -14,7 +14,7 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
     * these dummy indices, so the content of these image lists is irrelevant to the tests.
     *
     * Tests that show that the similar images functionality behaves as expected
-    * can be found in search/src/test/scala/weco/api/search/services/ImagesServiceTest.scala
+    * can be found in ../services/ImagesServiceTest.scala
     * and there should also be rank tests to cover whether the images returned are appropriately similar
     */
   describe("image similarity") {
