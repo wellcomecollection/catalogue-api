@@ -141,15 +141,15 @@ class ImagesIncludesTest extends ApiImagesTestBase {
               {
                 "concepts" : [
                   {
-                    "label" : "EpSJQZmtGx7fuue",
+                    "label" : "U0oWO3ioLqbrury",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "5B2TpAcW0w8rBX3",
+                    "label" : "7o2QTEqcIF9bQro",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "mFzqjToMwFq6R4F",
+                    "label" : "ssWozG8sqfYdoIO",
                     "type" : "Concept"
                   }
                 ],
@@ -159,15 +159,15 @@ class ImagesIncludesTest extends ApiImagesTestBase {
               {
                 "concepts" : [
                   {
-                    "label" : "fAamDQNCyLIwxNH",
+                    "label" : "JIUj2LP1mxi643r",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "4xfAtbHMMuSvg8U",
+                    "label" : "2da07kIJPZsamHd",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "AMXImddNWJOsirJ",
+                    "label" : "A4kdSkosRRTtjUN",
                     "type" : "Concept"
                   }
                 ],

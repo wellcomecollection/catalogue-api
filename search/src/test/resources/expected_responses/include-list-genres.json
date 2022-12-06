@@ -3,8 +3,8 @@
   "results" : [
     {
       "aspectRatio" : 0.8347602,
-      "averageColor" : "#9CF6FD",
-      "id" : "kksawdxv",
+      "averageColor" : "#F61B85",
+      "id" : "ygqouuku",
       "locations" : [
         {
           "accessConditions" : [
@@ -15,13 +15,14 @@
             "type" : "License",
             "url" : "http://creativecommons.org/licenses/by/4.0/"
           },
+          "linkText" : "Link text: Q1OzHxLpO",
           "locationType" : {
             "id" : "iiif-image",
             "label" : "IIIF Image API",
             "type" : "LocationType"
           },
           "type" : "DigitalLocation",
-          "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json"
+          "url" : "https://iiif.wellcomecollection.org/image/TV5.jpg/info.json"
         }
       ],
       "source" : {
@@ -29,15 +30,15 @@
           {
             "concepts" : [
               {
-                "label" : "EpSJQZmtGx7fuue",
+                "label" : "U0oWO3ioLqbrury",
                 "type" : "Concept"
               },
               {
-                "label" : "5B2TpAcW0w8rBX3",
+                "label" : "7o2QTEqcIF9bQro",
                 "type" : "Concept"
               },
               {
-                "label" : "mFzqjToMwFq6R4F",
+                "label" : "ssWozG8sqfYdoIO",
                 "type" : "Concept"
               }
             ],
@@ -47,15 +48,15 @@
           {
             "concepts" : [
               {
-                "label" : "fAamDQNCyLIwxNH",
+                "label" : "JIUj2LP1mxi643r",
                 "type" : "Concept"
               },
               {
-                "label" : "4xfAtbHMMuSvg8U",
+                "label" : "2da07kIJPZsamHd",
                 "type" : "Concept"
               },
               {
-                "label" : "AMXImddNWJOsirJ",
+                "label" : "A4kdSkosRRTtjUN",
                 "type" : "Concept"
               }
             ],
@@ -63,7 +64,7 @@
             "type" : "Genre"
           }
         ],
-        "id" : "oisbrmto",
+        "id" : "mtkttl2t",
         "title" : "Apple agitator",
         "type" : "Work"
       },
@@ -76,13 +77,14 @@
           "type" : "License",
           "url" : "http://creativecommons.org/licenses/by/4.0/"
         },
+        "linkText" : "Link text: Q1OzHxLpO",
         "locationType" : {
           "id" : "iiif-image",
           "label" : "IIIF Image API",
           "type" : "LocationType"
         },
         "type" : "DigitalLocation",
-        "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json"
+        "url" : "https://iiif.wellcomecollection.org/image/TV5.jpg/info.json"
       },
       "type" : "Image"
     }

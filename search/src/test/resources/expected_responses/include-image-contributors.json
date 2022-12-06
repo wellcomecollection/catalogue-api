@@ -1,55 +1,37 @@
 {
-  "id" : "kksawdxv",
-  "thumbnail" : {
-    "locationType" : {
-      "id" : "iiif-image",
-      "label" : "IIIF Image API",
-      "type" : "LocationType"
-    },
-    "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json",
-    "license" : {
-      "id" : "cc-by",
-      "label" : "Attribution 4.0 International (CC BY 4.0)",
-      "url" : "http://creativecommons.org/licenses/by/4.0/",
-      "type" : "License"
-    },
-    "accessConditions" : [
-    ],
-    "type" : "DigitalLocation"
-  },
+  "aspectRatio" : 0.8347602,
+  "averageColor" : "#F61B85",
+  "id" : "ygqouuku",
   "locations" : [
     {
+      "accessConditions" : [
+      ],
+      "license" : {
+        "id" : "cc-by",
+        "label" : "Attribution 4.0 International (CC BY 4.0)",
+        "type" : "License",
+        "url" : "http://creativecommons.org/licenses/by/4.0/"
+      },
+      "linkText" : "Link text: Q1OzHxLpO",
       "locationType" : {
         "id" : "iiif-image",
         "label" : "IIIF Image API",
         "type" : "LocationType"
       },
-      "url" : "https://iiif.wellcomecollection.org/image/LOB.jpg/info.json",
-      "license" : {
-        "id" : "cc-by",
-        "label" : "Attribution 4.0 International (CC BY 4.0)",
-        "url" : "http://creativecommons.org/licenses/by/4.0/",
-        "type" : "License"
-      },
-      "accessConditions" : [
-      ],
-      "type" : "DigitalLocation"
+      "type" : "DigitalLocation",
+      "url" : "https://iiif.wellcomecollection.org/image/TV5.jpg/info.json"
     }
   ],
-  "aspectRatio" : 0.8347602,
-  "averageColor": "#9CF6FD",
   "source" : {
-    "id" : "oisbrmto",
-    "title" : "Apple agitator",
     "contributors" : [
       {
         "agent" : {
           "label" : "Adrian Aardvark",
           "type" : "Person"
         },
+        "primary" : true,
         "roles" : [
         ],
-        "primary" : true,
         "type" : "Contributor"
       },
       {
@@ -57,13 +39,33 @@
           "label" : "Beatrice Buffalo",
           "type" : "Person"
         },
+        "primary" : true,
         "roles" : [
         ],
-        "primary" : true,
         "type" : "Contributor"
       }
     ],
+    "id" : "mtkttl2t",
+    "title" : "Apple agitator",
     "type" : "Work"
+  },
+  "thumbnail" : {
+    "accessConditions" : [
+    ],
+    "license" : {
+      "id" : "cc-by",
+      "label" : "Attribution 4.0 International (CC BY 4.0)",
+      "type" : "License",
+      "url" : "http://creativecommons.org/licenses/by/4.0/"
+    },
+    "linkText" : "Link text: Q1OzHxLpO",
+    "locationType" : {
+      "id" : "iiif-image",
+      "label" : "IIIF Image API",
+      "type" : "LocationType"
+    },
+    "type" : "DigitalLocation",
+    "url" : "https://iiif.wellcomecollection.org/image/TV5.jpg/info.json"
   },
   "type" : "Image"
 }
