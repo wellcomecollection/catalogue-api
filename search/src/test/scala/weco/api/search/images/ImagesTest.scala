@@ -44,6 +44,16 @@ class ImagesTest extends ApiImagesTestBase {
     val workImages =
       (0 to 3).map(i => s"images.examples.linked-with-the-same-work.$i")
 
+    val commonId: String =
+      getTestDocuments(Seq(workImages.head)).head.document.hcursor
+        .downField("display")
+        .downField("source")
+        .downField("id")
+        .focus
+        .get
+        .asString
+        .get
+
     withImagesApi {
       case (imagesIndex, routes) =>
         indexTestDocuments(
@@ -53,7 +63,7 @@ class ImagesTest extends ApiImagesTestBase {
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/images?query=osxxkxkl"
+          path = s"$rootPath/images?query=$commonId"
         ) {
           Status.OK -> imagesListResponse(workImages)
         }
