@@ -50,7 +50,7 @@ class ImagesServiceTest
           _.right.value
         }
 
-        expectedImage shouldBe actualImage
+        expectedImage shouldEqual actualImage
       }
     }
 
