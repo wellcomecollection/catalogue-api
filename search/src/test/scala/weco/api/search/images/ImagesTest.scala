@@ -48,10 +48,8 @@ class ImagesTest extends ApiImagesTestBase {
       getTestDocuments(Seq(workImages.head)).head.document.hcursor
         .downField("display")
         .downField("source")
-        .downField("id")
-        .focus
-        .get
-        .asString
+        .get[String]("id")
+        .right
         .get
 
     withImagesApi {
