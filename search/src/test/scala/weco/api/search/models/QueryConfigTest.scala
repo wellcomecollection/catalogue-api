@@ -23,27 +23,19 @@ class QueryConfigTest
           .downField("query")
           .downField("inferredData")
 
-        val binSizes =
-          inferredData
-            .downField("binSizes")
-            .focus
-            .get
-            .asArray
-            .get
-            .map(_.as[List[Int]].right.get)
-        println(binSizes)
+        // In an index with only one document, the values of binSizes and binMinima
+        // for the index will match those values found in the individual document.
+        val binSizes = inferredData.get[List[List[Int]]]("binSizes").right.get
+        val binMinima = inferredData.get[List[Double]]("binMinima").right.get
+
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
         result.paletteBinSizes shouldEqual binSizes
-
-        inferredData.downField("binMinima")
 
         // Casting to string here is to avoid weirdness when comparing Doubles;
         // if you compare to List(0.34999806, 0.7922977, 0.3721038), Scala will
         // tell you they're different.
-        result.paletteBinMinima.map(_.toString) shouldBe List(
-          "0.8503088",
-          "0.6996027",
-          "0.9475815"
+        result.paletteBinMinima.map(_.toString) shouldBe binMinima.map(
+          _.toString
         )
       }
     }
