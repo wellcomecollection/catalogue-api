@@ -60,7 +60,7 @@ class ImagesService(
     val defaultMinScore: Double = similarityMetric match {
       case SimilarityMetric.Blended  => 0
       case SimilarityMetric.Features => 0
-      case SimilarityMetric.Colors   => 0
+      case SimilarityMetric.Colors   => 20
     }
 
     val minScoreValue: Double = minScore.getOrElse(defaultMinScore)
