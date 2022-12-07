@@ -1,13 +1,13 @@
-import { Eval, Pass } from '../tests/pass'
-import { Query, QueryEnv } from './searchTemplate'
+import { Eval, Pass } from '../services/pass'
 
 import { RankEvalRankEvalMetric as Metric } from '@elastic/elasticsearch/lib/api/types'
+import { QueryEnv } from './searchTemplate'
 
 export type TestCase = {
   query: string
   ratings: string[]
   description?: string
-  knownFailure?: true
+  knownFailure?: boolean
 }
 
 export type Test = {
@@ -17,20 +17,19 @@ export type Test = {
   eval: Eval
   cases: TestCase[]
   metric: Metric
-  searchTemplateAugmentation?: (test: Test, query: Query) => Query
 }
 
 export type TestResult = {
   index: string
   queryEnv: QueryEnv
   label: string
-  description: string
+  description?: string
   pass: boolean
   namespace: string
   results: {
     query: string
     description?: string
-    knownFailure?: true
+    knownFailure?: boolean
     result: Pass
   }[]
 }

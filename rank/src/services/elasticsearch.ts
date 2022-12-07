@@ -1,7 +1,7 @@
 import { Client } from '@elastic/elasticsearch'
-import { getSecret } from './secrets'
 import { QueryEnv } from '../types/searchTemplate'
 import { apiUrl } from './search-templates'
+import { getSecret } from './secrets'
 
 let rankClient
 export async function getRankClient(): Promise<Client> {

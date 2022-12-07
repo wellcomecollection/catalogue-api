@@ -1,8 +1,8 @@
 import { code, error, info, success } from './utils'
 
-import { getNamespaceFromIndexName } from '../types/searchTemplate'
-import { getRankClient } from '../services/elasticsearch'
-import { listIndices } from '../services/search-templates'
+import { getNamespaceFromIndexName } from '../src/types/searchTemplate'
+import { getRankClient } from '../src/services/elasticsearch'
+import { listIndices } from '../src/services/search-templates'
 import { parse } from 'path'
 import prompts from 'prompts'
 import { readdirSync } from 'fs'

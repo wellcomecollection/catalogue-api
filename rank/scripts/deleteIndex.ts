@@ -1,7 +1,7 @@
 import { error, info } from './utils'
 
-import { getRankClient } from '../services/elasticsearch'
-import { listIndices } from '../services/search-templates'
+import { getRankClient } from '../src/services/elasticsearch'
+import { listIndices } from '../src/services/search-templates'
 import prompts from 'prompts'
 
 async function go() {

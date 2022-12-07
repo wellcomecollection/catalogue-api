@@ -1,11 +1,11 @@
-import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
+import { Index, QueryEnv, queryEnvs } from '../src/types/searchTemplate'
 
 import chalk from 'chalk'
 import { gatherArgs } from './utils'
-import { getRankClient } from '../services/elasticsearch'
-import { listIndices } from '../services/search-templates'
+import { getRankClient } from '../src/services/elasticsearch'
+import { listIndices } from '../src/services/search-templates'
 import prompts from 'prompts'
-import search from '../services/search'
+import search from '../src/services/search'
 
 global.fetch = require('node-fetch')
 

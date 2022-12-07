@@ -3,13 +3,13 @@ import {
   SearchTemplate,
   namespaces,
   queryEnvs,
-} from '../types/searchTemplate'
-import { getQueries, listIndices } from '../services/search-templates'
+} from '../src/types/searchTemplate'
+import { getQueries, listIndices } from '../src/services/search-templates'
 import { histogram, info } from './utils'
 
 import { MsearchMultiSearchItem } from '@elastic/elasticsearch/lib/api/types'
 import bars from 'bars'
-import { getRankClient } from '../services/elasticsearch'
+import { getRankClient } from '../src/services/elasticsearch'
 import prompts from 'prompts'
 
 global.fetch = require('node-fetch')

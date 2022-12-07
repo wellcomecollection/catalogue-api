@@ -1,8 +1,8 @@
 import { code, info, p, pretty, success } from './utils'
 
 import fs from 'fs'
-import { getRankClient } from '../services/elasticsearch'
-import { listIndices } from '../services/search-templates'
+import { getRankClient } from '../src/services/elasticsearch'
+import { listIndices } from '../src/services/search-templates'
 import prompts from 'prompts'
 
 global.fetch = require('node-fetch')
@@ -19,11 +19,9 @@ async function go() {
 
   if (indices.length > 0) {
     const client = await getRankClient()
-    const settingsRes = await client.indices
-      .getSettings({ index: indices })
+    const settingsRes = await client.indices.getSettings({ index: indices })
 
-    const mappingsRes = await client.indices
-      .getMapping({ index: indices })
+    const mappingsRes = await client.indices.getMapping({ index: indices })
 
     console.log(mappingsRes)
     for (const index of indices) {

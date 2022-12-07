@@ -1,18 +1,18 @@
-import { Index, QueryEnv, queryEnvs } from '../types/searchTemplate'
+import { Index, QueryEnv, queryEnvs } from '../src/types/searchTemplate'
 import { code, gatherArgs, info } from './utils'
-import { getPipelineClient, getRankClient } from '../services/elasticsearch'
+import { getPipelineClient, getRankClient } from '../src/services/elasticsearch'
 
 import { Client } from '@elastic/elasticsearch'
 import { exec } from 'child_process'
-import { listIndices } from '../services/search-templates'
-import { tests as possibleTests } from '../tests'
+import { listIndices } from '../src/services/search-templates'
+import tests from '../src/tests'
 
 global.fetch = require('node-fetch')
 
 async function go() {
   const { cluster, query } = await gatherArgs({
     cluster: { type: 'string', choices: ['pipeline', 'rank'] },
-    query: { type: 'string', choices: queryEnvs },
+    query: { type: 'string', choices: queryEnvs }
   })
 
   const queryEnv = query as QueryEnv
@@ -26,7 +26,7 @@ async function go() {
   }
 
   const indices: Index[] = await listIndices(client)
-  const possibleTestIds = Object.values(possibleTests)
+  const possibleTestIds = Object.values(tests)
     .flatMap((testSet) => testSet.map((test) => test.id))
     // Some test IDs are common across suites - we don't want to display
     // duplicates, so we filter here to keep only the unique values
@@ -37,8 +37,8 @@ async function go() {
     testId: {
       type: 'array',
       choices: possibleTestIds,
-      default: possibleTestIds,
-    },
+      default: possibleTestIds
+    }
   })
 
   const index = args.index as Index

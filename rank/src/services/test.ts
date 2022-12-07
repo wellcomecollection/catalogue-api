@@ -1,15 +1,10 @@
-import {
-  Cluster,
-  Index,
-  QueryEnv,
-  SearchTemplate,
-} from '../types/searchTemplate'
+import { Cluster, Index, QueryEnv } from '../types/searchTemplate'
 import { TestCase, TestResult } from '../types/test'
 import { getPipelineClient, getRankClient } from './elasticsearch'
 
 import { Client } from '@elastic/elasticsearch'
 import { getTemplate } from './search-templates'
-import { tests } from '../tests'
+import tests from '../tests'
 
 type Props = {
   testId: string
@@ -31,39 +26,29 @@ async function service({
   queryEnv,
   cluster,
   index,
-  testId,
+  testId
 }: Props): Promise<TestResult> {
-  const notAugmentedTemplate = await getTemplate(queryEnv, index)
+  const template = await getTemplate(queryEnv, index)
 
-  const test = tests[notAugmentedTemplate.namespace].find(
-    (test) => test.id === testId
-  )
+  const test= tests[template.namespace].find((test) => test.id === testId)
   if (!test) throw Error(`No such test ${testId}`)
 
-  const { cases, metric, searchTemplateAugmentation } = test
-
-  const template = searchTemplateAugmentation
-    ? new SearchTemplate(
-        queryEnv,
-        index,
-        searchTemplateAugmentation(test, notAugmentedTemplate.query)
-      )
-    : notAugmentedTemplate
+  const { cases, metric } = test
 
   const requests = cases.map((testCase: TestCase) => {
     return {
       id: testCase.query,
       template_id: template.id,
       params: {
-        query: testCase.query,
+        query: testCase.query
       },
       ratings: testCase.ratings.map((id) => {
         return {
           _id: id,
           _index: template.index,
-          rating: 3,
+          rating: 3
         }
-      }),
+      })
     }
   })
 
@@ -93,7 +78,7 @@ async function service({
     throw new Error(`${index} does not exist in the ${cluster} cluster!`)
   }
 
-  const res = await client.rankEval({
+  const { details } = await client.rankEval({
     index: template.index,
     body: {
       requests,
@@ -103,19 +88,19 @@ async function service({
       templates: [
         {
           id: template.id,
-          template: { source: { query: template.query } },
-        },
-      ],
-    },
+          template: { source: { query: template.query } }
+        }
+      ]
+    }
   })
 
-  const results = Object.entries(res.details).map(([query, detail]) => {
+  const results = Object.entries(details).map(([query, detail]) => {
     const testCase = test.cases.find((c) => c.query === query)
     return {
       query,
       description: testCase?.description,
       knownFailure: testCase?.knownFailure,
-      result: test.eval(detail),
+      result: test.eval(detail)
     }
   })
 
@@ -126,7 +111,7 @@ async function service({
     description: test.description,
     namespace: template.namespace,
     pass: results.every((result) => result.result.pass),
-    results,
+    results
   }
 }
 

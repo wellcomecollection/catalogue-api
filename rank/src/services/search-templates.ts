@@ -44,8 +44,8 @@ async function getEnvironmentQueries(env: QueryEnv) {
 
 export async function getCandidateQueries() {
   const imports = [
-    import('../data/queries/WorksMultiMatcherQuery.json'),
-    import('../data/queries/ImagesMultiMatcherQuery.json'),
+    import('../../data/queries/WorksMultiMatcherQuery.json'),
+    import('../../data/queries/ImagesMultiMatcherQuery.json'),
   ]
 
   const queries = await Promise.all(imports).then(([works, images]) => ({

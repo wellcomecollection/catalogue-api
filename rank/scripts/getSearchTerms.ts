@@ -1,8 +1,8 @@
 import { p, pretty, success } from './utils'
 
 import fs from 'fs'
-import { getReportingClient } from '../services/elasticsearch'
-import { namespaces } from '../types/searchTemplate'
+import { getReportingClient } from '../src/services/elasticsearch'
+import { namespaces } from '../src/types/searchTemplate'
 import prompts from 'prompts'
 
 global.fetch = require('node-fetch')
