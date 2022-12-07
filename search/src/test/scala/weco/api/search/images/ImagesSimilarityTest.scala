@@ -1,8 +1,5 @@
 package weco.api.search.images
-// TODO: These tests don't really do anything, as the actual similarity checking is now in Rank
-// However, we should change them to check whether the appropriate property has been included
-// this will act as a reasonable proxy for checking that the querystring parameter is invoking
-// the similarity search.
+
 class ImagesSimilarityTest extends ApiImagesTestBase {
 
   /**
