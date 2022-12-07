@@ -7,8 +7,9 @@ import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.sort._
-import weco.api.search.models.index.IndexedImage
+import io.circe.{Json, JsonObject}
 
+import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{
   ColorQuery,
   ImageSimilarity,
@@ -125,11 +126,11 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
 
   def requestWithBlendedSimilarity
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.blended)
+    rawSimilarityRequest(ImageSimilarity.blended)
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.features)
+    rawSimilarityRequest(ImageSimilarity.features)
 
   def requestWithSimilarColors
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
@@ -145,7 +146,30 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     minScore: Double
   ): SearchRequest =
     search(index)
-      .query(query(imageId, image, index))
       .size(n)
       .minScore(minScore)
+      .query(query(imageId, image, index))
+
+  private def rawSimilarityRequest(
+    query: (String, IndexedImage, Index) => JsonObject
+  )(
+    index: Index,
+    imageId: String,
+    image: IndexedImage,
+    n: Int,
+    minScore: Double
+  ): SearchRequest = {
+    val x = Json
+      .fromJsonObject(
+        query(imageId, image, index)
+          .add("min_score", Json.fromDouble(minScore).get)
+          // n is the number of similar documents we want the query to return
+          // However, because this is used by KNN searches, which also return
+          // the document in question (which is later filtered out of the result list),
+          // an extra slot must be added for the source document to occupy.
+          .add("size", Json.fromInt(n + 1))
+      )
+      .noSpaces
+    search(index).source(x)
+  }
 }

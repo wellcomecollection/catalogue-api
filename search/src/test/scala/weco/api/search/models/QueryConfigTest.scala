@@ -17,13 +17,25 @@ class QueryConfigTest
     it("fetches query config from a given index") {
       withLocalImagesIndex { index =>
         indexTestDocuments(index, "images.similar-features-and-palettes.0")
+        val inferredData = getTestDocuments(
+          Seq("images.similar-features-and-palettes.0")
+        ).head.document.hcursor
+          .downField("query")
+          .downField("inferredData")
 
+        val binSizes =
+          inferredData
+            .downField("binSizes")
+            .focus
+            .get
+            .asArray
+            .get
+            .map(_.as[List[Int]].right.get)
+        println(binSizes)
         val result = QueryConfig.fetchFromIndex(elasticClient, index)
-        result.paletteBinSizes shouldBe List(
-          List(7, 5, 0),
-          List(5, 7, 6),
-          List(5, 1, 2)
-        )
+        result.paletteBinSizes shouldEqual binSizes
+
+        inferredData.downField("binMinima")
 
         // Casting to string here is to avoid weirdness when comparing Doubles;
         // if you compare to List(0.34999806, 0.7922977, 0.3721038), Scala will

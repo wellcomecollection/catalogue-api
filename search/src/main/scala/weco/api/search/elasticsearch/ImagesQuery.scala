@@ -15,12 +15,11 @@ import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
   MultiMatchQuery
 }
-import com.sksamuel.elastic4s.requests.searches.queries.RawQuery
 import io.circe.syntax._
-import io.circe.Json
+import io.circe.{Json, JsonObject}
 
 case object ImageSimilarity {
-  def blended: (String, IndexedImage, Index) => Query =
+  def blended: (String, IndexedImage, Index) => JsonObject =
     // For now, we're replacing the blended lsh query with a single knn query
     // onthe image feature vector. We'll come back to blend the features and
     // colours after some more testing.
@@ -49,23 +48,23 @@ case object ImageSimilarity {
       )
   }
 
-  def features: (String, IndexedImage, Index) => Query =
+  def features: (String, IndexedImage, Index) => JsonObject =
     knnQuery("query.inferredData.reducedFeatures")
 
   private def knnQuery(
     field: String
-  )(imageId: String, image: IndexedImage, index: Index): Query = {
-    val query = Json.obj(
-      "knn" -> Json.obj(
-        "field" -> field.asJson,
-        "query_vector" -> image.reducedFeatures.asJson,
-        "k" -> 10.asJson,
-        "num_candidates" -> 100.asJson
+  )(imageId: String, image: IndexedImage, index: Index): JsonObject =
+    Json
+      .obj(
+        "knn" -> Json.obj(
+          "field" -> field.asJson,
+          "query_vector" -> image.reducedFeatures.asJson,
+          "k" -> 10.asJson,
+          "num_candidates" -> 100.asJson
+        )
       )
-    )
-
-    RawQuery(query.noSpaces)
-  }
+      .asObject
+      .get
 }
 
 case object ImagesMultiMatcher {
@@ -157,7 +156,7 @@ case object ImagesMultiMatcher {
                       s"query.source.title.$language",
                       s"query.source.notes.$language",
                       s"query.source.lettering.$language"
-                  )
+                    )
                 )
                 .map(field => FieldWithBoost(field, boost = 100))
             )

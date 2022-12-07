@@ -109,7 +109,7 @@ class ImagesServiceTest
           )
 
         whenReady(future) {
-          _ shouldBe expectedImages
+          _ should contain theSameElementsAs expectedImages
         }
       }
     }
