@@ -159,18 +159,18 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     image: IndexedImage,
     n: Int,
     minScore: Double
-  ): SearchRequest = {
-    val x = Json
-      .fromJsonObject(
-        query(imageId, image, index)
-          .add("min_score", Json.fromDouble(minScore).get)
-          // n is the number of similar documents we want the query to return
-          // However, because this is used by KNN searches, which also return
-          // the document in question (which is later filtered out of the result list),
-          // an extra slot must be added for the source document to occupy.
-          .add("size", Json.fromInt(n + 1))
-      )
-      .noSpaces
-    search(index).source(x)
-  }
+  ): SearchRequest =
+    search(index).source(
+      Json
+        .fromJsonObject(
+          query(imageId, image, index)
+            .add("min_score", Json.fromDouble(minScore).get)
+            // n is the number of similar documents we want the query to return
+            // However, because this is used by KNN searches, which also return
+            // the document in question (which is later filtered out of the result list),
+            // an extra slot must be added for the source document to occupy.
+            .add("size", Json.fromInt(n + 1))
+        )
+        .noSpaces
+    )
 }

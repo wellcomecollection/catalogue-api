@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
 import io.circe.generic.extras.semiauto._
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.models._
 import weco.api.search.models.index.IndexedImage
 import weco.json.JsonUtil._
@@ -55,8 +55,9 @@ class ImagesService(
         requestBuilder.requestWithSimilarColors
     }
 
-    // default minimum scores for each similarity metric determined using this notebook
+    // default minimum score for the colors similarity metric determined using this notebook
     // https://github.com/wellcomecollection/data-science/blob/47245826c70bf2d76c63d2c4b3ace6c824673784/notebooks/similarity_problems/notebooks/01-similarity-scores.ipynb
+    // The blended and features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
     val defaultMinScore: Double = similarityMetric match {
       case SimilarityMetric.Blended  => 0
       case SimilarityMetric.Features => 0
@@ -71,9 +72,7 @@ class ImagesService(
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
       .map {
-        case Left(err) =>
-          println(err)
-          Nil // TODO: This should probably log the error
+        case Left(_)       => Nil
         case Right(images) =>
           // The response from a KNN query includes the image we were searching _with_
           // This is because, unlike MLT queries, the client must provide the data to match,
