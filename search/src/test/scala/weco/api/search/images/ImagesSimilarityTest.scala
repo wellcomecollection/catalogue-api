@@ -1,5 +1,7 @@
 package weco.api.search.images
 
+import io.circe.Json
+
 class ImagesSimilarityTest extends ApiImagesTestBase {
 
   /**
@@ -8,7 +10,9 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
     * connection between the `include` querystring parameter and the resulting JSON.
     *
     * The thresholds are set too high to be able to actually return similar images in
-    * these dummy indices, so the content of these image lists is irrelevant to the tests.
+    * these dummy indices, so instead, each test loads one image, and ensures that
+    * the requested list property has been returned.  The list will be empty, because
+    * an image should not be similar to itself.
     *
     * Tests that show that the similar images functionality behaves as expected
     * can be found in ../services/ImagesServiceTest.scala
@@ -29,7 +33,10 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
             path =
               s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar",
             assertion = responseJson => {
-              assert(responseJson.asObject.get.contains("visuallySimilar"))
+              responseJson.hcursor
+                .get[Seq[Json]]("visuallySimilar")
+                .right
+                .get shouldBe Nil
               assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
               assert(!responseJson.asObject.get.contains("withSimilarColors"))
             }
@@ -52,7 +59,10 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
             path =
               s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures",
             assertion = responseJson => {
-              assert(responseJson.asObject.get.contains("withSimilarFeatures"))
+              responseJson.hcursor
+                .get[Seq[Json]]("withSimilarFeatures")
+                .right
+                .get shouldBe Nil
               assert(!responseJson.asObject.get.contains("visuallySimilar"))
               assert(!responseJson.asObject.get.contains("withSimilarColors"))
             }
@@ -74,7 +84,10 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
             path =
               s"$rootPath/images/${getTestImageId("images.similar-palettes.0")}?include=withSimilarColors",
             assertion = responseJson => {
-              assert(responseJson.asObject.get.contains("withSimilarColors"))
+              responseJson.hcursor
+                .get[Seq[Json]]("withSimilarColors")
+                .right
+                .get shouldBe Nil
               assert(!responseJson.asObject.get.contains("visuallySimilar"))
               assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
             }
@@ -95,9 +108,18 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
             path =
               s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar,withSimilarFeatures,withSimilarColors",
             assertion = responseJson => {
-              assert(responseJson.asObject.get.contains("visuallySimilar"))
-              assert(responseJson.asObject.get.contains("withSimilarFeatures"))
-              assert(responseJson.asObject.get.contains("withSimilarColors"))
+              responseJson.hcursor
+                .get[Seq[Json]]("visuallySimilar")
+                .right
+                .get shouldBe Nil
+              responseJson.hcursor
+                .get[Seq[Json]]("withSimilarFeatures")
+                .right
+                .get shouldBe Nil
+              responseJson.hcursor
+                .get[Seq[Json]]("withSimilarColors")
+                .right
+                .get shouldBe Nil
             }
           )
       }

@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Decoder
 import io.circe.generic.extras.semiauto._
-import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models._
 import weco.api.search.models.index.IndexedImage
 import weco.json.JsonUtil._
