@@ -41,11 +41,12 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
-      // include the reducedFeatures field, so that image similarity
-      // can do a KNN search.
-      // KNN differs from MLT in that you actually have to send it the
-      // vector, rather than telling it to look at a document's vectors.
-      .sourceInclude("display", "query.inferredData.reducedFeatures")
+      .sourceInclude(
+        "display",
+        // we do KNN searches for similar images, and for that we need
+        // to send the image's vectors to Elasticsearch
+        "query.inferredData.reducedFeatures"
+      )
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
