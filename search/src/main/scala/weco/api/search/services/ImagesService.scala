@@ -72,15 +72,9 @@ class ImagesService(
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
       .map {
-        case Left(_)       => Nil
+        case Left(_) => Nil
         case Right(images) =>
-          // The response from a KNN query includes the image we were searching _with_
-          // This is because, unlike MLT queries, the client must provide the data to match,
-          // rather than asking ES to find things similar to a record it already knows about.
-          // So, of course, the record that has a 100% match will be included in the response.
-          images.filterNot(
-            _.display.hcursor.get[String]("id").right.get == imageId
-          )
+          images
       }
   }
 }
