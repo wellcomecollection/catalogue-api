@@ -34,6 +34,24 @@ steps:
     agents:
       queue: nano
 
+  - label: "Deploy (snapshot generator)"
+    branches: "main"
+    concurrency: 1
+    concurrency_group: snapshots/deploy-prod
+    command: |
+      ENV_TAG="env.prod" ./builds/update_ecr_image_tag.sh \
+        uk.ac.wellcome/snapshot_generator
+
+      CLUSTER="data-api" ./builds/deploy_ecs_services.sh \
+        snapshot_generator-prod
+
+    plugins:
+      - wellcomecollection/aws-assume-role#v0.2.2:
+          role: "arn:aws:iam::756629837203:role/catalogue-ci"
+
+    agents:
+      queue: nano
+
   - label: "Deploy (requests prod)"
     branches: "main"
     concurrency: 1
