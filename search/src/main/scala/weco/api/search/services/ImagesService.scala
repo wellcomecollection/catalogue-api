@@ -72,7 +72,8 @@ class ImagesService(
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
       .map {
-        case Left(_) => Nil
+        case Left(_) =>
+          Nil
         case Right(images) =>
           images
       }

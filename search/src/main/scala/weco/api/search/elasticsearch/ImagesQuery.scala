@@ -60,7 +60,16 @@ case object ImageSimilarity {
           "field" -> field.asJson,
           "query_vector" -> image.reducedFeatures.asJson,
           "k" -> 10.asJson,
-          "num_candidates" -> 100.asJson
+          "num_candidates" -> 100.asJson,
+          "filter" -> Json.obj(
+            "bool" -> Json.obj(
+              "must_not" -> Json.obj(
+                "ids" -> Json.obj(
+                  "values" -> Json.arr(Json.fromString(imageId))
+                )
+              )
+            )
+          )
         )
       )
       .asObject
@@ -156,7 +165,7 @@ case object ImagesMultiMatcher {
                       s"query.source.title.$language",
                       s"query.source.notes.$language",
                       s"query.source.lettering.$language"
-                  )
+                    )
                 )
                 .map(field => FieldWithBoost(field, boost = 100))
             )

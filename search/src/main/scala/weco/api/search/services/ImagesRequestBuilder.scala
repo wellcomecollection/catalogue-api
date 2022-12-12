@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.sort._
-import io.circe.{parser, Json, JsonObject}
+import io.circe.{Json, JsonObject}
 
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{
@@ -170,23 +170,6 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
             // the document in question (which is later filtered out of the result list),
             // an extra slot must be added for the source document to occupy.
             .add("size", Json.fromInt(n + 1))
-            // The response from a KNN query would include the image we were searching _with_
-            // This is because the client provides the data to match, rather than asking ES to
-            // find things similar to a record it already knows about.
-            // So, of course, the record that has a 100% match would be included in the response.
-            // This filter prevents that undesirable outcome
-            .add(
-              "filter",
-              parser.parse(s"""{
-                "bool":{
-                  "must_not":{
-                    "ids":{
-                      "values":["$imageId"]
-                    }
-                  }
-                }
-             }""").right.get
-            )
         )
         .noSpaces
     )
