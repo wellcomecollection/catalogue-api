@@ -31,16 +31,15 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
           assertJsonResponseLike(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar",
-            assertion = responseJson => {
-              responseJson.hcursor
-                .get[Seq[Json]]("visuallySimilar")
-                .right
-                .get shouldBe Nil
-              assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
-              assert(!responseJson.asObject.get.contains("withSimilarColors"))
-            }
-          )
+              s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar"
+          ) { responseJson =>
+            responseJson.hcursor
+              .get[Seq[Json]]("visuallySimilar")
+              .right
+              .get shouldBe Nil
+            assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
+            assert(!responseJson.asObject.get.contains("withSimilarColors"))
+          }
       }
     }
 
@@ -57,16 +56,16 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
           assertJsonResponseLike(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures",
-            assertion = responseJson => {
-              responseJson.hcursor
-                .get[Seq[Json]]("withSimilarFeatures")
-                .right
-                .get shouldBe Nil
-              assert(!responseJson.asObject.get.contains("visuallySimilar"))
-              assert(!responseJson.asObject.get.contains("withSimilarColors"))
-            }
-          )
+              s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures"
+          ) { responseJson =>
+            responseJson.hcursor
+              .get[Seq[Json]]("withSimilarFeatures")
+              .right
+              .get shouldBe Nil
+            assert(!responseJson.asObject.get.contains("visuallySimilar"))
+            assert(!responseJson.asObject.get.contains("withSimilarColors"))
+          }
+
       }
     }
 
@@ -82,16 +81,16 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
           assertJsonResponseLike(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.similar-palettes.0")}?include=withSimilarColors",
-            assertion = responseJson => {
-              responseJson.hcursor
-                .get[Seq[Json]]("withSimilarColors")
-                .right
-                .get shouldBe Nil
-              assert(!responseJson.asObject.get.contains("visuallySimilar"))
-              assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
-            }
-          )
+              s"$rootPath/images/${getTestImageId("images.similar-palettes.0")}?include=withSimilarColors"
+          ) { responseJson =>
+            responseJson.hcursor
+              .get[Seq[Json]]("withSimilarColors")
+              .right
+              .get shouldBe Nil
+            assert(!responseJson.asObject.get.contains("visuallySimilar"))
+            assert(!responseJson.asObject.get.contains("withSimilarFeatures"))
+          }
+
       }
     }
 
@@ -106,22 +105,22 @@ class ImagesSimilarityTest extends ApiImagesTestBase {
           assertJsonResponseLike(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar,withSimilarFeatures,withSimilarColors",
-            assertion = responseJson => {
-              responseJson.hcursor
-                .get[Seq[Json]]("visuallySimilar")
-                .right
-                .get shouldBe Nil
-              responseJson.hcursor
-                .get[Seq[Json]]("withSimilarFeatures")
-                .right
-                .get shouldBe Nil
-              responseJson.hcursor
-                .get[Seq[Json]]("withSimilarColors")
-                .right
-                .get shouldBe Nil
-            }
-          )
+              s"$rootPath/images/${getTestImageId("images.similar-features-and-palettes.0")}?include=visuallySimilar,withSimilarFeatures,withSimilarColors"
+          ) { responseJson =>
+            responseJson.hcursor
+              .get[Seq[Json]]("visuallySimilar")
+              .right
+              .get shouldBe Nil
+            responseJson.hcursor
+              .get[Seq[Json]]("withSimilarFeatures")
+              .right
+              .get shouldBe Nil
+            responseJson.hcursor
+              .get[Seq[Json]]("withSimilarColors")
+              .right
+              .get shouldBe Nil
+          }
+
       }
     }
 

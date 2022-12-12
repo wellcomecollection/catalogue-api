@@ -99,9 +99,8 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 
   def assertJsonResponseLike(
     routes: Route,
-    path: String,
-    assertion: Json => Assertion
-  ): Assertion = {
+    path: String
+  )(assertion: Json => Assertion): Assertion = {
     def responseJson = eventually {
       Get(path) ~> routes ~> check {
         status shouldEqual Status.OK
