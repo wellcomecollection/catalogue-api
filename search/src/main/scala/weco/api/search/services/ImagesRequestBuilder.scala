@@ -7,8 +7,9 @@ import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.sort._
-import weco.api.search.models.index.IndexedImage
+import io.circe.{Json, JsonObject}
 
+import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{
   ColorQuery,
   ImageSimilarity,
@@ -40,7 +41,12 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
-      .sourceInclude("display")
+      .sourceInclude(
+        "display",
+        // we do KNN searches for similar images, and for that we need
+        // to send the image's vectors to Elasticsearch
+        "query.inferredData.reducedFeatures"
+      )
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
@@ -121,11 +127,11 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
 
   def requestWithBlendedSimilarity
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.blended)
+    rawSimilarityRequest(ImageSimilarity.blended)
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.features)
+    rawSimilarityRequest(ImageSimilarity.features)
 
   def requestWithSimilarColors
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
@@ -141,7 +147,26 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     minScore: Double
   ): SearchRequest =
     search(index)
-      .query(query(imageId, image, index))
       .size(n)
       .minScore(minScore)
+      .query(query(imageId, image, index))
+
+  private def rawSimilarityRequest(
+    query: (String, IndexedImage, Index) => JsonObject
+  )(
+    index: Index,
+    imageId: String,
+    image: IndexedImage,
+    n: Int,
+    minScore: Double
+  ): SearchRequest =
+    search(index).source(
+      Json
+        .fromJsonObject(
+          query(imageId, image, index)
+            .add("min_score", Json.fromDouble(minScore).get)
+            .add("size", Json.fromInt(n))
+        )
+        .noSpaces
+    )
 }

@@ -50,7 +50,7 @@ class ImagesServiceTest
           _.right.value
         }
 
-        expectedImage shouldBe actualImage
+        expectedImage shouldEqual actualImage
       }
     }
 
@@ -109,7 +109,7 @@ class ImagesServiceTest
           )
 
         whenReady(future) {
-          _ shouldBe expectedImages
+          _ should contain theSameElementsAs expectedImages
         }
       }
     }

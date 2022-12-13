@@ -61,80 +61,27 @@ class ImagesIncludesTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(imagesIndex, "images.subjects.sounds")
-
-          assertJsonResponse(
+          assertJsonResponseContains(
             routes,
-            path = s"$rootPath/images?include=source.subjects"
-          ) {
-            Status.OK ->
-              """
-                {
-                  "pageSize" : 10,
-                  "results" : [
-                    {
-                      "id" : "l6hqqw3i",
-                      "thumbnail" : {
-                        "locationType" : {
-                          "id" : "iiif-image",
-                          "label" : "IIIF Image API",
-                          "type" : "LocationType"
-                        },
-                        "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-                        "credit" : "Credit line: fW9LIc6n",
-                        "license" : {
-                          "id" : "cc-by",
-                          "label" : "Attribution 4.0 International (CC BY 4.0)",
-                          "url" : "http://creativecommons.org/licenses/by/4.0/",
-                          "type" : "License"
-                        },
-                        "accessConditions" : [
-                        ],
-                        "type" : "DigitalLocation"
-                      },
-                      "locations" : [
-                        {
-                          "locationType" : {
-                            "id" : "iiif-image",
-                            "label" : "IIIF Image API",
-                            "type" : "LocationType"
-                          },
-                          "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-                          "credit" : "Credit line: fW9LIc6n",
-                          "license" : {
-                            "id" : "cc-by",
-                            "label" : "Attribution 4.0 International (CC BY 4.0)",
-                            "url" : "http://creativecommons.org/licenses/by/4.0/",
-                            "type" : "License"
-                          },
-                          "accessConditions" : [
-                          ],
-                          "type" : "DigitalLocation"
-                        }
-                      ],
-                      "aspectRatio" : 0.022521317,
-                      "averageColor" : "#FFF94E",
-                      "source" : {
-                        "id" : "kxd5hg2c",
-                        "title" : "title-UXbrIVN9As",
-                        "subjects" : [
-                          {
-                            "label" : "Square sounds",
-                            "concepts" : [
-                            ],
-                            "type" : "Subject"
-                          }
-                        ],
-                        "type" : "Work"
-                      },
-                      "type" : "Image"
-                    }
-                  ],
-                  "totalPages" : 1,
-                  "totalResults" : 1,
-                  "type" : "ResultList"
-                }
-                """
-          }
+            path = s"$rootPath/images?include=source.subjects",
+            locator = responseJson => {
+              responseJson.hcursor
+                .downField("results")
+                .downArray
+                .downField("source")
+                .downField("subjects")
+                .focus
+                .get
+            },
+            expectedJson = """[
+              {
+                "label" : "Square sounds",
+                "concepts" : [
+                ],
+                "type" : "Subject"
+              }
+            ]"""
+          )
       }
     }
 
@@ -178,16 +125,58 @@ class ImagesIncludesTest extends ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(imagesIndex, "images.everything")
-
-          assertJsonResponse(
+          assertJsonResponseContains(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.genres"
-          ) {
-            Status.OK -> readResource(
-              "expected_responses/include-image-genres.json"
-            )
-          }
+              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.genres",
+            locator = responseJson => {
+              responseJson.hcursor
+                .downField("source")
+                .downField("genres")
+                .focus
+                .get
+            },
+            expectedJson = """
+               [
+              {
+                "concepts" : [
+                  {
+                    "label" : "U0oWO3ioLqbrury",
+                    "type" : "Concept"
+                  },
+                  {
+                    "label" : "7o2QTEqcIF9bQro",
+                    "type" : "Concept"
+                  },
+                  {
+                    "label" : "ssWozG8sqfYdoIO",
+                    "type" : "Concept"
+                  }
+                ],
+                "label" : "Crumbly cabbages",
+                "type" : "Genre"
+              },
+              {
+                "concepts" : [
+                  {
+                    "label" : "JIUj2LP1mxi643r",
+                    "type" : "Concept"
+                  },
+                  {
+                    "label" : "2da07kIJPZsamHd",
+                    "type" : "Concept"
+                  },
+                  {
+                    "label" : "A4kdSkosRRTtjUN",
+                    "type" : "Concept"
+                  }
+                ],
+                "label" : "Deadly durians",
+                "type" : "Genre"
+              }
+            ]
+             """
+          )
       }
     }
 
@@ -196,72 +185,27 @@ class ImagesIncludesTest extends ApiImagesTestBase {
         case (imagesIndex, routes) =>
           indexTestDocuments(imagesIndex, "images.subjects.sounds")
 
-          assertJsonResponse(
+          assertJsonResponseContains(
             routes,
             path =
-              s"$rootPath/images/${getTestImageId("images.subjects.sounds")}?include=source.subjects"
-          ) {
-            Status.OK ->
+              s"$rootPath/images/${getTestImageId("images.subjects.sounds")}?include=source.subjects",
+            locator = responseJson =>
+              responseJson.hcursor
+                .downField("source")
+                .downField("subjects")
+                .focus
+                .get,
+            expectedJson = """
+                [
+                  {
+                    "label" : "Square sounds",
+                    "concepts" : [
+                    ],
+                    "type" : "Subject"
+                  }
+                ]
               """
-                {
-                  "id" : "l6hqqw3i",
-                  "thumbnail" : {
-                    "locationType" : {
-                      "id" : "iiif-image",
-                      "label" : "IIIF Image API",
-                      "type" : "LocationType"
-                    },
-                    "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-                    "credit" : "Credit line: fW9LIc6n",
-                    "license" : {
-                      "id" : "cc-by",
-                      "label" : "Attribution 4.0 International (CC BY 4.0)",
-                      "url" : "http://creativecommons.org/licenses/by/4.0/",
-                      "type" : "License"
-                    },
-                    "accessConditions" : [
-                    ],
-                    "type" : "DigitalLocation"
-                  },
-                  "locations" : [
-                    {
-                      "locationType" : {
-                        "id" : "iiif-image",
-                        "label" : "IIIF Image API",
-                        "type" : "LocationType"
-                      },
-                      "url" : "https://iiif.wellcomecollection.org/image/j3J.jpg/info.json",
-                      "credit" : "Credit line: fW9LIc6n",
-                      "license" : {
-                        "id" : "cc-by",
-                        "label" : "Attribution 4.0 International (CC BY 4.0)",
-                        "url" : "http://creativecommons.org/licenses/by/4.0/",
-                        "type" : "License"
-                      },
-                      "accessConditions" : [
-                      ],
-                      "type" : "DigitalLocation"
-                    }
-                  ],
-                  "aspectRatio" : 0.022521317,
-                  "averageColor" : "#FFF94E",
-                  "source" : {
-                    "id" : "kxd5hg2c",
-                    "title" : "title-UXbrIVN9As",
-                    "subjects" : [
-                      {
-                        "label" : "Square sounds",
-                        "concepts" : [
-                        ],
-                        "type" : "Subject"
-                      }
-                    ],
-                    "type" : "Work"
-                  },
-                  "type" : "Image"
-                }
-                """
-          }
+          )
       }
     }
   }

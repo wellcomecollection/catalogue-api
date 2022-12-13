@@ -55,11 +55,12 @@ class ImagesService(
         requestBuilder.requestWithSimilarColors
     }
 
-    // default minimum scores for each similarity metric determined using this notebook
+    // default minimum score for the colors similarity metric determined using this notebook
     // https://github.com/wellcomecollection/data-science/blob/47245826c70bf2d76c63d2c4b3ace6c824673784/notebooks/similarity_problems/notebooks/01-similarity-scores.ipynb
+    // The blended and features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
     val defaultMinScore: Double = similarityMetric match {
-      case SimilarityMetric.Blended  => 300
-      case SimilarityMetric.Features => 300
+      case SimilarityMetric.Blended  => 0
+      case SimilarityMetric.Features => 0
       case SimilarityMetric.Colors   => 20
     }
 
@@ -71,8 +72,10 @@ class ImagesService(
     elasticsearchService
       .findBySearch(searchRequest)(decoder)
       .map {
-        case Left(_)       => Nil
-        case Right(images) => images
+        case Left(_) =>
+          Nil
+        case Right(images) =>
+          images
       }
   }
 }

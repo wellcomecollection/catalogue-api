@@ -60,6 +60,7 @@ trait TestDocumentFixtures
     getTestDocuments(Seq(id))
       .map(doc => getKey(doc.document, "query").get)
       .head
+      .deepDropNullValues
 
   def getTestDocuments(ids: Seq[String]): Seq[TestDocument] =
     ids.map { id =>
