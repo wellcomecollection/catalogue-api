@@ -8,7 +8,7 @@ import weco.elasticsearch.IndexConfig
 class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
   val includesString =
-    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
+    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
 
   describe("returns a 400 Bad Request for errors in the ?include parameter") {
     it("a single invalid include") {

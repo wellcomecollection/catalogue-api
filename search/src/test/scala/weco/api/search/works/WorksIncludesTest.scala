@@ -1722,7 +1722,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "jfzz4ou9",
                       "designation" : [
                         "Designation #1",
-                        "Designation #2"
+                        "Designation #2",
+                        "Designation #3"
                       ],
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
@@ -1740,7 +1741,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "nlqnlwch",
                       "designation" : [
                         "Designation #1",
-                        "Designation #2"
+                        "Designation #2",
+                        "Designation #3"
                       ],
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
@@ -1753,7 +1755,8 @@ class WorksIncludesTest extends ApiWorksTestBase {
                       "id" : "tmdfbk5k",
                       "designation" : [
                         "Designation #1",
-                        "Designation #2"
+                        "Designation #2",
+                        "Designation #3"
                       ],
                       "title" : "A work with all the include-able fields",
                       "type" : "Work"
