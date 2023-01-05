@@ -1618,6 +1618,159 @@ class WorksIncludesTest extends ApiWorksTestBase {
     }
   }
 
+  it("includes formerFrequency if we pass ?include=formerFrequency") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works?include=formerFrequency") {
+          Status.OK ->
+            s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "jfzz4ou9",
+                      "formerFrequency" : [
+                        "Published in 2001",
+                        "Published in 2002"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "nlqnlwch",
+                      "formerFrequency" : [
+                        "Published in 2001",
+                        "Published in 2002"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "formerFrequency" : [
+                        "Published in 2001",
+                        "Published in 2002"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
+        }
+    }
+  }
+
+  it("includes designation if we pass ?include=designation") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
+
+        assertJsonResponse(routes, path = s"$rootPath/works?include=designation") {
+          Status.OK ->
+            s"""
+                {
+                  "pageSize" : 10,
+                  "results" : [
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "open-shelves",
+                          "label" : "Open shelves",
+                          "type" : "Availability"
+                        },
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "jfzz4ou9",
+                      "designation" : [
+                        "Designation #1",
+                        "Designation #2",
+                        "Designation #3"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                        {
+                          "id" : "closed-stores",
+                          "label" : "Closed stores",
+                          "type" : "Availability"
+                        }
+                      ],
+                      "id" : "nlqnlwch",
+                      "designation" : [
+                        "Designation #1",
+                        "Designation #2",
+                        "Designation #3"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    },
+                    {
+                      "alternativeTitles" : [
+                      ],
+                      "availabilities" : [
+                      ],
+                      "id" : "tmdfbk5k",
+                      "designation" : [
+                        "Designation #1",
+                        "Designation #2",
+                        "Designation #3"
+                      ],
+                      "title" : "A work with all the include-able fields",
+                      "type" : "Work"
+                    }
+                  ],
+                  "totalPages" : 1,
+                  "totalResults" : 3,
+                  "type" : "ResultList"
+                }
+                """
+        }
+    }
+  }
+
   describe("image includes") {
     it(
       "includes a list of images on the list endpoint if we pass ?include=images"

@@ -1,6 +1,6 @@
 {
   "description" : "a list of work with all the include-able fields",
-  "createdAt" : "2022-10-03T11:15:02.792556Z",
+  "createdAt" : "2023-01-03T10:31:42.048683Z",
   "id" : "tmdfbk5k",
   "document" : {
     "debug" : {
@@ -384,6 +384,15 @@
           },
           "type" : "Note"
         }
+      ],
+      "formerFrequency" : [
+        "Published in 2001",
+        "Published in 2002"
+      ],
+      "designation" : [
+        "Designation #1",
+        "Designation #2",
+        "Designation #3"
       ],
       "images" : [
         {

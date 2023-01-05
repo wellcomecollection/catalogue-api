@@ -40,6 +40,8 @@ object SingleWorkParams extends QueryParamsUtils {
       "production" -> WorkInclude.Production,
       "languages" -> WorkInclude.Languages,
       "notes" -> WorkInclude.Notes,
+      "formerFrequency" -> WorkInclude.FormerFrequency,
+      "designation" -> WorkInclude.Designation,
       "images" -> WorkInclude.Images,
       "parts" -> WorkInclude.Parts,
       "partOf" -> WorkInclude.PartOf,
