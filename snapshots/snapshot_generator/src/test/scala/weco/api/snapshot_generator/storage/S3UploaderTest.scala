@@ -1,10 +1,13 @@
 package weco.api.snapshot_generator.storage
 
-import com.amazonaws.services.s3.model.AmazonS3Exception
 import org.apache.commons.io.FileUtils
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{EitherValues, TryValues}
+import software.amazon.awssdk.services.s3.model.{
+  HeadObjectRequest,
+  NoSuchBucketException
+}
 import weco.fixtures.RandomGenerators
 import weco.storage.fixtures.S3Fixtures
 import weco.storage.store.s3.S3StreamStore
@@ -31,12 +34,16 @@ class S3UploaderTest
       val uploadResult =
         uploader.upload(location, bytes.toIterator).success.value
 
-      uploadResult.getBucketName shouldBe location.bucket
-      uploadResult.getKey shouldBe location.key
+      uploadResult.bucket() shouldBe location.bucket
+      uploadResult.key() shouldBe location.key
 
-      s3Client
-        .getObjectMetadata(location.bucket, location.key)
-        .getETag shouldBe uploadResult.getETag
+      val headRequest =
+        HeadObjectRequest.builder()
+          .bucket(location.bucket)
+          .key(location.key)
+          .build()
+
+      s3Client.headObject(headRequest).eTag() shouldBe uploadResult.eTag()
 
       assertStreamEquals(
         s3StreamStore.get(location).right.value.identifiedT,
@@ -53,9 +60,6 @@ class S3UploaderTest
 
     val uploadResult = uploader.upload(location, bytes.toIterator).failed.get
 
-    uploadResult shouldBe a[AmazonS3Exception]
-    uploadResult.getMessage should startWith(
-      "The specified bucket does not exist"
-    )
+    uploadResult shouldBe a[NoSuchBucketException]
   }
 }

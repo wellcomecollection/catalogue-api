@@ -47,12 +47,9 @@ class SnapshotGeneratorFeatureTest
         sendNotificationToSQS(queue = queue, message = snapshotJob)
 
         eventually {
-          val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
+          val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
           val actualJsonLines = contents.split("\n").toList
-
-          val s3Etag = objectMetadata.getETag
-          val s3Size = objectMetadata.getContentLength
 
           val expectedJsonLines =
             readResource("expected-snapshot.txt").split("\n")

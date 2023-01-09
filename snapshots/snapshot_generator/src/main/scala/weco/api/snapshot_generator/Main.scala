@@ -1,9 +1,9 @@
 package weco.api.snapshot_generator
 
 import akka.actor.ActorSystem
-import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import com.typesafe.config.Config
+import software.amazon.awssdk.services.s3.S3Client
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.models.PipelineClusterElasticConfig
 import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
@@ -13,7 +13,6 @@ import weco.api.snapshot_generator.services.{
 }
 import weco.messaging.sns.NotificationMessage
 import weco.messaging.typesafe.{SNSBuilder, SQSBuilder}
-import weco.storage.typesafe.S3Builder
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.AkkaBuilder
 import weco.typesafe.config.builders.EnrichConfig._
@@ -36,7 +35,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val elasticClient: ElasticClient =
       PipelineElasticClientBuilder("snapshot_generator")
 
-    implicit val s3Client: AmazonS3 = S3Builder.buildS3Client
+    implicit val s3Client: S3Client = S3Client.builder().build()
 
     val snapshotService = new SnapshotService(snapshotConfig)
 

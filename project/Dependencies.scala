@@ -60,11 +60,6 @@ object WellcomeDependencies {
     version = versions.typesafe
   ) ++ fixturesLibrary
 
-  val storageTypesafeLibrary: Seq[ModuleID] = storageLibrary ++ library(
-    name = "storage_typesafe",
-    version = versions.storage
-  )
-
   val messagingTypesafeLibrary: Seq[ModuleID] = messagingLibrary ++ library(
     name = "messaging_typesafe",
     version = versions.messaging
@@ -167,7 +162,7 @@ object CatalogueDependencies {
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.elasticsearchLibrary ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
-      WellcomeDependencies.storageTypesafeLibrary ++
+      WellcomeDependencies.storageLibrary ++
       WellcomeDependencies.typesafeLibrary
 
   val itemsDependencies: Seq[ModuleID] =

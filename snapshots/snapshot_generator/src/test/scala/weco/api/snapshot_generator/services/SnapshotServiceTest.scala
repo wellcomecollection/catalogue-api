@@ -1,6 +1,5 @@
 package weco.api.snapshot_generator.services
 
-import com.amazonaws.services.s3.model.AmazonS3Exception
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.http.JavaClientExceptionWrapper
 import com.sksamuel.elastic4s.{ElasticClient, Index}
@@ -10,6 +9,7 @@ import io.circe.syntax._
 import org.scalatest.TryValues
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import software.amazon.awssdk.services.s3.model.NoSuchBucketException
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
@@ -58,10 +58,7 @@ class SnapshotServiceTest
 
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
-        val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
-
-        val s3Etag = objectMetadata.getETag
-        val s3Size = objectMetadata.getContentLength
+        val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
         val expectedJsonLines =
           readResource("expected-snapshot.txt").split("\n")
@@ -135,10 +132,7 @@ class SnapshotServiceTest
 
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
-        val (objectMetadata, contents) = getGzipObjectFromS3(s3Location)
-
-        val s3Etag = objectMetadata.getETag
-        val s3Size = objectMetadata.getContentLength
+        val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
         val expectedContents = documents
           .map { case (id, _) => s""""document $id"""" }
@@ -176,8 +170,7 @@ class SnapshotServiceTest
         )
 
         val exc = snapshotService.generateSnapshot(snapshotJob).failed.get
-        exc shouldBe a[AmazonS3Exception]
-        exc.getMessage should startWith("The specified bucket does not exist")
+        exc shouldBe a[NoSuchBucketException]
     }
   }
 
