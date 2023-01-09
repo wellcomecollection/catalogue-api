@@ -33,7 +33,8 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
   ): Try[CompleteMultipartUploadResponse] = Try {
 
     val createRequest =
-      CreateMultipartUploadRequest.builder()
+      CreateMultipartUploadRequest
+        .builder()
         .bucket(location.bucket)
         .key(location.key)
         .build()
@@ -47,12 +48,14 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
     val completedParts = uploadParts(createResponse, location, bytes)
 
     val completedMultipartUpload =
-      CompletedMultipartUpload.builder()
+      CompletedMultipartUpload
+        .builder()
         .parts(completedParts.asJava)
         .build()
 
     val completeRequest =
-      CompleteMultipartUploadRequest.builder()
+      CompleteMultipartUploadRequest
+        .builder()
         .bucket(location.bucket)
         .key(location.key)
         .uploadId(createResponse.uploadId())
@@ -77,7 +80,8 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
       .map {
         case (partBytes, partNumber) =>
           val uploadPartRequest =
-            UploadPartRequest.builder()
+            UploadPartRequest
+              .builder()
               .bucket(location.bucket)
               .key(location.key)
               .uploadId(createResponse.uploadId())
@@ -89,7 +93,8 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
           val uploadPartResponse =
             s3Client.uploadPart(uploadPartRequest, requestBody)
 
-          CompletedPart.builder()
+          CompletedPart
+            .builder()
             .eTag(uploadPartResponse.eTag())
             .partNumber(partNumber)
             .build()
