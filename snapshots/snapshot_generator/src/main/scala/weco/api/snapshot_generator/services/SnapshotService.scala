@@ -1,8 +1,8 @@
 package weco.api.snapshot_generator.services
 
-import com.amazonaws.services.s3.AmazonS3
 import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
+import software.amazon.awssdk.services.s3.S3Client
 import weco.api.snapshot_generator.compress.GzipCompressor
 import weco.api.snapshot_generator.iterators.ElasticsearchIterator
 import weco.api.snapshot_generator.models.{
@@ -19,7 +19,7 @@ import scala.util.Try
 class SnapshotService(config: SnapshotGeneratorConfig)(
   implicit
   elasticClient: ElasticClient,
-  s3Client: AmazonS3
+  s3Client: S3Client
 ) extends Logging {
   private val uploader = new S3Uploader()
 
@@ -54,7 +54,7 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
         documentCount = workCount,
         startedAt = startedAt,
         finishedAt = Instant.now(),
-        s3Etag = uploadResult.getETag,
+        s3Etag = uploadResult.eTag(),
         s3Size = s3Size,
         s3Location = snapshotJob.s3Location
       )

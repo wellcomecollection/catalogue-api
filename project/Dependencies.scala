@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "32.19.4" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "32.20.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -59,11 +59,6 @@ object WellcomeDependencies {
     name = "typesafe_app",
     version = versions.typesafe
   ) ++ fixturesLibrary
-
-  val storageTypesafeLibrary: Seq[ModuleID] = storageLibrary ++ library(
-    name = "storage_typesafe",
-    version = versions.storage
-  )
 
   val messagingTypesafeLibrary: Seq[ModuleID] = messagingLibrary ++ library(
     name = "messaging_typesafe",
@@ -167,7 +162,7 @@ object CatalogueDependencies {
     WellcomeDependencies.messagingTypesafeLibrary ++
       WellcomeDependencies.elasticsearchLibrary ++
       WellcomeDependencies.elasticsearchTypesafeLibrary ++
-      WellcomeDependencies.storageTypesafeLibrary ++
+      WellcomeDependencies.storageLibrary ++
       WellcomeDependencies.typesafeLibrary
 
   val itemsDependencies: Seq[ModuleID] =
