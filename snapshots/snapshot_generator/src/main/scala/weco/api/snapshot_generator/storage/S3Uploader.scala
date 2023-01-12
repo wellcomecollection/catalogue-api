@@ -1,75 +1,35 @@
 package weco.api.snapshot_generator.storage
 
-import grizzled.slf4j.Logging
 import org.apache.commons.io.FileUtils
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.{
-  CompleteMultipartUploadRequest,
   CompleteMultipartUploadResponse,
-  CompletedMultipartUpload,
   CompletedPart,
-  CreateMultipartUploadRequest,
-  CreateMultipartUploadResponse,
   UploadPartRequest
 }
 import weco.storage.s3.S3ObjectLocation
+import weco.storage.store.s3.S3MultipartUploader
 
-import scala.collection.JavaConverters._
 import scala.util.Try
 
-class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
-  implicit s3Client: S3Client
-) extends Logging {
+class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
+  implicit val s3Client: S3Client
+) extends S3MultipartUploader {
 
-  require(
-    partSize >= 5 * FileUtils.ONE_MB,
-    s"Parts must be at least 5 MB in size, got $partSize < ${5 * FileUtils.ONE_MB}; see https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html"
-  )
-
-  def upload(
-    location: S3ObjectLocation,
-    bytes: Iterator[Byte]
-  ): Try[CompleteMultipartUploadResponse] = Try {
-
-    val createRequest =
-      CreateMultipartUploadRequest
-        .builder()
-        .bucket(location.bucket)
-        .key(location.key)
-        .build()
-
-    val createResponse = s3Client.createMultipartUpload(createRequest)
-
-    debug(
-      s"Got CreateMultipartUploadResponse with upload ID ${createResponse.uploadId()}"
-    )
-
-    val completedParts = uploadParts(createResponse, location, bytes)
-
-    val completedMultipartUpload =
-      CompletedMultipartUpload
-        .builder()
-        .parts(completedParts.asJava)
-        .build()
-
-    val completeRequest =
-      CompleteMultipartUploadRequest
-        .builder()
-        .bucket(location.bucket)
-        .key(location.key)
-        .uploadId(createResponse.uploadId())
-        .multipartUpload(completedMultipartUpload)
-        .build()
-
-    s3Client.completeMultipartUpload(completeRequest)
-  }
+  def upload(location: S3ObjectLocation,
+             bytes: Iterator[Byte]): Try[CompleteMultipartUploadResponse] =
+    for {
+      uploadId <- createMultipartUpload(location)
+      completedParts <- uploadParts(location, uploadId, bytes)
+      response <- completeMultipartUpload(location, uploadId, completedParts)
+    } yield response
 
   private def uploadParts(
-    createResponse: CreateMultipartUploadResponse,
     location: S3ObjectLocation,
+    uploadId: String,
     bytes: Iterator[Byte]
-  ): List[CompletedPart] =
+  ): Try[List[CompletedPart]] = Try {
     bytes
       .grouped(partSize)
       .zipWithIndex
@@ -84,7 +44,7 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
               .builder()
               .bucket(location.bucket)
               .key(location.key)
-              .uploadId(createResponse.uploadId())
+              .uploadId(uploadId)
               .partNumber(partNumber)
               .build()
 
@@ -100,4 +60,5 @@ class S3Uploader(partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
             .build()
       }
       .toList
+  }
 }
