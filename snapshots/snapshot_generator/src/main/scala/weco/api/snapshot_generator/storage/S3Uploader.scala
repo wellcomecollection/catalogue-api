@@ -3,7 +3,11 @@ package weco.api.snapshot_generator.storage
 import org.apache.commons.io.FileUtils
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
-import software.amazon.awssdk.services.s3.model.{CompleteMultipartUploadResponse, CompletedPart, UploadPartRequest}
+import software.amazon.awssdk.services.s3.model.{
+  CompleteMultipartUploadResponse,
+  CompletedPart,
+  UploadPartRequest
+}
 import weco.storage.s3.S3ObjectLocation
 import weco.storage.store.s3.S3MultipartUploader
 
@@ -13,7 +17,8 @@ class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
   implicit val s3Client: S3Client
 ) extends S3MultipartUploader {
 
-  def upload(location: S3ObjectLocation, bytes: Iterator[Byte]): Try[CompleteMultipartUploadResponse] =
+  def upload(location: S3ObjectLocation,
+             bytes: Iterator[Byte]): Try[CompleteMultipartUploadResponse] =
     for {
       uploadId <- createMultipartUpload(location)
       completedParts <- uploadParts(location, uploadId, bytes)
