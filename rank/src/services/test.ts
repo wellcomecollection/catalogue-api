@@ -13,7 +13,10 @@ type Props = {
   cluster: Cluster
 }
 
-const indexExists = async (client: Client, index: string): Promise<boolean> => {
+export const indexExists = async (
+  client: Client,
+  index: string
+): Promise<boolean> => {
   try {
     await client.indices.get({ index })
     return true
@@ -22,7 +25,29 @@ const indexExists = async (client: Client, index: string): Promise<boolean> => {
   }
 }
 
-async function service({
+export async function getClient(queryEnv, cluster, template): Promise<Client> {
+  if (queryEnv === 'candidate' && cluster === 'pipeline') {
+    const prodClient = await getPipelineClient('production')
+    const stageClient = await getPipelineClient('staging')
+    if (await indexExists(prodClient, template.index)) {
+      return prodClient
+    } else if (await indexExists(stageClient, template.index)) {
+      return stageClient
+    } else {
+      throw new Error(
+        `${template.index} does not exist in any currently used ${cluster} cluster!`
+      )
+    }
+  } else if (cluster === 'pipeline') {
+    return await getPipelineClient(queryEnv)
+  } else if (cluster === 'rank') {
+    return await getRankClient()
+  } else {
+    throw new Error(`Unknown cluster ${cluster}`)
+  }
+}
+
+async function rankTest({
   queryEnv,
   cluster,
   index,
@@ -30,17 +55,17 @@ async function service({
 }: Props): Promise<TestResult> {
   const template = await getTemplate(queryEnv, index)
 
-  const test= tests[template.namespace].find((test) => test.id === testId)
+  const test = tests[template.namespace].find((test) => test.id === testId)
   if (!test) throw Error(`No such test ${testId}`)
 
   const { cases, metric } = test
 
   const requests = cases.map((testCase: TestCase) => {
     return {
-      id: testCase.query,
+      id: testCase.searchTerms,
       template_id: template.id,
       params: {
-        query: testCase.query
+        query: testCase.searchTerms
       },
       ratings: testCase.ratings.map((id) => {
         return {
@@ -52,27 +77,7 @@ async function service({
     }
   })
 
-  let client: Client
-  if (queryEnv === 'candidate' && cluster === 'pipeline') {
-    const prodClient = await getPipelineClient('production')
-    const stageClient = await getPipelineClient('staging')
-    if (await indexExists(prodClient, template.index)) {
-      client = prodClient
-    } else if (await indexExists(stageClient, template.index)) {
-      client = stageClient
-    } else {
-      throw new Error(
-        `${index} does not exist in any currently used ${cluster} cluster!`
-      )
-    }
-  } else if (cluster === 'pipeline') {
-    client = await getPipelineClient(queryEnv)
-  } else if (cluster === 'rank') {
-    client = await getRankClient()
-  } else {
-    throw new Error(`Unknown cluster ${cluster}`)
-  }
-
+  const client = await getClient(queryEnv, cluster, template)
   // fail if the index doesn't exist
   if (!(await indexExists(client, template.index))) {
     throw new Error(`${index} does not exist in the ${cluster} cluster!`)
@@ -95,9 +100,9 @@ async function service({
   })
 
   const results = Object.entries(details).map(([query, detail]) => {
-    const testCase = test.cases.find((c) => c.query === query)
+    const testCase = test.cases.find((c) => c.searchTerms === query)
     return {
-      query,
+      searchTerms: query,
       description: testCase?.description,
       knownFailure: testCase?.knownFailure,
       result: test.eval(detail)
@@ -107,7 +112,6 @@ async function service({
   return {
     index: template.index,
     queryEnv: template.queryEnv,
-    label: test.label,
     description: test.description,
     namespace: template.namespace,
     pass: results.every((result) => result.result.pass),
@@ -115,5 +119,5 @@ async function service({
   }
 }
 
-export default service
+export default rankTest
 export type { Props }

@@ -1,40 +1,39 @@
 [
     {
         "id": "precision",
-        "label": "Precision",
         "description": "Ensure that the query brings back the works we expect at the top of the list",
         "eval": "equalTo1",
         "cases": [
             {
-                "query": "information law",
+                "searchTerms": "information law",
                 "ratings": [
                     "zkg7xqm7"
                 ],
                 "description": "Multi-word exact matches at the start of a title should be prioritised https://github.com/wellcomecollection/catalogue-api/issues/466"
             },
             {
-                "query": "DJmjW2cU",
+                "searchTerms": "DJmjW2cU",
                 "ratings": [
                     "djmjw2cu"
                 ],
                 "description": "Case insensitive IDs"
             },
             {
-                "query": "2013i",
+                "searchTerms": "2013i",
                 "ratings": [
                     "djmjw2cu"
                 ],
                 "description": "Reference number as ID"
             },
             {
-                "query": "2599i",
+                "searchTerms": "2599i",
                 "ratings": [
                     "xxskepr5"
                 ],
                 "description": "Reference number as ID"
             },
             {
-                "query": "seq88sr4 qfk4vbp8",
+                "searchTerms": "seq88sr4 qfk4vbp8",
                 "ratings": [
                     "seq88sr4",
                     "qfk4vbp8"
@@ -42,35 +41,35 @@
                 "description": "multiple IDs"
             },
             {
-                "query": "Cassils Time lapse",
+                "searchTerms": "Cassils Time lapse",
                 "ratings": [
                     "ftqy78zj"
                 ],
                 "description": "Contributor and title in the same query"
             },
             {
-                "query": "bulloch history of bacteriology",
+                "searchTerms": "bulloch history of bacteriology",
                 "ratings": [
                     "rkcux48q"
                 ],
                 "description": "Contributor and title in the same query"
             },
             {
-                "query": "stim",
+                "searchTerms": "stim",
                 "ratings": [
                     "e8qxq5mv"
                 ],
                 "description": "Exact match on title with lowercasing and punctuation stripping"
             },
             {
-                "query": "stimming",
+                "searchTerms": "stimming",
                 "ratings": [
                     "uuem7v9a"
                 ],
                 "description": "Ensure that we return non-typos over typos e.g. query:stimming matches:stimming > swimming"
             },
             {
-                "query": "The Piggle",
+                "searchTerms": "The Piggle",
                 "ratings": [
                     "vp7q52gs"
                 ],
@@ -78,41 +77,41 @@
                 "description": "Example of a known title's prefix, but not the full thing"
             },
             {
-                "query": "Das neue Naturheilverfahren",
+                "searchTerms": "Das neue Naturheilverfahren",
                 "ratings": [
                     "execg22x"
                 ],
                 "description": "Example of a known title's prefix, but not the full thing"
             },
             {
-                "query": "bills of mortality",
+                "searchTerms": "bills of mortality",
                 "ratings": [
                     "xwtcsk93"
                 ]
             },
             {
-                "query": "L0033046",
+                "searchTerms": "L0033046",
                 "ratings": [
                     "kmebmktz"
                 ],
                 "description": "Miro ID matching"
             },
             {
-                "query": "kmebmktz",
+                "searchTerms": "kmebmktz",
                 "ratings": [
                     "kmebmktz"
                 ],
                 "description": "Work ID matching"
             },
             {
-                "query": "gzv2hhgy",
+                "searchTerms": "gzv2hhgy",
                 "ratings": [
                     "kmebmktz"
                 ],
                 "description": "Image ID matching"
             },
             {
-                "query": "Oxford dictionary of national biography",
+                "searchTerms": "Oxford dictionary of national biography",
                 "ratings": [
                     "ruedafcw"
                 ],
@@ -129,12 +128,11 @@
     },
     {
         "id": "recall",
-        "label": "Recall",
         "description": "Ensure that the query brings back the results we expect somewhere in the list",
         "eval": "equalTo1",
         "cases": [
             {
-                "query": "Atherosclerosis: an introduction to atherosclerosis",
+                "searchTerms": "Atherosclerosis: an introduction to atherosclerosis",
                 "ratings": [
                     "bcwvtknn",
                     "rty8296y"
@@ -142,7 +140,7 @@
                 "description": "Two works with matching titles"
             },
             {
-                "query": "2013i 2599i",
+                "searchTerms": "2013i 2599i",
                 "ratings": [
                     "djmjw2cu",
                     "xxskepr5"
@@ -150,7 +148,7 @@
                 "description": "Multiple IDs"
             },
             {
-                "query": "wa/hmm durham",
+                "searchTerms": "wa/hmm durham",
                 "ratings": [
                     "euf49qkx",
                     "tpxy78kr",
@@ -160,7 +158,7 @@
                 "description": "Archive refno and a word from the title"
             },
             {
-                "query": "wa/hmm benin",
+                "searchTerms": "wa/hmm benin",
                 "ratings": [
                     "qfdvkegw",
                     "je5pm2gj",
@@ -169,7 +167,7 @@
                 "description": "Archive refno and a word from the description"
             },
             {
-                "query": "WA/HMM/CM benin",
+                "searchTerms": "WA/HMM/CM benin",
                 "ratings": [
                     "qfdvkegw",
                     "je5pm2gj",
@@ -178,7 +176,7 @@
                 "description": "Archive refno and a word from the description"
             },
             {
-                "query": "eugenics society annual reports",
+                "searchTerms": "eugenics society annual reports",
                 "ratings": [
                     "k9w95csw",
                     "asqf8kzb",
@@ -188,7 +186,7 @@
                 "knownFailure": true
             },
             {
-                "query": "لكشف",
+                "searchTerms": "لكشف",
                 "ratings": [
                     "ymnmz59p"
                 ],
@@ -196,7 +194,7 @@
                 "knownFailure": true
             },
             {
-                "query": "الكشف",
+                "searchTerms": "الكشف",
                 "ratings": [
                     "ymnmz59p"
                 ],
@@ -204,7 +202,7 @@
                 "knownFailure": true
             },
             {
-                "query": "معرفت",
+                "searchTerms": "معرفت",
                 "ratings": [
                     "a9w79fzj"
                 ],
@@ -212,7 +210,7 @@
                 "knownFailure": true
             },
             {
-                "query": "عرف",
+                "searchTerms": "عرف",
                 "ratings": [
                     "a9w79fzj"
                 ],
@@ -229,53 +227,52 @@
     },
     {
         "id": "alternative-spellings",
-        "label": "Alternative spellings",
         "description": "Ensure that the query returns results for search terms which are misspelled or differently transliterated.",
         "eval": "equalTo1",
         "cases": [
             {
-                "query": "al-tibb",
+                "searchTerms": "al-tibb",
                 "ratings": [
                     "t4jqq9ue"
                 ],
                 "knownFailure": true
             },
             {
-                "query": "Al-ṭibb",
+                "searchTerms": "Al-ṭibb",
                 "ratings": [
                     "t4jqq9ue"
                 ],
                 "knownFailure": true
             },
             {
-                "query": "nuğūm",
+                "searchTerms": "nuğūm",
                 "ratings": [
                     "m94cyux7"
                 ],
                 "knownFailure": true
             },
             {
-                "query": "nujum",
+                "searchTerms": "nujum",
                 "ratings": [
                     "m94cyux7"
                 ],
                 "knownFailure": true
             },
             {
-                "query": "arbeiten",
+                "searchTerms": "arbeiten",
                 "ratings": [
                     "xn7yyrqf"
                 ]
             },
             {
-                "query": "savoire",
+                "searchTerms": "savoire",
                 "ratings": [
                     "tbuwy9bk"
                 ],
                 "description": "french stemming"
             },
             {
-                "query": "conosceva",
+                "searchTerms": "conosceva",
                 "ratings": [
                     "j3w6u4t2",
                     "mt8bj5zk",
@@ -284,13 +281,13 @@
                 "description": "italian stemming"
             },
             {
-                "query": "sharh",
+                "searchTerms": "sharh",
                 "ratings": [
                     "frd5y363"
                 ]
             },
             {
-                "query": "arkaprakāśa",
+                "searchTerms": "arkaprakāśa",
                 "ratings": [
                     "qqh7ydr3",
                     "qb7eggtk",

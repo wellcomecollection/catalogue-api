@@ -1,8 +1,7 @@
 import { Cluster, Index, QueryEnv } from '../src/types/searchTemplate'
 
-import { TestResult } from '../src/types/test'
-import service from '../src/services/test'
-import tests from '../src/tests'
+import rankTest from '../src/services/test'
+import testOrder from '../src/services/order'
 import yargs from 'yargs'
 
 global.fetch = require('node-fetch')
@@ -22,30 +21,42 @@ const cluster = args.cluster as Cluster
 const index = args.index as Index
 const testIds = args.testId as string[]
 
+Promise.all(
+  testIds.map(async (testId) => {
+    const result =
+      testId === 'order'
+        ? await testOrder({ queryEnv, index, testId, cluster })
+        : await rankTest({ queryEnv, index, testId, cluster })
 
-
-// for each testId, run the test and print the results
-testIds.forEach(async (testId) => {
-  const result = await service({ queryEnv, index, testId, cluster })
-  result.results.forEach((result) => {
-    if (result.knownFailure) {
-      return {
-        message: () => `"${result.query}" is a known failure`,
-        pass: true
+    return result.results.map((result) => {
+      if (result.knownFailure) {
+        return {
+          message: `🟡 "${result.searchTerms}" is a known failure`,
+          pass: true
+        }
       }
-    }
-    if (result.result.pass) {
-      return {
-        message: () => `"${result.query}" passes`,
-        pass: true
+      if (result.result.pass) {
+        return {
+          message: `🟢 "${result.searchTerms}" passes`,
+          pass: true
+        }
+      } else {
+        return {
+          message: `🔴 "${result.searchTerms}" fails but should pass`,
+          pass: false
+        }
       }
-    } else {
-      return {
-        message: () => `"${result.query}" fails but should pass`,
-        pass: false
-      }
-    }
+    })
   })
-
-  console.log(result)
-})
+).then((results) => {
+  results.flat().forEach((result) => {
+    console.log(result.message)
+  }, console.error)
+  const allPass = results
+    .flat()
+    .map((result) => result.pass)
+    .reduce((acc, curr) => acc && curr, true)
+  if (!allPass) {
+    process.exit(1)
+  }
+}, console.error)
