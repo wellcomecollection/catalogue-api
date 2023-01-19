@@ -26,21 +26,6 @@ module "lambda_function" {
   }
 }
 
-moved {
-  from = aws_lambda_function.lambda_function
-  to   = module.lambda_function.aws_lambda_function.main
-}
-
-moved {
-  from = aws_iam_role.iam_role
-  to   = module.lambda_function.aws_iam_role.lambda_role
-}
-
-moved {
-  from = aws_cloudwatch_log_group.cloudwatch_log_group
-  to   = module.lambda_function.aws_cloudwatch_log_group.lambda
-}
-
 resource "aws_cloudwatch_metric_alarm" "lambda_alarm" {
   alarm_name          = "lambda-${var.name}-errors"
   comparison_operator = "GreaterThanOrEqualToThreshold"
