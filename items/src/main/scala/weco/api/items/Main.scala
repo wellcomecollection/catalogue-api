@@ -13,7 +13,6 @@ import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
-import weco.typesafe.config.builders.AkkaBuilder
 import weco.http.WellcomeHttpApp
 import weco.http.client.{AkkaHttpClient, HttpGet}
 import weco.http.monitoring.HttpMetrics
@@ -26,9 +25,9 @@ object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
     implicit val actorSystem: ActorSystem =
-      AkkaBuilder.buildActorSystem()
+      ActorSystem("main-actor-system")
     implicit val executionContext: ExecutionContext =
-      AkkaBuilder.buildExecutionContext()
+      actorSystem.dispatcher
 
     Tracing.init(config)
 

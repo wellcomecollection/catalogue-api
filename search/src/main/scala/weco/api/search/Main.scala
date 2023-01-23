@@ -10,7 +10,6 @@ import weco.api.search.models.{
   QueryConfig
 }
 import weco.typesafe.WellcomeTypesafeApp
-import weco.typesafe.config.builders.AkkaBuilder
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
@@ -22,9 +21,9 @@ object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
     implicit val actorSystem: ActorSystem =
-      AkkaBuilder.buildActorSystem()
+      ActorSystem("main-actor-system")
     implicit val executionContext: ExecutionContext =
-      AkkaBuilder.buildExecutionContext()
+      actorSystem.dispatcher
 
     Tracing.init(config)
 
