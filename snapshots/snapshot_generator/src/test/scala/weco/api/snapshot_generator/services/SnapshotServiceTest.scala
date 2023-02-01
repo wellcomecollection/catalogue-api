@@ -11,7 +11,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.models.ApiVersions
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
@@ -38,7 +37,7 @@ class SnapshotServiceTest
   ): R =
     withLocalWorksIndex { worksIndex =>
       withLocalS3Bucket { bucket =>
-        withSnapshotService(worksIndex) { snapshotService =>
+        withSnapshotService() { snapshotService =>
           testWith((snapshotService, worksIndex, bucket))
         }
       }
@@ -52,8 +51,10 @@ class SnapshotServiceTest
         val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
         val snapshotJob = SnapshotJob(
           s3Location = s3Location,
-          apiVersion = ApiVersions.v2,
-          requestedAt = Instant.now()
+          requestedAt = Instant.now(),
+          index = worksIndex,
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
         )
 
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
@@ -126,8 +127,10 @@ class SnapshotServiceTest
         val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
         val snapshotJob = SnapshotJob(
           s3Location = s3Location,
-          apiVersion = ApiVersions.v2,
-          requestedAt = Instant.now()
+          requestedAt = Instant.now(),
+          index = worksIndex,
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
         )
 
         val result = snapshotService.generateSnapshot(snapshotJob).success.value
@@ -165,8 +168,10 @@ class SnapshotServiceTest
 
         val snapshotJob = SnapshotJob(
           s3Location = createS3ObjectLocation,
-          apiVersion = ApiVersions.v2,
-          requestedAt = Instant.now
+          requestedAt = Instant.now(),
+          index = worksIndex,
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
         )
 
         val exc = snapshotService.generateSnapshot(snapshotJob).failed.get
@@ -185,13 +190,14 @@ class SnapshotServiceTest
       )
 
       withSnapshotService(
-        worksIndex = "wrong-index",
         elasticClient = brokenElasticClient
       ) { brokenSnapshotService =>
         val snapshotJob = SnapshotJob(
           s3Location = createS3ObjectLocationWith(bucket),
-          apiVersion = ApiVersions.v2,
-          requestedAt = Instant.now()
+          requestedAt = Instant.now(),
+          index = "not-an-index",
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
         )
 
         brokenSnapshotService

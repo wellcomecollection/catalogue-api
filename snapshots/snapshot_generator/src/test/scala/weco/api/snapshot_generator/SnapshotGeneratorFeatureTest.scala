@@ -6,8 +6,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.models.ApiVersions
-import weco.api.snapshot_generator.fixtures.WorkerServiceFixture
+import weco.api.snapshot_generator.fixtures.{SnapshotServiceFixture, WorkerServiceFixture}
 import weco.api.snapshot_generator.models.{CompletedSnapshotJob, SnapshotJob}
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
 import weco.fixtures.TestWith
@@ -33,7 +32,7 @@ class SnapshotGeneratorFeatureTest
 
   it("completes a snapshot generation") {
     withFixtures {
-      case (queue, messageSender, worksIndex, _, bucket) =>
+      case (queue, messageSender, worksIndex, bucket) =>
         indexTestDocuments(worksIndex, works: _*)
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
@@ -41,7 +40,9 @@ class SnapshotGeneratorFeatureTest
         val snapshotJob = SnapshotJob(
           s3Location = s3Location,
           requestedAt = Instant.now(),
-          apiVersion = ApiVersions.v2
+          index = worksIndex,
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
         )
 
         sendNotificationToSQS(queue = queue, message = snapshotJob)
@@ -83,7 +84,7 @@ class SnapshotGeneratorFeatureTest
   }
 
   def withFixtures[R](
-    testWith: TestWith[(Queue, MemoryMessageSender, Index, Index, Bucket), R]
+    testWith: TestWith[(Queue, MemoryMessageSender, Index, Bucket), R]
   ): R =
     withActorSystem { implicit actorSystem =>
       withLocalSqsQueue() { queue =>
@@ -91,8 +92,8 @@ class SnapshotGeneratorFeatureTest
 
         withLocalWorksIndex { worksIndex =>
           withLocalS3Bucket { bucket =>
-            withWorkerService(queue, messageSender, worksIndex) { _ =>
-              testWith((queue, messageSender, worksIndex, worksIndex, bucket))
+            withWorkerService(queue, messageSender) { _ =>
+              testWith((queue, messageSender, worksIndex, bucket))
             }
           }
         }
