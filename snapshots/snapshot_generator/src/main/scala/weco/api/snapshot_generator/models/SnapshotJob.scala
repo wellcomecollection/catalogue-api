@@ -8,6 +8,7 @@ import weco.storage.s3.S3ObjectLocation
 case class SnapshotJob(
   s3Location: S3ObjectLocation,
   requestedAt: Instant,
+  pipelineDate: String,
   index: Index,
   // How many documents should be fetched in a single request?
   //

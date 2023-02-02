@@ -16,11 +16,12 @@ object PipelineElasticClientBuilder {
   // we let the services decide which set of secrets to read, which in turn sets
   // which cluster they read from.
 
-  def apply(serviceName: String): ElasticClient = {
+  def apply(
+    serviceName: String,
+    pipelineDate: String = PipelineClusterElasticConfig.pipelineDate
+  ): ElasticClient = {
     implicit val secretsClient: SecretsManagerClient =
       SecretsManagerClient.builder().build()
-
-    val pipelineDate = PipelineClusterElasticConfig.pipelineDate
 
     val hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/private_host"

@@ -6,8 +6,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.snapshot_generator.fixtures.{SnapshotServiceFixture, WorkerServiceFixture}
-import weco.api.snapshot_generator.models.{CompletedSnapshotJob, SnapshotJob}
+import weco.api.snapshot_generator.fixtures.{
+  SnapshotServiceFixture,
+  WorkerServiceFixture
+}
+import weco.api.snapshot_generator.models.CompletedSnapshotJob
 import weco.api.snapshot_generator.test.utils.S3GzipUtils
 import weco.fixtures.TestWith
 import weco.json.JsonUtil._
@@ -16,8 +19,6 @@ import weco.messaging.fixtures.SQS.Queue
 import weco.messaging.memory.MemoryMessageSender
 import weco.storage.fixtures.S3Fixtures.Bucket
 import weco.storage.s3.S3ObjectLocation
-
-import java.time.Instant
 
 class SnapshotGeneratorFeatureTest
     extends AnyFunSpec
@@ -37,11 +38,9 @@ class SnapshotGeneratorFeatureTest
 
         val s3Location = S3ObjectLocation(bucket.name, key = "target.tar.gz")
 
-        val snapshotJob = SnapshotJob(
-          s3Location = s3Location,
-          requestedAt = Instant.now(),
-          index = worksIndex,
-          bulkSize = 1000,
+        val snapshotJob = createSnapshotJob(
+          s3Location,
+          worksIndex,
           query = SnapshotServiceFixture.visibleTermQuery
         )
 

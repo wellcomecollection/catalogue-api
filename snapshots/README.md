@@ -7,7 +7,7 @@ Services for creating, recording and reporting on Catalogue API snapshots.
 Contains:
 
 - `snapshot_scheduler`: a lambda triggered by CloudWatch, publishes messages to SNS describing required snapshots.
-- `snapshot_generator`: an ECS service which polls SQS, produces a snapshot of works from the Catalogue ES index using their display model.
+- `snapshot_generator`: an ECS service which polls SQS, produces a snapshot of documents from the Catalogue ES indices using their display model.
 - `snapshot_recorder`: a lambda triggered by SNS, recording metadata in a reporting cluster Elasticsearch index.
 - `snapshot_reporter`: a lambda triggered by CloudWatch, reports on daily snapshots in team Slack, will provide notification on failure.
 

@@ -1,12 +1,12 @@
 package weco.api.snapshot_generator.services
 
-import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import software.amazon.awssdk.services.s3.S3Client
 import weco.api.snapshot_generator.compress.GzipCompressor
 import weco.api.snapshot_generator.iterators.ElasticsearchIterator
 import weco.api.snapshot_generator.models.{
   CompletedSnapshotJob,
+  PipelineElasticClient,
   SnapshotJob,
   SnapshotResult
 }
@@ -16,7 +16,7 @@ import java.time.Instant
 import scala.util.Try
 
 class SnapshotService(
-  elasticClient: ElasticClient,
+  pipelineElasticClient: PipelineElasticClient,
   implicit val s3Client: S3Client
 ) extends Logging {
   private val uploader = new S3Uploader()
@@ -24,6 +24,9 @@ class SnapshotService(
   def generateSnapshot(job: SnapshotJob): Try[CompletedSnapshotJob] = {
     info(s"Running $job")
 
+    val elasticClient = pipelineElasticClient.forDate(
+      job.pipelineDate
+    )
     val startedAt = Instant.now
 
     var workCount = 0
