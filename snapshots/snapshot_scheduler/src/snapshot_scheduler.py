@@ -14,11 +14,13 @@ from snapshot_job import get_snapshot_jobs
 
 
 def get_current_api_indices():
-    response = httpx.get("https://api.wellcomecollection.org/catalogue/v2/_elasticConfig")
+    response = httpx.get(
+        "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig"
+    )
     response_data = response.json()
     return {
         "works": response_data["worksIndex"],
-        "images": response_data["imagesIndex"]
+        "images": response_data["imagesIndex"],
     }
 
 

@@ -37,18 +37,18 @@ def snapshot_job(*, doc_type, index, pipeline_date, query):
     return SnapshotJob(
         s3Location=S3ObjectLocation(
             bucket=public_bucket_name,
-            key=f"{public_object_key_prefix}/{doc_type}.json.gz"
+            key=f"{public_object_key_prefix}/{doc_type}.json.gz",
         ),
         requestedAt=datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         bulkSize=es_bulk_size,
         index=Index(name=index),
         pipelineDate=pipeline_date,
-        query=query
+        query=query,
     )
 
 
 def get_pipeline_date(*, current_index):
-    ends_in_date_with_optional_suffix = re.compile(r'\d{4}-\d{2}-\d{2}.?$')
+    ends_in_date_with_optional_suffix = re.compile(r"\d{4}-\d{2}-\d{2}.?$")
     match = ends_in_date_with_optional_suffix.search(current_index)
     return match[0]
 
@@ -59,16 +59,12 @@ def get_snapshot_jobs(indices):
         index=indices["works"],
         doc_type="works",
         pipeline_date=pipeline_date,
-        query=json.dumps({
-            "term": {
-                "type": "Visible"
-            }
-        })
+        query=json.dumps({"term": {"type": "Visible"}}),
     )
     images_job = snapshot_job(
         index=indices["images"],
         doc_type="images",
         pipeline_date=pipeline_date,
-        query=None
+        query=None,
     )
     return [works_job, images_job]

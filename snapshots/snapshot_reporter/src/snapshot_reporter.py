@@ -91,16 +91,16 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
                     "text": {
                         "type": "plain_text",
                         "emoji": True,
-                        "text": f":rotating_light: {title}"
-                    }
+                        "text": f":rotating_light: {title}",
+                    },
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"_*No snapshot found within the last {recent_updates['hours']} hours*_. See logs: {kibana_logs_link}"
-                    }
-                }
+                        "text": f"_*No snapshot found within the last {recent_updates['hours']} hours*_. See logs: {kibana_logs_link}",
+                    },
+                },
             ]
 
         warnings = False
@@ -127,7 +127,9 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
             updates_message = f"There {'have' if plural else 'has'} been *{humanized_count}* update{'s' if plural else ''} in the last {recent_updates['hours']} hours."
         else:
             warnings = True
-            delta = humanize.naturaldelta(datetime.datetime.now(datetime.timezone.utc) - doc_updates["latest"])
+            delta = humanize.naturaldelta(
+                datetime.datetime.now(datetime.timezone.utc) - doc_updates["latest"]
+            )
             last_update = format_date(doc_updates["latest"])
             updates_message = f":warning: _*There haven't been any updates in the last {recent_updates['hours']} hours*_. The last update was {last_update} ({delta} ago)."
 
@@ -137,48 +139,54 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
                 "text": {
                     "type": "plain_text",
                     "emoji": True,
-                    "text": f"{':warning:' if warnings else ':white_check_mark:'} {title}"
-                }
+                    "text": f"{':warning:' if warnings else ':white_check_mark:'} {title}",
+                },
             },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "\n".join([
-                        f"- Index *{index_name}*",
-                        f"- Snapshot taken *{format_date(started_at)}*",
-                        f"- It contains *{humanize.intcomma(snapshot_document_count)}* documents (_{api_comparison}_).",
-                        f"- Snapshot took *{humanize.naturaldelta(finished_at - started_at)}* to complete.",
-                        f"- {updates_message}"
-                    ])
-                }
-            }
+                    "text": "\n".join(
+                        [
+                            f"- Index *{index_name}*",
+                            f"- Snapshot taken *{format_date(started_at)}*",
+                            f"- It contains *{humanize.intcomma(snapshot_document_count)}* documents (_{api_comparison}_).",
+                            f"- Snapshot took *{humanize.naturaldelta(finished_at - started_at)}* to complete.",
+                            f"- {updates_message}",
+                        ]
+                    ),
+                },
+            },
         ]
 
     works_index = recent_updates["works"]["index"]
     images_index = recent_updates["images"]["index"]
-    works_snapshot = next((s for s in snapshots if s["snapshotResult"]["indexName"] == works_index), None)
-    images_snapshot = next((s for s in snapshots if s["snapshotResult"]["indexName"] == images_index), None)
+    works_snapshot = next(
+        (s for s in snapshots if s["snapshotResult"]["indexName"] == works_index), None
+    )
+    images_snapshot = next(
+        (s for s in snapshots if s["snapshotResult"]["indexName"] == images_index), None
+    )
 
     works_message = _snapshot_message(
         title="Works :scroll:",
         snapshot=works_snapshot,
         doc_updates=recent_updates["works"],
-        api_document_count=api_counts["works"]
+        api_document_count=api_counts["works"],
     )
     images_message = _snapshot_message(
         title="Images :frame_with_picture:",
         snapshot=images_snapshot,
         doc_updates=recent_updates["images"],
-        api_document_count=api_counts["images"]
+        api_document_count=api_counts["images"],
     )
     header = {
         "type": "header",
         "text": {
             "type": "plain_text",
             "emoji": True,
-            "text": ":camera_with_flash: Catalogue snapshots"
-        }
+            "text": ":camera_with_flash: Catalogue snapshots",
+        },
     }
 
     return {"blocks": [header] + works_message + images_message}
@@ -244,15 +252,13 @@ def get_recent_update_stats(session, *, hours):
                     }
                 ]
             }
-        }
+        },
     }
     works_resp = pipeline_es_client.search(
-        index=works_index_name,
-        body=indexed_time_query,
+        index=works_index_name, body=indexed_time_query
     )
     images_resp = pipeline_es_client.search(
-        index=images_index_name,
-        body=indexed_time_query
+        index=images_index_name, body=indexed_time_query
     )
 
     return {
@@ -260,13 +266,17 @@ def get_recent_update_stats(session, *, hours):
         "works": {
             "index": works_index_name,
             "count": works_resp["hits"]["total"]["value"],
-            "latest": parser.parse(works_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"])
+            "latest": parser.parse(
+                works_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
+            ),
         },
         "images": {
             "index": images_index_name,
             "count": images_resp["hits"]["total"]["value"],
-            "latest": parser.parse(images_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"])
-        }
+            "latest": parser.parse(
+                images_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
+            ),
+        },
     }
 
 
@@ -282,16 +292,14 @@ def main(*args):
     snapshots = get_snapshots(elastic_client, snapshots_index=snapshots_index)
     api_counts = {
         "works": get_catalogue_api_document_count(endpoint="works"),
-        "images": get_catalogue_api_document_count(endpoint="images")
+        "images": get_catalogue_api_document_count(endpoint="images"),
     }
     hours = 24
 
     recent_updates = get_recent_update_stats(session, hours=hours)
 
     slack_payload = prepare_slack_payload(
-        snapshots=snapshots,
-        api_counts=api_counts,
-        recent_updates=recent_updates,
+        snapshots=snapshots, api_counts=api_counts, recent_updates=recent_updates
     )
 
     post_to_slack(session, slack_secret_id=slack_secret_id, payload=slack_payload)
