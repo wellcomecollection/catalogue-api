@@ -47,7 +47,7 @@ class ElasticsearchScanner()(
           if (index % bulkSize == 0) {
             info(
               s"Received another ${intComma(bulkSize)} hits " +
-                s"(${intComma(index)} so far) from $index"
+                s"(${intComma(index)} so far) from ${request.indexes.string()}"
             )
           }
 
