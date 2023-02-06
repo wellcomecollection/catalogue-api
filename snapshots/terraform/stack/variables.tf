@@ -28,7 +28,7 @@ variable "lambda_error_alarm_arn" {
 variable "public_bucket_name" {
   type = string
 }
-variable "public_object_key_v2" {
+variable "public_object_key_prefix" {
   type = string
 }
 

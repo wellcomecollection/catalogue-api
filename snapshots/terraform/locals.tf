@@ -6,8 +6,8 @@ locals {
   cluster_arn  = data.terraform_remote_state.data_api.outputs.cluster_arn
   cluster_name = data.terraform_remote_state.data_api.outputs.cluster_name
 
-  public_object_key_v2    = "catalogue/v2/works.json.gz"
-  public_data_bucket_name = data.aws_s3_bucket.public_data.id
+  public_object_key_prefix = "catalogue/v2"
+  public_data_bucket_name  = data.aws_s3_bucket.public_data.id
 
   snapshot_generator_image = data.terraform_remote_state.api_shared.outputs.ecr_snapshot_generator_repository_url
 

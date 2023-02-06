@@ -11,9 +11,10 @@ module "snapshot_scheduler" {
   timeout         = 10
 
   env_vars = {
-    TOPIC_ARN            = module.scheduler_topic.arn
-    PUBLIC_BUCKET_NAME   = var.public_bucket_name
-    PUBLIC_OBJECT_KEY_V2 = var.public_object_key_v2
+    TOPIC_ARN                = module.scheduler_topic.arn
+    PUBLIC_BUCKET_NAME       = var.public_bucket_name
+    PUBLIC_OBJECT_KEY_PREFIX = var.public_object_key_prefix
+    ES_BULK_SIZE             = var.es_bulk_size
   }
 
   log_retention_in_days = 30

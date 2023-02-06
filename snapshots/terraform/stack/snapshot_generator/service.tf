@@ -8,7 +8,6 @@ module "snapshot_generator" {
     queue_url        = module.snapshot_generator_input_queue.url
     topic_arn        = module.snapshot_generator_output_topic.arn
     metric_namespace = "snapshot_generator-${var.deployment_service_env}"
-    es_bulk_size     = var.es_bulk_size
   }
 
   cpu    = 4096
@@ -26,7 +25,7 @@ module "snapshot_generator" {
   elastic_cloud_vpce_sg_id = var.elastic_cloud_vpce_sg_id
 
   min_capacity = 0
-  max_capacity = 1
+  max_capacity = 2 # So we can do images and works at the same time
 
   shared_logging_secrets = var.shared_logging_secrets
 }

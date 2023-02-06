@@ -7,8 +7,6 @@ module "snapshot_generator" {
   snapshot_generator_image = var.snapshot_generator_image
   deployment_service_env   = var.deployment_service_env
 
-  es_bulk_size = var.es_bulk_size
-
   public_bucket_name = var.public_bucket_name
 
   snapshot_generator_input_topic_arn = module.snapshot_scheduler.topic_arn
@@ -32,8 +30,9 @@ module "snapshot_scheduler" {
 
   lambda_error_alarm_arn = var.lambda_error_alarm_arn
 
-  public_bucket_name   = var.public_bucket_name
-  public_object_key_v2 = var.public_object_key_v2
+  public_bucket_name       = var.public_bucket_name
+  public_object_key_prefix = var.public_object_key_prefix
+  es_bulk_size             = var.es_bulk_size
 }
 
 module "snapshot_recorder" {
