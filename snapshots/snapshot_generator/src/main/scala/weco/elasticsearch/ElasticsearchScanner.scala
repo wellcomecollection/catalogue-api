@@ -24,7 +24,7 @@ import scala.concurrent.duration._
   */
 class ElasticsearchScanner()(
   implicit client: ElasticClient,
-  timeout: FiniteDuration = 5 minutes,
+  keepAlive: FiniteDuration = 30 minutes,
   bulkSize: Int = 10000
 ) extends Logging {
   def scroll[T](
@@ -34,7 +34,7 @@ class ElasticsearchScanner()(
       .hits(
         client,
         request
-          .scroll(timeout)
+          .scroll(keepAlive)
           .size(bulkSize)
       )
       .zipWithIndex
