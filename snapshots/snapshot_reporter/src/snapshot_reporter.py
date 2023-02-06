@@ -81,59 +81,107 @@ def format_date(d):
         return d.strftime("on %A, %B %-d at %-I:%M %p %Z")
 
 
-def prepare_slack_payload(*, snapshots, api_document_count, recent_updates):
-    def _snapshot_message(snapshot):
+def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
+    def _snapshot_message(title, snapshot, doc_updates, api_document_count):
+        if not snapshot:
+            kibana_logs_link = "https://logging.wellcomecollection.org/goto/c98eb0e4e37c802e60d5affea422a98e"
+            return [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "emoji": True,
+                        "text": f":rotating_light: {title}"
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"_*No snapshot found within the last {recent_updates['hours']} hours*_. See logs: {kibana_logs_link}"
+                    }
+                }
+            ]
+
+        warnings = False
         index_name = snapshot["snapshotResult"]["indexName"]
         snapshot_document_count = snapshot["snapshotResult"]["documentCount"]
-
-        requested_at = parser.parse(snapshot["snapshotJob"]["requestedAt"])
+        started_at = parser.parse(snapshot["snapshotResult"]["startedAt"])
+        finished_at = parser.parse(snapshot["snapshotResult"]["finishedAt"])
 
         # In general, a snapshot should have the same number of works as the
         # catalogue API.  There might be some drift, if new works appear in the
         # pipeline between the snapshot being taken and the reporter running,
         # but not much.  The threshold 25 is chosen somewhat arbitrarily.
         if api_document_count == snapshot_document_count:
-            api_comparison = "same as the catalogue API"
+            api_comparison = "the same as the catalogue API"
         elif abs(api_document_count - snapshot_document_count) < 25:
             api_comparison = "almost the same as the catalogue API"
         else:
-            api_comparison = f"*different from the catalogue API, which has {humanize.intcomma(api_document_count)}*"
+            warnings = True
+            api_comparison = f":warning: *different from the catalogue API, which has {humanize.intcomma(api_document_count)}*"
 
-        return "\n".join(
-            [
-                f"The latest snapshot is of index *{index_name}*, taken *{format_date(requested_at)}*.",
-                f"• It contains {humanize.intcomma(snapshot_document_count)} documents ({api_comparison})",
-            ]
-        )
+        if doc_updates["count"]:
+            plural = doc_updates["count"] > 1
+            humanized_count = humanize.intcomma(doc_updates["count"])
+            updates_message = f"There {'have' if plural else 'has'} been *{humanized_count}* update{'s' if plural else ''} in the last {recent_updates['hours']} hours."
+        else:
+            warnings = True
+            delta = humanize.naturaldelta(datetime.datetime.now(datetime.timezone.utc) - doc_updates["latest"])
+            last_update = format_date(doc_updates["latest"])
+            updates_message = f":warning: _*There haven't been any updates in the last {recent_updates['hours']} hours*_. The last update was {last_update} ({delta} ago)."
 
-    if snapshots:
-        latest_snapshot = snapshots[0]
-
-        snapshot_heading = ":white_check_mark: Catalogue Snapshot"
-        snapshot_message = _snapshot_message(latest_snapshot)
-    else:
-        kibana_logs_link = "https://logging.wellcomecollection.org/goto/c98eb0e4e37c802e60d5affea422a98e"
-        snapshot_heading = ":interrobang: Catalogue Snapshot not found"
-        snapshot_message = (
-            f"No snapshot found within the last day. See logs: {kibana_logs_link}"
-        )
-
-    if recent_updates["count"]:
-        snapshot_message += f"\n• There {'have' if recent_updates['count'] > 1 else 'has'} been {humanize.intcomma(recent_updates['count'])} update{'s' if recent_updates['count'] > 1 else ''} in the last {recent_updates['hours']} hours."
-        update_blocks = []
-    else:
-        delta = datetime.datetime.now(datetime.timezone.utc) - recent_updates["latest"]
-        message = f":warning: There haven't been any updates in the last {recent_updates['hours']} hours. The last update was at {format_date(recent_updates['latest'])} ({humanize.naturaldelta(delta)} ago)."
-        update_blocks = [
-            {"type": "section", "text": {"type": "mrkdwn", "text": message}}
+        return [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "emoji": True,
+                    "text": f"{':warning:' if warnings else ':white_check_mark:'} {title}"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "\n".join([
+                        f"- Index *{index_name}*",
+                        f"- Snapshot taken *{format_date(started_at)}*",
+                        f"- It contains *{humanize.intcomma(snapshot_document_count)}* documents (_{api_comparison}_).",
+                        f"- Snapshot took *{humanize.naturaldelta(finished_at - started_at)}* to complete.",
+                        f"- {updates_message}"
+                    ])
+                }
+            }
         ]
 
-    snapshot_blocks = [
-        {"type": "header", "text": {"type": "plain_text", "text": snapshot_heading}},
-        {"type": "section", "text": {"type": "mrkdwn", "text": snapshot_message}},
-    ]
+    works_index = recent_updates["works"]["index"]
+    images_index = recent_updates["images"]["index"]
+    works_snapshot = next((s for s in snapshots if s["snapshotResult"]["indexName"] == works_index), None)
+    images_snapshot = next((s for s in snapshots if s["snapshotResult"]["indexName"] == images_index), None)
 
-    return {"blocks": snapshot_blocks + update_blocks}
+    works_message = _snapshot_message(
+        title="Works :scroll:",
+        snapshot=works_snapshot,
+        doc_updates=recent_updates["works"],
+        api_document_count=api_counts["works"]
+    )
+    images_message = _snapshot_message(
+        title="Images :frame_with_picture:",
+        snapshot=images_snapshot,
+        doc_updates=recent_updates["images"],
+        api_document_count=api_counts["images"]
+    )
+    header = {
+        "type": "header",
+        "text": {
+            "type": "plain_text",
+            "emoji": True,
+            "text": ":camera_with_flash: Catalogue snapshots"
+        }
+    }
+
+    return {"blocks": [header] + works_message + images_message}
 
 
 def post_to_slack(session, *, slack_secret_id, payload):
@@ -157,9 +205,11 @@ def post_to_slack(session, *, slack_secret_id, payload):
 
 
 def get_recent_update_stats(session, *, hours):
-    works_index_name = httpx.get(
+    indices = httpx.get(
         "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig"
-    ).json()["worksIndex"]
+    ).json()
+    works_index_name = indices["worksIndex"]
+    images_index_name = indices["imagesIndex"]
 
     index_date = works_index_name.replace("works-indexed-", "")
     secret_prefix = f"elasticsearch/pipeline_storage_{index_date}"
@@ -177,41 +227,46 @@ def get_recent_update_stats(session, *, hours):
     )
 
     indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
-
-    count_resp = pipeline_es_client.count(
-        index=works_index_name,
-        body={
-            "query": {
-                "bool": {
-                    "filter": [
-                        {
-                            "range": {
-                                "debug.indexedTime": {
-                                    "gte": indexed_after.strftime("%Y-%m-%dT%H:%M:%SZ")
-                                }
+    indexed_time_query = {
+        "track_total_hits": True,
+        "size": 1,
+        "_source": ["debug.indexedTime"],
+        "sort": [{"debug.indexedTime": {"order": "desc"}}],
+        "query": {
+            "bool": {
+                "filter": [
+                    {
+                        "range": {
+                            "debug.indexedTime": {
+                                "gte": indexed_after.strftime("%Y-%m-%dT%H:%M:%SZ")
                             }
                         }
-                    ]
-                }
+                    }
+                ]
             }
-        },
-    )
-
-    search_resp = pipeline_es_client.search(
+        }
+    }
+    works_resp = pipeline_es_client.search(
         index=works_index_name,
-        body={
-            "sort": [{"debug.indexedTime": {"order": "desc"}}],
-            "_source": ["debug.indexedTime"],
-            "size": 1,
-        },
+        body=indexed_time_query,
+    )
+    images_resp = pipeline_es_client.search(
+        index=images_index_name,
+        body=indexed_time_query
     )
 
     return {
         "hours": hours,
-        "count": count_resp["count"],
-        "latest": parser.parse(
-            search_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
-        ),
+        "works": {
+            "index": works_index_name,
+            "count": works_resp["hits"]["total"]["value"],
+            "latest": parser.parse(works_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"])
+        },
+        "images": {
+            "index": images_index_name,
+            "count": images_resp["hits"]["total"]["value"],
+            "latest": parser.parse(images_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"])
+        }
     }
 
 
@@ -225,15 +280,17 @@ def main(*args):
     elastic_client = get_elastic_client(session, elastic_secret_id=elastic_secret_id)
 
     snapshots = get_snapshots(elastic_client, snapshots_index=snapshots_index)
-    api_document_count = get_catalogue_api_document_count(endpoint="works")
-
+    api_counts = {
+        "works": get_catalogue_api_document_count(endpoint="works"),
+        "images": get_catalogue_api_document_count(endpoint="images")
+    }
     hours = 24
 
     recent_updates = get_recent_update_stats(session, hours=hours)
 
     slack_payload = prepare_slack_payload(
         snapshots=snapshots,
-        api_document_count=api_document_count,
+        api_counts=api_counts,
         recent_updates=recent_updates,
     )
 
