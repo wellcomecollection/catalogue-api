@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 class ElasticsearchIterator(
   implicit
   client: ElasticClient,
-  timeout: FiniteDuration = 5 minutes
+  keepAlive: FiniteDuration = 30 minutes
 ) extends Logging {
   case class HasDisplay(display: Json)
 
@@ -23,7 +23,7 @@ class ElasticsearchIterator(
   ): Iterator[String] = {
     val underlying = new ElasticsearchScanner()(
       client,
-      timeout = timeout,
+      keepAlive = keepAlive,
       bulkSize = bulkSize
     )
 
