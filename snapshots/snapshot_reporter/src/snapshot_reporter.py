@@ -84,7 +84,7 @@ def format_date(d):
 def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
     def _snapshot_message(title, snapshot, doc_updates, api_document_count):
         if not snapshot:
-            kibana_logs_link = "https://logging.wellcomecollection.org/goto/c98eb0e4e37c802e60d5affea422a98e"
+            kibana_logs_link = "https://logging.wellcomecollection.org/app/r/s/qYYcM"
             return [
                 {
                     "type": "header",
