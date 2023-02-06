@@ -25,7 +25,7 @@ module "snapshot_generator" {
   elastic_cloud_vpce_sg_id = var.elastic_cloud_vpce_sg_id
 
   min_capacity = 0
-  max_capacity = 2 # So we can do images and works at the same time
+  max_capacity = 1
 
   shared_logging_secrets = var.shared_logging_secrets
 }
