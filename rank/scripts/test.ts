@@ -31,18 +31,18 @@ Promise.all(
     return result.results.map((result) => {
       if (result.knownFailure) {
         return {
-          message: `🟡 "${result.searchTerms}" is a known failure`,
+          message: `🟡\t"${result.searchTerms}" is a known failure\n\t${result.description}\n`,
           pass: true
         }
       }
       if (result.result.pass) {
         return {
-          message: `🟢 "${result.searchTerms}" passes`,
+          message: `🟢\t"${result.searchTerms}" passes\n\t${result.description}\n`,
           pass: true
         }
       } else {
         return {
-          message: `🔴 "${result.searchTerms}" fails but should pass`,
+          message: `🔴\t"${result.searchTerms}" fails but should pass\n\t${result.description}\n`,
           pass: false
         }
       }
