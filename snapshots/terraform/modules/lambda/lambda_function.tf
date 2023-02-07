@@ -1,26 +1,27 @@
-data "aws_s3_bucket_object" "package" {
+data "aws_s3_object" "package" {
   bucket = var.s3_bucket
   key    = var.s3_key
 }
 
-resource "aws_lambda_function" "lambda_function" {
-  description   = var.description
-  function_name = var.name
+module "lambda_function" {
+  source = "git@github.com:wellcomecollection/terraform-aws-lambda.git?ref=v1.1.1"
 
-  s3_bucket         = var.s3_bucket
-  s3_key            = var.s3_key
-  s3_object_version = data.aws_s3_bucket_object.package.version_id
+  description = var.description
+  name        = var.name
 
-  role    = aws_iam_role.iam_role.arn
+  s3_bucket         = data.aws_s3_object.package.bucket
+  s3_key            = data.aws_s3_object.package.key
+  s3_object_version = data.aws_s3_object.package.version_id
+
   handler = "${var.handler}.main"
   runtime = "python3.7"
   timeout = var.timeout
 
-  dead_letter_config {
+  dead_letter_config = {
     target_arn = aws_sqs_queue.lambda_dlq.arn
   }
 
-  environment {
+  environment = {
     variables = var.env_vars
   }
 }
