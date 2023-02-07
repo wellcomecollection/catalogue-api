@@ -159,7 +159,20 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        )
+        ),
+        MultiMatchQuery(
+          q,
+          queryName = Some("shingles cased"),
+          `type` = Some(MOST_FIELDS),
+          operator = Some(AND),
+          fields = Seq(
+            (Some(1000), "query.title.shingles_cased"),
+            (Some(100), "query.alternativeTitles.shingles_cased"),
+            (Some(10), "query.partOf.title.shingles_cased"),
+          ).map {
+            case (boost, field) =>
+              FieldWithOptionalBoost(field, boost.map(_.toDouble))
+          }
       )
       .minimumShouldMatch(1)
 }

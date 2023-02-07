@@ -10,4 +10,4 @@ Instead, we started developing [rank](./rank/), a system which uses known exampl
 
 ## Current queries
 
-You can read an explanation of the current queries' structure [here](./current/README.md).
+You can read an explanation of the current queries' structure [here](./current_queries/README.md).
