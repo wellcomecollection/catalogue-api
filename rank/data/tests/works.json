@@ -84,7 +84,7 @@
                 "description": "Example of a known title's prefix, but not the full thing"
             },
             {
-                "searchTerms": "bills of mortality",
+                "searchTerms": "Bills of mortality",
                 "ratings": [
                     "xwtcsk93"
                 ]
@@ -302,5 +302,135 @@
                 "k": 1000
             }
         }
+    },
+    {
+        "id": "order",
+        "description": "Check that the order of results is correct",
+        "cases": [
+            {
+                "searchTerms": "horse furniture",
+                "description": "Matches ordered terms ahead of unordered terms",
+                "before": [
+                    "kdusu63n"
+                ],
+                "after": [
+                    "uxcxfj9d",
+                    "fpeerby9"
+                ]
+            },
+            {
+                "searchTerms": "everest chest",
+                "description": "Matches titles over descriptions",
+                "before": [
+                    "jmt44asm",
+                    "p2yucm2e",
+                    "pr929v3m"
+                ],
+                "after": [
+                    "g44jyqgs"
+                ]
+            },
+            {
+                "searchTerms": "crips",
+                "description": "Pluralised match appears before singular stemmed match",
+                "before": [
+                    "sgpyy6gb",
+                    "bp45sf6d"
+                ],
+                "after": [
+                    "ptvgbenh",
+                    "r3eue8kw"
+                ]
+            },
+            {
+                "searchTerms": "crip",
+                "description": "Exact singular match appears before pluralised match",
+                "knownFailure": true,
+                "before": [
+                    "ptvgbenh",
+                    "r3eue8kw"
+                ],
+                "after": [
+                    "sgpyy6gb",
+                    "bp45sf6d"
+                ]
+            },
+            {
+                "searchTerms": "CRIPS",
+                "description": "Capitalised match appears before lower case match",
+                "before": [
+                    "bp45sf6d",
+                    "s949zn4f"
+                ],
+                "after": [
+                    "ptvgbenh",
+                    "sk78b6pr"
+                ]
+            },
+            {
+                "searchTerms": "AIDS",
+                "description": "Capitalised match appears before lower case match",
+                "before": [
+                    "ae6cc6d9",
+                    "gvdwhbnd",
+                    "er9z8sj4",
+                    "n9xsxzg7"
+                ],
+                "after": [
+                    "gvem6rts",
+                    "tdwgsdsh",
+                    "vfwczwr7"
+                ]
+            },
+            {
+                "searchTerms": "aid",
+                "description": "Matches exact terms before stemmed terms",
+                "before": [
+                    "bt9bf26e",
+                    "rgrvznhs",
+                    "v63vtprn"
+                ],
+                "after": [
+                    "ae6cc6d9",
+                    "gvdwhbnd",
+                    "er9z8sj4",
+                    "n9xsxzg7"
+                ]
+            },
+            {
+                "searchTerms": "aids poster",
+                "description": "Matches ordered terms ahead of unordered terms",
+                "before": [
+                    "t5sb3sab",
+                    "bry8xyza"
+                ],
+                "after": [
+                    "e8vnd4s7"
+                ]
+            },
+            {
+                "searchTerms": "aids poster",
+                "description": "Matches both terms ahead of single term",
+                "before": [
+                    "t5sb3sab"
+                ],
+                "after": [
+                    "fyzv7d6h"
+                ]
+            },
+            {
+                "searchTerms": "x-ray",
+                "description": "tokens joined by hyphens are matched above tokens which are joined by whitespace",
+                "knownFailure": true,
+                "before": [
+                    "maxctjgf",
+                    "pbaethns",
+                    "tt2mxtff"
+                ],
+                "after": [
+                    "thgzs6pd"
+                ]
+            }
+        ]
     }
 ]
