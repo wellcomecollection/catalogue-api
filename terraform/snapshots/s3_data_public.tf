@@ -13,6 +13,17 @@ resource "aws_s3_bucket" "public_data" {
   policy = data.aws_iam_policy_document.public_data_bucket_get_access_policy.json
 }
 
+resource "aws_s3_bucket_cors_configuration" "example" {
+  bucket = aws_s3_bucket.public_data.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_origins = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    max_age_seconds = 24 * 60 * 60
+  }
+}
+
 data "aws_iam_policy_document" "public_data_bucket_get_access_policy" {
   statement {
     actions = [

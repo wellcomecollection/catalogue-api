@@ -20,7 +20,7 @@ resource "aws_cloudfront_distribution" "data_api" {
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = "data_api"
 
     forwarded_values {
@@ -30,7 +30,11 @@ resource "aws_cloudfront_distribution" "data_api" {
         forward = "none"
       }
 
-      headers = []
+      headers = [
+        "Origin",
+        "Access-Control-Request-Headers",
+        "Access-Control-Request-Method"
+      ]
     }
 
     viewer_protocol_policy = "redirect-to-https"
@@ -53,4 +57,8 @@ resource "aws_cloudfront_distribution" "data_api" {
       restriction_type = "none"
     }
   }
+}
+
+data "aws_cloudfront_origin_request_policy" "s3_cors" {
+  name = "Managed-CORS-S3Origin"
 }
