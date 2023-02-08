@@ -39,9 +39,10 @@ object ElasticsearchErrorHandler extends Logging {
         resultSizePattern.findFirstMatchIn(e.reason) match {
           case Some(s) =>
             val size = s.group(1)
+            val docs = s"${documentType}s".toLowerCase
             userError(
-              s"Only the first $size works are available in the API. " +
-                "If you want more works, you can download a snapshot of the complete catalogue: " +
+              s"Only the first $size $docs are available in the API. " +
+                s"If you want more $docs, you can download a snapshot of the complete catalogue: " +
                 "https://developers.wellcomecollection.org/docs/datasets",
               e.elasticError
             )
