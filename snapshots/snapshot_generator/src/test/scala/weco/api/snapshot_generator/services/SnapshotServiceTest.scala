@@ -57,7 +57,7 @@ class SnapshotServiceTest
         val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
         val expectedJsonLines =
-          readResource("expected-snapshot.txt").split("\n")
+          readResource("expected-snapshot-works.txt").split("\n")
         val actualLines = contents.split("\n")
 
         actualLines.zip(expectedJsonLines).foreach {
