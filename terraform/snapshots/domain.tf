@@ -17,11 +17,18 @@ resource "aws_acm_certificate" "data_page" {
 
 resource "aws_route53_record" "cert_validation" {
   provider = aws.dns
+  for_each = {
+    for dvo in aws_acm_certificate.data_page.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      type   = dvo.resource_record_type
+      record = dvo.resource_record_value
+    }
+  }
 
-  name    = aws_acm_certificate.data_page.domain_validation_options.0.resource_record_name
-  type    = aws_acm_certificate.data_page.domain_validation_options.0.resource_record_type
+  name    = each.value.name
+  type    = each.value.type
   zone_id = data.aws_route53_zone.dotorg.id
-  records = [aws_acm_certificate.data_page.domain_validation_options.0.resource_record_value]
+  records = [each.value.record]
   ttl     = 60
 }
 
@@ -29,7 +36,7 @@ resource "aws_acm_certificate_validation" "catalogue_api_validation" {
   provider = aws.us_east_1
 
   certificate_arn         = aws_acm_certificate.data_page.arn
-  validation_record_fqdns = [aws_route53_record.cert_validation.fqdn]
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
 resource "aws_route53_record" "data_page" {
