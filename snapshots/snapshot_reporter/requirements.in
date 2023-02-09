@@ -1,4 +1,5 @@
-elasticsearch>=7.0.0,<8.0.0
+boto3
+elasticsearch
 httpx
 humanize
 python-dateutil

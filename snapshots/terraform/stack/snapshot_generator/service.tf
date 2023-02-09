@@ -8,7 +8,6 @@ module "snapshot_generator" {
     queue_url        = module.snapshot_generator_input_queue.url
     topic_arn        = module.snapshot_generator_output_topic.arn
     metric_namespace = "snapshot_generator-${var.deployment_service_env}"
-    es_bulk_size     = var.es_bulk_size
   }
 
   cpu    = 4096

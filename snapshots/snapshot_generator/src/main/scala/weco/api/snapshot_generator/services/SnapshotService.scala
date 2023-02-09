@@ -1,13 +1,12 @@
 package weco.api.snapshot_generator.services
 
-import com.sksamuel.elastic4s.ElasticClient
 import grizzled.slf4j.Logging
 import software.amazon.awssdk.services.s3.S3Client
 import weco.api.snapshot_generator.compress.GzipCompressor
 import weco.api.snapshot_generator.iterators.ElasticsearchIterator
 import weco.api.snapshot_generator.models.{
   CompletedSnapshotJob,
-  SnapshotGeneratorConfig,
+  PipelineElasticClient,
   SnapshotJob,
   SnapshotResult
 }
@@ -16,16 +15,18 @@ import weco.api.snapshot_generator.storage.S3Uploader
 import java.time.Instant
 import scala.util.Try
 
-class SnapshotService(config: SnapshotGeneratorConfig)(
-  implicit
-  elasticClient: ElasticClient,
-  s3Client: S3Client
+class SnapshotService(
+  pipelineElasticClient: PipelineElasticClient,
+  implicit val s3Client: S3Client
 ) extends Logging {
   private val uploader = new S3Uploader()
 
-  def generateSnapshot(snapshotJob: SnapshotJob): Try[CompletedSnapshotJob] = {
-    info(s"Running $snapshotJob")
+  def generateSnapshot(job: SnapshotJob): Try[CompletedSnapshotJob] = {
+    info(s"Running $job")
 
+    val elasticClient = pipelineElasticClient.forDate(
+      job.pipelineDate
+    )
     val startedAt = Instant.now
 
     var workCount = 0
@@ -34,7 +35,11 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
     for {
       jsonStrings <- Try {
         new ElasticsearchIterator()(elasticClient)
-          .scroll(config)
+          .scroll(
+            index = job.index,
+            bulkSize = job.bulkSize,
+            query = job.query
+          )
           .map { work =>
             workCount += 1
             work
@@ -47,20 +52,20 @@ class SnapshotService(config: SnapshotGeneratorConfig)(
           byte
         }
 
-      uploadResult <- uploader.upload(snapshotJob.s3Location, compressedBytes)
+      uploadResult <- uploader.upload(job.s3Location, compressedBytes)
 
       snapshotResult = SnapshotResult(
-        indexName = config.index.name,
+        indexName = job.index.name,
         documentCount = workCount,
         startedAt = startedAt,
         finishedAt = Instant.now(),
         s3Etag = uploadResult.eTag(),
         s3Size = s3Size,
-        s3Location = snapshotJob.s3Location
+        s3Location = job.s3Location
       )
 
       completedJob = CompletedSnapshotJob(
-        snapshotJob = snapshotJob,
+        snapshotJob = job,
         snapshotResult = snapshotResult
       )
     } yield completedJob

@@ -7,8 +7,8 @@ module "stack" {
   snapshot_generator_image = local.snapshot_generator_image
   deployment_service_env   = "prod"
 
-  public_bucket_name   = local.public_data_bucket_name
-  public_object_key_v2 = local.public_object_key_v2
+  public_bucket_name       = local.public_data_bucket_name
+  public_object_key_prefix = local.public_object_key_prefix
 
   # How many documents to fetch in a single scroll request?  We choose this such that
   #

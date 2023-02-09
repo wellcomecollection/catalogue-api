@@ -8,7 +8,7 @@ import io.circe.syntax._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.fixtures.IndexFixtures
-import weco.api.snapshot_generator.models.SnapshotGeneratorConfig
+import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.json.JsonUtil._
 
 class ElasticsearchIteratorTest
@@ -51,8 +51,13 @@ class ElasticsearchIteratorTest
         getSizeOf(index) shouldBe documents.length
       }
 
-      val config = SnapshotGeneratorConfig(index)
-      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10)
+      iterator
+        .scroll(
+          index = index,
+          bulkSize = 1000,
+          query = Some("""{ "term": { "type": "Visible" } }""")
+        )
+        .toList should contain theSameElementsAs (1 to 10)
         .map(i => s""""document $i"""")
     }
   }
@@ -78,8 +83,13 @@ class ElasticsearchIteratorTest
         getSizeOf(index) shouldBe documents.length
       }
 
-      val config = SnapshotGeneratorConfig(index, bulkSize = 5)
-      iterator.scroll(config).toList should contain theSameElementsAs (1 to 10)
+      iterator
+        .scroll(
+          index = index,
+          bulkSize = 1000,
+          query = SnapshotServiceFixture.visibleTermQuery
+        )
+        .toList should contain theSameElementsAs (1 to 10)
         .map(i => s""""document $i"""")
     }
   }
