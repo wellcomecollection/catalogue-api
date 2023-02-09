@@ -15,11 +15,6 @@ resource "aws_acm_certificate" "data_page" {
   }
 }
 
-moved {
-  from = aws_route53_record.cert_validation
-  to   = aws_route53_record.cert_validation["data.wellcomecollection.org"]
-}
-
 resource "aws_route53_record" "cert_validation" {
   provider = aws.dns
   for_each = {
