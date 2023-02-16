@@ -174,6 +174,7 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        ).minimumShouldMatch(1)
+        )
       )
+      .minimumShouldMatch(1)
 }
