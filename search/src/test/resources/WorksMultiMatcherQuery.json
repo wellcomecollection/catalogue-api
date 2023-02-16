@@ -73,7 +73,10 @@
             {
               "multi_match": {
                 "query": "{{query}}",
-                "fields": ["query.title^100.0", "query.description^10.0"],
+                "fields": [
+                  "query.title^100.0",
+                  "query.description^10.0"
+                ],
                 "type": "cross_fields",
                 "operator": "Or",
                 "_name": "relations text"
@@ -115,6 +118,20 @@
           "type": "cross_fields",
           "operator": "And",
           "_name": "data"
+        }
+      },
+      {
+        "multi_match": {
+          "query": "{{query}}",
+          "fields": [
+            "query.title.shingles_cased^1000.0",
+            "query.alternativeTitles.shingles_cased^100.0",
+            "query.lettering.shingles_cased^10.0",
+            "query.partOf.title.shingles_cased^10.0"
+          ],
+          "type": "most_fields",
+          "operator": "And",
+          "_name": "shingles_cased"
         }
       }
     ],
