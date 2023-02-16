@@ -5,7 +5,8 @@ import com.sksamuel.elastic4s.requests.common.Operator.{AND, OR}
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryBuilderType.{
   BEST_FIELDS,
-  CROSS_FIELDS
+  CROSS_FIELDS,
+  MOST_FIELDS
 }
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
