@@ -2,10 +2,10 @@
   "scripts": {
     "checkTask": "ts-node ./scripts/checkTask",
     "compareQuerySpeed": "ts-node ./scripts/compareQuerySpeed",
-    "getQueries": "ts-node ./scripts/getQueries",
     "createIndex": "ts-node ./scripts/createIndex",
     "deleteIndex": "ts-node ./scripts/deleteIndex",
     "getIndexConfig": "ts-node ./scripts/getIndexConfig",
+    "getQueries": "ts-node ./scripts/getQueries",
     "getSearchTerms": "ts-node ./scripts/getSearchTerms",
     "rank": "ts-node ./scripts/rank",
     "search": "ts-node ./scripts/search",
