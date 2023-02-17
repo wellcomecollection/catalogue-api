@@ -34,11 +34,12 @@ async function testOrder({
   const test = tests[template.namespace].find((test) => test.id === testId)
   if (!test) throw Error(`No such test ${testId}`)
 
+  const client = await getClient(queryEnv, cluster, template)
+
   const results = await Promise.all(
     // for each test case, run a search
     test.cases.map(async (testCase) => {
       const { searchTerms, description, knownFailure } = testCase
-      const client = await getClient(queryEnv, cluster, template)
 
       // run the search for the test case and return all results
       const searchResponse = await client.searchTemplate({
