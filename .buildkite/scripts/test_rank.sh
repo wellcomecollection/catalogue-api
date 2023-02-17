@@ -53,5 +53,6 @@ do
           --index="$index" \
           --testId=alternative-spellings \
           --testId=precision \
-          --testId=recall
+          --testId=recall \
+          --testId=order
 done
