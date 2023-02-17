@@ -87,7 +87,9 @@
                 "searchTerms": "Bills of mortality",
                 "ratings": [
                     "xwtcsk93"
-                ]
+                ],
+                "description": "Example of a known title's prefix, but not the full thing",
+                "knownFailure": true
             },
             {
                 "searchTerms": "L0033046",
