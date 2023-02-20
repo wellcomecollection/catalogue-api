@@ -8,7 +8,7 @@ module "snapshot_reporter" {
 
   description     = "Reports daily snapshot results to Slack"
   alarm_topic_arn = var.lambda_error_alarm_arn
-  timeout         = 60
+  timeout         = 60 * 5 // 5 minutes
 
   env_vars = {
     ELASTIC_SECRET_ID = local.elastic_secret_id
