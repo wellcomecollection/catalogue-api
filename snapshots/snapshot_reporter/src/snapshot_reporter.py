@@ -277,12 +277,12 @@ def get_recent_update_stats(session, *, hours):
         "works": {
             "index": works_index_name,
             "count": works_count,
-            "last_update": works_last_update
+            "last_update": parser.parse(works_last_update),
         },
         "images": {
             "index": images_index_name,
             "count": images_count,
-            "last_update": images_last_update
+            "last_update": parser.parse(images_last_update),
         },
     }
 
