@@ -134,7 +134,9 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
             warnings = True
             updates_message = f":warning: _*There haven't been any updates in the last {recent_updates['hours']} hours*_."
 
-        updates_message += f" The last update was {last_update} ({last_update_delta} ago)."
+        updates_message += (
+            f" The last update was {last_update} ({last_update_delta} ago)."
+        )
 
         return [
             {
@@ -251,12 +253,12 @@ def get_recent_update_stats(session, *, hours):
                     }
                 ]
             }
-        },
+        }
     }
     last_update_body = {
         "size": 1,
         "_source": ["debug.indexedTime"],
-        "sort": [{"debug.indexedTime": {"order": "desc"}}]
+        "sort": [{"debug.indexedTime": {"order": "desc"}}],
     }
     works_count = pipeline_es_client.count(
         index=works_index_name, body=indexed_time_body
