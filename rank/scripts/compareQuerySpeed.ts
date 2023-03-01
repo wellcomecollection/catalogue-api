@@ -2,17 +2,16 @@ import {
   QueryEnv,
   SearchTemplate,
   namespaces,
-  queryEnvs,
-} from '../types/searchTemplate'
-import { getQueries, listIndices } from '../services/search-templates'
+  queryEnvs
+} from '../src/types/searchTemplate'
+import { getQueries, listIndices } from '../src/services/search-templates'
 import { histogram, info } from './utils'
 
 import { MsearchMultiSearchItem } from '@elastic/elasticsearch/lib/api/types'
 import bars from 'bars'
-import { getRankClient } from '../services/elasticsearch'
+import fetch from 'node-fetch'
+import { getRankClient } from '../src/services/elasticsearch'
 import prompts from 'prompts'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   const queries = await getQueries()
@@ -25,8 +24,8 @@ async function go() {
     message: 'Which namespace do you want to test in?',
     choices: namespaces.map((namespace) => ({
       title: namespace,
-      value: namespace,
-    })),
+      value: namespace
+    }))
   }).then(({ value }) => value)
   const testIndices = indices.filter((index) => index.startsWith(namespace))
   info(
@@ -41,15 +40,15 @@ async function go() {
       message: `Which query should be used with ${index}?`,
       choices: queryEnvs.map((env) => ({
         title: env,
-        value: env,
-      })),
+        value: env
+      }))
     }).then(({ value }) => value)
     const query = queries[queryEnv][namespace]
     searchTemplates.push(new SearchTemplate(queryEnv, index, query))
   }
 
   info('Loading real search terms for querying')
-  const { terms } = await import(`../terms/${namespace}.json`).then(
+  const { terms } = await import(`../data/terms/${namespace}.json`).then(
     (mod) => mod.default
   )
 
@@ -64,8 +63,8 @@ async function go() {
           // replace {{query}} with the actual search term
           query: JSON.parse(
             JSON.stringify(query).replace('{{query}}', encodeURIComponent(term))
-          ),
-        },
+          )
+        }
       ])
       const client = await getRankClient()
       const searchResp = await client.msearch({ body })

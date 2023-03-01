@@ -1,8 +1,8 @@
 import { code, error, info, success } from './utils'
 
-import { getNamespaceFromIndexName } from '../types/searchTemplate'
-import { getRankClient } from '../services/elasticsearch'
-import { listIndices } from '../services/search-templates'
+import { getNamespaceFromIndexName } from '../src/types/searchTemplate'
+import { getRankClient } from '../src/services/elasticsearch'
+import { listIndices } from '../src/services/search-templates'
 import { parse } from 'path'
 import prompts from 'prompts'
 import { readdirSync } from 'fs'
@@ -22,7 +22,7 @@ async function go() {
 
   // the config should have the same namespace as the chosen index
   const indexNamespace = getNamespaceFromIndexName(indexName)
-  const configFiles = readdirSync('./mappings/')
+  const configFiles = readdirSync('./data/mappings/')
     .filter((fileName) => fileName.includes('.json'))
     .map((fileName) => parse(fileName).name)
     .filter((index) => indexNamespace == getNamespaceFromIndexName(index))
@@ -34,7 +34,7 @@ async function go() {
     choices: configFiles.map((choice) => ({ title: choice, value: choice })),
   }).then(({ value }) => value)
 
-  const indexConfig = await import(`../mappings/${configName}.json`).then(
+  const indexConfig = await import(`../data/mappings/${configName}.json`).then(
     (mod) => mod.default
   )
 

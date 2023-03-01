@@ -10,14 +10,14 @@ type Eval = (score: MetricDetail) => Pass
 const equalTo1: Eval = (metricDetail: MetricDetail) => {
   return {
     score: metricDetail.metric_score,
-    pass: metricDetail.metric_score === 1,
+    pass: metricDetail.metric_score === 1
   }
 }
 
 const equalTo0: Eval = (metricDetail: MetricDetail) => {
   return {
     score: metricDetail.metric_score,
-    pass: metricDetail.metric_score === 0,
+    pass: metricDetail.metric_score === 0
   }
 }
 

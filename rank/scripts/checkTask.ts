@@ -1,7 +1,7 @@
 import { info, success } from './utils'
 
 import cliProgress from 'cli-progress'
-import { getRankClient } from '../services/elasticsearch'
+import { getRankClient } from '../src/services/elasticsearch'
 import prompts from 'prompts'
 import yargs from 'yargs'
 

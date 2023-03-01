@@ -5,7 +5,8 @@ import com.sksamuel.elastic4s.requests.common.Operator.{AND, OR}
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryBuilderType.{
   BEST_FIELDS,
-  CROSS_FIELDS
+  CROSS_FIELDS,
+  MOST_FIELDS
 }
 import com.sksamuel.elastic4s.requests.searches.queries.matches.{
   FieldWithOptionalBoost,
@@ -155,6 +156,20 @@ case object WorksMultiMatcher {
             (None, "query.edition"),
             (None, "query.notes.contents"),
             (None, "query.lettering")
+          ).map {
+            case (boost, field) =>
+              FieldWithOptionalBoost(field, boost.map(_.toDouble))
+          }
+        ),
+        MultiMatchQuery(
+          q,
+          queryName = Some("shingles cased"),
+          `type` = Some(MOST_FIELDS),
+          operator = Some(AND),
+          fields = Seq(
+            (Some(1000), "query.title.shingles_cased"),
+            (Some(100), "query.alternativeTitles.shingles_cased"),
+            (Some(10), "query.partOf.title.shingles_cased")
           ).map {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))

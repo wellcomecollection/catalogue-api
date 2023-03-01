@@ -10,7 +10,7 @@ type Props = {
   index: Index
 }
 
-async function service({
+async function search({
   queryEnv,
   index,
   searchTerms,
@@ -29,4 +29,4 @@ async function service({
   })
 }
 
-export default service
+export default search

@@ -8,15 +8,15 @@ set -o verbose
 docker run \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    public.ecr.aws/docker/library/node:14-slim \
+    public.ecr.aws/docker/library/node:18-slim \
     yarn
 
 # Copy candidate queries into place.
-# TODO: This is a short-term fix to unbreak the build, find a better
-# way to do this.
-ROOT=$(git rev-parse --show-toplevel)
-cp "$ROOT/search/src/test/resources/WorksMultiMatcherQuery.json" "$ROOT/rank/queries/WorksMultiMatcherQuery.json"
-cp "$ROOT/search/src/test/resources/ImagesMultiMatcherQuery.json" "$ROOT/rank/queries/ImagesMultiMatcherQuery.json"
+docker run \
+    --volume $(pwd):/catalogue-api \
+    --workdir /catalogue-api/rank \
+    public.ecr.aws/docker/library/node:18-slim \
+    yarn getQueries
 
 case $QUERY_ENV in
     candidate | staging)
@@ -46,12 +46,13 @@ do
       --volume $HOME/.aws:/root/.aws \
       --volume $(pwd):/catalogue-api \
       --workdir /catalogue-api/rank \
-      public.ecr.aws/docker/library/node:14-slim \
+      public.ecr.aws/docker/library/node:18-slim \
       yarn test \
           --queryEnv=$QUERY_ENV \
           --cluster=pipeline \
           --index="$index" \
           --testId=alternative-spellings \
           --testId=precision \
-          --testId=recall
+          --testId=recall \
+          --testId=order
 done

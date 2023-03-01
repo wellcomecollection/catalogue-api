@@ -2,117 +2,7 @@
 
 ## Complete query json
 
-<details>
-<summary>Click to expand</summary>
-
-```json
-{
-  "bool": {
-    "should": [
-      {
-        "span_first": {
-          "match": {
-            "span_term": {
-              "data.title.shingles": "{{query}}"
-            }
-          },
-          "end": 1,
-          "boost": 1000
-        }
-      },
-      {
-        "multi_match": {
-          "query": "{{query}}",
-          "fields": [
-            "state.canonicalId^1000.0",
-            "state.sourceIdentifier.value^1000.0",
-            "data.otherIdentifiers.value^1000.0",
-            "data.items.id.canonicalId^1000.0",
-            "data.items.id.sourceIdentifier.value^1000.0",
-            "data.items.id.otherIdentifiers.value^1000.0",
-            "data.imageData.id.canonicalId^1000.0",
-            "data.imageData.id.sourceIdentifier.value^1000.0",
-            "data.imageData.id.otherIdentifiers.value^1000.0",
-            "data.referenceNumber^1000.0"
-          ],
-          "type": "best_fields",
-          "analyzer": "whitespace_analyzer",
-          "operator": "Or",
-          "_name": "identifiers"
-        }
-      },
-      {
-        "dis_max": {
-          "queries": [
-            {
-              "multi_match": {
-                "query": "{{query}}",
-                "fields": [
-                  "search.titlesAndContributors^100.0",
-                  "search.titlesAndContributors.english^100.0",
-                  "search.titlesAndContributors.shingles^100.0"
-                ],
-                "type": "best_fields",
-                "operator": "And",
-                "_name": "title and contributor exact spellings"
-              }
-            },
-            {
-              "multi_match": {
-                "query": "{{query}}",
-                "fields": [
-                  "search.titlesAndContributors.arabic",
-                  "search.titlesAndContributors.bengali",
-                  "search.titlesAndContributors.french",
-                  "search.titlesAndContributors.german",
-                  "search.titlesAndContributors.hindi",
-                  "search.titlesAndContributors.italian"
-                ],
-                "type": "best_fields",
-                "operator": "And",
-                "_name": "non-english titles and contributors"
-              }
-            }
-          ]
-        }
-      },
-
-      {
-        "multi_match": {
-          "query": "{{query}}",
-          "fields": [
-            "data.contributors.agent.label^1000.0",
-            "data.subjects.concepts.label^10.0",
-            "data.genres.concepts.label^10.0",
-            "data.production.*.label^10.0",
-            "data.description",
-            "data.physicalDescription",
-            "data.language.label",
-            "data.edition",
-            "data.notes.contents",
-            "data.lettering"
-          ],
-          "type": "cross_fields",
-          "operator": "And",
-          "_name": "data"
-        }
-      }
-    ],
-    "filter": [
-      {
-        "term": {
-          "type": {
-            "value": "Visible"
-          }
-        }
-      }
-    ],
-    "minimum_should_match": "1"
-  }
-}
-```
-
-</details>
+[click here for the complete query json](../../../rank/data/queries/WorksMultiMatcherQuery.json)
 
 ## Intentions
 
@@ -273,5 +163,25 @@ we want to prioritise the third result. Based on user feedback documented here <
     "end": 1,
     "boost": 1000
   }
+}
+```
+
+### Users should see documents which contain exact matches to their query above documents which contain partial matches
+
+We've introduced a section of the query which is designed to match documents which contain more exact matches to the user's query, including casing and some punctuation, multi-matched over a few key title fields. This field is analysed with a `shingle` filter, meaning spans of multiple matched tokens will score even more highly. The field mappings also use the discard the lowercase filter and include a `hyphens` char filter, meaning that hyphenated words will be treated as a single token. This is important because we want to match `x-ray` over `x ray` when someone searches for `x-ray`, or `AIDS` over `aids` when someone searches for `AIDS`.
+
+```json
+{
+    "multi_match": {
+        "query": "{{query}}",
+        "fields": [
+            "query.title.shingles_cased^1000.0",
+            "query.alternativeTitles.shingles_cased^100.0",
+            "query.partOf.title.shingles_cased^10.0"
+        ],
+        "type": "most_fields",
+        "operator": "And",
+        "_name": "shingles_cased"
+    }
 }
 ```
