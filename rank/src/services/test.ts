@@ -26,7 +26,7 @@ export const indexExists = async (
 }
 
 export async function getClient(queryEnv, cluster, template): Promise<Client> {
-  if (queryEnv === 'candidate' && cluster === 'pipeline') {
+  if (cluster === 'pipeline' && queryEnv === 'candidate') {
     const prodClient = await getPipelineClient('production')
     const stageClient = await getPipelineClient('staging')
     if (await indexExists(prodClient, template.index)) {

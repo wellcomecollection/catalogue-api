@@ -1,11 +1,10 @@
 import { p, pretty, success } from './utils'
 
+import fetch from 'node-fetch'
 import fs from 'fs'
 import { getReportingClient } from '../src/services/elasticsearch'
 import { namespaces } from '../src/types/searchTemplate'
 import prompts from 'prompts'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   const chosenNamespaces: string[] = await prompts({
@@ -14,8 +13,8 @@ async function go() {
     message: 'Which namespace do you want to get search terms for?',
     choices: namespaces.map((namespace) => ({
       title: namespace,
-      value: namespace,
-    })),
+      value: namespace
+    }))
   }).then(({ value }) => value)
 
   chosenNamespaces.map(async (namespace) => {
@@ -30,18 +29,18 @@ async function go() {
             must: [
               {
                 exists: {
-                  field: 'page.query.query',
-                },
+                  field: 'page.query.query'
+                }
               },
               {
                 match: {
-                  'page.name': namespace,
-                },
-              },
-            ],
-          },
-        },
-      },
+                  'page.name': namespace
+                }
+              }
+            ]
+          }
+        }
+      }
     })
     success(`Fetched recent search terms for ${namespace}`)
 

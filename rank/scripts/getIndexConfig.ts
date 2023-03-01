@@ -1,11 +1,10 @@
 import { code, info, p, pretty, success } from './utils'
 
+import fetch from 'node-fetch'
 import fs from 'fs'
 import { getRankClient } from '../src/services/elasticsearch'
 import { listIndices } from '../src/services/search-templates'
 import prompts from 'prompts'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   const client = await getRankClient()
@@ -14,7 +13,7 @@ async function go() {
     type: 'multiselect',
     name: 'value',
     message: 'Which index configs do you want to fetch?',
-    choices: remoteIndices.map((index) => ({ title: index, value: index })),
+    choices: remoteIndices.map((index) => ({ title: index, value: index }))
   }).then(({ value }) => value)
 
   if (indices.length > 0) {
@@ -23,7 +22,6 @@ async function go() {
 
     const mappingsRes = await client.indices.getMapping({ index: indices })
 
-    console.log(mappingsRes)
     for (const index of indices) {
       const mappings = mappingsRes[index].mappings
       const analysis = settingsRes[index].settings.index.analysis
@@ -32,9 +30,9 @@ async function go() {
         mappings,
         settings: {
           index: {
-            analysis,
-          },
-        },
+            analysis
+          }
+        }
       }
       success(`Fetched config for ${index}`)
 

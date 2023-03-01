@@ -1,10 +1,9 @@
 import { Cluster, Index, QueryEnv } from '../src/types/searchTemplate'
 
+import fetch from 'node-fetch'
 import rankTest from '../src/services/test'
 import testOrder from '../src/services/order'
 import yargs from 'yargs'
-
-global.fetch = require('node-fetch')
 
 const args = yargs(process.argv)
   .options({

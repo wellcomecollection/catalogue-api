@@ -1,13 +1,12 @@
 import { Index, QueryEnv, queryEnvs } from '../src/types/searchTemplate'
 
 import chalk from 'chalk'
+import fetch from 'node-fetch'
 import { gatherArgs } from './utils'
 import { getRankClient } from '../src/services/elasticsearch'
 import { listIndices } from '../src/services/search-templates'
 import prompts from 'prompts'
 import search from '../src/services/search'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   const client = await getRankClient()
@@ -15,7 +14,7 @@ async function go() {
 
   const args = await gatherArgs({
     index: { type: 'string', choices: indices },
-    queryEnv: { type: 'string', choices: queryEnvs },
+    queryEnv: { type: 'string', choices: queryEnvs }
   })
 
   const index = args.index as Index
@@ -24,7 +23,7 @@ async function go() {
   const searchTerms = await prompts({
     type: 'text',
     name: 'value',
-    message: 'What are you looking for?',
+    message: 'What are you looking for?'
   }).then(({ value }) => value)
 
   const results = await search({ index, queryEnv, searchTerms })
@@ -40,7 +39,7 @@ async function go() {
       `${i + 1}.\t${chalk.bold(chalk.cyan(title))}`,
       reference ? reference : null,
       dates ? dates : null,
-      url,
+      url
     ]
       .filter((n) => n)
       .join('\n\t')

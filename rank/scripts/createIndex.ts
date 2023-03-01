@@ -1,13 +1,12 @@
 import { code, error, info, success } from './utils'
 
+import fetch from 'node-fetch'
 import { getNamespaceFromIndexName } from '../src/types/searchTemplate'
 import { getRankClient } from '../src/services/elasticsearch'
 import { listIndices } from '../src/services/search-templates'
 import { parse } from 'path'
 import prompts from 'prompts'
 import { readdirSync } from 'fs'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   // Users should be able to create new indices by modifying mappings they've
@@ -25,7 +24,7 @@ async function go() {
     type: 'select',
     name: 'value',
     message: 'Which index config are you working from?',
-    choices: validIndices.map((index) => ({ title: index, value: index })),
+    choices: validIndices.map((index) => ({ title: index, value: index }))
   }).then(({ value }) => value)
 
   const indexConfig = await import(`../data/mappings/${localIndex}.json`).then(
@@ -36,7 +35,7 @@ async function go() {
     type: 'text',
     name: 'value',
     message: 'What should the new index be called?',
-    initial: `${getNamespaceFromIndexName(localIndex)}-candidate`,
+    initial: `${getNamespaceFromIndexName(localIndex)}-candidate`
   }).then(({ value }) => value)
 
   const putIndexRes = await client.indices.create({
@@ -48,10 +47,10 @@ async function go() {
         index: {
           ...indexConfig.settings.index,
           number_of_shards: 1,
-          number_of_replicas: 1,
-        },
-      },
-    },
+          number_of_replicas: 1
+        }
+      }
+    }
   })
   if (putIndexRes.acknowledged) {
     success(`Created index ${remoteIndex}`)
@@ -71,7 +70,7 @@ async function go() {
     type: 'confirm',
     name: 'value',
     message: `Do you want to start a reindex from ${localIndex} into ${remoteIndex}?`,
-    initial: true,
+    initial: true
   }).then(({ value }) => value)
 
   if (reindex) {
@@ -80,7 +79,7 @@ async function go() {
       name: 'nDocsRequested',
       message:
         'How many documents do you want to reindex? (0 for all documents)',
-      initial: 0,
+      initial: 0
     })
     const reindexResp = await client.reindex({
       wait_for_completion: false,
@@ -88,12 +87,12 @@ async function go() {
       body: {
         source: {
           index: localIndex,
-          size: 100, // batch size reduced from 1000 to avoid memory issues during reindex
+          size: 100 // batch size reduced from 1000 to avoid memory issues during reindex
         },
         dest: {
-          index: remoteIndex,
-        },
-      },
+          index: remoteIndex
+        }
+      }
     })
 
     success('Reindex started successfully')

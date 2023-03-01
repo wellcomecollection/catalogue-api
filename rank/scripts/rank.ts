@@ -4,10 +4,9 @@ import { getPipelineClient, getRankClient } from '../src/services/elasticsearch'
 
 import { Client } from '@elastic/elasticsearch'
 import { exec } from 'child_process'
+import fetch from 'node-fetch'
 import { listIndices } from '../src/services/search-templates'
 import tests from '../src/tests'
-
-global.fetch = require('node-fetch')
 
 async function go() {
   const { cluster, query } = await gatherArgs({

@@ -8,14 +8,14 @@ set -o verbose
 docker run \
     -v $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    public.ecr.aws/docker/library/node:14-slim \
+    public.ecr.aws/docker/library/node:18-slim \
     yarn
 
 # Copy candidate queries into place.
 docker run \
     --volume $(pwd):/catalogue-api \
     --workdir /catalogue-api/rank \
-    public.ecr.aws/docker/library/node:14-slim \
+    public.ecr.aws/docker/library/node:18-slim \
     yarn getQueries
 
 case $QUERY_ENV in
@@ -46,7 +46,7 @@ do
       --volume $HOME/.aws:/root/.aws \
       --volume $(pwd):/catalogue-api \
       --workdir /catalogue-api/rank \
-      public.ecr.aws/docker/library/node:14-slim \
+      public.ecr.aws/docker/library/node:18-slim \
       yarn test \
           --queryEnv=$QUERY_ENV \
           --cluster=pipeline \

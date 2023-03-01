@@ -1,7 +1,7 @@
 [
     {
         "id": "precision",
-        "description": "TBD",
+        "description": "Ensure that the query brings back the works we expect at the top of the list",
         "eval": "equalTo1",
         "cases": [
             {
@@ -41,7 +41,7 @@
     },
     {
         "id": "recall",
-        "description": "TBD",
+        "description": "Ensure that the query brings back the results we expect somewhere in the list",
         "eval": "equalTo1",
         "cases": [
             {
@@ -107,7 +107,7 @@
     },
     {
         "id": "alternative-spellings",
-        "description": "TBD",
+        "description": "Ensure that the query returns results for search terms which are misspelled or differently transliterated.",
         "eval": "equalTo1",
         "cases": [
             {
@@ -138,5 +138,10 @@
                 "k": 100
             }
         }
+    },
+    {
+        "id": "order",
+        "description": "Check that the order of results is correct",
+        "cases": []
     }
 ]

@@ -22,7 +22,7 @@ docker run -it \
   -v $(git rev-parse --show-toplevel):/catalogue-api \
   --workdir /catalogue-api/rank \
   --env AWS_PROFILE=platform-dev \
-  public.ecr.aws/docker/library/node:14-slim \
+  public.ecr.aws/docker/library/node:18-slim \
   yarn rank
 ```
 
