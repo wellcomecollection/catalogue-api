@@ -39,7 +39,7 @@ async function testOrder({
   const results = await Promise.all(
     // for each test case, run a search
     test.cases.map(async (testCase) => {
-      const { searchTerms, description, knownFailure } = testCase
+      const { searchTerms, description, knownFailure, filter } = testCase
 
       // run the search for the test case and return all results
       const searchResponse = await client.searchTemplate({
@@ -48,7 +48,8 @@ async function testOrder({
           source: JSON.stringify({
             query: template.query,
             track_total_hits: true,
-            size: 10000
+            size: 10000,
+            ...(filter ? { post_filter: filter } : {})
           }),
           params: { query: testCase.searchTerms }
         }
