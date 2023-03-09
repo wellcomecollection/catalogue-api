@@ -10,7 +10,6 @@
 locals {
   service_repositories = [
     "nginx_api-gw",
-    "update_api_docs",
   ]
 }
 
