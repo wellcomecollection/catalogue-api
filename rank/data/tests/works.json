@@ -330,6 +330,21 @@
         "description": "Check that the order of results is correct",
         "cases": [
             {
+                "searchTerms": "Crète",
+                "before": [
+                    "yyz378xr",
+                    "d6aezcvw",
+                    "z4yefjez"
+                ],
+                "after": [
+                    "gsehqy4k",
+                    "zq2yf7uz",
+                    "d2c3k3d3"
+                ],
+                "description": "Term with diacritics is scored higher than the asciifolded equivalent, or versions with different diacritics",
+                "knownFailure": true
+            },
+            {
                 "searchTerms": "horse furniture",
                 "description": "Matches ordered terms ahead of unordered terms",
                 "before": [
