@@ -5,6 +5,18 @@
         "eval": "equalTo1",
         "cases": [
             {
+                "searchTerms": "Mackie",
+                "ratings": [
+                    "k8ccmj6t"
+                ],
+                "description": "An exact match in the title and description, and filtering for archives",
+                "filter": {
+                    "term": {
+                        "query.format.id": "h"
+                    }
+                }
+            },
+            {
                 "searchTerms": "information law",
                 "ratings": [
                     "zkg7xqm7"
@@ -452,7 +464,11 @@
                     "ae5kymcs"
                 ],
                 "description": "An exact matches in the title should appear before a misspelled match in the contributor and title. Also uses a filter",
-                "filter": {"term": {"query.format.id": "h"}}
+                "filter": {
+                    "term": {
+                        "query.format.id": "h"
+                    }
+                }
             }
         ]
     }
