@@ -131,6 +131,14 @@
                     "gdfhp4gw"
                 ],
                 "description": "Searching without punctuation should match a document with punctuation"
+            },
+            {
+                "searchTerms": "sophie's shell",
+                "ratings": [
+                    "gdfhp4gw"
+                ],
+                "knownFailure": true,
+                "description": "Searching for a term including an apostrophe should match the same term"
             }
         ],
         "metric": {
