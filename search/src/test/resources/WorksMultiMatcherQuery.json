@@ -44,7 +44,8 @@
                   "query.titlesAndContributors.shingles^100.0"
                 ],
                 "type": "best_fields",
-                "operator": "And",
+                "minimum_should_match": "80%",
+                "operator": "Or",
                 "_name": "title and contributor exact spellings"
               }
             },
@@ -60,7 +61,8 @@
                   "query.titlesAndContributors.italian"
                 ],
                 "type": "best_fields",
-                "operator": "And",
+                "minimum_should_match": "80%",
+                "operator": "Or",
                 "_name": "non-english titles and contributors"
               }
             }
@@ -69,6 +71,21 @@
       },
       {
         "bool": {
+          "must": [
+            {
+              "multi_match": {
+                "query": "{{query}}",
+                "fields": [
+                  "query.collectionPath.path.clean",
+                  "query.collectionPath.label.cleanPath",
+                  "query.collectionPath.label",
+                  "query.collectionPath.path.keyword"
+                ],
+                "operator": "Or",
+                "_name": "relations paths"
+              }
+            }
+          ],
           "should": [
             {
               "multi_match": {
@@ -80,21 +97,6 @@
                 "type": "cross_fields",
                 "operator": "Or",
                 "_name": "relations text"
-              }
-            }
-          ],
-          "must": [
-            {
-              "multi_match": {
-                "fields": [
-                  "query.collectionPath.path.clean",
-                  "query.collectionPath.label.cleanPath",
-                  "query.collectionPath.label",
-                  "query.collectionPath.path.keyword"
-                ],
-                "query": "{{query}}",
-                "operator": "Or",
-                "_name": "relations paths"
               }
             }
           ]
@@ -116,7 +118,8 @@
             "query.lettering"
           ],
           "type": "cross_fields",
-          "operator": "And",
+          "minimum_should_match": "80%",
+          "operator": "Or",
           "_name": "data"
         }
       },
@@ -129,7 +132,8 @@
             "query.partOf.title.shingles_cased^10.0"
           ],
           "type": "most_fields",
-          "operator": "And",
+          "minimum_should_match": "80%",
+          "operator": "Or",
           "_name": "shingles cased"
         }
       }

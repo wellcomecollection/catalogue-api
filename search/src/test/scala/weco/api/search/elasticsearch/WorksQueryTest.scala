@@ -3,11 +3,13 @@ package weco.api.search.elasticsearch
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.{Assertion, EitherValues}
+import org.scalatest.EitherValues
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
+import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{SearchQuery, SearchQueryType}
 import weco.api.search.services.WorksService
+import weco.fixtures.TestWith
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -24,11 +26,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2twopft1",
-          expectedMatches = List("works.visible.0")
-        )
+        assertForQueryResults(index, query = "2twopft1") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("works.visible.0")
+        }
       }
     }
 
@@ -36,11 +37,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "Uaequ81tpB",
-          expectedMatches = List("works.visible.0")
-        )
+        assertForQueryResults(index, query = "Uaequ81tpB") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("works.visible.0")
+        }
       }
     }
 
@@ -48,11 +48,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "UfcQYSxE7g",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "UfcQYSxE7g") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -60,11 +59,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "ca3anii6",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "ca3anii6") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -72,11 +70,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "hKyStbKjx1",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "hKyStbKjx1") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -87,11 +84,12 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksWithItemIdentifiers: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "xJJHLpGvU7",
-          expectedMatches = List("works.items-with-other-identifiers.0")
-        )
+        assertForQueryResults(index, query = "xJJHLpGvU7") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork(
+            "works.items-with-other-identifiers.0"
+          )
+        }
       }
     }
 
@@ -99,11 +97,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "eoedbdmz",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "eoedbdmz") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -111,11 +108,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "auL5Gzybrl",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "auL5Gzybrl") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -123,11 +119,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, visibleWorks: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2twopft1",
-          expectedMatches = List("works.visible.0")
-        )
+        assertForQueryResults(index, query = "2twopft1") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("works.visible.0")
+        }
       }
     }
 
@@ -135,17 +130,9 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2twopft1",
-          expectedMatches = List("works.visible.0")
-        )
-
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "7sji",
-          expectedMatches = List()
-        )
+        assertForQueryResults(index, query = "7sji") { results =>
+          results shouldBe empty
+        }
       }
     }
 
@@ -153,11 +140,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2TWOPFT1",
-          expectedMatches = List("works.visible.0")
-        )
+        assertForQueryResults(index, query = "2TWOPFT1") { results =>
+          results.size shouldBe 1
+          results.head shouldBe getVisibleWork("works.visible.0")
+        }
       }
     }
 
@@ -165,11 +151,13 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2TWOPFT1 dph7sjip",
-          expectedMatches = List("works.visible.0", "works.visible.1")
-        )
+        assertForQueryResults(index, query = "2TWOPFT1 dph7sjip") { results =>
+          results.size shouldBe 2
+          results should contain theSameElementsAs List(
+            "works.visible.0",
+            "works.visible.1"
+          ).map(getVisibleWork)
+        }
       }
     }
 
@@ -177,17 +165,9 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, works: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2twopft1",
-          expectedMatches = List("works.visible.0")
-        )
-
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "2two",
-          expectedMatches = List()
-        )
+        assertForQueryResults(index, query = "2two") { results =>
+          results shouldBe empty
+        }
       }
     }
 
@@ -195,11 +175,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "person-W9SVIX0fEg",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "person-W9SVIX0fEg") { results =>
+          // We don't mind about number of results for a label search
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -207,11 +186,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "IHQR23GK9tQdPt3",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "IHQR23GK9tQdPt3") { results =>
+          // We don't mind about number of results for a label search
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -219,11 +197,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "goKOwWLrIbnrzZj",
-          expectedMatches = List("work.visible.everything.0")
-        )
+        assertForQueryResults(index, query = "goKOwWLrIbnrzZj") { results =>
+          // We don't mind about number of results for a label search
+          results.head shouldBe getVisibleWork("work.visible.everything.0")
+        }
       }
     }
 
@@ -231,11 +208,10 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, "work-title-dodo", "work-title-mouse")
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "A line of legible ligatures",
-          expectedMatches = List("work-title-dodo")
-        )
+        assertForQueryResults(index, query = "A line of legible ligatures") {
+          results =>
+            results.head shouldBe getVisibleWork("work-title-dodo")
+        }
       }
     }
 
@@ -247,11 +223,9 @@ class WorksQueryTest
           "works.collection-path.PPCRI"
         )
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "PPCRI",
-          expectedMatches = List("works.collection-path.PPCRI")
-        )
+        assertForQueryResults(index, query = "PPCRI") { results =>
+          results.head shouldBe getVisibleWork("works.collection-path.PPCRI")
+        }
       }
     }
 
@@ -263,39 +237,31 @@ class WorksQueryTest
           "works.collection-path.PPCRI"
         )
 
-        assertResultsMatchForAllowedQueryTypes(
-          index,
-          query = "PP/CRI",
-          expectedMatches = List("works.collection-path.PPCRI")
-        )
+        assertForQueryResults(index, query = "PP/CRI") { results =>
+          results.head shouldBe getVisibleWork("works.collection-path.PPCRI")
+        }
       }
     }
   }
 
-  private def assertResultsMatchForAllowedQueryTypes(
-    index: Index,
-    query: String,
-    expectedMatches: List[String]
-  ): List[Assertion] =
-    SearchQueryType.allowed map { queryType =>
-      val future = worksService.listOrSearch(
-        index,
-        searchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery(query, queryType))
-        )
+  private def assertForQueryResults[R](index: Index, query: String)(
+    testWith: TestWith[Seq[IndexedWork.Visible], R]
+  ) = SearchQueryType.allowed map { queryType =>
+    val future = worksService.listOrSearch(
+      index,
+      searchOptions = createWorksSearchOptionsWith(
+        searchQuery = Some(SearchQuery(query, queryType))
       )
+    )
 
-      val results = whenReady(future) {
-        _.right.value.results
-      }
-
-      withClue(s"Using: ${queryType.name}") {
-        results.size shouldBe expectedMatches.size
-        results should contain theSameElementsAs expectedMatches.map(
-          getVisibleWork
-        )
-      }
+    val results = whenReady(future) {
+      _.right.value.results
     }
+
+    withClue(s"[Using query: ${queryType.name}]") {
+      testWith(results)
+    }
+  }
 
   private val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(elasticClient)

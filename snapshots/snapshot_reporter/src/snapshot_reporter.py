@@ -109,6 +109,11 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
         started_at = parser.parse(snapshot["snapshotResult"]["startedAt"])
         finished_at = parser.parse(snapshot["snapshotResult"]["finishedAt"])
 
+        last_update_delta = humanize.naturaldelta(
+            datetime.datetime.now(datetime.timezone.utc) - doc_updates["last_update"]
+        )
+        last_update = format_date(doc_updates["last_update"])
+
         # In general, a snapshot should have the same number of works as the
         # catalogue API.  There might be some drift, if new works appear in the
         # pipeline between the snapshot being taken and the reporter running,
@@ -127,11 +132,11 @@ def prepare_slack_payload(*, snapshots, api_counts, recent_updates):
             updates_message = f"There {'have' if plural else 'has'} been *{humanized_count}* update{'s' if plural else ''} in the last {recent_updates['hours']} hours."
         else:
             warnings = True
-            delta = humanize.naturaldelta(
-                datetime.datetime.now(datetime.timezone.utc) - doc_updates["latest"]
-            )
-            last_update = format_date(doc_updates["latest"])
-            updates_message = f":warning: _*There haven't been any updates in the last {recent_updates['hours']} hours*_. The last update was {last_update} ({delta} ago)."
+            updates_message = f":warning: _*There haven't been any updates in the last {recent_updates['hours']} hours*_."
+
+        updates_message += (
+            f" The last update was {last_update} ({last_update_delta} ago)."
+        )
 
         return [
             {
@@ -235,11 +240,7 @@ def get_recent_update_stats(session, *, hours):
     )
 
     indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
-    indexed_time_query = {
-        "track_total_hits": True,
-        "size": 1,
-        "_source": ["debug.indexedTime"],
-        "sort": [{"debug.indexedTime": {"order": "desc"}}],
+    indexed_time_body = {
         "query": {
             "bool": {
                 "filter": [
@@ -252,30 +253,38 @@ def get_recent_update_stats(session, *, hours):
                     }
                 ]
             }
-        },
+        }
     }
-    works_resp = pipeline_es_client.search(
-        index=works_index_name, body=indexed_time_query
-    )
-    images_resp = pipeline_es_client.search(
-        index=images_index_name, body=indexed_time_query
-    )
+    last_update_body = {
+        "size": 1,
+        "_source": ["debug.indexedTime"],
+        "sort": [{"debug.indexedTime": {"order": "desc"}}],
+    }
+    works_count = pipeline_es_client.count(
+        index=works_index_name, body=indexed_time_body
+    )["count"]
+    images_count = pipeline_es_client.count(
+        index=images_index_name, body=indexed_time_body
+    )["count"]
+
+    works_last_update = pipeline_es_client.search(
+        index=works_index_name, body=last_update_body
+    )["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
+    images_last_update = pipeline_es_client.search(
+        index=images_index_name, body=last_update_body
+    )["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
 
     return {
         "hours": hours,
         "works": {
             "index": works_index_name,
-            "count": works_resp["hits"]["total"]["value"],
-            "latest": parser.parse(
-                works_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
-            ),
+            "count": works_count,
+            "last_update": parser.parse(works_last_update),
         },
         "images": {
             "index": images_index_name,
-            "count": images_resp["hits"]["total"]["value"],
-            "latest": parser.parse(
-                images_resp["hits"]["hits"][0]["_source"]["debug"]["indexedTime"]
-            ),
+            "count": images_count,
+            "last_update": parser.parse(images_last_update),
         },
     }
 

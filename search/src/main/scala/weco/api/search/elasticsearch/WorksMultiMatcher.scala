@@ -1,7 +1,7 @@
 package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.requests.common.Operator.{AND, OR}
+import com.sksamuel.elastic4s.requests.common.Operator.OR
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryBuilderType.{
   BEST_FIELDS,
@@ -91,8 +91,8 @@ case object WorksMultiMatcher {
                 fields = titleFields
               ),
               `type` = Some(BEST_FIELDS),
-              operator = Some(AND)
-            ),
+              operator = Some(OR)
+            ).minimumShouldMatch("80%"),
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
@@ -108,8 +108,8 @@ case object WorksMultiMatcher {
                   FieldWithoutBoost(s"query.titlesAndContributors.$language")
               ),
               `type` = Some(BEST_FIELDS),
-              operator = Some(AND)
-            )
+              operator = Some(OR)
+            ).minimumShouldMatch("80%")
           )
         ),
         bool(
@@ -144,7 +144,7 @@ case object WorksMultiMatcher {
           q,
           queryName = Some("data"),
           `type` = Some(CROSS_FIELDS),
-          operator = Some(AND),
+          operator = Some(OR),
           fields = Seq(
             (Some(1000), "query.contributors.agent.label"),
             (Some(10), "query.subjects.concepts.label"),
@@ -160,12 +160,12 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        ),
+        ).minimumShouldMatch("80%"),
         MultiMatchQuery(
           q,
           queryName = Some("shingles cased"),
           `type` = Some(MOST_FIELDS),
-          operator = Some(AND),
+          operator = Some(OR),
           fields = Seq(
             (Some(1000), "query.title.shingles_cased"),
             (Some(100), "query.alternativeTitles.shingles_cased"),
@@ -174,7 +174,7 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        )
+        ).minimumShouldMatch("80%")
       )
       .minimumShouldMatch(1)
 }
