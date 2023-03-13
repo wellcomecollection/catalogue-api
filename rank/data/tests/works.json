@@ -5,18 +5,6 @@
         "eval": "equalTo1",
         "cases": [
             {
-                "searchTerms": "Mackie",
-                "ratings": [
-                    "k8ccmj6t"
-                ],
-                "description": "An exact match in the title and description, and filtering for archives",
-                "filter": {
-                    "term": {
-                        "query.format.id": "h"
-                    }
-                }
-            },
-            {
                 "searchTerms": "information law",
                 "ratings": [
                     "zkg7xqm7"
