@@ -88,8 +88,7 @@
                 "ratings": [
                     "xwtcsk93"
                 ],
-                "description": "Example of a known title's prefix, but not the full thing",
-                "knownFailure": true
+                "description": "Example of a known title's prefix, but not the full thing"
             },
             {
                 "searchTerms": "L0033046",
@@ -117,8 +116,29 @@
                 "ratings": [
                     "ruedafcw"
                 ],
-                "description": "Example of a known title's prefix, but not the full thing",
-                "knownFailure": true
+                "description": "Example of a known title's prefix, but not the full thing"
+            },
+            {
+                "searchTerms": "mammas favorites",
+                "ratings": [
+                    "dbqsn5gk"
+                ],
+                "description": "Searching without punctuation should match a document with punctuation"
+            },
+            {
+                "searchTerms": "sophies shell",
+                "ratings": [
+                    "gdfhp4gw"
+                ],
+                "description": "Searching without punctuation should match a document with punctuation"
+            },
+            {
+                "searchTerms": "sophie's shell",
+                "ratings": [
+                    "gdfhp4gw"
+                ],
+                "knownFailure": true,
+                "description": "Searching for a term including an apostrophe should match the same term"
             }
         ],
         "metric": {
@@ -133,6 +153,14 @@
         "description": "Ensure that the query brings back the results we expect somewhere in the list",
         "eval": "equalTo1",
         "cases": [
+            {
+                "searchTerms": "indian journal of medical research 1930-1931",
+                "ratings": [
+                    "p444t8rp",
+                    "kccp8d5t"
+                ],
+                "description": "Query where most search terms (but not all) are in the title"
+            },
             {
                 "searchTerms": "Atherosclerosis: an introduction to atherosclerosis",
                 "ratings": [
@@ -310,6 +338,21 @@
         "description": "Check that the order of results is correct",
         "cases": [
             {
+                "searchTerms": "Crète",
+                "before": [
+                    "yyz378xr",
+                    "d6aezcvw",
+                    "z4yefjez"
+                ],
+                "after": [
+                    "gsehqy4k",
+                    "zq2yf7uz",
+                    "d2c3k3d3"
+                ],
+                "description": "Term with diacritics is scored higher than the asciifolded equivalent, or versions with different diacritics",
+                "knownFailure": true
+            },
+            {
                 "searchTerms": "horse furniture",
                 "description": "Matches ordered terms ahead of unordered terms",
                 "before": [
@@ -347,7 +390,6 @@
             {
                 "searchTerms": "crip",
                 "description": "Exact singular match appears before pluralised match",
-                "knownFailure": true,
                 "before": [
                     "ptvgbenh",
                     "r3eue8kw"
@@ -382,8 +424,7 @@
                     "gvem6rts",
                     "tdwgsdsh",
                     "vfwczwr7"
-                ],
-                "knownFailure": true
+                ]
             },
             {
                 "searchTerms": "aid",
@@ -424,11 +465,11 @@
             {
                 "searchTerms": "x-ray",
                 "description": "tokens joined by hyphens are matched above tokens which are joined by whitespace",
-                "knownFailure": true,
                 "before": [
                     "maxctjgf",
-                    "pbaethns",
-                    "tt2mxtff"
+                    "c3jatdq5",
+                    "dmcchav2",
+                    "gfp86e2b"
                 ],
                 "after": [
                     "thgzs6pd"
