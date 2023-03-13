@@ -10,6 +10,7 @@ export type TestCase = {
   after?: string[]
   description?: string
   knownFailure?: boolean
+  filter?: any
 }
 
 export type Test = {

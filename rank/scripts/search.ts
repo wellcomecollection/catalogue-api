@@ -26,7 +26,19 @@ async function go() {
     message: 'What are you looking for?'
   }).then(({ value }) => value)
 
-  const results = await search({ index, queryEnv, searchTerms })
+  const filter = await prompts({
+    type: 'text',
+    name: 'value',
+    message: 'Any filters?'
+  }).then(({ value }) => value)
+
+  const results = await search({ index, queryEnv, searchTerms, filter })
+
+  // @ts-ignore
+  if (results.hits.total.value === 0) {
+    console.log('No results found')
+    return
+  }
 
   results.hits.hits.map((hit, i) => {
     const title = hit._source.display.title

@@ -7,7 +7,6 @@ export type Cluster = typeof clusters[number]
 export const namespaces = ['works', 'images'] as const
 export type Namespace = typeof namespaces[number]
 
-export type Query = string | unknown
 export type Index = string
 export type SearchTemplateString = `${QueryEnv}/${Index}`
 
@@ -15,10 +14,10 @@ export class SearchTemplate {
   index: Index
   namespace: Namespace
   queryEnv: QueryEnv
-  query: Query
+  query: string
   id: SearchTemplateString
 
-  constructor(queryEnv: QueryEnv, index: Index, query: Query) {
+  constructor(queryEnv: QueryEnv, index: Index, query: string) {
     this.queryEnv = queryEnv
     this.index = index
     this.query = query
