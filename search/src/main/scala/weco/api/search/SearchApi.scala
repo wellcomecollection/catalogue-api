@@ -91,13 +91,15 @@ class SearchApi(
               path("_workTypes") {
                 get {
                   withFuture {
-                    worksController.countWorkTypes(elasticConfig.worksIndex).map {
-                      case Right(tally) => complete(tally)
-                      case Left(err) =>
-                        internalError(
-                          new Throwable(s"Error counting work types: $err")
-                        )
-                    }
+                    worksController
+                      .countWorkTypes(elasticConfig.worksIndex)
+                      .map {
+                        case Right(tally) => complete(tally)
+                        case Left(err) =>
+                          internalError(
+                            new Throwable(s"Error counting work types: $err")
+                          )
+                      }
                   }
                 }
               }
@@ -169,16 +171,16 @@ class SearchApi(
 
   val timeoutResponse = HttpResponse(
     StatusCodes.ServiceUnavailable,
-    entity =
-      HttpEntity(
-        contentType = ContentTypes.`application/json`,
-        string = toJson(
-          DisplayError(
-            statusCode = StatusCodes.ServiceUnavailable,
-            description = "The server was not able to produce a timely response to your request. Please try again in a short while!"
-          )
+    entity = HttpEntity(
+      contentType = ContentTypes.`application/json`,
+      string = toJson(
+        DisplayError(
+          statusCode = StatusCodes.ServiceUnavailable,
+          description =
+            "The server was not able to produce a timely response to your request. Please try again in a short while!"
         )
       )
+    )
   )
 
   def rejectionHandler =
