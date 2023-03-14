@@ -44,7 +44,7 @@
                   "query.titlesAndContributors.shingles^100.0"
                 ],
                 "type": "best_fields",
-                "minimum_should_match": "80%",
+                "minimum_should_match": "-20%",
                 "operator": "Or",
                 "_name": "title and contributor exact spellings"
               }
@@ -61,7 +61,7 @@
                   "query.titlesAndContributors.italian"
                 ],
                 "type": "best_fields",
-                "minimum_should_match": "80%",
+                "minimum_should_match": "-20%",
                 "operator": "Or",
                 "_name": "non-english titles and contributors"
               }
@@ -118,7 +118,7 @@
             "query.lettering"
           ],
           "type": "cross_fields",
-          "minimum_should_match": "80%",
+          "minimum_should_match": "-20%",
           "operator": "Or",
           "_name": "data"
         }
@@ -132,7 +132,7 @@
             "query.partOf.title.shingles_cased^10.0"
           ],
           "type": "most_fields",
-          "minimum_should_match": "80%",
+          "minimum_should_match": "-20%",
           "operator": "Or",
           "_name": "shingles cased"
         }
