@@ -92,7 +92,7 @@ case object WorksMultiMatcher {
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(OR)
-            ).minimumShouldMatch("80%"),
+            ).minimumShouldMatch("-30%"),
             MultiMatchQuery(
               q,
               queryName = Some("non-english titles and contributors"),
@@ -109,7 +109,7 @@ case object WorksMultiMatcher {
               ),
               `type` = Some(BEST_FIELDS),
               operator = Some(OR)
-            ).minimumShouldMatch("80%")
+            ).minimumShouldMatch("-30%")
           )
         ),
         bool(
@@ -160,7 +160,7 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        ).minimumShouldMatch("80%"),
+        ).minimumShouldMatch("-30%"),
         MultiMatchQuery(
           q,
           queryName = Some("shingles cased"),
@@ -174,7 +174,7 @@ case object WorksMultiMatcher {
             case (boost, field) =>
               FieldWithOptionalBoost(field, boost.map(_.toDouble))
           }
-        ).minimumShouldMatch("80%")
+        ).minimumShouldMatch("-30%")
       )
       .minimumShouldMatch(1)
 }
