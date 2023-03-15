@@ -22,14 +22,16 @@ from commands import git
 
 
 def current_pipeline_date():
-    resp = urllib.request.urlopen("https://api.wellcomecollection.org/catalogue/v2/_elasticConfig")
+    resp = urllib.request.urlopen(
+        "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig"
+    )
 
     # this will be a string of the form 'works-indexed-YYYY-MM-DD'
-    works_index = json.load(resp)['worksIndex']
+    works_index = json.load(resp)["worksIndex"]
 
-    m = re.search(r'\d{4}-\d{2}-\d{2}', works_index)
+    m = re.search(r"\d{4}-\d{2}-\d{2}", works_index)
     if m is None:
-        raise RuntimeError(f'Could not work out what the current pipeline date is!')
+        raise RuntimeError(f"Could not work out what the current pipeline date is!")
 
     return m.group(0)
 
@@ -89,7 +91,9 @@ def get_github_api_key():
     session = boto3.Session()
     secrets_client = session.client("secretsmanager")
 
-    secret_value = secrets_client.get_secret_value(SecretId="builds/github_wecobot/scala_libs_pr_bumps")
+    secret_value = secrets_client.get_secret_value(
+        SecretId="builds/github_wecobot/scala_libs_pr_bumps"
+    )
 
     return secret_value["SecretString"]
 
@@ -104,7 +108,12 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         branch_name = f"point-concepts-pipeline-at-{pipeline_date}"
 
         git("config", "--local", "user.email", "wellcomedigitalplatform@wellcome.ac.uk")
-        git("config", "--local", "user.name", "BuildKite on behalf of Wellcome Collection")
+        git(
+            "config",
+            "--local",
+            "user.name",
+            "BuildKite on behalf of Wellcome Collection",
+        )
 
         git("checkout", "-b", branch_name)
         git("add", "infrastructure/main.tf")
@@ -124,7 +133,7 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
                 "title": f"Point concepts-pipeline at {pipeline_date}",
                 "maintainer_can_modify": True,
                 "body": "",
-            }
+            },
         )
 
         try:
@@ -137,7 +146,7 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         r = client.post(
             f"https://api.github.com/repos/wellcomecollection/concepts-pipeline/pulls/{new_pr_number}/requested_reviewers",
             headers={"Accept": "application/vnd.github.v3+json"},
-            json={"team_reviewers": ["scala-reviewers"]}
+            json={"team_reviewers": ["scala-reviewers"]},
         )
 
         print(r.json())
@@ -148,7 +157,5 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
             raise
 
 
-if __name__ == '__main__':
-    create_concepts_pipeline_pull_request(
-        pipeline_date=current_pipeline_date()
-    )
+if __name__ == "__main__":
+    create_concepts_pipeline_pull_request(pipeline_date=current_pipeline_date())
