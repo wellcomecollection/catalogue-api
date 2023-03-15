@@ -106,3 +106,5 @@ steps:
     command: |
       pip3 install boto3 http3
       python3 .buildkite/scripts/open_concepts_pipeline_pr.py
+    agents:
+      queue: nano
