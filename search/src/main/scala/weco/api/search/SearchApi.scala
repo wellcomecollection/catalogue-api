@@ -1,5 +1,11 @@
 package weco.api.search
 
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpResponse,
+  StatusCodes
+}
 import akka.http.scaladsl.server.{
   MalformedQueryParamRejection,
   RejectionHandler,
@@ -16,6 +22,7 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.models._
 import weco.api.search.rest._
 import weco.catalogue.display_model.rest.IdentifierDirectives
+import weco.http.models.DisplayError
 
 import scala.concurrent.ExecutionContext
 
@@ -29,69 +36,77 @@ class SearchApi(
     with IdentifierDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {
-    ignoreTrailingSlash {
-      concat(
-        path("works") {
-          MultipleWorksParams.parse { worksController.multipleWorks }
-        },
-        path("works" / Segment) {
-          case id if looksLikeCanonicalId(id) =>
-            SingleWorkParams.parse {
-              worksController.singleWork(id, _)
+    withRequestTimeoutResponse(request => timeoutResponse) {
+      ignoreTrailingSlash {
+        concat(
+          path("works") {
+            MultipleWorksParams.parse {
+              worksController.multipleWorks
             }
-
-          case id =>
-            notFound(s"Work not found for identifier $id")
-        },
-        path("images") {
-          MultipleImagesParams.parse { imagesController.multipleImages }
-        },
-        path("images" / Segment) {
-          case id if looksLikeCanonicalId(id) =>
-            SingleImageParams.parse {
-              imagesController.singleImage(id, _)
-            }
-
-          case id => notFound(s"Image not found for identifier $id")
-        },
-        path("search-templates.json") {
-          getSearchTemplates
-        },
-        path("_elasticConfig") {
-          getElasticConfig
-        },
-        pathPrefix("management") {
-          concat(
-            path("healthcheck") {
-              get {
-                complete("message" -> "ok")
+          },
+          path("works" / Segment) {
+            case id if looksLikeCanonicalId(id) =>
+              SingleWorkParams.parse {
+                worksController.singleWork(id, _)
               }
-            },
-            path("clusterhealth") {
-              getClusterHealth
-            },
-            // This endpoint is meant for the diff tool; it gives a breakdown of the
-            // different work types (e.g. Visible, Redirected, Deleted) in the index
-            // the API is using.
-            //
-            // It allows the diff tool to get stats about the API without knowing
-            // which ES cluster the API is connecting to or which index it's using.
-            path("_workTypes") {
-              get {
-                withFuture {
-                  worksController.countWorkTypes(elasticConfig.worksIndex).map {
-                    case Right(tally) => complete(tally)
-                    case Left(err) =>
-                      internalError(
-                        new Throwable(s"Error counting work types: $err")
-                      )
+
+            case id =>
+              notFound(s"Work not found for identifier $id")
+          },
+          path("images") {
+            MultipleImagesParams.parse {
+              imagesController.multipleImages
+            }
+          },
+          path("images" / Segment) {
+            case id if looksLikeCanonicalId(id) =>
+              SingleImageParams.parse {
+                imagesController.singleImage(id, _)
+              }
+
+            case id => notFound(s"Image not found for identifier $id")
+          },
+          path("search-templates.json") {
+            getSearchTemplates
+          },
+          path("_elasticConfig") {
+            getElasticConfig
+          },
+          pathPrefix("management") {
+            concat(
+              path("healthcheck") {
+                get {
+                  complete("message" -> "ok")
+                }
+              },
+              path("clusterhealth") {
+                getClusterHealth
+              },
+              // This endpoint is meant for the diff tool; it gives a breakdown of the
+              // different work types (e.g. Visible, Redirected, Deleted) in the index
+              // the API is using.
+              //
+              // It allows the diff tool to get stats about the API without knowing
+              // which ES cluster the API is connecting to or which index it's using.
+              path("_workTypes") {
+                get {
+                  withFuture {
+                    worksController
+                      .countWorkTypes(elasticConfig.worksIndex)
+                      .map {
+                        case Right(tally) => complete(tally)
+                        case Left(err) =>
+                          internalError(
+                            new Throwable(s"Error counting work types: $err")
+                          )
+                      }
                   }
                 }
               }
-            }
-          )
-        }
-      )
+            )
+          }
+        )
+      }
     }
   }
 
@@ -153,6 +168,20 @@ class SearchApi(
         )
       )
     }
+
+  val timeoutResponse = HttpResponse(
+    StatusCodes.ServiceUnavailable,
+    entity = HttpEntity(
+      contentType = ContentTypes.`application/json`,
+      string = toJson(
+        DisplayError(
+          statusCode = StatusCodes.ServiceUnavailable,
+          description =
+            "The server was not able to produce a timely response to your request. Please try again in a short while!"
+        )
+      )
+    )
+  )
 
   def rejectionHandler =
     RejectionHandler.newBuilder
