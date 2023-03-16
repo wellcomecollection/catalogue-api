@@ -103,6 +103,7 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         try:
             update_catalogue_pipeline_version(pipeline_date=pipeline_date)
         except AlreadyAtLatestVersionException:
+            print("concepts-pipeline repo is up to date, nothing to do!")
             return
 
         branch_name = f"point-concepts-pipeline-at-{pipeline_date}"
