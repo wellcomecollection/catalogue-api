@@ -1,6 +1,6 @@
 {
   "description" : "images with different licenses",
-  "createdAt" : "2022-12-01T11:10:59.505723Z",
+  "createdAt" : "2023-03-17T09:13:02.393206Z",
   "id" : "cqamwwme",
   "document" : {
     "modifiedTime" : "1994-03-14T09:51:03Z",
@@ -5366,6 +5366,8 @@
         ],
         "genres.concepts.label" : [
         ],
+        "genres.concepts.id" : [
+        ],
         "languages.id" : [
         ],
         "languages.label" : [
@@ -5399,6 +5401,9 @@
       ],
       "source.subjects.label" : [
       ]
+    },
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }
