@@ -1,6 +1,6 @@
 {
   "description" : "images with different licenses",
-  "createdAt" : "2022-12-01T11:10:59.498559Z",
+  "createdAt" : "2023-03-17T09:13:02.387424Z",
   "id" : "by60ajvp",
   "document" : {
     "modifiedTime" : "1956-05-21T11:24:15Z",
@@ -5362,6 +5362,8 @@
         ],
         "genres.concepts.label" : [
         ],
+        "genres.concepts.id" : [
+        ],
         "languages.id" : [
         ],
         "languages.label" : [
@@ -5395,6 +5397,9 @@
       ],
       "source.subjects.label" : [
       ]
+    },
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }
