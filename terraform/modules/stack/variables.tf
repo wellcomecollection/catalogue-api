@@ -51,7 +51,3 @@ variable "sierra_secret_config" {
     sierra_api_secret = string
   })
 }
-
-variable "api_gateway_alerts_topic_arn" {
-  type = string
-}
