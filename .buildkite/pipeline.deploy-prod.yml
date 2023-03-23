@@ -104,7 +104,7 @@ steps:
 
   - label: "Bump the concepts-pipeline (if necessary)"
     command: |
-      pip3 install boto3 http3
+      pip3 install boto3 httpx
       python3 .buildkite/scripts/open_concepts_pipeline_pr.py
     agents:
       queue: nano
