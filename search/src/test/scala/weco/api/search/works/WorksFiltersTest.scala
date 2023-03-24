@@ -294,7 +294,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     // This work has a multiple Genres, both goodcafe and baadfood are
     // present as primary concepts within the genres.
     // It should be matched by either id
-    val goodCafePrimaryBaadFoodWork = s"works.examples.genre-filters-tests.4"
+    val bothGenresWork = s"works.examples.genre-filters-tests.4"
 
     def withGenreIdFilterRecords(
       testWith: TestWith[Route, Assertion]
@@ -307,7 +307,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
             goodCafeWork,
             baadFoodWork,
             noConceptWork,
-            goodCafePrimaryBaadFoodWork
+            bothGenresWork
           )
           testWith(routes)
       }
@@ -324,7 +324,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
               goodCafeWork,
               baadFoodWork,
               noConceptWork,
-              goodCafePrimaryBaadFoodWork
+              bothGenresWork
             )
           )
         }
@@ -340,7 +340,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              goodCafePrimaryBaadFoodWork,
+              bothGenresWork,
               baadFoodWork
             )
           )
@@ -362,7 +362,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
               goodCafeSecondaryBaadFoodWork,
               goodCafeWork,
               baadFoodWork,
-              goodCafePrimaryBaadFoodWork
+              bothGenresWork
             )
           )
         }
