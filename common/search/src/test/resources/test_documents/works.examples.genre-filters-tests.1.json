@@ -1,29 +1,29 @@
 {
   "description" : "examples for the genre tests",
-  "createdAt" : "2023-03-23T08:48:50.776148Z",
-  "id" : "qrbao66q",
+  "createdAt" : "2023-03-24T09:25:43.385524Z",
+  "id" : "2p5zwgga",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "qrbao66q",
+        "id" : "2p5zwgga",
         "identifier" : {
           "identifierType" : {
             "id" : "sierra-system-number"
           },
           "ontologyType" : "Work",
-          "value" : "u5hoUH5ZhF"
+          "value" : "LO2RdbNpFC"
         },
-        "version" : 44,
-        "modifiedTime" : "2014-12-29T00:58:01Z"
+        "version" : 2,
+        "modifiedTime" : "2060-08-18T13:25:49Z"
       },
-      "mergedTime" : "2014-12-29T00:58:01Z",
+      "mergedTime" : "2060-08-18T13:25:49Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ]
     },
     "display" : {
-      "id" : "qrbao66q",
-      "title" : "title-lbcmHn7act",
+      "id" : "2p5zwgga",
+      "title" : "title-NvMk5aVuGQ",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -35,7 +35,7 @@
             "label" : "Sierra system number",
             "type" : "IdentifierType"
           },
-          "value" : "u5hoUH5ZhF",
+          "value" : "LO2RdbNpFC",
           "type" : "Identifier"
         }
       ],
@@ -46,7 +46,7 @@
           "label" : "Pamphlets.",
           "concepts" : [
             {
-              "id" : "kjqbcbto",
+              "id" : "baadf00d",
               "identifiers" : [
                 {
                   "identifierType" : {
@@ -54,44 +54,12 @@
                     "label" : "Calm RecordIdentifier",
                     "type" : "IdentifierType"
                   },
-                  "value" : "hdmKTFidDl",
+                  "value" : "85YYFFvT9f",
                   "type" : "Identifier"
                 }
               ],
-              "label" : "F9X3cVR8q4GIgcs",
+              "label" : "df4bTPrmWNKiLGp",
               "type" : "Genre"
-            },
-            {
-              "id" : "sqnu7hzz",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "cjglMPaKQZ",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "tHlWPIpZYum1qUl",
-              "type" : "Concept"
-            },
-            {
-              "id" : "55siulpm",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "dy2nMuMcZq",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "gIG177tcCDpKgb0",
-              "type" : "Concept"
             }
           ],
           "type" : "Genre"
@@ -126,13 +94,13 @@
       "type" : "Work"
     },
     "query" : {
-      "id" : "qrbao66q",
+      "id" : "2p5zwgga",
       "format.id" : null,
       "workType" : "Standard",
       "identifiers.value" : [
-        "u5hoUH5ZhF"
+        "LO2RdbNpFC"
       ],
-      "title" : "title-lbcmHn7act",
+      "title" : "title-NvMk5aVuGQ",
       "alternativeTitles" : [
       ],
       "description" : null,
@@ -165,12 +133,10 @@
         "Pamphlets."
       ],
       "genres.concepts.label" : [
-        "F9X3cVR8q4GIgcs",
-        "tHlWPIpZYum1qUl",
-        "gIG177tcCDpKgb0"
+        "df4bTPrmWNKiLGp"
       ],
       "genres.concepts.id" : [
-        "kjqbcbto"
+        "baadf00d"
       ],
       "languages.id" : [
       ],
