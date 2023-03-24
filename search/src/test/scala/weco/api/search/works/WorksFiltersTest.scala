@@ -1,7 +1,9 @@
 package weco.api.search.works
 
+import akka.http.scaladsl.server.Route
 import org.scalatest.Assertion
 import org.scalatest.prop.TableDrivenPropertyChecks
+import weco.fixtures.TestWith
 
 import java.net.URLEncoder
 
@@ -277,6 +279,94 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
               )
             )
           }
+      }
+    }
+  }
+
+  describe("filtering by genre concept ids") {
+
+    // This work has a single compound Genre.
+    // It should only be matched by the primary genre id
+    val goodCafeSecondaryBaadFoodWork = s"works.examples.genre-filters-tests.0"
+    val goodCafeWork = "works.examples.genre-filters-tests.1"
+    val baadFoodWork = "works.examples.genre-filters-tests.2"
+    val noConceptWork = "works.examples.genre-filters-tests.3"
+    // This work has a multiple Genres, both goodcafe and baadfood are
+    // present as primary concepts within the genres.
+    // It should be matched by either id
+    val goodCafePrimaryBaadFoodWork = s"works.examples.genre-filters-tests.4"
+
+    def withGenreIdFilterRecords(
+      testWith: TestWith[Route, Assertion]
+    ): Assertion =
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(
+            worksIndex,
+            goodCafeSecondaryBaadFoodWork,
+            goodCafeWork,
+            baadFoodWork,
+            noConceptWork,
+            goodCafePrimaryBaadFoodWork
+          )
+          testWith(routes)
+      }
+
+    it("does not apply the filter if there are no values provided") {
+      withGenreIdFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?genres.concepts.id="
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              goodCafeSecondaryBaadFoodWork,
+              goodCafeWork,
+              baadFoodWork,
+              noConceptWork,
+              goodCafePrimaryBaadFoodWork
+            )
+          )
+        }
+
+      }
+    }
+
+    it("filters by one concept id") {
+      withGenreIdFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?genres.concepts.id=baadf00d"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              goodCafePrimaryBaadFoodWork,
+              baadFoodWork
+            )
+          )
+        }
+
+      }
+    }
+
+    it(
+      "filters containing multiple concept ids return documents containing ANY of the requested ids"
+    ) {
+      withGenreIdFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?genres.concepts.id=g00dcafe,baadf00d"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              goodCafeSecondaryBaadFoodWork,
+              goodCafeWork,
+              baadFoodWork,
+              goodCafePrimaryBaadFoodWork
+            )
+          )
+        }
+
       }
     }
   }
