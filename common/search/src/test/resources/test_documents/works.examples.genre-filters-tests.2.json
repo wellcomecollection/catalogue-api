@@ -1,29 +1,29 @@
 {
   "description" : "examples for the genre tests",
-  "createdAt" : "2023-03-24T09:25:43.386452Z",
-  "id" : "qaemazai",
+  "createdAt" : "2023-03-24T11:34:22.391267Z",
+  "id" : "mv6kix0n",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "qaemazai",
+        "id" : "mv6kix0n",
         "identifier" : {
           "identifierType" : {
-            "id" : "sierra-system-number"
+            "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "ShRQFJOR9V"
+          "value" : "Md0v8N5yZN"
         },
-        "version" : 20,
-        "modifiedTime" : "2018-11-25T09:07:43Z"
+        "version" : 24,
+        "modifiedTime" : "1938-01-29T14:12:05Z"
       },
-      "mergedTime" : "2018-11-25T09:07:43Z",
+      "mergedTime" : "1938-01-29T14:12:05Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ]
     },
     "display" : {
-      "id" : "qaemazai",
-      "title" : "title-FAZvTVR490",
+      "id" : "mv6kix0n",
+      "title" : "title-qklbwm3uF6",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -31,11 +31,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "ShRQFJOR9V",
+          "value" : "Md0v8N5yZN",
           "type" : "Identifier"
         }
       ],
@@ -46,7 +46,7 @@
           "label" : "Psychology, Pathological",
           "concepts" : [
             {
-              "id" : "hswtsupo",
+              "id" : "baadf00d",
               "identifiers" : [
                 {
                   "identifierType" : {
@@ -54,44 +54,12 @@
                     "label" : "Miro image number",
                     "type" : "IdentifierType"
                   },
-                  "value" : "KJQbCBtOF9",
+                  "value" : "WpBejTwv1N",
                   "type" : "Identifier"
                 }
               ],
-              "label" : "o0o5OdfdodercwI",
+              "label" : "RuvBbFbQPNB7ZuK",
               "type" : "Genre"
-            },
-            {
-              "id" : "x3cvr8q4",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "sqnu7hZZtH",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "GIgcsJhdmKTFidD",
-              "type" : "Concept"
-            },
-            {
-              "id" : "lwpipzyu",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "sierra-system-number",
-                    "label" : "Sierra system number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "55SIuLPMgI",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "m1qUlCcjglMPaKQ",
-              "type" : "Concept"
             }
           ],
           "type" : "Genre"
@@ -126,13 +94,13 @@
       "type" : "Work"
     },
     "query" : {
-      "id" : "qaemazai",
+      "id" : "mv6kix0n",
       "format.id" : null,
       "workType" : "Standard",
       "identifiers.value" : [
-        "ShRQFJOR9V"
+        "Md0v8N5yZN"
       ],
-      "title" : "title-FAZvTVR490",
+      "title" : "title-qklbwm3uF6",
       "alternativeTitles" : [
       ],
       "description" : null,
@@ -165,12 +133,10 @@
         "Psychology, Pathological"
       ],
       "genres.concepts.label" : [
-        "o0o5OdfdodercwI",
-        "GIgcsJhdmKTFidD",
-        "m1qUlCcjglMPaKQ"
+        "RuvBbFbQPNB7ZuK"
       ],
       "genres.concepts.id" : [
-        "hswtsupo"
+        "baadf00d"
       ],
       "languages.id" : [
       ],
