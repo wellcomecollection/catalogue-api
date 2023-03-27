@@ -1,0 +1,102 @@
+{
+  "physicalDescription": "1 volume ; 24 cm",
+  "items": [
+    {
+      "id": "ankgmzj2",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "value": "i18355341",
+          "type": "Identifier"
+        },
+        {
+          "identifierType": {
+            "id": "sierra-identifier",
+            "label": "Sierra identifier",
+            "type": "IdentifierType"
+          },
+          "value": "1835534",
+          "type": "Identifier"
+        }
+      ],
+      "locations": [
+        {
+          "label": "Medical Collection",
+          "accessConditions": [
+            {
+              "method": {
+                "id": "open-shelves",
+                "label": "Open shelves",
+                "type": "AccessMethod"
+              },
+              "status": {
+                "id": "temporarily-unavailable",
+                "label": "Temporarily unavailable",
+                "type": "AccessStatus"
+              },
+              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
+              "type": "AccessCondition"
+            }
+          ],
+          "shelfmark": "B105.T54 2004W48h",
+          "locationType": {
+            "id": "open-shelves",
+            "label": "Open shelves",
+            "type": "LocationType"
+          },
+          "type": "PhysicalLocation"
+        }
+      ],
+      "type": "Item"
+    }
+  ],
+  "workType": {
+    "id": "a",
+    "label": "Books",
+    "type": "Format"
+  },
+  "identifiers": [
+    {
+      "identifierType": {
+        "id": "sierra-system-number",
+        "label": "Sierra system number",
+        "type": "IdentifierType"
+      },
+      "value": "b15898660",
+      "type": "Identifier"
+    },
+    {
+      "identifierType": {
+        "id": "sierra-identifier",
+        "label": "Sierra identifier",
+        "type": "IdentifierType"
+      },
+      "value": "1589866",
+      "type": "Identifier"
+    },
+    {
+      "identifierType": {
+        "id": "isbn",
+        "label": "International Standard Book Number",
+        "type": "IdentifierType"
+      },
+      "value": "0007140967",
+      "type": "Identifier"
+    }
+  ],
+  "alternativeTitles": [],
+  "id": "g2773269",
+  "title": "How mumbo-jumbo conquered the world / Francis Wheen.",
+  "type": "Work",
+  "availabilities": [
+    {
+      "id": "open-shelves",
+      "label": "Open shelves",
+      "type": "Availability"
+    }
+  ]
+}

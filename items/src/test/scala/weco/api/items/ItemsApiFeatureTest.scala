@@ -6,6 +6,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.items.fixtures.{ItemsApiFixture, ItemsApiGenerators}
 import weco.catalogue.display_model.generators.IdentifiersGenerators
+import weco.fixtures.LocalResources
 import weco.json.utils.JsonAssertions
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
@@ -18,7 +19,8 @@ class ItemsApiFeatureTest
     with IntegrationPatience
     with IdentifiersGenerators
     with ItemsApiGenerators
-    with SierraIdentifierGenerators {
+    with SierraIdentifierGenerators
+    with LocalResources {
 
   describe("look up the status of an item") {
     it("shows a user the items on a work") {
@@ -150,7 +152,7 @@ class ItemsApiFeatureTest
         (
           catalogueWorkRequest(workId),
           catalogueWorkResponse(resourceName)
-        )
+        ),
       )
 
       withItemsApi(catalogueResponses) { _ =>
@@ -208,6 +210,112 @@ class ItemsApiFeatureTest
              |              "type": "AccessCondition"
              |            }
              |          ],
+             |          "type": "PhysicalLocation"
+             |        }
+             |      ],
+             |      "type": "Item"
+             |    }
+             |  ]
+             |}
+              """.stripMargin
+
+        whenGetRequestReady(path) { response =>
+          response.status shouldBe StatusCodes.OK
+
+          withStringEntity(response.entity) {
+            assertJsonStringsAreEqual(_, expectedJson)
+          }
+        }
+      }
+    }
+
+    it("handles items which are on loan to a staff member") {
+      val resourceName = "work-with-items-on-loan.json"
+      val workId = "g2773269"
+
+      val catalogueResponses = Seq(
+        (
+          catalogueWorkRequest(workId),
+          catalogueWorkResponse(resourceName)
+        )
+      )
+
+      val sierraResponses = Seq(
+        (
+          sierraItemRequest(SierraItemNumber("1835534")),
+          HttpResponse(
+            entity = HttpEntity(
+              contentType = ContentTypes.`application/json`,
+              f"""
+                 |{
+                 |  "total": 1,
+                 |  "start": 0,
+                 |  "entries": [
+                 |    ${readResource("sierra-item-on-loan.json")}
+                 |  ]
+                 |}
+                 |""".stripMargin
+            )
+          )
+        )
+      )
+
+      withItemsApi(catalogueResponses, sierraResponses) { _ =>
+        val path = s"/works/$workId"
+
+        val expectedJson =
+          s"""
+             |{
+             |  "type" : "ItemsList",
+             |  "totalResults" : 1,
+             |  "results" : [
+             |    {
+             |      "id": "ankgmzj2",
+             |      "identifiers": [
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-system-number",
+             |            "label": "Sierra system number",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "i18355341",
+             |          "type": "Identifier"
+             |        },
+             |        {
+             |          "identifierType": {
+             |            "id": "sierra-identifier",
+             |            "label": "Sierra identifier",
+             |            "type": "IdentifierType"
+             |          },
+             |          "value": "1835534",
+             |          "type": "Identifier"
+             |        }
+             |      ],
+             |      "locations": [
+             |        {
+             |          "label": "Medical Collection",
+             |          "accessConditions": [
+             |            {
+             |              "method": {
+             |                "id": "open-shelves",
+             |                "label": "Open shelves",
+             |                "type": "AccessMethod"
+             |              },
+             |              "status": {
+             |                "id": "temporarily-unavailable",
+             |                "label": "Temporarily unavailable",
+             |                "type": "AccessStatus"
+             |              },
+             |              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
+             |              "type": "AccessCondition"
+             |            }
+             |          ],
+             |          "shelfmark": "B105.T54 2004W48h",
+             |          "locationType": {
+             |            "id": "open-shelves",
+             |            "label": "Open shelves",
+             |            "type": "LocationType"
+             |          },
              |          "type": "PhysicalLocation"
              |        }
              |      ],
