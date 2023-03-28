@@ -98,7 +98,7 @@ trait QueryParamsUtils extends Directives {
               quoteChar = '"'
             )
             .getOrElse(List(str))
-        )
+      )
     )
 
   def decodeOneOf[T](values: (String, T)*): Decoder[T] =
