@@ -1,29 +1,29 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2023-03-24T14:12:13.329887Z",
-  "id" : "peojwvfe",
+  "description" : "A work which is available open-only",
+  "createdAt" : "2023-03-27T10:48:12.227788Z",
+  "id" : "vbi1ii19",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "peojwvfe",
+        "id" : "vbi1ii19",
         "identifier" : {
           "identifierType" : {
-            "id" : "sierra-system-number"
+            "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "7qcFvAY3kD"
+          "value" : "CzLNHBFHuR"
         },
-        "version" : 93,
-        "modifiedTime" : "1989-01-11T05:04:05Z"
+        "version" : 46,
+        "modifiedTime" : "2024-12-13T21:31:42Z"
       },
-      "mergedTime" : "1989-01-11T05:04:05Z",
+      "mergedTime" : "2024-12-13T21:31:42Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ]
     },
     "display" : {
-      "id" : "peojwvfe",
-      "title" : "title-zni8X1iQV3",
+      "id" : "vbi1ii19",
+      "title" : "availability: open-only",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -31,11 +31,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "7qcFvAY3kD",
+          "value" : "CzLNHBFHuR",
           "type" : "Identifier"
         }
       ],
@@ -48,6 +48,11 @@
       "holdings" : [
       ],
       "availabilities" : [
+        {
+          "id" : "open-shelves",
+          "label" : "Open shelves",
+          "type" : "Availability"
+        }
       ],
       "production" : [
       ],
@@ -72,13 +77,13 @@
       "type" : "Work"
     },
     "query" : {
-      "id" : "peojwvfe",
+      "id" : "vbi1ii19",
       "format.id" : null,
       "workType" : "Standard",
       "identifiers.value" : [
-        "7qcFvAY3kD"
+        "CzLNHBFHuR"
       ],
-      "title" : "title-zni8X1iQV3",
+      "title" : "availability: open-only",
       "alternativeTitles" : [
       ],
       "description" : null,
@@ -130,6 +135,7 @@
       "partOf.title" : [
       ],
       "availabilities.id" : [
+        "open-shelves"
       ],
       "collectionPath.label" : null,
       "collectionPath.path" : null,
@@ -151,6 +157,7 @@
       "items.locations.license" : [
       ],
       "availabilities" : [
+        "{\"id\":\"open-shelves\",\"label\":\"Open shelves\",\"type\":\"Availability\"}"
       ]
     },
     "type" : "Visible"

@@ -1,29 +1,29 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2023-03-24T14:12:13.329887Z",
-  "id" : "peojwvfe",
+  "description" : "A work which is available nowhere",
+  "createdAt" : "2023-03-27T11:16:18.817459Z",
+  "id" : "dph7sjip",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "peojwvfe",
+        "id" : "dph7sjip",
         "identifier" : {
           "identifierType" : {
-            "id" : "sierra-system-number"
+            "id" : "miro-image-number"
           },
           "ontologyType" : "Work",
-          "value" : "7qcFvAY3kD"
+          "value" : "WpBejTwv1N"
         },
-        "version" : 93,
-        "modifiedTime" : "1989-01-11T05:04:05Z"
+        "version" : 66,
+        "modifiedTime" : "1971-11-19T03:42:42Z"
       },
-      "mergedTime" : "1989-01-11T05:04:05Z",
+      "mergedTime" : "1971-11-19T03:42:42Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ]
     },
     "display" : {
-      "id" : "peojwvfe",
-      "title" : "title-zni8X1iQV3",
+      "id" : "dph7sjip",
+      "title" : "availability: nowhere",
       "alternativeTitles" : [
       ],
       "contributors" : [
@@ -31,11 +31,11 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
             "type" : "IdentifierType"
           },
-          "value" : "7qcFvAY3kD",
+          "value" : "WpBejTwv1N",
           "type" : "Identifier"
         }
       ],
@@ -72,13 +72,13 @@
       "type" : "Work"
     },
     "query" : {
-      "id" : "peojwvfe",
+      "id" : "dph7sjip",
       "format.id" : null,
       "workType" : "Standard",
       "identifiers.value" : [
-        "7qcFvAY3kD"
+        "WpBejTwv1N"
       ],
-      "title" : "title-zni8X1iQV3",
+      "title" : "availability: nowhere",
       "alternativeTitles" : [
       ],
       "description" : null,

@@ -643,7 +643,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,jfcicmGMGK"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,LMVvWxgXRS"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -660,10 +660,10 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=aGKxAEeG0H"
+            path = s"$rootPath/works?identifiers=Hq3k05Fqag"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.1")
+              ids = Seq("work.visible.everything.2")
             )
           }
       }
@@ -676,11 +676,11 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=UfcQYSxE7g,aGKxAEeG0H"
+            path = s"$rootPath/works?identifiers=UfcQYSxE7g,Hq3k05Fqag"
           ) {
             Status.OK -> worksListResponse(
               ids =
-                Seq("work.visible.everything.0", "work.visible.everything.1")
+                Seq("work.visible.everything.0", "work.visible.everything.2")
             )
           }
       }
@@ -693,11 +693,11 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,aGKxAEeG0H"
+            path = s"$rootPath/works?identifiers=Aic5qOhRoS,Hq3k05Fqag"
           ) {
             Status.OK -> worksListResponse(
               ids =
-                Seq("work.visible.everything.0", "work.visible.everything.1")
+                Seq("work.visible.everything.0", "work.visible.everything.2")
             )
           }
       }
@@ -771,17 +771,27 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
   }
 
   describe("availabilities filter") {
+    val worksAvailabilities = Seq(
+      "works.examples.availabilities.open-only",
+      "works.examples.availabilities.closed-only",
+      "works.examples.availabilities.online-only",
+      "works.examples.availabilities.everywhere",
+      "works.examples.availabilities.nowhere"
+    )
     it("filters by availability ID") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+          indexTestDocuments(worksIndex, worksAvailabilities: _*)
 
           assertJsonResponse(
             routes,
             path = s"$rootPath/works?availabilities=open-shelves"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.2")
+              ids = Seq(
+                "works.examples.availabilities.open-only",
+                "works.examples.availabilities.everywhere"
+              )
             )
           }
       }
@@ -790,7 +800,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     it("filters by multiple comma-separated availability IDs") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything ++ visibleWorks: _*)
+          indexTestDocuments(worksIndex, worksAvailabilities: _*)
 
           assertJsonResponse(
             routes,
@@ -798,8 +808,9 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
           ) {
             Status.OK -> worksListResponse(
               ids = Seq(
-                "work.visible.everything.1",
-                "work.visible.everything.2"
+                "works.examples.availabilities.open-only",
+                "works.examples.availabilities.closed-only",
+                "works.examples.availabilities.everywhere"
               )
             )
           }
@@ -841,51 +852,56 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
   describe("item filters") {
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=ca3anii6",
+        path = s"$rootPath/works?items=a7xxlndb",
         expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=kdcpazds",
+        path = s"$rootPath/works?items=sr0le4q0",
         expectedIds = Seq("work.visible.everything.1")
       )
     }
 
     it("looks up multiple canonical IDs") {
-      assertItemsFilterWorks(
-        path = s"$rootPath/works?items=ca3anii6,kdcpazds",
-        expectedIds =
-          Seq("work.visible.everything.0", "work.visible.everything.1")
-      )
-
-      assertItemsFilterWorks(
-        path = s"$rootPath/works?items=kdcpazds,iba49lem",
-        expectedIds =
-          Seq("work.visible.everything.1", "work.visible.everything.2")
-      )
-
-      assertItemsFilterWorks(
-        path = s"$rootPath/works?items=iba49lem,ca3anii6",
-        expectedIds =
-          Seq("work.visible.everything.2", "work.visible.everything.0")
-      )
+      forAll(
+        Table(
+          ("ids", "works"),
+          (
+            "a7xxlndb,sr0le4q0",
+            Seq("work.visible.everything.0", "work.visible.everything.1")
+          ),
+          (
+            "sr0le4q0,9indplmm",
+            Seq("work.visible.everything.1", "work.visible.everything.2")
+          ),
+          (
+            "b7xfovxp,a7xxlndb",
+            Seq("work.visible.everything.2", "work.visible.everything.0")
+          )
+        )
+      ) { (ids, works) =>
+        assertItemsFilterWorks(
+          path = s"$rootPath/works?items=$ids",
+          expectedIds = works
+        )
+      }
     }
 
     it("looks up source identifiers") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=hKyStbKjx1",
+        path = s"$rootPath/works?items.identifiers=dG0mvvCJtU",
         expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=CnNOdtzVPO",
+        path = s"$rootPath/works?items.identifiers=fYVwu7Y7Y7",
         expectedIds = Seq("work.visible.everything.1")
       )
     }
 
     it("looks up multiple source identifiers") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=hKyStbKjx1,CnNOdtzVPO",
+        path = s"$rootPath/works?items.identifiers=GWWFxlGgZX,HYZ1N6BwQR",
         expectedIds =
           Seq("work.visible.everything.0", "work.visible.everything.1")
       )
