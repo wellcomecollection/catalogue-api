@@ -141,15 +141,18 @@ class ImagesIncludesTest extends ApiImagesTestBase {
               {
                 "concepts" : [
                   {
-                    "label" : "U0oWO3ioLqbrury",
+                    "id" : "dskosrrt",
+                    "label" : "tjUNTV5bxlXKXKx",
+                    "type" : "Genre"
+                  },
+                  {
+                    "id" : "o27apmtn",
+                    "label" : "93nXupnLhpptDHh",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "7o2QTEqcIF9bQro",
-                    "type" : "Concept"
-                  },
-                  {
-                    "label" : "ssWozG8sqfYdoIO",
+                    "id" : "regw9uhu",
+                    "label" : "fOGcqXj3ysERa5n",
                     "type" : "Concept"
                   }
                 ],
@@ -159,15 +162,18 @@ class ImagesIncludesTest extends ApiImagesTestBase {
               {
                 "concepts" : [
                   {
-                    "label" : "JIUj2LP1mxi643r",
+                    "id" : "uerabjuu",
+                    "label" : "yNrNyYNcXGSDteR",
+                    "type" : "Genre"
+                  },
+                  {
+                    "id" : "s8joisbr",
+                    "label" : "MTOhe8jIen3J4Yf",
                     "type" : "Concept"
                   },
                   {
-                    "label" : "2da07kIJPZsamHd",
-                    "type" : "Concept"
-                  },
-                  {
-                    "label" : "A4kdSkosRRTtjUN",
+                    "id" : "fuue5b2t",
+                    "label" : "pAcW0w8rBX3mFzq",
                     "type" : "Concept"
                   }
                 ],
