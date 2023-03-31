@@ -192,7 +192,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("6IZ2DrUzFk"))
+            SubjectLabelFilter(Seq("y0B0TSmDGU"))
           )
         )
         val results =
@@ -214,7 +214,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain("6IZ2DrUzFk"))
+          .foreach(subjects => subjects should contain("y0B0TSmDGU"))
       }
     }
   }
