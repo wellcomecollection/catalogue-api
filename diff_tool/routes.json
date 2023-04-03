@@ -47,7 +47,7 @@
   {
     "path": "/works",
     "params": {
-      "language": "ger"
+      "languages": "ger"
     }
   },
   {
