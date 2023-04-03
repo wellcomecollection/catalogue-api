@@ -22,6 +22,4 @@ locals {
     sierra_api_key    = "stacks/prod/sierra_api_key"
     sierra_api_secret = "stacks/prod/sierra_api_secret"
   }
-
-  api_gateway_alerts_topic_arn = data.terraform_remote_state.monitoring.outputs.catalogue_api_gateway_alerts_topic_arn
 }
