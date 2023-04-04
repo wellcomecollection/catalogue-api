@@ -1,0 +1,54 @@
+[
+    {
+        "id": "precision",
+        "description": "Ensure that the query brings back the exhibitions we expect at the top of the list",
+        "eval": "equalTo1",
+        "cases": [
+            {
+                "searchTerms": "a space for rest",
+                "ratings": [
+                    "X2sinRMAAHbq-865"
+                ],
+                "description": "lowercase event title"
+            },
+            {
+                "searchTerms": "A Space for Rest",
+                "ratings": [
+                    "X2sinRMAAHbq-865"
+                ],
+                "description": "exact event title"
+            },
+            {
+                "searchTerms": "Tricia Hersey",
+                "ratings": [
+                    "X2sinRMAAHbq-865"
+                ],
+                "description": "contributor name"
+            },
+            {
+                "searchTerms": "mental health",
+                "ratings": [
+                    "Yk7i6xAAACMAYA5B"
+                ],
+                "description": "topic from the title"
+            }
+        ]
+    },
+    {
+        "id": "order",
+        "description": "Ensure that the order of results is correct",
+        "eval": "equalTo1",
+        "cases": [
+            {
+                "searchTerms": "research",
+                "before": [
+                    "Y5HALREAACIAi29G"
+                ],
+                "after": [
+                    "YeViLhAAAJMQM7IY"
+                ],
+                "description": "more recent events should score higher"
+            }
+        ]
+    }
+]
