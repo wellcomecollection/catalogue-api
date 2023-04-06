@@ -138,9 +138,13 @@ object WorksRequestBuilder
   ): BoolQuery =
     searchQuery
       .filter {
-        (VisibleWorkFilter :: searchOptions.filters)
-          .map(buildWorkFilterQuery)
+        buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
       }
+
+  private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
+    filters.map {
+      buildWorkFilterQuery
+    } filter (_ != NoopQuery)
 
   private def buildWorkFilterQuery(workFilter: WorkFilter): Query =
     workFilter match {
@@ -158,6 +162,9 @@ object WorksRequestBuilder
         termsQuery("query.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
         termsQuery("query.genres.label.keyword", genreQueries)
+      case GenreConceptFilter(conceptIds) =>
+        if (conceptIds.isEmpty) NoopQuery
+        else termsQuery("query.genres.concepts.id", conceptIds)
 
       case SubjectLabelFilter(labels) =>
         termsQuery("query.subjects.label.keyword", labels)

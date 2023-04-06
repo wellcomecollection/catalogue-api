@@ -59,7 +59,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "ca3anii6") { results =>
+        assertForQueryResults(index, query = "ejk7jwcd") { results =>
           results.size shouldBe 1
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }
@@ -70,7 +70,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "hKyStbKjx1") { results =>
+        assertForQueryResults(index, query = "GWWFxlGgZX") { results =>
           results.size shouldBe 1
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }
@@ -84,7 +84,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksWithItemIdentifiers: _*)
 
-        assertForQueryResults(index, query = "xJJHLpGvU7") { results =>
+        assertForQueryResults(index, query = "MKDvFJ5itR") { results =>
           results.size shouldBe 1
           results.head shouldBe getVisibleWork(
             "works.items-with-other-identifiers.0"
@@ -97,7 +97,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "eoedbdmz") { results =>
+        assertForQueryResults(index, query = "ihvpnycp") { results =>
           results.size shouldBe 1
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }
@@ -108,7 +108,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "auL5Gzybrl") { results =>
+        assertForQueryResults(index, query = "N8dAz61bAE") { results =>
           results.size shouldBe 1
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }
@@ -175,7 +175,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "person-W9SVIX0fEg") { results =>
+        assertForQueryResults(index, query = "person-eKZIqbV783") { results =>
           // We don't mind about number of results for a label search
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }
@@ -186,7 +186,7 @@ class WorksQueryTest
       withLocalWorksIndex { index =>
         indexTestDocuments(index, worksEverything: _*)
 
-        assertForQueryResults(index, query = "IHQR23GK9tQdPt3") { results =>
+        assertForQueryResults(index, query = "9tQdPt3acHhNKnN") { results =>
           // We don't mind about number of results for a label search
           results.head shouldBe getVisibleWork("work.visible.everything.0")
         }

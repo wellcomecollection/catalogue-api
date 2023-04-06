@@ -26,6 +26,10 @@ case class GenreFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter
 
+case class GenreConceptFilter(conceptIds: Seq[String])
+    extends WorkFilter
+    with ImageFilter
+
 case class SubjectLabelFilter(labels: Seq[String])
     extends WorkFilter
     with ImageFilter

@@ -1,0 +1,165 @@
+{
+  "description" : "A work which is available open-only",
+  "createdAt" : "2023-03-30T11:15:34.208620Z",
+  "id" : "bb4tv6zd",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "bb4tv6zd",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "sierra-system-number"
+          },
+          "ontologyType" : "Work",
+          "value" : "rXrfr8eL5R"
+        },
+        "version" : 47,
+        "modifiedTime" : "1969-11-05T18:12:49Z"
+      },
+      "mergedTime" : "1969-11-05T18:12:49Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
+      ]
+    },
+    "display" : {
+      "id" : "bb4tv6zd",
+      "title" : "availability: open-only",
+      "alternativeTitles" : [
+      ],
+      "contributors" : [
+      ],
+      "identifiers" : [
+        {
+          "identifierType" : {
+            "id" : "sierra-system-number",
+            "label" : "Sierra system number",
+            "type" : "IdentifierType"
+          },
+          "value" : "rXrfr8eL5R",
+          "type" : "Identifier"
+        }
+      ],
+      "subjects" : [
+      ],
+      "genres" : [
+      ],
+      "items" : [
+      ],
+      "holdings" : [
+      ],
+      "availabilities" : [
+        {
+          "id" : "open-shelves",
+          "label" : "Open shelves",
+          "type" : "Availability"
+        }
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "formerFrequency" : [
+      ],
+      "designation" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
+    },
+    "query" : {
+      "id" : "bb4tv6zd",
+      "format.id" : null,
+      "workType" : "Standard",
+      "identifiers.value" : [
+        "rXrfr8eL5R"
+      ],
+      "title" : "availability: open-only",
+      "alternativeTitles" : [
+      ],
+      "description" : null,
+      "physicalDescription" : null,
+      "edition" : null,
+      "notes.contents" : [
+      ],
+      "lettering" : null,
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.locations.accessConditions.status.id" : [
+      ],
+      "items.locations.license.id" : [
+      ],
+      "items.locations.locationType.id" : [
+      ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
+      ],
+      "genres.concepts.label" : [
+      ],
+      "genres.concepts.id" : [
+      ],
+      "languages.id" : [
+      ],
+      "languages.label" : [
+      ],
+      "contributors.agent.id" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "production.label" : [
+      ],
+      "production.dates.range.from" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+        "open-shelves"
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
+    },
+    "aggregatableValues" : {
+      "workType" : [
+      ],
+      "genres.label" : [
+      ],
+      "production.dates" : [
+      ],
+      "subjects.label" : [
+      ],
+      "languages" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "items.locations.license" : [
+      ],
+      "availabilities" : [
+        "{\"id\":\"open-shelves\",\"label\":\"Open shelves\",\"type\":\"Availability\"}"
+      ]
+    },
+    "type" : "Visible"
+  }
+}

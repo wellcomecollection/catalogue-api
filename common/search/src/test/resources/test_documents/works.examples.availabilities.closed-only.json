@@ -1,0 +1,165 @@
+{
+  "description" : "A work which is available closed-only",
+  "createdAt" : "2023-03-30T11:15:34.214830Z",
+  "id" : "bwsensp3",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "bwsensp3",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "miro-image-number"
+          },
+          "ontologyType" : "Work",
+          "value" : "QVu8iRSvNL"
+        },
+        "version" : 92,
+        "modifiedTime" : "2039-04-16T22:38:32Z"
+      },
+      "mergedTime" : "2039-04-16T22:38:32Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
+      ]
+    },
+    "display" : {
+      "id" : "bwsensp3",
+      "title" : "availability: closed-only",
+      "alternativeTitles" : [
+      ],
+      "contributors" : [
+      ],
+      "identifiers" : [
+        {
+          "identifierType" : {
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
+            "type" : "IdentifierType"
+          },
+          "value" : "QVu8iRSvNL",
+          "type" : "Identifier"
+        }
+      ],
+      "subjects" : [
+      ],
+      "genres" : [
+      ],
+      "items" : [
+      ],
+      "holdings" : [
+      ],
+      "availabilities" : [
+        {
+          "id" : "closed-stores",
+          "label" : "Closed stores",
+          "type" : "Availability"
+        }
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "formerFrequency" : [
+      ],
+      "designation" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
+    },
+    "query" : {
+      "id" : "bwsensp3",
+      "format.id" : null,
+      "workType" : "Standard",
+      "identifiers.value" : [
+        "QVu8iRSvNL"
+      ],
+      "title" : "availability: closed-only",
+      "alternativeTitles" : [
+      ],
+      "description" : null,
+      "physicalDescription" : null,
+      "edition" : null,
+      "notes.contents" : [
+      ],
+      "lettering" : null,
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.locations.accessConditions.status.id" : [
+      ],
+      "items.locations.license.id" : [
+      ],
+      "items.locations.locationType.id" : [
+      ],
+      "subjects.id" : [
+      ],
+      "subjects.label" : [
+      ],
+      "subjects.concepts.label" : [
+      ],
+      "genres.label" : [
+      ],
+      "genres.concepts.label" : [
+      ],
+      "genres.concepts.id" : [
+      ],
+      "languages.id" : [
+      ],
+      "languages.label" : [
+      ],
+      "contributors.agent.id" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "production.label" : [
+      ],
+      "production.dates.range.from" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+        "closed-stores"
+      ],
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "referenceNumber" : null
+    },
+    "aggregatableValues" : {
+      "workType" : [
+      ],
+      "genres.label" : [
+      ],
+      "production.dates" : [
+      ],
+      "subjects.label" : [
+      ],
+      "languages" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "items.locations.license" : [
+      ],
+      "availabilities" : [
+        "{\"id\":\"closed-stores\",\"label\":\"Closed stores\",\"type\":\"Availability\"}"
+      ]
+    },
+    "type" : "Visible"
+  }
+}

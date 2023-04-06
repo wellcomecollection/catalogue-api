@@ -11,6 +11,7 @@ import weco.api.search.rest.MultipleWorksParams.{
 }
 import weco.api.search.models.{
   ContributorsFilter,
+  GenreConceptFilter,
   GenreFilter,
   LicenseFilter,
   SubjectLabelFilter
@@ -27,6 +28,9 @@ object CommonDecoders {
 
   implicit val genreFilter: Decoder[GenreFilter] =
     stringListFilter(GenreFilter)
+
+  implicit val genreConceptFilter: Decoder[GenreConceptFilter] =
+    stringListFilter(GenreConceptFilter)
 
   implicit val subjectsFilter: Decoder[SubjectLabelFilter] =
     stringListFilter(SubjectLabelFilter)

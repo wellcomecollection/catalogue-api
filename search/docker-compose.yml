@@ -13,3 +13,4 @@ services:
       - "logger.level=DEBUG"
       - "discovery.type=single-node"
       - "xpack.security.enabled=false"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"

@@ -402,8 +402,16 @@ class WorksAggregationsTest extends ApiWorksTestBase {
   it("aggregates by availability") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
-        val displayWorks = getMinimalDisplayWorks(worksEverything)
+        val worksAvailabilities = Seq(
+          "works.examples.availabilities.open-only",
+          "works.examples.availabilities.closed-only",
+          "works.examples.availabilities.online-only",
+          "works.examples.availabilities.everywhere",
+          "works.examples.availabilities.nowhere"
+        )
+
+        indexTestDocuments(worksIndex, worksAvailabilities: _*)
+        val displayWorks = getMinimalDisplayWorks(worksAvailabilities)
 
         assertJsonResponse(
           routes,
@@ -411,7 +419,7 @@ class WorksAggregationsTest extends ApiWorksTestBase {
         ) {
           Status.OK -> s"""
             {
-              ${resultList(totalResults = worksEverything.size)},
+              ${resultList(totalResults = worksAvailabilities.size)},
               "aggregations": {
                 "availabilities": {
                   "buckets": [
@@ -425,7 +433,16 @@ class WorksAggregationsTest extends ApiWorksTestBase {
                       "type": "AggregationBucket"
                     },
                     {
-                      "count": 1,
+                    "count" : 2,
+                    "data" : {
+                      "id" : "online",
+                      "label" : "Online",
+                      "type" : "Availability"
+                    },
+                    "type" : "AggregationBucket"
+                  },
+                    {
+                      "count": 2,
                       "data": {
                         "label": "Open shelves",
                         "id": "open-shelves",

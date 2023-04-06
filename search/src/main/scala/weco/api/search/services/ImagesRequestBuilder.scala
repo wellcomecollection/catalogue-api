@@ -5,10 +5,9 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import com.sksamuel.elastic4s.requests.searches.queries.Query
+import com.sksamuel.elastic4s.requests.searches.queries.{NoopQuery, Query}
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
-
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{
   ColorQuery,
@@ -112,12 +111,15 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         )
       case GenreFilter(genreLabels) =>
         termsQuery("query.source.genres.label.keyword", genreLabels)
+      case GenreConceptFilter(conceptIds) =>
+        if (conceptIds.isEmpty) NoopQuery
+        else termsQuery("query.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
         termsQuery("query.source.subjects.label.keyword", subjectLabels)
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
-    filters.map { buildImageFilterQuery }
+    filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
 
   private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
     queries.map {

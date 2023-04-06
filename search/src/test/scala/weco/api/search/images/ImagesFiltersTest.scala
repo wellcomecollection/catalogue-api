@@ -1,5 +1,9 @@
 package weco.api.search.images
 
+import akka.http.scaladsl.server.Route
+import org.scalatest.Assertion
+import weco.fixtures.TestWith
+
 class ImagesFiltersTest extends ApiImagesTestBase {
   describe("filtering images by license") {
     it("filters by license") {
@@ -70,54 +74,100 @@ class ImagesFiltersTest extends ApiImagesTestBase {
   }
 
   describe("filtering images by source genres") {
-    it("filters by genres from the canonical source work") {
+    def withGenreFilterRecords(
+      testWith: TestWith[Route, Assertion]
+    ): Assertion =
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(
             imagesIndex,
             (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
           )
+          testWith(routes)
+      }
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.genres.label=Carrot%20counselling"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq("images.examples.genre-filter-tests.0")
-            )
-          }
+    it("filters by genres from the canonical source work") {
+      withGenreFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.genres.label=Carrot%20counselling"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq("images.examples.genre-filter-tests.0")
+          )
+        }
       }
     }
 
     it("does not filter by genres from the redirected source work") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
-          )
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.genres.label=Dodo%20divination"
-          ) {
-            Status.OK -> emptyJsonResult
-          }
+      withGenreFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.genres.label=Dodo%20divination"
+        ) {
+          Status.OK -> emptyJsonResult
+        }
       }
     }
 
     it("filters by multiple genres") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+      withGenreFilterRecords { routes =>
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.examples.genre-filter-tests.0",
+              "images.examples.genre-filter-tests.2"
+            )
           )
+        }
+      }
+    }
 
+    describe("filtering by genre concept ids") {
+      it("does not apply the filter if there are no values provided") {
+        withGenreFilterRecords { routes =>
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/images?source.genres.concepts="
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.examples.genre-filter-tests.0",
+                "images.examples.genre-filter-tests.1",
+                "images.examples.genre-filter-tests.2"
+              )
+            )
+          }
+
+        }
+      }
+      it("filters by one concept id") {
+        withGenreFilterRecords { routes =>
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/images?source.genres.concepts=baadf00d"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.examples.genre-filter-tests.2"
+              )
+            )
+          }
+
+        }
+      }
+      it(
+        "filters containing multiple concept ids return documents containing ANY of the requested ids"
+      ) {
+        withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
             path =
-              s"$rootPath/images?source.genres.label=Carrot%20counselling,Emu%20entrepreneurship"
+              s"$rootPath/images?source.genres.concepts=g00dcafe,baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -126,8 +176,11 @@ class ImagesFiltersTest extends ApiImagesTestBase {
               )
             )
           }
+
+        }
       }
     }
+
   }
 
   describe("filtering images by source subjects") {
