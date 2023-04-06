@@ -47,7 +47,7 @@ resource "aws_cloudfront_distribution" "data_api" {
   price_class = "PriceClass_100"
 
   viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate_validation.catalogue_api_validation.certificate_arn
+    acm_certificate_arn      = module.certificate.arn
     minimum_protocol_version = "TLSv1"
     ssl_support_method       = "sni-only"
   }
