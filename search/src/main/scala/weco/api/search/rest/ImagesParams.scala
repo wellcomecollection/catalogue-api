@@ -42,7 +42,7 @@ case class MultipleImagesParams(
   license: Option[LicenseFilter],
   `source.contributors.agent.label`: Option[ContributorsFilter],
   `source.genres.label`: Option[GenreFilter],
-  `source.genres.concepts.id`: Option[GenreConceptFilter],
+  `source.genres.concepts`: Option[GenreConceptFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
   color: Option[ColorMustQuery],
   include: Option[MultipleImagesIncludes],
@@ -65,7 +65,7 @@ case class MultipleImagesParams(
       license,
       `source.contributors.agent.label`,
       `source.genres.label`,
-      `source.genres.concepts.id`,
+      `source.genres.concepts`,
       `source.subjects.label`
     ).flatten
 
@@ -84,7 +84,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "locations.license".as[LicenseFilter].?,
       "source.contributors.agent.label".as[ContributorsFilter].?,
       "source.genres.label".as[GenreFilter].?,
-      "source.genres.concepts.id".as[GenreConceptFilter].?,
+      "source.genres.concepts".as[GenreConceptFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,
       "color".as[ColorMustQuery].?,
       "include".as[MultipleImagesIncludes].?,

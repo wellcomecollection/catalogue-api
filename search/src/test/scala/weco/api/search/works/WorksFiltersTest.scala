@@ -316,7 +316,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.concepts.id="
+          path = s"$rootPath/works?genres.concepts="
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
@@ -336,7 +336,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.concepts.id=baadf00d"
+          path = s"$rootPath/works?genres.concepts=baadf00d"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
@@ -355,7 +355,7 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.concepts.id=g00dcafe,baadf00d"
+          path = s"$rootPath/works?genres.concepts=g00dcafe,baadf00d"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(

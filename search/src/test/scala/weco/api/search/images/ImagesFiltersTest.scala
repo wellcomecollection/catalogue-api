@@ -132,7 +132,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.concepts.id="
+            path = s"$rootPath/images?source.genres.concepts="
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -149,7 +149,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.concepts.id=baadf00d"
+            path = s"$rootPath/images?source.genres.concepts=baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -167,7 +167,7 @@ class ImagesFiltersTest extends ApiImagesTestBase {
           assertJsonResponse(
             routes,
             path =
-              s"$rootPath/images?source.genres.concepts.id=g00dcafe,baadf00d"
+              s"$rootPath/images?source.genres.concepts=g00dcafe,baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
