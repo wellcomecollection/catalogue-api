@@ -1,0 +1,88 @@
+[
+    {
+        "id": "precision",
+        "description": "Ensure that the query brings back the exhibitions we expect at the top of the list",
+        "eval": "equalTo1",
+        "cases": [
+            {
+                "searchTerms": "being human",
+                "ratings": [
+                    "XNFfsxAAANwqbNWD"
+                ],
+                "description": "lowercase exhibition title"
+            },
+            {
+                "searchTerms": "Being Human",
+                "ratings": [
+                    "XNFfsxAAANwqbNWD"
+                ],
+                "description": "exact exhibition title"
+            },
+            {
+                "searchTerms": "magic",
+                "ratings": [
+                    "W_vuwBQAACoA_SY2"
+                ],
+                "description": "matching a single term in the exhibition title"
+            }
+        ],
+        "metric": {
+            "precision": {
+                "relevant_rating_threshold": 3,
+                "k": 1
+            }
+        }
+    },
+    {
+        "id": "recall",
+        "description": "Ensure that the query returns the expected exhibitions in the top 10",
+        "eval": "equalTo1",
+        "cases": [
+            {
+                "searchTerms": "being",
+                "ratings": [
+                    "XNFfsxAAANwqbNWD",
+                    "YZeNOxEAACQAXM-0"
+                ],
+                "description": "matching term in the exhibition title"
+            },
+            {
+                "searchTerms": "hiv",
+                "ratings": [
+                    "XFximBAAAPkAioWn"
+                ],
+                "description": "matching term in the exhibition body text"
+            },
+            {
+                "searchTerms": "Alison Rodger",
+                "ratings": [
+                    "XFximBAAAPkAioWn"
+                ],
+                "description": "matching contributor name"
+            }
+        ],
+        "metric": {
+            "recall": {
+                "relevant_rating_threshold": 3,
+                "k": 10
+            }
+        }
+    },
+    {
+        "id": "order",
+        "description": "Ensure that the order of results is correct",
+        "eval": "equalTo1",
+        "cases": [
+            {
+                "searchTerms": "milk",
+                "before": [
+                    "Y8VNbhEAAPJM-oki"
+                ],
+                "after": [
+                    "XNFfsxAAANwqbNWD"
+                ],
+                "description": "title match should score higher than body text match"
+            }
+        ]
+    }
+]
