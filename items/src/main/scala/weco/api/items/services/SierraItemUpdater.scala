@@ -1,10 +1,7 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.{
-  DisplayItemOps,
-  SierraItemIdentifier
-}
+import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
@@ -112,7 +109,8 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
     for {
       accessConditions <- staleItems.size match {
-        case 0 => Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
+        case 0 =>
+          Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
         case _ => getAccessConditions(staleItems)
       }
 
