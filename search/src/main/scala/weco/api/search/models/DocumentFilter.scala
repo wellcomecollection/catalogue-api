@@ -16,7 +16,8 @@ case class WorkTypeFilter(types: Seq[String]) extends WorkFilter
 case class DateRangeFilter(
   fromDate: Option[LocalDate],
   toDate: Option[LocalDate]
-) extends WorkFilter with ImageFilter
+) extends WorkFilter
+    with ImageFilter
 
 case object VisibleWorkFilter extends WorkFilter
 

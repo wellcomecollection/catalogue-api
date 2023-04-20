@@ -111,7 +111,8 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   private def sort(implicit searchOptions: ImageSearchOptions) =
     searchOptions.sortBy
       .map {
-        case ProductionDateSortRequest => "query.source.production.dates.range.from"
+        case ProductionDateSortRequest =>
+          "query.source.production.dates.range.from"
       }
       .map { FieldSort(_).order(sortOrder) }
 
@@ -140,7 +141,10 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
-        RangeQuery("query.source.production.dates.range.from", lte = lte, gte = gte)
+        RangeQuery(
+          "query.source.production.dates.range.from",
+          lte = lte,
+          gte = gte)
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
