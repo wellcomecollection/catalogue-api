@@ -5,7 +5,11 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import com.sksamuel.elastic4s.requests.searches.queries.{NoopQuery, Query}
+import com.sksamuel.elastic4s.requests.searches.queries.{
+  NoopQuery,
+  Query,
+  RangeQuery
+}
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
@@ -116,6 +120,10 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         else termsQuery("query.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
         termsQuery("query.source.subjects.label.keyword", subjectLabels)
+      case DateRangeFilter(fromDate, toDate) =>
+        val (gte, lte) =
+          (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
+        RangeQuery("query.source.production.dates.range.from", lte = lte, gte = gte)
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =

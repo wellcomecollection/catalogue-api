@@ -9,6 +9,7 @@ import weco.api.search.models.request.{
   SingleImageIncludes
 }
 
+import java.time.LocalDate
 import scala.util.{Failure, Success}
 
 case class SingleImageParams(
@@ -44,6 +45,8 @@ case class MultipleImagesParams(
   `source.genres.label`: Option[GenreFilter],
   `source.genres.concepts`: Option[GenreConceptFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
+  `source.production.dates.from`: Option[LocalDate],
+  `source.production.dates.to`: Option[LocalDate],
   color: Option[ColorMustQuery],
   include: Option[MultipleImagesIncludes],
   aggregations: Option[List[ImageAggregationRequest]]
@@ -66,11 +69,18 @@ case class MultipleImagesParams(
       `source.contributors.agent.label`,
       `source.genres.label`,
       `source.genres.concepts`,
-      `source.subjects.label`
+      `source.subjects.label`,
+      dateFilter
     ).flatten
 
   private def mustQueries: List[ImageMustQuery] =
     List(color).flatten
+
+  private def dateFilter: Option[DateRangeFilter] =
+    (`source.production.dates.from`, `source.production.dates.to`) match {
+      case (None, None)       => None
+      case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
+    }
 }
 
 object MultipleImagesParams extends QueryParamsUtils {
@@ -86,6 +96,8 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.genres.label".as[GenreFilter].?,
       "source.genres.concepts".as[GenreConceptFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,
+      "source.production.dates.from".as[LocalDate].?,
+      "source.production.dates.to".as[LocalDate].?,
       "color".as[ColorMustQuery].?,
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
