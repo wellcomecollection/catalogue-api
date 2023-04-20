@@ -6,7 +6,10 @@ import weco.api.search.models.request.{
   ImageAggregationRequest,
   ImageInclude,
   MultipleImagesIncludes,
-  SingleImageIncludes
+  ProductionDateSortRequest,
+  SingleImageIncludes,
+  SortRequest,
+  SortingOrder
 }
 
 import java.time.LocalDate
@@ -39,6 +42,8 @@ object SingleImageParams extends QueryParamsUtils {
 case class MultipleImagesParams(
   page: Option[Int],
   pageSize: Option[Int],
+  sort: Option[List[SortRequest]],
+  sortOrder: Option[SortingOrder],
   query: Option[String],
   license: Option[LicenseFilter],
   `source.contributors.agent.label`: Option[ContributorsFilter],
@@ -60,7 +65,9 @@ case class MultipleImagesParams(
       mustQueries = mustQueries,
       aggregations = aggregations.getOrElse(Nil),
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
-      pageNumber = page.getOrElse(1)
+      pageNumber = page.getOrElse(1),
+      sortBy = sort.getOrElse(Nil),
+      sortOrder = sortOrder.getOrElse(SortingOrder.Ascending)
     )
 
   private def filters: List[ImageFilter] =
@@ -90,6 +97,8 @@ object MultipleImagesParams extends QueryParamsUtils {
     parameters(
       "page".as[Int].?,
       "pageSize".as[Int].?,
+      "sort".as[List[SortRequest]].?,
+      "sortOrder".as[SortingOrder].?,
       "query".as[String].?,
       "locations.license".as[LicenseFilter].?,
       "source.contributors.agent.label".as[ContributorsFilter].?,
@@ -144,5 +153,16 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgents,
       "source.genres.label" -> ImageAggregationRequest.SourceGenres,
       "source.subjects.label" -> ImageAggregationRequest.SourceSubjects
+    )
+
+  implicit val sortDecoder: Decoder[List[SortRequest]] =
+    decodeOneOfCommaSeparated(
+      "source.production.dates" -> ProductionDateSortRequest
+    )
+
+  implicit val sortOrderDecoder: Decoder[SortingOrder] =
+    decodeOneOf(
+      "asc" -> SortingOrder.Ascending,
+      "desc" -> SortingOrder.Descending
     )
 }

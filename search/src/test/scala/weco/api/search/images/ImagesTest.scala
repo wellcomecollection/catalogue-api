@@ -95,4 +95,65 @@ class ImagesTest extends ApiImagesTestBase {
         }
     }
   }
+
+  describe("sort by production date of the source work") {
+    val productionImages = Seq(
+      "image-production.1098",
+      "image-production.1900",
+      "image-production.1904",
+      "image-production.1976",
+      "image-production.2020"
+    )
+
+    it("sorts ascending by default") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?sort=source.production.dates"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = productionImages, strictOrdering = true
+            )
+          }
+      }
+    }
+
+    it("sorts ascending if asked for explicitly") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?sort=source.production.dates&sortOrder=asc"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = productionImages, strictOrdering = true
+            )
+          }
+      }
+    }
+
+    it("can sort by descending order") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?sort=source.production.dates&sortOrder=desc"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = productionImages.reverse, strictOrdering = true
+            )
+          }
+      }
+    }
+  }
 }

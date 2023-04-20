@@ -19,7 +19,11 @@ import weco.api.search.elasticsearch.{
   ImagesMultiMatcher
 }
 import weco.api.search.models._
-import weco.api.search.models.request.ImageAggregationRequest
+import weco.api.search.models.request.{
+  ImageAggregationRequest,
+  ProductionDateSortRequest,
+  SortingOrder
+}
 import weco.api.search.rest.PaginationQuery
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
@@ -97,11 +101,24 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  private def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
+  private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
     if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      List(scoreSort(SortOrder.DESC), idSort)
+      sort :+ scoreSort(SortOrder.DESC) :+ idSort
     } else {
-      List(idSort)
+      sort :+ idSort
+    }
+
+  private def sort(implicit searchOptions: ImageSearchOptions) =
+    searchOptions.sortBy
+      .map {
+        case ProductionDateSortRequest => "query.source.production.dates.range.from"
+      }
+      .map { FieldSort(_).order(sortOrder) }
+
+  private def sortOrder(implicit searchOptions: ImageSearchOptions) =
+    searchOptions.sortOrder match {
+      case SortingOrder.Ascending  => SortOrder.ASC
+      case SortingOrder.Descending => SortOrder.DESC
     }
 
   private def buildImageFilterQuery(filter: ImageFilter): Query =
