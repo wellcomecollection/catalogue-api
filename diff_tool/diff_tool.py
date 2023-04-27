@@ -125,17 +125,14 @@ class ApiDiffer:
 
 
 def _display_in_console(stats, diffs, outfile=None):
-
     def file_echo(*args, **kwargs):
         click.echo(*args, file=outfile, **kwargs)
-        
+
     echo = file_echo if outfile else click.echo
 
     time_now = datetime.datetime.now().strftime("%A %-d %B %Y @ %H:%M:%S")
     echo()
-    echo(
-        click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True)
-    )
+    echo(click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True))
     echo()
     echo(click.style("Index statistics", underline=True))
     echo()
@@ -149,7 +146,7 @@ def _display_in_console(stats, diffs, outfile=None):
                     humanize.intcomma(v)
                     for v in stats["staging"]["work_types"].values()
                 ],
-                ],
+            ],
             headers=stats["prod"]["work_types"].keys(),
             colalign=("left", "right", "right", "right", "right", "right"),
         )
