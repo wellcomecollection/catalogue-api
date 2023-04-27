@@ -26,6 +26,8 @@ steps:
       - "buildkite-agent artifact download reports/api_diff.txt ."
       - "if grep -q '✖' reports/api_diff.txt; then STYLE=warning; else STYLE=info; fi"
       - "cat -e reports/api_diff.txt | buildkite-agent annotate --style=$STYLE"
+    agents:
+      queue: nano
 
   - label: "{{ matrix }} (library)"
     command: "./builds/run_sbt_tests.sh {{ matrix }}"
