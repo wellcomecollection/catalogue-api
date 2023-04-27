@@ -24,7 +24,7 @@ steps:
   - label: "annotate with diff"
     command:
       - "buildkite-agent artifact download reports/api_diff.txt ."
-      - "if grep -q '✖' reports/api_diff.txt; then STYLE=warning; else STYLE=info; fi"
+      - "if grep -q '✖' reports/api_diff.txt; then export STYLE=warning; else export STYLE=info; fi"
       - "(echo '```term' && cat reports/api_diff.txt && echo '```') | buildkite-agent annotate --style=$STYLE"
     agents:
       queue: nano
