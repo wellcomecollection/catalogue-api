@@ -11,6 +11,22 @@ steps:
     # and trigger a new build; if so, we want that to happen ASAP.
     priority: 1
 
+    # It's only here so that I can see it running on normal builds
+    # instead of just prod deployments.
+  - label: "Diff tool: Compare stage & prod - DELETEME"
+    artifact_paths: "reports/*"
+    plugins:
+      - docker-compose#v3.5.0:
+          run: diff_tool
+    agents:
+      queue: nano
+  - wait
+  - label: "annotate with diff"
+    command:
+      - "buildkite-agent artifact download reports/api_diff.txt ."
+      - "if grep -q '✖' reports/api_diff.txt; then STYLE=warning; else STYLE=info; fi"
+      - "cat -e reports/api_diff.txt | buildkite-agent annotate --style=$STYLE"
+
   - label: "{{ matrix }} (library)"
     command: "./builds/run_sbt_tests.sh {{ matrix }}"
     matrix:

@@ -9,6 +9,8 @@ services:
     image: diff_tool
     build:
       context: ./diff_tool
+    volumes:
+      - "./reports:/usr/src/app/reports"
   concepts:
     image: uk.ac.wellcome/concepts:${CONTAINER_TAG:-test}
     build:
