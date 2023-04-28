@@ -1,6 +1,7 @@
 steps:
   - label: "Diff tool: Compare stage & prod"
     branches: "main"
+    artifact_paths: "reports/*"
     plugins:
       - docker-compose#v3.5.0:
           run: diff_tool
