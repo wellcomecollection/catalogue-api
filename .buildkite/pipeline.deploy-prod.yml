@@ -1,6 +1,7 @@
 steps:
   - label: "Diff tool: Compare stage & prod"
     branches: "main"
+    artifact_paths: "reports/*"
     plugins:
       - docker-compose#v3.5.0:
           run: diff_tool
@@ -8,6 +9,17 @@ steps:
       queue: nano
 
   - wait
+  - label: "annotate with diff"
+    command: |
+      buildkite-agent artifact download reports/api_diff.txt .
+      if grep -q '✖' reports/api_diff.txt; then 
+        export STYLE=warning; 
+      else 
+        export STYLE=info; 
+      fi
+      (echo '```term' && cat reports/api_diff.txt && echo '```') | buildkite-agent annotate --style=$$STYLE
+    agents:
+      queue: nano
 
   - block: ":rocket: Deploy to prod?"
     prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"

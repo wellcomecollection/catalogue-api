@@ -13,4 +13,4 @@ ADD template.html template.html
 ADD api_stats.py api_stats.py
 ADD diff_tool.py diff_tool.py
 
-CMD ["/usr/local/bin/python3", "/usr/src/app/diff_tool.py", "--console"]
+CMD ["/usr/local/bin/python3", "/usr/src/app/diff_tool.py", "--console", "--outfile", "/usr/src/app/reports/api_diff.txt"]

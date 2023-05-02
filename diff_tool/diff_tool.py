@@ -124,16 +124,19 @@ class ApiDiffer:
             sys.exit(1)
 
 
-def _display_in_console(stats, diffs):
+def _display_in_console(stats, diffs, outfile=None):
+    def file_echo(*args, **kwargs):
+        click.echo(*args, file=outfile, **kwargs)
+
+    echo = file_echo if outfile else click.echo
+
     time_now = datetime.datetime.now().strftime("%A %-d %B %Y @ %H:%M:%S")
-    click.echo()
-    click.echo(
-        click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True)
-    )
-    click.echo()
-    click.echo(click.style("Index statistics", underline=True))
-    click.echo()
-    click.echo(
+    echo()
+    echo(click.style(f"API diff for {time_now}", fg="white", bold=True, underline=True))
+    echo()
+    echo(click.style("Index statistics", underline=True))
+    echo()
+    echo(
         tabulate(
             [
                 ["Production"]
@@ -149,9 +152,9 @@ def _display_in_console(stats, diffs):
         )
     )
 
-    click.echo()
-    click.echo(click.style("Index tests", underline=True))
-    click.echo()
+    echo()
+    echo(click.style("Index tests", underline=True))
+    echo()
 
     for diff_line in diffs:
         if "comment" in diff_line["route"]:
@@ -160,17 +163,17 @@ def _display_in_console(stats, diffs):
             display_diff_line = diff_line["display_url"]
 
         if diff_line["status"] == "match":
-            click.echo(click.style(f"✓ {display_diff_line}", fg="green"))
+            echo(click.style(f"✓ {display_diff_line}", fg="green"))
         elif diff_line["status"] == "different result count":
-            click.echo(
+            echo(
                 click.style(
                     f"! {display_diff_line} (result count differs)", fg="yellow"
                 )
             )
         else:
-            click.echo(click.style(f"✖ {display_diff_line}", fg="red"))
+            echo(click.style(f"✖ {display_diff_line}", fg="red"))
 
-    click.echo()
+    echo()
 
 
 @click.command()
@@ -180,7 +183,8 @@ def _display_in_console(stats, diffs):
     help="What routes file to use (default=routes.json)",
 )
 @click.option("--console", is_flag=True, help="Print results in console")
-def main(routes_file, console):
+@click.option("--outfile", default=None)
+def main(routes_file, console, outfile):
     with open(routes_file) as f:
         routes = json.load(f)
 
@@ -207,6 +211,9 @@ def main(routes_file, console):
     }
 
     if console:
+        if outfile:
+            with open(outfile, "w") as outfile_obj:
+                _display_in_console(stats, diffs, outfile_obj)
         _display_in_console(stats, diffs)
     else:
         env = Environment(
