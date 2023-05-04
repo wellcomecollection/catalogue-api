@@ -1,11 +1,7 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.stacks.models.{
-  CatalogueAccessMethod,
-  DisplayItemOps,
-  SierraItemIdentifier
-}
+import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
@@ -112,7 +108,11 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     )
 
     for {
-      accessConditions <- getUpdatedAccessConditions(staleItems)
+      accessConditions <- staleItems.size match {
+        case 0 =>
+          Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
+        case _ => getAccessConditions(staleItems)
+      }
 
       updatedItems = itemMap.map {
         case (sierraId, item) =>
@@ -123,34 +123,4 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       }
     } yield updatedItems.toSeq
   }
-
-  /** Given a series of item IDs, get the most up-to-date access condition
-    * information from Sierra.
-    *
-    */
-  private def getUpdatedAccessConditions(
-    itemIds: Map[SierraItemNumber, Option[DisplayLocationType]]
-  ): Future[Map[SierraItemNumber, DisplayAccessCondition]] =
-    itemIds.size match {
-      case 0 => Future.successful(Map())
-
-      case _ =>
-        for {
-          accessConditionsMap <- getAccessConditions(itemIds)
-
-          // It is possible for there to be a situation where Sierra does not know about
-          // an Item that is in the Catalogue API, but this situation should be very rare.
-          // For example an item has been deleted but the change has not yet propagated.
-          // In that case it gets method "NotRequestable".
-          missingItemIds = itemIds.keySet.diff(accessConditionsMap.keySet)
-
-          missingItemsMap = missingItemIds
-            .map(
-              _ -> DisplayAccessCondition(
-                method = CatalogueAccessMethod.NotRequestable
-              )
-            )
-            .toMap
-        } yield accessConditionsMap ++ missingItemsMap
-    }
 }

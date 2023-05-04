@@ -126,16 +126,15 @@ class ItemUpdateServiceTest
     )
   }
 
-  def availableItem(sierraItemNumber: SierraItemNumber) = {
-    val availableOnline = DisplayAccessCondition(
-      method = CatalogueAccessMethod.OnlineRequest
-    )
-
+  def availableItem(sierraItemNumber: SierraItemNumber) =
     createPhysicalItemWith(
       sierraItemNumber = sierraItemNumber,
-      accessCondition = availableOnline
+      accessCondition = availableOnlineAccessCondition
     )
-  }
+
+  val availableOnlineAccessCondition = DisplayAccessCondition(
+    method = CatalogueAccessMethod.OnlineRequest
+  )
 
   val onHoldAccessCondition = DisplayAccessCondition(
     method = CatalogueAccessMethod.NotRequestable,
@@ -289,7 +288,7 @@ class ItemUpdateServiceTest
       (
         missingItemResponse(workWithAvailableItemNumber),
         workWithAvailableItem,
-        notRequestableAccessCondition
+        availableOnlineAccessCondition
       )
     )
 

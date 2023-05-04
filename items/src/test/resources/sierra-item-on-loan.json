@@ -1,0 +1,87 @@
+{
+  "barcode": "22501739848",
+  "bibIds": [
+    "1589866"
+  ],
+  "callNumber": "B105.T54 2004W48h",
+  "copyNo": 1,
+  "createdDate": "2013-06-17T07:54:52Z",
+  "deleted": false,
+  "fixedFields": {
+    "108": {
+      "display": "Open shelves",
+      "label": "OPACMSG",
+      "value": "o"
+    },
+    "58": {
+      "label": "COPY #",
+      "value": "1"
+    },
+    "61": {
+      "display": "book",
+      "label": "I TYPE",
+      "value": "0"
+    },
+    "70": {
+      "label": "IN LOC",
+      "value": "0"
+    },
+    "79": {
+      "display": "Medical Collection",
+      "label": "LOCATION",
+      "value": "wgmem"
+    },
+    "88": {
+      "display": "Available",
+      "label": "STATUS",
+      "value": "-"
+    },
+    "97": {
+      "label": "IMESSAGE",
+      "value": "-"
+    },
+    "98": {
+      "label": "PDATE",
+      "value": "2021-05-11T14:38:43Z"
+    }
+  },
+  "holdCount": 0,
+  "id": "1835534",
+  "itemType": "book",
+  "location": {
+    "code": "wgmem",
+    "name": "Medical Collection"
+  },
+  "status": {
+    "code": "-",
+    "display": "Available"
+  },
+  "suppressed": false,
+  "updatedDate": "2021-06-09T12:32:03Z",
+  "varFields": [
+    {
+      "content": "22501739848",
+      "fieldTag": "b"
+    },
+    {
+      "fieldTag": "c",
+      "ind1": "0",
+      "ind2": "0",
+      "marcTag": "949",
+      "subfields": [
+        {
+          "content": "B105.T54 2004W48h",
+          "tag": "a"
+        }
+      ]
+    },
+    {
+      "content": "1",
+      "fieldTag": "g"
+    },
+    {
+      "content": ".i15566638",
+      "fieldTag": "y"
+    }
+  ]
+}
