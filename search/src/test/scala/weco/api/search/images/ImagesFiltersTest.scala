@@ -234,6 +234,88 @@ class ImagesFiltersTest extends ApiImagesTestBase {
     }
   }
 
+  describe("filtering images by source date range") {
+    val productionImages = Seq(
+      "image-production.1098",
+      "image-production.1900",
+      "image-production.1904",
+      "image-production.1976",
+      "image-production.2020"
+    )
+
+    it("filters by date range") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/images?source.production.dates.from=1900-01-01&source.production.dates.to=1960-01-01"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq("image-production.1900", "image-production.1904")
+            )
+          }
+      }
+    }
+
+    it("filters by from date") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/images?source.production.dates.from=1900-01-01"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "image-production.1900",
+                "image-production.1904",
+                "image-production.1976",
+                "image-production.2020"
+              )
+            )
+          }
+      }
+    }
+
+    it("filters by to date") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(imagesIndex, productionImages: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/images?source.production.dates.to=1960-01-01"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "image-production.1098",
+                "image-production.1900",
+                "image-production.1904"
+              )
+            )
+          }
+      }
+    }
+
+    it("errors on invalid date") {
+      withApi { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.production.dates.from=INVALID"
+        ) {
+          Status.BadRequest ->
+            badRequest(
+              "source.production.dates.from: Invalid date encoding. Expected YYYY-MM-DD"
+            )
+        }
+      }
+    }
+  }
+
   describe("filtering images by color") {
     it("filters by color") {
       withImagesApi {

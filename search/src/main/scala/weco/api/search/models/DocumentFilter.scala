@@ -17,6 +17,7 @@ case class DateRangeFilter(
   fromDate: Option[LocalDate],
   toDate: Option[LocalDate]
 ) extends WorkFilter
+    with ImageFilter
 
 case object VisibleWorkFilter extends WorkFilter
 

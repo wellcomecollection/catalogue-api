@@ -5,7 +5,11 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import com.sksamuel.elastic4s.requests.searches.queries.{NoopQuery, Query}
+import com.sksamuel.elastic4s.requests.searches.queries.{
+  NoopQuery,
+  Query,
+  RangeQuery
+}
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
@@ -15,7 +19,11 @@ import weco.api.search.elasticsearch.{
   ImagesMultiMatcher
 }
 import weco.api.search.models._
-import weco.api.search.models.request.ImageAggregationRequest
+import weco.api.search.models.request.{
+  ImageAggregationRequest,
+  ProductionDateSortRequest,
+  SortingOrder
+}
 import weco.api.search.rest.PaginationQuery
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
@@ -93,11 +101,25 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  private def sortBy(searchOptions: ImageSearchOptions): Seq[Sort] =
+  private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
     if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      List(scoreSort(SortOrder.DESC), idSort)
+      sort :+ scoreSort(SortOrder.DESC) :+ idSort
     } else {
-      List(idSort)
+      sort :+ idSort
+    }
+
+  private def sort(implicit searchOptions: ImageSearchOptions) =
+    searchOptions.sortBy
+      .map {
+        case ProductionDateSortRequest =>
+          "query.source.production.dates.range.from"
+      }
+      .map { FieldSort(_).order(sortOrder) }
+
+  private def sortOrder(implicit searchOptions: ImageSearchOptions) =
+    searchOptions.sortOrder match {
+      case SortingOrder.Ascending  => SortOrder.ASC
+      case SortingOrder.Descending => SortOrder.DESC
     }
 
   private def buildImageFilterQuery(filter: ImageFilter): Query =
@@ -116,6 +138,13 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         else termsQuery("query.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
         termsQuery("query.source.subjects.label.keyword", subjectLabels)
+      case DateRangeFilter(fromDate, toDate) =>
+        val (gte, lte) =
+          (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
+        RangeQuery(
+          "query.source.production.dates.range.from",
+          lte = lte,
+          gte = gte)
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =

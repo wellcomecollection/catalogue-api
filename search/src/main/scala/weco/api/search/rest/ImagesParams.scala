@@ -6,9 +6,13 @@ import weco.api.search.models.request.{
   ImageAggregationRequest,
   ImageInclude,
   MultipleImagesIncludes,
-  SingleImageIncludes
+  ProductionDateSortRequest,
+  SingleImageIncludes,
+  SortRequest,
+  SortingOrder
 }
 
+import java.time.LocalDate
 import scala.util.{Failure, Success}
 
 case class SingleImageParams(
@@ -38,12 +42,16 @@ object SingleImageParams extends QueryParamsUtils {
 case class MultipleImagesParams(
   page: Option[Int],
   pageSize: Option[Int],
+  sort: Option[List[SortRequest]],
+  sortOrder: Option[SortingOrder],
   query: Option[String],
   license: Option[LicenseFilter],
   `source.contributors.agent.label`: Option[ContributorsFilter],
   `source.genres.label`: Option[GenreFilter],
   `source.genres.concepts`: Option[GenreConceptFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
+  `source.production.dates.from`: Option[LocalDate],
+  `source.production.dates.to`: Option[LocalDate],
   color: Option[ColorMustQuery],
   include: Option[MultipleImagesIncludes],
   aggregations: Option[List[ImageAggregationRequest]]
@@ -57,7 +65,9 @@ case class MultipleImagesParams(
       mustQueries = mustQueries,
       aggregations = aggregations.getOrElse(Nil),
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
-      pageNumber = page.getOrElse(1)
+      pageNumber = page.getOrElse(1),
+      sortBy = sort.getOrElse(Nil),
+      sortOrder = sortOrder.getOrElse(SortingOrder.Ascending)
     )
 
   private def filters: List[ImageFilter] =
@@ -66,11 +76,18 @@ case class MultipleImagesParams(
       `source.contributors.agent.label`,
       `source.genres.label`,
       `source.genres.concepts`,
-      `source.subjects.label`
+      `source.subjects.label`,
+      dateFilter
     ).flatten
 
   private def mustQueries: List[ImageMustQuery] =
     List(color).flatten
+
+  private def dateFilter: Option[DateRangeFilter] =
+    (`source.production.dates.from`, `source.production.dates.to`) match {
+      case (None, None)       => None
+      case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
+    }
 }
 
 object MultipleImagesParams extends QueryParamsUtils {
@@ -80,12 +97,16 @@ object MultipleImagesParams extends QueryParamsUtils {
     parameters(
       "page".as[Int].?,
       "pageSize".as[Int].?,
+      "sort".as[List[SortRequest]].?,
+      "sortOrder".as[SortingOrder].?,
       "query".as[String].?,
       "locations.license".as[LicenseFilter].?,
       "source.contributors.agent.label".as[ContributorsFilter].?,
       "source.genres.label".as[GenreFilter].?,
       "source.genres.concepts".as[GenreConceptFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,
+      "source.production.dates.from".as[LocalDate].?,
+      "source.production.dates.to".as[LocalDate].?,
       "color".as[ColorMustQuery].?,
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
@@ -132,5 +153,16 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgents,
       "source.genres.label" -> ImageAggregationRequest.SourceGenres,
       "source.subjects.label" -> ImageAggregationRequest.SourceSubjects
+    )
+
+  implicit val sortDecoder: Decoder[List[SortRequest]] =
+    decodeOneOfCommaSeparated(
+      "source.production.dates" -> ProductionDateSortRequest
+    )
+
+  implicit val sortOrderDecoder: Decoder[SortingOrder] =
+    decodeOneOf(
+      "asc" -> SortingOrder.Ascending,
+      "desc" -> SortingOrder.Descending
     )
 }
