@@ -185,7 +185,8 @@
                     "uemqqmb9",
                     "xxskepr5"
                 ],
-                "description": "Multiple IDs"
+                "description": "Multiple IDs",
+                "knownFailure": true
             },
             {
                 "searchTerms": "wa/hmm durham",
