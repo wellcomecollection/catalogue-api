@@ -37,9 +37,9 @@ These APIs are used on the Wellcome Collection website, but they require authent
 	It forward requests to our library management systems, so that library staff know which items to retrieve from the stores.
 
 [search]: https://wellcomecollection.org/collections
-[search_docs]: https://developers.wellcomecollection.org/catalogue
+[search_docs]: https://developers.wellcomecollection.org/api/catalogue
 [pipeline]: https://github.com/wellcomecollection/catalogue-pipeline
-[snapshots]: https://developers.wellcomecollection.org/datasets
+[snapshots]: https://developers.wellcomecollection.org/docs/datasets
 [requests]: https://wellcomecollection.org/pages/X_2eexEAACQAZLBi
 
 ## Usage
