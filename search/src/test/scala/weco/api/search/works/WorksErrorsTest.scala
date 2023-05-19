@@ -131,23 +131,6 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     }
   }
 
-  // This is expected as it's transient parameter that will have valid values changing over time
-  // And if there is a client with a deprecated value, we wouldn't want it to fail
-  describe("returns a 200 for invalid values in the ?_queryType parameter") {
-    it("200s despite being a unknown value") {
-      withWorksApi {
-        case (_, route) =>
-          assertJsonResponse(
-            route,
-            path =
-              s"$rootPath/works?_queryType=athingwewouldneverusebutmightbecausewesaidwewouldnot"
-          ) {
-            Status.OK -> emptyJsonResult
-          }
-      }
-    }
-  }
-
   describe("returns a 400 Bad Request for user errors") {
     describe("errors in the ?pageSize query") {
       it("not an integer") {
@@ -296,7 +279,7 @@ class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
         case (_, route) =>
           assertBadRequest(route)(
             path =
-              s"$rootPath/works?_queryType=undefined&production.dates.from=%2B011860-01-01",
+              s"$rootPath/works?production.dates.from=%2B011860-01-01",
             description = "production.dates.from: year must be less than 9999"
           )
       }

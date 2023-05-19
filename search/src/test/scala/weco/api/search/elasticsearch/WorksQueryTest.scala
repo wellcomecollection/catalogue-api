@@ -7,7 +7,7 @@ import org.scalatest.EitherValues
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.index.IndexedWork
-import weco.api.search.models.{SearchQuery, SearchQueryType}
+import weco.api.search.models.{SearchQuery}
 import weco.api.search.services.WorksService
 import weco.fixtures.TestWith
 
@@ -246,11 +246,11 @@ class WorksQueryTest
 
   private def assertForQueryResults[R](index: Index, query: String)(
     testWith: TestWith[Seq[IndexedWork.Visible], R]
-  ) = SearchQueryType.allowed map { queryType =>
+  ) = {
     val future = worksService.listOrSearch(
       index,
       searchOptions = createWorksSearchOptionsWith(
-        searchQuery = Some(SearchQuery(query, queryType))
+        searchQuery = Some(SearchQuery(query))
       )
     )
 
@@ -258,9 +258,7 @@ class WorksQueryTest
       _.right.value.results
     }
 
-    withClue(s"[Using query: ${queryType.name}]") {
-      testWith(results)
-    }
+    testWith(results)
   }
 
   private val worksService = new WorksService(
