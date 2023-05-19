@@ -16,7 +16,6 @@ import weco.api.search.models.request.{
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.WorksMultiMatcher
 
-
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions] {
 
