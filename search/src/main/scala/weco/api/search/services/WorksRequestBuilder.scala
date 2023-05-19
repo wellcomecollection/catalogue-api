@@ -14,6 +14,7 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 import weco.api.search.rest.PaginationQuery
+import weco.api.search.elasticsearch.WorksMultiMatcher
 
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions] {
@@ -128,8 +129,8 @@ object WorksRequestBuilder
   ): BoolQuery =
     searchOptions.searchQuery
       .map {
-        case SearchQuery(query, queryType) =>
-          queryType.toEsQuery(query)
+        case SearchQuery(query) =>
+          WorksMultiMatcher(query)
       }
       .getOrElse { boolQuery }
 

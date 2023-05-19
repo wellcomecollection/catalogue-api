@@ -92,7 +92,6 @@ case class MultipleWorksParams(
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
   query: Option[String],
-  _queryType: Option[SearchQueryType]
 ) extends QueryParams
     with Paginated {
 
@@ -102,7 +101,7 @@ case class MultipleWorksParams(
   def searchOptions(apiConfig: ApiConfig): WorkSearchOptions =
     WorkSearchOptions(
       searchQuery = query map { query =>
-        SearchQuery(query, _queryType)
+        SearchQuery(query)
       },
       filters = filters,
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
@@ -163,7 +162,6 @@ object MultipleWorksParams extends QueryParamsUtils {
       "pageSize".as[Int].?,
       "sort".as[List[SortRequest]].?,
       "sortOrder".as[SortingOrder].?,
-      "_queryType".as[SearchQueryType].?,
       "query".as[String].?,
       "include".as[WorksIncludes].?,
       "aggregations".as[List[WorkAggregationRequest]].?
@@ -178,7 +176,6 @@ object MultipleWorksParams extends QueryParamsUtils {
           pageSize,
           sort,
           sortOrder,
-          queryType,
           query,
           includes,
           aggregations
@@ -246,7 +243,6 @@ object MultipleWorksParams extends QueryParamsUtils {
               include = includes,
               aggregations = aggregations,
               query = query,
-              _queryType = queryType
             )
             validated(params.paginationErrors, params)
         }
@@ -310,11 +306,5 @@ object MultipleWorksParams extends QueryParamsUtils {
     decodeOneOf(
       "asc" -> SortingOrder.Ascending,
       "desc" -> SortingOrder.Descending
-    )
-
-  implicit val _queryTypeDecoder: Decoder[SearchQueryType] =
-    decodeOneWithDefaultOf(
-      SearchQueryType.default,
-      "MultiMatcher" -> SearchQueryType.MultiMatcher
     )
 }
