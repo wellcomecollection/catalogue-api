@@ -153,7 +153,7 @@ def _display_in_console(stats, diffs, outfile=None):
     )
 
     echo()
-    echo(click.style("Index tests", underline=True))
+    echo(click.style("API tests", underline=True))
     echo()
 
     for diff_line in diffs:
