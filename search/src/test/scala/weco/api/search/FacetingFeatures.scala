@@ -31,8 +31,9 @@ trait FacetingFeatures
   }
   protected val resourcePath: String
   protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R
-  protected def singleAggregableField: String
-  protected val buckets: Map[String, Json]
+  protected def aggregableFields: Seq[String]
+  protected val queries: Seq[String]
+  protected val buckets: Map[String, Seq[Json]]
   Feature("Faceting - aggregations and filters") {
     Rule("Aggregations are only returned when requested") {
       info(
@@ -55,22 +56,49 @@ trait FacetingFeatures
       Scenario("a request with one aggregation") {
         Given("a dataset with aggregable values")
         withFacetedAPI { server =>
-          When("records are requested with an aggregation")
+          val singleAggregableField = aggregableFields.head
+          When(
+            s"records are requested with an aggregation on the '$singleAggregableField' field"
+          )
           val responseJson =
             server.getJson(s"$resourcePath?aggregations=$singleAggregableField")
-          Then("that aggregation will be returned")
+
+          Then(
+            s"only the '$singleAggregableField' aggregation will be returned"
+          )
           responseJson.aggregationKeys should contain theSameElementsAs Seq(
             singleAggregableField
           )
+          And("all documents will have contributed to the bucket counts")
           val expectedBuckets = buckets(singleAggregableField)
-          responseJson.aggregationBuckets(singleAggregableField) should contain theSameElementsAs expectedBuckets.asArray.get
+          responseJson.aggregationBuckets(singleAggregableField) should contain theSameElementsAs expectedBuckets
         }
       }
 
       Scenario("a request with multiple aggregations") {
         Given("a dataset with aggregable values")
-        When("records are requested with two aggregations")
-        Then("both aggregations will be returned")
+        withFacetedAPI { server =>
+          When("records are requested")
+          val field1 = aggregableFields.head
+          val field2 = aggregableFields(1)
+          And(
+            s"the request asks for aggregations on fields '$field1' and '$field2'"
+          )
+          val responseJson =
+            server.getJson(s"$resourcePath?aggregations=$field1,$field2")
+          Then(s"only aggregations for $field1 and $field2 will be returned")
+          responseJson.aggregationKeys should contain theSameElementsAs Seq(
+            field1,
+            field2
+          )
+          And("all documents will have contributed to the bucket counts")
+          responseJson.aggregationBuckets(field1) should contain theSameElementsAs buckets(
+            field1
+          )
+          responseJson.aggregationBuckets(field2) should contain theSameElementsAs buckets(
+            field2
+          )
+        }
       }
     }
 
@@ -79,10 +107,25 @@ trait FacetingFeatures
     ) {
       Scenario("a request with a query and aggregations") {
         Given("a dataset with aggregable values")
-        When("a query is made with two aggregations")
-        Then(
-          "only documents that match the query are counted in the aggregations"
-        )
+        withFacetedAPI { server =>
+          When("a query is made with two aggregations")
+          val queryText = queries.head
+          val field1 = aggregableFields.head
+          val field2 = aggregableFields(1)
+          val responseJson =
+            server.getJson(
+              s"$resourcePath?query=$queryText&aggregations=$field1,$field2"
+            )
+          Then(
+            "only documents that match the query are counted in the aggregations"
+          )
+          responseJson.aggregationBuckets(field1) should contain theSameElementsAs buckets(
+            s"$queryText/$field1"
+          )
+          responseJson.aggregationBuckets(field2) should contain theSameElementsAs buckets(
+            s"$queryText/$field2"
+          )
+        }
       }
     }
 
