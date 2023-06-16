@@ -1,6 +1,7 @@
 package weco.api.search.works
 
 import io.circe.Json
+import org.scalatest.Suite
 import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
@@ -10,6 +11,7 @@ trait ApiWorksTestBase
     extends ApiTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
+  this: Suite =>
 
   def getMinimalDisplayWorks(ids: Seq[String]): Seq[Json] =
     ids

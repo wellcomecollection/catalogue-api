@@ -1,12 +1,14 @@
 package weco.api.search.images
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.request.SingleImageIncludes
 
 trait ApiImagesTestBase
-    extends ApiTestBase
+    extends AnyFunSpec
+    with ApiTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
 

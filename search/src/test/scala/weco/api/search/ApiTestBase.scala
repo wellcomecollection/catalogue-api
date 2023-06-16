@@ -1,10 +1,11 @@
 package weco.api.search
 
 import akka.http.scaladsl.server.Route
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, Suite}
 import weco.api.search.fixtures.ApiFixture
 
 trait ApiTestBase extends ApiFixture {
+  this: Suite =>
   val publicRootUri = "https://api-testing.local/catalogue/v2"
 
   // This is the path relative to which requests are made on the host,

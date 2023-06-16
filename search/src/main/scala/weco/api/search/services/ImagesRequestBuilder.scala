@@ -144,7 +144,8 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         RangeQuery(
           "query.source.production.dates.range.from",
           lte = lte,
-          gte = gte)
+          gte = gte
+        )
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =

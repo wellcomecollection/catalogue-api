@@ -1,6 +1,8 @@
 package weco.api.search.works
 
-class WorksRedirectsTest extends ApiWorksTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class WorksRedirectsTest extends AnyFunSpec with ApiWorksTestBase {
   val redirectSource = "4nwkprdt"
   val redirectTarget = "mv6kix0n"
 

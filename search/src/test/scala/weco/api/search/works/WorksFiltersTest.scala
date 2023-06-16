@@ -2,12 +2,13 @@ package weco.api.search.works
 
 import akka.http.scaladsl.server.Route
 import org.scalatest.Assertion
+import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.fixtures.TestWith
 
 import java.net.URLEncoder
 
-class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
+class WorksFiltersTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
     withWorksApi {

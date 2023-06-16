@@ -91,7 +91,7 @@ case class MultipleWorksParams(
   filterParams: WorkFilterParams,
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
-  query: Option[String],
+  query: Option[String]
 ) extends QueryParams
     with Paginated {
 
@@ -242,7 +242,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               filterParams = filterParams,
               include = includes,
               aggregations = aggregations,
-              query = query,
+              query = query
             )
             validated(params.paginationErrors, params)
         }
