@@ -4,18 +4,13 @@ import akka.http.scaladsl.model.ContentTypes
 import akka.http.scaladsl.server.Route
 import io.circe.Json
 import io.circe.parser.parse
-import org.scalatest.featurespec.AnyFeatureSpec
 import weco.api.search.FacetingFeatures
 import weco.fixtures.TestWith
 
-class WorksFacetingTest
-    extends AnyFeatureSpec
-    with FacetingFeatures
-    with ApiWorksTestBase {
+class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
 
   protected val resourcePath: String = s"$rootPath/works"
-  protected val aggregableFields: Seq[String] = Seq("workType", "languages")
-  protected val queries: Seq[String] = Seq("capybara")
+
   private def toKeywordBucket(
     dataType: String,
     count: Int,
@@ -74,11 +69,14 @@ class WorksFacetingTest
     }: _*
   )
 
-  protected val buckets: Map[String, Seq[Json]] = Map(
-    "workType" -> workTypeBuckets,
-    "languages" -> languageBuckets,
-    "capybara/workType" -> capybaraWorkTypeBuckets,
-    "capybara/languages" -> capybaraLanguageBuckets
+  private val marathiWorkTypeBuckets = Seq(
+    Seq(
+      (1, "a", "Books"),
+      (1, "d", "Journals")
+    ) map {
+      case (count, code, label) =>
+        toKeywordBucket("Format", count, code, label)
+    }: _*
   )
 
   private val aggregatedWorks =
@@ -101,4 +99,51 @@ class WorksFacetingTest
         indexTestDocuments(worksIndex, aggregatedWorks: _*)
         testWith(new WorksJsonServer(route))
     }
+
+  protected val oneAggregation: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType"),
+    expectedAggregationBuckets = Map("workType" -> workTypeBuckets)
+  )
+
+  protected val twoAggregations: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType", "languages"),
+    expectedAggregationBuckets = Map(
+      "workType" -> workTypeBuckets,
+      "languages" -> languageBuckets
+    )
+  )
+
+  protected val queryAndAggregations: ScenarioData = ScenarioData(
+    queryTerm = Some("capybara"),
+    aggregationFields = Seq("workType", "languages"),
+    expectedAggregationBuckets = Map(
+      "workType" -> capybaraWorkTypeBuckets,
+      "languages" -> capybaraLanguageBuckets
+    )
+  )
+
+  protected val filterOneAggregateAnother: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType"),
+    filters = Seq(("languages", "mar")),
+    expectedAggregationBuckets = Map(
+      "workType" -> marathiWorkTypeBuckets
+    )
+  )
+
+  protected val filterAndAggregateSame: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType"),
+    filters = Seq(("workType", "a")),
+    expectedAggregationBuckets = Map(
+      "workType" -> workTypeBuckets
+    )
+  )
+
+  protected val filterMultiAndAggregateSame: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType"),
+    filters = Seq(("workType", "a"), ("workType", "d")),
+    expectedAggregationBuckets = Map(
+      "workType" -> workTypeBuckets
+    )
+  )
+
 }

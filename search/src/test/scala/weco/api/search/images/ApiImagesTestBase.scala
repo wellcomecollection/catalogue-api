@@ -1,17 +1,16 @@
 package weco.api.search.images
 
-import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.Suite
 import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.request.SingleImageIncludes
 
 trait ApiImagesTestBase
-    extends AnyFunSpec
-    with ApiTestBase
+    extends ApiTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
-
+  this: Suite =>
   def imagesListResponse(
     ids: Seq[String],
     strictOrdering: Boolean = false

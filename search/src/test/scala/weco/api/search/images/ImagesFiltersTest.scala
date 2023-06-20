@@ -2,9 +2,10 @@ package weco.api.search.images
 
 import akka.http.scaladsl.server.Route
 import org.scalatest.Assertion
+import org.scalatest.funspec.AnyFunSpec
 import weco.fixtures.TestWith
 
-class ImagesFiltersTest extends ApiImagesTestBase {
+class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
   describe("filtering images by license") {
     it("filters by license") {
       withImagesApi {

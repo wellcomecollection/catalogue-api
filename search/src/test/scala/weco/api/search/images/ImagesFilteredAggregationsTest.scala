@@ -1,8 +1,9 @@
 package weco.api.search.images
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesFilteredAggregationsTest extends ApiImagesTestBase {
+class ImagesFilteredAggregationsTest extends AnyFunSpec with ApiImagesTestBase {
   it("filters and aggregates by license") {
     withImagesApi {
       case (imagesIndex, routes) =>
