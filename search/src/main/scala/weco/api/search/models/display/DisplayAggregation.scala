@@ -12,11 +12,12 @@ case class DisplayAggregation(
 case object DisplayAggregation {
   def apply(agg: Aggregation[Json]): DisplayAggregation =
     DisplayAggregation(
-      buckets = agg.buckets.map { bucket =>
-        DisplayAggregationBucket(
-          data = bucket.data,
-          count = bucket.count
-        )
+      buckets = agg.buckets.collect {
+        case bucket if bucket.count != 0 =>
+          DisplayAggregationBucket(
+            data = bucket.data,
+            count = bucket.count
+          )
       }
     )
 }

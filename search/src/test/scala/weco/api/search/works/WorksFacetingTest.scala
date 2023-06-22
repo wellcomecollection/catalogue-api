@@ -78,6 +78,15 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
         toKeywordBucket("Format", count, code, label)
     }: _*
   )
+  private val bookLanguagesBuckets = Seq(
+    Seq(
+      (3, "bak", "Bashkir"),
+      (1, "mar", "Marathi")
+    ) map {
+      case (count, code, label) =>
+        toKeywordBucket("Language", count, code, label)
+    }: _*
+  )
 
   private val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
@@ -143,6 +152,14 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
     filters = Seq(("workType", "a"), ("workType", "d")),
     expectedAggregationBuckets = Map(
       "workType" -> workTypeBuckets
+    )
+  )
+  protected val filterAndAggregateMultiFields: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType", "languages"),
+    filters = Seq(("workType", "a"), ("languages", "mar")),
+    expectedAggregationBuckets = Map(
+      "workType" -> marathiWorkTypeBuckets,
+      "languages" -> bookLanguagesBuckets
     )
   )
 

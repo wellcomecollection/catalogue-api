@@ -1,7 +1,7 @@
 package weco.api.search
 import io.circe.Json
 import org.scalactic.source
-import org.scalatest.{GivenWhenThen, Informing}
+import org.scalatest.{Assertion, GivenWhenThen, Informing, Inspectors}
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.matchers.APIResponseMatchers
@@ -22,6 +22,7 @@ trait ExtraGherkinWords {
 
 trait FacetingFeatures
     extends AnyFeatureSpec
+    with Inspectors
     with GivenWhenThen
     with ExtraGherkinWords
     with Matchers
@@ -41,7 +42,18 @@ trait FacetingFeatures
   ) {
     def formatFilters: String =
       filters.map(pair => s"${pair._1}=${pair._2}").mkString("&")
-
+    def formatQuery: String =
+      queryTerm match {
+        case Some(term) => s"query=$term"
+        case None       => ""
+      }
+    def formatAggregations: String =
+      aggregationFields match {
+        case Nil => ""
+        case seq => s"aggregations=${seq.mkString(",")}"
+      }
+    def url: String =
+      s"$resourcePath?${Seq(formatQuery, formatAggregations, formatFilters).mkString("&")}"
   }
   protected val oneAggregation: ScenarioData
   protected val twoAggregations: ScenarioData
@@ -49,6 +61,19 @@ trait FacetingFeatures
   protected val filterOneAggregateAnother: ScenarioData
   protected val filterAndAggregateSame: ScenarioData
   protected val filterMultiAndAggregateSame: ScenarioData
+  protected val filterAndAggregateMultiFields: ScenarioData
+
+  private def assertSameBuckets(
+    expectedAggregations: Map[String, Seq[Json]],
+    json: Json
+  ): Assertion = {
+    json.aggregationKeys should contain theSameElementsAs expectedAggregations.keys
+
+    forEvery(expectedAggregations) {
+      case (key, value) =>
+        json.aggregationBuckets(key) should contain theSameElementsAs value
+    }
+  }
 
   Feature("Faceting - aggregations and filters") {
     Rule("Aggregations are only returned when requested") {
@@ -78,13 +103,17 @@ trait FacetingFeatures
             s"records are requested with an aggregation on the '$field' field"
           )
           val responseJson =
-            server.getJson(s"$resourcePath?aggregations=$field")
+            server.getJson(scenarioData.url)
 
           Then(
             s"only the '$field' aggregation will be returned"
           )
+          responseJson.aggregations should have size 1
           And("all documents will have contributed to the bucket counts")
-          responseJson.aggregations should contain theSameElementsAs scenarioData.expectedAggregationBuckets
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
 
@@ -101,12 +130,12 @@ trait FacetingFeatures
           val responseJson =
             server.getJson(s"$resourcePath?aggregations=$field1,$field2")
           Then(s"only aggregations for $field1 and $field2 will be returned")
-          responseJson.aggregationKeys should contain theSameElementsAs scenarioData.aggregationFields
+          responseJson.aggregations should have size 2
           And("all documents will have contributed to the bucket counts")
-          responseJson.aggregationBuckets(field1) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(field1)
-          responseJson.aggregationBuckets(field2) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(field2)
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
     }
@@ -132,10 +161,10 @@ trait FacetingFeatures
           Then(
             "only documents that match the query are counted in the aggregations"
           )
-          responseJson.aggregationBuckets(field1) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(field1)
-          responseJson.aggregationBuckets(field2) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(field2)
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
     }
@@ -158,8 +187,10 @@ trait FacetingFeatures
           Then(
             "only documents that match the filter are counted in the aggregation"
           )
-          responseJson.aggregationBuckets(aggregationField) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(aggregationField)
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
 
       }
@@ -182,8 +213,10 @@ trait FacetingFeatures
           Then(
             "documents that do not match that filter are also counted in the aggregation"
           )
-          responseJson.aggregationBuckets(aggregationField) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(aggregationField)
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
 
@@ -193,17 +226,21 @@ trait FacetingFeatures
           val scenarioData = filterMultiAndAggregateSame
           When("records are requested")
           And("the request has two filters on the same field")
+          val filterField = scenarioData.filters.head._1
+          scenarioData.filters.map(_._1) shouldBe Seq(filterField, filterField)
           And("asks for an aggregation on the same field")
           val aggregationField = scenarioData.aggregationFields.head
-          aggregationField shouldBe scenarioData.filters.head._1
+          aggregationField shouldBe filterField
           val responseJson = server.getJson(
             s"$resourcePath?${scenarioData.formatFilters}&aggregations=${scenarioData.aggregationFields.head}"
           )
           Then(
             "documents that do not match either filter are also counted in the aggregation"
           )
-          responseJson.aggregationBuckets(aggregationField) should contain theSameElementsAs scenarioData
-            .expectedAggregationBuckets(aggregationField)
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
 
@@ -212,13 +249,23 @@ trait FacetingFeatures
           "filters apply to all aggregations but their own"
         )
         Given("a dataset with aggregable values")
-        When("records are requested")
-        And("the request has filters on two different fields")
-        And("asks for an aggregation on the same fields")
-        And("asks for an aggregation on yet another field")
-        Then(
-          "only documents that match the filters on other fields are counted in the aggregation on each field"
-        )
+        withFacetedAPI { server =>
+          val scenarioData = filterAndAggregateMultiFields
+          When("records are requested")
+          And("the request has filters on two different fields")
+          And("asks for an aggregation on the same fields")
+          scenarioData.filters.map(_._1) should contain theSameElementsAs scenarioData.aggregationFields
+          val responseJson = server.getJson(scenarioData.url)
+          And("asks for an aggregation on yet another field")
+          // TODO: the filtered aggregations dataset doesn't cover this
+          Then(
+            "only documents that match the filters on other fields are counted in the aggregation on each field"
+          )
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
+        }
       }
 
       Rule(
