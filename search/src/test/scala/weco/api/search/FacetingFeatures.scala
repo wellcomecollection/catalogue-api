@@ -1,4 +1,5 @@
 package weco.api.search
+import akka.http.scaladsl.model.{StatusCode, StatusCodes}
 import io.circe.Json
 import org.scalactic.source
 import org.scalatest.{Assertion, GivenWhenThen, Informing, Inspectors}
@@ -29,7 +30,9 @@ trait FacetingFeatures
     with APIResponseMatchers {
   protected trait JsonServer {
     def getJson(path: String): Json
+    def failToGet(path: String): StatusCode
   }
+
   protected val resourcePath: String
   protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R
 
@@ -62,6 +65,9 @@ trait FacetingFeatures
   protected val filterAndAggregateSame: ScenarioData
   protected val filterMultiAndAggregateSame: ScenarioData
   protected val filterAndAggregateMultiFields: ScenarioData
+  protected val mutexFilter: ScenarioData
+  protected val emptyBucketFilter: ScenarioData
+  protected val queryAndFilter: ScenarioData
 
   private def assertSameBuckets(
     expectedAggregations: Map[String, Seq[Json]],
@@ -102,8 +108,7 @@ trait FacetingFeatures
           When(
             s"records are requested with an aggregation on the '$field' field"
           )
-          val responseJson =
-            server.getJson(scenarioData.url)
+          val responseJson = server.getJson(scenarioData.url)
 
           Then(
             s"only the '$field' aggregation will be returned"
@@ -127,8 +132,7 @@ trait FacetingFeatures
           And(
             s"the request asks for aggregations on fields '$field1' and '$field2'"
           )
-          val responseJson =
-            server.getJson(s"$resourcePath?aggregations=$field1,$field2")
+          val responseJson = server.getJson(scenarioData.url)
           Then(s"only aggregations for $field1 and $field2 will be returned")
           responseJson.aggregations should have size 2
           And("all documents will have contributed to the bucket counts")
@@ -154,10 +158,7 @@ trait FacetingFeatures
           And(
             s"the request asks for aggregations on fields '$field1' and '$field2'"
           )
-          val responseJson =
-            server.getJson(
-              s"$resourcePath?query=$queryTerm&aggregations=$field1,$field2"
-            )
+          val responseJson = server.getJson(scenarioData.url)
           Then(
             "only documents that match the query are counted in the aggregations"
           )
@@ -181,9 +182,7 @@ trait FacetingFeatures
           And(s"the request is filtered for ${scenarioData.formatFilters}")
           val aggregationField = scenarioData.aggregationFields.head
           And(s"asks for aggregation on $aggregationField")
-          val responseJson = server.getJson(
-            s"$resourcePath?${scenarioData.formatFilters}&aggregations=${scenarioData.aggregationFields.head}"
-          )
+          val responseJson = server.getJson(scenarioData.url)
           Then(
             "only documents that match the filter are counted in the aggregation"
           )
@@ -207,9 +206,7 @@ trait FacetingFeatures
           And("asks for aggregation on the same field")
           val aggregationField = scenarioData.aggregationFields.head
           aggregationField shouldBe scenarioData.filters.head._1
-          val responseJson = server.getJson(
-            s"$resourcePath?${scenarioData.formatFilters}&aggregations=${scenarioData.aggregationFields.head}"
-          )
+          val responseJson = server.getJson(scenarioData.url)
           Then(
             "documents that do not match that filter are also counted in the aggregation"
           )
@@ -231,9 +228,7 @@ trait FacetingFeatures
           And("asks for an aggregation on the same field")
           val aggregationField = scenarioData.aggregationFields.head
           aggregationField shouldBe filterField
-          val responseJson = server.getJson(
-            s"$resourcePath?${scenarioData.formatFilters}&aggregations=${scenarioData.aggregationFields.head}"
-          )
+          val responseJson = server.getJson(scenarioData.url)
           Then(
             "documents that do not match either filter are also counted in the aggregation"
           )
@@ -256,8 +251,6 @@ trait FacetingFeatures
           And("asks for an aggregation on the same fields")
           scenarioData.filters.map(_._1) should contain theSameElementsAs scenarioData.aggregationFields
           val responseJson = server.getJson(scenarioData.url)
-          And("asks for an aggregation on yet another field")
-          // TODO: the filtered aggregations dataset doesn't cover this
           Then(
             "only documents that match the filters on other fields are counted in the aggregation on each field"
           )
@@ -271,33 +264,50 @@ trait FacetingFeatures
       Rule(
         "buckets with zero counts are only returned if they have an associated filter"
       ) {
-        Scenario("requesting empty buckets") {
+        Scenario("empty buckets") {
           Given("a dataset with aggregable values")
-          When("records are requested")
-          And(
-            "the request has a filter on field A that excludes all resources with values in field B"
-          )
-          And("asks for an aggregation on field B")
-          Then("no aggregations are returned for field B")
+          val scenarioData = emptyBucketFilter
+          withFacetedAPI { server =>
+            When("records are requested")
+            And(
+              "the request has a filter on field A that excludes all resources with values in field B"
+            )
+            And("asks for an aggregation on field B")
+            val responseJson = server.getJson(scenarioData.url)
+            Then("no aggregation buckets are returned for field B")
+            responseJson.aggregationBuckets(
+              scenarioData.expectedAggregationBuckets.head._1
+            ) shouldBe Nil
+          }
         }
 
-        Scenario("requesting redundant filters") {
-          info(
-            "Combinations of filters and queries may result in some filters being redundant"
-          )
-          info("  i.e. that there are zero matches for it.")
-          info(
-            "   Any filter values with corresponding aggregations should be present in"
-          )
-          info("  the aggregation, regardless of bucket count being zero")
+        Scenario("the requested filters are mutually exclusive") {
           Given("a dataset with aggregable values")
-          When("records are requested")
-          And(
-            "the request has a filter on field A that excludes all resources with values in field B"
-          )
-          And("has a filter on field B")
-          And("asks for an aggregation on field B")
-          Then("the bucket corresponding to the field B filter is returned")
+          withFacetedAPI { server =>
+            val scenarioData = mutexFilter
+            When("records are requested")
+            val emptyFilter = scenarioData.filters.head
+            And(
+              s"the request has a filter for ${emptyFilter._1} being ${emptyFilter._2}"
+            )
+            val exclusionFilter = scenarioData.filters(1)
+            And(
+              s"the request has a filter for ${exclusionFilter._1} being ${exclusionFilter._2}"
+            )
+            And("those filters are mutually exclusive")
+            And("asks for an aggregation on both fields")
+            val responseJson = server.getJson(scenarioData.url)
+            Then(
+              "only documents that match the filters on other fields are counted in the aggregation on each field"
+            )
+            And(
+              "the aggregations will contain zero-count buckets for the two requested filters"
+            )
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
+          }
         }
       }
     }
@@ -306,32 +316,51 @@ trait FacetingFeatures
 
       Scenario("an aggregation with queries and filters") {
         Given("a dataset with aggregable values")
-        When("a query is made")
-        And("the request is filtered on one field")
-        And("asks for aggregation on another field")
-        Then(
-          "only documents that match the filter and the query are counted in the aggregations"
-        )
+        val scenarioData = queryAndFilter
+        withFacetedAPI { server =>
+          When("a query is made")
+          And("the request is filtered on one field")
+          And("asks for aggregation on another field")
+          val responseJson = server.getJson(scenarioData.url)
+          Then(
+            "only documents that match the filter and the query are counted in the aggregations"
+          )
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
+        }
+      }
+
+      Scenario("unexpected parameters") {
+        Given("a dataset with aggregable values")
+        val scenarioData = queryAndFilter
+        withFacetedAPI { server =>
+          When("a query is made")
+          And("the request contains unknown parameters")
+          val responseJson =
+            server.getJson(s"${scenarioData.url}&thisIsNotAFilter=SomeValue")
+          Then("the unknown parameters are ignored")
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
+        }
       }
     }
 
     Rule("Erroneous requests are rejected") {
       Scenario("an unknown aggregation") {
         Given("a dataset with aggregable values")
-        When("records are requested")
-        And("the request asks for an aggregation on a non-aggregable field")
-        Then("a 400 error is returned")
-      }
-
-      Scenario("an unknown filter") {
-        info(
-          "currently, unexpected querystring parameters are ignored, should it be like this instead?"
-        )
-        Given("a dataset with aggregable values")
-        When("records are requested")
-        And("the request asks for a filter on a non-filterable field")
-        Then("a 400 error is returned")
-
+        withFacetedAPI { server: JsonServer =>
+          When("records are requested")
+          And("the request asks for an aggregation on a non-aggregable field")
+          val responseCode = server.failToGet(
+            s"$resourcePath?aggregations=anAggregationThatDoesNotExist"
+          )
+          Then("a 400 error is returned")
+          responseCode shouldBe StatusCodes.BadRequest
+        }
       }
     }
   }

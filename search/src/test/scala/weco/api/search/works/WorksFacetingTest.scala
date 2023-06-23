@@ -1,6 +1,6 @@
 package weco.api.search.works
 
-import akka.http.scaladsl.model.ContentTypes
+import akka.http.scaladsl.model.{ContentTypes, StatusCode}
 import akka.http.scaladsl.server.Route
 import io.circe.Json
 import io.circe.parser.parse
@@ -100,6 +100,13 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
           parseJson(responseAs[String])
         }
       }
+
+    def failToGet(path: String): StatusCode = eventually {
+      Get(path) ~> route ~> check {
+        status shouldNot equal(Status.OK)
+        status
+      }
+    }
   }
 
   protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R =
@@ -154,6 +161,7 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
       "workType" -> workTypeBuckets
     )
   )
+
   protected val filterAndAggregateMultiFields: ScenarioData = ScenarioData(
     aggregationFields = Seq("workType", "languages"),
     filters = Seq(("workType", "a"), ("languages", "mar")),
@@ -163,4 +171,40 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
     )
   )
 
+  protected val mutexFilter: ScenarioData = ScenarioData(
+    aggregationFields = Seq("workType", "languages"),
+    filters = Seq(("workType", "k"), ("languages", "mar")),
+    expectedAggregationBuckets = Map(
+      "workType" -> (marathiWorkTypeBuckets :+ toKeywordBucket(
+        "Format",
+        0,
+        "k",
+        "Pictures"
+      )),
+      "languages" -> Seq(
+        toKeywordBucket("Language", 1, "que", "Quechua"),
+        toKeywordBucket("Language", 0, "mar", "Marathi")
+      )
+    )
+  )
+  protected val emptyBucketFilter: ScenarioData = ScenarioData(
+    aggregationFields = Seq("subjects.label"),
+    expectedAggregationBuckets = Map(
+      "subjects.label" -> Nil
+    )
+  )
+
+  protected val queryAndFilter: ScenarioData = ScenarioData(
+    queryTerm = Some("tapirs"),
+    aggregationFields = Seq("workType"),
+    filters = Seq(("languages", "que")),
+    // tapirs alone would be Pictures(1), Books(1), Journals(1)
+    // Quechua alone would be Pictures(1), Journals(2)
+    expectedAggregationBuckets = Map(
+      "workType" -> Seq(
+        toKeywordBucket("Format", 1, "k", "Pictures"),
+        toKeywordBucket("Format", 1, "d", "Journals")
+      )
+    )
+  )
 }
