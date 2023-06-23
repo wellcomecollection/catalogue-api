@@ -216,6 +216,7 @@ trait FacetingFeatures
           )
         }
       }
+      // TODO: Add scenario to show ordering
 
       Scenario("applying multiple filters to the same field") {
         Given("a dataset with aggregable values")
