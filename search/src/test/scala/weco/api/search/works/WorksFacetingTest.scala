@@ -4,10 +4,14 @@ import akka.http.scaladsl.model.{ContentTypes, StatusCode}
 import akka.http.scaladsl.server.Route
 import io.circe.Json
 import io.circe.parser.parse
+import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
 import weco.fixtures.TestWith
 
-class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
+class WorksFacetingTest
+    extends FacetingFeatures
+    with ApiWorksTestBase
+    with GivenWhenThen {
 
   protected val resourcePath: String = s"$rootPath/works"
 
@@ -106,6 +110,14 @@ class WorksFacetingTest extends FacetingFeatures with ApiWorksTestBase {
         status shouldNot equal(Status.OK)
         status
       }
+    }
+  }
+  override protected def Given[R](msg: String)(
+    testWith: TestWith[JsonServer, R]
+  ): R = {
+    super[GivenWhenThen].Given(msg)
+    withFacetedAPI[R] {
+      testWith(_)
     }
   }
 

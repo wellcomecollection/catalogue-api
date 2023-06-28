@@ -28,6 +28,7 @@ trait FacetingFeatures
     with ExtraGherkinWords
     with Matchers
     with APIResponseMatchers {
+
   protected trait JsonServer {
     def getJson(path: String): Json
     def failToGet(path: String): StatusCode
@@ -35,6 +36,10 @@ trait FacetingFeatures
 
   protected val resourcePath: String
   protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R
+
+  protected def Given[R](msg: String)(
+    testWith: TestWith[JsonServer, R]
+  ): R
 
   protected case class ScenarioData(
     queryTerm: Option[String] = None,
@@ -91,8 +96,7 @@ trait FacetingFeatures
       )
       Scenario("a request with no aggregations") {
 
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
           When("records are requested")
           val responseJson = server.getJson(resourcePath)
           Then("no aggregations are returned")
@@ -101,9 +105,8 @@ trait FacetingFeatures
       }
 
       Scenario("a request with one aggregation") {
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
-          val scenarioData = oneAggregation
+        val scenarioData = oneAggregation
+        Given("a dataset with multiple aggregable fields") { server =>
           val field = scenarioData.aggregationFields.head
           When(
             s"records are requested with an aggregation on the '$field' field"
@@ -123,9 +126,8 @@ trait FacetingFeatures
       }
 
       Scenario("a request with multiple aggregations") {
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
-          val scenarioData = twoAggregations
+        val scenarioData = twoAggregations
+        Given("a dataset with multiple aggregable fields") { server =>
           When("records are requested")
           val field1 = scenarioData.aggregationFields.head
           val field2 = scenarioData.aggregationFields(1)
@@ -148,24 +150,24 @@ trait FacetingFeatures
       "Queries constrain the document collection over which aggregations operate"
     ) {
       Scenario("a request with a query and aggregations") {
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
-          val scenarioData = queryAndAggregations
-          val queryTerm = scenarioData.queryTerm.get
-          When(s"a query is made for the term '$queryTerm'")
-          val field1 = scenarioData.aggregationFields.head
-          val field2 = scenarioData.aggregationFields(1)
-          And(
-            s"the request asks for aggregations on fields '$field1' and '$field2'"
-          )
-          val responseJson = server.getJson(scenarioData.url)
-          Then(
-            "only documents that match the query are counted in the aggregations"
-          )
-          assertSameBuckets(
-            scenarioData.expectedAggregationBuckets,
-            responseJson
-          )
+        val scenarioData = queryAndAggregations
+        Given("a dataset with queryable content and multiple aggregable fields") {
+          server =>
+            val queryTerm = scenarioData.queryTerm.get
+            When(s"a query is made for the term '$queryTerm'")
+            val field1 = scenarioData.aggregationFields.head
+            val field2 = scenarioData.aggregationFields(1)
+            And(
+              s"the request asks for aggregations on fields '$field1' and '$field2'"
+            )
+            val responseJson = server.getJson(scenarioData.url)
+            Then(
+              "only documents that match the query are counted in the aggregations"
+            )
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
         }
       }
     }
@@ -175,8 +177,7 @@ trait FacetingFeatures
       Scenario("filtering one one field, and aggregating on another") {
         info("filters constrain the document collection for other aggregations")
 
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
           val scenarioData = filterOneAggregateAnother
           When("records are requested")
           And(s"the request is filtered for ${scenarioData.formatFilters}")
@@ -198,8 +199,7 @@ trait FacetingFeatures
         info(
           "filters do not constrain the document collection when aggregating on that same field"
         )
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
           val scenarioData = filterAndAggregateSame
           When("records are requested")
           And("the request has a filter")
@@ -216,11 +216,9 @@ trait FacetingFeatures
           )
         }
       }
-      // TODO: Add scenario to show ordering
 
       Scenario("applying multiple filters to the same field") {
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
           val scenarioData = filterMultiAndAggregateSame
           When("records are requested")
           And("the request has two filters on the same field")
@@ -244,11 +242,12 @@ trait FacetingFeatures
         info(
           "filters apply to all aggregations but their own"
         )
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
           val scenarioData = filterAndAggregateMultiFields
           When("records are requested")
-          And("the request has filters on two different fields")
+          And(
+            s"the request has filters on two different fields, ${scenarioData.filters.map(_._1).mkString(" and ")}"
+          )
           And("asks for an aggregation on the same fields")
           scenarioData.filters.map(_._1) should contain theSameElementsAs scenarioData.aggregationFields
           val responseJson = server.getJson(scenarioData.url)
@@ -260,15 +259,41 @@ trait FacetingFeatures
             responseJson
           )
         }
+
+        Scenario("filtering on an unpopular term") {
+          // For Works in the catalogue api, this represents the Sex/London/Germany problem
+          // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
+          // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
+          // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
+          // This scenario shows that the less common value is to be counted properly and returned.
+          Given(
+            "a dataset with some common aggregable values and a less common one"
+          ) { _ =>
+            When("records are requested")
+            And("the request is filtered on the least common aggregable value")
+            And("asks for an aggregation on the same field")
+            Then(
+              "an aggregation with the correct count for that uncommon value is returned"
+            )
+          }
+
+        }
+      }
+
+      Rule(
+        "buckets are ordered first by document count, then lexicographically"
+      ) {
+        Scenario("ordering buckets in an aggregation without a filter") {}
+        Scenario("ordering buckets in an aggregation with a filter") {}
+
       }
 
       Rule(
         "buckets with zero counts are only returned if they have an associated filter"
       ) {
         Scenario("empty buckets") {
-          Given("a dataset with aggregable values")
-          val scenarioData = emptyBucketFilter
-          withFacetedAPI { server =>
+          Given("a dataset with aggregable values") { server =>
+            val scenarioData = emptyBucketFilter
             When("records are requested")
             And(
               "the request has a filter on field A that excludes all resources with values in field B"
@@ -283,8 +308,7 @@ trait FacetingFeatures
         }
 
         Scenario("the requested filters are mutually exclusive") {
-          Given("a dataset with aggregable values")
-          withFacetedAPI { server =>
+          Given("a dataset with aggregable values") { server =>
             val scenarioData = mutexFilter
             When("records are requested")
             val emptyFilter = scenarioData.filters.head
@@ -316,9 +340,8 @@ trait FacetingFeatures
     Rule("Queries and filters operate together") {
 
       Scenario("an aggregation with queries and filters") {
-        Given("a dataset with aggregable values")
-        val scenarioData = queryAndFilter
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
+          val scenarioData = queryAndFilter
           When("a query is made")
           And("the request is filtered on one field")
           And("asks for aggregation on another field")
@@ -334,9 +357,8 @@ trait FacetingFeatures
       }
 
       Scenario("unexpected parameters") {
-        Given("a dataset with aggregable values")
-        val scenarioData = queryAndFilter
-        withFacetedAPI { server =>
+        Given("a dataset with aggregable values") { server =>
+          val scenarioData = queryAndFilter
           When("a query is made")
           And("the request contains unknown parameters")
           val responseJson =
@@ -352,8 +374,7 @@ trait FacetingFeatures
 
     Rule("Erroneous requests are rejected") {
       Scenario("an unknown aggregation") {
-        Given("a dataset with aggregable values")
-        withFacetedAPI { server: JsonServer =>
+        Given("a dataset with aggregable values") { server: JsonServer =>
           When("records are requested")
           And("the request asks for an aggregation on a non-aggregable field")
           val responseCode = server.failToGet(
