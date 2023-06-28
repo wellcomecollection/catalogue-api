@@ -259,25 +259,25 @@ trait FacetingFeatures
             responseJson
           )
         }
+      }
 
-        Scenario("filtering on an unpopular term") {
-          // For Works in the catalogue api, this represents the Sex/London/Germany problem
-          // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
-          // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
-          // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
-          // This scenario shows that the less common value is to be counted properly and returned.
-          Given(
-            "a dataset with some common aggregable values and a less common one"
-          ) { _ =>
-            When("records are requested")
-            And("the request is filtered on the least common aggregable value")
-            And("asks for an aggregation on the same field")
-            Then(
-              "an aggregation with the correct count for that uncommon value is returned"
-            )
-          }
-
+      Scenario("filtering on an unpopular term") {
+        // For Works in the catalogue api, this represents the Sex/London/Germany problem
+        // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
+        // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
+        // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
+        // This scenario shows that the less common value is to be counted properly and returned.
+        Given(
+          "a dataset with some common aggregable values and a less common one"
+        ) { _ =>
+          When("records are requested")
+          And("the request is filtered on the least common aggregable value")
+          And("asks for an aggregation on the same field")
+          Then(
+            "an aggregation with the correct count for that uncommon value is returned"
+          )
         }
+
       }
 
       Rule(

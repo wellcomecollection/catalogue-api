@@ -18,12 +18,18 @@ object DisplayImageAggregations {
   implicit def encoder: Encoder[DisplayImageAggregations] =
     deriveConfiguredEncoder
 
-  def apply(aggs: ImageAggregations): DisplayImageAggregations =
+  def apply(aggs: ImageAggregations): DisplayImageAggregations = {
+    val alwaysTrue = Function.const(true) _
+
     DisplayImageAggregations(
-      license = aggs.license.map(DisplayAggregation(_)),
-      `source.contributors.agent.label` =
-        aggs.sourceContributorAgents.map(DisplayAggregation(_)),
-      `source.genres.label` = aggs.sourceGenres.map(DisplayAggregation(_)),
-      `source.subjects.label` = aggs.sourceSubjects.map(DisplayAggregation(_))
+      license =
+        aggs.license.map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+      `source.contributors.agent.label` = aggs.sourceContributorAgents
+        .map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+      `source.genres.label` =
+        aggs.sourceGenres.map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+      `source.subjects.label` =
+        aggs.sourceSubjects.map(DisplayAggregation(_, retainEmpty = alwaysTrue))
     )
+  }
 }

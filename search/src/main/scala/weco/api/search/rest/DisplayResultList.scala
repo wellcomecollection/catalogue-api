@@ -31,7 +31,7 @@ case class DisplayResultList[DisplayAggs](
 object DisplayResultList extends CatalogueJsonUtil {
   def apply(
     resultList: ResultList[IndexedWork.Visible, WorkAggregations],
-    searchOptions: SearchOptions[_, WorkAggregationRequest, _],
+    searchOptions: SearchOptions[WorkFilter, WorkAggregationRequest, _],
     includes: WorksIncludes,
     requestUri: Uri
   ): DisplayResultList[DisplayWorkAggregations] =
@@ -45,7 +45,7 @@ object DisplayResultList extends CatalogueJsonUtil {
           prevPage = prevPage,
           nextPage = nextPage,
           aggregations = resultList.aggregations.map(
-            DisplayWorkAggregations.apply(_, searchOptions.aggregations)
+            DisplayWorkAggregations.apply(_, searchOptions.filters)
           )
         )
     }

@@ -10,10 +10,14 @@ case class DisplayAggregation(
 )
 
 case object DisplayAggregation {
-  def apply(agg: Aggregation[Json]): DisplayAggregation =
+
+  def apply(
+    agg: Aggregation[Json],
+    retainEmpty: Json => Boolean
+  ): DisplayAggregation =
     DisplayAggregation(
       buckets = agg.buckets.collect {
-        case bucket =>
+        case bucket if bucket.count > 0 || retainEmpty(bucket.data) =>
           DisplayAggregationBucket(
             data = bucket.data,
             count = bucket.count
