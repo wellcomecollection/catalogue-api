@@ -12,16 +12,16 @@
                 "description": "Multi-word exact matches at the start of a title should be prioritised https://github.com/wellcomecollection/catalogue-api/issues/466"
             },
             {
-                "searchTerms": "UeMQqMb9",
+                "searchTerms": "DJmjW2cU",
                 "ratings": [
-                    "uemqqmb9"
+                    "djmjw2cu"
                 ],
                 "description": "Case insensitive IDs"
             },
             {
                 "searchTerms": "2013i",
                 "ratings": [
-                    "uemqqmb9"
+                    "djmjw2cu"
                 ],
                 "description": "Reference number as ID"
             },
@@ -182,7 +182,7 @@
             {
                 "searchTerms": "2013i 2599i",
                 "ratings": [
-                    "uemqqmb9",
+                    "djmjw2cu",
                     "xxskepr5"
                 ],
                 "description": "Multiple IDs",
