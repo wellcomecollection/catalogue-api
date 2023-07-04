@@ -5,10 +5,14 @@ import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.fixtures.TestWith
+import io.circe.syntax._
 
 import java.net.URLEncoder
 
-class WorksFiltersTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenPropertyChecks {
+class WorksFiltersTest
+    extends AnyFunSpec
+    with ApiWorksTestBase
+    with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
     withWorksApi {
@@ -346,7 +350,6 @@ class WorksFiltersTest extends AnyFunSpec with ApiWorksTestBase with TableDriven
             )
           )
         }
-
       }
     }
 
@@ -367,7 +370,6 @@ class WorksFiltersTest extends AnyFunSpec with ApiWorksTestBase with TableDriven
             )
           )
         }
-
       }
     }
   }
@@ -431,6 +433,89 @@ class WorksFiltersTest extends AnyFunSpec with ApiWorksTestBase with TableDriven
                   Status.OK -> worksListResponse(expectedIds)
                 }
               }
+          }
+      }
+    }
+    it("returns an aggregation over all genres when filtering by genre") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, works: _*)
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/works?genres.label=Pamphlets.&aggregations=genres.label"
+          ) {
+            Status.OK -> worksListResponseWithAggs(
+              Seq(pamphletsWork, mostThingsWork),
+              Map(
+                "genres.label" -> Seq(
+                  (2, "Darwin \"Jones\", Charles"),
+                  (2, "Pamphlets."),
+                  (2, "Psychology, Pathological"),
+                  (1, "Annual reports.")
+                ).map {
+                  case (count, label) =>
+                    (count, s"""
+                  |{
+                  |            "concepts" : [
+                  |            ],
+                  |            "label" : ${label.asJson},
+                  |            "type" : "Genre"
+                  |          }
+                    |""".stripMargin)
+                }
+              )
+            )
+          }
+      }
+    }
+
+    it(
+      "returns an aggregation containing the filtered value when redundantly filtering by genre"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, works: _*)
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/works?genres.label=Pamphlets.&languages=sjn&aggregations=genres.label"
+          ) {
+            Status.OK -> worksListResponseWithAggs(
+              Nil,
+              Map(
+                "genres.label" -> Seq(
+                  (0, s"""
+                                    |{
+                                    |            "concepts" : [
+                                    |            ],
+                                    |            "label" :"Pamphlets.",
+                                    |            "type" : "Genre"
+                                    |          }""")
+                )
+              )
+            )
+          }
+      }
+    }
+
+    it(
+      "does not return an aggregation containing the filtered value if the value is bogus"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, works: _*)
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/works?genres.label=Dolomite&languages=sjn&aggregations=genres.label"
+          ) {
+            Status.OK -> worksListResponseWithAggs(
+              Nil,
+              Map(
+                "genres.label" -> Nil
+              )
+            )
           }
       }
     }

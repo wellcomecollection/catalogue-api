@@ -4,6 +4,8 @@ import akka.http.scaladsl.server.Route
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.fixtures.ApiFixture
 
+import scala.math
+
 trait ApiTestBase extends ApiFixture {
   this: Suite =>
   val publicRootUri = "https://api-testing.local/catalogue/v2"
@@ -41,6 +43,13 @@ trait ApiTestBase extends ApiFixture {
       "label": "Gone",
       "description": "$description"
     }"""
+
+  def resultListWithCalculatedPageCount(totalResults: Int, pageSize: Int = 10): String =
+    resultList(
+      pageSize,
+      totalPages = math.ceil(totalResults.toDouble / pageSize).toInt,
+      totalResults = totalResults
+    )
 
   def resultList(
     pageSize: Int = 10,
