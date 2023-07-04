@@ -3,6 +3,9 @@ package weco.api.search.works.filtering
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.works.ApiWorksTestBase
 
+/**
+  * Test cases that cover filtering by simple values such as ids.
+  */
 trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
   val testWorks: Seq[String]
 
@@ -15,8 +18,7 @@ trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
   val searchingParams: String
   val searchingResponse: String
 
-  describe(s"filtering") {
-
+  describe(s"filtering by simple values") {
     it(s"filters by one value when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>

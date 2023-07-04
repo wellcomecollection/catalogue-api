@@ -4,26 +4,15 @@ import io.circe.{Encoder, Json}
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto._
 import weco.api.search.models.{
-  AccessStatusFilter,
   AvailabilitiesFilter,
   ContributorsFilter,
-  DateRangeFilter,
   FormatFilter,
-  GenreConceptFilter,
   GenreFilter,
-  IdentifiersFilter,
-  ItemLocationTypeIdFilter,
-  ItemsFilter,
-  ItemsIdentifiersFilter,
   LanguagesFilter,
   LicenseFilter,
-  PartOfFilter,
-  PartOfTitleFilter,
   SubjectLabelFilter,
-  VisibleWorkFilter,
   WorkAggregations,
-  WorkFilter,
-  WorkTypeFilter
+  WorkFilter
 }
 import weco.json.JsonUtil._
 
@@ -61,9 +50,9 @@ class aggregationDataIdInFilter(labels: Seq[String])
       case _            => false
     }
 }
-class alwaysAggregationMatcher() extends FilterAggregationMatcher {
+class neverAggregationMatcher() extends FilterAggregationMatcher {
   def matches(bucketData: Json): Boolean =
-    true
+    false
 }
 class multiAggregationMatcher(matchers: Seq[FilterAggregationMatcher])
     extends FilterAggregationMatcher {
@@ -79,32 +68,17 @@ object FilterBucketMatcher {
     new multiAggregationMatcher(filters.collect {
       case filter: T =>
         filter match {
-          case ItemLocationTypeIdFilter(ids) =>
-            new aggregationDataIdInFilter(ids)
-          case FormatFilter(ids) => new aggregationDataIdInFilter(ids)
-
-          case LanguagesFilter(ids)    => new aggregationDataIdInFilter(ids)
-          case GenreFilter(labels)     => new aggregationDataLabelInFilter(labels)
-          case GenreConceptFilter(ids) => new aggregationDataIdInFilter(ids)
+          case FormatFilter(ids)    => new aggregationDataIdInFilter(ids)
+          case LanguagesFilter(ids) => new aggregationDataIdInFilter(ids)
+          case GenreFilter(labels)  => new aggregationDataLabelInFilter(labels)
           case SubjectLabelFilter(labels) =>
             new aggregationDataLabelInFilter(labels)
           case ContributorsFilter(labels) =>
             new aggregationDataLabelInFilter(labels)
-          case LicenseFilter(ids)    => new aggregationDataIdInFilter(ids)
-          case PartOfFilter(id)      => new aggregationDataIdInFilter(Seq(id))
-          case PartOfTitleFilter(id) => new aggregationDataIdInFilter(Seq(id))
+          case LicenseFilter(ids) => new aggregationDataIdInFilter(ids)
           case AvailabilitiesFilter(availabilityIds) =>
             new aggregationDataIdInFilter(availabilityIds)
-          case WorkTypeFilter(types)          => new alwaysAggregationMatcher
-          case IdentifiersFilter(values)      => new alwaysAggregationMatcher
-          case ItemsFilter(values)            => new alwaysAggregationMatcher
-          case ItemsIdentifiersFilter(values) => new alwaysAggregationMatcher
-
-          case DateRangeFilter(fromDate, toDate) => new alwaysAggregationMatcher
-          case AccessStatusFilter(includes, excludes) =>
-            new alwaysAggregationMatcher
-          case VisibleWorkFilter => new alwaysAggregationMatcher
-          case _                 => new aggregationDataIdInFilter(Nil)
+          case _ => new neverAggregationMatcher
         }
     })
 
@@ -145,14 +119,34 @@ object DisplayWorkAggregations {
             retainEmpty = FilterBucketMatcher[LanguagesFilter](filters).matches
           )
         ),
-      `subjects.label` =
-        aggs.subjectsLabel.map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+      `subjects.label` = aggs.subjectsLabel.map(
+        DisplayAggregation(
+          _,
+          retainEmpty = FilterBucketMatcher[SubjectLabelFilter](filters).matches
+        )
+      ),
       `contributors.agent.label` = aggs.contributorsAgentsLabel
-        .map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty =
+              FilterBucketMatcher[ContributorsFilter](filters).matches
+          )
+        ),
       `items.locations.license` = aggs.itemsLocationsLicense
-        .map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
-      availabilities =
-        aggs.availabilities.map(DisplayAggregation(_, retainEmpty = alwaysTrue))
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = FilterBucketMatcher[LicenseFilter](filters).matches
+          )
+        ),
+      availabilities = aggs.availabilities.map(
+        DisplayAggregation(
+          _,
+          retainEmpty =
+            FilterBucketMatcher[AvailabilitiesFilter](filters).matches
+        )
+      )
     )
   }
 }

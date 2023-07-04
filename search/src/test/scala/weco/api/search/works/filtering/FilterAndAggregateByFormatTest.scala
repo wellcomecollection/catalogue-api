@@ -1,6 +1,6 @@
 package weco.api.search.works.filtering
 
-class FilterAndAggregateByFormat
+class FilterAndAggregateByFormatTest
     extends FilteringTestCases
     with AggregatingTestCases {
 
