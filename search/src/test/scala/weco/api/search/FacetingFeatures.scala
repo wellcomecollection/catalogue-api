@@ -262,6 +262,8 @@ trait FacetingFeatures
       }
 
       Scenario("filtering on an unpopular term") {
+        //TODO: fill this test out as part of fixing the problem
+
         // For Works in the catalogue api, this represents the Sex/London/Germany problem
         // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
         // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
@@ -283,6 +285,8 @@ trait FacetingFeatures
       Rule(
         "buckets are ordered first by document count, then lexicographically"
       ) {
+        //TODO: fill these tests out as part of fixing the problem
+
         Scenario("ordering buckets in an aggregation without a filter") {}
         Scenario("ordering buckets in an aggregation with a filter") {}
 

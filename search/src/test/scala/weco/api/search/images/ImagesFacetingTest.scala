@@ -1,14 +1,17 @@
 package weco.api.search.images
 
-import akka.http.scaladsl.model.ContentTypes
+import akka.http.scaladsl.model.{ContentTypes, StatusCode}
 import akka.http.scaladsl.server.Route
 import io.circe.Json
 import io.circe.parser.parse
-
+import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
 import weco.fixtures.TestWith
 
-class ImagesFacetingTest extends FacetingFeatures with ApiImagesTestBase {
+class ImagesFacetingTest
+    extends FacetingFeatures
+    with ApiImagesTestBase
+    with GivenWhenThen {
 
   protected val resourcePath: String = s"$rootPath/images"
 
@@ -24,6 +27,13 @@ class ImagesFacetingTest extends FacetingFeatures with ApiImagesTestBase {
           parseJson(responseAs[String])
         }
       }
+
+    def failToGet(path: String): StatusCode = eventually {
+      Get(path) ~> route ~> check {
+        status shouldNot equal(Status.OK)
+        status
+      }
+    }
   }
 
   protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R =
@@ -32,6 +42,15 @@ class ImagesFacetingTest extends FacetingFeatures with ApiImagesTestBase {
         indexTestDocuments(worksIndex, aggregatedImages: _*)
         testWith(new ImagesJsonServer(route))
     }
+
+  override protected def Given[R](msg: String)(
+    testWith: TestWith[JsonServer, R]
+  ): R = {
+    super[GivenWhenThen].Given(msg)
+    withFacetedAPI[R] {
+      testWith(_)
+    }
+  }
 
   val licenceBuckets: Seq[Json] = Seq(
     """
@@ -72,5 +91,8 @@ class ImagesFacetingTest extends FacetingFeatures with ApiImagesTestBase {
   protected val filterOneAggregateAnother: ScenarioData = ScenarioData()
   protected val filterAndAggregateSame: ScenarioData = ScenarioData()
   protected val filterMultiAndAggregateSame: ScenarioData = ScenarioData()
-
+  protected val filterAndAggregateMultiFields: ScenarioData = ScenarioData()
+  protected val mutexFilter: ScenarioData = ScenarioData()
+  protected val emptyBucketFilter: ScenarioData = ScenarioData()
+  protected val queryAndFilter: ScenarioData = ScenarioData()
 }
