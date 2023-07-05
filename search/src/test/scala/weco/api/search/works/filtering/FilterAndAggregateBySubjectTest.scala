@@ -5,7 +5,8 @@ import org.scalatest.prop.TableFor3
 import java.net.URLEncoder
 
 class FilterAndAggregateBySubjectTest
-    extends FreeTextFilteringTestCases
+    extends SingleFieldFilterTest("subject")
+    with FreeTextFilteringTestCases
     with AggregatingTestCases {
 
   val sanitationWork = "works.examples.subject-filters-tests.0"
@@ -15,7 +16,7 @@ class FilterAndAggregateBySubjectTest
   val mostThingsWork = "works.examples.subject-filters-tests.4"
   val nothingWork = "works.examples.subject-filters-tests.5"
 
-  val testWorks =
+  val testWorks: Seq[String] =
     Seq(
       sanitationWork,
       londonWork,

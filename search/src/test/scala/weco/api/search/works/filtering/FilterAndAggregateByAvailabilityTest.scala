@@ -1,7 +1,8 @@
 package weco.api.search.works.filtering
 
 class FilterAndAggregateByAvailabilityTest
-    extends FilteringTestCases
+    extends SingleFieldFilterTest("availability")
+    with FilteringTestCases
     with AggregatingTestCases {
   val testWorks = Seq(
     "works.examples.availabilities.open-only",

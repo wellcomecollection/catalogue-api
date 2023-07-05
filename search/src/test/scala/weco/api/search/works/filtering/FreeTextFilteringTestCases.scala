@@ -18,11 +18,14 @@ trait FreeTextFilteringTestCases
     with ApiWorksTestBase
     with TableDrivenPropertyChecks {
 
+  this: SingleFieldFilterTest =>
+
   val testWorks: Seq[String]
   val filterName: String
+
   protected val freeTextExamples: TableFor3[String, Seq[String], String]
 
-  describe("filtering by various values") {
+  describe(s"filtering $fieldName by various values") {
     it(s"filters using a comma separated list") {
       withWorksApi {
         case (worksIndex, routes) =>

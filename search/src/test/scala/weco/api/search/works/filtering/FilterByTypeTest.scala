@@ -1,6 +1,8 @@
 package weco.api.search.works.filtering
 
-class FilterByTypeTest extends FilteringTestCases {
+class FilterByTypeTest
+    extends SingleFieldFilterTest("type")
+    with FilteringTestCases {
   val testWorks: Seq[String] = Seq(
     "works.examples.different-work-types.Collection",
     "works.examples.different-work-types.Series",

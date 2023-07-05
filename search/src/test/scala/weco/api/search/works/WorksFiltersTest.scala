@@ -56,64 +56,6 @@ class WorksFiltersTest
     }
   }
 
-  describe("filtering works by type") {
-    val works = Seq(
-      "works.examples.different-work-types.Collection",
-      "works.examples.different-work-types.Series",
-      "works.examples.different-work-types.Section"
-    )
-
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(routes, path = s"$rootPath/works?type=Collection") {
-            Status.OK -> worksListResponse(
-              ids = Seq("works.examples.different-work-types.Collection")
-            )
-          }
-      }
-    }
-
-    it("filters by multiple types") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?type=Collection,Series"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.different-work-types.Collection",
-                "works.examples.different-work-types.Series"
-              )
-            )
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?query=rats&type=Series,Section"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.different-work-types.Series",
-                "works.examples.different-work-types.Section"
-              )
-            )
-          }
-      }
-    }
-  }
 
   describe("filtering works by date range") {
     val productionWorks = Seq(

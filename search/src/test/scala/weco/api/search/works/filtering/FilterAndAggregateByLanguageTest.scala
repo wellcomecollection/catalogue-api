@@ -1,7 +1,8 @@
 package weco.api.search.works.filtering
 
 class FilterAndAggregateByLanguageTest
-    extends FilteringTestCases
+    extends SingleFieldFilterTest("language")
+    with FilteringTestCases
     with AggregatingTestCases {
   val testWorks: Seq[String] = Seq(
     "works.languages.0.eng",

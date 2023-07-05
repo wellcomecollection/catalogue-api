@@ -4,6 +4,9 @@ import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.works.ApiWorksTestBase
 
 trait AggregatingTestCases extends AnyFunSpec with ApiWorksTestBase {
+
+  this: SingleFieldFilterTest =>
+
   val testWorks: Seq[String]
   val aggregationName: String
 //
@@ -15,8 +18,10 @@ trait AggregatingTestCases extends AnyFunSpec with ApiWorksTestBase {
 
   val bogusValueParams: String
 
-  describe(s"filtering and aggregating") {
-    it("returns an aggregation over all values when filtering by this field") {
+  describe(s"filtering and aggregating on $fieldName") {
+    it(
+      s"returns an aggregation over all values in $fieldName when filtering by $fieldName"
+    ) {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, testWorks: _*)

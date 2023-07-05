@@ -3,7 +3,8 @@ package weco.api.search.works.filtering
 import org.scalatest.prop.TableFor3
 
 class FilterAndAggregateByContributorTest
-    extends FreeTextFilteringTestCases
+    extends SingleFieldFilterTest("contributor")
+    with FreeTextFilteringTestCases
     with AggregatingTestCases {
 
   val patriciaWork = "works.examples.contributor-filters-tests.0"

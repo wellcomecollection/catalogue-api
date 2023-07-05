@@ -6,7 +6,11 @@ import weco.api.search.works.ApiWorksTestBase
 /**
   * Test cases that cover filtering by simple values such as ids.
   */
-trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
+trait FilteringTestCases
+    extends AnyFunSpec
+    with ApiWorksTestBase {
+  this: SingleFieldFilterTest =>
+
   val testWorks: Seq[String]
 
   val listingParams: String
@@ -18,8 +22,8 @@ trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
   val searchingParams: String
   val searchingResponse: String
 
-  describe(s"filtering by simple values") {
-    it(s"filters by one value when listing works") {
+  describe(s"filtering $fieldName by simple values") {
+    it("filters by one value when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, testWorks: _*)
@@ -30,7 +34,7 @@ trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
       }
     }
 
-    it(s"filters by multiple values when listing works") {
+    it("filters by multiple values when listing works") {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, testWorks: _*)

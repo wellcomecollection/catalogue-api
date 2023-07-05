@@ -1,7 +1,8 @@
 package weco.api.search.works.filtering
 
 class FilterAndAggregateByFormatTest
-    extends FilteringTestCases
+    extends SingleFieldFilterTest("workType")
+    with FilteringTestCases
     with AggregatingTestCases {
 
   val testWorks = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
