@@ -6,9 +6,7 @@ import weco.api.search.works.ApiWorksTestBase
 /**
   * Test cases that cover filtering by simple values such as ids.
   */
-trait FilteringTestCases
-    extends AnyFunSpec
-    with ApiWorksTestBase {
+trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
   this: SingleFieldFilterTest =>
 
   val testWorks: Seq[String]

@@ -9,7 +9,7 @@ trait AggregatingTestCases extends AnyFunSpec with ApiWorksTestBase {
 
   val testWorks: Seq[String]
   val aggregationName: String
-//
+
   val allValuesParams: String
   val allValuesResponse: String
 
