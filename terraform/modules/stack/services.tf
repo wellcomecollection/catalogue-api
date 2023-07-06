@@ -47,6 +47,9 @@ module "search_api" {
   cluster_arn        = var.cluster_arn
   vpc_id             = var.vpc_id
   load_balancer_arn  = aws_lb.catalogue_api.arn
+
+  use_fargate_spot              = var.environment_name == "stage" ? true : false
+  turn_off_outside_office_hours = var.environment_name == "stage" ? true : false
 }
 
 module "items_api" {
@@ -86,6 +89,9 @@ module "items_api" {
   cluster_arn        = var.cluster_arn
   vpc_id             = var.vpc_id
   load_balancer_arn  = aws_lb.catalogue_api.arn
+
+  use_fargate_spot              = var.environment_name == "stage" ? true : false
+  turn_off_outside_office_hours = var.environment_name == "stage" ? true : false
 }
 
 module "concepts_api" {
@@ -117,4 +123,7 @@ module "concepts_api" {
   cluster_arn        = var.cluster_arn
   vpc_id             = var.vpc_id
   load_balancer_arn  = aws_lb.catalogue_api.arn
+
+  use_fargate_spot              = var.environment_name == "stage" ? true : false
+  turn_off_outside_office_hours = var.environment_name == "stage" ? true : false
 }
