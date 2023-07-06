@@ -31,6 +31,11 @@ variable "use_fargate_spot" {
   default = false
 }
 
+variable "turn_off_outside_office_hours" {
+  type    = bool
+  default = false
+}
+
 variable "cluster_arn" {
   type = string
 }
