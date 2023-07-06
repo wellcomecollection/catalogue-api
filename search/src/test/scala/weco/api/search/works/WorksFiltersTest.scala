@@ -2,12 +2,14 @@ package weco.api.search.works
 
 import akka.http.scaladsl.server.Route
 import org.scalatest.Assertion
+import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.fixtures.TestWith
 
-import java.net.URLEncoder
-
-class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
+class WorksFiltersTest
+    extends AnyFunSpec
+    with ApiWorksTestBase
+    with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
     withWorksApi {
@@ -48,104 +50,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
             )
           )
         }
-    }
-  }
-
-  describe("filtering works by Format") {
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksFormat: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?workType=k"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq("works.formats.9.Pictures")
-            )
-          }
-      }
-    }
-
-    it("filters by multiple formats") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksFormat: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?workType=k,d"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.formats.4.Journals",
-                "works.formats.5.Journals",
-                "works.formats.6.Journals",
-                "works.formats.9.Pictures"
-              )
-            )
-          }
-      }
-    }
-  }
-
-  describe("filtering works by type") {
-    val works = Seq(
-      "works.examples.different-work-types.Collection",
-      "works.examples.different-work-types.Series",
-      "works.examples.different-work-types.Section"
-    )
-
-    it("when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(routes, path = s"$rootPath/works?type=Collection") {
-            Status.OK -> worksListResponse(
-              ids = Seq("works.examples.different-work-types.Collection")
-            )
-          }
-      }
-    }
-
-    it("filters by multiple types") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?type=Collection,Series"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.different-work-types.Collection",
-                "works.examples.different-work-types.Series"
-              )
-            )
-          }
-      }
-    }
-
-    it("when searching works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?query=rats&type=Series,Section"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.different-work-types.Series",
-                "works.examples.different-work-types.Section"
-              )
-            )
-          }
-      }
     }
   }
 
@@ -231,58 +135,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
     }
   }
 
-  describe("filtering works by language") {
-    val languageWorks = Seq(
-      "works.languages.0.eng",
-      "works.languages.1.eng",
-      "works.languages.2.eng",
-      "works.languages.3.eng+swe",
-      "works.languages.4.eng+swe+tur",
-      "works.languages.5.swe",
-      "works.languages.6.tur"
-    )
-
-    it("filters by language") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, languageWorks: _*)
-
-          assertJsonResponse(routes, path = s"$rootPath/works?languages=eng") {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.languages.0.eng",
-                "works.languages.1.eng",
-                "works.languages.2.eng",
-                "works.languages.3.eng+swe",
-                "works.languages.4.eng+swe+tur"
-              )
-            )
-          }
-      }
-    }
-
-    it("filters by multiple comma separated languages") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, languageWorks: _*)
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?languages=swe,tur"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.languages.3.eng+swe",
-                "works.languages.4.eng+swe+tur",
-                "works.languages.5.swe",
-                "works.languages.6.tur"
-              )
-            )
-          }
-      }
-    }
-  }
-
   describe("filtering by genre concept ids") {
 
     // This work has a single compound Genre.
@@ -345,7 +197,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
             )
           )
         }
-
       }
     }
 
@@ -366,212 +217,6 @@ class WorksFiltersTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
             )
           )
         }
-
-      }
-    }
-  }
-
-  describe("filtering works by genre") {
-    val annualReportsWork = s"works.examples.genre-filters-tests.0"
-    val pamphletsWork = "works.examples.genre-filters-tests.1"
-    val psychologyWork = "works.examples.genre-filters-tests.2"
-    val darwinWork = "works.examples.genre-filters-tests.3"
-    val mostThingsWork = "works.examples.genre-filters-tests.4"
-    val nothingWork = "works.examples.genre-filters-tests.5"
-
-    val works =
-      List(
-        annualReportsWork,
-        pamphletsWork,
-        psychologyWork,
-        darwinWork,
-        mostThingsWork,
-        nothingWork
-      )
-
-    val testCases = Table(
-      ("query", "expectedIds", "clue"),
-      ("Annual reports.", Seq(annualReportsWork), "single match single genre"),
-      (
-        "Pamphlets.",
-        Seq(pamphletsWork, mostThingsWork),
-        "multi match single genre"
-      ),
-      (
-        "Annual reports.,Pamphlets.",
-        Seq(annualReportsWork, pamphletsWork, mostThingsWork),
-        "comma separated"
-      ),
-      (
-        """Annual reports.,"Psychology, Pathological"""",
-        Seq(annualReportsWork, psychologyWork, mostThingsWork),
-        "commas in quotes"
-      ),
-      (
-        """"Darwin \"Jones\", Charles","Psychology, Pathological",Pamphlets.""",
-        Seq(darwinWork, psychologyWork, mostThingsWork, pamphletsWork),
-        "escaped quotes in quotes"
-      )
-    )
-
-    it("filters by genres as a comma separated list") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          forAll(testCases) {
-            (query: String, expectedIds: Seq[String], clue: String) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  path =
-                    s"$rootPath/works?genres.label=${URLEncoder.encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(expectedIds)
-                }
-              }
-          }
-      }
-    }
-  }
-
-  describe("filtering works") {
-    val sanitationWork = "works.examples.subject-filters-tests.0"
-    val londonWork = "works.examples.subject-filters-tests.1"
-    val psychologyWork = "works.examples.subject-filters-tests.2"
-    val darwinWork = "works.examples.subject-filters-tests.3"
-    val mostThingsWork = "works.examples.subject-filters-tests.4"
-    val nothingWork = "works.examples.subject-filters-tests.5"
-
-    val works =
-      List(
-        sanitationWork,
-        londonWork,
-        psychologyWork,
-        darwinWork,
-        mostThingsWork,
-        nothingWork
-      )
-
-    val testCases = Table(
-      ("filterName", "query", "expectedIds", "clue"),
-      (
-        "subjects.label",
-        "Sanitation.",
-        Seq(sanitationWork),
-        "single match single subject"
-      ),
-      (
-        "subjects.label",
-        "London (England)",
-        Seq(londonWork, mostThingsWork),
-        "multi match single subject"
-      ),
-      (
-        "subjects.label",
-        "Sanitation.,London (England)",
-        Seq(sanitationWork, londonWork, mostThingsWork),
-        "comma separated"
-      ),
-      (
-        "subjects.label",
-        """Sanitation.,"Psychology, Pathological"""",
-        Seq(sanitationWork, psychologyWork, mostThingsWork),
-        "commas in quotes"
-      ),
-      (
-        "subjects.label",
-        """"Darwin \"Jones\", Charles","Psychology, Pathological",London (England)""",
-        Seq(darwinWork, psychologyWork, londonWork, mostThingsWork),
-        "escaped quotes in quotes"
-      )
-    )
-
-    it("filters by subjects") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          forAll(testCases) {
-            (
-              filterName,
-              query: String,
-              expectedIds: Seq[String],
-              clue: String
-            ) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  path =
-                    s"$rootPath/works?$filterName=${URLEncoder.encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(expectedIds)
-                }
-              }
-          }
-      }
-    }
-  }
-
-  describe("filtering works by contributors") {
-    val patriciaWork = "works.examples.contributor-filters-tests.0"
-    val karlMarxWork = "works.examples.contributor-filters-tests.1"
-    val jakePaulWork = "works.examples.contributor-filters-tests.2"
-    val darwinWork = "works.examples.contributor-filters-tests.3"
-    val patriciaDarwinWork = "works.examples.contributor-filters-tests.4"
-    val noContributorsWork = "works.examples.contributor-filters-tests.5"
-
-    val works = List(
-      patriciaWork,
-      karlMarxWork,
-      jakePaulWork,
-      darwinWork,
-      patriciaDarwinWork,
-      noContributorsWork
-    )
-
-    val testCases = Table(
-      ("query", "expectedIds", "clue"),
-      ("Karl Marx", Seq(karlMarxWork), "single match"),
-      (
-        """"Bath, Patricia"""",
-        Seq(patriciaWork, patriciaDarwinWork),
-        "multi match"
-      ),
-      (
-        "Karl Marx,Jake Paul",
-        Seq(karlMarxWork, jakePaulWork),
-        "comma separated"
-      ),
-      (
-        """"Bath, Patricia",Karl Marx""",
-        Seq(patriciaWork, patriciaDarwinWork, karlMarxWork),
-        "commas in quotes"
-      ),
-      (
-        """"Bath, Patricia",Karl Marx,"Darwin \"Jones\", Charles"""",
-        Seq(patriciaWork, karlMarxWork, darwinWork, patriciaDarwinWork),
-        "quotes in quotes"
-      )
-    )
-
-    it("filters by contributors as a comma separated list") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
-
-          forAll(testCases) {
-            (query: String, expectedIds: Seq[String], clue: String) =>
-              withClue(clue) {
-                assertJsonResponse(
-                  routes,
-                  path = s"$rootPath/works?contributors.agent.label=${URLEncoder
-                    .encode(query, "UTF-8")}"
-                ) {
-                  Status.OK -> worksListResponse(expectedIds)
-                }
-              }
-          }
       }
     }
   }
