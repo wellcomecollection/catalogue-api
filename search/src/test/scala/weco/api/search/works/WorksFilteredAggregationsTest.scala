@@ -196,25 +196,7 @@ class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                         "type" : "Format"
                       },
                       "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    }
+                    } 
                   ]
                 }
               },
@@ -266,15 +248,6 @@ class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "data" : {
                         "id" : "d",
                         "label" : "Journals",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "k",
-                        "label" : "Pictures",
                         "type" : "Format"
                       },
                       "type" : "AggregationBucket"
