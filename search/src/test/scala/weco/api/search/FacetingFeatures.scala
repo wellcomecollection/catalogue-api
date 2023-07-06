@@ -261,7 +261,7 @@ trait FacetingFeatures
         }
       }
 
-      Scenario("filtering on an unpopular term") {
+      ignore("filtering on an unpopular term") {
         //TODO: fill this test out as part of fixing the problem
 
         // For Works in the catalogue api, this represents the Sex/London/Germany problem
@@ -287,8 +287,8 @@ trait FacetingFeatures
       ) {
         //TODO: fill these tests out as part of fixing the problem
 
-        Scenario("ordering buckets in an aggregation without a filter") {}
-        Scenario("ordering buckets in an aggregation with a filter") {}
+        ignore("ordering buckets in an aggregation without a filter") {}
+        ignore("ordering buckets in an aggregation with a filter") {}
 
       }
 

@@ -199,6 +199,7 @@ class WorksFacetingTest
       )
     )
   )
+
   protected val emptyBucketFilter: ScenarioData = ScenarioData(
     aggregationFields = Seq("subjects.label"),
     expectedAggregationBuckets = Map(
