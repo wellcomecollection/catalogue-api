@@ -70,11 +70,13 @@ class FilterAndAggregateByLIcenseTest
   )
   val redundantFilterParams: String =
     "items.locations.license=cc-by&genres.label=ThisIsNotAGenre&aggregations=items.locations.license"
-  val redundantFilterBucket: String = """{
-                                       |            "id" : "online",
-                                       |            "label" : "Online",
-                                       |            "type" : "Availability"
-                                       |          }""".stripMargin
+  val redundantFilterBucket: String =
+    """{
+                                        |            "id" : "cc-by",
+                                        |            "label" : "Attribution 4.0 International (CC BY 4.0)",
+                                        |            "type" : "License",
+                                        |            "url" : "http://creativecommons.org/licenses/by/4.0/"
+                                        |          }""".stripMargin
   val bogusValueParams: String =
     "items.locations.license=to-kill&genres.label=ThisIsNotAGenre&aggregations=items.locations.license"
 }
