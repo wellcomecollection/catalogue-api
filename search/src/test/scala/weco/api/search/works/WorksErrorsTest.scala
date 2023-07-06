@@ -1,11 +1,12 @@
 package weco.api.search.works
 
 import com.sksamuel.elastic4s.Index
+import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.models.ElasticConfig
 import weco.elasticsearch.IndexConfig
 
-class WorksErrorsTest extends ApiWorksTestBase with TableDrivenPropertyChecks {
+class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenPropertyChecks {
 
   val includesString =
     "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"

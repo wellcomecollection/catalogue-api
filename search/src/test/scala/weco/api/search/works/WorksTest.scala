@@ -1,8 +1,9 @@
 package weco.api.search.works
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.WorksIncludes
 
-class WorksTest extends ApiWorksTestBase {
+class WorksTest extends AnyFunSpec with ApiWorksTestBase {
   it("returns a list of works") {
     withWorksApi {
       case (worksIndex, routes) =>

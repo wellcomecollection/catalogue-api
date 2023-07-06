@@ -1,6 +1,8 @@
 package weco.api.search.works
 
-class WorksAggregationsTest extends ApiWorksTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
   it("aggregates by format") {
     withWorksApi {
       case (worksIndex, routes) =>
