@@ -52,7 +52,7 @@ object DisplayResultList extends CatalogueJsonUtil {
 
   def apply(
     resultList: ResultList[IndexedImage, ImageAggregations],
-    searchOptions: SearchOptions[_, _, _],
+    searchOptions: SearchOptions[ImageFilter, _, _],
     includes: MultipleImagesIncludes,
     requestUri: Uri
   ): DisplayResultList[DisplayImageAggregations] =
@@ -65,8 +65,9 @@ object DisplayResultList extends CatalogueJsonUtil {
           results = resultList.results.map(_.display.withIncludes(includes)),
           prevPage = prevPage,
           nextPage = nextPage,
-          aggregations =
-            resultList.aggregations.map(DisplayImageAggregations.apply)
+          aggregations = resultList.aggregations.map(
+            DisplayImageAggregations.apply(_, searchOptions.filters)
+          )
         )
     }
 }
