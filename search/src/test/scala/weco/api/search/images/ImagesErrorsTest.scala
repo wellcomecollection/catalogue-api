@@ -1,10 +1,12 @@
 package weco.api.search.images
 
+import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.models.ElasticConfig
 
 class ImagesErrorsTest
-    extends ApiImagesTestBase
+    extends AnyFunSpec
+    with ApiImagesTestBase
     with TableDrivenPropertyChecks {
   describe("returns a 404 for missing resources") {
     it("looking up an image that doesn't exist") {

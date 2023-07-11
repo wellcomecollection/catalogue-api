@@ -1,8 +1,9 @@
 package weco.api.search.images
 
 import io.circe.Json
+import org.scalatest.funspec.AnyFunSpec
 
-class ImagesSimilarityTest extends ApiImagesTestBase {
+class ImagesSimilarityTest extends AnyFunSpec with ApiImagesTestBase {
 
   /**
     * These tests treat the simple presence of the requested property as a proxy

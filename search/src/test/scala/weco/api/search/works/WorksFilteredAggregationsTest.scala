@@ -1,8 +1,9 @@
 package weco.api.search.works
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.WorksIncludes
 
-class WorksFilteredAggregationsTest extends ApiWorksTestBase {
+class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
   val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 

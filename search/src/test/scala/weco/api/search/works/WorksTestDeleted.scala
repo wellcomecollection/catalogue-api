@@ -1,6 +1,8 @@
 package weco.api.search.works
 
-class WorksTestDeleted extends ApiWorksTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class WorksTestDeleted extends AnyFunSpec with ApiWorksTestBase {
   it("returns an HTTP 410 Gone if looking up a deleted work") {
     withWorksApi {
       case (worksIndex, routes) =>

@@ -1,6 +1,8 @@
 package weco.api.search.images
 
-class ImagesIncludesTest extends ApiImagesTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class ImagesIncludesTest extends AnyFunSpec with ApiImagesTestBase {
   describe("images includes") {
     it(
       "includes the source contributors on results from the list endpoint if we pass ?include=source.contributors"

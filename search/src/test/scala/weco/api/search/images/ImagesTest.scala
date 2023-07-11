@@ -1,8 +1,9 @@
 package weco.api.search.images
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesTest extends ApiImagesTestBase {
+class ImagesTest extends AnyFunSpec with ApiImagesTestBase {
   it("returns a list of images") {
     withImagesApi {
       case (imagesIndex, routes) =>
@@ -112,11 +113,11 @@ class ImagesTest extends ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path =
-              s"$rootPath/images?sort=source.production.dates"
+            path = s"$rootPath/images?sort=source.production.dates"
           ) {
             Status.OK -> imagesListResponse(
-              ids = productionImages, strictOrdering = true
+              ids = productionImages,
+              strictOrdering = true
             )
           }
       }
@@ -133,7 +134,8 @@ class ImagesTest extends ApiImagesTestBase {
               s"$rootPath/images?sort=source.production.dates&sortOrder=asc"
           ) {
             Status.OK -> imagesListResponse(
-              ids = productionImages, strictOrdering = true
+              ids = productionImages,
+              strictOrdering = true
             )
           }
       }
@@ -150,7 +152,8 @@ class ImagesTest extends ApiImagesTestBase {
               s"$rootPath/images?sort=source.production.dates&sortOrder=desc"
           ) {
             Status.OK -> imagesListResponse(
-              ids = productionImages.reverse, strictOrdering = true
+              ids = productionImages.reverse,
+              strictOrdering = true
             )
           }
       }
