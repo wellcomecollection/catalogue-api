@@ -282,7 +282,7 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
-      "contributors.agent.label" -> (('a' to 't').map(
+      "contributors.agent.label" -> (('a' to 's').map(
         n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
       ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
     )

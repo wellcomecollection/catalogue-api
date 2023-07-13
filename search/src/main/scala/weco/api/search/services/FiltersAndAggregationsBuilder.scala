@@ -5,7 +5,8 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   Aggregation,
   FilterAggregation,
-  TermsAggregation
+  TermsAggregation,
+  TermsOrder
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
@@ -53,9 +54,18 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       case agg => agg
     }
 
+  def requestToOrderedAggregation(
+    aggReq: AggregationRequest
+  ): AbstractAggregation =
+    requestToAggregation(aggReq) match {
+      case terms: TermsAggregation =>
+        terms.order(Seq(TermsOrder("_count"), TermsOrder("_key", asc = true)))
+      case agg => agg
+    }
+
   lazy val filteredAggregations: List[AbstractAggregation] =
     aggregationRequests.map { aggReq =>
-      val agg = requestToAggregation(aggReq)
+      val agg = requestToOrderedAggregation(aggReq)
       pairedFilter(aggReq) match {
         case Some(paired) =>
           val otherFilters = filters.filterNot(_ == paired)
@@ -74,23 +84,6 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
               )
             )
           )
-//          GlobalAggregation(
-//            // We would like to rename the aggregation here to something predictable
-//            // (eg "global_agg") but because it is an opaque AbstractAggregation we
-//            // make do with naming it the same as its parent GlobalAggregation, so that
-//            // the latter can be picked off when parsing in WorkAggregations
-//            name = agg.name,
-//            subaggs = Seq(
-//              agg.addSubagg(
-//                FilterAggregation(
-//                  "filtered",
-//                  boolQuery.filter {
-//                    searchQuery :: otherFilters.map(filterToQuery)
-//                  }
-//                )
-//              )
-//            )
-//          )
         case _ =>
           FilterAggregation(
             name = agg.name,
