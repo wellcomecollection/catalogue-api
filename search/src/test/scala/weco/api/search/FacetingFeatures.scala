@@ -269,7 +269,6 @@ trait FacetingFeatures
         // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
         // This scenario shows that the less common value is to be counted properly and returned.
         Scenario("filtering on an uncommon term") {
-          //TODO: fill this test out as part of fixing the problem
 
           val scenarioData = uncommonTerm
           Given(
@@ -282,7 +281,7 @@ trait FacetingFeatures
             Then(
               "an aggregation with the correct count for that uncommon value is returned"
             )
-            // TODO: A matcher that checks that the aggregation bucket is not zero
+
             Then(
               "and the most common terms are also returned"
             )
@@ -309,6 +308,9 @@ trait FacetingFeatures
             Then(
               "the buckets will contain the most common terms in the set returned by the query"
             )
+            // This scenario could be improved by using a matcher that checks for a bucket with the
+            // right key and a count of 0, but for now, trusting the inheriting suite to
+            // specify the correct expected aggregation buckets will do.
             And(
               "the buckets will contain the filtered value with a count of zero"
             )
@@ -325,11 +327,11 @@ trait FacetingFeatures
       Rule(
         "buckets are ordered first by document count, then lexicographically"
       ) {
-        //TODO: fill these tests out as part of fixing the problem
-
-        ignore("ordering buckets in an aggregation without a filter") {}
-        ignore("ordering buckets in an aggregation with a filter") {}
-
+        // This rule can be covered by the scenarios within "context for counting aggregation buckets", above,
+        // but could be expanded upon here if desired.
+        // A Scenario that shows this requires a large set of equally common terms, along with some other
+        // terms with a different frequency.  The simplest way to achieve the counting scenarios is to
+        // have lots of terms in two documents, and one term that is only present in one of them.
       }
 
       Rule(
