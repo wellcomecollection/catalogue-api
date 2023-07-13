@@ -6,11 +6,13 @@ import io.circe.Json
 import io.circe.parser.parse
 import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
+import weco.api.search.generators.AggregationDocumentGenerators
 import weco.fixtures.TestWith
 
 class WorksFacetingTest
     extends FacetingFeatures
     with ApiWorksTestBase
+    with AggregationDocumentGenerators
     with GivenWhenThen {
 
   protected val resourcePath: String = s"$rootPath/works"
@@ -28,6 +30,19 @@ class WorksFacetingTest
          |  "id": "$code",
          |  "label": "$label",
          |  "type": "$dataType"
+         |},
+         |"type": "AggregationBucket"
+         |}""".stripMargin).right.get
+
+  private def toUnidentifiedBucket(
+    count: Int,
+    label: String
+  ): Json =
+    parse(s"""
+         |{
+         |"count": $count,
+         |"data": {
+         |  "label": "$label"
          |},
          |"type": "AggregationBucket"
          |}""".stripMargin).right.get
@@ -82,6 +97,7 @@ class WorksFacetingTest
         toKeywordBucket("Format", count, code, label)
     }: _*
   )
+
   private val bookLanguagesBuckets = Seq(
     Seq(
       (3, "bak", "Bashkir"),
@@ -94,6 +110,36 @@ class WorksFacetingTest
 
   private val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
+
+  private val top21Contributors = Seq(
+    createWorkDocument(
+      s"abadcafe",
+      "top 20 only",
+      Map(
+        "contributors.agent.label" -> ('a' to 'z')
+          .map(n => s"Beverley Crusher $n")
+      )
+    ),
+    createWorkDocument(
+      "goodcafe",
+      "top 20 and hapax",
+      Map(
+        "contributors.agent.label" -> (('a' to 'z')
+          .map(n => s"Beverley Crusher $n") :+ "Mark Sloan")
+      )
+    )
+  )
+
+  private val multipleUncommonContributors = top21Contributors :+ createWorkDocument(
+    "baadf00d",
+    "top 1 and hapax legomenon",
+    Map(
+      "contributors.agent.label" -> Seq(
+        "Yuri Zhivago",
+        "Beverley Crusher a"
+      )
+    )
+  )
 
   private class WorksJsonServer(route: Route) extends JsonServer {
     def getJson(path: String): Json =
@@ -112,19 +158,30 @@ class WorksFacetingTest
       }
     }
   }
+
+  private val givens = Map[String, Seq[TestDocument]](
+    "a dataset with some common aggregable values and a less common one" -> top21Contributors,
+    "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents" -> multipleUncommonContributors
+  )
+
   override protected def Given[R](msg: String)(
     testWith: TestWith[JsonServer, R]
   ): R = {
     super[GivenWhenThen].Given(msg)
-    withFacetedAPI[R] {
+    withFacetedAPI[R](givens.get(msg)) {
       testWith(_)
     }
   }
 
-  protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R =
+  protected def withFacetedAPI[R](
+    docs: Option[Seq[TestDocument]]
+  )(testWith: TestWith[JsonServer, R]): R =
     withWorksApi[R] {
       case (worksIndex, route) =>
-        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+        docs match {
+          case Some(docs) => indexLoadedTestDocuments(worksIndex, docs)
+          case None       => indexTestDocuments(worksIndex, aggregatedWorks: _*)
+        }
         testWith(new WorksJsonServer(route))
     }
 
@@ -220,4 +277,28 @@ class WorksFacetingTest
       )
     )
   )
+
+  protected val uncommonTerm: ScenarioData = ScenarioData(
+    aggregationFields = Seq("contributors.agent.label"),
+    filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
+    expectedAggregationBuckets = Map(
+      "contributors.agent.label" -> (('a' to 't').map(
+        n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
+      ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
+    )
+  )
+
+  protected val multipleUncommonTerms: ScenarioData = ScenarioData(
+    queryTerm = Some("Zhivago"),
+    filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
+    aggregationFields = Seq("contributors.agent.label"),
+    expectedAggregationBuckets = Map(
+      "contributors.agent.label" -> Seq(
+        toUnidentifiedBucket(1, "Beverley Crusher a"),
+        toUnidentifiedBucket(1, "Yuri Zhivago"),
+        toUnidentifiedBucket(0, "Mark Sloan")
+      )
+    )
+  )
+
 }

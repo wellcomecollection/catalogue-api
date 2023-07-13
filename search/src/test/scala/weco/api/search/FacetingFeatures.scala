@@ -35,12 +35,9 @@ trait FacetingFeatures
   }
 
   protected val resourcePath: String
-  protected def withFacetedAPI[R](testWith: TestWith[JsonServer, R]): R
-
-  protected def Given[R](msg: String)(
-    testWith: TestWith[JsonServer, R]
-  ): R
-
+  protected def Given[R](
+    msg: String
+  )(testWith: TestWith[JsonServer, R]): R
   protected case class ScenarioData(
     queryTerm: Option[String] = None,
     filters: Seq[(String, String)] = Nil,
@@ -73,6 +70,8 @@ trait FacetingFeatures
   protected val mutexFilter: ScenarioData
   protected val emptyBucketFilter: ScenarioData
   protected val queryAndFilter: ScenarioData
+  protected val uncommonTerm: ScenarioData
+  protected val multipleUncommonTerms: ScenarioData
 
   private def assertSameBuckets(
     expectedAggregations: Map[String, Seq[Json]],
@@ -95,7 +94,6 @@ trait FacetingFeatures
         "  they can be slow and expensive, and shouldn't happen if the client doesn't want them"
       )
       Scenario("a request with no aggregations") {
-
         Given("a dataset with aggregable values") { server =>
           When("records are requested")
           val responseJson = server.getJson(resourcePath)
@@ -177,8 +175,8 @@ trait FacetingFeatures
       Scenario("filtering one one field, and aggregating on another") {
         info("filters constrain the document collection for other aggregations")
 
+        val scenarioData = filterOneAggregateAnother
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = filterOneAggregateAnother
           When("records are requested")
           And(s"the request is filtered for ${scenarioData.formatFilters}")
           val aggregationField = scenarioData.aggregationFields.head
@@ -199,8 +197,8 @@ trait FacetingFeatures
         info(
           "filters do not constrain the document collection when aggregating on that same field"
         )
+        val scenarioData = filterAndAggregateSame
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = filterAndAggregateSame
           When("records are requested")
           And("the request has a filter")
           And("asks for aggregation on the same field")
@@ -218,8 +216,8 @@ trait FacetingFeatures
       }
 
       Scenario("applying multiple filters to the same field") {
+        val scenarioData = filterMultiAndAggregateSame
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = filterMultiAndAggregateSame
           When("records are requested")
           And("the request has two filters on the same field")
           val filterField = scenarioData.filters.head._1
@@ -242,8 +240,9 @@ trait FacetingFeatures
         info(
           "filters apply to all aggregations but their own"
         )
+        val scenarioData =
+          filterAndAggregateMultiFields
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = filterAndAggregateMultiFields
           When("records are requested")
           And(
             s"the request has filters on two different fields, ${scenarioData.filters.map(_._1).mkString(" and ")}"
@@ -261,25 +260,66 @@ trait FacetingFeatures
         }
       }
 
-      ignore("filtering on an unpopular term") {
-        //TODO: fill this test out as part of fixing the problem
-
+      Rule(
+        "the context for counting aggregation buckets is set by the query and filters"
+      ) {
         // For Works in the catalogue api, this represents the Sex/London/Germany problem
         // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
         // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
         // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
         // This scenario shows that the less common value is to be counted properly and returned.
-        Given(
-          "a dataset with some common aggregable values and a less common one"
-        ) { _ =>
-          When("records are requested")
-          And("the request is filtered on the least common aggregable value")
-          And("asks for an aggregation on the same field")
-          Then(
-            "an aggregation with the correct count for that uncommon value is returned"
-          )
+        Scenario("filtering on an uncommon term") {
+          //TODO: fill this test out as part of fixing the problem
+
+          val scenarioData = uncommonTerm
+          Given(
+            "a dataset with some common aggregable values and a less common one"
+          ) { server =>
+            When("records are requested")
+            And("the request is filtered on the least common aggregable value")
+            And("asks for an aggregation on the same field")
+            val responseJson = server.getJson(scenarioData.url)
+            Then(
+              "an aggregation with the correct count for that uncommon value is returned"
+            )
+            // TODO: A matcher that checks that the aggregation bucket is not zero
+            Then(
+              "and the most common terms are also returned"
+            )
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
+          }
         }
 
+        Scenario("filtering on an uncommon term when querying") {
+          val scenarioData = multipleUncommonTerms
+          Given(
+            "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents"
+          ) { server =>
+            When(
+              "a query is made that excludes most of the top terms in the requested aggregation"
+            )
+            And(
+              "a field is filtered on a value that is not in the set returned by the query"
+            )
+            And("an aggregation is requested on the same field")
+            val responseJson = server.getJson(scenarioData.url)
+            Then(
+              "the buckets will contain the most common terms in the set returned by the query"
+            )
+            And(
+              "the buckets will contain the filtered value with a count of zero"
+            )
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
+
+          }
+
+        }
       }
 
       Rule(
@@ -296,8 +336,8 @@ trait FacetingFeatures
         "buckets with zero counts are only returned if they have an associated filter"
       ) {
         Scenario("empty buckets") {
+          val scenarioData = emptyBucketFilter
           Given("a dataset with aggregable values") { server =>
-            val scenarioData = emptyBucketFilter
             When("records are requested")
             And(
               "the request has a filter on field A that excludes all resources with values in field B"
@@ -312,8 +352,8 @@ trait FacetingFeatures
         }
 
         Scenario("the requested filters are mutually exclusive") {
+          val scenarioData = mutexFilter
           Given("a dataset with aggregable values") { server =>
-            val scenarioData = mutexFilter
             When("records are requested")
             val emptyFilter = scenarioData.filters.head
             And(
@@ -344,8 +384,8 @@ trait FacetingFeatures
     Rule("Queries and filters operate together") {
 
       Scenario("an aggregation with queries and filters") {
+        val scenarioData = queryAndFilter
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = queryAndFilter
           When("a query is made")
           And("the request is filtered on one field")
           And("asks for aggregation on another field")
@@ -361,8 +401,8 @@ trait FacetingFeatures
       }
 
       Scenario("unexpected parameters") {
+        val scenarioData = queryAndFilter
         Given("a dataset with aggregable values") { server =>
-          val scenarioData = queryAndFilter
           When("a query is made")
           And("the request contains unknown parameters")
           val responseJson =
