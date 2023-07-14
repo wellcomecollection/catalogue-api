@@ -59,8 +59,8 @@ class FilterAndAggregateByContributorTest
       "contributors.agent.label" -> Seq(
         (2, "Bath, Patricia"),
         (2, "Darwin \\\"Jones\\\", Charles"),
-        (1, "Jake Paul"),
-        (1, "Karl Marx")
+        (1, "Karl Marx"),
+        (1, "Jake Paul")
       ).map {
         case (count, label) =>
           (count, s"""

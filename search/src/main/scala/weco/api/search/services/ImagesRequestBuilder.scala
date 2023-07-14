@@ -39,12 +39,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
     search(index)
       .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
-      .query(
-        searchQuery(searchOptions)
-          .filter(
-            buildImageFilterQuery(searchOptions.filters)
-          )
-      )
+      .query(searchQuery(searchOptions))
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
@@ -54,6 +49,9 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         // to send the image's vectors to Elasticsearch
         "query.inferredData.reducedFeatures"
       )
+      .postFilter {
+        must(buildImageFilterQuery(searchOptions.filters))
+      }
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
@@ -61,7 +59,6 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildImageFilterQuery,
-      searchQuery = searchQuery(searchOptions)
     )
 
   private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =

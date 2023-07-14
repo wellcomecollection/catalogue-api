@@ -47,7 +47,6 @@ object WorksRequestBuilder
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildWorkFilterQuery,
-      searchQuery = searchQuery
     )
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {

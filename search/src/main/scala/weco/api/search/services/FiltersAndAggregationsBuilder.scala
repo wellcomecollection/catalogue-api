@@ -36,7 +36,6 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val filters: List[Filter]
   val requestToAggregation: AggregationRequest => Aggregation
   val filterToQuery: Filter => Query
-  val searchQuery: Query
 
   def pairedAggregationRequests(filter: Filter): List[AggregationRequest]
   private def toSelfAggregation(
@@ -108,8 +107,7 @@ class WorkFiltersAndAggregationsBuilder(
   val aggregationRequests: List[WorkAggregationRequest],
   val filters: List[WorkFilter],
   val requestToAggregation: WorkAggregationRequest => Aggregation,
-  val filterToQuery: WorkFilter => Query,
-  val searchQuery: Query
+  val filterToQuery: WorkFilter => Query
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
   override def pairedAggregationRequests(
@@ -132,8 +130,7 @@ class ImageFiltersAndAggregationsBuilder(
   val aggregationRequests: List[ImageAggregationRequest],
   val filters: List[ImageFilter],
   val requestToAggregation: ImageAggregationRequest => Aggregation,
-  val filterToQuery: ImageFilter => Query,
-  val searchQuery: Query
+  val filterToQuery: ImageFilter => Query
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
 
   override def pairedAggregationRequests(

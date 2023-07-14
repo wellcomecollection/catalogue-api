@@ -30,22 +30,36 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
           List(WorkAggregationRequest.Format, WorkAggregationRequest.Languages),
         filters = List(formatFilter, languagesFilter),
         requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery,
-        searchQuery = MockSearchQuery
+        filterToQuery = filterToQuery
       )
 
       builder.filteredAggregations should have length 2
-      builder.filteredAggregations.head shouldBe a[GlobalAggregation]
 
-      val topAgg = builder.filteredAggregations.head
-        .asInstanceOf[GlobalAggregation]
-        .subaggs
-        .head
-      topAgg shouldBe a[MockAggregation]
-
-      val agg = topAgg.asInstanceOf[MockAggregation]
-      agg.subaggs.head shouldBe a[FilterAggregation]
-      agg.request shouldBe WorkAggregationRequest.Format
+      builder.filteredAggregations.head shouldBe a[FilterAggregation]
+      // The first aggregation is Format
+      val filterAgg = builder.filteredAggregations.head
+        .asInstanceOf[FilterAggregation]
+      // Filtered on Language=en
+      filterAgg.query
+        .asInstanceOf[BoolQuery]
+        .filters
+        .head shouldBe MockQuery(LanguagesFilter(Seq("en")))
+      // Within that filtered aggregation is the
+      // aggregation for format.
+      val formatAgg = filterAgg.subaggs.head
+      formatAgg
+        .asInstanceOf[MockAggregation]
+        .request shouldBe WorkAggregationRequest.Format
+      //Then comes the self aggregation
+      val selfAgg = filterAgg.subaggs(1).asInstanceOf[FilterAggregation]
+      // Which is the same aggregation
+      selfAgg.subaggs.head
+        .asInstanceOf[MockAggregation]
+        .request shouldBe WorkAggregationRequest.Format
+      //but additionally, it matches the filter on this field.
+      selfAgg.query
+        .asInstanceOf[MockQuery]
+        .filter shouldBe FormatFilter(Seq("bananas"))
     }
 
     it("does not apply to aggregations without a paired filter") {
@@ -54,15 +68,13 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
         aggregationRequests = List(WorkAggregationRequest.Format),
         filters = List(languagesFilter),
         requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery,
-        searchQuery = MockSearchQuery
+        filterToQuery = filterToQuery
       )
 
       builder.filteredAggregations should have length 1
-      builder.filteredAggregations.head shouldBe a[MockAggregation]
       builder.filteredAggregations.head
-        .asInstanceOf[MockAggregation]
-        .subaggs should have length 0
+        .asInstanceOf[FilterAggregation]
+        .subaggs should have length 1 // not 2 - the second is the self aggregation
     }
 
     it("applies paired filters to non-paired aggregations") {
@@ -72,24 +84,20 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
           List(WorkAggregationRequest.Format, WorkAggregationRequest.Languages),
         filters = List(formatFilter),
         requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery,
-        searchQuery = MockSearchQuery
+        filterToQuery = filterToQuery
       )
 
       builder.filteredAggregations should have length 2
-      builder.filteredAggregations.head shouldBe a[GlobalAggregation]
-      builder.filteredAggregations.head
-        .asInstanceOf[GlobalAggregation]
-        .subaggs
-        .head
-        .asInstanceOf[MockAggregation]
-        .subaggs should have length 1
+      //The first aggregation is Format, which has already been explored
+      // in the "applies to aggregations with a paired filter" test
+      builder.filteredAggregations.head shouldBe a[FilterAggregation]
 
-      builder.filteredAggregations(1) shouldBe a[MockAggregation]
+      //The second aggregation is Language, with no corresponding
+      // filter in this query
       builder
         .filteredAggregations(1)
-        .asInstanceOf[MockAggregation]
-        .subaggs should have length 0
+        .asInstanceOf[FilterAggregation]
+        .subaggs should have length 1
     }
 
     it("applies all other aggregation-dependent filters to the paired filter") {
@@ -104,8 +112,7 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
         ),
         filters = List(formatFilter, languagesFilter, genreFilter),
         requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery,
-        searchQuery = MockSearchQuery
+        filterToQuery = filterToQuery
       )
 
       val agg =
