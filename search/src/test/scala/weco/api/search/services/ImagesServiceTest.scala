@@ -11,7 +11,7 @@ import weco.api.search.elasticsearch.{
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
-import weco.api.search.models.{QueryConfig, SimilarityMetric}
+import weco.api.search.models.SimilarityMetric
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -24,13 +24,7 @@ class ImagesServiceTest
 
   val elasticsearchService = new ElasticsearchService(elasticClient)
 
-  val imagesService = new ImagesService(
-    elasticsearchService,
-    QueryConfig(
-      paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),
-      paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
-    )
-  )
+  val imagesService = new ImagesService(elasticsearchService)
 
   describe("findById") {
     it("fetches an Image by ID") {

@@ -7,7 +7,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
 import weco.api.search.models.SearchOptions
 
-trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _, _]] {
+trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _]] {
   val idSort: FieldSort
 
   def request(searchOptions: S, index: Index): SearchRequest

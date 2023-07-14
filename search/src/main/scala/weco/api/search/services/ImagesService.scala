@@ -13,7 +13,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ImagesService(
   val elasticsearchService: ElasticsearchService,
-  queryConfig: QueryConfig
 )(
   implicit
   val ec: ExecutionContext
@@ -37,7 +36,7 @@ class ImagesService(
     ImageAggregations(searchResponse)
 
   override protected val requestBuilder: ImagesRequestBuilder =
-    new ImagesRequestBuilder(queryConfig)
+    new ImagesRequestBuilder()
 
   def retrieveSimilarImages(
     index: Index,

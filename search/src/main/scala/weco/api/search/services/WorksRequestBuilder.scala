@@ -105,7 +105,7 @@ object WorksRequestBuilder
   }
 
   private def sortBy(implicit searchOptions: WorkSearchOptions) =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
+    if (searchOptions.searchQuery.isDefined) {
       sort :+ scoreSort(SortOrder.DESC) :+ idSort
     } else {
       sort :+ idSort

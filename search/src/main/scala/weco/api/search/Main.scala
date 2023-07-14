@@ -7,7 +7,6 @@ import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.models.{
   ApiConfig,
   PipelineClusterElasticConfig,
-  QueryConfig
 }
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
@@ -32,13 +31,9 @@ object Main extends WellcomeTypesafeApp {
     val elasticClient = PipelineElasticClientBuilder("catalogue_api")
     val elasticConfig = PipelineClusterElasticConfig()
 
-    val queryConfig =
-      QueryConfig.fetchFromIndex(elasticClient, elasticConfig.imagesIndex)
-
     val router = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
-      queryConfig = queryConfig,
       apiConfig = apiConfig
     )
 

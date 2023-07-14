@@ -39,7 +39,7 @@ case class PaginationResponse(
 object PaginationResponse {
   def apply(
     resultList: ResultList[_, _],
-    searchOptions: SearchOptions[_, _, _],
+    searchOptions: SearchOptions[_, _],
     requestUri: Uri
   ): PaginationResponse = {
     val totalPages =
@@ -80,7 +80,7 @@ object PaginationResponse {
 }
 
 object PaginationQuery {
-  def safeGetFrom(searchOptions: SearchOptions[_, _, _]): Int = {
+  def safeGetFrom(searchOptions: SearchOptions[_, _]): Int = {
     // Because we use Int for the pageSize and pageNumber, computing
     //
     //     from = (pageNumber - 1) * pageSize

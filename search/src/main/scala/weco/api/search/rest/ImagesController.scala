@@ -10,7 +10,7 @@ import weco.api.search.models.request.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
-import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
+import weco.api.search.models.{ApiConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,7 +19,6 @@ class ImagesController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
   imagesIndex: Index,
-  queryConfig: QueryConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
     with CatalogueJsonUtil
@@ -107,5 +106,5 @@ class ImagesController(
       .getOrElse(Nil)
 
   private lazy val imagesService =
-    new ImagesService(elasticsearchService, queryConfig)
+    new ImagesService(elasticsearchService)
 }

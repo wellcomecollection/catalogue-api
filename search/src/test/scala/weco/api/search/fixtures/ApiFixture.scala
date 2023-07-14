@@ -11,7 +11,7 @@ import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.api.search.models.{ApiConfig, ElasticConfig, QueryConfig}
+import weco.api.search.models.{ApiConfig, ElasticConfig}
 
 trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
 
@@ -35,10 +35,6 @@ trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
     val router = new SearchApi(
       elasticClient,
       elasticConfig,
-      QueryConfig(
-        paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),
-        paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
-      ),
       apiConfig = apiConfig
     )
 
