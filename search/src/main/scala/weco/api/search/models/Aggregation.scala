@@ -60,10 +60,7 @@ object AggregationMapping {
     val allBuckets = json.findAllByKey("buckets")
     allBuckets flatMap {
       _.asArray.get
-    } map {
-      case k =>
-        k.as[Bucket].right.get
-    } distinct
+    } map (k => k.as[Bucket].right.get) distinct
   }
 
   private case class Bucket(
