@@ -136,6 +136,7 @@ class FiltersAndAggregationsBuilderTest
         //Three filters are requested, each aggregation should
         // have only two.  i.e. not it's own
         filterQuery.filters should have length 2
+        // And this ensures that it is the correct two.
         filterQuery.filters.map(_.asInstanceOf[MockQuery].filter) should contain theSameElementsAs filters
           .filterNot(_ == thisFilter)
       }
