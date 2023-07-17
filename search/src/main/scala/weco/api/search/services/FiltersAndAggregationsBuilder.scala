@@ -5,9 +5,11 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   Aggregation,
   FilterAggregation,
-  GlobalAggregation
+  TermsAggregation,
+  TermsOrder
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
+import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ImageAggregationRequest,
@@ -34,34 +36,61 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val filters: List[Filter]
   val requestToAggregation: AggregationRequest => Aggregation
   val filterToQuery: Filter => Query
-  val searchQuery: Query
 
   def pairedAggregationRequests(filter: Filter): List[AggregationRequest]
+  private def toSelfAggregation(
+    agg: AbstractAggregation,
+    filterQuery: Query
+  ): AbstractAggregation =
+    agg match {
+      case terms: TermsAggregation =>
+        val filterTerm = filterQuery match {
+          case TermsQuery(_, values, _, _, _, _, _) =>
+            values.map(value => s"""\\"$value\\"""").mkString("|")
+          case _ => ""
+        }
+        terms.minDocCount(0).includeRegex(s".*($filterTerm).*")
+      case agg => agg
+    }
+
+  def requestToOrderedAggregation(
+    aggReq: AggregationRequest
+  ): AbstractAggregation =
+    requestToAggregation(aggReq) match {
+      case terms: TermsAggregation =>
+        terms.order(Seq(TermsOrder("_count"), TermsOrder("_key", asc = true)))
+      case agg => agg
+    }
 
   lazy val filteredAggregations: List[AbstractAggregation] =
     aggregationRequests.map { aggReq =>
-      val agg = requestToAggregation(aggReq)
+      val agg = requestToOrderedAggregation(aggReq)
       pairedFilter(aggReq) match {
         case Some(paired) =>
-          val subFilters = filters.filterNot(_ == paired)
-          GlobalAggregation(
-            // We would like to rename the aggregation here to something predictable
-            // (eg "global_agg") but because it is an opaque AbstractAggregation we
-            // make do with naming it the same as its parent GlobalAggregation, so that
-            // the latter can be picked off when parsing in WorkAggregations
+          val otherFilters = filters.filterNot(_ == paired)
+          val pairedQuery = filterToQuery(paired)
+          FilterAggregation(
             name = agg.name,
+            boolQuery.filter {
+              otherFilters.map(filterToQuery)
+            },
             subaggs = Seq(
-              agg.addSubagg(
-                FilterAggregation(
-                  "filtered",
-                  boolQuery.filter {
-                    searchQuery :: subFilters.map(filterToQuery)
-                  }
-                )
+              agg,
+              FilterAggregation(
+                name = "self",
+                pairedQuery,
+                subaggs = Seq(toSelfAggregation(agg, pairedQuery))
               )
             )
           )
-        case _ => agg
+        case _ =>
+          FilterAggregation(
+            name = agg.name,
+            boolQuery.filter {
+              filters.map(filterToQuery)
+            },
+            subaggs = Seq(agg)
+          )
       }
     }
 
@@ -78,8 +107,7 @@ class WorkFiltersAndAggregationsBuilder(
   val aggregationRequests: List[WorkAggregationRequest],
   val filters: List[WorkFilter],
   val requestToAggregation: WorkAggregationRequest => Aggregation,
-  val filterToQuery: WorkFilter => Query,
-  val searchQuery: Query
+  val filterToQuery: WorkFilter => Query
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
   override def pairedAggregationRequests(
@@ -102,8 +130,7 @@ class ImageFiltersAndAggregationsBuilder(
   val aggregationRequests: List[ImageAggregationRequest],
   val filters: List[ImageFilter],
   val requestToAggregation: ImageAggregationRequest => Aggregation,
-  val filterToQuery: ImageFilter => Query,
-  val searchQuery: Query
+  val filterToQuery: ImageFilter => Query
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
 
   override def pairedAggregationRequests(

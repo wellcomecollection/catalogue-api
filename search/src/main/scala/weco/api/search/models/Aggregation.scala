@@ -48,9 +48,7 @@ import scala.util.{Success, Try}
 //      ...
 //    }
 object AggregationMapping {
-
   import weco.json.JsonUtil._
-
   private case class Result(buckets: Option[Seq[Bucket]])
 
   // When we use a global aggregation we can't predict the key name of the
@@ -58,6 +56,16 @@ object AggregationMapping {
   // "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
   private val globalAggBuckets = root.each.buckets.each.as[Bucket]
+
+  // When we use the self aggregation pattern, buckets are returned
+  // in aggregations at multiple depths. This will return any
+  // buckets that can be found within the given Json object
+  private def bucketsFromAnywhere(json: Json): Seq[Bucket] = {
+    val allBuckets = json.findAllByKey("buckets")
+    allBuckets flatMap {
+      _.asArray.get
+    } map (k => k.as[Bucket].right.get) distinct
+  }
 
   private case class Bucket(
     key: Json,
@@ -80,7 +88,7 @@ object AggregationMapping {
           Success(buckets)
         case Result(None) =>
           parse(jsonString)
-            .map(globalAggBuckets.getAll)
+            .map(bucketsFromAnywhere)
             .toTry
       }
       .map { buckets =>
