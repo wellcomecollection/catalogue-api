@@ -56,6 +56,10 @@ object AggregationMapping {
   // "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
   private val globalAggBuckets = root.each.buckets.each.as[Bucket]
+
+  // When we use the self aggregation pattern, buckets are returned
+  // in aggregations at multiple depths. This will return any
+  // buckets that can be found within the given Json object
   private def bucketsFromAnywhere(json: Json): Seq[Bucket] = {
     val allBuckets = json.findAllByKey("buckets")
     allBuckets flatMap {
