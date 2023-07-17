@@ -138,14 +138,6 @@ object WorksRequestBuilder
       }
       .getOrElse { boolQuery }
 
-//  private def filteredQuery(
-//    implicit searchOptions: WorkSearchOptions
-//  ): BoolQuery =
-//    searchQuery
-//      .filter {
-//        buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
-//      }
-
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
       buildWorkFilterQuery
