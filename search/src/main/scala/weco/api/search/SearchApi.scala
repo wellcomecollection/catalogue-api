@@ -36,7 +36,7 @@ class SearchApi(
     with IdentifierDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {
-    withRequestTimeoutResponse(_ => timeoutResponse) {
+    withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
         concat(
           path("works") {
