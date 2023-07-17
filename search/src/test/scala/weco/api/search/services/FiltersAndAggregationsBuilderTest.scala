@@ -3,13 +3,13 @@ package weco.api.search.services
 import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   Aggregation,
-  FilterAggregation,
-  GlobalAggregation
+  FilterAggregation
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
@@ -19,7 +19,10 @@ import weco.api.search.models.{
   WorkFilter
 }
 
-class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
+class FiltersAndAggregationsBuilderTest
+    extends AnyFunSpec
+    with Matchers
+    with TableDrivenPropertyChecks {
 
   describe("aggregation-level filtering") {
     it("applies to aggregations with a paired filter") {
@@ -104,32 +107,38 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
       val formatFilter = FormatFilter(Seq("bananas"))
       val languagesFilter = LanguagesFilter(Seq("en"))
       val genreFilter = GenreFilter(Seq("durian"))
+      val filters = List(formatFilter, languagesFilter, genreFilter)
       val builder = new WorkFiltersAndAggregationsBuilder(
         aggregationRequests = List(
           WorkAggregationRequest.Format,
           WorkAggregationRequest.Languages,
           WorkAggregationRequest.Genre
         ),
-        filters = List(formatFilter, languagesFilter, genreFilter),
+        filters = filters,
         requestToAggregation = requestToAggregation,
         filterToQuery = filterToQuery
       )
 
-      val agg =
-        builder.filteredAggregations.head
-          .asInstanceOf[GlobalAggregation]
-          .subaggs
-          .head
-          .asInstanceOf[MockAggregation]
-          .subaggs
-          .head
-          .asInstanceOf[FilterAggregation]
-      agg.query shouldBe a[BoolQuery]
-      val query = agg.query.asInstanceOf[BoolQuery]
-      query.filters should not contain MockQuery(formatFilter)
-      query.filters should contain only (
-        MockSearchQuery, MockQuery(languagesFilter), MockQuery(genreFilter)
+      builder.filteredAggregations should have length 3
+
+      val t = Table(
+        ("agg", "matchingFilter"),
+        builder.filteredAggregations.zip(
+          filters
+        ): _*
       )
+
+      forAll(t) { (agg: AbstractAggregation, thisFilter: WorkFilter) =>
+        val filterQuery = agg
+          .asInstanceOf[FilterAggregation]
+          .query
+          .asInstanceOf[BoolQuery]
+        //Three filters are requested, each aggregation should
+        // have only two.  i.e. not it's own
+        filterQuery.filters should have length 2
+        filterQuery.filters.map(_.asInstanceOf[MockQuery].filter) should contain theSameElementsAs filters
+          .filterNot(_ == thisFilter)
+      }
     }
   }
 
@@ -141,7 +150,7 @@ class FiltersAndAggregationsBuilderTest extends AnyFunSpec with Matchers {
   private def filterToQuery(filter: WorkFilter): Query = MockQuery(filter)
 
   private case class MockQuery(filter: WorkFilter) extends Query
-  private case object MockSearchQuery extends Query
+  // private case object MockSearchQuery extends Query
 
   private case class MockAggregation(
     name: String,
