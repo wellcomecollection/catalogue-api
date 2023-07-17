@@ -272,8 +272,8 @@ class WorksFacetingTest
     // Quechua alone would be Pictures(1), Journals(2)
     expectedAggregationBuckets = Map(
       "workType" -> Seq(
-        toKeywordBucket("Format", 1, "k", "Pictures"),
-        toKeywordBucket("Format", 1, "d", "Journals")
+        toKeywordBucket("Format", 1, "d", "Journals"),
+        toKeywordBucket("Format", 1, "k", "Pictures")
       )
     )
   )
@@ -282,13 +282,30 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
-      "contributors.agent.label" -> (('a' to 's').map(
+      "contributors.agent.label" -> (('a' to 't').map(
         n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
       ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
     )
   )
 
   protected val multipleUncommonTerms: ScenarioData = ScenarioData(
+    filters = Seq(
+      ("contributors.agent.label", "Mark%20Sloan,Yuri%20Zhivago")
+    ),
+    aggregationFields = Seq("contributors.agent.label"),
+    expectedAggregationBuckets = Map(
+      "contributors.agent.label" -> (Seq(
+        toUnidentifiedBucket(3, "Beverley Crusher a")
+      ) ++ ('b' to 't').map(
+        n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
+      ) ++ Seq(
+        toUnidentifiedBucket(1, "Mark Sloan"),
+        toUnidentifiedBucket(1, "Yuri Zhivago")
+      ))
+    )
+  )
+
+  protected val queryingUncommonTerms: ScenarioData = ScenarioData(
     queryTerm = Some("Zhivago"),
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     aggregationFields = Seq("contributors.agent.label"),

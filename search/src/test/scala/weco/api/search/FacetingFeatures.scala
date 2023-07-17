@@ -72,6 +72,7 @@ trait FacetingFeatures
   protected val queryAndFilter: ScenarioData
   protected val uncommonTerm: ScenarioData
   protected val multipleUncommonTerms: ScenarioData
+  protected val queryingUncommonTerms: ScenarioData
 
   private def assertSameBuckets(
     expectedAggregations: Map[String, Seq[Json]],
@@ -81,7 +82,7 @@ trait FacetingFeatures
 
     forEvery(expectedAggregations) {
       case (key, value) =>
-        json.aggregationBuckets(key) should contain theSameElementsAs value
+        json.aggregationBuckets(key) shouldBe value
     }
   }
 
@@ -268,7 +269,7 @@ trait FacetingFeatures
         // with the query applied as a filter afterwards.  This means that a less common (21+) value would not
         // be counted in the buckets (but would be returned with a zero count due to the associated filter rule)
         // This scenario shows that the less common value is to be counted properly and returned.
-        Scenario("filtering on an uncommon term") {
+        Scenario("filtering on uncommon terms") {
 
           val scenarioData = uncommonTerm
           Given(
@@ -291,9 +292,32 @@ trait FacetingFeatures
             )
           }
         }
+        Scenario("filtering on multiple uncommon terms") {
+
+          val scenarioData = multipleUncommonTerms
+          Given(
+            "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents"
+          ) { server =>
+            When("records are requested")
+            And("the request is filtered on both uncommon terms")
+            And("asks for an aggregation on the same field")
+            val responseJson = server.getJson(scenarioData.url)
+            Then(
+              "aggregation buckets with the correct count for the uncommon values are returned"
+            )
+
+            Then(
+              "and the most common terms are also returned"
+            )
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
+          }
+        }
 
         Scenario("filtering on an uncommon term when querying") {
-          val scenarioData = multipleUncommonTerms
+          val scenarioData = queryingUncommonTerms
           Given(
             "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents"
           ) { server =>
