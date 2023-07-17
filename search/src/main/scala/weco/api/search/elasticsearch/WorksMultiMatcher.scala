@@ -17,10 +17,6 @@ import com.sksamuel.elastic4s.requests.searches.span.{
   SpanTermQuery
 }
 
-// TODO: Turn all this into loading a resource and filling in its template values
-// Take care that it is not subject to injection (e.g. "}, DROP TABLES)
-// or falling over due to unsanitary input. (e.g. quotes)
-
 case object WorksMultiMatcher {
   val titleFields = Seq(
     "query.titlesAndContributors",
