@@ -56,22 +56,14 @@ object AggregationMapping {
   // "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
   private val globalAggBuckets = root.each.buckets.each.as[Bucket]
+  private val selfAggBuckets = root.self.each.buckets.each.as[Bucket]
 
   // When we use the self aggregation pattern, buckets are returned
-  // in aggregations at multiple depths. This will return any
-  // buckets that can be found within the given Json object
-  private def bucketsFromAnywhere(json: Json): Seq[Bucket] = {
-    val allBuckets = json.findAllByKey("buckets")
-    allBuckets flatMap { bucketListJson =>
-      bucketListJson.asArray
-    } flatMap { jsonArray =>
-      jsonArray map { singleBucketJson =>
-        singleBucketJson.as[Bucket]
-      } collect {
-        case bucket if bucket.isRight => bucket.right.get
-      }
-    } distinct
-  }
+  // in aggregations at multiple depths. This will return
+  // buckets from the expected locations.
+
+  private def bucketsFromAnywhere(json: Json): Seq[Bucket] =
+    (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
 
   private case class Bucket(
     key: Json,
@@ -112,12 +104,7 @@ object AggregationMapping {
       }
       .map { buckets =>
         Aggregation(
-          buckets
-          // Sort manually here because filtered aggregations are bucketed before filtering
-          // therefore they are not always ordered by their final counts.
-          // Sorting in Scala is stable.
-            .sortBy(_.count)(Ordering[Int].reverse)
-            .toList
+          buckets.toList
         )
       }
 
