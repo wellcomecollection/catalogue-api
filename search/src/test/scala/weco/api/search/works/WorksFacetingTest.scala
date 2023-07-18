@@ -117,7 +117,7 @@ class WorksFacetingTest
       "top 20 only",
       Map(
         "contributors.agent.label" -> ('a' to 'z')
-          .map(n => s"Beverley Crusher $n")
+          .map(n => s"Beverley Crusher ($n)")
       )
     ),
     createWorkDocument(
@@ -125,7 +125,7 @@ class WorksFacetingTest
       "top 20 and hapax",
       Map(
         "contributors.agent.label" -> (('a' to 'z')
-          .map(n => s"Beverley Crusher $n") :+ "Mark Sloan")
+          .map(n => s"Beverley Crusher ($n)") :+ "Mark Sloan")
       )
     )
   )
@@ -136,7 +136,7 @@ class WorksFacetingTest
     Map(
       "contributors.agent.label" -> Seq(
         "Yuri Zhivago",
-        "Beverley Crusher a"
+        "Beverley Crusher (a)"
       )
     )
   )
@@ -283,22 +283,26 @@ class WorksFacetingTest
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> (('a' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
+        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
     )
   )
 
   protected val multipleUncommonTerms: ScenarioData = ScenarioData(
     filters = Seq(
-      ("contributors.agent.label", "Mark%20Sloan,Yuri%20Zhivago")
+      (
+        "contributors.agent.label",
+        "Mark%20Sloan,Yuri%20Zhivago,Beverley%20Crusher%20(z)"
+      )
     ),
     aggregationFields = Seq("contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> (Seq(
-        toUnidentifiedBucket(3, "Beverley Crusher a")
+        toUnidentifiedBucket(3, "Beverley Crusher (a)")
       ) ++ ('b' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher $n")
+        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) ++ Seq(
+        toUnidentifiedBucket(2, "Beverley Crusher (z)"),
         toUnidentifiedBucket(1, "Mark Sloan"),
         toUnidentifiedBucket(1, "Yuri Zhivago")
       ))
@@ -311,7 +315,7 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> Seq(
-        toUnidentifiedBucket(1, "Beverley Crusher a"),
+        toUnidentifiedBucket(1, "Beverley Crusher (a)"),
         toUnidentifiedBucket(1, "Yuri Zhivago"),
         toUnidentifiedBucket(0, "Mark Sloan")
       )

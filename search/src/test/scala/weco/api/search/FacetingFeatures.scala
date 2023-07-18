@@ -292,6 +292,7 @@ trait FacetingFeatures
             )
           }
         }
+
         Scenario("filtering on multiple uncommon terms") {
 
           val scenarioData = multipleUncommonTerms
