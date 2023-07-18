@@ -81,7 +81,11 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       case agg => agg
     }
 
-  def requestToOrderedAggregation(
+  // Given an aggregation request, convert it to an actual aggregation
+  // with a predictable sort order.
+  // Higher count buckets come first, and within each group of higher count buckets,
+  // the keys should be in alphabetical order.
+  private def requestToOrderedAggregation(
     aggReq: AggregationRequest
   ): AbstractAggregation =
     requestToAggregation(aggReq) match {
@@ -94,35 +98,45 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
 
   lazy val filteredAggregations: List[AbstractAggregation] =
     aggregationRequests.map { aggReq =>
-      val agg = requestToOrderedAggregation(aggReq)
-      pairedFilter(aggReq) match {
-        case Some(paired) =>
-          val otherFilters = filters.filterNot(_ == paired)
-          val pairedQuery = filterToQuery(paired)
-          FilterAggregation(
-            name = agg.name,
-            boolQuery.filter {
-              otherFilters.map(filterToQuery)
-            },
-            subaggs = Seq(
-              agg,
-              FilterAggregation(
-                name = "self",
-                pairedQuery,
-                subaggs = Seq(toSelfAggregation(agg, pairedQuery))
-              )
+      filteredAggregation(aggReq)
+    }
+
+  /**
+    *  Turn an aggregation request into an actual aggregation.
+    *  The aggregation will be filtered using all filters that do not operate on the same field as the aggregation (if any).
+    *  It also contains a subaggregation that *does* additionally filter on that field.  This ensures that the filtered
+    *  values are returned even if they fall outside the top n buckets as defined by the main aggregation
+    */
+  private def filteredAggregation(aggReq: AggregationRequest) = {
+    val agg = requestToOrderedAggregation(aggReq)
+    pairedFilter(aggReq) match {
+      case Some(paired) =>
+        val otherFilters = filters.filterNot(_ == paired)
+        val pairedQuery = filterToQuery(paired)
+        FilterAggregation(
+          name = agg.name,
+          boolQuery.filter {
+            otherFilters.map(filterToQuery)
+          },
+          subaggs = Seq(
+            agg,
+            FilterAggregation(
+              name = "self",
+              pairedQuery,
+              subaggs = Seq(toSelfAggregation(agg, pairedQuery))
             )
           )
-        case _ =>
-          FilterAggregation(
-            name = agg.name,
-            boolQuery.filter {
-              filters.map(filterToQuery)
-            },
-            subaggs = Seq(agg)
-          )
-      }
+        )
+      case _ =>
+        FilterAggregation(
+          name = agg.name,
+          boolQuery.filter {
+            filters.map(filterToQuery)
+          },
+          subaggs = Seq(agg)
+        )
     }
+  }
 
   private def pairedFilter(
     aggregationRequest: AggregationRequest
