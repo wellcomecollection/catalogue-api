@@ -262,7 +262,7 @@ trait FacetingFeatures
       }
 
       Rule(
-        "the context for counting aggregation buckets is set by the query and filters"
+        "valid filtered values are always returned in the buckets"
       ) {
         // For Works in the catalogue api, this represents the Sex/London/Germany problem
         // Once filtered by subject, the subject aggregation was only returning the global top 20 terms
