@@ -62,9 +62,15 @@ object AggregationMapping {
   // buckets that can be found within the given Json object
   private def bucketsFromAnywhere(json: Json): Seq[Bucket] = {
     val allBuckets = json.findAllByKey("buckets")
-    allBuckets flatMap {
-      _.asArray.get
-    } map (k => k.as[Bucket].right.get) distinct
+    allBuckets flatMap { bucketListJson =>
+      bucketListJson.asArray
+    } flatMap { jsonArray =>
+      jsonArray map { singleBucketJson =>
+        singleBucketJson.as[Bucket]
+      } collect {
+        case bucket if bucket.isRight => bucket.right.get
+      }
+    } distinct
   }
 
   private case class Bucket(

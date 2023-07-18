@@ -38,6 +38,17 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val filterToQuery: Filter => Query
 
   def pairedAggregationRequests(filter: Filter): List[AggregationRequest]
+
+  // Ensure that characters like parentheses can still be returned by the self aggregation, escape any
+  // regex tokens that might appear in filter terms.
+  // (as present in some labels, e.g. /concepts/gafuyqgp: "Nicholson, Michael C. (Michael Christopher), 1962-")
+  private def escapeRegexTokens(term: String): String =
+    term.replaceAll("""([.?+*|{}\[\]()\\"])""", "\\\\$1")
+
+  /**
+    * An aggregation that will contain the filtered-upon value even
+    * if no documents in the aggregation context match it.
+    */
   private def toSelfAggregation(
     agg: AbstractAggregation,
     filterQuery: Query
@@ -46,9 +57,26 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       case terms: TermsAggregation =>
         val filterTerm = filterQuery match {
           case TermsQuery(_, values, _, _, _, _, _) =>
-            values.map(value => s"""\\"$value\\"""").mkString("|")
+            //Aggregable values are a JSON object encoded as a string
+            // Filter terms correspond to a property of this JSON
+            // object (normally id or label).
+            // In order to ensure that this aggregation only matches
+            // the whole value in question, it is enclosed in
+            // escaped quotes.
+            // This is not perfect, but should be sufficient.
+            // If (e.g.) this filter operates
+            // on id and there is a label for a different value
+            // that exactly matches it, then both will be returned.
+            // This is an unlikely scenario, and will still result
+            // in the desired value being returned.
+            s"""\\"(${values
+              .map(value => escapeRegexTokens(value.toString))
+              .mkString("|")})\\""""
           case _ => ""
         }
+        // The aggregation context may be excluding all documents
+        // that match this filter term. Setting minDocCount to 0
+        // allows the term in question to be returned.
         terms.minDocCount(0).includeRegex(s".*($filterTerm).*")
       case agg => agg
     }
@@ -58,7 +86,9 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   ): AbstractAggregation =
     requestToAggregation(aggReq) match {
       case terms: TermsAggregation =>
-        terms.order(Seq(TermsOrder("_count"), TermsOrder("_key", asc = true)))
+        terms.order(
+          Seq(TermsOrder("_count", asc = false), TermsOrder("_key", asc = true))
+        )
       case agg => agg
     }
 
