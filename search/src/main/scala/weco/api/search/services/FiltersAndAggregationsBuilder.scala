@@ -182,6 +182,11 @@ class ImageFiltersAndAggregationsBuilder(
   ): List[ImageAggregationRequest] =
     filter match {
       case _: LicenseFilter => List(ImageAggregationRequest.License)
-      case _                => Nil
+      case _: ContributorsFilter =>
+        List(ImageAggregationRequest.SourceContributorAgents)
+      case _: GenreFilter        => List(ImageAggregationRequest.SourceGenres)
+      case _: SubjectLabelFilter => List(ImageAggregationRequest.SourceSubjects)
+
+      case _ => Nil
     }
 }

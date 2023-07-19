@@ -1,51 +1,23 @@
 package weco.api.search.works
 
-import akka.http.scaladsl.model.{ContentTypes, StatusCode}
-import akka.http.scaladsl.server.Route
-import io.circe.Json
-import io.circe.parser.parse
 import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
-import weco.api.search.generators.AggregationDocumentGenerators
+import weco.api.search.fixtures.{JsonServer, LocalJsonServerFixture}
+import weco.api.search.generators.{
+  AggregationDocumentGenerators,
+  BucketGenerators
+}
 import weco.fixtures.TestWith
 
 class WorksFacetingTest
     extends FacetingFeatures
     with ApiWorksTestBase
     with AggregationDocumentGenerators
-    with GivenWhenThen {
+    with BucketGenerators
+    with GivenWhenThen
+    with LocalJsonServerFixture {
 
   protected val resourcePath: String = s"$rootPath/works"
-
-  private def toKeywordBucket(
-    dataType: String,
-    count: Int,
-    code: String,
-    label: String
-  ): Json =
-    parse(s"""
-         |{
-         |"count": $count,
-         |"data": {
-         |  "id": "$code",
-         |  "label": "$label",
-         |  "type": "$dataType"
-         |},
-         |"type": "AggregationBucket"
-         |}""".stripMargin).right.get
-
-  private def toUnidentifiedBucket(
-    count: Int,
-    label: String
-  ): Json =
-    parse(s"""
-         |{
-         |"count": $count,
-         |"data": {
-         |  "label": "$label"
-         |},
-         |"type": "AggregationBucket"
-         |}""".stripMargin).right.get
 
   private val workTypeBuckets = Seq(
     Seq(
@@ -141,24 +113,6 @@ class WorksFacetingTest
     )
   )
 
-  private class WorksJsonServer(route: Route) extends JsonServer {
-    def getJson(path: String): Json =
-      eventually {
-        Get(path) ~> route ~> check {
-          contentType shouldEqual ContentTypes.`application/json`
-          status shouldEqual Status.OK
-          parseJson(responseAs[String])
-        }
-      }
-
-    def failToGet(path: String): StatusCode = eventually {
-      Get(path) ~> route ~> check {
-        status shouldNot equal(Status.OK)
-        status
-      }
-    }
-  }
-
   private val givens = Map[String, Seq[TestDocument]](
     "a dataset with some common aggregable values and a less common one" -> top21Contributors,
     "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents" -> multipleUncommonContributors
@@ -173,7 +127,7 @@ class WorksFacetingTest
     }
   }
 
-  protected def withFacetedAPI[R](
+  private def withFacetedAPI[R](
     docs: Option[Seq[TestDocument]]
   )(testWith: TestWith[JsonServer, R]): R =
     withWorksApi[R] {
