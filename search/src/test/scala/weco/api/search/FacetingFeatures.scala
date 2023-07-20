@@ -361,7 +361,9 @@ trait FacetingFeatures
       ) {
         Scenario("empty buckets") {
           val scenarioData = emptyBucketFilter
-          Given("a dataset with multiple aggregable fields, where one record has a field which the others do not") { server =>
+          Given(
+            "a dataset with multiple aggregable fields, where one record has a field which the others do not"
+          ) { server =>
             When("records are requested")
             And(
               "the request has a filter on field A that excludes all resources with values in field B"
@@ -427,16 +429,17 @@ trait FacetingFeatures
 
       Scenario("unexpected parameters") {
         val scenarioData = queryAndFilter
-        Given("a dataset with aggregable values") { server =>
-          When("a query is made")
-          And("the request contains unknown parameters")
-          val responseJson =
-            server.getJson(s"${scenarioData.url}&thisIsNotAFilter=SomeValue")
-          Then("the unknown parameters are ignored")
-          assertSameBuckets(
-            scenarioData.expectedAggregationBuckets,
-            responseJson
-          )
+        Given("a dataset with queryable content and multiple aggregable fields") {
+          server =>
+            When("a query is made")
+            And("the request contains unknown parameters")
+            val responseJson =
+              server.getJson(s"${scenarioData.url}&thisIsNotAFilter=SomeValue")
+            Then("the unknown parameters are ignored")
+            assertSameBuckets(
+              scenarioData.expectedAggregationBuckets,
+              responseJson
+            )
         }
       }
     }

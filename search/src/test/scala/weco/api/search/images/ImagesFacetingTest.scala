@@ -158,10 +158,61 @@ class ImagesFacetingTest
     )
   )
 
-  protected val queryAndFilter: ScenarioData = ScenarioData()
-  protected val uncommonTerm: ScenarioData = ScenarioData()
-  protected val multipleUncommonTerms: ScenarioData = ScenarioData()
-  protected val queryingUncommonTerms: ScenarioData = ScenarioData()
+  protected val queryAndFilter: ScenarioData = ScenarioData(
+    queryTerm = Some("mash"),
+    aggregationFields = Seq("source.genres.label"),
+    filters = Seq(("source.subjects.label", "Surgery")),
+    expectedAggregationBuckets = Map(
+      "source.genres.label" -> Seq(
+        // Only Hunnicut is Surgery+mash
+        toUnidentifiedBucket(1, "Daguerreotype")
+      )
+    )
+  )
+
+  protected val uncommonTerm: ScenarioData = ScenarioData(
+    aggregationFields = Seq("source.contributors.agent.label"),
+    filters = Seq(("source.contributors.agent.label", "Mark%20Sloan")),
+    expectedAggregationBuckets = Map(
+      "source.contributors.agent.label" -> (('a' to 't').map(
+        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
+    )
+  )
+
+  protected val multipleUncommonTerms: ScenarioData = ScenarioData(
+    filters = Seq(
+      (
+        "source.contributors.agent.label",
+        "Mark%20Sloan,Yuri%20Zhivago,Beverley%20Crusher%20(z)"
+      )
+    ),
+    aggregationFields = Seq("source.contributors.agent.label"),
+    expectedAggregationBuckets = Map(
+      "source.contributors.agent.label" -> (Seq(
+        toUnidentifiedBucket(3, "Beverley Crusher (a)")
+      ) ++ ('b' to 't').map(
+        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      ) ++ Seq(
+        toUnidentifiedBucket(2, "Beverley Crusher (z)"),
+        toUnidentifiedBucket(1, "Mark Sloan"),
+        toUnidentifiedBucket(1, "Yuri Zhivago")
+      ))
+    )
+  )
+
+  protected val queryingUncommonTerms: ScenarioData = ScenarioData(
+    queryTerm = Some("Zhivago"),
+    filters = Seq(("source.contributors.agent.label", "Mark%20Sloan")),
+    aggregationFields = Seq("source.contributors.agent.label"),
+    expectedAggregationBuckets = Map(
+      "source.contributors.agent.label" -> Seq(
+        toUnidentifiedBucket(1, "Beverley Crusher (a)"),
+        toUnidentifiedBucket(1, "Yuri Zhivago"),
+        toUnidentifiedBucket(0, "Mark Sloan")
+      )
+    )
+  )
 
   private val hunnicutDaguerreotype = createImageDocument(
     s"hunn1234",
@@ -209,10 +260,43 @@ class ImagesFacetingTest
     cullenOilPainting,
     jonesNoGenre
   )
+
+  private val top21Contributors = Seq(
+    createImageDocument(
+      s"abadcafe",
+      "top 20 only",
+      Map(
+        "source.contributors.agent.label" -> ('a' to 'z')
+          .map(n => s"Beverley Crusher ($n)")
+      )
+    ),
+    createImageDocument(
+      "goodcafe",
+      "top 20 and hapax",
+      Map(
+        "source.contributors.agent.label" -> (('a' to 'z')
+          .map(n => s"Beverley Crusher ($n)") :+ "Mark Sloan")
+      )
+    )
+  )
+
+  private val multipleUncommonContributors = top21Contributors :+ createImageDocument(
+    "baadf00d",
+    "top 1 and hapax legomenon",
+    Map(
+      "source.contributors.agent.label" -> Seq(
+        "Yuri Zhivago",
+        "Beverley Crusher (a)"
+      )
+    )
+  )
+
   private val givens: Map[String, Seq[TestDocument]] = Map(
     "a dataset with multiple aggregable fields" -> threeImages,
     "a dataset with queryable content and multiple aggregable fields" -> threeImages,
-    "a dataset with multiple aggregable fields, where one record has a field which the others do not" -> setWithOneGenre
+    "a dataset with multiple aggregable fields, where one record has a field which the others do not" -> setWithOneGenre,
+    "a dataset with some common aggregable values and a less common one" -> top21Contributors,
+    "a dataset with two uncommon terms in two different documents and some common terms that are not present in one of those documents" -> multipleUncommonContributors
   )
 
   override protected def Given[R](msg: String)(
