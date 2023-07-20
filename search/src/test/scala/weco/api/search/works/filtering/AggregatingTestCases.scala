@@ -16,7 +16,7 @@ trait AggregatingTestCases extends AnyFunSpec with ApiWorksTestBase {
   val redundantFilterParams: String
   val redundantFilterBucket: String
 
-  val bogusValueParams: String
+  val unattestedValueParams: String
 
   describe(s"filtering and aggregating on $fieldName") {
     it(
@@ -35,14 +35,14 @@ trait AggregatingTestCases extends AnyFunSpec with ApiWorksTestBase {
     }
 
     it(
-      "does not return an aggregation containing the filtered value if the value is bogus"
+      "does not return an aggregation containing the filtered value if the value is not attested in the corpus"
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, testWorks: _*)
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?$bogusValueParams"
+            path = s"$rootPath/works?$unattestedValueParams"
           ) {
             Status.OK -> worksListResponseWithAggs(
               Nil,

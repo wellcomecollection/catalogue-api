@@ -62,6 +62,6 @@ class FilterAndAggregateByAvailabilityTest
                                        |            "label" : "Online",
                                        |            "type" : "Availability"
                                        |          }""".stripMargin
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "availabilities=on-the-moon&genres.label=ThisIsNotAGenre&aggregations=availabilities"
 }
