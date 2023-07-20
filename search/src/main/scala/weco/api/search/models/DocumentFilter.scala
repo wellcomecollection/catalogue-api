@@ -1,10 +1,10 @@
 package weco.api.search.models
 
 import java.time.LocalDate
+sealed trait DocumentFilter
+sealed trait WorkFilter extends DocumentFilter
 
-sealed trait WorkFilter
-
-sealed trait ImageFilter
+sealed trait ImageFilter extends DocumentFilter
 
 case class ItemLocationTypeIdFilter(locationTypeIds: Seq[String])
     extends WorkFilter
