@@ -83,7 +83,7 @@ class FilterAndAggregateByContributorTest
       |""".stripMargin
 
   val aggregationName: String = "contributors.agent.label"
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "languages=sjn&contributors.agent.label=Joseph%20Pujol&aggregations=contributors.agent.label"
   val bogusValueResponse: String = ""
 }

@@ -72,7 +72,7 @@ class FilterAndAggregateByLanguageTest
       |          }
       |""".stripMargin
   val aggregationName: String = "languages"
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "languages=sjn&genres.label=NotAGenre&aggregations=languages"
   val bogusValueResponse: String = ""
 }

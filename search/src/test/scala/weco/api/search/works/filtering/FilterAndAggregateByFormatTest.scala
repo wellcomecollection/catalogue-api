@@ -47,6 +47,6 @@ class FilterAndAggregateByFormatTest
                                        |            "label" : "Pictures",
                                        |            "type" : "Format"
                                        |          }""".stripMargin
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "workType=z&genres.label=ThisIsNotAGenre&aggregations=workType"
 }

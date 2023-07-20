@@ -7,9 +7,9 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 
-sealed trait SearchOptions[DocumentFilter, AggregationRequest, MustQuery] {
+sealed trait SearchOptions[DocFilter, AggregationRequest, MustQuery] {
   val searchQuery: Option[SearchQuery]
-  val filters: List[DocumentFilter]
+  val filters: List[DocFilter]
   val aggregations: List[AggregationRequest]
   val mustQueries: List[MustQuery]
   val sortBy: List[SortRequest]

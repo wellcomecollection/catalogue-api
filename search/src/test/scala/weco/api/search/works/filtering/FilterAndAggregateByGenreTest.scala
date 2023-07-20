@@ -87,7 +87,7 @@ class FilterAndAggregateByGenreTest
       |          }
       |""".stripMargin
   val aggregationName: String = "genres.label"
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "languages=sjn&genres.label=NotAGenre&aggregations=genres.label"
   val bogusValueResponse: String = ""
 }

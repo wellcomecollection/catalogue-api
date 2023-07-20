@@ -93,7 +93,7 @@ class FilterAndAggregateBySubjectTest
       |          }
       |""".stripMargin
   val aggregationName: String = "subjects.label"
-  val bogusValueParams: String =
+  val unattestedValueParams: String =
     "languages=sjn&subjects.label=NotASubject&aggregations=subjects.label"
   val bogusValueResponse: String = ""
 }

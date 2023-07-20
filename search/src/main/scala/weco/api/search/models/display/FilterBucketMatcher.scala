@@ -4,7 +4,7 @@ import io.circe.Json
 import weco.api.search.models.{
   AvailabilitiesFilter,
   ContributorsFilter,
-  DocumentFilterBase,
+  DocumentFilter,
   FormatFilter,
   GenreFilter,
   LanguagesFilter,
@@ -61,7 +61,7 @@ class FilterBucketMatcher(
 }
 
 object FilterBucketMatcher {
-  def apply(filters: Seq[DocumentFilterBase]) =
+  def apply(filters: Seq[DocumentFilter]) =
     new FilterBucketMatcher(
       filters collect {
         case FormatFilter(ids) =>
