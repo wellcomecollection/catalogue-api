@@ -25,16 +25,18 @@ object WorksRequestBuilder
 
   def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
     implicit val s = searchOptions
+    val pairings =
+      WorksPairedAggregations(searchOptions.filters, searchOptions.aggregations)
     search(index)
       .aggs { filteredAggregationBuilder.filteredAggregations }
-      .query { searchQuery }
+      .query { withPrefilters(searchQuery, pairings.unpaired) }
       .sortBy { sortBy }
       .limit { searchOptions.pageSize }
       .from { PaginationQuery.safeGetFrom(searchOptions) }
       .sourceInclude("display", "type")
       .postFilter {
         must(
-          buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+          buildWorkFilterQuery(searchOptions.filters)
         )
       }
   }
@@ -127,6 +129,12 @@ object WorksRequestBuilder
       case SortingOrder.Ascending  => SortOrder.ASC
       case SortingOrder.Descending => SortOrder.DESC
     }
+  private def withPrefilters(
+    query: BoolQuery,
+    filters: Seq[WorkFilter]
+  )(): Query = query.filter {
+    buildWorkFilterQuery(filters :+ VisibleWorkFilter)
+  }
 
   private def searchQuery(
     implicit searchOptions: WorkSearchOptions

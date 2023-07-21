@@ -58,7 +58,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
-      filterToQuery = buildImageFilterQuery,
+      filterToQuery = buildImageFilterQuery
     )
 
   private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =

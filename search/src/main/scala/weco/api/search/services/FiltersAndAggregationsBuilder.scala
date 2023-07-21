@@ -10,7 +10,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
-import weco.api.search.models._
+import weco.api.search.models.{PairableFilter, _}
 import weco.api.search.models.request.{
   ImageAggregationRequest,
   WorkAggregationRequest
@@ -31,7 +31,10 @@ import scala.collection.immutable._
   *   now have a sub-aggregation of the filter aggregation type, named "filtered", and are in the global
   *   aggregation context so post-filtering of query results is not required.
   */
-trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
+trait FiltersAndAggregationsBuilder[
+  Filter <: DocumentFilter,
+  AggregationRequest
+] {
   val aggregationRequests: List[AggregationRequest]
   val filters: List[Filter]
   val requestToAggregation: AggregationRequest => Aggregation
@@ -100,6 +103,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     aggregationRequests.map { aggReq =>
       filteredAggregation(aggReq)
     }
+  val pairs: Map[AggregationRequest, Filter]
 
   /**
     *  Turn an aggregation request into an actual aggregation.
@@ -109,7 +113,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     */
   private def filteredAggregation(aggReq: AggregationRequest) = {
     val agg = requestToOrderedAggregation(aggReq)
-    pairedFilter(aggReq) match {
+    pairs.get(aggReq) match {
       case Some(paired) =>
         val otherFilters = filters.filterNot(_ == paired)
         val pairedQuery = filterToQuery(paired)
@@ -137,13 +141,42 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
         )
     }
   }
+}
 
-  private def pairedFilter(
-    aggregationRequest: AggregationRequest
-  ): Option[Filter] =
-    filters.find { filter =>
-      pairedAggregationRequests(filter)
-        .contains(aggregationRequest)
+object WorksPairedAggregations {
+  case class FiltersAndAggregations(
+    paired: Map[WorkAggregationRequest, WorkFilter],
+    unpaired: Seq[WorkFilter]
+  )
+  def apply(
+    filterRequests: Seq[WorkFilter],
+    aggregationRequests: Seq[WorkAggregationRequest]
+  ): FiltersAndAggregations = {
+    val eitherFilter = filterRequests map {
+      case pairable: PairableFilter =>
+        val aggReq = aggregationForFilter(pairable)
+        if (aggregationRequests.contains(aggReq)) Left(aggReq -> pairable)
+        else Right(pairable)
+
+      case unpairable => Right(unpairable)
+    } groupBy (_.isLeft)
+
+    FiltersAndAggregations(
+      paired = eitherFilter.getOrElse(true, Nil).map(_.left.get).toMap,
+      unpaired = eitherFilter.getOrElse(false, Nil).map(_.right.get)
+    )
+  }
+
+  def aggregationForFilter(filter: PairableFilter): WorkAggregationRequest =
+    filter match {
+      case _: FormatFilter       => WorkAggregationRequest.Format
+      case _: LanguagesFilter    => WorkAggregationRequest.Languages
+      case _: GenreFilter        => WorkAggregationRequest.Genre
+      case _: SubjectLabelFilter => WorkAggregationRequest.Subject
+      case _: ContributorsFilter => WorkAggregationRequest.Contributor
+      case _: LicenseFilter      => WorkAggregationRequest.License
+      case _: AvailabilitiesFilter =>
+        WorkAggregationRequest.Availabilities
     }
 }
 
@@ -154,6 +187,8 @@ class WorkFiltersAndAggregationsBuilder(
   val filterToQuery: WorkFilter => Query
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
+  val pairs: Map[WorkAggregationRequest, WorkFilter] =
+    WorksPairedAggregations(filters, aggregationRequests).paired
   override def pairedAggregationRequests(
     filter: WorkFilter
   ): List[WorkAggregationRequest] =
@@ -176,6 +211,7 @@ class ImageFiltersAndAggregationsBuilder(
   val requestToAggregation: ImageAggregationRequest => Aggregation,
   val filterToQuery: ImageFilter => Query
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
+  val pairs: Map[ImageAggregationRequest, ImageFilter] = Map.empty
 
   override def pairedAggregationRequests(
     filter: ImageFilter
