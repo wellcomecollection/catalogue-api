@@ -65,4 +65,6 @@ case class AccessStatusFilter(
 case class PartOfFilter(id: String) extends WorkFilter
 case class PartOfTitleFilter(id: String) extends WorkFilter
 
-case class AvailabilitiesFilter(availabilityIds: Seq[String]) extends WorkFilter with PairableFilter
+case class AvailabilitiesFilter(availabilityIds: Seq[String])
+    extends WorkFilter
+    with PairableFilter
