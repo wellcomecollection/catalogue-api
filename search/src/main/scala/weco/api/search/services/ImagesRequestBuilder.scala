@@ -36,23 +36,25 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     binMinima = queryConfig.paletteBinMinima
   )
 
-  def request(searchOptions: ImageSearchOptions, index: Index): Left[SearchRequest, Nothing] =
-    Left(search(index)
-      .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
-      .query(searchQuery(searchOptions))
-      .sortBy { sortBy(searchOptions) }
-      .limit(searchOptions.pageSize)
-      .trackTotalHits(true)
-      .from(PaginationQuery.safeGetFrom(searchOptions))
-      .sourceInclude(
-        "display",
-        // we do KNN searches for similar images, and for that we need
-        // to send the image's vectors to Elasticsearch
-        "query.inferredData.reducedFeatures"
-      )
-      .postFilter {
-        must(buildImageFilterQuery(searchOptions.filters))
-      })
+  def request(searchOptions: ImageSearchOptions,
+              index: Index): Left[SearchRequest, Nothing] =
+    Left(
+      search(index)
+        .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
+        .query(searchQuery(searchOptions))
+        .sortBy { sortBy(searchOptions) }
+        .limit(searchOptions.pageSize)
+        .trackTotalHits(true)
+        .from(PaginationQuery.safeGetFrom(searchOptions))
+        .sourceInclude(
+          "display",
+          // we do KNN searches for similar images, and for that we need
+          // to send the image's vectors to Elasticsearch
+          "query.inferredData.reducedFeatures"
+        )
+        .postFilter {
+          must(buildImageFilterQuery(searchOptions.filters))
+        })
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(

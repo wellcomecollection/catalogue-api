@@ -11,7 +11,8 @@ import weco.api.search.models.SearchOptions
 trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _, _]] {
   val idSort: FieldSort
 
-  def request(searchOptions: S, index: Index): Either[SearchRequest, TemplateSearchRequest]
+  def request(searchOptions: S,
+              index: Index): Either[SearchRequest, TemplateSearchRequest]
 }
 
 object ElasticsearchRequestBuilder {
