@@ -1,0 +1,32 @@
+
+
+GET works-indexed-2023-06-26/_search/template
+{
+  "source" : "{\n  \"query\": {\n    \"bool\": {\n      \"should\": [\n        {\n          \"span_first\": {\n            \"match\": {\n              \"span_term\": {\n                \"query.title.shingles\": \"{{query_term}}\"\n              }\n            },\n            \"end\": 1,\n            \"boost\": 1000.0,\n            \"_name\": \"start of title\"\n          }\n        },\n        {\n          \"multi_match\": {\n            \"query\": \"{{query_term}}\",\n            \"fields\": [\n              \"query.id^1000.0\",\n              \"query.identifiers.value^1000.0\",\n              \"query.items.id^1000.0\",\n              \"query.items.identifiers.value^1000.0\",\n              \"query.images.id^1000.0\",\n              \"query.images.identifiers.value^1000.0\",\n              \"query.referenceNumber^1000.0\",\n              \"query.allIdentifiers^1000.0\"\n            ],\n            \"type\": \"best_fields\",\n            \"analyzer\": \"whitespace_analyzer\",\n            \"operator\": \"Or\",\n            \"_name\": \"identifiers\"\n          }\n        },\n        {\n          \"dis_max\": {\n            \"queries\": [\n              {\n                \"multi_match\": {\n                  \"query\": \"{{query_term}}\",\n                  \"fields\": [\n                    \"query.titlesAndContributors^100.0\",\n                    \"query.titlesAndContributors.english^100.0\",\n                    \"query.titlesAndContributors.shingles^100.0\"\n                  ],\n                  \"type\": \"best_fields\",\n                  \"minimum_should_match\": \"-30%\",\n                  \"operator\": \"Or\",\n                  \"_name\": \"title and contributor exact spellings\"\n                }\n              },\n              {\n                \"multi_match\": {\n                  \"query\": \"{{query_term}}\",\n                  \"fields\": [\n                    \"query.titlesAndContributors.arabic\",\n                    \"query.titlesAndContributors.bengali\",\n                    \"query.titlesAndContributors.french\",\n                    \"query.titlesAndContributors.german\",\n                    \"query.titlesAndContributors.hindi\",\n                    \"query.titlesAndContributors.italian\"\n                  ],\n                  \"type\": \"best_fields\",\n                  \"minimum_should_match\": \"-30%\",\n                  \"operator\": \"Or\",\n                  \"_name\": \"non-english titles and contributors\"\n                }\n              }\n            ]\n          }\n        },\n        {\n          \"bool\": {\n            \"must\": [\n              {\n                \"multi_match\": {\n                  \"query\": \"{{query_term}}\",\n                  \"fields\": [\n                    \"query.collectionPath.path.clean\",\n                    \"query.collectionPath.label.cleanPath\",\n                    \"query.collectionPath.label\",\n                    \"query.collectionPath.path.keyword\"\n                  ],\n                  \"operator\": \"Or\",\n                  \"_name\": \"relations paths\"\n                }\n              }\n            ],\n            \"should\": [\n              {\n                \"multi_match\": {\n                  \"query\": \"{{query_term}}\",\n                  \"fields\": [\n                    \"query.title^100.0\",\n                    \"query.description^10.0\"\n                  ],\n                  \"type\": \"cross_fields\",\n                  \"operator\": \"Or\",\n                  \"_name\": \"relations text\"\n                }\n              }\n            ]\n          }\n        },\n        {\n          \"multi_match\": {\n            \"query\": \"{{query_term}}\",\n            \"fields\": [\n              \"query.contributors.agent.label^1000.0\",\n              \"query.subjects.concepts.label^10.0\",\n              \"query.genres.concepts.label^10.0\",\n              \"query.production.label^10.0\",\n              \"query.description\",\n              \"query.physicalDescription\",\n              \"query.languages.label\",\n              \"query.edition\",\n              \"query.notes.contents\",\n              \"query.lettering\"\n            ],\n            \"type\": \"cross_fields\",\n            \"minimum_should_match\": \"-30%\",\n            \"operator\": \"Or\",\n            \"_name\": \"data\"\n          }\n        },\n        {\n          \"multi_match\": {\n            \"query\": \"{{query_term}}\",\n            \"fields\": [\n              \"query.title.shingles_cased^1000.0\",\n              \"query.alternativeTitles.shingles_cased^100.0\",\n              \"query.partOf.title.shingles_cased^10.0\"\n            ],\n            \"type\": \"most_fields\",\n            \"minimum_should_match\": \"-30%\",\n            \"operator\": \"Or\",\n            \"_name\": \"shingles cased\"\n          }\n        }\n      ],\n      \"filter\": [\n        {\n          \"term\": {\n            \"type\": {\n              \"value\": \"Visible\"\n            }\n          }\n        }\n      ],\n      \"minimum_should_match\": \"1\"\n    }\n  },\n\n  \"from\": \"{{from}}\",\n  \"size\": \"{{size}}\",\n  \"_source\": {\n    \"includes\": [\n      \"display\",\n      \"type\"\n    ]\n  },\n  {{#aggs}}\n  \"aggs\": {{#toJson}}aggs{{/toJson}},\n  {{/aggs}}\n  {{#filters}}\n  \"post_filter\": {{#toJson}}filters{{/toJson}},\n  {{/filters}}\n\n  \"sort\": [\n    {{#sort_by_score}}\n    {\n      \"_score\": {\n        \"order\": \"desc\"\n      }\n    },\n    {{/sort_by_score}}\n    {{#sort_by_date}}\n    {\n      \"query.production.dates.range.from\": {\n        \"order\": \"{{sort_by_date}}\"\n      }\n    },\n    {{/sort_by_date}}\n    {\n      \"query.id\": {\n        \"order\": \"asc\"\n      }\n    }\n  ]\n}\n",
+  "params" : {
+    "query_term" : "banana",
+    "from":0,
+    "size":25,
+    "sort_by_date":"desc",
+    "filters": {
+      "bool": {
+        "must": [
+          {
+            "term": {
+              "type": {
+                "value": "Visible"
+              }
+            }
+          },
+          {
+            "terms": {
+              "query.languages.id": [
+                "fre"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
