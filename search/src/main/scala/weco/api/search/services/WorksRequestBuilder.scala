@@ -15,7 +15,7 @@ import weco.api.search.models.request.{
 }
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.WorksMultiMatcher
-
+import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions] {
 
@@ -23,20 +23,28 @@ object WorksRequestBuilder
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
-  def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
+  def request(
+    searchOptions: WorkSearchOptions,
+    index: Index
+  ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s = searchOptions
-    search(index)
-      .aggs { filteredAggregationBuilder.filteredAggregations }
-      .query { searchQuery }
-      .sortBy { sortBy }
-      .limit { searchOptions.pageSize }
-      .from { PaginationQuery.safeGetFrom(searchOptions) }
-      .sourceInclude("display", "type")
-      .postFilter {
-        must(
-          buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
-        )
-      }
+    val aggs = filteredAggregationBuilder.filteredAggregations
+
+    Right(
+      search(index)
+        .aggs { filteredAggregationBuilder.filteredAggregations }
+        .query { searchQuery }
+        .sortBy { sortBy }
+        .limit { searchOptions.pageSize }
+        .trackTotalHits(true)
+        .from { PaginationQuery.safeGetFrom(searchOptions) }
+        .sourceInclude("display", "type")
+        .postFilter {
+          must(
+            buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+          )
+        }
+    )
   }
 
   private def filteredAggregationBuilder(

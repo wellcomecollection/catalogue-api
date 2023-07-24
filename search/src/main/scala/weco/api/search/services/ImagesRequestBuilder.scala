@@ -36,12 +36,13 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     binMinima = queryConfig.paletteBinMinima
   )
 
-  def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
-    search(index)
+  def request(searchOptions: ImageSearchOptions, index: Index): Left[SearchRequest, Nothing] =
+    Left(search(index)
       .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
       .query(searchQuery(searchOptions))
       .sortBy { sortBy(searchOptions) }
       .limit(searchOptions.pageSize)
+      .trackTotalHits(true)
       .from(PaginationQuery.safeGetFrom(searchOptions))
       .sourceInclude(
         "display",
@@ -51,7 +52,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
       )
       .postFilter {
         must(buildImageFilterQuery(searchOptions.filters))
-      }
+      })
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(

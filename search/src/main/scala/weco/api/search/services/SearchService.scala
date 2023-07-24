@@ -61,11 +61,15 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
     searchOptions: S,
     index: Index
   ): Future[Either[ElasticsearchError, SearchResponse]] = {
-    val searchRequest = requestBuilder
+    val request = requestBuilder
       .request(searchOptions, index)
-      .trackTotalHits(true)
     Tracing.currentTransaction.addQueryOptionLabels(searchOptions)
-    elasticsearchService.executeSearchRequest(searchRequest)
+    request match {
+      case Left(search) => elasticsearchService.executeSearchRequest(search)
+      case Right(template) =>
+        elasticsearchService.executeTemplateSearchRequest(template)
+    }
+
   }
 
   implicit class EnhancedTransaction(transaction: Transaction) {
