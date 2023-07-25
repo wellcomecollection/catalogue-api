@@ -17,11 +17,11 @@ trait TemplateSearchHandlers {
 
     private def endpoint(indexes: Indexes): String =
       if (indexes.values.isEmpty)
-        "/_all/_search"
+        "/_all/_search/template"
       else
         "/" + indexes.values
           .map(ElasticUrlEncoder.encodeUrlFragment)
-          .mkString(",") + "/_search"
+          .mkString(",") + "/_search/template"
 
     override def build(request: TemplateSearchRequest): ElasticRequest = {
       val body = Json

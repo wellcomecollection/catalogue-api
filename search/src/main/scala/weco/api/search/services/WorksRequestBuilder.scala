@@ -7,6 +7,8 @@ import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
+import io.circe.Json
+import io.circe.syntax.EncoderOps
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ProductionDateSortRequest,
@@ -16,35 +18,57 @@ import weco.api.search.models.request.{
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.WorksMultiMatcher
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
+
+import scala.io.Source
 object WorksRequestBuilder
-    extends ElasticsearchRequestBuilder[WorkSearchOptions] {
+    extends ElasticsearchRequestBuilder[WorkSearchOptions]
+    with TemplateSearchBuilder {
 
   import ElasticsearchRequestBuilder._
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
+
+  protected val queryTemplate: String =
+    Source.fromResource("WorksMultiMatcherQueryTemplate.json").mkString
 
   def request(
     searchOptions: WorkSearchOptions,
     index: Index
   ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s = searchOptions
-    val aggs = filteredAggregationBuilder.filteredAggregations
-
+    val aggs: Seq[AbstractAggregation] =
+      filteredAggregationBuilder.filteredAggregations
+    if (false)
+      Left(
+        search(index)
+          .aggs { aggs }
+          .query { searchQuery }
+          .sortBy { sortBy }
+          .limit { searchOptions.pageSize }
+          .trackTotalHits(true)
+          .from { PaginationQuery.safeGetFrom(searchOptions) }
+          .sourceInclude("display", "type")
+          .postFilter {
+            must(
+              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+            )
+          }
+      )
     Right(
-      search(index)
-        .aggs { filteredAggregationBuilder.filteredAggregations }
-        .query { searchQuery }
-        .sortBy { sortBy }
-        .limit { searchOptions.pageSize }
-        .trackTotalHits(true)
-        .from { PaginationQuery.safeGetFrom(searchOptions) }
-        .sourceInclude("display", "type")
-        .postFilter {
-          must(
-            buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
-          )
-        }
+      searchRequest(
+        indexes = Indexes(values = Seq(index.name)),
+        params = Json.obj(
+          "query" -> searchOptions.searchQuery.get.query.asJson,
+          "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
+          "size" -> searchOptions.pageSize.asJson
+          // "sort_by_date"
+          // "sort_by_score"
+          // "aggs" -> Do some Circe Encoder business.
+          // "post_filters" -> Do some Circe Encoder business.
+        )
+      )
     )
+
   }
 
   private def filteredAggregationBuilder(
@@ -249,4 +273,5 @@ object WorksRequestBuilder
           values = availabilityIds
         )
     }
+
 }

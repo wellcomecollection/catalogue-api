@@ -36,8 +36,10 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     binMinima = queryConfig.paletteBinMinima
   )
 
-  def request(searchOptions: ImageSearchOptions,
-              index: Index): Left[SearchRequest, Nothing] =
+  def request(
+    searchOptions: ImageSearchOptions,
+    index: Index
+  ): Left[SearchRequest, Nothing] =
     Left(
       search(index)
         .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
@@ -54,14 +56,15 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         )
         .postFilter {
           must(buildImageFilterQuery(searchOptions.filters))
-        })
+        }
+    )
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
-      filterToQuery = buildImageFilterQuery,
+      filterToQuery = buildImageFilterQuery
     )
 
   private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =
