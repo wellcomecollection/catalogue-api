@@ -9,7 +9,9 @@ trait TemplateSearchBuilder {
 
   lazy protected val source: String =
     s"""
-       |{ "query": $queryTemplate,
+       |{ {{#query}}
+       |  "query": $queryTemplate,
+       |  {{/query}}
        |  "from": "{{from}}",
        |  "size": "{{size}}",
        |  "_source": {

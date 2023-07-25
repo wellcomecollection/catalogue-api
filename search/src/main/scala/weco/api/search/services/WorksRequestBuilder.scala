@@ -61,7 +61,7 @@ object WorksRequestBuilder
         params = Json.obj(
           "query" -> searchOptions.searchQuery
             .map(_.query.asJson)
-            .getOrElse(Json.fromString("")),
+            .getOrElse("".asJson),
           "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
           "size" -> searchOptions.pageSize.asJson,
           "aggs" -> aggs.asJson
