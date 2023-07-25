@@ -22,7 +22,8 @@ import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import scala.io.Source
 object WorksRequestBuilder
     extends ElasticsearchRequestBuilder[WorkSearchOptions]
-    with TemplateSearchBuilder {
+    with TemplateSearchBuilder
+    with Encoders {
 
   import ElasticsearchRequestBuilder._
 
@@ -58,12 +59,14 @@ object WorksRequestBuilder
       searchRequest(
         indexes = Indexes(values = Seq(index.name)),
         params = Json.obj(
-          "query" -> searchOptions.searchQuery.get.query.asJson,
+          "query" -> searchOptions.searchQuery
+            .map(_.query.asJson)
+            .getOrElse(Json.fromString("")),
           "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
-          "size" -> searchOptions.pageSize.asJson
+          "size" -> searchOptions.pageSize.asJson,
+          "aggs" -> aggs.asJson
           // "sort_by_date"
           // "sort_by_score"
-          // "aggs" -> Do some Circe Encoder business.
           // "post_filters" -> Do some Circe Encoder business.
         )
       )
