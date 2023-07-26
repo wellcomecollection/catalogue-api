@@ -21,6 +21,7 @@ trait Encoders {
   // XContentBuilder.string is deprecated with an astoundingly unhelpful message
   // "will be replaced with a pluggable system", yet all the code in E4S
   // and its documentation still uses `.string()` everywhere.
+
   // This warning is being suppressed here as we do not intend to
   // carry on working this way for very long.
   @nowarn
