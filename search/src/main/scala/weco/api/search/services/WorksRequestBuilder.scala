@@ -44,7 +44,7 @@ object WorksRequestBuilder
         params = Json.obj(
           "query" -> (searchOptions.searchQuery match {
             case Some(searchQuery) => searchQuery.query.asJson
-            case None => Json.False
+            case None              => Json.False
           }),
           "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
           "size" -> searchOptions.pageSize.asJson,
