@@ -40,7 +40,7 @@ object WorksRequestBuilder
       buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters))
     Right(
       searchRequest(
-        indexes = Indexes(values = Seq(index.name)),
+        indexes = Seq(index.name),
         params = Json.obj(
           "query" -> searchOptions.searchQuery
             .map(_.query.asJson)

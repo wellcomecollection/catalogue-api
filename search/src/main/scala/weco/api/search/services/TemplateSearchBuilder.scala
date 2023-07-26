@@ -1,6 +1,5 @@
 package weco.api.search.services
 
-import com.sksamuel.elastic4s.Indexes
 import io.circe.Json
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
@@ -53,6 +52,6 @@ trait TemplateSearchBuilder {
        |}
        |""".stripMargin
 
-  def searchRequest(indexes: Indexes, params: Json): TemplateSearchRequest =
+  def searchRequest(indexes: Seq[String], params: Json): TemplateSearchRequest =
     TemplateSearchRequest(indexes, source, params)
 }
