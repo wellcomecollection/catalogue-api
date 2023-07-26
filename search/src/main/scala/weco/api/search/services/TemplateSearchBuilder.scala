@@ -20,12 +20,14 @@ trait TemplateSearchBuilder {
        |      "type"
        |    ]
        |  },
+       |
        |  {{#aggs}}
        |  "aggs": {{#toJson}}aggs{{/toJson}},
        |  {{/aggs}}
-       |  {{#post_filters}}
-       |  "post_filter": {{#toJson}}post_filters{{/toJson}},
-       |  {{/post_filters}}
+       |
+       |  {{#post_filter}}
+       |  "post_filter": {{#toJson}}post_filter{{/toJson}},
+       |  {{/post_filter}}
        |
        |  "sort": [
        |    {{#sort_by_date}}

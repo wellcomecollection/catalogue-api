@@ -2,10 +2,8 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
-import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
-import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.Json
 import io.circe.syntax.EncoderOps
@@ -16,7 +14,6 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 import weco.api.search.rest.PaginationQuery
-import weco.api.search.elasticsearch.WorksMultiMatcher
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
 import scala.io.Source
@@ -36,25 +33,9 @@ object WorksRequestBuilder
     searchOptions: WorkSearchOptions,
     index: Index
   ): Right[Nothing, TemplateSearchRequest] = {
-    implicit val s = searchOptions
-    val aggs: Seq[AbstractAggregation] =
-      filteredAggregationBuilder.filteredAggregations
-    if (false)
-      Left(
-        search(index)
-          .aggs { aggs }
-          .query { searchQuery }
-          .sortBy { sortBy }
-          .limit { searchOptions.pageSize }
-          .trackTotalHits(true)
-          .from { PaginationQuery.safeGetFrom(searchOptions) }
-          .sourceInclude("display", "type")
-          .postFilter {
-            must(
-              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
-            )
-          }
-      )
+    implicit val s:WorkSearchOptions = searchOptions
+    val aggregations: Seq[AbstractAggregation] = filteredAggregationBuilder.filteredAggregations
+    val postFilter: Query = must(buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters))
     Right(
       searchRequest(
         indexes = Indexes(values = Seq(index.name)),
@@ -64,10 +45,10 @@ object WorksRequestBuilder
             .getOrElse("".asJson),
           "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
           "size" -> searchOptions.pageSize.asJson,
-          "aggs" -> aggs.asJson
-          // "sort_by_date"
-          // "sort_by_score"
-          // "post_filters" -> Do some Circe Encoder business.
+          "aggs" -> aggregations.asJson,
+          "sort_by_date" -> dateOrder,
+          "sort_by_score" -> searchOptions.searchQuery.isDefined.asJson,
+          "post_filter" -> postFilter.asJson
         )
       )
     )
@@ -143,35 +124,13 @@ object WorksRequestBuilder
         .field("aggregatableValues.availabilities")
   }
 
-  private def sortBy(implicit searchOptions: WorkSearchOptions) =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      sort :+ scoreSort(SortOrder.DESC) :+ idSort
-    } else {
-      sort :+ idSort
-    }
-
-  private def sort(implicit searchOptions: WorkSearchOptions) =
-    searchOptions.sortBy
-      .map {
-        case ProductionDateSortRequest => "query.production.dates.range.from"
+  private def dateOrder(implicit searchOptions: WorkSearchOptions): Json =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest => searchOptions.sortOrder match {
+        case SortingOrder.Ascending => "asc".asJson
+        case SortingOrder.Descending => "desc".asJson
       }
-      .map { FieldSort(_).order(sortOrder) }
-
-  private def sortOrder(implicit searchOptions: WorkSearchOptions) =
-    searchOptions.sortOrder match {
-      case SortingOrder.Ascending  => SortOrder.ASC
-      case SortingOrder.Descending => SortOrder.DESC
-    }
-
-  private def searchQuery(
-    implicit searchOptions: WorkSearchOptions
-  ): BoolQuery =
-    searchOptions.searchQuery
-      .map {
-        case SearchQuery(query) =>
-          WorksMultiMatcher(query)
-      }
-      .getOrElse { boolQuery }
+    } getOrElse(Json.False)
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
