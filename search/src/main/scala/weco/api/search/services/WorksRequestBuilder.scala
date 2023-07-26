@@ -42,9 +42,10 @@ object WorksRequestBuilder
       searchRequest(
         indexes = Seq(index.name),
         params = Json.obj(
-          "query" -> searchOptions.searchQuery
-            .map(_.query.asJson)
-            .getOrElse("".asJson),
+          "query" -> (searchOptions.searchQuery match {
+            case Some(searchQuery) => searchQuery.query.asJson
+            case None => Json.False
+          }),
           "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
           "size" -> searchOptions.pageSize.asJson,
           "aggs" -> aggregations.asJson,
