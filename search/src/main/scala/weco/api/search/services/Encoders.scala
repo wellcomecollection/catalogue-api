@@ -1,9 +1,12 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.handlers.searches.queries.QueryBuilderFn
-import com.sksamuel.elastic4s.requests.searches.aggs.{AbstractAggregation, AggregationBuilderFn}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  AbstractAggregation,
+  AggregationBuilderFn
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import io.circe.{Encoder, Json, parser}
+import io.circe.{parser, Encoder, Json}
 import io.circe.syntax.EncoderOps
 
 import scala.annotation.nowarn
@@ -25,8 +28,7 @@ trait Encoders {
     parser.parse(AggregationBuilderFn(agg).string()).getOrElse(Json.obj())
 
   implicit val aggregationsEncoder: Encoder[Seq[AbstractAggregation]] =
-    aggs =>
-      aggs.map(agg => agg.name -> agg.asJson).toMap.asJson
+    aggs => aggs.map(agg => agg.name -> agg.asJson).toMap.asJson
 
   @nowarn
   implicit val queryEncoder: Encoder[Query] = query =>

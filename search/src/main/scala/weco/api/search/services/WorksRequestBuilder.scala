@@ -33,9 +33,11 @@ object WorksRequestBuilder
     searchOptions: WorkSearchOptions,
     index: Index
   ): Right[Nothing, TemplateSearchRequest] = {
-    implicit val s:WorkSearchOptions = searchOptions
-    val aggregations: Seq[AbstractAggregation] = filteredAggregationBuilder.filteredAggregations
-    val postFilter: Query = must(buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters))
+    implicit val s: WorkSearchOptions = searchOptions
+    val aggregations: Seq[AbstractAggregation] =
+      filteredAggregationBuilder.filteredAggregations
+    val postFilter: Query = must(
+      buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters))
     Right(
       searchRequest(
         indexes = Indexes(values = Seq(index.name)),
@@ -126,11 +128,12 @@ object WorksRequestBuilder
 
   private def dateOrder(implicit searchOptions: WorkSearchOptions): Json =
     searchOptions.sortBy collectFirst {
-      case ProductionDateSortRequest => searchOptions.sortOrder match {
-        case SortingOrder.Ascending => "asc".asJson
-        case SortingOrder.Descending => "desc".asJson
-      }
-    } getOrElse(Json.False)
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder match {
+          case SortingOrder.Ascending  => "asc".asJson
+          case SortingOrder.Descending => "desc".asJson
+        }
+    } getOrElse (Json.False)
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
