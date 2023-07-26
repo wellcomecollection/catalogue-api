@@ -27,16 +27,11 @@ object WorksRequestBuilder
     implicit val s = searchOptions
     search(index)
       .aggs { filteredAggregationBuilder.filteredAggregations }
-      .query { searchQuery }
+      .query { filteredQuery }
       .sortBy { sortBy }
       .limit { searchOptions.pageSize }
       .from { PaginationQuery.safeGetFrom(searchOptions) }
       .sourceInclude("display", "type")
-      .postFilter {
-        must(
-          buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
-        )
-      }
   }
 
   private def filteredAggregationBuilder(
@@ -46,7 +41,8 @@ object WorksRequestBuilder
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
-      filterToQuery = buildWorkFilterQuery
+      filterToQuery = buildWorkFilterQuery,
+      searchQuery = searchQuery
     )
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
@@ -137,6 +133,14 @@ object WorksRequestBuilder
           WorksMultiMatcher(query)
       }
       .getOrElse { boolQuery }
+
+  private def filteredQuery(
+    implicit searchOptions: WorkSearchOptions
+  ): BoolQuery =
+    searchQuery
+      .filter {
+        buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+      }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {

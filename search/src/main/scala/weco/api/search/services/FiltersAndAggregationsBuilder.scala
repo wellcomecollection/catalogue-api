@@ -5,11 +5,9 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   Aggregation,
   FilterAggregation,
-  TermsAggregation,
-  TermsOrder
+  GlobalAggregation
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ImageAggregationRequest,
@@ -36,107 +34,36 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val filters: List[Filter]
   val requestToAggregation: AggregationRequest => Aggregation
   val filterToQuery: Filter => Query
+  val searchQuery: Query
 
   def pairedAggregationRequests(filter: Filter): List[AggregationRequest]
 
-  // Ensure that characters like parentheses can still be returned by the self aggregation, escape any
-  // regex tokens that might appear in filter terms.
-  // (as present in some labels, e.g. /concepts/gafuyqgp: "Nicholson, Michael C. (Michael Christopher), 1962-")
-  private def escapeRegexTokens(term: String): String =
-    term.replaceAll("""([.?+*|{}\[\]()\\"])""", "\\\\$1")
-
-  /**
-    * An aggregation that will contain the filtered-upon value even
-    * if no documents in the aggregation context match it.
-    */
-  private def toSelfAggregation(
-    agg: AbstractAggregation,
-    filterQuery: Query
-  ): AbstractAggregation =
-    agg match {
-      case terms: TermsAggregation =>
-        val filterTerm = filterQuery match {
-          case TermsQuery(_, values, _, _, _, _, _) =>
-            //Aggregable values are a JSON object encoded as a string
-            // Filter terms correspond to a property of this JSON
-            // object (normally id or label).
-            // In order to ensure that this aggregation only matches
-            // the whole value in question, it is enclosed in
-            // escaped quotes.
-            // This is not perfect, but should be sufficient.
-            // If (e.g.) this filter operates
-            // on id and there is a label for a different value
-            // that exactly matches it, then both will be returned.
-            // This is an unlikely scenario, and will still result
-            // in the desired value being returned.
-            s"""\\"(${values
-              .map(value => escapeRegexTokens(value.toString))
-              .mkString("|")})\\""""
-          case _ => ""
-        }
-        // The aggregation context may be excluding all documents
-        // that match this filter term. Setting minDocCount to 0
-        // allows the term in question to be returned.
-        terms.minDocCount(0).includeRegex(s".*($filterTerm).*")
-      case agg => agg
-    }
-
-  // Given an aggregation request, convert it to an actual aggregation
-  // with a predictable sort order.
-  // Higher count buckets come first, and within each group of higher count buckets,
-  // the keys should be in alphabetical order.
-  private def requestToOrderedAggregation(
-    aggReq: AggregationRequest
-  ): AbstractAggregation =
-    requestToAggregation(aggReq) match {
-      case terms: TermsAggregation =>
-        terms.order(
-          Seq(TermsOrder("_count", asc = false), TermsOrder("_key", asc = true))
-        )
-      case agg => agg
-    }
-
   lazy val filteredAggregations: List[AbstractAggregation] =
     aggregationRequests.map { aggReq =>
-      filteredAggregation(aggReq)
-    }
-
-  /**
-    *  Turn an aggregation request into an actual aggregation.
-    *  The aggregation will be filtered using all filters that do not operate on the same field as the aggregation (if any).
-    *  It also contains a subaggregation that *does* additionally filter on that field.  This ensures that the filtered
-    *  values are returned even if they fall outside the top n buckets as defined by the main aggregation
-    */
-  private def filteredAggregation(aggReq: AggregationRequest) = {
-    val agg = requestToOrderedAggregation(aggReq)
-    pairedFilter(aggReq) match {
-      case Some(paired) =>
-        val otherFilters = filters.filterNot(_ == paired)
-        val pairedQuery = filterToQuery(paired)
-        FilterAggregation(
-          name = agg.name,
-          boolQuery.filter {
-            otherFilters.map(filterToQuery)
-          },
-          subaggs = Seq(
-            agg,
-            FilterAggregation(
-              name = "self",
-              pairedQuery,
-              subaggs = Seq(toSelfAggregation(agg, pairedQuery))
+      val agg = requestToAggregation(aggReq)
+      pairedFilter(aggReq) match {
+        case Some(paired) =>
+          val subFilters = filters.filterNot(_ == paired)
+          GlobalAggregation(
+            // We would like to rename the aggregation here to something predictable
+            // (eg "global_agg") but because it is an opaque AbstractAggregation we
+            // make do with naming it the same as its parent GlobalAggregation, so that
+            // the latter can be picked off when parsing in WorkAggregations
+            name = agg.name,
+            subaggs = Seq(
+              agg.addSubagg(
+                FilterAggregation(
+                  "filtered",
+                  boolQuery.filter {
+                    searchQuery :: subFilters.map(filterToQuery)
+                  }
+                )
+              )
             )
           )
-        )
-      case _ =>
-        FilterAggregation(
-          name = agg.name,
-          boolQuery.filter {
-            filters.map(filterToQuery)
-          },
-          subaggs = Seq(agg)
-        )
+        case _ => agg
+      }
     }
-  }
 
   private def pairedFilter(
     aggregationRequest: AggregationRequest
@@ -151,7 +78,8 @@ class WorkFiltersAndAggregationsBuilder(
   val aggregationRequests: List[WorkAggregationRequest],
   val filters: List[WorkFilter],
   val requestToAggregation: WorkAggregationRequest => Aggregation,
-  val filterToQuery: WorkFilter => Query
+  val filterToQuery: WorkFilter => Query,
+  val searchQuery: Query
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
   override def pairedAggregationRequests(
@@ -174,7 +102,8 @@ class ImageFiltersAndAggregationsBuilder(
   val aggregationRequests: List[ImageAggregationRequest],
   val filters: List[ImageFilter],
   val requestToAggregation: ImageAggregationRequest => Aggregation,
-  val filterToQuery: ImageFilter => Query
+  val filterToQuery: ImageFilter => Query,
+  val searchQuery: Query
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
 
   override def pairedAggregationRequests(

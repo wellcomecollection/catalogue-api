@@ -48,28 +48,16 @@ import scala.util.{Success, Try}
 //      ...
 //    }
 object AggregationMapping {
+
   import weco.json.JsonUtil._
+
   private case class Result(buckets: Option[Seq[Bucket]])
 
-  // We can't predict the key name of the resultant sub-aggregation.
-  // This optic says, "for each key of the root object that has a key `buckets`, decode
+  // When we use a global aggregation we can't predict the key name of the
+  // resultant sub-aggregation. This optic says,
+  // "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
   private val globalAggBuckets = root.each.buckets.each.as[Bucket]
-  // This optic does the same for buckets within the self aggregation
-  private val selfAggBuckets = root.self.each.buckets.each.as[Bucket]
-
-  // When we use the self aggregation pattern, buckets are returned
-  // in aggregations at multiple depths. This will return
-  // buckets from the expected locations.
-  // The order of sub aggregations vs the top-level aggregation is not guaranteed,
-  // so construct a sequence consisting of first the top-level buckets, then the self buckets.
-  // The top-level buckets will contain all the properly counted bucket values.  The self buckets
-  // exist only to "top up" the main list with the filtered values if those values were not returned in
-  // the main aggregation.
-  // If any of the filtered terms are present in the main aggregation, then they will be duplicated
-  // in the self buckets, hence the need for distinct.
-  private def bucketsFromAnywhere(json: Json): Seq[Bucket] =
-    (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
 
   private case class Bucket(
     key: Json,
@@ -92,7 +80,7 @@ object AggregationMapping {
           Success(buckets)
         case Result(None) =>
           parse(jsonString)
-            .map(bucketsFromAnywhere)
+            .map(globalAggBuckets.getAll)
             .toTry
       }
       .map { buckets =>
@@ -110,7 +98,12 @@ object AggregationMapping {
       }
       .map { buckets =>
         Aggregation(
-          buckets.toList
+          buckets
+          // Sort manually here because filtered aggregations are bucketed before filtering
+          // therefore they are not always ordered by their final counts.
+          // Sorting in Scala is stable.
+            .sortBy(_.count)(Ordering[Int].reverse)
+            .toList
         )
       }
 

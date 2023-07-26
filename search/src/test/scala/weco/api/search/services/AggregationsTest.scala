@@ -148,19 +148,35 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("9SceRNaTEl"))
+            SubjectLabelFilter(Seq("pGkJTZWwn4"))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
-          buckets.length shouldBe 7
+          buckets.length shouldBe works.length
           buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
+            "Journals",
+            "Maps",
+            "E-videos",
+            "Videos",
             "Archives and manuscripts",
+            "Audio",
+            "E-journals",
+            "Pictures",
+            "Ephemera",
+            "CD-Roms",
             "Film",
+            "Mixed materials",
+            "Digital Images",
+            "3-D Objects",
+            "E-sound",
             "Standing order",
+            "E-books",
+            "Student dissertations",
+            "Manuscripts",
             "Web sites"
           )
         }
