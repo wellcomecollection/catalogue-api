@@ -19,7 +19,7 @@ import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import scala.io.Source
 
 object WorksRequestBuilder
-  extends ElasticsearchRequestBuilder[WorkSearchOptions]
+    extends ElasticsearchRequestBuilder[WorkSearchOptions]
     with TemplateSearchBuilder
     with Encoders {
 
@@ -31,9 +31,9 @@ object WorksRequestBuilder
     Source.fromResource("WorksMultiMatcherQueryTemplate.json").mkString
 
   def request(
-               searchOptions: WorkSearchOptions,
-               index: Index
-             ): Right[Nothing, TemplateSearchRequest] = {
+    searchOptions: WorkSearchOptions,
+    index: Index
+  ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s: WorkSearchOptions = searchOptions
     val aggregations: Seq[AbstractAggregation] =
       filteredAggregationBuilder.filteredAggregations
@@ -59,8 +59,8 @@ object WorksRequestBuilder
   }
 
   private def filteredAggregationBuilder(
-                                          implicit searchOptions: WorkSearchOptions
-                                        ) =
+    implicit searchOptions: WorkSearchOptions
+  ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
@@ -131,7 +131,7 @@ object WorksRequestBuilder
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         searchOptions.sortOrder match {
-          case SortingOrder.Ascending => "asc".asJson
+          case SortingOrder.Ascending  => "asc".asJson
           case SortingOrder.Descending => "desc".asJson
         }
     } getOrElse (Json.False)
