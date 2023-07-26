@@ -54,7 +54,6 @@ object WorksRequestBuilder
         )
       )
     )
-
   }
 
   private def filteredAggregationBuilder(
@@ -134,6 +133,7 @@ object WorksRequestBuilder
           case SortingOrder.Descending => "desc".asJson
         }
     } getOrElse (Json.False)
+
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
