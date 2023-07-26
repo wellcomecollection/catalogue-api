@@ -1,5 +1,6 @@
 package weco.api.search.images
 
+import org.scalatest.Suite
 import weco.api.search.ApiTestBase
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.json.CatalogueJsonUtil
@@ -9,7 +10,7 @@ trait ApiImagesTestBase
     extends ApiTestBase
     with CatalogueJsonUtil
     with TestDocumentFixtures {
-
+  this: Suite =>
   def imagesListResponse(
     ids: Seq[String],
     strictOrdering: Boolean = false

@@ -1,6 +1,8 @@
 package weco.api.search.works
 
-class WorksIncludesTest extends ApiWorksTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
   describe("identifiers includes") {
     it(
       "includes a list of identifiers on a list endpoint if we pass ?include=identifiers"

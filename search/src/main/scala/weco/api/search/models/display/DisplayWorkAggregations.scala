@@ -3,8 +3,7 @@ package weco.api.search.models.display
 import io.circe.Encoder
 import io.circe.generic.extras.JsonKey
 import io.circe.generic.extras.semiauto._
-import weco.api.search.models.WorkAggregations
-import weco.api.search.models.request.WorkAggregationRequest
+import weco.api.search.models.{WorkAggregations, WorkFilter}
 import weco.json.JsonUtil._
 
 case class DisplayWorkAggregations(
@@ -20,23 +19,66 @@ case class DisplayWorkAggregations(
 )
 
 object DisplayWorkAggregations {
+
   implicit def encoder: Encoder[DisplayWorkAggregations] =
     deriveConfiguredEncoder
 
   def apply(
     aggs: WorkAggregations,
-    aggregationRequests: Seq[WorkAggregationRequest]
-  ): DisplayWorkAggregations =
+    filters: Seq[WorkFilter]
+  ): DisplayWorkAggregations = {
+
+    val alwaysTrue = Function.const(true) _
+    val bucketMatcher = FilterBucketMatcher(filters)
+
     DisplayWorkAggregations(
-      workType = aggs.format.map(DisplayAggregation(_)),
-      `production.dates` = aggs.productionDates.map(DisplayAggregation(_)),
-      `genres.label` = aggs.genresLabel.map(DisplayAggregation(_)),
-      languages = aggs.languages.map(DisplayAggregation(_)),
-      `subjects.label` = aggs.subjectsLabel.map(DisplayAggregation(_)),
-      `contributors.agent.label` =
-        aggs.contributorsAgentsLabel.map(DisplayAggregation(_)),
-      `items.locations.license` =
-        aggs.itemsLocationsLicense.map(DisplayAggregation(_)),
-      availabilities = aggs.availabilities.map(DisplayAggregation(_))
+      workType = aggs.format.map(
+        DisplayAggregation(
+          _,
+          retainEmpty = bucketMatcher.matchBucket(FormatFilterAgg)
+        )
+      ),
+      `production.dates` = aggs.productionDates
+        .map(DisplayAggregation(_, retainEmpty = alwaysTrue)),
+      `genres.label` = aggs.genresLabel.map(
+        DisplayAggregation(
+          _,
+          retainEmpty = bucketMatcher.matchBucket(GenreFilterAgg)
+        )
+      ),
+      languages = aggs.languages
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = bucketMatcher.matchBucket(LanguagesFilterAgg)
+          )
+        ),
+      `subjects.label` = aggs.subjectsLabel.map(
+        DisplayAggregation(
+          _,
+          retainEmpty = bucketMatcher.matchBucket(SubjectLabelFilterAgg)
+        )
+      ),
+      `contributors.agent.label` = aggs.contributorsAgentsLabel
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = bucketMatcher.matchBucket(ContributorsFilterAgg)
+          )
+        ),
+      `items.locations.license` = aggs.itemsLocationsLicense
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = bucketMatcher.matchBucket(LicenseFilterAgg)
+          )
+        ),
+      availabilities = aggs.availabilities.map(
+        DisplayAggregation(
+          _,
+          retainEmpty = bucketMatcher.matchBucket(AvailabilitiesFilterAgg)
+        )
+      )
     )
+  }
 }

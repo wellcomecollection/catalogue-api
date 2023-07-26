@@ -1,8 +1,9 @@
 package weco.api.search.works
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.WorksIncludes
 
-class WorksFilteredAggregationsTest extends ApiWorksTestBase {
+class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
   val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 
@@ -195,25 +196,7 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                         "type" : "Format"
                       },
                       "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    }
+                    } 
                   ]
                 }
               },
@@ -265,15 +248,6 @@ class WorksFilteredAggregationsTest extends ApiWorksTestBase {
                       "data" : {
                         "id" : "d",
                         "label" : "Journals",
-                        "type" : "Format"
-                      },
-                      "type" : "AggregationBucket"
-                    },
-                    {
-                      "count" : 0,
-                      "data" : {
-                        "id" : "k",
-                        "label" : "Pictures",
                         "type" : "Format"
                       },
                       "type" : "AggregationBucket"

@@ -7,14 +7,13 @@ import akka.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import io.circe.parser.parse
 import io.circe.Json
-import org.scalatest.Assertion
-import org.scalatest.funspec.AnyFunSpec
+import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
 import weco.api.search.models.{ApiConfig, ElasticConfig}
 
-trait ApiFixture extends AnyFunSpec with ScalatestRouteTest with IndexFixtures {
-
+trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
+  this: Suite =>
   val Status = akka.http.scaladsl.model.StatusCodes
 
   val publicRootUri: String

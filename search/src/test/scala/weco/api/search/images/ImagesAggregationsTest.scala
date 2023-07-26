@@ -1,8 +1,10 @@
 package weco.api.search.images
 
+import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesAggregationsTest extends ApiImagesTestBase {
+class ImagesAggregationsTest extends AnyFunSpec
+with ApiImagesTestBase {
   it("aggregates by license") {
     val images = (0 to 6).map(i => s"images.different-licenses.$i")
     val displayImages = images

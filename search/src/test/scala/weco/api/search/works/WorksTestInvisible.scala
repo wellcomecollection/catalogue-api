@@ -1,6 +1,8 @@
 package weco.api.search.works
 
-class WorksTestInvisible extends ApiWorksTestBase {
+import org.scalatest.funspec.AnyFunSpec
+
+class WorksTestInvisible extends AnyFunSpec with ApiWorksTestBase {
   it("returns an HTTP 410 Gone if looking up a work with visible = false") {
     withWorksApi {
       case (worksIndex, routes) =>
