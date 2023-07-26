@@ -134,7 +134,6 @@ object WorksRequestBuilder
         }
     } getOrElse (Json.False)
 
-
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
       buildWorkFilterQuery
