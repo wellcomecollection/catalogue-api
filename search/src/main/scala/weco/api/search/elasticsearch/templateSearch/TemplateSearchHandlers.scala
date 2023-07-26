@@ -11,19 +11,18 @@ import io.circe.Json
 import io.circe.syntax.EncoderOps
 
 /**
- * Handler used by E4S ElasticClient.execute to turn a
- * request (the semantic description of what we want to do)
- * into an ElasticRequest (the method/url/body combination that will do that)
- *
- * The template search implementation built in to E4S does not currently support
- * sending the template in the source attribute.  It only works with templates that
- * have been stored on the cluster.
- *
- * We do not want to permit the API to make cluster changes, and although (in the future)
- * we may wish to configure the cluster at deploy time to contain the template,
- * it is currently a step too far in terms of maintenance and ownership of the queries.
- */
-
+  * Handler used by E4S ElasticClient.execute to turn a
+  * request (the semantic description of what we want to do)
+  * into an ElasticRequest (the method/url/body combination that will do that)
+  *
+  * The template search implementation built in to E4S does not currently support
+  * sending the template in the source attribute.  It only works with templates that
+  * have been stored on the cluster.
+  *
+  * We do not want to permit the API to make cluster changes, and although (in the future)
+  * we may wish to configure the cluster at deploy time to contain the template,
+  * it is currently a step too far in terms of maintenance and ownership of the queries.
+  */
 trait TemplateSearchHandlers {
   implicit object TemplateSearchHandler
       extends Handler[TemplateSearchRequest, SearchResponse] {
@@ -31,9 +30,10 @@ trait TemplateSearchHandlers {
     private def endpoint(indexes: Seq[String]): String =
       indexes match {
         case Nil => "/_all/_search/template"
-        case _ => "/" + indexes
-          .map(ElasticUrlEncoder.encodeUrlFragment)
-          .mkString(",") + "/_search/template"
+        case _ =>
+          "/" + indexes
+            .map(ElasticUrlEncoder.encodeUrlFragment)
+            .mkString(",") + "/_search/template"
       }
 
     override def build(request: TemplateSearchRequest): ElasticRequest = {
