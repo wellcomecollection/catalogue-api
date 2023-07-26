@@ -2,15 +2,7 @@ package weco.api.search.rest
 
 import io.circe.Decoder
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ImageAggregationRequest,
-  ImageInclude,
-  MultipleImagesIncludes,
-  ProductionDateSortRequest,
-  SingleImageIncludes,
-  SortRequest,
-  SortingOrder
-}
+import weco.api.search.models.request.{ImageAggregationRequest, ImageInclude, MultipleImagesIncludes, ProductionDateSortRequest, SingleImageIncludes, SortRequest, SortingOrder}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success}
@@ -52,7 +44,7 @@ case class MultipleImagesParams(
   `source.subjects.label`: Option[SubjectLabelFilter],
   `source.production.dates.from`: Option[LocalDate],
   `source.production.dates.to`: Option[LocalDate],
-  color: Option[ColorMustQuery],
+  color: Option[RgbColor],
   include: Option[MultipleImagesIncludes],
   aggregations: Option[List[ImageAggregationRequest]]
 ) extends QueryParams
@@ -62,7 +54,7 @@ case class MultipleImagesParams(
     ImageSearchOptions(
       searchQuery = query.map(SearchQuery(_)),
       filters = filters,
-      mustQueries = mustQueries,
+      color = color,
       aggregations = aggregations.getOrElse(Nil),
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
       pageNumber = page.getOrElse(1),
@@ -79,9 +71,6 @@ case class MultipleImagesParams(
       `source.subjects.label`,
       dateFilter
     ).flatten
-
-  private def mustQueries: List[ImageMustQuery] =
-    List(color).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
     (`source.production.dates.from`, `source.production.dates.to`) match {
@@ -107,7 +96,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.subjects.label".as[SubjectLabelFilter].?,
       "source.production.dates.from".as[LocalDate].?,
       "source.production.dates.to".as[LocalDate].?,
-      "color".as[ColorMustQuery].?,
+      "color".as[RgbColor].?,
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
     ).tflatMap { args =>
@@ -115,29 +104,11 @@ object MultipleImagesParams extends QueryParamsUtils {
       validated(params.paginationErrors, params)
     }
 
-  implicit val colorMustQuery: Decoder[ColorMustQuery] =
-    decodeCommaSeparated.emap { strs =>
-      val tryColors = strs.map { s =>
-        (s, HsvColor.fromHex(s))
-      }
-
-      val colors = tryColors.collect { case (_, Success(c))   => c }
-      val unparsed = tryColors.collect { case (s, Failure(_)) => s }
-
-      val errorMessage = unparsed match {
-        case Nil => ""
-        case Seq(singleColor) =>
-          s"'$singleColor' is not a valid value. Please supply a hex string."
-        case multipleColors =>
-          s"${multipleColors.map(mc => s"'$mc'").mkString(", ")} are not valid values. Please supply hex strings."
-      }
-
-      Either.cond(
-        unparsed.isEmpty,
-        right = ColorMustQuery(colors),
-        left = errorMessage
-      )
-    }
+  implicit val rgbColorDecoder: Decoder[RgbColor] =
+    Decoder.decodeString.emap(colorString => RgbColor.fromHex(colorString) match {
+      case Success(rgbColor) => Right(rgbColor)
+      case Failure(_) => Left(s"'$colorString' is not a valid value. Please supply a hex string.")
+    })
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
     decodeOneOfCommaSeparated(
