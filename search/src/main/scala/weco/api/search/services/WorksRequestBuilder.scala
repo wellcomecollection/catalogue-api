@@ -18,7 +18,7 @@ import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
 object WorksRequestBuilder
-    extends ElasticsearchRequestBuilder[WorkSearchOptions]
+  extends ElasticsearchRequestBuilder[WorkSearchOptions]
     with WorksTemplateSearchBuilder
     with Encoders {
 
@@ -27,37 +27,35 @@ object WorksRequestBuilder
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
   def request(
-    searchOptions: WorkSearchOptions,
-    index: Index
-  ): Right[Nothing, TemplateSearchRequest] = {
+               searchOptions: WorkSearchOptions,
+               index: Index
+             ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s: WorkSearchOptions = searchOptions
-    val aggregations: Seq[AbstractAggregation] =
-      filteredAggregationBuilder.filteredAggregations
-    val postFilter: Query = must(
-      buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters))
+
     Right(
       searchRequest(
         indexes = Seq(index.name),
         params = WorksTemplateParams(
           query = searchOptions.searchQuery match {
             case Some(searchQuery) => Some(searchQuery.query)
-            case _                 => None
+            case _ => None
           },
           from = PaginationQuery.safeGetFrom(searchOptions),
           size = searchOptions.pageSize,
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
-          aggs = aggregations,
-          postFilter = Some(postFilter)
+          aggs = filteredAggregationBuilder.filteredAggregations,
+          postFilter = Some(must(
+            buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)))
         ).asJson
       )
     )
   }
 
   private def filteredAggregationBuilder(
-    implicit searchOptions: WorkSearchOptions
-  ) =
+                                          implicit searchOptions: WorkSearchOptions
+                                        ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
@@ -125,7 +123,7 @@ object WorksRequestBuilder
   }
 
   private def dateOrder(
-    implicit searchOptions: WorkSearchOptions): Option[SortingOrder] =
+                         implicit searchOptions: WorkSearchOptions): Option[SortingOrder] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         searchOptions.sortOrder
