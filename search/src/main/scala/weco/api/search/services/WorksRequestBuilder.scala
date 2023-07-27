@@ -5,8 +5,9 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
-import io.circe.Json
 import io.circe.syntax.EncoderOps
+import io.circe.generic.auto._
+
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ProductionDateSortRequest,
@@ -16,24 +17,20 @@ import weco.api.search.models.request.{
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
-import scala.io.Source
 
 object WorksRequestBuilder
-    extends ElasticsearchRequestBuilder[WorkSearchOptions]
-    with TemplateSearchBuilder
+  extends ElasticsearchRequestBuilder[WorkSearchOptions]
+    with WorksTemplateSearchBuilder
     with Encoders {
 
   import ElasticsearchRequestBuilder._
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
-  protected val queryTemplate: String =
-    Source.fromResource("WorksMultiMatcherQueryTemplate.json").mkString
-
   def request(
-    searchOptions: WorkSearchOptions,
-    index: Index
-  ): Right[Nothing, TemplateSearchRequest] = {
+               searchOptions: WorkSearchOptions,
+               index: Index
+             ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s: WorkSearchOptions = searchOptions
     val aggregations: Seq[AbstractAggregation] =
       filteredAggregationBuilder.filteredAggregations
@@ -42,25 +39,27 @@ object WorksRequestBuilder
     Right(
       searchRequest(
         indexes = Seq(index.name),
-        params = Json.obj(
-          "query" -> (searchOptions.searchQuery match {
-            case Some(searchQuery) => searchQuery.query.asJson
-            case None              => Json.False
-          }),
-          "from" -> PaginationQuery.safeGetFrom(searchOptions).asJson,
-          "size" -> searchOptions.pageSize.asJson,
-          "aggs" -> aggregations.asJson,
-          "sort_by_date" -> dateOrder,
-          "sort_by_score" -> searchOptions.searchQuery.isDefined.asJson,
-          "post_filter" -> postFilter.asJson
-        )
+        params = WorksTemplateParams(
+          query = searchOptions.searchQuery match {
+            case Some(searchQuery) => Some(searchQuery.query)
+            case _ => None
+          },
+          from = PaginationQuery.safeGetFrom(searchOptions),
+          size = searchOptions.pageSize,
+          sortByDate = dateOrder,
+          sortByScore = searchOptions.searchQuery.isDefined,
+          includes = Seq("display", "type"),
+          aggs = aggregations,
+          postFilter = Some(postFilter)
+        ).asJson
+
       )
     )
   }
 
   private def filteredAggregationBuilder(
-    implicit searchOptions: WorkSearchOptions
-  ) =
+                                          implicit searchOptions: WorkSearchOptions
+                                        ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
@@ -127,14 +126,11 @@ object WorksRequestBuilder
         .field("aggregatableValues.availabilities")
   }
 
-  private def dateOrder(implicit searchOptions: WorkSearchOptions): Json =
+  private def dateOrder(implicit searchOptions: WorkSearchOptions): Option[SortingOrder] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
-        searchOptions.sortOrder match {
-          case SortingOrder.Ascending  => "asc".asJson
-          case SortingOrder.Descending => "desc".asJson
-        }
-    } getOrElse (Json.False)
+        searchOptions.sortOrder
+    }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
