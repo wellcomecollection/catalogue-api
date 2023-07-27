@@ -27,7 +27,7 @@ import weco.api.search.models.request.{
 import weco.api.search.rest.PaginationQuery
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
-  extends ElasticsearchRequestBuilder[ImageSearchOptions] {
+    extends ElasticsearchRequestBuilder[ImageSearchOptions] {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
@@ -36,7 +36,8 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     binMinima = queryConfig.paletteBinMinima
   )
 
-  def request(searchOptions: ImageSearchOptions, index: Index): Left[SearchRequest, Nothing] =
+  def request(searchOptions: ImageSearchOptions,
+              index: Index): Left[SearchRequest, Nothing] =
     Left(
       search(index)
         .aggs {
@@ -123,7 +124,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
 
   private def sortOrder(implicit searchOptions: ImageSearchOptions) =
     searchOptions.sortOrder match {
-      case SortingOrder.Ascending => SortOrder.ASC
+      case SortingOrder.Ascending  => SortOrder.ASC
       case SortingOrder.Descending => SortOrder.DESC
     }
 
@@ -165,40 +166,40 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     }
 
   def requestWithBlendedSimilarity
-  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.blended)
 
   def requestWithSimilarFeatures
-  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.features)
 
   def requestWithSimilarColors
-  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
-                                 query: (String, IndexedImage, Index) => Query
-                               )(
-                                 index: Index,
-                                 imageId: String,
-                                 image: IndexedImage,
-                                 n: Int,
-                                 minScore: Double
-                               ): SearchRequest =
+    query: (String, IndexedImage, Index) => Query
+  )(
+    index: Index,
+    imageId: String,
+    image: IndexedImage,
+    n: Int,
+    minScore: Double
+  ): SearchRequest =
     search(index)
       .size(n)
       .minScore(minScore)
       .query(query(imageId, image, index))
 
   private def rawSimilarityRequest(
-                                    query: (String, IndexedImage, Index) => JsonObject
-                                  )(
-                                    index: Index,
-                                    imageId: String,
-                                    image: IndexedImage,
-                                    n: Int,
-                                    minScore: Double
-                                  ): SearchRequest =
+    query: (String, IndexedImage, Index) => JsonObject
+  )(
+    index: Index,
+    imageId: String,
+    image: IndexedImage,
+    n: Int,
+    minScore: Double
+  ): SearchRequest =
     search(index).source(
       Json
         .fromJsonObject(
