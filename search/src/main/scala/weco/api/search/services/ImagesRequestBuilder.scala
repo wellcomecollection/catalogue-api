@@ -40,13 +40,9 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
               index: Index): Left[SearchRequest, Nothing] =
     Left(
       search(index)
-        .aggs {
-          filteredAggregationBuilder(searchOptions).filteredAggregations
-        }
+        .aggs {filteredAggregationBuilder(searchOptions).filteredAggregations}
         .query(searchQuery(searchOptions))
-        .sortBy {
-          sortBy(searchOptions)
-        }
+        .sortBy {sortBy(searchOptions)}
         .limit(searchOptions.pageSize)
         .from(PaginationQuery.safeGetFrom(searchOptions))
         .sourceInclude(
@@ -166,15 +162,15 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     }
 
   def requestWithBlendedSimilarity
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.blended)
 
   def requestWithSimilarFeatures
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.features)
 
   def requestWithSimilarColors
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
+  : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     similarityRequest(ImageSimilarity.color)
 
   private def similarityRequest(
