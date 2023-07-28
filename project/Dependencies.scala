@@ -101,7 +101,7 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val akka = "2.6.19"
+    val akka = "2.6.20"
     val akkaHttp = "10.2.9"
     val aws2 = "2.11.14"
   }
