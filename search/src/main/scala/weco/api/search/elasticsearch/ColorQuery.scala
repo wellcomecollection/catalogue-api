@@ -3,10 +3,9 @@ package weco.api.search.elasticsearch
 import com.sksamuel.elastic4s.requests.searches.knn.Knn
 import weco.api.search.models.RgbColor
 
-
 class ColorQuery {
   def apply(
-     color: RgbColor,
+    color: RgbColor,
   ): Knn =
     Knn(
       field = "query.inferredData.paletteEmbedding",
@@ -27,7 +26,8 @@ class ColorQuery {
     val b_index = (color.b / 255) * (n_bins - 1)
 
     val embedding_index = (b_index * n_bins * n_bins) + (r_index * n_bins) + g_index
-    val embedding = Seq.fill(n_bins * n_bins * n_bins)(0.0).updated(embedding_index, 1.0)
+    val embedding =
+      Seq.fill(n_bins * n_bins * n_bins)(0.0).updated(embedding_index, 1.0)
 //    println(embedding)
     embedding
   }
