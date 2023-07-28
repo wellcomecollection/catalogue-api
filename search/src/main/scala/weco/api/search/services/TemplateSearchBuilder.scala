@@ -1,11 +1,18 @@
 package weco.api.search.services
 
-import io.circe.Json
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
+import io.circe.syntax.EncoderOps
+import io.circe.generic.auto._
 
 trait TemplateSearchBuilder extends Encoders {
+  // Template for the "query" part of the request.
+  // This is expected to be a moustache template in which
+  // the query term to be used in the search is represented by a variable
+  // called "query".
+  // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
 
+  // Importantly, this is *not* JSON, so must be created and sent as a string.
   lazy protected val source: String =
     s"""
        |{ {{#query}}
@@ -50,7 +57,10 @@ trait TemplateSearchBuilder extends Encoders {
        |}
        |""".stripMargin
 
-  def searchRequest(indexes: Seq[String], params: Json): TemplateSearchRequest =
-    TemplateSearchRequest(indexes, source, params)
+  def searchRequest(
+    indexes: Seq[String],
+    params: SearchTemplateParams
+  ): TemplateSearchRequest =
+    TemplateSearchRequest(indexes, source, params.asJson)
 
 }

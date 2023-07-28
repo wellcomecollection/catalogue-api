@@ -5,8 +5,6 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
-import io.circe.syntax.EncoderOps
-import io.circe.generic.auto._
 
 import weco.api.search.models._
 import weco.api.search.models.request.{
@@ -48,8 +46,10 @@ object WorksRequestBuilder
           aggs = filteredAggregationBuilder.filteredAggregations,
           postFilter = Some(
             must(
-              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)))
-        ).asJson
+              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+            )
+          )
+        )
       )
     )
   }
@@ -124,7 +124,8 @@ object WorksRequestBuilder
   }
 
   private def dateOrder(
-    implicit searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    implicit searchOptions: WorkSearchOptions
+  ): Option[SortingOrder] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         searchOptions.sortOrder
