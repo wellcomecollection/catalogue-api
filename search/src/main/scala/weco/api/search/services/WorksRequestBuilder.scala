@@ -35,7 +35,7 @@ object WorksRequestBuilder
     Right(
       searchRequest(
         indexes = Seq(index.name),
-        params = WorksTemplateParams(
+        params = SearchTemplateParams(
           query = searchOptions.searchQuery match {
             case Some(searchQuery) => Some(searchQuery.query)
             case _                 => None

@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.AbstractAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.request.SortingOrder
 
-case class WorksTemplateParams(
+case class SearchTemplateParams(
   query: Option[String],
   from: Int,
   size: Int,
