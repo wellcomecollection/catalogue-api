@@ -44,7 +44,7 @@ case class MultipleImagesParams(
   `source.subjects.label`: Option[SubjectLabelFilter],
   `source.production.dates.from`: Option[LocalDate],
   `source.production.dates.to`: Option[LocalDate],
-  color: Option[RgbColor],
+  color: RgbColor,
   include: Option[MultipleImagesIncludes],
   aggregations: Option[List[ImageAggregationRequest]]
 ) extends QueryParams
@@ -96,7 +96,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.subjects.label".as[SubjectLabelFilter].?,
       "source.production.dates.from".as[LocalDate].?,
       "source.production.dates.to".as[LocalDate].?,
-      "color".as[RgbColor].?,
+      "color".as[RgbColor],
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
     ).tflatMap { args =>

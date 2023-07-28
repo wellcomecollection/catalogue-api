@@ -26,26 +26,26 @@ import weco.api.search.models.request.{
 }
 import weco.api.search.rest.PaginationQuery
 
-class ImagesRequestBuilder(queryConfig: QueryConfig)
+class ImagesRequestBuilder()
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
-  lazy val colorQuery = new ColorQuery(
-    binSizes = queryConfig.paletteBinSizes,
-    binMinima = queryConfig.paletteBinMinima
-  )
-
   def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
     search(index)
-      .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
+      .knn(colorQuery(searchOptions.color))
+      .aggs {
+        filteredAggregationBuilder(searchOptions).filteredAggregations
+      }
       .query(
         searchQuery(searchOptions)
           .filter(
             buildImageFilterQuery(searchOptions.filters)
           )
       )
-      .sortBy { sortBy(searchOptions) }
+      .sortBy {
+        sortBy(searchOptions)
+      }
       .limit(searchOptions.pageSize)
       .from(PaginationQuery.safeGetFrom(searchOptions))
       .sourceInclude(
@@ -55,6 +55,14 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         "query.inferredData.reducedFeatures"
       )
 
+  private def colorQuery = new ColorQuery()
+//  private def knnColorQuery(searchOptions: ImageSearchOptions) =
+//    searchOptions.color
+//      .map { color =>
+//        val colorQuery = new ColorQuery()
+//        colorQuery(color)
+//      }
+//      .getOrElse(BoolQuery)
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
@@ -70,9 +78,6 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         ImagesMultiMatcher(q.query)
       }
       .getOrElse(boolQuery)
-      .must(
-        buildImageMustQuery(searchOptions.mustQueries)
-      )
 
   private def toAggregation(aggReq: ImageAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -102,7 +107,7 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   }
 
   private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
+    if (searchOptions.searchQuery.isDefined) {
       sort :+ scoreSort(SortOrder.DESC) :+ idSort
     } else {
       sort :+ idSort
@@ -150,11 +155,11 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
 
-  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
-    queries.map {
-      case ColorMustQuery(hexColors) =>
-        colorQuery(field = "query.inferredData.palette", hexColors)
-    }
+//  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
+//    queries.map {
+//      case ColorMustQuery(hexColors) =>
+//        colorQuery(field = "query.inferredData.palette", hexColors)
+//    }
 
   def requestWithBlendedSimilarity
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =

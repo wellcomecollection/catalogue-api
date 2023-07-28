@@ -20,6 +20,7 @@ trait ApiImagesTestBase
     }
 
     val sortedWorks = if (strictOrdering) {
+      println("!!!!!!!!!!!!!!!!")
       works
     } else {
       works.sortBy(w => getKey(w, "id").get.asString)
