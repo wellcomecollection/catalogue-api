@@ -6,13 +6,13 @@ import io.circe.generic.auto._
 
 trait TemplateSearchBuilder extends Encoders {
   // Template for the "query" part of the request.
-  // This is expected to be a moustache template in which
+  // This is expected to be a mustache template in which
   // the query term to be used in the search is represented by a variable
   // called "query".
   // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
 
-  // Importantly, this is *not* JSON, so must be created and sent as a string.
+  // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
   lazy protected val source: String =
     s"""
        |{ {{#query}}

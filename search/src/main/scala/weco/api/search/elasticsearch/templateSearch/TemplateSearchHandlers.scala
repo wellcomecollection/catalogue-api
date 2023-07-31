@@ -12,7 +12,7 @@ import io.circe.syntax.EncoderOps
 
 /**
   * Handler used by E4S ElasticClient.execute to turn a
-  * request (the semantic description of what we want to do)
+  * request (the E4S-style description of what we want the request to contain)
   * into an ElasticRequest (the method/url/body combination that will do that)
   *
   * The template search implementation built in to E4S does not currently support
