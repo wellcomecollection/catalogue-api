@@ -34,10 +34,7 @@ object WorksRequestBuilder
       searchRequest(
         indexes = Seq(index.name),
         params = SearchTemplateParams(
-          query = searchOptions.searchQuery match {
-            case Some(searchQuery) => Some(searchQuery.query)
-            case _                 => None
-          },
+          query = searchOptions.searchQuery.map(_.query),
           from = PaginationQuery.safeGetFrom(searchOptions),
           size = searchOptions.pageSize,
           sortByDate = dateOrder,
