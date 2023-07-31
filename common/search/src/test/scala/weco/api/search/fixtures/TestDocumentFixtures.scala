@@ -83,6 +83,13 @@ trait TestDocumentFixtures
   ): Unit = {
     val documents = getTestDocuments(documentIds)
 
+    indexLoadedTestDocuments(index, documents)
+  }
+
+  def indexLoadedTestDocuments(
+    index: Index,
+    documents: Seq[TestDocument]
+  ): Unit = {
     val result = elasticClient.execute(
       bulk(
         documents.map { fixture =>
