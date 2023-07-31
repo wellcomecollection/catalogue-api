@@ -39,7 +39,8 @@ trait TemplateSearchHandlers {
     override def build(request: TemplateSearchRequest): ElasticRequest = {
       val body = Json
         .obj(
-          // The source is a string containing an Elasticsearch-flavoured Moustache template.
+          // The source is a string containing an Elasticsearch-flavoured Mustache template.
+          // (See: https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-template-with-mustache-examples.html)
           // It may look like Json at a glance, and most of it is, but as a whole thing, it is not,
           // so must be sent as a String containing escaped Json content.
           "source" -> request.source.asJson,

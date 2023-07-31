@@ -64,6 +64,9 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
     val request = requestBuilder
       .request(searchOptions, index)
     Tracing.currentTransaction.addQueryOptionLabels(searchOptions)
+    // This offers a choice between the two options Images and countWorkTypes
+    // still use the old way.
+    // Eventually, this should only return a TemplateSearchRequest.
     request match {
       case Left(search) => elasticsearchService.executeSearchRequest(search)
       case Right(template) =>
