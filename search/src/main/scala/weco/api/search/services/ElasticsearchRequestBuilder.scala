@@ -5,12 +5,18 @@ import com.sksamuel.elastic4s.requests.searches.sort.FieldSort
 import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.ElasticDsl._
+import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import weco.api.search.models.SearchOptions
 
 trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _, _]] {
   val idSort: FieldSort
 
-  def request(searchOptions: S, index: Index): SearchRequest
+  // return Either because Images and countWorkTypes still use the old way.
+  // Eventually, this should only return a TemplateSearchRequest.
+  def request(
+    searchOptions: S,
+    index: Index
+  ): Either[SearchRequest, TemplateSearchRequest]
 }
 
 object ElasticsearchRequestBuilder {

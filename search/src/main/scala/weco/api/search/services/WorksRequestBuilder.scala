@@ -2,11 +2,10 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
-import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
-import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.sort._
+
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ProductionDateSortRequest,
@@ -14,29 +13,42 @@ import weco.api.search.models.request.{
   WorkAggregationRequest
 }
 import weco.api.search.rest.PaginationQuery
-import weco.api.search.elasticsearch.WorksMultiMatcher
+import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
 object WorksRequestBuilder
-    extends ElasticsearchRequestBuilder[WorkSearchOptions] {
+    extends ElasticsearchRequestBuilder[WorkSearchOptions]
+    with WorksTemplateSearchBuilder
+    with Encoders {
 
   import ElasticsearchRequestBuilder._
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
-  def request(searchOptions: WorkSearchOptions, index: Index): SearchRequest = {
-    implicit val s = searchOptions
-    search(index)
-      .aggs { filteredAggregationBuilder.filteredAggregations }
-      .query { searchQuery }
-      .sortBy { sortBy }
-      .limit { searchOptions.pageSize }
-      .from { PaginationQuery.safeGetFrom(searchOptions) }
-      .sourceInclude("display", "type")
-      .postFilter {
-        must(
-          buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+  def request(
+    searchOptions: WorkSearchOptions,
+    index: Index
+  ): Right[Nothing, TemplateSearchRequest] = {
+    implicit val s: WorkSearchOptions = searchOptions
+
+    Right(
+      searchRequest(
+        indexes = Seq(index.name),
+        params = SearchTemplateParams(
+          query = searchOptions.searchQuery.map(_.query),
+          from = PaginationQuery.safeGetFrom(searchOptions),
+          size = searchOptions.pageSize,
+          sortByDate = dateOrder,
+          sortByScore = searchOptions.searchQuery.isDefined,
+          includes = Seq("display", "type"),
+          aggs = filteredAggregationBuilder.filteredAggregations,
+          postFilter = Some(
+            must(
+              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+            )
+          )
         )
-      }
+      )
+    )
   }
 
   private def filteredAggregationBuilder(
@@ -108,35 +120,13 @@ object WorksRequestBuilder
         .field("aggregatableValues.availabilities")
   }
 
-  private def sortBy(implicit searchOptions: WorkSearchOptions) =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      sort :+ scoreSort(SortOrder.DESC) :+ idSort
-    } else {
-      sort :+ idSort
-    }
-
-  private def sort(implicit searchOptions: WorkSearchOptions) =
-    searchOptions.sortBy
-      .map {
-        case ProductionDateSortRequest => "query.production.dates.range.from"
-      }
-      .map { FieldSort(_).order(sortOrder) }
-
-  private def sortOrder(implicit searchOptions: WorkSearchOptions) =
-    searchOptions.sortOrder match {
-      case SortingOrder.Ascending  => SortOrder.ASC
-      case SortingOrder.Descending => SortOrder.DESC
-    }
-
-  private def searchQuery(
+  private def dateOrder(
     implicit searchOptions: WorkSearchOptions
-  ): BoolQuery =
-    searchOptions.searchQuery
-      .map {
-        case SearchQuery(query) =>
-          WorksMultiMatcher(query)
-      }
-      .getOrElse { boolQuery }
+  ): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
+    }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
     filters.map {
@@ -241,4 +231,5 @@ object WorksRequestBuilder
           values = availabilityIds
         )
     }
+
 }

@@ -36,29 +36,34 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
     binMinima = queryConfig.paletteBinMinima
   )
 
-  def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
-    search(index)
-      .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
-      .query(searchQuery(searchOptions))
-      .sortBy { sortBy(searchOptions) }
-      .limit(searchOptions.pageSize)
-      .from(PaginationQuery.safeGetFrom(searchOptions))
-      .sourceInclude(
-        "display",
-        // we do KNN searches for similar images, and for that we need
-        // to send the image's vectors to Elasticsearch
-        "query.inferredData.reducedFeatures"
-      )
-      .postFilter {
-        must(buildImageFilterQuery(searchOptions.filters))
-      }
+  def request(
+    searchOptions: ImageSearchOptions,
+    index: Index
+  ): Left[SearchRequest, Nothing] =
+    Left(
+      search(index)
+        .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
+        .query(searchQuery(searchOptions))
+        .sortBy { sortBy(searchOptions) }
+        .limit(searchOptions.pageSize)
+        .from(PaginationQuery.safeGetFrom(searchOptions))
+        .sourceInclude(
+          "display",
+          // we do KNN searches for similar images, and for that we need
+          // to send the image's vectors to Elasticsearch
+          "query.inferredData.reducedFeatures"
+        )
+        .postFilter {
+          must(buildImageFilterQuery(searchOptions.filters))
+        }
+    )
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
-      filterToQuery = buildImageFilterQuery,
+      filterToQuery = buildImageFilterQuery
     )
 
   private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =
@@ -111,7 +116,9 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         case ProductionDateSortRequest =>
           "query.source.production.dates.range.from"
       }
-      .map { FieldSort(_).order(sortOrder) }
+      .map {
+        FieldSort(_).order(sortOrder)
+      }
 
   private def sortOrder(implicit searchOptions: ImageSearchOptions) =
     searchOptions.sortOrder match {

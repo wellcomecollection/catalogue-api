@@ -12,6 +12,10 @@ import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import weco.Tracing
+import weco.api.search.elasticsearch.templateSearch.{
+  TemplateSearchHandlers,
+  TemplateSearchRequest
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -19,7 +23,8 @@ import scala.util.{Failure, Success}
 class ElasticsearchService(elasticClient: ElasticClient)(
   implicit ec: ExecutionContext
 ) extends Logging
-    with Tracing {
+    with Tracing
+    with TemplateSearchHandlers {
 
   def findById[T](id: String)(
     index: Index
@@ -69,6 +74,30 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def executeSearchRequest(
     request: SearchRequest
+  ): Future[Either[ElasticsearchError, SearchResponse]] =
+    spanFuture(
+      name = "ElasticSearch#executeSearchRequest",
+      spanType = "request",
+      subType = "elastic",
+      action = "query"
+    ) {
+      debug(s"Sending ES request: ${request.show}")
+      val transaction = Tracing.currentTransaction
+      withActiveTrace(elasticClient.execute(request))
+        .map(_.toEither)
+        .map {
+          case Right(response) =>
+            transaction.setLabel("elasticTook", response.took)
+            Right(response)
+
+          case Left(err) =>
+            warn(s"Error while making request=${request.show}, error=$err")
+            Left(ElasticsearchError(err))
+        }
+    }
+
+  def executeTemplateSearchRequest(
+    request: TemplateSearchRequest
   ): Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
       name = "ElasticSearch#executeSearchRequest",

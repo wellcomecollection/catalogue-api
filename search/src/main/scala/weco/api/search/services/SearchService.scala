@@ -61,11 +61,18 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
     searchOptions: S,
     index: Index
   ): Future[Either[ElasticsearchError, SearchResponse]] = {
-    val searchRequest = requestBuilder
+    val request = requestBuilder
       .request(searchOptions, index)
-      .trackTotalHits(true)
     Tracing.currentTransaction.addQueryOptionLabels(searchOptions)
-    elasticsearchService.executeSearchRequest(searchRequest)
+    // This offers a choice between the two options Images and countWorkTypes
+    // still use the old way.
+    // Eventually, this should only return a TemplateSearchRequest.
+    request match {
+      case Left(search) => elasticsearchService.executeSearchRequest(search)
+      case Right(template) =>
+        elasticsearchService.executeTemplateSearchRequest(template)
+    }
+
   }
 
   implicit class EnhancedTransaction(transaction: Transaction) {
