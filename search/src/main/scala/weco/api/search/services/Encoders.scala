@@ -6,6 +6,7 @@ import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   AggregationBuilderFn
 }
+import com.sksamuel.elastic4s.requests.searches.defaultCustomAggregationHandler
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import io.circe.{parser, Encoder, Json}
 import io.circe.syntax.EncoderOps
@@ -20,7 +21,11 @@ trait Encoders {
 
   implicit val aggregationEncoder: Encoder[AbstractAggregation] = agg =>
     parser
-      .parse(JacksonBuilder.writeAsString(AggregationBuilderFn(agg).value))
+      .parse(
+        JacksonBuilder.writeAsString(
+          AggregationBuilderFn(agg, defaultCustomAggregationHandler).value
+        )
+      )
       .getOrElse(Json.obj())
 
   implicit val aggregationsEncoder: Encoder[Seq[AbstractAggregation]] =
