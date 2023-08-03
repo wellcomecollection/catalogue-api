@@ -30,38 +30,35 @@ class ImagesRequestBuilder()
     extends ElasticsearchRequestBuilder[ImageSearchOptions] {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
-
-  def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
-    search(index)
-      .aggs {
-        filteredAggregationBuilder(searchOptions).filteredAggregations
-      }
-      .query(
-        searchQuery(searchOptions)
-          .filter(
-            buildImageFilterQuery(searchOptions.filters)
-          )
-      )
-      .copy(knn = searchOptions.color.map(ColorQuery(_)))
-      .sortBy {
-        sortBy(searchOptions)
-      }
-      .limit(searchOptions.pageSize)
-      .from(PaginationQuery.safeGetFrom(searchOptions))
-      .sourceInclude(
-        "display",
-        // we do KNN searches for similar images, and for that we need
-        // to send the image's vectors to Elasticsearch
-        "query.inferredData.reducedFeatures"
-      )
+  def request(
+    searchOptions: ImageSearchOptions,
+    index: Index
+  ): Left[SearchRequest, Nothing] =
+    Left(
+      search(index)
+        .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
+        .query(searchQuery(searchOptions))
+        .copy(knn = searchOptions.color.map(ColorQuery(_)))
+        .sortBy { sortBy(searchOptions) }
+        .limit(searchOptions.pageSize)
+        .from(PaginationQuery.safeGetFrom(searchOptions))
+        .sourceInclude(
+          "display",
+          // we do KNN searches for similar images, and for that we need
+          // to send the image's vectors to Elasticsearch
+          "query.inferredData.reducedFeatures"
+        )
+        .postFilter {
+          must(buildImageFilterQuery(searchOptions.filters))
+        }
+    )
 
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
-      filterToQuery = buildImageFilterQuery,
-      searchQuery = searchQuery(searchOptions)
+      filterToQuery = buildImageFilterQuery
     )
 
   private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =
@@ -111,7 +108,9 @@ class ImagesRequestBuilder()
         case ProductionDateSortRequest =>
           "query.source.production.dates.range.from"
       }
-      .map { FieldSort(_).order(sortOrder) }
+      .map {
+        FieldSort(_).order(sortOrder)
+      }
 
   private def sortOrder(implicit searchOptions: ImageSearchOptions) =
     searchOptions.sortOrder match {
@@ -147,12 +146,6 @@ class ImagesRequestBuilder()
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
-
-//  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
-//    queries.map {
-//      case ColorMustQuery(hexColors) =>
-//        colorQuery(field = "query.inferredData.palette", hexColors)
-//    }
 
   def requestWithBlendedSimilarity
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =

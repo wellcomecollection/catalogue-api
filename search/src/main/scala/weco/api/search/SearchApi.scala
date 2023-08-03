@@ -13,14 +13,10 @@ import akka.http.scaladsl.server.{
   ValidationRejection
 }
 import com.sksamuel.elastic4s.ElasticClient
-import com.sksamuel.elastic4s.ElasticDsl._
-import weco.api.search.elasticsearch.{
-  ElasticsearchService,
-  ImagesMultiMatcher,
-  WorksMultiMatcher
-}
+import weco.api.search.elasticsearch.{ElasticsearchService, ImagesMultiMatcher}
 import weco.api.search.models._
 import weco.api.search.rest._
+import weco.api.search.services.WorksTemplateSearchBuilder
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.models.DisplayError
 
@@ -140,8 +136,7 @@ class SearchApi(
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       elasticConfig.worksIndex.name,
-      WorksMultiMatcher("{{query}}")
-        .filter(termQuery(field = "type", value = "Visible"))
+      WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
