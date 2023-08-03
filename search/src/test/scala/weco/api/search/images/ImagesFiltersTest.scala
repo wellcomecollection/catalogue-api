@@ -302,7 +302,6 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
     }
 
     it("errors on invalid date") {
-      // the one with valid test-documents
       withApi { routes =>
         assertJsonResponse(
           routes,
@@ -346,5 +345,4 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
       }
     }
   }
-
 }

@@ -42,7 +42,7 @@ class ImagesRequestBuilder()
             buildImageFilterQuery(searchOptions.filters)
           )
       )
-      .knn(new ColorQuery()(searchOptions.color))
+      .copy(knn = searchOptions.color.map(ColorQuery(_)))
       .sortBy {
         sortBy(searchOptions)
       }

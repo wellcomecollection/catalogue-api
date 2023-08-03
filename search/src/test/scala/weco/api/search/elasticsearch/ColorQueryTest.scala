@@ -8,7 +8,7 @@ class ColorQueryTest extends AnyFunSpec with Matchers {
 
   it("creates knn search for signature with given hex color") {
     // the Some can go away if ColorQuery reverts to taking a RgbColor instead of the Option of one
-    val query = new ColorQuery()(Some(yellow))
+    val query = ColorQuery(yellow)
     val expectedQueryVector = (Seq.fill(216)(0.0)).updated(210, 1.0)
 
     query.field shouldBe "query.inferredData.paletteEmbedding"
