@@ -31,7 +31,7 @@ case class ImageSearchOptions(
   searchQuery: Option[SearchQuery] = None,
   filters: List[ImageFilter] = Nil,
   aggregations: List[ImageAggregationRequest] = Nil,
-  color: RgbColor,
+  color: Option[RgbColor] = None,
   sortBy: List[SortRequest] = Nil,
   sortOrder: SortingOrder = SortingOrder.Ascending,
   pageSize: Int = 10,

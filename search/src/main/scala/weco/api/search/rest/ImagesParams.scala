@@ -2,7 +2,15 @@ package weco.api.search.rest
 
 import io.circe.Decoder
 import weco.api.search.models._
-import weco.api.search.models.request.{ImageAggregationRequest, ImageInclude, MultipleImagesIncludes, ProductionDateSortRequest, SingleImageIncludes, SortRequest, SortingOrder}
+import weco.api.search.models.request.{
+  ImageAggregationRequest,
+  ImageInclude,
+  MultipleImagesIncludes,
+  ProductionDateSortRequest,
+  SingleImageIncludes,
+  SortRequest,
+  SortingOrder
+}
 
 import java.time.LocalDate
 import scala.util.{Failure, Success}
@@ -44,7 +52,7 @@ case class MultipleImagesParams(
   `source.subjects.label`: Option[SubjectLabelFilter],
   `source.production.dates.from`: Option[LocalDate],
   `source.production.dates.to`: Option[LocalDate],
-  color: RgbColor,
+  color: Option[RgbColor],
   include: Option[MultipleImagesIncludes],
   aggregations: Option[List[ImageAggregationRequest]]
 ) extends QueryParams
@@ -96,7 +104,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "source.subjects.label".as[SubjectLabelFilter].?,
       "source.production.dates.from".as[LocalDate].?,
       "source.production.dates.to".as[LocalDate].?,
-      "color".as[RgbColor],
+      "color".as[RgbColor].?,
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
     ).tflatMap { args =>
@@ -105,10 +113,16 @@ object MultipleImagesParams extends QueryParamsUtils {
     }
 
   implicit val rgbColorDecoder: Decoder[RgbColor] =
-    Decoder.decodeString.emap(colorString => RgbColor.fromHex(colorString) match {
-      case Success(rgbColor) => Right(rgbColor)
-      case Failure(_) => Left(s"'$colorString' is not a valid value. Please supply a hex string.")
-    })
+    Decoder.decodeString.emap(
+      colorString =>
+        RgbColor.fromHex(colorString) match {
+          case Success(rgbColor) => Right(rgbColor)
+          case Failure(_) =>
+            Left(
+              s"'$colorString' is not a valid value. Please supply a hex string."
+            )
+        }
+    )
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
     decodeOneOfCommaSeparated(

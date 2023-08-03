@@ -33,7 +33,6 @@ class ImagesRequestBuilder()
 
   def request(searchOptions: ImageSearchOptions, index: Index): SearchRequest =
     search(index)
-      .knn(colorQuery(searchOptions.color))
       .aggs {
         filteredAggregationBuilder(searchOptions).filteredAggregations
       }
@@ -43,6 +42,7 @@ class ImagesRequestBuilder()
             buildImageFilterQuery(searchOptions.filters)
           )
       )
+      .knn(new ColorQuery()(searchOptions.color))
       .sortBy {
         sortBy(searchOptions)
       }
@@ -55,14 +55,6 @@ class ImagesRequestBuilder()
         "query.inferredData.reducedFeatures"
       )
 
-  private def colorQuery = new ColorQuery()
-//  private def knnColorQuery(searchOptions: ImageSearchOptions) =
-//    searchOptions.color
-//      .map { color =>
-//        val colorQuery = new ColorQuery()
-//        colorQuery(color)
-//      }
-//      .getOrElse(BoolQuery)
   private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
@@ -107,7 +99,7 @@ class ImagesRequestBuilder()
   }
 
   private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
-    if (searchOptions.searchQuery.isDefined) {
+    if (searchOptions.searchQuery.isDefined || searchOptions.color.isDefined) {
       sort :+ scoreSort(SortOrder.DESC) :+ idSort
     } else {
       sort :+ idSort
@@ -149,7 +141,8 @@ class ImagesRequestBuilder()
         RangeQuery(
           "query.source.production.dates.range.from",
           lte = lte,
-          gte = gte)
+          gte = gte
+        )
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
