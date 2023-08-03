@@ -121,7 +121,7 @@ object MultipleImagesParams extends QueryParamsUtils {
             Left(
               s"'$colorString' is not a valid value. Please supply a hex string."
             )
-        }
+      }
     )
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
