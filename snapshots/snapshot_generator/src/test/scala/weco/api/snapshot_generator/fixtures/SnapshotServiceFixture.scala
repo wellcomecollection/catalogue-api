@@ -7,7 +7,7 @@ import weco.api.snapshot_generator.models.SnapshotJob
 import weco.api.snapshot_generator.services.SnapshotService
 import weco.fixtures.TestWith
 import weco.storage.fixtures.S3Fixtures
-import weco.storage.s3.S3ObjectLocation
+import weco.storage.providers.s3.S3ObjectLocation
 
 import java.time.Instant
 

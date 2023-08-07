@@ -19,7 +19,7 @@ import weco.json.utils.JsonAssertions
 import weco.messaging.fixtures.SQS.Queue
 import weco.messaging.memory.MemoryMessageSender
 import weco.storage.fixtures.S3Fixtures.Bucket
-import weco.storage.s3.S3ObjectLocation
+import weco.storage.providers.s3.S3ObjectLocation
 
 class SnapshotGeneratorFeatureTest
     extends AnyFunSpec

@@ -18,7 +18,7 @@ import weco.fixtures.TestWith
 import weco.json.JsonUtil._
 import weco.json.utils.JsonAssertions
 import weco.storage.fixtures.S3Fixtures.Bucket
-import weco.storage.s3.S3ObjectLocation
+import weco.storage.providers.s3.S3ObjectLocation
 
 class SnapshotServiceTest
     extends AnyFunSpec
