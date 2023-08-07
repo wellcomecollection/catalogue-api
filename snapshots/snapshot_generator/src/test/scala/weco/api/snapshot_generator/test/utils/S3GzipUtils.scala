@@ -6,7 +6,7 @@ import software.amazon.awssdk.services.s3.model.{
   HeadObjectRequest
 }
 import weco.storage.fixtures.S3Fixtures
-import weco.storage.s3.S3ObjectLocation
+import weco.storage.providers.s3.S3ObjectLocation
 
 trait S3GzipUtils extends GzipUtils with S3Fixtures {
   def getGzipObjectFromS3(

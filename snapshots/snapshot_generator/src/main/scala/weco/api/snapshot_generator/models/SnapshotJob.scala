@@ -3,7 +3,7 @@ package weco.api.snapshot_generator.models
 import com.sksamuel.elastic4s.Index
 
 import java.time.Instant
-import weco.storage.s3.S3ObjectLocation
+import weco.storage.providers.s3.S3ObjectLocation
 
 case class SnapshotJob(
   s3Location: S3ObjectLocation,
