@@ -2,28 +2,26 @@
   "pageSize" : 10,
   "results" : [
     {
-      "aspectRatio" : 0.8347602,
-      "averageColor" : "#FEE0E5",
-      "id" : "qb2gf0le",
+      "aspectRatio" : 0.7270947,
+      "averageColor" : "#0BFA2A",
+      "id" : "d52cr1sj",
       "locations" : [
         {
           "accessConditions" : [
           ],
-          "credit" : "Credit line: DQNCyLIw",
           "license" : {
             "id" : "cc-by",
             "label" : "Attribution 4.0 International (CC BY 4.0)",
             "type" : "License",
             "url" : "http://creativecommons.org/licenses/by/4.0/"
           },
-          "linkText" : "Link text: H4xfAtbH",
           "locationType" : {
             "id" : "iiif-image",
             "label" : "IIIF Image API",
             "type" : "LocationType"
           },
           "type" : "DigitalLocation",
-          "url" : "https://iiif.wellcomecollection.org/image/fAa.jpg/info.json"
+          "url" : "https://iiif.wellcomecollection.org/image/sNm.jpg/info.json"
         }
       ],
       "source" : {
@@ -31,18 +29,18 @@
           {
             "concepts" : [
               {
-                "id" : "dskosrrt",
-                "label" : "tjUNTV5bxlXKXKx",
+                "id" : "lh4jqzhy",
+                "label" : "Gj43IFYeBR6i8fX",
                 "type" : "Genre"
               },
               {
-                "id" : "o27apmtn",
-                "label" : "93nXupnLhpptDHh",
+                "id" : "e5zk8ar1",
+                "label" : "uNyVAzCsOBddxKj",
                 "type" : "Concept"
               },
               {
-                "id" : "regw9uhu",
-                "label" : "fOGcqXj3ysERa5n",
+                "id" : "gkihsan6",
+                "label" : "L75cyD87gKSW6a9",
                 "type" : "Concept"
               }
             ],
@@ -52,18 +50,18 @@
           {
             "concepts" : [
               {
-                "id" : "uerabjuu",
-                "label" : "yNrNyYNcXGSDteR",
+                "id" : "g09vnkg0",
+                "label" : "twIaKw52N38FjWG",
                 "type" : "Genre"
               },
               {
-                "id" : "s8joisbr",
-                "label" : "MTOhe8jIen3J4Yf",
+                "id" : "q5mjqxpr",
+                "label" : "laz5R9cIkr3WL6R",
                 "type" : "Concept"
               },
               {
-                "id" : "fuue5b2t",
-                "label" : "pAcW0w8rBX3mFzq",
+                "id" : "zfbqvcbp",
+                "label" : "QwPOIUdseGvs6Kp",
                 "type" : "Concept"
               }
             ],
@@ -71,28 +69,26 @@
             "type" : "Genre"
           }
         ],
-        "id" : "3r2da07k",
+        "id" : "liwqgtc8",
         "title" : "Apple agitator",
         "type" : "Work"
       },
       "thumbnail" : {
         "accessConditions" : [
         ],
-        "credit" : "Credit line: DQNCyLIw",
         "license" : {
           "id" : "cc-by",
           "label" : "Attribution 4.0 International (CC BY 4.0)",
           "type" : "License",
           "url" : "http://creativecommons.org/licenses/by/4.0/"
         },
-        "linkText" : "Link text: H4xfAtbH",
         "locationType" : {
           "id" : "iiif-image",
           "label" : "IIIF Image API",
           "type" : "LocationType"
         },
         "type" : "DigitalLocation",
-        "url" : "https://iiif.wellcomecollection.org/image/fAa.jpg/info.json"
+        "url" : "https://iiif.wellcomecollection.org/image/sNm.jpg/info.json"
       },
       "type" : "Image"
     }
