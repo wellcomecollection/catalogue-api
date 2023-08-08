@@ -2,10 +2,8 @@ package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.Index
-import com.sksamuel.elastic4s.requests.common.DocumentRef
 import com.sksamuel.elastic4s.requests.common.Operator.{AND, OR}
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.matches.MultiMatchQueryBuilderType.{
   BEST_FIELDS,
   CROSS_FIELDS
@@ -19,35 +17,6 @@ import io.circe.syntax._
 import io.circe.{Json, JsonObject}
 
 case object ImageSimilarity {
-  def blended: (String, IndexedImage, Index) => JsonObject =
-    // For now, we're replacing the blended lsh query with a single knn query
-    // onthe image feature vector. We'll come back to blend the features and
-    // colours after some more testing.
-    //
-    // lshQuery(
-    //   "query.inferredData.lshEncodedFeatures",
-    //   "query.inferredData.palette"
-    // )
-    knnQuery("query.inferredData.reducedFeatures")
-
-  def color: (String, IndexedImage, Index) => Query =
-    lshQuery("query.inferredData.palette")
-
-  private def lshQuery(
-    fields: String*
-  )(imageId: String, image: IndexedImage, index: Index): Query = {
-    val documentRef = DocumentRef(index, imageId)
-
-    moreLikeThisQuery(fields)
-      .likeDocs(List(documentRef))
-      .copy(
-        minTermFreq = Some(1),
-        minDocFreq = Some(1),
-        maxQueryTerms = Some(1000),
-        minShouldMatch = Some("1")
-      )
-  }
-
   def features: (String, IndexedImage, Index) => JsonObject =
     knnQuery("query.inferredData.reducedFeatures")
 
@@ -165,7 +134,7 @@ case object ImagesMultiMatcher {
                       s"query.source.title.$language",
                       s"query.source.notes.$language",
                       s"query.source.lettering.$language"
-                  )
+                    )
                 )
                 .map(field => FieldWithBoost(field, boost = 100))
             )

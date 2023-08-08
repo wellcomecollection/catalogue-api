@@ -147,31 +147,9 @@ class ImagesRequestBuilder()
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
 
-  def requestWithBlendedSimilarity
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    rawSimilarityRequest(ImageSimilarity.blended)
-
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.features)
-
-  def requestWithSimilarColors
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.color)
-
-  private def similarityRequest(
-    query: (String, IndexedImage, Index) => Query
-  )(
-    index: Index,
-    imageId: String,
-    image: IndexedImage,
-    n: Int,
-    minScore: Double
-  ): SearchRequest =
-    search(index)
-      .size(n)
-      .minScore(minScore)
-      .query(query(imageId, image, index))
 
   private def rawSimilarityRequest(
     query: (String, IndexedImage, Index) => JsonObject

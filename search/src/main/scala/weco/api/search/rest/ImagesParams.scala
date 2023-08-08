@@ -29,9 +29,7 @@ object SingleImageParams extends QueryParamsUtils {
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
     decodeOneOfCommaSeparated(
-      "visuallySimilar" -> ImageInclude.VisuallySimilar,
       "withSimilarFeatures" -> ImageInclude.WithSimilarFeatures,
-      "withSimilarColors" -> ImageInclude.WithSimilarColors,
       "source.contributors" -> ImageInclude.SourceContributors,
       "source.languages" -> ImageInclude.SourceLanguages,
       "source.genres" -> ImageInclude.SourceGenres,
@@ -119,9 +117,9 @@ object MultipleImagesParams extends QueryParamsUtils {
           case Success(rgbColor) => Right(rgbColor)
           case Failure(_) =>
             Left(
-              s"'$colorString' is not a valid value. Please supply a hex string."
+              s"'$colorString' is not a valid value. Please supply a single hex string."
             )
-      }
+        }
     )
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =

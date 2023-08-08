@@ -18,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ImagesController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
-  imagesIndex: Index,
+  imagesIndex: Index
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
     with CatalogueJsonUtil
@@ -35,7 +35,7 @@ class ImagesController(
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(imagesIndex, id, image, metric)
+                      .retrieveSimilarImages(imagesIndex, id, image)
                       .map(metric -> _)
                   }
                   .map(_.toMap)
@@ -44,10 +44,6 @@ class ImagesController(
                       image.display.asJson(
                         includes =
                           params.include.getOrElse(SingleImageIncludes.none),
-                        visuallySimilar =
-                          similarImages.get(SimilarityMetric.Blended),
-                        withSimilarColors =
-                          similarImages.get(SimilarityMetric.Colors),
                         withSimilarFeatures =
                           similarImages.get(SimilarityMetric.Features)
                       )
@@ -95,11 +91,7 @@ class ImagesController(
     maybeIncludes
       .map { includes =>
         List(
-          if (includes.visuallySimilar) Some(SimilarityMetric.Blended)
-          else None,
           if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
-          else None,
-          if (includes.withSimilarColors) Some(SimilarityMetric.Colors)
           else None
         ).flatten
       }
