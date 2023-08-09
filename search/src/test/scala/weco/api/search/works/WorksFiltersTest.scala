@@ -19,7 +19,7 @@ class WorksFiltersTest
           path = "/works?workType=a%3C&aggregations=workType"
         ) {
           Status.OK -> worksListResponse(
-            id = Seq("work.visible.everything.0")
+            ids = Seq("work.visible.everything.0")
           )
         }
     }
