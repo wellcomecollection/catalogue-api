@@ -134,7 +134,7 @@ case object ImagesMultiMatcher {
                       s"query.source.title.$language",
                       s"query.source.notes.$language",
                       s"query.source.lettering.$language"
-                    )
+                  )
                 )
                 .map(field => FieldWithBoost(field, boost = 100))
             )
