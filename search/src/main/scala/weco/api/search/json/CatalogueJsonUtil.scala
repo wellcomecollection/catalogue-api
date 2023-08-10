@@ -44,21 +44,9 @@ trait CatalogueJsonUtil {
   implicit class ImageJsonOps(json: Json) {
     def asJson(
       includes: SingleImageIncludes,
-      visuallySimilar: Option[Seq[IndexedImage]],
-      withSimilarColors: Option[Seq[IndexedImage]],
       withSimilarFeatures: Option[Seq[IndexedImage]]
     ): Json =
       json
-        .addImagesIf(
-          includes.visuallySimilar,
-          key = "visuallySimilar",
-          value = visuallySimilar
-        )
-        .addImagesIf(
-          includes.withSimilarColors,
-          key = "withSimilarColors",
-          value = withSimilarColors
-        )
         .addImagesIf(
           includes.withSimilarFeatures,
           key = "withSimilarFeatures",

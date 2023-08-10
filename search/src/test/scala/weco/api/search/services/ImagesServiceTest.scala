@@ -11,7 +11,6 @@ import weco.api.search.elasticsearch.{
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
-import weco.api.search.models.{QueryConfig, SimilarityMetric}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -24,13 +23,7 @@ class ImagesServiceTest
 
   val elasticsearchService = new ElasticsearchService(elasticClient)
 
-  val imagesService = new ImagesService(
-    elasticsearchService,
-    QueryConfig(
-      paletteBinSizes = Seq(Seq(4, 6, 9), Seq(2, 4, 6), Seq(1, 3, 5)),
-      paletteBinMinima = Seq(0f, 10f / 256, 10f / 256)
-    )
-  )
+  val imagesService = new ImagesService(elasticsearchService)
 
   describe("findById") {
     it("fetches an Image by ID") {
@@ -80,40 +73,6 @@ class ImagesServiceTest
   }
 
   describe("retrieveSimilarImages") {
-    it("gets images using a blended similarity metric by default") {
-      withLocalImagesIndex { index =>
-        indexTestDocuments(
-          index,
-          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
-        )
-
-        val expectedImages = (1 to 5).map(
-          i =>
-            IndexedImage(
-              display =
-                getDisplayImage(s"images.similar-features-and-palettes.$i"),
-              query = getQueryImage(s"images.similar-features-and-palettes.$i")
-            )
-        )
-
-        val future =
-          imagesService.retrieveSimilarImages(
-            index,
-            imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            image = IndexedImage(
-              display =
-                getDisplayImage(s"images.similar-features-and-palettes.0"),
-              query = getQueryImage(s"images.similar-features-and-palettes.0")
-            ),
-            minScore = Some(0)
-          )
-
-        whenReady(future) {
-          _ should contain theSameElementsAs expectedImages
-        }
-      }
-    }
-
     it("gets images with similar features") {
       withLocalImagesIndex { index =>
         indexTestDocuments(
@@ -138,86 +97,11 @@ class ImagesServiceTest
                 display = getDisplayImage(s"images.similar-features.0"),
                 query = getQueryImage(s"images.similar-features.0")
               ),
-              similarityMetric = SimilarityMetric.Features,
               minScore = Some(0)
             )
 
         whenReady(future) {
           _ should contain theSameElementsAs expectedImages
-        }
-      }
-    }
-
-    it("gets images with similar color palettes") {
-      withLocalImagesIndex { index =>
-        indexTestDocuments(
-          index,
-          (0 to 5).map(i => s"images.similar-palettes.$i"): _*
-        )
-
-        val expectedImages = (1 to 5).map(
-          i =>
-            IndexedImage(
-              display = getDisplayImage(s"images.similar-palettes.$i"),
-              query = getQueryImage(s"images.similar-palettes.$i")
-            )
-        )
-
-        val future =
-          imagesService
-            .retrieveSimilarImages(
-              index,
-              imageId = getTestImageId("images.similar-palettes.0"),
-              image = IndexedImage(
-                display = getDisplayImage(s"images.similar-palettes.0"),
-                query = getQueryImage(s"images.similar-palettes.0")
-              ),
-              similarityMetric = SimilarityMetric.Colors,
-              minScore = Some(0)
-            )
-
-        whenReady(future) {
-          _ should contain theSameElementsAs expectedImages
-        }
-      }
-    }
-
-    it("does not blend similarity metrics when specific ones are requested") {
-      withLocalImagesIndex { index =>
-        indexTestDocuments(
-          index,
-          (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
-        )
-
-        val colorResultsFuture = imagesService
-          .retrieveSimilarImages(
-            index,
-            imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            image = IndexedImage(
-              display =
-                getDisplayImage(s"images.similar-features-and-palettes.0"),
-              query = getQueryImage(s"images.similar-features-and-palettes.0")
-            ),
-            similarityMetric = SimilarityMetric.Colors,
-            minScore = Some(0)
-          )
-        val blendedResultsFuture = imagesService
-          .retrieveSimilarImages(
-            index,
-            imageId = getTestImageId("images.similar-features-and-palettes.0"),
-            image = IndexedImage(
-              display =
-                getDisplayImage(s"images.similar-features-and-palettes.0"),
-              query = getQueryImage(s"images.similar-features-and-palettes.0")
-            ),
-            similarityMetric = SimilarityMetric.Blended,
-            minScore = Some(0)
-          )
-        whenReady(colorResultsFuture) { colorResults =>
-          whenReady(blendedResultsFuture) { blendedResults =>
-            colorResults should not contain
-              theSameElementsInOrderAs(blendedResults)
-          }
         }
       }
     }

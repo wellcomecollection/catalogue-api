@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import weco.api.search.models.SearchOptions
 
-trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _, _]] {
+trait ElasticsearchRequestBuilder[S <: SearchOptions[_, _]] {
   val idSort: FieldSort
 
   // return Either because Images and countWorkTypes still use the old way.

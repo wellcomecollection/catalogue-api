@@ -12,8 +12,7 @@ import weco.json.JsonUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 class ImagesService(
-  val elasticsearchService: ElasticsearchService,
-  queryConfig: QueryConfig
+  val elasticsearchService: ElasticsearchService
 )(
   implicit
   val ec: ExecutionContext
@@ -37,35 +36,18 @@ class ImagesService(
     ImageAggregations(searchResponse)
 
   override protected val requestBuilder: ImagesRequestBuilder =
-    new ImagesRequestBuilder(queryConfig)
+    new ImagesRequestBuilder()
 
   def retrieveSimilarImages(
     index: Index,
     imageId: String,
     image: IndexedImage,
-    similarityMetric: SimilarityMetric = SimilarityMetric.Blended,
     minScore: Option[Double] = None
   ): Future[List[IndexedImage]] = {
-    val builder = similarityMetric match {
-      case SimilarityMetric.Blended =>
-        requestBuilder.requestWithBlendedSimilarity
-      case SimilarityMetric.Features =>
-        requestBuilder.requestWithSimilarFeatures
-      case SimilarityMetric.Colors =>
-        requestBuilder.requestWithSimilarColors
-    }
-
-    // default minimum score for the colors similarity metric determined using this notebook
-    // https://github.com/wellcomecollection/data-science/blob/47245826c70bf2d76c63d2c4b3ace6c824673784/notebooks/similarity_problems/notebooks/01-similarity-scores.ipynb
-    // The blended and features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
-    val defaultMinScore: Double = similarityMetric match {
-      case SimilarityMetric.Blended  => 0
-      case SimilarityMetric.Features => 0
-      case SimilarityMetric.Colors   => 20
-    }
-
+    val builder = requestBuilder.requestWithSimilarFeatures
+    // The features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
+    val defaultMinScore = 0
     val minScoreValue: Double = minScore.getOrElse(defaultMinScore)
-
     val searchRequest =
       builder(index, imageId, image, nVisuallySimilarImages, minScoreValue)
 

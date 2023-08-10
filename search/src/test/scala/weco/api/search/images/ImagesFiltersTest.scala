@@ -167,8 +167,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path =
-              s"$rootPath/images?source.genres.concepts=g00dcafe,baadf00d"
+            path = s"$rootPath/images?source.genres.concepts=g00dcafe,baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -318,52 +317,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
   }
 
   describe("filtering images by color") {
-    it("filters by color") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.red",
-            "images.examples.color-filter-tests.blue"
-          )
-
-          assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
-            Status.OK -> imagesListResponse(
-              ids = Seq("images.examples.color-filter-tests.red")
-            )
-          }
-      }
-    }
-
-    it("filters by multiple colors") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.red",
-            "images.examples.color-filter-tests.blue"
-          )
-
-          // TODO: This test would pass if it was returning every image.
-          //
-          // We should add a green image and check it gets filtered out correctly.
-          //
-          // See https://github.com/wellcomecollection/catalogue-api/issues/432
-          assertJsonResponse(
-            routes,
-            path = f"$rootPath/images?color=ff0000,0000ff"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.examples.color-filter-tests.red",
-                "images.examples.color-filter-tests.blue"
-              )
-            )
-          }
-      }
-    }
-
-    it("scores by number of color bin matches") {
+    it("scores by nearest neighbour") {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(
@@ -374,12 +328,16 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
             "images.examples.color-filter-tests.blue"
           )
 
-          assertJsonResponse(routes, path = f"$rootPath/images?color=ff0000") {
+          assertJsonResponse(
+            routes,
+            path = f"$rootPath/images?color=FF0000"
+          ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
                 "images.examples.color-filter-tests.red",
                 "images.examples.color-filter-tests.slightly-less-red",
-                "images.examples.color-filter-tests.even-less-red"
+                "images.examples.color-filter-tests.even-less-red",
+                "images.examples.color-filter-tests.blue"
               ),
               strictOrdering = true
             )
