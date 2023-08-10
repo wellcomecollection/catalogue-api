@@ -31,7 +31,7 @@ case class DisplayResultList[DisplayAggs](
 object DisplayResultList extends CatalogueJsonUtil {
   def apply(
     resultList: ResultList[IndexedWork.Visible, WorkAggregations],
-    searchOptions: SearchOptions[WorkFilter, WorkAggregationRequest],
+    searchOptions: SearchOptions[WorkFilter, WorkAggregationRequest, _],
     includes: WorksIncludes,
     requestUri: Uri
   ): DisplayResultList[DisplayWorkAggregations] =
@@ -52,7 +52,7 @@ object DisplayResultList extends CatalogueJsonUtil {
 
   def apply(
     resultList: ResultList[IndexedImage, ImageAggregations],
-    searchOptions: SearchOptions[ImageFilter, _],
+    searchOptions: SearchOptions[ImageFilter, _, _],
     includes: MultipleImagesIncludes,
     requestUri: Uri
   ): DisplayResultList[DisplayImageAggregations] =

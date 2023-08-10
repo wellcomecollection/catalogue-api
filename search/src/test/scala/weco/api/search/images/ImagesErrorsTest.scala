@@ -39,17 +39,17 @@ class ImagesErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/images?color=%3C",
           description =
-            s"color: '<' is not a valid value. Please supply a single hex string."
+            s"color: '<' is not a valid value. Please supply a hex string."
         )
       }
     }
 
-    it("rejects multiple valid color parameters") {
+    it("rejects multiple invalid color parameters") {
       withApi { route =>
         assertBadRequest(route)(
-          path = s"$rootPath/images?color=ff6700,ff0000,3610e8",
+          path = s"$rootPath/images?color=%3C,ff0000,<script>",
           description =
-            s"color: 'ff6700,ff0000,3610e8' is not a valid value. Please supply a single hex string."
+            s"color: '<', '<script>' are not valid values. Please supply hex strings."
         )
       }
     }
