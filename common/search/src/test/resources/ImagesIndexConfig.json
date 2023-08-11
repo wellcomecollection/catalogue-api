@@ -60,6 +60,14 @@
               "aspectRatio": {
                 "type": "float"
               },
+              "binMinima": {
+                "type": "float",
+                "index": false
+              },
+              "binSizes": {
+                "type": "integer",
+                "index": false
+              },
               "features1": {
                 "type": "dense_vector",
                 "dims": 2048
@@ -74,11 +82,8 @@
                 "index": true,
                 "similarity": "dot_product"
               },
-              "paletteEmbedding": {
-                "type": "dense_vector",
-                "dims": 216,
-                "index": true,
-                "similarity": "dot_product"
+              "palette": {
+                "type": "keyword"
               },
               "averageColorHex": {
                 "type": "keyword"

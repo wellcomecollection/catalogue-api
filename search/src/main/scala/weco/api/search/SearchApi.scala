@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContext
 class SearchApi(
   elasticClient: ElasticClient,
   elasticConfig: ElasticConfig,
+  queryConfig: QueryConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
@@ -119,6 +120,7 @@ class SearchApi(
       elasticsearchService,
       apiConfig,
       imagesIndex = elasticConfig.imagesIndex,
+      queryConfig
     )
 
   def getClusterHealth: Route =
