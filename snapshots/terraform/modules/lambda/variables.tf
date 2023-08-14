@@ -42,9 +42,3 @@ variable "s3_key" {
 
   type = string
 }
-
-variable "log_retention_in_days" {
-  description = "The number of days to keep CloudWatch logs"
-
-  type = string
-}
