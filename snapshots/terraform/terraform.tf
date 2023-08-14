@@ -14,7 +14,7 @@ data "terraform_remote_state" "catalogue_account" {
 
   config = {
     bucket = "wellcomecollection-platform-infra"
-    key    = "terraform/platform-infrastructure/accounts/catalogue.tfstate"
+    key    = "terraform/aws-account-infrastructure/catalogue.tfstate"
 
     role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
     region   = "eu-west-1"
