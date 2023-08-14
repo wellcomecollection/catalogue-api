@@ -58,7 +58,3 @@ resource "aws_cloudfront_distribution" "data_api" {
     }
   }
 }
-
-data "aws_cloudfront_origin_request_policy" "s3_cors" {
-  name = "Managed-CORS-S3Origin"
-}

@@ -2,7 +2,6 @@ locals {
   search_lb_port    = 8000
   items_lb_port     = 8001
   concepts_lb_port  = 8002
-  version_path_part = "v2"
 
   api_gateway_domain_name = "catalogue.api-${var.environment_name}.wellcomecollection.org"
 

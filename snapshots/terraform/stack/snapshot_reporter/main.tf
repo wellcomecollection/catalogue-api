@@ -16,7 +16,5 @@ module "snapshot_reporter" {
     ELASTIC_INDEX     = "snapshots"
   }
 
-  log_retention_in_days = 30
-
   handler = "snapshot_reporter"
 }

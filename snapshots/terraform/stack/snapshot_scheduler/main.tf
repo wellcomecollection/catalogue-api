@@ -17,8 +17,6 @@ module "snapshot_scheduler" {
     ES_BULK_SIZE             = var.es_bulk_size
   }
 
-  log_retention_in_days = 30
-
   handler = "snapshot_scheduler"
 }
 

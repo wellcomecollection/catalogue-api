@@ -18,8 +18,6 @@ module "snapshot_recorder" {
     SECRET_ID = local.secret_id
   }
 
-  log_retention_in_days = 30
-
   handler = "snapshot_recorder"
 }
 
