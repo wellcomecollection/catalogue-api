@@ -1,73 +1,31 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.ElasticApi._
-import com.sksamuel.elastic4s.requests.searches.queries.MoreLikeThisQuery
-import weco.api.search.models.HsvColor
+import com.sksamuel.elastic4s.requests.searches.knn.Knn
+import weco.api.search.models.RgbColor
 
-class ColorQuery(binSizes: Seq[Seq[Int]], binMinima: Seq[Float]) {
-  require(
-    binSizes.size == 3 && binSizes.forall(_.size == 3),
-    "binSizes must be a 3x3 sequence of ints"
-  )
-  require(
-    binMinima.size == 3,
-    "binMinima must be a sequence of 3 floats"
-  )
-
-  private final val minBinWidth = 1f / 256
-
-  lazy private val transposedSizes = binSizes.transpose
-  lazy private val satMin = binMinima(1)
-  lazy private val valMin = binMinima(2)
-
+object ColorQuery {
+  // palette_inferrer creates embeddings with 6 bins per colour dimension
+  private val n_bins = 6
   def apply(
-    field: String,
-    colors: Seq[HsvColor],
-    binIndices: Seq[Int] = binSizes.indices
-  ): MoreLikeThisQuery =
-    moreLikeThisQuery(field)
-      .likeTexts(getColorsSignature(colors, binIndices))
-      .copy(
-        minTermFreq = Some(1),
-        minDocFreq = Some(1),
-        maxQueryTerms = Some(1000),
-        minShouldMatch = Some("1")
-      )
-      .boost(2000)
+    color: RgbColor
+  ): Knn =
+    Knn(
+      field = "query.inferredData.paletteEmbedding",
+      numCandidates = 10000,
+      queryVector = getColorSignature(color),
+      k = 1000,
+      boost = 15
+    )
 
   // This replicates the logic in palette_encoder.py:get_bin_index
-  private def getColorsSignature(
-    colors: Seq[HsvColor],
-    binIndices: Seq[Int]
-  ): Seq[String] =
-    binIndices
-      .map(transposedSizes)
-      .zip(binIndices)
-      .flatMap {
-        case (nBins, i) =>
-          val nValBins = nBins(1)
-          colors
-            .map {
-              case HsvColor(_, _, v) if v < valMin => 0
-              case HsvColor(_, s, v) if s < satMin =>
-                1 + math
-                  .floor(nValBins * (v - valMin) / (1 - valMin + minBinWidth))
-                  .toInt
-              case HsvColor(h, s, v) =>
-                def idx(x: Float, i: Int): Int = {
-                  val num = nBins(i) * (x - binMinima(i))
-                  val denom = 1 - binMinima(i) + minBinWidth
-                  math.floor(num / denom).toInt
-                }
-                1 + nValBins +
-                  idx(h, 0) +
-                  nBins(0) * idx(s, 1) +
-                  nBins(0) * nBins(1) * idx(v, 2)
-            }
-            .map((_, i))
-      }
-      .map {
-        case (binIndex, i) => s"$binIndex/$i"
-      }
+  private def getColorSignature(color: RgbColor): Seq[Double] = {
+    val r_index = (color.r / 255) * (n_bins - 1)
+    val g_index = (color.g / 255) * (n_bins - 1)
+    val b_index = (color.b / 255) * (n_bins - 1)
 
+    val embedding_index = b_index + g_index * n_bins + r_index * n_bins * n_bins
+    Seq
+      .fill(n_bins * n_bins * n_bins)(0.0)
+      .updated(embedding_index.toInt, 1.0)
+  }
 }

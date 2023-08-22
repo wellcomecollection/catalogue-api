@@ -12,7 +12,7 @@ import weco.api.search.models.{ResultList, SearchOptions}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _, _]] {
+trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _]] {
   val elasticsearchService: ElasticsearchService
   protected val requestBuilder: ElasticsearchRequestBuilder[S]
 

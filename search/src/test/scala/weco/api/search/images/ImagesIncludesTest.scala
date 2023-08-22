@@ -127,64 +127,15 @@ class ImagesIncludesTest extends AnyFunSpec with ApiImagesTestBase {
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(imagesIndex, "images.everything")
-          assertJsonResponseContains(
+
+          assertJsonResponse(
             routes,
-            path =
-              s"$rootPath/images/${getTestImageId("images.everything")}?include=source.genres",
-            locator = responseJson => {
-              responseJson.hcursor
-                .downField("source")
-                .downField("genres")
-                .focus
-                .get
-            },
-            expectedJson = """
-               [
-              {
-                "concepts" : [
-                  {
-                    "id" : "dskosrrt",
-                    "label" : "tjUNTV5bxlXKXKx",
-                    "type" : "Genre"
-                  },
-                  {
-                    "id" : "o27apmtn",
-                    "label" : "93nXupnLhpptDHh",
-                    "type" : "Concept"
-                  },
-                  {
-                    "id" : "regw9uhu",
-                    "label" : "fOGcqXj3ysERa5n",
-                    "type" : "Concept"
-                  }
-                ],
-                "label" : "Crumbly cabbages",
-                "type" : "Genre"
-              },
-              {
-                "concepts" : [
-                  {
-                    "id" : "uerabjuu",
-                    "label" : "yNrNyYNcXGSDteR",
-                    "type" : "Genre"
-                  },
-                  {
-                    "id" : "s8joisbr",
-                    "label" : "MTOhe8jIen3J4Yf",
-                    "type" : "Concept"
-                  },
-                  {
-                    "id" : "fuue5b2t",
-                    "label" : "pAcW0w8rBX3mFzq",
-                    "type" : "Concept"
-                  }
-                ],
-                "label" : "Deadly durians",
-                "type" : "Genre"
-              }
-            ]
-             """
-          )
+            s"$rootPath/images/${getTestImageId("images.everything")}?include=source.genres"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/include-image-genres.json"
+            )
+          }
       }
     }
 
