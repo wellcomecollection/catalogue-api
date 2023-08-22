@@ -19,13 +19,13 @@ object ColorQuery {
 
   // This replicates the logic in palette_encoder.py:get_bin_index
   private def getColorSignature(color: RgbColor): Seq[Double] = {
-    val r_index = (color.r / 255) * (n_bins - 1)
-    val g_index = (color.g / 255) * (n_bins - 1)
-    val b_index = (color.b / 255) * (n_bins - 1)
+    val r_index = Math.round((color.r / 255) * (n_bins - 1))
+    val g_index = Math.round((color.g / 255) * (n_bins - 1))
+    val b_index = Math.round((color.b / 255) * (n_bins - 1))
 
     val embedding_index = b_index + g_index * n_bins + r_index * n_bins * n_bins
     Seq
       .fill(n_bins * n_bins * n_bins)(0.0)
-      .updated(embedding_index.toInt, 1.0)
+      .updated(embedding_index, 1.0)
   }
 }
