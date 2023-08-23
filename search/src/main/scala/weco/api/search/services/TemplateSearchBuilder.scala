@@ -11,14 +11,13 @@ trait TemplateSearchBuilder extends Encoders {
   // called "query".
   // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
-
   // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
   lazy protected val source: String =
     s"""
        |{ {{#query}}
        |  "query": $queryTemplate,
        |  {{/query}}
-       |
+       |  "track_total_hits": true,
        |  "from": "{{from}}",
        |  "size": "{{size}}",
        |  "_source": {
