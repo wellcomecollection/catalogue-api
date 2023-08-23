@@ -279,9 +279,7 @@ class WorksQueryTest
         )
 
         whenReady(future) { r =>
-          val v = r.right.value
           r.right.value.totalResults should be > 10000
-          println(v)
         }
       }
 
