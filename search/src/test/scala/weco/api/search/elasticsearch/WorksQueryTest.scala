@@ -1,13 +1,15 @@
 package weco.api.search.elasticsearch
 
 import com.sksamuel.elastic4s.Index
+import io.circe.Json
+import io.circe.syntax.EncoderOps
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.EitherValues
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.index.IndexedWork
-import weco.api.search.models.{SearchQuery}
+import weco.api.search.models.SearchQuery
 import weco.api.search.services.WorksService
 import weco.fixtures.TestWith
 
@@ -242,6 +244,49 @@ class WorksQueryTest
         }
       }
     }
+
+    it("accurately reports total hits") {
+      info(
+        """By default, Elasticsearch only returns total hits up to 10000.
+          | Ensure that the number we return to the API is an accurate reflection
+          | of the number of matches, and has not been cut down to this 10k max.
+          |""".stripMargin
+      )
+      withLocalWorksIndex { index =>
+        val docs: Seq[TestDocument] = (0 to 10010) map { i =>
+          val docId = s"id$i"
+          val doc = Json.obj(
+            "display" -> Json
+              .obj("id" -> docId.asJson, "title" -> s"work number $i".asJson),
+            "query" -> Json.obj(
+              "title" -> Seq(s"work number $i").asJson
+            ),
+            "type" -> "Visible".asJson
+          )
+
+          TestDocument(
+            docId,
+            doc
+          )
+        }
+        indexLoadedTestDocuments(index, docs)
+
+        val future = worksService.listOrSearch(
+          index,
+          searchOptions = createWorksSearchOptionsWith(
+            searchQuery = Some(SearchQuery("work"))
+          )
+        )
+
+        whenReady(future) { r =>
+          val v = r.right.value
+          r.right.value.totalResults should be > 10000
+          println(v)
+        }
+      }
+
+    }
+
   }
 
   private def assertForQueryResults[R](index: Index, query: String)(
