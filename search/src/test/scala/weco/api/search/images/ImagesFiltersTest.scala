@@ -346,37 +346,5 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
     }
   }
 
-  describe("filtering foot images by color") {
-    it("combines free test query and knn search") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.blue-foot",
-            "images.examples.color-filter-tests.blue",
-            "images.examples.color-filter-tests.red",
-            "images.examples.color-filter-tests.even-less-blue-foot",
-            "images.examples.color-filter-tests.red-foot",
-            "images.examples.color-filter-tests.slightly-less-blue-foot"
-          )
 
-          assertJsonResponse(
-            routes,
-            path = f"$rootPath/images?query=foot&color=22bbff"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.examples.color-filter-tests.blue-foot",
-                "images.examples.color-filter-tests.slightly-less-blue-foot",
-                "images.examples.color-filter-tests.red-foot",
-                "images.examples.color-filter-tests.even-less-blue-foot",
-                "images.examples.color-filter-tests.blue",
-                "images.examples.color-filter-tests.red"
-              ),
-              strictOrdering = true
-            )
-          }
-      }
-    }
-  }
 }

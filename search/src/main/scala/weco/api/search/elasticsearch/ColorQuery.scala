@@ -34,9 +34,9 @@ object ColorQuery {
     val sigma = 0.3
     def gaussian(x: Double, y: Double, z: Double): Double =
       Math.exp(
-        -(pow((x - r_index), 2) + pow((y - g_index), 2) + pow((z - b_index), 2)) /
+        -(pow(x - r_index, 2) + pow(y - g_index, 2) + pow(z - b_index, 2)) /
           (2 * pow(sigma, 2))
-      );
+      )
 
     for (x <- 0 until n_bins) {
       for (y <- 0 until n_bins) {
@@ -46,7 +46,7 @@ object ColorQuery {
         }
       }
     }
-    val norm = Math.sqrt(embedding.foldLeft(0.0)((a, b) => a + b * b));
-    embedding.map((x) => x / norm);
+    val norm = Math.sqrt(embedding.foldLeft(0.0)((a, b) => a + b * b))
+    embedding.map((x) => x / norm)
   }
 }
