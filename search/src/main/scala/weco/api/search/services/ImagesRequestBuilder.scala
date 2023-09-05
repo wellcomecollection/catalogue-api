@@ -25,9 +25,11 @@ import weco.api.search.models.request.{
   SortingOrder
 }
 import weco.api.search.rest.PaginationQuery
+import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
 class ImagesRequestBuilder(queryConfig: QueryConfig)
-    extends ElasticsearchRequestBuilder[ImageSearchOptions] {
+    extends ElasticsearchRequestBuilder[ImageSearchOptions]
+    with ImagesTemplateSearchBuilder {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
 
@@ -39,42 +41,38 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   def request(
     searchOptions: ImageSearchOptions,
     index: Index
-  ): Left[SearchRequest, Nothing] =
-    Left(
-      search(index)
-        .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
-        .query(searchQuery(searchOptions))
-        .sortBy { sortBy(searchOptions) }
-        .limit(searchOptions.pageSize)
-        .from(PaginationQuery.safeGetFrom(searchOptions))
-        .sourceInclude(
-          "display",
-          // we do KNN searches for similar images, and for that we need
-          // to send the image's vectors to Elasticsearch
-          "query.inferredData.reducedFeatures"
+  ): Right[Nothing, TemplateSearchRequest] = {
+    implicit val s: ImageSearchOptions = searchOptions
+    Right(
+      searchRequest(
+        indexes = Seq(index.name),
+        params = SearchTemplateParams(
+          query = searchOptions.searchQuery.map(_.query),
+          from = PaginationQuery.safeGetFrom(searchOptions),
+          size = searchOptions.pageSize,
+          sortByDate = dateOrder,
+          sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
+          includes = Seq("display", "query.inferredData.reducedFeatures"),
+          aggs = filteredAggregationBuilder.filteredAggregations,
+          postFilter = Some(
+            must(
+              buildImageFilterQuery(searchOptions.filters)
+            )
+          )
         )
-        .postFilter {
-          must(buildImageFilterQuery(searchOptions.filters))
-        }
+      )
     )
+  }
 
-  private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
+  private def filteredAggregationBuilder(
+    implicit searchOptions: ImageSearchOptions
+  ) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildImageFilterQuery
     )
-
-  private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =
-    searchOptions.searchQuery
-      .map { q =>
-        ImagesMultiMatcher(q.query)
-      }
-      .getOrElse(boolQuery)
-      .must(
-        buildImageMustQuery(searchOptions.mustQueries)
-      )
 
   private def toAggregation(aggReq: ImageAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -103,27 +101,12 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      sort :+ scoreSort(SortOrder.DESC) :+ idSort
-    } else {
-      sort :+ idSort
-    }
-
-  private def sort(implicit searchOptions: ImageSearchOptions) =
-    searchOptions.sortBy
-      .map {
-        case ProductionDateSortRequest =>
-          "query.source.production.dates.range.from"
-      }
-      .map {
-        FieldSort(_).order(sortOrder)
-      }
-
-  private def sortOrder(implicit searchOptions: ImageSearchOptions) =
-    searchOptions.sortOrder match {
-      case SortingOrder.Ascending  => SortOrder.ASC
-      case SortingOrder.Descending => SortOrder.DESC
+  private def dateOrder(
+    implicit searchOptions: ImageSearchOptions
+  ): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   private def buildImageFilterQuery(filter: ImageFilter): Query =
