@@ -15,8 +15,7 @@ object ColorQuery {
       field = "query.inferredData.paletteEmbedding",
       numCandidates = 10000,
       queryVector = getColorSignature(color),
-      k = 1000,
-      boost = Some(15)
+      k = 1000
     )
 
   // This replicates the logic in palette_encoder.py:get_bin_index

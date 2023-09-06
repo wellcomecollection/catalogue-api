@@ -21,6 +21,5 @@ case class SearchTemplateKNNParams(
   k: Int,
   numCandidates: Int,
   queryVector: Seq[Double],
-  similarityThreshold: Option[Double] = None,
-  boost: Option[Double] = None
+  similarityThreshold: Option[Double] = None
 )

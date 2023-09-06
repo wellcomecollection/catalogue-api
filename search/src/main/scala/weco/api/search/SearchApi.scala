@@ -118,7 +118,7 @@ class SearchApi(
     new ImagesController(
       elasticsearchService,
       apiConfig,
-      imagesIndex = elasticConfig.imagesIndex,
+      imagesIndex = elasticConfig.imagesIndex
     )
 
   def getClusterHealth: Route =
@@ -142,7 +142,7 @@ class SearchApi(
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
       elasticConfig.imagesIndex.name,
-      ImagesMultiMatcher("{{query}}")
+      ImagesTemplateSearchBuilder.queryTemplate
     )
 
     complete(

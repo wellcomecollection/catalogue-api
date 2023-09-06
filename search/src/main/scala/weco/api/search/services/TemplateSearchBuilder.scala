@@ -30,7 +30,7 @@ trait TemplateSearchBuilder extends Encoders {
   // the query term to be used in the search is represented by a variable
   // called "query".
   // This preserves the existing behaviour of /search-templates.json
-  protected val queryTemplate: String
+  val queryTemplate: String
 
   protected val dateField: String
 
@@ -59,9 +59,6 @@ trait TemplateSearchBuilder extends Encoders {
        |      {{#similarityThreshold}}
        |        "similarity": {{similarityThreshold}},
        |      {{/similarityThreshold}}
-       |      {{#boost}}
-       |        "boost": {{boost}},
-       |      {{/boost}}
        |      "field": "{{field}}",
        |      "k": {{k}},
        |      "num_candidates": {{numCandidates}},
