@@ -22,6 +22,4 @@ git checkout common/stacks/src/test/scala/weco/catalogue/source_model
 
 docker run --tty --rm \
 	--volume "$ROOT:/repo" \
-  --workdir /repo \
-	"$ECR_REGISTRY/pyfound/black" \
-  black --exclude ".lambda_zips/|.terraform/|target/" .
+	"$ECR_REGISTRY/wellcome/format_python:112"
