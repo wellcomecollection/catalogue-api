@@ -116,6 +116,7 @@ trait TemplateSearchBuilder extends Encoders {
     // readable here, but because this eventually gets converted into
     // a string containing loads of escape characters, all the '\n'
     // sequences and wide gaps actually make it harder to read.
+    // (it also saves a handful of bytes per request)
       .replaceAll("\\s+", " ")
 
   def searchRequest(
