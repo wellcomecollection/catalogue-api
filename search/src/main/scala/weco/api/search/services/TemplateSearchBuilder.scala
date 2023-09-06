@@ -111,7 +111,12 @@ trait TemplateSearchBuilder extends Encoders {
        |    }
        |  ]
        |}
-       |""".stripMargin.replace('\n', ' ')
+       |""".stripMargin
+    // Normalise all whitespace - it only exists to make the code more
+    // readable here, but because this eventually gets converted into
+    // a string containing loads of escape characters, all the '\n'
+    // sequences and wide gaps actually make it harder to read.
+      .replaceAll("\\s+", " ")
 
   def searchRequest(
     indexes: Seq[String],
