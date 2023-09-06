@@ -1,6 +1,5 @@
 package weco.api.search.services
 
-//import com.sksamuel.elastic4s.requests.searches.knn.Knn
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import io.circe.syntax.EncoderOps
 import io.circe.generic.auto._
@@ -117,9 +116,7 @@ trait TemplateSearchBuilder extends Encoders {
   def searchRequest(
     indexes: Seq[String],
     params: SearchTemplateParams
-  ): TemplateSearchRequest = {
-    println(params.knn.get.queryVector.length)
+  ): TemplateSearchRequest =
     TemplateSearchRequest(indexes, source, params.asJson.deepDropNullValues)
-  }
 
 }
