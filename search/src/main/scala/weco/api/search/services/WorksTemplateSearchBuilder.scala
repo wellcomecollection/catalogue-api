@@ -4,10 +4,10 @@ import scala.io.Source
 
 trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
 
-  val queryTemplate: String =
+  protected val queryTemplate: String =
     Source.fromResource("WorksMultiMatcherQueryTemplate.json").mkString
 
-  val dateField: String = "query.production.dates.range.from"
+  protected val dateField: String = "query.production.dates.range.from"
 
 }
 

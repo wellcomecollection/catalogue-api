@@ -30,9 +30,9 @@ trait TemplateSearchBuilder extends Encoders {
   // the query term to be used in the search is represented by a variable
   // called "query".
   // This preserves the existing behaviour of /search-templates.json
-  val queryTemplate: String
+  protected val queryTemplate: String
 
-  val dateField: String
+  protected val dateField: String
 
   // KNN based searches rank by similarity, meaning that the complexity
   // of a full query is not required, and could be misleading to read.
