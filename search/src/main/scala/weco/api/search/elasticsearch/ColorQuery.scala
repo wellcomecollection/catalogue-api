@@ -1,7 +1,8 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.requests.searches.knn.Knn
 import weco.api.search.models.RgbColor
+import weco.api.search.services.SearchTemplateKNNParams
+
 import scala.math.pow
 
 object ColorQuery {
@@ -9,13 +10,13 @@ object ColorQuery {
   private val n_bins = 10
   def apply(
     color: RgbColor
-  ): Knn =
-    Knn(
+  ): SearchTemplateKNNParams =
+    SearchTemplateKNNParams(
       field = "query.inferredData.paletteEmbedding",
       numCandidates = 10000,
       queryVector = getColorSignature(color),
       k = 1000,
-      boost = 15
+      boost = Some(15)
     )
 
   // This replicates the logic in palette_encoder.py:get_bin_index

@@ -1,0 +1,111 @@
+ {
+   "bool": {
+     "should": [{
+         "multi_match": {
+           "query": "{{query}}",
+           "_name": "identifiers",
+           "fields": [
+             "query.source.id",
+             "query.source.identifiers.value",
+             "query.id",
+             "query.sourceIdentifier.value"
+           ],
+           "type": "best_fields",
+           "analyzer": "whitespace_analyzer",
+           "operator": "Or",
+           "boost": 1000.0
+         }
+       },
+       {
+         "multi_match": {
+          "_name": "data",
+           "query": "{{query}}",
+           "fields": [
+             "query.source.contributors.agent.label^1000.0",
+             "query.source.subjects.concepts.label^10.0",
+             "query.source.genres.concepts.label^10.0",
+             "query.source.production.label^10.0",
+             "query.source.description",
+             "query.source.physicalDescription",
+             "query.source.languages.label",
+             "query.source.edition",
+             "query.source.collectionPath.path",
+             "query.source.collectionPath.label"
+           ],
+           "type": "cross_fields",
+           "operator": "And"
+         }
+       },
+       {
+         "dis_max": {
+           "queries": [
+             {
+               "bool": {
+                 "_name": "canonical title prefix",
+                 "boost": 1000.0,
+                 "must": [{
+                     "prefix": {
+                       "query.source.title.keyword": {
+                         "value": "{{query}}"
+                       }
+                     }
+                   },
+                   {
+                     "match_phrase": {
+                       "query.source.title": {
+                         "query": "{{query}}"
+                       }
+                     }
+                   }
+                 ]
+               }
+             },
+             {
+               "multi_match": {
+                 "_name": "title exact spellings",
+                 "fields": [
+                   "query.source.alternativeTitles^100.0",
+                   "query.source.title.english^100.0",
+                   "query.source.title.shingles^100.0",
+                   "query.source.title^100.0"
+                 ],
+                 "operator": "And",
+                 "query": "{{query}}",
+                 "type": "best_fields"
+               }
+             },
+             {
+               "multi_match": {
+                 "_name": "non-english text",
+                 "fields": [
+                   "query.source.title.arabic^100.0",
+                   "query.source.notes.arabic^100.0",
+                   "query.source.lettering.arabic^100.0",
+                   "query.source.title.bengali^100.0",
+                   "query.source.notes.bengali^100.0",
+                   "query.source.lettering.bengali^100.0",
+                   "query.source.title.french^100.0",
+                   "query.source.notes.french^100.0",
+                   "query.source.lettering.french^100.0",
+                   "query.source.title.german^100.0",
+                   "query.source.notes.german^100.0",
+                   "query.source.lettering.german^100.0",
+                   "query.source.title.hindi^100.0",
+                   "query.source.notes.hindi^100.0",
+                   "query.source.lettering.hindi^100.0",
+                   "query.source.title.italian^100.0",
+                   "query.source.notes.italian^100.0",
+                   "query.source.lettering.italian^100.0"
+                 ],
+                 "query": "{{query}}",
+                 "operator": "And",
+                 "type": "best_fields"
+               }
+             }
+           ]
+         }
+       }
+     ],
+     "minimum_should_match": "1"
+   }
+ }

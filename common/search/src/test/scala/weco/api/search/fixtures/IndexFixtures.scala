@@ -25,7 +25,13 @@ trait IndexFixtures extends ElasticsearchFixtures with LocalResources {
         // Elasticsearch is eventually consistent, so the future
         // completing doesn't actually mean that the index exists yet
         eventuallyIndexExists(index)
-
+//        elasticClient
+//          .execute(
+//            ElasticDsl.updateSettings(
+//              Indexes(Seq(index.name)),
+//              settings = Map("number_of_replicas" -> "0")
+//            )
+//          )
         index
       },
       destroy = eventuallyDeleteIndex

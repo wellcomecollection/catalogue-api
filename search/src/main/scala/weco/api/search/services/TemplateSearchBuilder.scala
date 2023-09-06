@@ -1,9 +1,30 @@
 package weco.api.search.services
 
+//import com.sksamuel.elastic4s.requests.searches.knn.Knn
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import io.circe.syntax.EncoderOps
 import io.circe.generic.auto._
 
+/**
+  * Builder for template-based search requests.
+  *
+  * = Scoring =
+  * Searches created by this trait may be ranked by query, or by KNN,
+  * but not both.
+  * If both a query term and a KNN are requested, then the
+  * query term becomes a filter for the KNN part, rather than
+  * populating a full query for itself.
+  * This is because the score for a document that matches both
+  * a query and a knn is the sum of both, giving no sensible provision to
+  * score a document that matches both over one that very highly
+  * matches one but not the other.
+  *
+  * = Sorting =
+  * Results can be sorted by date (up or down) or score, and if neither
+  * value is given, results will be sorted by id.
+  * If both date and score sorting are requested, then results are sorted
+  *  by date and then score.
+  */
 trait TemplateSearchBuilder extends Encoders {
   // Template for the "query" part of the request.
   // This is expected to be a mustache template in which
@@ -12,13 +33,53 @@ trait TemplateSearchBuilder extends Encoders {
   // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
 
+  val dateField: String
+
+  // KNN based searches rank by similarity, meaning that the complexity
+  // of a full query is not required, and could be misleading to read.
+  // A query may have boosts for finding things like exact matches
+  // or values in certain fields, and, if copied into the knn filter
+  // would be executed in filter context and be discarded.
+  // When running a KNN search, the query term becomes a simple filter
+  // on whether the document contains the term in any searchable field.
+  // If there are fields that should be ignored, then this default will
+  // be inappropriate, and can be overridden.
+  protected val knnFilter: String = """{
+  |   "multi_match": { "query": "{{query}}" }
+  | }""".stripMargin
+
   // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
   lazy protected val source: String =
     s"""
-       |{ {{#query}}
-       |  "query": $queryTemplate,
-       |  {{/query}}
+       |{
+       |  {{#knn}}
+       |    "knn": {
+       |      {{#query}}
+       |        "filter": $knnFilter,
+       |      {{/query}}
+       |      {{#similarityThreshold}}
+       |        "similarity": {{similarityThreshold}},
+       |      {{/similarityThreshold}}
+       |      {{#boost}}
+       |        "boost": {{boost}},
+       |      {{/boost}}
+       |      "field": "{{field}}",
+       |      "k": {{k}},
+       |      "num_candidates": {{numCandidates}},
+       |      "query_vector": {{#toJson}}queryVector{{/toJson}}
+       |  },
+       |  {{/knn}}
+       |  {{^knn}}
+       |    {{#query}}
+       |      "query": $queryTemplate,
+       |    {{/query}}
+       |  {{/knn}}
        |
+       |  {{#postFilter}}
+       |  "post_filter": {{#toJson}}postFilter{{/toJson}},
+       |  {{/postFilter}}
+       |
+       |  "track_total_hits": true,
        |  "from": "{{from}}",
        |  "size": "{{size}}",
        |  "_source": {
@@ -29,14 +90,10 @@ trait TemplateSearchBuilder extends Encoders {
        |  "aggs": {{#toJson}}aggs{{/toJson}},
        |  {{/aggs}}
        |
-       |  {{#postFilter}}
-       |  "post_filter": {{#toJson}}postFilter{{/toJson}},
-       |  {{/postFilter}}
-       |
        |  "sort": [
        |    {{#sortByDate}}
        |    {
-       |      "query.production.dates.range.from": {
+       |      "$dateField": {
        |        "order": "{{sortByDate}}"
        |      }
        |    },
@@ -55,12 +112,14 @@ trait TemplateSearchBuilder extends Encoders {
        |    }
        |  ]
        |}
-       |""".stripMargin
+       |""".stripMargin.replace('\n', ' ')
 
   def searchRequest(
     indexes: Seq[String],
     params: SearchTemplateParams
-  ): TemplateSearchRequest =
-    TemplateSearchRequest(indexes, source, params.asJson)
+  ): TemplateSearchRequest = {
+    println(params.knn.get.queryVector.length)
+    TemplateSearchRequest(indexes, source, params.asJson.deepDropNullValues)
+  }
 
 }
