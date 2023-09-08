@@ -330,7 +330,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = f"$rootPath/images?color=FF0000"
+            path = f"$rootPath/images?color=ff47d1"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -345,6 +345,4 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
       }
     }
   }
-
-
 }

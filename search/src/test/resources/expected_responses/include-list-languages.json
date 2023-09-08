@@ -2,9 +2,9 @@
   "pageSize" : 10,
   "results" : [
     {
-      "aspectRatio" : 0.7270947,
-      "averageColor" : "#0BFA2A",
-      "id" : "d52cr1sj",
+      "aspectRatio" : 0.16625082,
+      "averageColor" : "#658BB7",
+      "id" : "wp52vobn",
       "locations" : [
         {
           "accessConditions" : [
@@ -15,17 +15,18 @@
             "type" : "License",
             "url" : "http://creativecommons.org/licenses/by/4.0/"
           },
+          "linkText" : "Link text: eAFmnmhjx",
           "locationType" : {
             "id" : "iiif-image",
             "label" : "IIIF Image API",
             "type" : "LocationType"
           },
           "type" : "DigitalLocation",
-          "url" : "https://iiif.wellcomecollection.org/image/sNm.jpg/info.json"
+          "url" : "https://iiif.wellcomecollection.org/image/UfW.jpg/info.json"
         }
       ],
       "source" : {
-        "id" : "liwqgtc8",
+        "id" : "vsc5ou3g",
         "languages" : [
           {
             "id" : "eng",
@@ -50,13 +51,14 @@
           "type" : "License",
           "url" : "http://creativecommons.org/licenses/by/4.0/"
         },
+        "linkText" : "Link text: eAFmnmhjx",
         "locationType" : {
           "id" : "iiif-image",
           "label" : "IIIF Image API",
           "type" : "LocationType"
         },
         "type" : "DigitalLocation",
-        "url" : "https://iiif.wellcomecollection.org/image/sNm.jpg/info.json"
+        "url" : "https://iiif.wellcomecollection.org/image/UfW.jpg/info.json"
       },
       "type" : "Image"
     }

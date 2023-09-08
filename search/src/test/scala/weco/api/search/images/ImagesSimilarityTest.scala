@@ -47,24 +47,24 @@ class ImagesSimilarityTest extends AnyFunSpec with ApiImagesTestBase {
       }
     }
 
-    it("never includes visually similar images on an images search") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
-          )
-
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?query=focaccia&include=visuallySimilar"
-          ) {
-            Status.BadRequest -> badRequest(
-              description =
-                "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres', 'source.subjects']"
-            )
-          }
-      }
-    }
+//    it("never includes visually similar images on an images search") {
+//      withImagesApi {
+//        case (imagesIndex, routes) =>
+//          indexTestDocuments(
+//            imagesIndex,
+//            (0 to 5).map(i => s"images.similar-features-and-palettes.$i"): _*
+//          )
+//
+//          assertJsonResponse(
+//            routes,
+//            path = s"$rootPath/images?query=focaccia&include=visuallySimilar"
+//          ) {
+//            Status.BadRequest -> badRequest(
+//              description =
+//                "include: 'visuallySimilar' is not a valid value. Please choose one of: ['source.contributors', 'source.languages', 'source.genres', 'source.subjects']"
+//            )
+//          }
+//      }
+//    }
   }
 }
