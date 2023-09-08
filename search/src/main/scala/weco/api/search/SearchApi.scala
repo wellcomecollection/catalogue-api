@@ -13,10 +13,13 @@ import akka.http.scaladsl.server.{
   ValidationRejection
 }
 import com.sksamuel.elastic4s.ElasticClient
-import weco.api.search.elasticsearch.{ElasticsearchService, ImagesMultiMatcher}
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.models._
 import weco.api.search.rest._
-import weco.api.search.services.WorksTemplateSearchBuilder
+import weco.api.search.services.{
+  ImagesTemplateSearchBuilder,
+  WorksTemplateSearchBuilder
+}
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.models.DisplayError
 
@@ -118,7 +121,7 @@ class SearchApi(
     new ImagesController(
       elasticsearchService,
       apiConfig,
-      imagesIndex = elasticConfig.imagesIndex,
+      imagesIndex = elasticConfig.imagesIndex
     )
 
   def getClusterHealth: Route =
@@ -142,7 +145,7 @@ class SearchApi(
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
       elasticConfig.imagesIndex.name,
-      ImagesMultiMatcher("{{query}}")
+      ImagesTemplateSearchBuilder.queryTemplate
     )
 
     complete(
