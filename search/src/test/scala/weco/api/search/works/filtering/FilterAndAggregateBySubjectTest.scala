@@ -32,7 +32,7 @@ class FilterAndAggregateBySubjectTest
     Table(
       ("query", "expectedIds", "clue"),
       (
-        "Sanitation.",
+        "Sanitation",
         Seq(sanitationWork),
         "single match single subject"
       ),
@@ -42,12 +42,12 @@ class FilterAndAggregateBySubjectTest
         "multi match single subject"
       ),
       (
-        "Sanitation.,London (England)",
+        "Sanitation,London (England)",
         Seq(sanitationWork, londonWork, mostThingsWork),
         "comma separated"
       ),
       (
-        """Sanitation.,"Psychology, Pathological"""",
+        """Sanitation,"Psychology, Pathological"""",
         Seq(sanitationWork, psychologyWork, mostThingsWork),
         "commas in quotes"
       ),
@@ -59,7 +59,7 @@ class FilterAndAggregateBySubjectTest
     )
 
   val allValuesParams: String =
-    "subjects.label=Sanitation.&aggregations=subjects.label"
+    "subjects.label=Sanitation&aggregations=subjects.label"
   val allValuesResponse: String = worksListResponseWithAggs(
     Seq(sanitationWork),
     Map(
@@ -67,7 +67,7 @@ class FilterAndAggregateBySubjectTest
         (2, "Darwin \\\"Jones\\\", Charles"),
         (2, "London (England)"),
         (2, "Psychology, Pathological"),
-        (1, "Sanitation.")
+        (1, "Sanitation")
       ).map {
         case (count, label) =>
           (count, s"""
