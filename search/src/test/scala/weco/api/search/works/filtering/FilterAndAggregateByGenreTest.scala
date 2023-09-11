@@ -26,7 +26,7 @@ class FilterAndAggregateByGenreTest
 
   val freeTextExamples: TableFor3[String, Seq[String], String] = Table(
     ("query", "expectedIds", "clue"),
-    ("Annual reports.", Seq(annualReportsWork), "single match single genre"),
+    ("Annual reports", Seq(annualReportsWork), "single match single genre"),
     (
       "Pamphlets",
       Seq(pamphletsWork, mostThingsWork),
@@ -76,13 +76,13 @@ class FilterAndAggregateByGenreTest
   )
 
   val redundantFilterParams: String =
-    s"genres.label=Pamphlets.&languages=sjn&aggregations=genres.label"
+    s"genres.label=Pamphlets&languages=sjn&aggregations=genres.label"
   val redundantFilterBucket: String =
     """
       |{
       |            "concepts" : [
       |            ],
-      |            "label" : "Pamphlets.",
+      |            "label" : "Pamphlets",
       |            "type" : "Genre"
       |          }
       |""".stripMargin
