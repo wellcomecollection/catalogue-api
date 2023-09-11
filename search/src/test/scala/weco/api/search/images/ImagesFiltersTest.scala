@@ -76,8 +76,8 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
 
   describe("filtering images by source genres") {
     def withGenreFilterRecords(
-                                testWith: TestWith[Route, Assertion]
-                              ): Assertion =
+      testWith: TestWith[Route, Assertion]
+    ): Assertion =
       withImagesApi {
         case (imagesIndex, routes) =>
           indexTestDocuments(
@@ -330,7 +330,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
 
           assertJsonResponse(
             routes,
-            path = f"$rootPath/images?color=ff47d1"
+            path = f"$rootPath/images?color=e02020"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -338,6 +338,36 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
                 "images.examples.color-filter-tests.slightly-less-red",
                 "images.examples.color-filter-tests.even-less-red",
                 "images.examples.color-filter-tests.blue"
+              ),
+              strictOrdering = true
+            )
+          }
+      }
+    }
+  }
+
+  describe("filtering images by color and query") {
+    it("combines query and colour filter") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(
+            imagesIndex,
+            "images.examples.color-filter-tests.even-less-blue-foot",
+            "images.examples.color-filter-tests.blue-foot",
+            "images.examples.color-filter-tests.orange-foot",
+            "images.examples.color-filter-tests.slightly-less-blue-foot"
+          )
+
+          assertJsonResponse(
+            routes,
+            path = f"$rootPath/images?query=foot&color=22bbff"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.examples.color-filter-tests.blue-foot",
+                "images.examples.color-filter-tests.slightly-less-blue-foot",
+                "images.examples.color-filter-tests.even-less-blue-foot",
+                "images.examples.color-filter-tests.orange-foot"
               ),
               strictOrdering = true
             )
