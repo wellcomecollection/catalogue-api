@@ -19,17 +19,22 @@ import weco.api.search.models.request.{
 import scala.collection.immutable._
 
 /** This class governs the way in which we wish to combine the filters and aggregations
-  * that are specified for a search. We have a concept of "pairing" a filter and an aggregation:
-  * for example, an aggregation on format is paired with a filter of a specific format.
+  * that are specified for a search.
+  *
+  * We have a concept of "pairing" a filter and an aggregation:
+  * for example, an aggregation on format is paired with a filter for a specific format.
   * If a search includes an aggregation and its paired filter, the filter is *not* applied to that
   * aggregation, but is still applied to results and to all other aggregations.
   *
-  * Given a list of aggregations requests and filters, as well as functions to convert these to
-  * constituents of the ES query, this class exposes:
+  * Given a list of aggregation requests and filters, as well as functions to convert these to
+  * constituents of the ES query.
   *
-  * - `filteredAggregations`: a list of all the ES query aggregations, where those that need to be filtered
-  *   now have a sub-aggregation of the filter aggregation type, named "filtered", and are in the global
-  *   aggregation context so post-filtering of query results is not required.
+  * This class exposes:
+  *
+  * - `filteredAggregations`: a list of all the ES query aggregations.  Each aggregation is a Filter,
+  *    applying all filters appropriate for the requested aggregation, containing the actual aggregation
+  *    requested.  Additionally, if the aggregation is paired with a filter, it will also contain a subaggregation
+  *    that ensures that the filtered-upon value is returned, regardless of the number of documents in which it is present
   */
 trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val aggregationRequests: List[AggregationRequest]
@@ -78,7 +83,6 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
             // allows the term in question to be returned.
             terms
               .minDocCount(0)
-              .size(values.size)
               .includeRegex(s".*($filterTerm).*")
           case _ =>
             throw new NotImplementedError(
@@ -116,7 +120,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     *  Turn an aggregation request into an actual aggregation.
     *  The aggregation will be filtered using all filters that do not operate on the same field as the aggregation (if any).
     *  It also contains a subaggregation that *does* additionally filter on that field.  This ensures that the filtered
-    *  values are returned even if they fall outside the top n buckets as defined by the main aggregation
+    *  values are returned even if they fall outside the top n buckets as defined by the main aggregation.
     */
   private def filteredAggregation(
     aggReq: AggregationRequest
@@ -126,14 +130,24 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       case Some(paired) =>
         val otherFilters = filters.filterNot(_ == paired)
         val pairedQuery = filterToQuery(paired)
+        // The top level aggregation filters the context by applying all the filters
+        // operating on the other fields.
         filteredAggregation(
+          // The requested aggregation operates within this filter.
           agg,
           otherFilters.map(filterToQuery),
           Seq(
             FilterAggregation(
               name = "self",
+              // Then a further filter is applied, additionally applying the filter on this field.
               pairedQuery,
-              // And a modified version of the requested aggregation is applied again,
+              // A modified version of the requested aggregation is applied again.
+              // This ensures that the filtered-upon values are picked up, and will have the
+              // correct document counts corresponding to all the filters.
+              // Any of these that are present in the main aggregation will be exact duplicates.
+              // Any that have been completely filtered out by other filters, will be present with a bucket count of 0
+              // Any that have not been filtered out, but are still not in the top results (i.e. outside agg.size)
+              //  will be returned and the counts will be influenced by all the filters.
               subaggs = Seq(toSelfAggregation(agg, pairedQuery))
             )
           )
