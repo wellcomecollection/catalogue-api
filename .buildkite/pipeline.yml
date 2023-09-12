@@ -96,6 +96,7 @@ steps:
             - "./search/src/main/resources:/resources"
           always-pull: true
           propagate-aws-auth-tokens: true
+          shell: false
 
   - wait
 
