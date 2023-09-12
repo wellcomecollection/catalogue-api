@@ -55,7 +55,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   ): AbstractAggregation =
     agg match {
       case terms: TermsAggregation =>
-        val filterTerm = filterQuery match {
+        filterQuery match {
           case TermsQuery(_, values, _, _, _, _, _) =>
             //Aggregable values are a JSON object encoded as a string
             // Filter terms correspond to a property of this JSON
@@ -69,16 +69,27 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
             // that exactly matches it, then both will be returned.
             // This is an unlikely scenario, and will still result
             // in the desired value being returned.
-            s"""\\"(${values
+            val filterTerm = s"""\\"(${values
               .map(value => escapeRegexTokens(value.toString))
               .mkString("|")})\\""""
-          case _ => ""
+
+            // The aggregation context may be excluding all documents
+            // that match this filter term. Setting minDocCount to 0
+            // allows the term in question to be returned.
+            terms
+              .minDocCount(0)
+              .size(values.size)
+              .includeRegex(s".*($filterTerm).*")
+          case _ =>
+            throw new NotImplementedError(
+              "Only aggregations paired with terms filters have been implemented as paired aggregations"
+            )
         }
-        // The aggregation context may be excluding all documents
-        // that match this filter term. Setting minDocCount to 0
-        // allows the term in question to be returned.
-        terms.minDocCount(0).includeRegex(s".*($filterTerm).*")
-      case agg => agg
+
+      case _ =>
+        throw new NotImplementedError(
+          "Only terms aggregations have been implemented as paired aggregations"
+        )
     }
 
   // Given an aggregation request, convert it to an actual aggregation
@@ -107,36 +118,43 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     *  It also contains a subaggregation that *does* additionally filter on that field.  This ensures that the filtered
     *  values are returned even if they fall outside the top n buckets as defined by the main aggregation
     */
-  private def filteredAggregation(aggReq: AggregationRequest) = {
+  private def filteredAggregation(
+    aggReq: AggregationRequest
+  ): FilterAggregation = {
     val agg = requestToOrderedAggregation(aggReq)
     pairedFilter(aggReq) match {
       case Some(paired) =>
         val otherFilters = filters.filterNot(_ == paired)
         val pairedQuery = filterToQuery(paired)
-        FilterAggregation(
-          name = agg.name,
-          boolQuery.filter {
-            otherFilters.map(filterToQuery)
-          },
-          subaggs = Seq(
-            agg,
+        filteredAggregation(
+          agg,
+          otherFilters.map(filterToQuery),
+          Seq(
             FilterAggregation(
               name = "self",
               pairedQuery,
+              // And a modified version of the requested aggregation is applied again,
               subaggs = Seq(toSelfAggregation(agg, pairedQuery))
             )
           )
         )
       case _ =>
-        FilterAggregation(
-          name = agg.name,
-          boolQuery.filter {
-            filters.map(filterToQuery)
-          },
-          subaggs = Seq(agg)
-        )
+        filteredAggregation(agg, filters.map(filterToQuery), Nil)
     }
   }
+
+  private def filteredAggregation(
+    agg: AbstractAggregation,
+    filters: Seq[Query],
+    extraSubaggs: Seq[AbstractAggregation]
+  ): FilterAggregation =
+    FilterAggregation(
+      name = agg.name,
+      boolQuery.filter {
+        filters
+      },
+      subaggs = Seq(agg) ++ extraSubaggs
+    )
 
   private def pairedFilter(
     aggregationRequest: AggregationRequest
