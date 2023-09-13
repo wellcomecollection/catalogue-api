@@ -3,14 +3,17 @@ package weco.api.search.services
 import com.sksamuel.elastic4s.requests.searches.aggs.{
   AbstractAggregation,
   Aggregation,
-  FilterAggregation
+  FilterAggregation,
+  TermsAggregation
 }
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
-import org.scalatest.LoneElement
+import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
+import org.scalatest.{Inside, LoneElement}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
+import weco.api.search.matchers.AggregationRequestMatchers
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{
@@ -24,7 +27,9 @@ class FiltersAndAggregationsBuilderTest
     extends AnyFunSpec
     with Matchers
     with TableDrivenPropertyChecks
-    with LoneElement {
+    with LoneElement
+    with Inside
+    with AggregationRequestMatchers {
 
   describe("aggregation-level filtering") {
     it("applies to aggregations with a paired filter") {
@@ -34,40 +39,48 @@ class FiltersAndAggregationsBuilderTest
         aggregationRequests =
           List(WorkAggregationRequest.Format, WorkAggregationRequest.Languages),
         filters = List(formatFilter, languagesFilter),
-        requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery
+        requestToAggregation = requestToTermsAggregation,
+        filterToQuery = filterToTermsQuery
       )
 
+      // The mock aggregation generator stringifies the request object
+      // into the field, just to show that it's choosing the right one.
+      // This saves the tests having to replicate all the field mappings.
+      val formatFieldName = WorkAggregationRequest.Format.toString
+      val languagesFieldName = WorkAggregationRequest.Languages.toString
+
       builder.filteredAggregations should have length 2
+      val firstAgg =
+        builder.filteredAggregations.head.asInstanceOf[FilterAggregation]
+      // The first aggregation is the Format one, filtered with the languages filter.
+      firstAgg should have(
+        filters(Seq(languagesFilter)),
+        aggregationField(formatFieldName)
+      )
 
-      builder.filteredAggregations.head shouldBe a[FilterAggregation]
-      // The first aggregation is Format
-      val filterAgg = builder.filteredAggregations.head
-        .asInstanceOf[FilterAggregation]
-      // Filtered on Language=en
-      filterAgg.query
-        .asInstanceOf[BoolQuery]
-        .filters
-        .loneElement shouldBe MockQuery(LanguagesFilter(Seq("en")))
+      inside(firstAgg.subaggs(1)) {
+        case selfFilter: FilterAggregation =>
+          selfFilter should have(
+            filter(formatFilter),
+            aggregationField(formatFieldName)
+          )
+      }
 
-      // Within that filtered aggregation are the two aggregation
-      // requests.
-      filterAgg.subaggs should have length 2
-      // First comes the aggregation for format, without the format filter
-      val formatAgg = filterAgg.subaggs.head
-      formatAgg
-        .asInstanceOf[MockAggregation]
-        .request shouldBe WorkAggregationRequest.Format
-      //Then comes the self aggregation
-      val selfAgg = filterAgg.subaggs(1).asInstanceOf[FilterAggregation]
-      // Which is the same aggregation
-      selfAgg.subaggs.loneElement
-        .asInstanceOf[MockAggregation]
-        .request shouldBe WorkAggregationRequest.Format
-      //but additionally, it matches the filter on this field.
-      selfAgg.query
-        .asInstanceOf[MockQuery]
-        .filter shouldBe FormatFilter(Seq("bananas"))
+      val secondAgg =
+        builder.filteredAggregations(1).asInstanceOf[FilterAggregation]
+      // The second aggregation is the Languages one, filtered with the languages filter.
+      secondAgg should have(
+        filters(Seq(formatFilter)),
+        aggregationField(languagesFieldName)
+      )
+
+      inside(secondAgg.subaggs(1)) {
+        case selfFilter: FilterAggregation =>
+          selfFilter should have(
+            filter(languagesFilter),
+            aggregationField(languagesFieldName)
+          )
+      }
     }
 
     it("does not apply to aggregations without a paired filter") {
@@ -75,8 +88,8 @@ class FiltersAndAggregationsBuilderTest
       val builder = new WorkFiltersAndAggregationsBuilder(
         aggregationRequests = List(WorkAggregationRequest.Format),
         filters = List(languagesFilter),
-        requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery
+        requestToAggregation = requestToTermsAggregation,
+        filterToQuery = filterToTermsQuery
       )
       // The aggregation list is just the requested aggregation
       // filtered by the requested (unpaired) filter.
@@ -84,8 +97,9 @@ class FiltersAndAggregationsBuilderTest
         .asInstanceOf[FilterAggregation]
         .subaggs
         .loneElement // This marks the absence of the "self" filteraggregation
-        .asInstanceOf[MockAggregation]
-        .request shouldBe WorkAggregationRequest.Format
+        .asInstanceOf[TermsAggregation]
+        .field
+        .get shouldBe WorkAggregationRequest.Format.toString
     }
 
     it("applies paired filters to non-paired aggregations") {
@@ -94,27 +108,37 @@ class FiltersAndAggregationsBuilderTest
         aggregationRequests =
           List(WorkAggregationRequest.Format, WorkAggregationRequest.Languages),
         filters = List(formatFilter),
-        requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery
+        requestToAggregation = requestToTermsAggregation,
+        filterToQuery = filterToTermsQuery
       )
 
       builder.filteredAggregations should have length 2
       //The first aggregation is Format, which has a "self" subaggregation.
       // The details of the content of this aggregation are examined
       // in the "applies to aggregations with a paired filter" test.
-      builder.filteredAggregations.head
+      val firstAgg = builder.filteredAggregations.head
         .asInstanceOf[FilterAggregation]
-        .subaggs should have length 2
+
+      firstAgg.subaggs should have length 2
+      firstAgg should have(
+        filters(Nil),
+        aggregationField(WorkAggregationRequest.Format.toString)
+      )
 
       //The second aggregation is Language, which has no corresponding
       // filter in this query, so does not have a "self" subaggregation
-      builder
+      val secondAgg = builder
         .filteredAggregations(1)
         .asInstanceOf[FilterAggregation]
-        .subaggs
-        .loneElement
-        .asInstanceOf[MockAggregation]
-        .request shouldBe WorkAggregationRequest.Languages
+
+      secondAgg.subaggs should have length 1
+
+      // But it should still be filtered using the format filter
+      secondAgg should have(
+        filters(Seq(formatFilter)),
+        aggregationField(WorkAggregationRequest.Languages.toString)
+      )
+
     }
 
     it("applies all other aggregation-dependent filters to the paired filter") {
@@ -129,8 +153,8 @@ class FiltersAndAggregationsBuilderTest
           WorkAggregationRequest.Genre
         ),
         filters = filters,
-        requestToAggregation = requestToAggregation,
-        filterToQuery = filterToQuery
+        requestToAggregation = requestToTermsAggregation,
+        filterToQuery = filterToTermsQuery
       )
 
       builder.filteredAggregations should have length 3
@@ -154,30 +178,20 @@ class FiltersAndAggregationsBuilderTest
         // have only two.  i.e. not it's own
         filterQuery.filters should have length 2
         // And this ensures that it is the correct two.
-        filterQuery.filters.map(_.asInstanceOf[MockQuery].filter) should contain theSameElementsAs filters
+        filterQuery.filters.map(_.asInstanceOf[MockFilter].filter) should contain theSameElementsAs filters
           .filterNot(_ == thisFilter)
       }
     }
   }
 
-  private def requestToAggregation(
+  private def requestToTermsAggregation(
     request: WorkAggregationRequest
   ): Aggregation =
-    MockAggregation("cabbage", request)
+    TermsAggregation(name = "cabbage", field = Some(request.toString))
 
-  private def filterToQuery(filter: WorkFilter): Query = MockQuery(filter)
-
-  private case class MockQuery(filter: WorkFilter) extends Query
-
-  private case class MockAggregation(
-    name: String,
-    request: WorkAggregationRequest,
-    subaggs: Seq[AbstractAggregation] = Nil,
-    metadata: Map[String, AnyRef] = Map.empty
-  ) extends Aggregation {
-    type T = MockAggregation
-    override def subAggregations(aggs: Iterable[AbstractAggregation]): T =
-      copy(subaggs = aggs.toSeq)
-    override def metadata(map: Map[String, AnyRef]): T = copy(metadata = map)
-  }
+  private def filterToTermsQuery(filter: WorkFilter): Query =
+    new MockTermsQuery(filter)
+  private class MockTermsQuery(val filter: WorkFilter)
+      extends TermsQuery(field = "", values = Nil)
+      with MockFilter
 }
