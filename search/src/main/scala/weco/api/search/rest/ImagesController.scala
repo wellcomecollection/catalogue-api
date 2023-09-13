@@ -10,7 +10,7 @@ import weco.api.search.models.request.{
   MultipleImagesIncludes,
   SingleImageIncludes
 }
-import weco.api.search.models.{ApiConfig, QueryConfig, SimilarityMetric}
+import weco.api.search.models.{ApiConfig, SimilarityMetric}
 import weco.api.search.services.ImagesService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -18,8 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ImagesController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
-  imagesIndex: Index,
-  queryConfig: QueryConfig
+  imagesIndex: Index
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
     with CatalogueJsonUtil
@@ -36,7 +35,7 @@ class ImagesController(
                 getSimilarityMetrics(params.include)
                   .traverse { metric =>
                     imagesService
-                      .retrieveSimilarImages(imagesIndex, id, image, metric)
+                      .retrieveSimilarImages(imagesIndex, id, image)
                       .map(metric -> _)
                   }
                   .map(_.toMap)
@@ -45,10 +44,6 @@ class ImagesController(
                       image.display.asJson(
                         includes =
                           params.include.getOrElse(SingleImageIncludes.none),
-                        visuallySimilar =
-                          similarImages.get(SimilarityMetric.Blended),
-                        withSimilarColors =
-                          similarImages.get(SimilarityMetric.Colors),
                         withSimilarFeatures =
                           similarImages.get(SimilarityMetric.Features)
                       )
@@ -96,16 +91,12 @@ class ImagesController(
     maybeIncludes
       .map { includes =>
         List(
-          if (includes.visuallySimilar) Some(SimilarityMetric.Blended)
-          else None,
           if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
-          else None,
-          if (includes.withSimilarColors) Some(SimilarityMetric.Colors)
           else None
         ).flatten
       }
       .getOrElse(Nil)
 
   private lazy val imagesService =
-    new ImagesService(elasticsearchService, queryConfig)
+    new ImagesService(elasticsearchService)
 }

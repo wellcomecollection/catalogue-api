@@ -4,11 +4,7 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.models.{
-  ApiConfig,
-  PipelineClusterElasticConfig,
-  QueryConfig
-}
+import weco.api.search.models.{ApiConfig, PipelineClusterElasticConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -32,13 +28,9 @@ object Main extends WellcomeTypesafeApp {
     val elasticClient = PipelineElasticClientBuilder("catalogue_api")
     val elasticConfig = PipelineClusterElasticConfig()
 
-    val queryConfig =
-      QueryConfig.fetchFromIndex(elasticClient, elasticConfig.imagesIndex)
-
     val router = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
-      queryConfig = queryConfig,
       apiConfig = apiConfig
     )
 

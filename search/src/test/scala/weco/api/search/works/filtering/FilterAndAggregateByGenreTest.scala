@@ -26,24 +26,24 @@ class FilterAndAggregateByGenreTest
 
   val freeTextExamples: TableFor3[String, Seq[String], String] = Table(
     ("query", "expectedIds", "clue"),
-    ("Annual reports.", Seq(annualReportsWork), "single match single genre"),
+    ("Annual reports", Seq(annualReportsWork), "single match single genre"),
     (
-      "Pamphlets.",
+      "Pamphlets",
       Seq(pamphletsWork, mostThingsWork),
       "multi match single genre"
     ),
     (
-      "Annual reports.,Pamphlets.",
+      "Annual reports,Pamphlets",
       Seq(annualReportsWork, pamphletsWork, mostThingsWork),
       "comma separated"
     ),
     (
-      """Annual reports.,"Psychology, Pathological"""",
+      """Annual reports,"Psychology, Pathological"""",
       Seq(annualReportsWork, psychologyWork, mostThingsWork),
       "commas in quotes"
     ),
     (
-      """"Darwin \"Jones\", Charles","Psychology, Pathological",Pamphlets.""",
+      """"Darwin \"Jones\", Charles","Psychology, Pathological",Pamphlets""",
       Seq(darwinWork, psychologyWork, mostThingsWork, pamphletsWork),
       "escaped quotes in quotes"
     )
@@ -52,15 +52,15 @@ class FilterAndAggregateByGenreTest
   val filterName: String = "genres.label"
 
   val allValuesParams: String =
-    "genres.label=Annual%20reports.&aggregations=genres.label"
+    "genres.label=Annual%20reports&aggregations=genres.label"
   val allValuesResponse: String = worksListResponseWithAggs(
     Seq(annualReportsWork),
     Map(
       "genres.label" -> Seq(
         (2, "Darwin \"Jones\", Charles"),
-        (2, "Pamphlets."),
+        (2, "Pamphlets"),
         (2, "Psychology, Pathological"),
-        (1, "Annual reports.")
+        (1, "Annual reports")
       ).map {
         case (count, label) =>
           (count, s"""
@@ -76,13 +76,13 @@ class FilterAndAggregateByGenreTest
   )
 
   val redundantFilterParams: String =
-    s"genres.label=Pamphlets.&languages=sjn&aggregations=genres.label"
+    s"genres.label=Pamphlets&languages=sjn&aggregations=genres.label"
   val redundantFilterBucket: String =
     """
       |{
       |            "concepts" : [
       |            ],
-      |            "label" : "Pamphlets.",
+      |            "label" : "Pamphlets",
       |            "type" : "Genre"
       |          }
       |""".stripMargin

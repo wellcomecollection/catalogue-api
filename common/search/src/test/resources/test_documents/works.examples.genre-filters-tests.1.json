@@ -1,6 +1,6 @@
 {
   "description" : "examples for the genre tests",
-  "createdAt" : "2023-03-24T14:12:13.303744Z",
+  "createdAt" : "2023-08-22T11:49:35.846438Z",
   "id" : "wdnn2etp",
   "document" : {
     "debug" : {
@@ -43,7 +43,7 @@
       ],
       "genres" : [
         {
-          "label" : "Pamphlets.",
+          "label" : "Pamphlets",
           "concepts" : [
             {
               "id" : "g00dcafe",
@@ -130,7 +130,7 @@
       "subjects.concepts.label" : [
       ],
       "genres.label" : [
-        "Pamphlets."
+        "Pamphlets"
       ],
       "genres.concepts.label" : [
         "df4bTPrmWNKiLGp"
@@ -164,7 +164,7 @@
       "workType" : [
       ],
       "genres.label" : [
-        "{\"label\":\"Pamphlets.\",\"concepts\":[],\"type\":\"Genre\"}"
+        "{\"label\":\"Pamphlets\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
       "production.dates" : [
       ],

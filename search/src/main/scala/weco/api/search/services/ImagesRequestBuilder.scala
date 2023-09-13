@@ -4,7 +4,6 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
-import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import com.sksamuel.elastic4s.requests.searches.queries.{
   NoopQuery,
   Query,
@@ -13,11 +12,7 @@ import com.sksamuel.elastic4s.requests.searches.queries.{
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
-import weco.api.search.elasticsearch.{
-  ColorQuery,
-  ImageSimilarity,
-  ImagesMultiMatcher
-}
+import weco.api.search.elasticsearch.{ColorQuery, ImageSimilarity}
 import weco.api.search.models._
 import weco.api.search.models.request.{
   ImageAggregationRequest,
@@ -25,56 +20,49 @@ import weco.api.search.models.request.{
   SortingOrder
 }
 import weco.api.search.rest.PaginationQuery
+import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
-class ImagesRequestBuilder(queryConfig: QueryConfig)
-    extends ElasticsearchRequestBuilder[ImageSearchOptions] {
+class ImagesRequestBuilder()
+    extends ElasticsearchRequestBuilder[ImageSearchOptions]
+    with ImagesTemplateSearchBuilder {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
-
-  lazy val colorQuery = new ColorQuery(
-    binSizes = queryConfig.paletteBinSizes,
-    binMinima = queryConfig.paletteBinMinima
-  )
-
   def request(
     searchOptions: ImageSearchOptions,
     index: Index
-  ): Left[SearchRequest, Nothing] =
-    Left(
-      search(index)
-        .aggs { filteredAggregationBuilder(searchOptions).filteredAggregations }
-        .query(searchQuery(searchOptions))
-        .sortBy { sortBy(searchOptions) }
-        .limit(searchOptions.pageSize)
-        .from(PaginationQuery.safeGetFrom(searchOptions))
-        .sourceInclude(
-          "display",
-          // we do KNN searches for similar images, and for that we need
-          // to send the image's vectors to Elasticsearch
-          "query.inferredData.reducedFeatures"
+  ): Right[Nothing, TemplateSearchRequest] = {
+    implicit val s: ImageSearchOptions = searchOptions
+    Right(
+      searchRequest(
+        indexes = Seq(index.name),
+        params = SearchTemplateParams(
+          query = searchOptions.searchQuery.map(_.query),
+          from = PaginationQuery.safeGetFrom(searchOptions),
+          size = searchOptions.pageSize,
+          sortByDate = dateOrder,
+          sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
+          includes = Seq("display", "query.inferredData.reducedFeatures"),
+          aggs = filteredAggregationBuilder.filteredAggregations,
+          postFilter = Some(
+            must(
+              buildImageFilterQuery(searchOptions.filters)
+            )
+          ),
+          knn = searchOptions.color.map(ColorQuery(_))
         )
-        .postFilter {
-          must(buildImageFilterQuery(searchOptions.filters))
-        }
+      )
     )
+  }
 
-  private def filteredAggregationBuilder(searchOptions: ImageSearchOptions) =
+  private def filteredAggregationBuilder(
+    implicit searchOptions: ImageSearchOptions
+  ) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = searchOptions.filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildImageFilterQuery
     )
-
-  private def searchQuery(searchOptions: ImageSearchOptions): BoolQuery =
-    searchOptions.searchQuery
-      .map { q =>
-        ImagesMultiMatcher(q.query)
-      }
-      .getOrElse(boolQuery)
-      .must(
-        buildImageMustQuery(searchOptions.mustQueries)
-      )
 
   private def toAggregation(aggReq: ImageAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -103,27 +91,12 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
         .field("aggregatableValues.source.subjects.label")
   }
 
-  private def sortBy(implicit searchOptions: ImageSearchOptions): Seq[Sort] =
-    if (searchOptions.searchQuery.isDefined || searchOptions.mustQueries.nonEmpty) {
-      sort :+ scoreSort(SortOrder.DESC) :+ idSort
-    } else {
-      sort :+ idSort
-    }
-
-  private def sort(implicit searchOptions: ImageSearchOptions) =
-    searchOptions.sortBy
-      .map {
-        case ProductionDateSortRequest =>
-          "query.source.production.dates.range.from"
-      }
-      .map {
-        FieldSort(_).order(sortOrder)
-      }
-
-  private def sortOrder(implicit searchOptions: ImageSearchOptions) =
-    searchOptions.sortOrder match {
-      case SortingOrder.Ascending  => SortOrder.ASC
-      case SortingOrder.Descending => SortOrder.DESC
+  private def dateOrder(
+    implicit searchOptions: ImageSearchOptions
+  ): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   private def buildImageFilterQuery(filter: ImageFilter): Query =
@@ -155,37 +128,9 @@ class ImagesRequestBuilder(queryConfig: QueryConfig)
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
     filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
 
-  private def buildImageMustQuery(queries: List[ImageMustQuery]): Seq[Query] =
-    queries.map {
-      case ColorMustQuery(hexColors) =>
-        colorQuery(field = "query.inferredData.palette", hexColors)
-    }
-
-  def requestWithBlendedSimilarity
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    rawSimilarityRequest(ImageSimilarity.blended)
-
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
     rawSimilarityRequest(ImageSimilarity.features)
-
-  def requestWithSimilarColors
-    : (Index, String, IndexedImage, Int, Double) => SearchRequest =
-    similarityRequest(ImageSimilarity.color)
-
-  private def similarityRequest(
-    query: (String, IndexedImage, Index) => Query
-  )(
-    index: Index,
-    imageId: String,
-    image: IndexedImage,
-    n: Int,
-    minScore: Double
-  ): SearchRequest =
-    search(index)
-      .size(n)
-      .minScore(minScore)
-      .query(query(imageId, image, index))
 
   private def rawSimilarityRequest(
     query: (String, IndexedImage, Index) => JsonObject

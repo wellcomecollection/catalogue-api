@@ -23,26 +23,48 @@
     }
   ],
   "source" : {
-    "contributors" : [
+    "genres" : [
       {
-        "agent" : {
-          "label" : "Adrian Aardvark",
-          "type" : "Person"
-        },
-        "primary" : true,
-        "roles" : [
+        "concepts" : [
+          {
+            "id" : "lhv6fymm",
+            "label" : "x54TII0VPSaRa8w",
+            "type" : "Genre"
+          },
+          {
+            "id" : "eqakv68w",
+            "label" : "w83ptb24Wdf0ffp",
+            "type" : "Concept"
+          },
+          {
+            "id" : "gkwupx3s",
+            "label" : "0EIxNCtDqaYGQtY",
+            "type" : "Concept"
+          }
         ],
-        "type" : "Contributor"
+        "label" : "Crumbly cabbages",
+        "type" : "Genre"
       },
       {
-        "agent" : {
-          "label" : "Beatrice Buffalo",
-          "type" : "Person"
-        },
-        "primary" : true,
-        "roles" : [
+        "concepts" : [
+          {
+            "id" : "f6d8tqxf",
+            "label" : "uWYjSoLFdpcpari",
+            "type" : "Genre"
+          },
+          {
+            "id" : "1vp6bsrx",
+            "label" : "2Ag1y5HSMCthkMG",
+            "type" : "Concept"
+          },
+          {
+            "id" : "s3wjtkzh",
+            "label" : "kxmCLMBG67iDCYg",
+            "type" : "Concept"
+          }
         ],
-        "type" : "Contributor"
+        "label" : "Deadly durians",
+        "type" : "Genre"
       }
     ],
     "id" : "vsc5ou3g",

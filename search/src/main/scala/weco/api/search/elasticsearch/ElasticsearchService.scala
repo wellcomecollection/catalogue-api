@@ -100,7 +100,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(
     request: TemplateSearchRequest
   ): Future[Either[ElasticsearchError, SearchResponse]] =
     spanFuture(
-      name = "ElasticSearch#executeSearchRequest",
+      name = "ElasticSearch#executeTemplateSearchRequest",
       spanType = "request",
       subType = "elastic",
       action = "query"
