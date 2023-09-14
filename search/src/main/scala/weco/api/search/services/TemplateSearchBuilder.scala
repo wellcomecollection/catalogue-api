@@ -66,9 +66,15 @@ trait TemplateSearchBuilder extends Encoders {
        |  },
        |  {{/knn}}
        |  {{^knn}}
-       |    {{#query}}
-       |      "query": $queryTemplate,
-       |    {{/query}}
+       |    "query": {
+       |      "bool" {
+       |          {{#query}}
+       |            "must": $queryTemplate,
+       |          {{/query}}
+       |          "filter": [
+       |          ]
+       |       }
+       |    }
        |  {{/knn}}
        |
        |  {{#postFilter}}
