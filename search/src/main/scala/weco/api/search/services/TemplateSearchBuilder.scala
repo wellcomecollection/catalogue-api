@@ -43,8 +43,9 @@ trait TemplateSearchBuilder extends Encoders {
   // on whether the document contains the term in any searchable field.
   // If there are fields that should be ignored, then this default will
   // be inappropriate, and can be overridden.
-  protected val knnFilter: String = """{
-  |   "multi_match": { "query": "{{query}}" }
+  protected val knnFilter: String =
+    """{
+  |   "multi_match": { "query": "{{query}}", "operator": "AND", "type": "cross_fields"}
   | }""".stripMargin
 
   // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
