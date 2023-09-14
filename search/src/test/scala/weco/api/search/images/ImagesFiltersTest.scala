@@ -354,6 +354,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
             imagesIndex,
             "images.examples.color-filter-tests.even-less-blue-foot",
             "images.examples.color-filter-tests.blue-foot",
+            "images.examples.color-filter-tests.blue",
             "images.examples.color-filter-tests.orange-foot",
             "images.examples.color-filter-tests.slightly-less-blue-foot"
           )
@@ -368,6 +369,29 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
                 "images.examples.color-filter-tests.slightly-less-blue-foot",
                 "images.examples.color-filter-tests.even-less-blue-foot",
                 "images.examples.color-filter-tests.orange-foot"
+              ),
+              strictOrdering = true
+            )
+          }
+      }
+    }
+    it("combines multi-token query terms with AND") {
+      withImagesApi {
+        case (imagesIndex, routes) =>
+          indexTestDocuments(
+            imagesIndex,
+            "images.examples.color-filter-tests.blue", // Green + Dye (subjects)
+            "images.examples.color-filter-tests.blue-foot", // Dye but not Green
+            "images.examples.color-filter-tests.even-less-blue-foot" // Neither Dye nor Green
+          )
+
+          assertJsonResponse(
+            routes,
+            path = f"$rootPath/images?query=green+dye&color=22bbff"
+          ) {
+            Status.OK -> imagesListResponse(
+              ids = Seq(
+                "images.examples.color-filter-tests.blue"
               ),
               strictOrdering = true
             )
