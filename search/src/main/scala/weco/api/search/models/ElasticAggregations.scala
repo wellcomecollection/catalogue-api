@@ -41,7 +41,6 @@ trait ElasticAggregations extends Logging {
           ).recoverWith {
             case err =>
               warn("Failed to parse aggregation from ES", err)
-              println(s"Failed to parse aggregation from ES: $err")
               Failure(err)
           }.toOption
         )
