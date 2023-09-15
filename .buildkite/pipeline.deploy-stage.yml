@@ -80,8 +80,6 @@ steps:
             - "--cluster=pipeline-stage"
             - "--query=https://api-stage.wellcomecollection.org/catalogue/v2"
           mount-checkout: false
-          volumes:
-            - "./search/src/main/resources:/resources"
           always-pull: true
           propagate-environment: true
           propagate-aws-auth-tokens: true
