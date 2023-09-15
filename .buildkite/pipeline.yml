@@ -83,7 +83,10 @@ steps:
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
 
-  - label: "Rank: test in-branch query against staging cluster"
+  - label: "Rank {{matrix}}: test query against staging cluster"
+    matrix:
+      - "Works"
+      - "Images"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
@@ -93,9 +96,9 @@ steps:
           image: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/weco/rank:latest
           command:
             - "test"
-            - "--content-type=works"
+            - "--content-type={{matrix}}"
             - "--cluster=pipeline-stage"
-            - "--query=/resources/WorksMultiMatcherQueryTemplate.json"
+            - "--query=/resources/{{matrix}}MultiMatcherQueryTemplate.json"
           mount-checkout: false
           volumes:
             - "./search/src/main/resources:/resources"
