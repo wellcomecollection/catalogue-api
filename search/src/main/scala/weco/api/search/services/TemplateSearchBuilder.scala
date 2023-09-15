@@ -44,9 +44,7 @@ trait TemplateSearchBuilder extends Encoders {
   // If there are fields that should be ignored, then this default will
   // be inappropriate, and can be overridden.
   protected val knnFilter: String =
-    """{
-  |   "multi_match": { "query": "{{query}}", "operator": "AND", "type": "cross_fields"}
-  | }""".stripMargin
+    """{"multi_match": { "query": "{{query}}", "operator": "AND", "type": "cross_fields"}}"""
 
   // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
   lazy protected val source: String =
@@ -68,14 +66,13 @@ trait TemplateSearchBuilder extends Encoders {
        |  {{/knn}}
        |  {{^knn}}
        |    "query": {
-       |      "bool" {
+       |      "bool": {
        |          {{#query}}
-       |            "must": $queryTemplate,
+       |          "must": $queryTemplate,
        |          {{/query}}
-       |          "filter": [
-       |          ]
+       |          "filter": {{#toJson}}preFilter{{/toJson}}
        |       }
-       |    }
+       |    },
        |  {{/knn}}
        |
        |  {{#postFilter}}

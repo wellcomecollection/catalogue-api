@@ -29,6 +29,15 @@ object WorksRequestBuilder
     index: Index
   ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s: WorkSearchOptions = searchOptions
+    val splitFilterRequests = searchOptions.filters.groupBy {
+      case _: Pairable => Pairable
+      case _           => Unpairable
+    }
+
+    val unpairables = splitFilterRequests.getOrElse(Unpairable, Nil)
+    val pairables = splitFilterRequests
+      .getOrElse(Pairable, Nil)
+      .asInstanceOf[List[WorkFilter with Pairable]]
 
     Right(
       searchRequest(
@@ -40,10 +49,11 @@ object WorksRequestBuilder
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
-          aggs = filteredAggregationBuilder.filteredAggregations,
+          aggs = filteredAggregationBuilder(pairables).filteredAggregations,
+          preFilter = buildWorkFilterQuery(VisibleWorkFilter :: unpairables),
           postFilter = Some(
             must(
-              buildWorkFilterQuery(VisibleWorkFilter :: searchOptions.filters)
+              buildWorkFilterQuery(pairables)
             )
           )
         )
@@ -52,11 +62,13 @@ object WorksRequestBuilder
   }
 
   private def filteredAggregationBuilder(
+    filters: List[WorkFilter with Pairable]
+  )(
     implicit searchOptions: WorkSearchOptions
   ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
-      filters = searchOptions.filters,
+      filters = filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildWorkFilterQuery
     )
