@@ -1,7 +1,24 @@
 steps:
-  - command: ./.buildkite/scripts/test_rank.sh
-    env:
-      QUERY_ENV: "production"
+  - label: "Production query ({{matrix}})"
+    matrix:
+      - "works"
+      - "images"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      - ecr#v2.7.0:
+          login: true
+      - docker#v5.8.0:
+          image: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/weco/rank:latest
+          command:
+            - "test"
+            - "--content-type={{matrix}}"
+            - "--cluster=pipeline-prod"
+            - "--query=https://api.wellcomecollection.org/catalogue/v2"
+          mount-checkout: false
+          volumes:
+            - "./search/src/main/resources:/resources"
+          always-pull: true
+          propagate-environment: true
+          propagate-aws-auth-tokens: true
+          shell: false
