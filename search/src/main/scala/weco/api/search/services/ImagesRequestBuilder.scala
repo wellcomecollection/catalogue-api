@@ -32,6 +32,16 @@ class ImagesRequestBuilder()
     index: Index
   ): Right[Nothing, TemplateSearchRequest] = {
     implicit val s: ImageSearchOptions = searchOptions
+
+    val splitFilterRequests = searchOptions.filters.groupBy {
+      case _: Pairable => Pairable
+      case _           => Unpairable
+    }
+    val unpairables = splitFilterRequests.getOrElse(Unpairable, Nil)
+    val pairables = splitFilterRequests
+      .getOrElse(Pairable, Nil)
+      .asInstanceOf[List[ImageFilter with Pairable]]
+
     Right(
       searchRequest(
         indexes = Seq(index.name),
@@ -42,7 +52,8 @@ class ImagesRequestBuilder()
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "query.inferredData.reducedFeatures"),
-          aggs = filteredAggregationBuilder.filteredAggregations,
+          aggs = filteredAggregationBuilder(pairables).filteredAggregations,
+          preFilter = buildImageFilterQuery(unpairables),
           postFilter = Some(
             must(
               buildImageFilterQuery(searchOptions.filters)
@@ -55,11 +66,13 @@ class ImagesRequestBuilder()
   }
 
   private def filteredAggregationBuilder(
+    filters: List[ImageFilter with Pairable]
+  )(
     implicit searchOptions: ImageSearchOptions
   ) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
-      filters = searchOptions.filters,
+      filters = filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildImageFilterQuery
     )

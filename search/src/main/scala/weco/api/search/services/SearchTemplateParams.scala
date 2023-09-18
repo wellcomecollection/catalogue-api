@@ -12,6 +12,7 @@ case class SearchTemplateParams(
   sortByScore: Boolean,
   includes: Seq[String],
   aggs: Seq[AbstractAggregation],
+  preFilter: Seq[Query],
   postFilter: Option[Query],
   knn: Option[SearchTemplateKNNParams] = None
 )

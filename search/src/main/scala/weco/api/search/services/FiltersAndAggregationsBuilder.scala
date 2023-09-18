@@ -38,11 +38,13 @@ import scala.collection.immutable._
   */
 trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   val aggregationRequests: List[AggregationRequest]
-  val filters: List[Filter]
+  val filters: List[Filter with Pairable]
   val requestToAggregation: AggregationRequest => Aggregation
   val filterToQuery: Filter => Query
 
-  def pairedAggregationRequests(filter: Filter): List[AggregationRequest]
+  def pairedAggregationRequests(
+    filter: Filter with Pairable
+  ): List[AggregationRequest]
 
   // Ensure that characters like parentheses can still be returned by the self aggregation, escape any
   // regex tokens that might appear in filter terms.
@@ -181,13 +183,13 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
 
 class WorkFiltersAndAggregationsBuilder(
   val aggregationRequests: List[WorkAggregationRequest],
-  val filters: List[WorkFilter],
+  val filters: List[WorkFilter with Pairable],
   val requestToAggregation: WorkAggregationRequest => Aggregation,
   val filterToQuery: WorkFilter => Query
 ) extends FiltersAndAggregationsBuilder[WorkFilter, WorkAggregationRequest] {
 
   override def pairedAggregationRequests(
-    filter: WorkFilter
+    filter: WorkFilter with Pairable
   ): List[WorkAggregationRequest] =
     filter match {
       case _: FormatFilter       => List(WorkAggregationRequest.Format)
@@ -198,19 +200,19 @@ class WorkFiltersAndAggregationsBuilder(
       case _: LicenseFilter      => List(WorkAggregationRequest.License)
       case _: AvailabilitiesFilter =>
         List(WorkAggregationRequest.Availabilities)
-      case _ => Nil
     }
+
 }
 
 class ImageFiltersAndAggregationsBuilder(
   val aggregationRequests: List[ImageAggregationRequest],
-  val filters: List[ImageFilter],
+  val filters: List[ImageFilter with Pairable],
   val requestToAggregation: ImageAggregationRequest => Aggregation,
   val filterToQuery: ImageFilter => Query
 ) extends FiltersAndAggregationsBuilder[ImageFilter, ImageAggregationRequest] {
 
   override def pairedAggregationRequests(
-    filter: ImageFilter
+    filter: ImageFilter with Pairable
   ): List[ImageAggregationRequest] =
     filter match {
       case _: LicenseFilter => List(ImageAggregationRequest.License)
@@ -218,7 +220,5 @@ class ImageFiltersAndAggregationsBuilder(
         List(ImageAggregationRequest.SourceContributorAgents)
       case _: GenreFilter        => List(ImageAggregationRequest.SourceGenres)
       case _: SubjectLabelFilter => List(ImageAggregationRequest.SourceSubjects)
-
-      case _ => Nil
     }
 }
