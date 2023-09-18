@@ -83,13 +83,29 @@ steps:
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:ref.${BUILDKITE_COMMIT}
             - concepts:756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome/concepts:latest
 
-  - command: .buildkite/scripts/test_rank.sh
-    label: "rank"
-    env:
-      QUERY_ENV: "candidate"
+  - label: "Rank: test query against staging cluster ({{matrix}})"
+    matrix:
+      - "Works"
+      - "Images"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      - ecr#v2.7.0:
+          login: true
+      - docker#v5.8.0:
+          image: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/weco/rank:latest
+          command:
+            - "test"
+            - "--content-type={{matrix}}"
+            - "--cluster=pipeline-stage"
+            - "--query=/resources/{{matrix}}MultiMatcherQueryTemplate.json"
+          mount-checkout: false
+          volumes:
+            - "./search/src/main/resources:/resources"
+          always-pull: true
+          propagate-environment: true
+          propagate-aws-auth-tokens: true
+          shell: false
 
   - wait
 
