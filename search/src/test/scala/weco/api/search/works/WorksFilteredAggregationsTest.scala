@@ -1,9 +1,15 @@
 package weco.api.search.works
 
 import org.scalatest.funspec.AnyFunSpec
+import weco.api.search.generators.AggregationDocumentGenerators
 import weco.api.search.models.request.WorksIncludes
 
-class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
+import java.net.URLEncoder
+
+class WorksFilteredAggregationsTest
+    extends AnyFunSpec
+    with ApiWorksTestBase
+    with AggregationDocumentGenerators {
   val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 
@@ -171,7 +177,8 @@ class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
             path =
               s"$rootPath/works?workType=a&languages=che&aggregations=workType"
           ) {
-            Status.OK -> s"""
+            Status.OK ->
+              s"""
             {
               ${resultList(totalResults = 0, totalPages = 0)},
               "aggregations": {
@@ -205,6 +212,49 @@ class WorksFilteredAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
           """.stripMargin
           }
       }
+    }
+  }
+  it("safely handles terms with special characters") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        val doc = createWorkDocument(
+          "xkcd0327",
+          "Exploits Of a Mom",
+          Map(
+            "contributors.agent.label" -> Seq(
+              "Robert .?+*|{}<>&@[]()\" Tables"
+            )
+          )
+        )
+
+        indexLoadedTestDocuments(worksIndex, Seq(doc))
+
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?contributors.agent.label=${URLEncoder.encode("Robert .?+*|{}<>&@[]()\" Tables", "UTF-8")}&aggregations=contributors.agent.label"
+        ) {
+          Status.OK ->
+            s"""
+          {
+            ${resultList(totalResults = 1)},
+            "results":[{"id":"xkcd0327","title":"Exploits Of a Mom"}],
+            "aggregations": {
+              "contributors.agent.label": {
+                "buckets": [{
+                  "data": {
+                    "label": "Robert .?+*|{}<>&@[]()\\" Tables"
+                    },
+                    "count":1,
+                    "type":"AggregationBucket"
+                  }],
+                  "type":"Aggregation"
+                },
+                "type":"Aggregations"
+              }
+           }
+        """.stripMargin
+        }
     }
   }
 
