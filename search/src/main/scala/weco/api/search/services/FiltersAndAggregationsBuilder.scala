@@ -48,9 +48,11 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
 
   // Ensure that characters like parentheses can still be returned by the self aggregation, escape any
   // regex tokens that might appear in filter terms.
-  // (as present in some labels, e.g. /concepts/gafuyqgp: "Nicholson, Michael C. (Michael Christopher), 1962-")
+  // (as present in some labels, e.g. /concepts/gafuyqgp: "Nicholson, Michael C. (Michael Christopher), 1962-"
+  // Any regex tokens that are enabled by default in ES must be escaped.
+  // https://www.elastic.co/guide/en/elasticsearch/reference/current/regexp-syntax.html#_valid_values
   private def escapeRegexTokens(term: String): String =
-    term.replaceAll("""([.?+*|{}\[\]()\\"])""", "\\\\$1")
+    term.replaceAll("""([.?+*|{}<>&@\[\]()\\"])""", "\\\\$1")
 
   /**
     * An aggregation that will contain the filtered-upon value even
