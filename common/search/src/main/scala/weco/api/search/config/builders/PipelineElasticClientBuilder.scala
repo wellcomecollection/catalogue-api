@@ -32,19 +32,15 @@ object PipelineElasticClientBuilder {
     val protocol = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
     )
-    val username = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_username"
-    )
-    val password = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/es_password"
+    val apiKey = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/api_key"
     )
 
     ElasticClientBuilder.create(
       hostname = hostname,
       port = port,
       protocol = protocol,
-      username = username,
-      password = password
+      encodedApiKey = apiKey
     )
   }
 
