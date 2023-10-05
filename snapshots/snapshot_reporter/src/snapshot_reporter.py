@@ -238,8 +238,7 @@ def get_recent_update_stats(session, *, hours):
     api_key_id, api_key_secret = b64decode(api_key_encoded).decode("ascii").split(":")
 
     pipeline_es_client = Elasticsearch(
-        f"https://{host}:9243",
-        api_key=(api_key_id, api_key_secret)
+        f"https://{host}:9243", api_key=(api_key_id, api_key_secret)
     )
 
     indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
