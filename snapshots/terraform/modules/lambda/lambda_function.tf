@@ -14,7 +14,7 @@ module "lambda_function" {
   s3_object_version = data.aws_s3_object.package.version_id
 
   handler = "${var.handler}.main"
-  runtime = "python3.7"
+  runtime = "python3.10"
   timeout = var.timeout
 
   dead_letter_config = {

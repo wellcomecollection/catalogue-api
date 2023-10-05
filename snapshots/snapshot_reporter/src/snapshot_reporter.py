@@ -13,6 +13,7 @@ import httpx
 import humanize
 import pytz
 
+from base64 import b64decode
 from dateutil import parser
 import json
 import os
@@ -227,16 +228,17 @@ def get_recent_update_stats(session, *, hours):
     index_date = works_index_name.replace("works-indexed-", "")
     secret_prefix = f"elasticsearch/pipeline_storage_{index_date}"
 
-    username = get_secret(
-        session, secret_id=f"{secret_prefix}/snapshot_generator/es_username"
-    )
-    password = get_secret(
-        session, secret_id=f"{secret_prefix}/snapshot_generator/es_password"
+    api_key_encoded = get_secret(
+        session, secret_id=f"{secret_prefix}/snapshot_generator/api_key"
     )
     host = get_secret(session, secret_id=f"{secret_prefix}/public_host")
+    # The Python client is the only thing I have yet encountered that insists
+    # on encoding the API Key auth header itself, rather than using the encoded
+    # version that the security API gives you
+    api_key_id, api_key_secret = b64decode(api_key_encoded).decode("ascii").split(":")
 
     pipeline_es_client = Elasticsearch(
-        f"https://{host}:9243", http_auth=(username, password)
+        f"https://{host}:9243", api_key=(api_key_id, api_key_secret)
     )
 
     indexed_after = datetime.datetime.now() - datetime.timedelta(hours=hours)
