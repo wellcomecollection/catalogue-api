@@ -43,7 +43,7 @@ def test_writes_messages_to_sqs(
         requested_at = datetime.datetime.strptime(
             requested_at_str, "%Y-%m-%dT%H:%M:%SZ"
         )
-        return (datetime.datetime.now() - requested_at).total_seconds() < 5
+        return (datetime.datetime.utcnow() - requested_at).total_seconds() < 5
 
     assert all(took_less_than_five_seconds(m["requestedAt"]) for m in messages)
 

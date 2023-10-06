@@ -7,8 +7,8 @@ import os
 import attr
 import boto3
 import httpx
-from wellcome_aws_utils.lambda_utils import log_on_error
-from wellcome_aws_utils.sns_utils import publish_sns_message
+
+from wellcome_aws_utils import log_on_error, publish_sns_message
 
 from snapshot_job import get_snapshot_jobs
 
