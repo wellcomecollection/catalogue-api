@@ -33,7 +33,7 @@ class ImagesServiceTest
         val expectedImage =
           IndexedImage(
             display = getDisplayImage("images.everything"),
-            query = getQueryImage("images.everything")
+            vectorValues = getVectorValuesImage("images.everything")
           )
 
         val future = imagesService.findById(
@@ -84,7 +84,7 @@ class ImagesServiceTest
           i =>
             IndexedImage(
               display = getDisplayImage(s"images.similar-features.$i"),
-              query = getQueryImage(s"images.similar-features.$i")
+              vectorValues = getVectorValuesImage(s"images.similar-features.$i")
             )
         )
 
@@ -95,7 +95,7 @@ class ImagesServiceTest
               imageId = getTestImageId("images.similar-features.0"),
               image = IndexedImage(
                 display = getDisplayImage(s"images.similar-features.0"),
-                query = getQueryImage(s"images.similar-features.0")
+                vectorValues = getVectorValuesImage("images.similar-features.0")
               ),
               minScore = Some(0)
             )
@@ -116,7 +116,7 @@ class ImagesServiceTest
             imageId = getTestImageId("images.everything"),
             image = IndexedImage(
               display = getDisplayImage("images.everything"),
-              query = getQueryImage("images.everything")
+              vectorValues = getVectorValuesImage("images.everything")
             ),
             minScore = Some(0)
           )
@@ -134,7 +134,7 @@ class ImagesServiceTest
             imageId = "nopenope",
             image = IndexedImage(
               display = getDisplayImage("images.everything"),
-              query = getQueryImage("images.everything")
+              vectorValues = getVectorValuesImage("images.everything")
             ),
             minScore = Some(0)
           )

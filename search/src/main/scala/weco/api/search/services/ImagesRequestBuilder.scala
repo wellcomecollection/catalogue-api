@@ -51,7 +51,7 @@ class ImagesRequestBuilder()
           size = searchOptions.pageSize,
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
-          includes = Seq("display", "query.inferredData.reducedFeatures"),
+          includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
           preFilter = buildImageFilterQuery(unpairables),
           postFilter = Some(
