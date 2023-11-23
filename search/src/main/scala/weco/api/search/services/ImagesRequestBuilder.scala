@@ -118,16 +118,16 @@ class ImagesRequestBuilder()
         termsQuery(field = "filterableValues.locations.license.id", values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "filterableValues.source.contributors.agent.label.keyword",
+          "filterableValues.source.contributors.agent.label",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>
-        termsQuery("filterableValues.source.genres.label.keyword", genreLabels)
+        termsQuery("filterableValues.source.genres.label", genreLabels)
       case GenreConceptFilter(conceptIds) =>
         if (conceptIds.isEmpty) NoopQuery
         else termsQuery("filterableValues.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("filterableValues.source.subjects.label.keyword", subjectLabels)
+        termsQuery("filterableValues.source.subjects.label", subjectLabels)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)

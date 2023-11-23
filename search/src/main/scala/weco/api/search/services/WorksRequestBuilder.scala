@@ -160,16 +160,16 @@ object WorksRequestBuilder
       case LanguagesFilter(languageIds) =>
         termsQuery("filterableValues.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
-        termsQuery("filterableValues.genres.label.keyword", genreQueries)
+        termsQuery("filterableValues.genres.label", genreQueries)
       case GenreConceptFilter(conceptIds) =>
         if (conceptIds.isEmpty) NoopQuery
         else termsQuery("filterableValues.genres.concepts.id", conceptIds)
 
       case SubjectLabelFilter(labels) =>
-        termsQuery("filterableValues.subjects.label.keyword", labels)
+        termsQuery("filterableValues.subjects.label", labels)
 
       case ContributorsFilter(contributorQueries) =>
-        termsQuery("filterableValues.contributors.agent.label.keyword", contributorQueries)
+        termsQuery("filterableValues.contributors.agent.label", contributorQueries)
 
       case IdentifiersFilter(identifiers) =>
         termsQuery("filterableValues.identifiers.value", identifiers)
@@ -206,7 +206,7 @@ object WorksRequestBuilder
         )
       case PartOfTitleFilter(search_term) =>
         termQuery(
-          field = "filterableValues.partOf.title.keyword",
+          field = "filterableValues.partOf.title",
           value = search_term
         )
       case AvailabilitiesFilter(availabilityIds) =>
