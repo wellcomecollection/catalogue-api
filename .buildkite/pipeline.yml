@@ -98,7 +98,7 @@ steps:
             - "test"
             - "--content-type={{matrix}}"
             - "--cluster=pipeline-stage"
-            - "--query=/resources/{{matrix}}MultiMatcherQueryTemplate.json"
+            - "--query=/resources/{{matrix}}Query.json"
           mount-checkout: false
           volumes:
             - "./search/src/main/resources:/resources"
