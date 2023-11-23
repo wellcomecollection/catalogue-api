@@ -1,0 +1,63 @@
+{
+  "bool": {
+    "should": [
+      {
+        "multi_match": {
+          "_name": "Text: This is the core of the query, and most queries should return relevant results based on this sub-query alone. It searches for the query string across a wide range of heavily analysed fields, each with its own boost. The minimum_should_match parameter is set to allow for a small number of tokens in long query strings to be missing.",
+          "query": "{{query}}",
+          "fields": [
+            "query.title.*^5",
+            "query.title.cased^10",
+            "query.contributors.agent.label^10",
+            "query.subjects.concepts.label^10",
+            "query.genres.concepts.label^10",
+            "query.production.label.*^5",
+            "query.alternativeTitles.*",
+            "query.description.*",
+            "query.edition",
+            "query.languages.label",
+            "query.lettering.*",
+            "query.notes.contents.*",
+            "query.partOf.title.*",
+            "query.physicalDescription.*"
+          ],
+          "type": "best_fields",
+          "tie_breaker": 0.4,
+          "minimum_should_match": "-55%",
+          "operator": "Or"
+        }
+      },
+      {
+        "multi_match": {
+          "_name": "Identifiers: Most of these are simple keyword matches on identifier fields, but some of the fields are analysed specifically for archive paths. We use a different analyzer for the query to the fields so we can do searches for multiple IDs without causing problems with some free-text identifiers.",
+          "query": "{{query}}",
+          "analyzer": "lowercase",
+          "fields": [
+            "query.id^5",
+            "query.sourceIdentifier.value^5",
+            "query.identifiers.value",
+            "query.items.id",
+            "query.items.identifiers.value",
+            "query.images.id",
+            "query.images.identifiers.value",
+            "query.referenceNumber*",
+            "query.collectionPath*"
+          ],
+          "type": "best_fields",
+          "boost": 100,
+          "operator": "Or",
+          "minimum_should_match": 1
+        }
+      },
+      {
+        "match_phrase_prefix": {
+          "query.title.normalized_keyword": {
+            "_name": "Start of title: to improve the _appearance_ of relevance (and to build trust with users), we boost matches at the start of the english-analysed title. The first few results might not _actually_ be more relevant with this clause applied, but they look better at a glance. A high boost is required to overcome sum of fields in the multi_match.",
+            "query": "{{query}}",
+            "boost": 50
+          }
+        }
+      }
+    ]
+  }
+}
