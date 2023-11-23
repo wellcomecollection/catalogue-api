@@ -484,7 +484,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?partOf=title-MS5Hy6x38N"
+            path = s"$rootPath/works?partOf.title=title-MS5Hy6x38N"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
