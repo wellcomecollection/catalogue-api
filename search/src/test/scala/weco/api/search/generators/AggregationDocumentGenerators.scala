@@ -54,8 +54,8 @@ trait AggregationDocumentGenerators {
 
     val queryables = filterables.filterKeys {
       case "source.contributors.agent.label" => true
-      case "source.genres.label" => true
-      case "source.subjects.label" => true
+      case "source.genres.concepts.label" => true
+      case "source.subjects.concepts.label" => true
       case _ => false
     } + ("source.title" -> title.asJson)
 
