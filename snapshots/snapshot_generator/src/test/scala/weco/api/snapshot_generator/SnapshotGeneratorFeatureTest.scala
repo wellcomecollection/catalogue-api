@@ -74,6 +74,8 @@ class SnapshotGeneratorFeatureTest
             val expectedJsonLines =
               readResource(resourceName).split("\n")
 
+            actualJsonLines.length shouldBe expectedJsonLines.length
+
             actualJsonLines.zip(expectedJsonLines).foreach {
               case (actualLine, expectedLine) =>
                 withClue(s"actualLine = <<$actualLine>>") {
