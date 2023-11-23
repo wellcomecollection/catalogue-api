@@ -51,7 +51,7 @@
       },
       {
         "match_phrase_prefix": {
-          "query.title.normalized_keyword": {
+          "query.title.normalized_whole_phrase": {
             "_name": "Start of title: to improve the _appearance_ of relevance (and to build trust with users), we boost matches at the start of the english-analysed title. The first few results might not _actually_ be more relevant with this clause applied, but they look better at a glance. A high boost is required to overcome sum of fields in the multi_match.",
             "query": "{{query}}",
             "boost": 50
