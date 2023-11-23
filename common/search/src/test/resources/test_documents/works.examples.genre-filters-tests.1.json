@@ -1,184 +1,137 @@
 {
-  "description" : "examples for the genre tests",
-  "createdAt" : "2023-08-22T11:49:35.846438Z",
-  "id" : "wdnn2etp",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "wdnn2etp",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "examples for the genre tests",
+  "createdAt": "2023-11-21T15:39:35.042124Z",
+  "id": "wdnn2etp",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "wdnn2etp",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "hx40zJbSlL"
+          "ontologyType": "Work",
+          "value": "hx40zJbSlL"
         },
-        "version" : 23,
-        "modifiedTime" : "1953-09-20T12:06:56Z"
+        "version": 23,
+        "modifiedTime": "1953-09-20T12:06:56Z"
       },
-      "mergedTime" : "1953-09-20T12:06:56Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1953-09-20T12:06:56Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "wdnn2etp",
-      "title" : "title-zfssscK3St",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "wdnn2etp",
+      "title": "title-zfssscK3St",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "hx40zJbSlL",
-          "type" : "Identifier"
+          "value": "hx40zJbSlL",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
+      "subjects": [],
+      "genres": [
         {
-          "label" : "Pamphlets",
-          "concepts" : [
+          "label": "Pamphlets",
+          "concepts": [
             {
-              "id" : "g00dcafe",
-              "identifiers" : [
+              "id": "g00dcafe",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "calm-record-id",
-                    "label" : "Calm RecordIdentifier",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "calm-record-id",
+                    "label": "Calm RecordIdentifier",
+                    "type": "IdentifierType"
                   },
-                  "value" : "85YYFFvT9f",
-                  "type" : "Identifier"
+                  "value": "85YYFFvT9f",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "df4bTPrmWNKiLGp",
-              "type" : "Genre"
+              "label": "df4bTPrmWNKiLGp",
+              "type": "Genre"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         }
       ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "wdnn2etp",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "hx40zJbSlL"
-      ],
-      "title" : "title-zfssscK3St",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-        "Pamphlets"
-      ],
-      "genres.concepts.label" : [
-        "df4bTPrmWNKiLGp"
-      ],
-      "genres.concepts.id" : [
-        "g00dcafe"
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": ["df4bTPrmWNKiLGp"],
+      "id": "wdnn2etp",
+      "sourceIdentifier.value": "hx40zJbSlL",
+      "identifiers.value": ["hx40zJbSlL"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "title-zfssscK3St"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [
         "{\"label\":\"Pamphlets\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [],
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": ["Pamphlets"],
+      "genres.concepts.id": ["g00dcafe"],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["hx40zJbSlL"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

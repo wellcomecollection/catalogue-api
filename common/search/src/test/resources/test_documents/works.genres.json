@@ -1,193 +1,149 @@
 {
-  "description" : "a work with different concepts in the genre",
-  "createdAt" : "2023-03-17T11:03:31.790835Z",
-  "id" : "jlp05mgl",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "jlp05mgl",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "a work with different concepts in the genre",
+  "createdAt": "2023-11-21T15:39:33.884759Z",
+  "id": "jlp05mgl",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "jlp05mgl",
+        "identifier": {
+          "identifierType": {
+            "id": "calm-record-id"
           },
-          "ontologyType" : "Work",
-          "value" : "iIjgaHUI5C"
+          "ontologyType": "Work",
+          "value": "iIjgaHUI5C"
         },
-        "version" : 91,
-        "modifiedTime" : "1978-12-03T12:21:42Z"
+        "version": 91,
+        "modifiedTime": "1978-12-03T12:21:42Z"
       },
-      "mergedTime" : "1978-12-03T12:21:42Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1978-12-03T12:21:42Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "jlp05mgl",
-      "title" : "A work with different concepts in the genre",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "jlp05mgl",
+      "title": "A work with different concepts in the genre",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
+            "type": "IdentifierType"
           },
-          "value" : "iIjgaHUI5C",
-          "type" : "Identifier"
+          "value": "iIjgaHUI5C",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
+      "subjects": [],
+      "genres": [
         {
-          "label" : "Electronic books",
-          "concepts" : [
+          "label": "Electronic books",
+          "concepts": [
             {
-              "label" : "Conceptual Conversations",
-              "type" : "Concept"
+              "label": "Conceptual Conversations",
+              "type": "Concept"
             },
             {
-              "label" : "Pleasant Paris",
-              "type" : "Place"
+              "label": "Pleasant Paris",
+              "type": "Place"
             },
             {
-              "id" : "buvphmut",
-              "identifiers" : [
+              "id": "buvphmut",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "miro-image-number",
+                    "label": "Miro image number",
+                    "type": "IdentifierType"
                   },
-                  "value" : "nJ8zsEX9al",
-                  "type" : "Identifier"
+                  "value": "nJ8zsEX9al",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "Past Prehistory",
-              "type" : "Period"
+              "label": "Past Prehistory",
+              "type": "Period"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         }
       ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "jlp05mgl",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "iIjgaHUI5C"
-      ],
-      "title" : "A work with different concepts in the genre",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-        "Electronic books"
-      ],
-      "genres.concepts.label" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
         "Conceptual Conversations",
         "Pleasant Paris",
         "Past Prehistory"
       ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+      "id": "jlp05mgl",
+      "sourceIdentifier.value": "iIjgaHUI5C",
+      "identifiers.value": ["iIjgaHUI5C"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "A work with different concepts in the genre"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [
         "{\"label\":\"Electronic books\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [],
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": ["Electronic books"],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["iIjgaHUI5C"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }
