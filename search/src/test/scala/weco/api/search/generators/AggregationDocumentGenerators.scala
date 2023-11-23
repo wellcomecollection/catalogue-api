@@ -12,8 +12,15 @@ trait AggregationDocumentGenerators {
     aggregables: Map[String, Seq[String]]
   ): TestDocument = {
 
-    val queryables: Map[String, Json] = aggregables.map {
+    val filterables: Map[String, Json] = aggregables.map {
       case (key, values) => key -> values.asJson
+    }
+
+    val queryables = filterables.filterKeys {
+      case "contributors.agent.label" => true
+      case "genres.label" => true
+      case "subjects.label" => true
+      case _ => false
     } + ("title" -> title.asJson)
 
     val aggregablesJson = aggregables.map {
@@ -25,7 +32,8 @@ trait AggregationDocumentGenerators {
       "display" -> Json.obj("id" -> docId.asJson, "title" -> title.asJson),
       "type" -> Json.fromString("Visible"),
       "query" -> queryables.asJson,
-      "aggregatableValues" -> aggregablesJson
+      "aggregatableValues" -> aggregablesJson,
+      "filterableValues" -> filterables.asJson
     )
 
     TestDocument(
@@ -40,9 +48,16 @@ trait AggregationDocumentGenerators {
     aggregables: Map[String, Seq[String]]
   ): TestDocument = {
 
-    val queryables: Map[String, Json] = aggregables.map {
+    val filterables: Map[String, Json] = aggregables.map {
       case (key, values) => key -> values.asJson
-    } + ("source.title" -> title.asJson) + ("inferredData.reducedFeatures" -> reducedFeaturePlaceholder.asJson)
+    }
+
+    val queryables = filterables.filterKeys {
+      case "source.contributors.agent.label" => true
+      case "source.genres.label" => true
+      case "source.subjects.label" => true
+      case _ => false
+    } + ("source.title" -> title.asJson)
 
     val aggregablesJson = aggregables.map {
       case (key, values) =>
@@ -52,7 +67,11 @@ trait AggregationDocumentGenerators {
     val doc = Json.obj(
       "display" -> Json.obj("id" -> docId.asJson, "title" -> title.asJson),
       "query" -> queryables.asJson,
-      "aggregatableValues" -> aggregablesJson
+      "aggregatableValues" -> aggregablesJson,
+      "filterableValues" -> filterables.asJson,
+      "vectorValues" -> Json.obj(
+        "reducedFeatures" -> reducedFeaturePlaceholder.asJson
+      )
     )
 
     TestDocument(
