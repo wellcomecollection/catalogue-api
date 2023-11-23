@@ -156,7 +156,10 @@ object WorksRequestBuilder
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
-        RangeQuery("filterableValues.production.dates.range.from", lte = lte, gte = gte)
+        RangeQuery(
+          "filterableValues.production.dates.range.from",
+          lte = lte,
+          gte = gte)
       case LanguagesFilter(languageIds) =>
         termsQuery("filterableValues.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
@@ -169,7 +172,9 @@ object WorksRequestBuilder
         termsQuery("filterableValues.subjects.label", labels)
 
       case ContributorsFilter(contributorQueries) =>
-        termsQuery("filterableValues.contributors.agent.label", contributorQueries)
+        termsQuery(
+          "filterableValues.contributors.agent.label",
+          contributorQueries)
 
       case IdentifiersFilter(identifiers) =>
         termsQuery("filterableValues.identifiers.value", identifiers)
@@ -197,7 +202,9 @@ object WorksRequestBuilder
           )
         )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
-        termsQuery("filterableValues.items.locations.locationType.id", itemLocationTypeIds)
+        termsQuery(
+          "filterableValues.items.locations.locationType.id",
+          itemLocationTypeIds)
 
       case PartOfFilter(search_term) =>
         termQuery(
