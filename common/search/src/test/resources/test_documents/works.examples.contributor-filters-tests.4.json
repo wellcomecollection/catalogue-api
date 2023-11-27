@@ -1,182 +1,140 @@
 {
-  "description" : "examples for the contributor filter tests",
-  "createdAt" : "2023-03-24T14:12:13.343432Z",
-  "id" : "moftow5b",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "moftow5b",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "examples for the contributor filter tests",
+  "createdAt": "2023-11-21T15:39:35.263302Z",
+  "id": "moftow5b",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "moftow5b",
+        "identifier": {
+          "identifierType": {
+            "id": "calm-record-id"
           },
-          "ontologyType" : "Work",
-          "value" : "KWys5lZ5ra"
+          "ontologyType": "Work",
+          "value": "KWys5lZ5ra"
         },
-        "version" : 66,
-        "modifiedTime" : "1950-07-15T20:46:42Z"
+        "version": 66,
+        "modifiedTime": "1950-07-15T20:46:42Z"
       },
-      "mergedTime" : "1950-07-15T20:46:42Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1950-07-15T20:46:42Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "moftow5b",
-      "title" : "title-vMTmP7wsQ9",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
+    "display": {
+      "id": "moftow5b",
+      "title": "title-vMTmP7wsQ9",
+      "alternativeTitles": [],
+      "contributors": [
         {
-          "agent" : {
-            "label" : "Bath, Patricia",
-            "type" : "Person"
+          "agent": {
+            "label": "Bath, Patricia",
+            "type": "Person"
           },
-          "roles" : [
-          ],
-          "primary" : true,
-          "type" : "Contributor"
+          "roles": [],
+          "primary": true,
+          "type": "Contributor"
         },
         {
-          "agent" : {
-            "label" : "Darwin \"Jones\", Charles",
-            "type" : "Person"
+          "agent": {
+            "label": "Darwin \"Jones\", Charles",
+            "type": "Person"
           },
-          "roles" : [
-          ],
-          "primary" : true,
-          "type" : "Contributor"
+          "roles": [],
+          "primary": true,
+          "type": "Contributor"
         }
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
+            "type": "IdentifierType"
           },
-          "value" : "KWys5lZ5ra",
-          "type" : "Identifier"
+          "value": "KWys5lZ5ra",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "moftow5b",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "KWys5lZ5ra"
-      ],
-      "title" : "title-vMTmP7wsQ9",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [
         "Bath, Patricia",
         "Darwin \"Jones\", Charles"
       ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "moftow5b",
+      "sourceIdentifier.value": "KWys5lZ5ra",
+      "identifiers.value": ["KWys5lZ5ra"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "title-vMTmP7wsQ9"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [],
+      "contributors.agent.label": [
         "{\"label\":\"Bath, Patricia\",\"type\":\"Person\"}",
         "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"type\":\"Person\"}"
       ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [
+        "Bath, Patricia",
+        "Darwin \"Jones\", Charles"
+      ],
+      "identifiers.value": ["KWys5lZ5ra"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

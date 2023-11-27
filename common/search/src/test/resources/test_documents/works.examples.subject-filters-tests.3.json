@@ -1,194 +1,149 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2023-03-24T14:12:13.326746Z",
-  "id" : "igluyxyl",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "igluyxyl",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "examples for the subject filter tests",
+  "createdAt": "2023-11-21T15:39:35.210827Z",
+  "id": "igluyxyl",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "igluyxyl",
+        "identifier": {
+          "identifierType": {
+            "id": "calm-record-id"
           },
-          "ontologyType" : "Work",
-          "value" : "R5Stsp385V"
+          "ontologyType": "Work",
+          "value": "R5Stsp385V"
         },
-        "version" : 91,
-        "modifiedTime" : "2014-07-17T10:56:43Z"
+        "version": 91,
+        "modifiedTime": "2014-07-17T10:56:43Z"
       },
-      "mergedTime" : "2014-07-17T10:56:43Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "2014-07-17T10:56:43Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "igluyxyl",
-      "title" : "title-wWOedI3v8S",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "igluyxyl",
+      "title": "title-wWOedI3v8S",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
+            "type": "IdentifierType"
           },
-          "value" : "R5Stsp385V",
-          "type" : "Identifier"
+          "value": "R5Stsp385V",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
         {
-          "id" : "darwin01",
-          "identifiers" : [
+          "id": "darwin01",
+          "identifiers": [
             {
-              "identifierType" : {
-                "id" : "lc-names",
-                "label" : "Library of Congress Name authority records",
-                "type" : "IdentifierType"
+              "identifierType": {
+                "id": "lc-names",
+                "label": "Library of Congress Name authority records",
+                "type": "IdentifierType"
               },
-              "value" : "lcnames-darwin",
-              "type" : "Identifier"
+              "value": "lcnames-darwin",
+              "type": "Identifier"
             }
           ],
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
+          "label": "Darwin \"Jones\", Charles",
+          "concepts": [
             {
-              "label" : "LzJV7M3Kvqw9fGo",
-              "type" : "Concept"
+              "label": "LzJV7M3Kvqw9fGo",
+              "type": "Concept"
             },
             {
-              "label" : "l7E1K1L8XUhcLZh",
-              "type" : "Concept"
+              "label": "l7E1K1L8XUhcLZh",
+              "type": "Concept"
             },
             {
-              "label" : "c35m9C4DAgxJAjE",
-              "type" : "Concept"
+              "label": "c35m9C4DAgxJAjE",
+              "type": "Concept"
             }
           ],
-          "type" : "Subject"
+          "type": "Subject"
         }
       ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "igluyxyl",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "R5Stsp385V"
-      ],
-      "title" : "title-wWOedI3v8S",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-        "darwin01"
-      ],
-      "subjects.label" : [
-        "Darwin \"Jones\", Charles"
-      ],
-      "subjects.concepts.label" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "igluyxyl",
+      "sourceIdentifier.value": "R5Stsp385V",
+      "identifiers.value": ["R5Stsp385V"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [
         "LzJV7M3Kvqw9fGo",
         "l7E1K1L8XUhcLZh",
         "c35m9C4DAgxJAjE"
       ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+      "title": "title-wWOedI3v8S"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [
         "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "languages": [],
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": ["Darwin \"Jones\", Charles"],
+      "contributors.agent.label": [],
+      "identifiers.value": ["R5Stsp385V"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

@@ -1,175 +1,125 @@
 {
-  "description" : "a work with a production event in 1904",
-  "createdAt" : "2023-03-23T12:52:18.673853Z",
-  "id" : "aiv95swj",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "aiv95swj",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "a work with a production event in 1904",
+  "createdAt": "2023-11-21T15:39:30.487946Z",
+  "id": "aiv95swj",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "aiv95swj",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "h0QyLvGt20"
+          "ontologyType": "Work",
+          "value": "h0QyLvGt20"
         },
-        "version" : 38,
-        "modifiedTime" : "1949-02-28T00:19:38Z"
+        "version": 38,
+        "modifiedTime": "1949-02-28T00:19:38Z"
       },
-      "mergedTime" : "1949-02-28T00:19:38Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1949-02-28T00:19:38Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "aiv95swj",
-      "title" : "Production event in 1904",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "aiv95swj",
+      "title": "Production event in 1904",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "h0QyLvGt20",
-          "type" : "Identifier"
+          "value": "h0QyLvGt20",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [
         {
-          "label" : "gIdUKO9ELdlCtGqZpr8ZHyDFZ",
-          "places" : [
-          ],
-          "agents" : [
-          ],
-          "dates" : [
+          "label": "gIdUKO9ELdlCtGqZpr8ZHyDFZ",
+          "places": [],
+          "agents": [],
+          "dates": [
             {
-              "label" : "1904",
-              "type" : "Period"
+              "label": "1904",
+              "type": "Period"
             }
           ],
-          "type" : "ProductionEvent"
+          "type": "ProductionEvent"
         }
       ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "aiv95swj",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "h0QyLvGt20"
-      ],
-      "title" : "Production event in 1904",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-        "1904"
-      ],
-      "production.dates.range.from" : [
-        -2082844800000
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "aiv95swj",
+      "sourceIdentifier.value": "h0QyLvGt20",
+      "identifiers.value": ["h0QyLvGt20"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": ["1904"],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "Production event in 1904"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-        "{\"label\":\"1904\",\"type\":\"Period\"}"
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [],
+      "production.dates": ["{\"label\":\"1904\",\"type\":\"Period\"}"],
+      "subjects.label": [],
+      "languages": [],
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [-2082844800000],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["h0QyLvGt20"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

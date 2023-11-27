@@ -1,172 +1,125 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2023-03-24T14:12:13.385549Z",
-  "id" : "1ndk3ton",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "1ndk3ton",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "examples for the works filtered aggregations tests",
+  "createdAt": "2023-11-21T15:39:35.409030Z",
+  "id": "1ndk3ton",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "1ndk3ton",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "HgjmZ1Psfx"
+          "ontologyType": "Work",
+          "value": "HgjmZ1Psfx"
         },
-        "version" : 31,
-        "modifiedTime" : "1942-02-08T16:28:55Z"
+        "version": 31,
+        "modifiedTime": "1942-02-08T16:28:55Z"
       },
-      "mergedTime" : "1942-02-08T16:28:55Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1942-02-08T16:28:55Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "1ndk3ton",
-      "title" : "capybara",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "d",
-        "label" : "Journals",
-        "type" : "Format"
+    "display": {
+      "id": "1ndk3ton",
+      "title": "capybara",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "d",
+        "label": "Journals",
+        "type": "Format"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "HgjmZ1Psfx",
-          "type" : "Identifier"
+          "value": "HgjmZ1Psfx",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "mar",
-          "label" : "Marathi",
-          "type" : "Language"
+          "id": "mar",
+          "label": "Marathi",
+          "type": "Language"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "1ndk3ton",
-      "format.id" : "d",
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "HgjmZ1Psfx"
-      ],
-      "title" : "capybara",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-        "mar"
-      ],
-      "languages.label" : [
-        "Marathi"
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "1ndk3ton",
+      "sourceIdentifier.value": "HgjmZ1Psfx",
+      "identifiers.value": ["HgjmZ1Psfx"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": ["Marathi"],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "capybara"
     },
-    "aggregatableValues" : {
-      "workType" : [
-        "{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
+    "aggregatableValues": {
+      "workType": ["{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [
         "{\"id\":\"mar\",\"label\":\"Marathi\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": "d",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["mar"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["HgjmZ1Psfx"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

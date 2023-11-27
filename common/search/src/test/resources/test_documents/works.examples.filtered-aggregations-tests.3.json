@@ -1,172 +1,125 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2023-03-24T14:12:13.391806Z",
-  "id" : "vguputez",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "vguputez",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the works filtered aggregations tests",
+  "createdAt": "2023-11-21T15:39:35.410007Z",
+  "id": "vguputez",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "vguputez",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "6Fz9KprYAw"
+          "ontologyType": "Work",
+          "value": "6Fz9KprYAw"
         },
-        "version" : 80,
-        "modifiedTime" : "2031-04-11T11:09:11Z"
+        "version": 80,
+        "modifiedTime": "2031-04-11T11:09:11Z"
       },
-      "mergedTime" : "2031-04-11T11:09:11Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "2031-04-11T11:09:11Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "vguputez",
-      "title" : "rats",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "i",
-        "label" : "Audio",
-        "type" : "Format"
+    "display": {
+      "id": "vguputez",
+      "title": "rats",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "i",
+        "label": "Audio",
+        "type": "Format"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "6Fz9KprYAw",
-          "type" : "Identifier"
+          "value": "6Fz9KprYAw",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "bak",
-          "label" : "Bashkir",
-          "type" : "Language"
+          "id": "bak",
+          "label": "Bashkir",
+          "type": "Language"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "vguputez",
-      "format.id" : "i",
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "6Fz9KprYAw"
-      ],
-      "title" : "rats",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-        "bak"
-      ],
-      "languages.label" : [
-        "Bashkir"
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "vguputez",
+      "sourceIdentifier.value": "6Fz9KprYAw",
+      "identifiers.value": ["6Fz9KprYAw"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": ["Bashkir"],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "rats"
     },
-    "aggregatableValues" : {
-      "workType" : [
-        "{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
+    "aggregatableValues": {
+      "workType": ["{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [
         "{\"id\":\"bak\",\"label\":\"Bashkir\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": "i",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["bak"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["6Fz9KprYAw"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

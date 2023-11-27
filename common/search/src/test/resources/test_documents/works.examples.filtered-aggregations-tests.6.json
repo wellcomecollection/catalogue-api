@@ -1,172 +1,125 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2023-03-24T14:12:13.393647Z",
-  "id" : "cpyuhtp8",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "cpyuhtp8",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the works filtered aggregations tests",
+  "createdAt": "2023-11-21T15:39:35.410964Z",
+  "id": "cpyuhtp8",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "cpyuhtp8",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "KSqlcVurSf"
+          "ontologyType": "Work",
+          "value": "KSqlcVurSf"
         },
-        "version" : 26,
-        "modifiedTime" : "1958-09-25T01:35:38Z"
+        "version": 26,
+        "modifiedTime": "1958-09-25T01:35:38Z"
       },
-      "mergedTime" : "1958-09-25T01:35:38Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1958-09-25T01:35:38Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "cpyuhtp8",
-      "title" : "rats",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "d",
-        "label" : "Journals",
-        "type" : "Format"
+    "display": {
+      "id": "cpyuhtp8",
+      "title": "rats",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "d",
+        "label": "Journals",
+        "type": "Format"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "KSqlcVurSf",
-          "type" : "Identifier"
+          "value": "KSqlcVurSf",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "que",
-          "label" : "Quechua",
-          "type" : "Language"
+          "id": "que",
+          "label": "Quechua",
+          "type": "Language"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "cpyuhtp8",
-      "format.id" : "d",
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "KSqlcVurSf"
-      ],
-      "title" : "rats",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-        "que"
-      ],
-      "languages.label" : [
-        "Quechua"
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "cpyuhtp8",
+      "sourceIdentifier.value": "KSqlcVurSf",
+      "identifiers.value": ["KSqlcVurSf"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": ["Quechua"],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "rats"
     },
-    "aggregatableValues" : {
-      "workType" : [
-        "{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
+    "aggregatableValues": {
+      "workType": ["{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [
         "{\"id\":\"que\",\"label\":\"Quechua\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": "d",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["que"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": [],
+      "identifiers.value": ["KSqlcVurSf"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

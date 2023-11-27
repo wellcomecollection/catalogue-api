@@ -51,7 +51,7 @@ class ImagesRequestBuilder()
           size = searchOptions.pageSize,
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
-          includes = Seq("display", "query.inferredData.reducedFeatures"),
+          includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
           preFilter = buildImageFilterQuery(unpairables),
           postFilter = Some(
@@ -115,24 +115,27 @@ class ImagesRequestBuilder()
   private def buildImageFilterQuery(filter: ImageFilter): Query =
     filter match {
       case LicenseFilter(licenseIds) =>
-        termsQuery(field = "query.locations.license.id", values = licenseIds)
+        termsQuery(
+          field = "filterableValues.locations.license.id",
+          values = licenseIds)
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
-          "query.source.contributors.agent.label.keyword",
+          "filterableValues.source.contributors.agent.label",
           contributorQueries
         )
       case GenreFilter(genreLabels) =>
-        termsQuery("query.source.genres.label.keyword", genreLabels)
+        termsQuery("filterableValues.source.genres.label", genreLabels)
       case GenreConceptFilter(conceptIds) =>
         if (conceptIds.isEmpty) NoopQuery
-        else termsQuery("query.source.genres.concepts.id", conceptIds)
+        else
+          termsQuery("filterableValues.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("query.source.subjects.label.keyword", subjectLabels)
+        termsQuery("filterableValues.source.subjects.label", subjectLabels)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
         RangeQuery(
-          "query.source.production.dates.range.from",
+          "filterableValues.source.production.dates.range.from",
           lte = lte,
           gte = gte
         )
@@ -146,7 +149,7 @@ class ImagesRequestBuilder()
     rawSimilarityRequest(ImageSimilarity.features)
 
   private def rawSimilarityRequest(
-    query: (String, IndexedImage, Index) => JsonObject
+    query: (String, IndexedImage) => JsonObject
   )(
     index: Index,
     imageId: String,
@@ -157,7 +160,7 @@ class ImagesRequestBuilder()
     search(index).source(
       Json
         .fromJsonObject(
-          query(imageId, image, index)
+          query(imageId, image)
             .add("min_score", Json.fromDouble(minScore).get)
             .add("size", Json.fromInt(n))
         )

@@ -12,7 +12,7 @@ object ColorQuery {
     color: RgbColor
   ): SearchTemplateKNNParams =
     SearchTemplateKNNParams(
-      field = "query.inferredData.paletteEmbedding",
+      field = "vectorValues.paletteEmbedding",
       numCandidates = 10000,
       queryVector = getColorSignature(color),
       k = 1000

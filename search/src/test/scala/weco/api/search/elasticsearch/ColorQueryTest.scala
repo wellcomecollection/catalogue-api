@@ -9,7 +9,14 @@ class ColorQueryTest extends AnyFunSpec with Matchers {
   it("creates knn search for signature with given hex color") {
     val query = ColorQuery(yellow)
 
-    query.field shouldBe "query.inferredData.paletteEmbedding"
-    query.queryVector should have length (1000)
+    query.queryVector should have length 1000
+    val norm = query.queryVector.map(x => x * x).sum
+    approxEquals(norm, 1.0) shouldBe true
+  }
+
+  // Got to deal with floating point precision
+  def approxEquals(a: Double, b: Double): Boolean = {
+    val epsilon = 1e-7
+    (a - b).abs < epsilon
   }
 }

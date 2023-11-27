@@ -7,6 +7,7 @@
           "locations": {
             "properties": {
               "license": {
+                "eager_global_ordinals": true,
                 "type": "keyword"
               }
             }
@@ -18,6 +19,7 @@
                   "agent": {
                     "properties": {
                       "label": {
+                        "eager_global_ordinals": true,
                         "type": "keyword"
                       }
                     }
@@ -27,6 +29,7 @@
               "genres": {
                 "properties": {
                   "label": {
+                    "eager_global_ordinals": true,
                     "type": "keyword"
                   }
                 }
@@ -34,11 +37,66 @@
               "subjects": {
                 "properties": {
                   "label": {
+                    "eager_global_ordinals": true,
                     "type": "keyword"
                   }
                 }
               }
             }
+          }
+        }
+      },
+      "filterableValues": {
+        "properties": {
+          "locations.license.id": {
+            "type": "keyword"
+          },
+          "source.contributors.agent.label": {
+            "type": "keyword"
+          },
+          "source.genres.label": {
+            "type": "keyword"
+          },
+          "source.genres.concepts.id": {
+            "type": "keyword"
+          },
+          "source.subjects.label": {
+            "type": "keyword"
+          },
+          "source.production.dates.range.from": {
+            "type": "date"
+          }
+        }
+      },
+      "vectorValues": {
+        "properties": {
+          "features1": {
+            "type": "dense_vector",
+            "dims": 2048
+          },
+          "features2": {
+            "type": "dense_vector",
+            "dims": 2048
+          },
+          "paletteEmbedding": {
+            "type": "dense_vector",
+            "dims": 1000,
+            "index": true,
+            "similarity": "dot_product"
+          },
+          "reducedFeatures": {
+            "type": "dense_vector",
+            "dims": 1024,
+            "index": true,
+            "similarity": "dot_product"
+          }
+        }
+      },
+      "debug": {
+        "dynamic": "false",
+        "properties": {
+          "indexedTime": {
+            "type": "date"
           }
         }
       },
@@ -53,249 +111,173 @@
         "properties": {
           "id": {
             "type": "keyword",
-            "normalizer": "lowercase_normalizer"
-          },
-          "inferredData": {
-            "properties": {
-              "aspectRatio": {
-                "type": "float"
-              },
-              "features1": {
-                "type": "dense_vector",
-                "dims": 2048
-              },
-              "features2": {
-                "type": "dense_vector",
-                "dims": 2048
-              },
-              "reducedFeatures": {
-                "type": "dense_vector",
-                "dims": 1024,
-                "index": true,
-                "similarity": "dot_product"
-              },
-              "paletteEmbedding": {
-                "type": "dense_vector",
-                "dims": 1000,
-                "index": true,
-                "similarity": "dot_product"
-              },
-              "averageColorHex": {
-                "type": "keyword"
-              }
-            }
-          },
-          "locations": {
-            "properties": {
-              "license": {
-                "properties": {
-                  "id": {
-                    "type": "keyword"
-                  }
-                }
-              }
-            }
+            "normalizer": "lowercase"
           },
           "source": {
             "properties": {
               "alternativeTitles": {
                 "type": "text",
+                "analyzer": "lowercase",
                 "fields": {
                   "arabic": {
                     "type": "text",
-                    "analyzer": "arabic_analyzer"
+                    "analyzer": "arabic"
                   },
                   "bengali": {
                     "type": "text",
-                    "analyzer": "bengali_analyzer"
+                    "analyzer": "bengali"
                   },
                   "english": {
                     "type": "text",
-                    "analyzer": "english_analyzer"
+                    "analyzer": "english"
                   },
                   "french": {
                     "type": "text",
-                    "analyzer": "french_analyzer"
+                    "analyzer": "french"
                   },
                   "german": {
                     "type": "text",
-                    "analyzer": "german_analyzer"
+                    "analyzer": "german"
                   },
                   "hindi": {
                     "type": "text",
-                    "analyzer": "hindi_analyzer"
+                    "analyzer": "hindi"
                   },
                   "italian": {
                     "type": "text",
-                    "analyzer": "italian_analyzer"
+                    "analyzer": "italian"
                   },
-                  "keyword": {
-                    "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
-                  },
-                  "shingles": {
+                  "persian": {
                     "type": "text",
-                    "analyzer": "shingle_asciifolding_analyzer"
-                  }
-                }
-              },
-              "availabilities": {
-                "properties": {
-                  "id": {
-                    "type": "keyword"
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
                   }
                 }
               },
               "collectionPath": {
                 "properties": {
                   "label": {
-                    "type": "text",
+                    "type": "keyword",
+                    "normalizer": "lowercase",
                     "fields": {
-                      "keyword": {
-                        "type": "keyword"
-                      },
-                      "lowercaseKeyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      },
-                      "cleanPath": {
-                        "type": "text",
-                        "analyzer": "clean_path_analyzer"
-                      },
                       "path": {
                         "type": "text",
-                        "analyzer": "exact_path_analyzer"
+                        "analyzer": "path_analyzer",
+                        "search_analyzer": "whitespace"
                       }
-                    },
-                    "analyzer": "asciifolding_analyzer"
+                    }
                   },
                   "path": {
-                    "type": "text",
+                    "type": "keyword",
+                    "normalizer": "lowercase",
                     "fields": {
-                      "clean": {
+                      "path": {
                         "type": "text",
-                        "analyzer": "clean_path_analyzer"
-                      },
-                      "keyword": {
-                        "type": "keyword"
-                      }
-                    },
-                    "analyzer": "exact_path_analyzer"
-                  }
-                }
-              },
-              "contributors": {
-                "properties": {
-                  "agent": {
-                    "properties": {
-                      "label": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword"
-                          },
-                          "lowercaseKeyword": {
-                            "type": "keyword",
-                            "normalizer": "lowercase_normalizer"
-                          }
-                        },
-                        "analyzer": "asciifolding_analyzer"
-                      },
-                      "id": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
+                        "analyzer": "path_analyzer",
+                        "search_analyzer": "whitespace"
                       }
                     }
                   }
                 }
               },
+              "contributors.agent.label": {
+                "type": "text",
+                "analyzer": "english"
+              },
               "description": {
                 "type": "text",
+                "analyzer": "lowercase",
                 "fields": {
+                  "arabic": {
+                    "type": "text",
+                    "analyzer": "arabic"
+                  },
+                  "bengali": {
+                    "type": "text",
+                    "analyzer": "bengali"
+                  },
                   "english": {
                     "type": "text",
-                    "analyzer": "english_analyzer"
+                    "analyzer": "english"
+                  },
+                  "french": {
+                    "type": "text",
+                    "analyzer": "french"
+                  },
+                  "german": {
+                    "type": "text",
+                    "analyzer": "german"
+                  },
+                  "hindi": {
+                    "type": "text",
+                    "analyzer": "hindi"
+                  },
+                  "italian": {
+                    "type": "text",
+                    "analyzer": "italian"
+                  },
+                  "persian": {
+                    "type": "text",
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
                   }
                 }
               },
               "edition": {
-                "type": "text"
+                "type": "text",
+                "analyzer": "english"
               },
-              "genres": {
-                "properties": {
-                  "concepts": {
-                    "properties": {
-                      "label": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword"
-                          },
-                          "lowercaseKeyword": {
-                            "type": "keyword",
-                            "normalizer": "lowercase_normalizer"
-                          }
-                        },
-                        "analyzer": "asciifolding_analyzer"
-                      },
-                      "id": {
-                        "type": "keyword"
-                      }
-                    }
-                  },
-                  "label": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword"
-                      },
-                      "lowercaseKeyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    },
-                    "analyzer": "asciifolding_analyzer"
-                  }
-                }
+              "genres.concepts.label": {
+                "type": "text",
+                "analyzer": "english"
               },
               "id": {
                 "type": "keyword",
-                "normalizer": "lowercase_normalizer"
+                "normalizer": "lowercase"
               },
-              "type": {
-                "type": "keyword"
+              "sourceIdentifier.value": {
+                "type": "keyword",
+                "normalizer": "lowercase"
               },
-              "format": {
-                "properties": {
-                  "id": {
-                    "type": "keyword"
-                  }
-                }
-              },
-              "workType": {
-                "type": "keyword"
-              },
-              "identifiers": {
-                "properties": {
-                  "value": {
-                    "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
-                  }
-                }
+              "identifiers.value": {
+                "type": "keyword",
+                "normalizer": "lowercase"
               },
               "images": {
                 "properties": {
                   "id": {
                     "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
+                    "normalizer": "lowercase"
                   },
-                  "identifiers": {
-                    "properties": {
-                      "value": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    }
+                  "identifiers.value": {
+                    "type": "keyword",
+                    "normalizer": "lowercase"
                   }
                 }
               },
@@ -303,305 +285,312 @@
                 "properties": {
                   "id": {
                     "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
+                    "normalizer": "lowercase"
                   },
-                  "identifiers": {
-                    "properties": {
-                      "value": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    }
-                  },
-                  "locations": {
-                    "properties": {
-                      "accessConditions": {
-                        "properties": {
-                          "status": {
-                            "properties": {
-                              "id": {
-                                "type": "keyword"
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "license": {
-                        "properties": {
-                          "id": {
-                            "type": "keyword"
-                          }
-                        }
-                      },
-                      "locationType": {
-                        "properties": {
-                          "id": {
-                            "type": "keyword"
-                          }
-                        }
-                      }
-                    }
+                  "identifiers.value": {
+                    "type": "keyword",
+                    "normalizer": "lowercase"
                   }
                 }
               },
-              "languages": {
-                "properties": {
-                  "id": {
-                    "type": "keyword"
-                  },
-                  "label": {
-                    "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword"
-                      },
-                      "lowercaseKeyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    },
-                    "analyzer": "asciifolding_analyzer"
-                  }
-                }
+              "languages.label": {
+                "type": "text",
+                "analyzer": "lowercase"
               },
               "lettering": {
                 "type": "text",
+                "analyzer": "lowercase",
                 "fields": {
                   "arabic": {
                     "type": "text",
-                    "analyzer": "arabic_analyzer"
+                    "analyzer": "arabic"
                   },
                   "bengali": {
                     "type": "text",
-                    "analyzer": "bengali_analyzer"
+                    "analyzer": "bengali"
                   },
                   "english": {
                     "type": "text",
-                    "analyzer": "english_analyzer"
+                    "analyzer": "english"
                   },
                   "french": {
                     "type": "text",
-                    "analyzer": "french_analyzer"
+                    "analyzer": "french"
                   },
                   "german": {
                     "type": "text",
-                    "analyzer": "german_analyzer"
+                    "analyzer": "german"
                   },
                   "hindi": {
                     "type": "text",
-                    "analyzer": "hindi_analyzer"
+                    "analyzer": "hindi"
                   },
                   "italian": {
                     "type": "text",
-                    "analyzer": "italian_analyzer"
+                    "analyzer": "italian"
                   },
-                  "shingles": {
+                  "persian": {
                     "type": "text",
-                    "analyzer": "shingle_asciifolding_analyzer"
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
                   }
                 }
               },
-              "notes": {
-                "properties": {
-                  "contents": {
+              "notes.contents": {
+                "type": "text",
+                "analyzer": "lowercase",
+                "fields": {
+                  "arabic": {
                     "type": "text",
-                    "fields": {
-                      "english": {
-                        "type": "text",
-                        "analyzer": "english_analyzer"
-                      }
-                    }
+                    "analyzer": "arabic"
+                  },
+                  "bengali": {
+                    "type": "text",
+                    "analyzer": "bengali"
+                  },
+                  "english": {
+                    "type": "text",
+                    "analyzer": "english"
+                  },
+                  "french": {
+                    "type": "text",
+                    "analyzer": "french"
+                  },
+                  "german": {
+                    "type": "text",
+                    "analyzer": "german"
+                  },
+                  "hindi": {
+                    "type": "text",
+                    "analyzer": "hindi"
+                  },
+                  "italian": {
+                    "type": "text",
+                    "analyzer": "italian"
+                  },
+                  "persian": {
+                    "type": "text",
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
                   }
                 }
               },
-              "partOf": {
-                "properties": {
-                  "id": {
-                    "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
-                  },
-                  "title": {
+              "partOf.title": {
+                "type": "text",
+                "analyzer": "lowercase",
+                "fields": {
+                  "arabic": {
                     "type": "text",
-                    "fields": {
-                      "arabic": {
-                        "type": "text",
-                        "analyzer": "arabic_analyzer"
-                      },
-                      "bengali": {
-                        "type": "text",
-                        "analyzer": "bengali_analyzer"
-                      },
-                      "english": {
-                        "type": "text",
-                        "analyzer": "english_analyzer"
-                      },
-                      "french": {
-                        "type": "text",
-                        "analyzer": "french_analyzer"
-                      },
-                      "german": {
-                        "type": "text",
-                        "analyzer": "german_analyzer"
-                      },
-                      "hindi": {
-                        "type": "text",
-                        "analyzer": "hindi_analyzer"
-                      },
-                      "italian": {
-                        "type": "text",
-                        "analyzer": "italian_analyzer"
-                      },
-                      "keyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      },
-                      "shingles": {
-                        "type": "text",
-                        "analyzer": "shingle_asciifolding_analyzer"
-                      }
-                    }
+                    "analyzer": "arabic"
+                  },
+                  "bengali": {
+                    "type": "text",
+                    "analyzer": "bengali"
+                  },
+                  "english": {
+                    "type": "text",
+                    "analyzer": "english"
+                  },
+                  "french": {
+                    "type": "text",
+                    "analyzer": "french"
+                  },
+                  "german": {
+                    "type": "text",
+                    "analyzer": "german"
+                  },
+                  "hindi": {
+                    "type": "text",
+                    "analyzer": "hindi"
+                  },
+                  "italian": {
+                    "type": "text",
+                    "analyzer": "italian"
+                  },
+                  "persian": {
+                    "type": "text",
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
                   }
                 }
               },
               "physicalDescription": {
                 "type": "text",
+                "analyzer": "english"
+              },
+              "production.label": {
+                "type": "text",
+                "analyzer": "lowercase",
                 "fields": {
+                  "arabic": {
+                    "type": "text",
+                    "analyzer": "arabic"
+                  },
+                  "bengali": {
+                    "type": "text",
+                    "analyzer": "bengali"
+                  },
                   "english": {
                     "type": "text",
-                    "analyzer": "english_analyzer"
+                    "analyzer": "english"
                   },
-                  "keyword": {
-                    "type": "keyword"
-                  }
-                }
-              },
-              "production": {
-                "properties": {
-                  "label": {
+                  "french": {
                     "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword"
-                      },
-                      "lowercaseKeyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    },
-                    "analyzer": "asciifolding_analyzer"
+                    "analyzer": "french"
                   },
-                  "dates": {
-                    "properties": {
-                      "range": {
-                        "properties": {
-                          "from": {
-                            "type": "date"
-                          }
-                        }
-                      }
-                    }
+                  "german": {
+                    "type": "text",
+                    "analyzer": "german"
+                  },
+                  "hindi": {
+                    "type": "text",
+                    "analyzer": "hindi"
+                  },
+                  "italian": {
+                    "type": "text",
+                    "analyzer": "italian"
+                  },
+                  "persian": {
+                    "type": "text",
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
                   }
                 }
               },
               "referenceNumber": {
-                "type": "keyword"
-              },
-              "subjects": {
-                "properties": {
-                  "concepts": {
-                    "properties": {
-                      "label": {
-                        "type": "text",
-                        "fields": {
-                          "keyword": {
-                            "type": "keyword"
-                          },
-                          "lowercaseKeyword": {
-                            "type": "keyword",
-                            "normalizer": "lowercase_normalizer"
-                          }
-                        },
-                        "analyzer": "asciifolding_analyzer"
-                      }
-                    }
-                  },
-                  "label": {
+                "type": "keyword",
+                "normalizer": "lowercase",
+                "fields": {
+                  "path": {
                     "type": "text",
-                    "fields": {
-                      "keyword": {
-                        "type": "keyword"
-                      },
-                      "lowercaseKeyword": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_normalizer"
-                      }
-                    },
-                    "analyzer": "asciifolding_analyzer"
-                  },
-                  "id": {
-                    "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
+                    "analyzer": "path_analyzer",
+                    "search_analyzer": "whitespace"
                   }
                 }
+              },
+              "subjects.concepts.label": {
+                "type": "text",
+                "analyzer": "english"
               },
               "title": {
                 "type": "text",
+                "analyzer": "lowercase",
                 "fields": {
                   "arabic": {
                     "type": "text",
-                    "analyzer": "arabic_analyzer"
+                    "analyzer": "arabic"
                   },
                   "bengali": {
                     "type": "text",
-                    "analyzer": "bengali_analyzer"
+                    "analyzer": "bengali"
                   },
                   "english": {
                     "type": "text",
-                    "analyzer": "english_analyzer"
+                    "analyzer": "english"
+                  },
+                  "english_without_shingles": {
+                    "type": "text",
+                    "analyzer": "english_without_shingles"
                   },
                   "french": {
                     "type": "text",
-                    "analyzer": "french_analyzer"
+                    "analyzer": "french"
                   },
                   "german": {
                     "type": "text",
-                    "analyzer": "german_analyzer"
+                    "analyzer": "german"
                   },
                   "hindi": {
                     "type": "text",
-                    "analyzer": "hindi_analyzer"
+                    "analyzer": "hindi"
                   },
                   "italian": {
                     "type": "text",
-                    "analyzer": "italian_analyzer"
+                    "analyzer": "italian"
                   },
-                  "keyword": {
-                    "type": "keyword",
-                    "normalizer": "lowercase_normalizer"
-                  },
-                  "shingles": {
+                  "persian": {
                     "type": "text",
-                    "analyzer": "shingle_asciifolding_analyzer"
+                    "analyzer": "persian"
+                  },
+                  "spanish": {
+                    "type": "text",
+                    "analyzer": "spanish"
+                  },
+                  "swappable_characters": {
+                    "type": "text",
+                    "analyzer": "swappable_characters"
+                  },
+                  "cased": {
+                    "type": "text",
+                    "analyzer": "cased"
+                  },
+                  "base": {
+                    "type": "text",
+                    "analyzer": "base"
                   }
                 }
               }
             }
-          },
-          "sourceIdentifier": {
-            "properties": {
-              "value": {
-                "type": "keyword",
-                "normalizer": "lowercase_normalizer"
-              }
-            }
-          }
-        }
-      },
-      "debug": {
-        "dynamic": "false",
-        "properties": {
-          "indexedTime": {
-            "type": "date"
           }
         }
       }
@@ -610,191 +599,304 @@
   "settings": {
     "index": {
       "analysis": {
-        "filter": {
-          "punctuation": {
+        "char_filter": {
+          "zero_width_spaces": {
+            "type": "mapping",
+            "mappings": ["\\u200C=>\\u0020"]
+          },
+          "slash_remover": {
             "type": "pattern_replace",
-            "pattern": "[^0-9\\p{L}\\s]",
+            "pattern": "/",
             "replacement": ""
           },
-          "english_stemmer": {
-            "name": "english",
-            "type": "stemmer"
-          },
-          "shingle_token_filter": {
-            "max_shingle_size": "4",
-            "min_shingle_size": "2",
-            "type": "shingle"
-          },
-          "hindi_stemmer": {
-            "name": "hindi",
-            "type": "stemmer"
-          },
-          "arabic_stemmer": {
-            "name": "arabic",
-            "type": "stemmer"
-          },
-          "english_possessive_stemmer": {
-            "name": "possessive_english",
-            "type": "stemmer"
-          },
-          "french_stemmer": {
-            "name": "french",
-            "type": "stemmer"
-          },
-          "italian_stemmer": {
-            "name": "italian",
-            "type": "stemmer"
-          },
-          "german_stemmer": {
-            "name": "german",
-            "type": "stemmer"
-          },
-          "asciifolding_token_filter": {
-            "type": "asciifolding",
+          "remove_punctuation": {
+            "type": "pattern_replace",
+            "_name": "Removes non-letter, non-numeric, and non-whitespace characters. Respects other character sets.",
+            "pattern": "[^\\p{L}\\p{Nd}\\s]",
+            "replacement": ""
+          }
+        },
+        "filter": {
+          "word_delimiter": {
+            "type": "word_delimiter_graph",
             "preserve_original": "true"
           },
+          "asciifolding": {
+            "type": "asciifolding"
+          },
+          "shingle": {
+            "type": "shingle",
+            "min_shingle_size": 2,
+            "max_shingle_size": 3,
+            "output_unigrams": true
+          },
+          "arabic_stemmer": {
+            "type": "stemmer",
+            "language": "arabic"
+          },
           "bengali_stemmer": {
-            "name": "bengali",
-            "type": "stemmer"
-          }
-        },
-        "char_filter": {
-          "slashes_char_filter": {
-            "type": "mapping",
-            "mappings": [
-              "/=> __"
+            "type": "stemmer",
+            "language": "bengali"
+          },
+          "possessive_english": {
+            "type": "stemmer",
+            "language": "possessive_english"
+          },
+          "english_stemmer": {
+            "type": "stemmer",
+            "language": "english"
+          },
+          "french_elision": {
+            "type": "elision",
+            "articles_case": true,
+            "articles": [
+              "l",
+              "m",
+              "t",
+              "qu",
+              "n",
+              "s",
+              "j",
+              "d",
+              "c",
+              "jusqu",
+              "quoiqu",
+              "lorsqu",
+              "puisqu"
             ]
-          }
-        },
-        "normalizer": {
-          "lowercase_normalizer": {
-            "filter": [
-              "lowercase"
+          },
+          "french_stemmer": {
+            "type": "stemmer",
+            "language": "light_french"
+          },
+          "german_stemmer": {
+            "type": "stemmer",
+            "language": "light_german"
+          },
+          "hindi_stemmer": {
+            "type": "stemmer",
+            "language": "hindi"
+          },
+          "italian_elision": {
+            "type": "elision",
+            "articles": [
+              "c",
+              "l",
+              "all",
+              "dall",
+              "dell",
+              "nell",
+              "sull",
+              "coll",
+              "pell",
+              "gl",
+              "agl",
+              "dagl",
+              "degl",
+              "negl",
+              "sugl",
+              "un",
+              "m",
+              "t",
+              "s",
+              "v",
+              "d"
             ],
-            "type": "custom"
+            "articles_case": true
+          },
+          "italian_stemmer": {
+            "type": "stemmer",
+            "language": "light_italian"
+          },
+          "spanish_stemmer": {
+            "type": "stemmer",
+            "language": "light_spanish"
+          },
+          "pattern_replace_vv_w": {
+            "type": "pattern_replace",
+            "pattern": "vv",
+            "replacement": "w"
+          },
+          "pattern_replace_uu_w": {
+            "type": "pattern_replace",
+            "pattern": "uu",
+            "replacement": "w"
+          },
+          "pattern_replace_v_u": {
+            "type": "pattern_replace",
+            "pattern": "v",
+            "replacement": "u"
+          },
+          "pattern_replace_j_i": {
+            "type": "pattern_replace",
+            "pattern": "j",
+            "replacement": "i"
+          },
+          "pattern_replace_g_j": {
+            "type": "pattern_replace",
+            "pattern": "g",
+            "replacement": "j"
           }
         },
         "analyzer": {
-          "hindi_analyzer": {
+          "arabic": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "word_delimiter",
               "lowercase",
-              "hindi_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "decimal_digit",
+              "arabic_normalization",
+              "arabic_stemmer",
+              "shingle"
+            ]
           },
-          "asciifolding_analyzer": {
+          "bengali": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "word_delimiter",
               "lowercase",
-              "asciifolding_token_filter"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "decimal_digit",
+              "indic_normalization",
+              "bengali_normalization",
+              "bengali_stemmer",
+              "shingle"
+            ]
           },
-          "exact_path_analyzer": {
-            "type": "custom",
-            "tokenizer": "path_hierarchy"
-          },
-          "arabic_analyzer": {
+          "english": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "possessive_english",
+              "asciifolding",
+              "word_delimiter",
               "lowercase",
-              "arabic_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
-          },
-          "english_analyzer": {
-            "filter": [
-              "lowercase",
-              "asciifolding_token_filter",
               "english_stemmer",
-              "english_possessive_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "shingle"
+            ]
           },
-          "english_cased_analyzer": {
+          "english_without_shingles": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
-              "asciifolding_token_filter",
-              "english_stemmer",
-              "english_possessive_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
-          },
-          "bengali_analyzer": {
-            "filter": [
+              "possessive_english",
+              "asciifolding",
+              "word_delimiter",
               "lowercase",
-              "bengali_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "english_stemmer"
+            ]
           },
-          "german_analyzer": {
+          "normalized_whole_phrase": {
+            "char_filter": ["remove_punctuation"],
+            "tokenizer": "keyword",
+            "filter": ["asciifolding", "lowercase"]
+          },
+          "french": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "french_elision",
+              "word_delimiter",
               "lowercase",
-              "german_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "french_stemmer",
+              "shingle"
+            ]
           },
-          "slashes_analyzer": {
+          "german": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "word_delimiter",
               "lowercase",
-              "asciifolding_token_filter"
-            ],
-            "char_filter": [
-              "slashes_char_filter"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "german_normalization",
+              "german_stemmer",
+              "shingle"
+            ]
           },
-          "clean_path_analyzer": {
+          "hindi": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "word_delimiter",
               "lowercase",
-              "asciifolding_token_filter"
-            ],
-            "type": "custom",
-            "tokenizer": "path_hierarchy"
+              "decimal_digit",
+              "indic_normalization",
+              "hindi_normalization",
+              "hindi_stemmer",
+              "shingle"
+            ]
           },
-          "shingle_asciifolding_analyzer": {
+          "italian": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
+              "italian_elision",
+              "word_delimiter",
               "lowercase",
-              "punctuation",
-              "shingle_token_filter",
-              "asciifolding_token_filter"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "italian_stemmer",
+              "shingle"
+            ]
           },
-          "shingle_cased_analyzer": {
+          "persian": {
+            "char_filter": ["zero_width_spaces", "slash_remover"],
+            "tokenizer": "whitespace",
             "filter": [
-              "punctuation",
-              "shingle_token_filter",
-              "asciifolding_token_filter"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
-          },
-          "french_analyzer": {
-            "filter": [
+              "word_delimiter",
               "lowercase",
-              "french_stemmer"
-            ],
-            "type": "custom",
-            "tokenizer": "standard"
+              "decimal_digit",
+              "arabic_normalization",
+              "persian_normalization",
+              "shingle"
+            ]
           },
-          "whitespace_analyzer": {
+          "spanish": {
+            "char_filter": ["slash_remover"],
+            "tokenizer": "whitespace",
+            "filter": [
+              "word_delimiter",
+              "lowercase",
+              "spanish_stemmer",
+              "shingle"
+            ]
+          },
+          "lowercase": {
+            "char_filter": ["slash_remover"],
+            "filter": ["asciifolding", "word_delimiter", "lowercase"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
-          "italian_analyzer": {
+          "cased": {
+            "char_filter": ["slash_remover"],
+            "filter": ["asciifolding", "word_delimiter"],
+            "type": "custom",
+            "tokenizer": "whitespace"
+          },
+          "base": {
+            "char_filter": ["slash_remover"],
+            "filter": ["word_delimiter"],
+            "type": "custom",
+            "tokenizer": "whitespace"
+          },
+          "path_analyzer": {
+            "filter": ["asciifolding", "lowercase"],
+            "type": "custom",
+            "tokenizer": "path_hierarchy"
+          },
+          "swappable_characters": {
+            "char_filter": ["slash_remover"],
             "filter": [
+              "word_delimiter",
+              "asciifolding",
               "lowercase",
-              "italian_stemmer"
+              "pattern_replace_vv_w",
+              "pattern_replace_uu_w",
+              "pattern_replace_v_u",
+              "pattern_replace_j_i",
+              "pattern_replace_g_j"
             ],
             "type": "custom",
-            "tokenizer": "standard"
+            "tokenizer": "whitespace"
           }
         }
       }

@@ -1,203 +1,158 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2023-08-22T11:49:35.861105Z",
-  "id" : "inoolbps",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "inoolbps",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the subject filter tests",
+  "createdAt": "2023-11-21T15:39:35.203349Z",
+  "id": "inoolbps",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "inoolbps",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "bh6q7wkoWR"
+          "ontologyType": "Work",
+          "value": "bh6q7wkoWR"
         },
-        "version" : 4,
-        "modifiedTime" : "1988-02-26T07:09:16Z"
+        "version": 4,
+        "modifiedTime": "1988-02-26T07:09:16Z"
       },
-      "mergedTime" : "1988-02-26T07:09:16Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1988-02-26T07:09:16Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "inoolbps",
-      "title" : "title-jRX3FqozNG",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "inoolbps",
+      "title": "title-jRX3FqozNG",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "bh6q7wkoWR",
-          "type" : "Identifier"
+          "value": "bh6q7wkoWR",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
         {
-          "id" : "sanitati",
-          "identifiers" : [
+          "id": "sanitati",
+          "identifiers": [
             {
-              "identifierType" : {
-                "id" : "lc-subjects",
-                "label" : "Library of Congress Subject Headings (LCSH)",
-                "type" : "IdentifierType"
+              "identifierType": {
+                "id": "lc-subjects",
+                "label": "Library of Congress Subject Headings (LCSH)",
+                "type": "IdentifierType"
               },
-              "value" : "lcsh-sanitation",
-              "type" : "Identifier"
+              "value": "lcsh-sanitation",
+              "type": "Identifier"
             },
             {
-              "identifierType" : {
-                "id" : "nlm-mesh",
-                "label" : "Medical Subject Headings (MeSH) identifier",
-                "type" : "IdentifierType"
+              "identifierType": {
+                "id": "nlm-mesh",
+                "label": "Medical Subject Headings (MeSH) identifier",
+                "type": "IdentifierType"
               },
-              "value" : "mesh-sanitation",
-              "type" : "Identifier"
+              "value": "mesh-sanitation",
+              "type": "Identifier"
             }
           ],
-          "label" : "Sanitation.",
-          "concepts" : [
+          "label": "Sanitation.",
+          "concepts": [
             {
-              "label" : "485o02DxPLXKke6",
-              "type" : "Concept"
+              "label": "485o02DxPLXKke6",
+              "type": "Concept"
             },
             {
-              "label" : "NacQ8QOPJdAXFgM",
-              "type" : "Concept"
+              "label": "NacQ8QOPJdAXFgM",
+              "type": "Concept"
             },
             {
-              "label" : "zC1ICZOvNWbRfsA",
-              "type" : "Concept"
+              "label": "zC1ICZOvNWbRfsA",
+              "type": "Concept"
             }
           ],
-          "type" : "Subject"
+          "type": "Subject"
         }
       ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "inoolbps",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "bh6q7wkoWR"
-      ],
-      "title" : "title-jRX3FqozNG",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-        "sanitati"
-      ],
-      "subjects.label" : [
-        "Sanitation"
-      ],
-      "subjects.concepts.label" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "inoolbps",
+      "sourceIdentifier.value": "bh6q7wkoWR",
+      "identifiers.value": ["bh6q7wkoWR"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [
         "485o02DxPLXKke6",
         "NacQ8QOPJdAXFgM",
         "zC1ICZOvNWbRfsA"
       ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+      "title": "title-jRX3FqozNG"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [
         "{\"label\":\"Sanitation\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "languages": [],
+      "contributors.agent.label": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": ["Sanitation"],
+      "contributors.agent.label": [],
+      "identifiers.value": ["bh6q7wkoWR"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }

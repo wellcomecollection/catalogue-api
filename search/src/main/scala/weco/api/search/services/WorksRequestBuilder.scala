@@ -150,96 +150,75 @@ object WorksRequestBuilder
       case VisibleWorkFilter =>
         termQuery(field = "type", value = "Visible")
       case FormatFilter(formatIds) =>
-        termsQuery(field = "query.format.id", values = formatIds)
+        termsQuery(field = "filterableValues.format.id", values = formatIds)
       case WorkTypeFilter(types) =>
-        termsQuery(field = "query.workType", values = types)
+        termsQuery(field = "filterableValues.workType", values = types)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
-        RangeQuery("query.production.dates.range.from", lte = lte, gte = gte)
+        RangeQuery(
+          "filterableValues.production.dates.range.from",
+          lte = lte,
+          gte = gte)
       case LanguagesFilter(languageIds) =>
-        termsQuery("query.languages.id", languageIds)
+        termsQuery("filterableValues.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
-        termsQuery("query.genres.label.keyword", genreQueries)
+        termsQuery("filterableValues.genres.label", genreQueries)
       case GenreConceptFilter(conceptIds) =>
         if (conceptIds.isEmpty) NoopQuery
-        else termsQuery("query.genres.concepts.id", conceptIds)
+        else termsQuery("filterableValues.genres.concepts.id", conceptIds)
 
       case SubjectLabelFilter(labels) =>
-        termsQuery("query.subjects.label.keyword", labels)
+        termsQuery("filterableValues.subjects.label", labels)
 
       case ContributorsFilter(contributorQueries) =>
-        termsQuery("query.contributors.agent.label.keyword", contributorQueries)
+        termsQuery(
+          "filterableValues.contributors.agent.label",
+          contributorQueries)
 
       case IdentifiersFilter(identifiers) =>
-        termsQuery("query.identifiers.value", identifiers)
+        termsQuery("filterableValues.identifiers.value", identifiers)
 
       case LicenseFilter(licenseIds) =>
-        termsQuery("query.items.locations.license.id", licenseIds)
+        termsQuery("filterableValues.items.locations.license.id", licenseIds)
       case AccessStatusFilter(includes, excludes) =>
         includesExcludesQuery(
-          field = "query.items.locations.accessConditions.status.id",
+          field = "filterableValues.items.locations.accessConditions.status.id",
           includes = includes,
           excludes = excludes
         )
       case ItemsFilter(itemIds) =>
         should(
           termsQuery(
-            field = "query.items.id",
+            field = "filterableValues.items.id",
             values = itemIds
           )
         )
       case ItemsIdentifiersFilter(itemSourceIdentifiers) =>
         should(
           termsQuery(
-            field = "query.items.identifiers.value",
+            field = "filterableValues.items.identifiers.value",
             values = itemSourceIdentifiers
           )
         )
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
-        termsQuery("query.items.locations.locationType.id", itemLocationTypeIds)
+        termsQuery(
+          "filterableValues.items.locations.locationType.id",
+          itemLocationTypeIds)
 
       case PartOfFilter(search_term) =>
-        /*
-         The partOf filter matches on either the id or the title of any ancestor.
-         As it is vanishingly unlikely that an id_minter canonical id will coincidentally
-         match the title of a Work or Series, this query can be a simple OR (i.e. bool.should),
-         rather than have to introduce a new filter to the API to cover it.
-         */
-        bool(
-          mustQueries = Nil,
-          shouldQueries = Seq(
-            /*
-             title is an analysed field, so cannot be matched by a term query.
-             Instead, a matchPhrase is used. This will match a contiguous substring within
-             the title as well as the whole title
-             (e.g. search for Wellcome Malay and you will get Wellcome Malay 7 and Wellcome Malay 8).
-             In most situations, this is likely to be the desired result anyway.  However for Series
-             linking, this may provide some incorrect results.
-             e.g. 'The Journal of Philosophy' is the title of a philosophy journal, but so is
-             'The journal of philosophy, psychology and scientific methods'.
-             If this does cause unwanted results in "real life", then we can consider storing a
-             separate non-analysed version of title for term matching.
-             */
-            matchPhraseQuery(
-              field = "query.partOf.title",
-              value = search_term
-            ),
-            termQuery(
-              field = "query.partOf.id",
-              value = search_term
-            )
-          ),
-          notQueries = Nil
+        termQuery(
+          field = "filterableValues.partOf.id",
+          value = search_term
         )
       case PartOfTitleFilter(search_term) =>
         termQuery(
-          field = "query.partOf.title.keyword",
+          field = "filterableValues.partOf.title",
           value = search_term
         )
       case AvailabilitiesFilter(availabilityIds) =>
         termsQuery(
-          field = "query.availabilities.id",
+          field = "filterableValues.availabilities.id",
           values = availabilityIds
         )
     }

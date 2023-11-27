@@ -56,9 +56,9 @@ trait TestDocumentFixtures
       .map(doc => getKey(doc.document, "display").get)
       .head
 
-  def getQueryImage(id: String): Json =
+  def getVectorValuesImage(id: String): Json =
     getTestDocuments(Seq(id))
-      .map(doc => getKey(doc.document, "query").get)
+      .map(doc => getKey(doc.document, "vectorValues").get)
       .head
       .deepDropNullValues
 

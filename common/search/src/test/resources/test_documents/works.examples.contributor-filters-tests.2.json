@@ -1,170 +1,124 @@
 {
-  "description" : "examples for the contributor filter tests",
-  "createdAt" : "2023-03-24T14:12:13.341630Z",
-  "id" : "wmvuppum",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "wmvuppum",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "examples for the contributor filter tests",
+  "createdAt": "2023-11-21T15:39:35.249714Z",
+  "id": "wmvuppum",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "wmvuppum",
+        "identifier": {
+          "identifierType": {
+            "id": "calm-record-id"
           },
-          "ontologyType" : "Work",
-          "value" : "KzPZAnMiJN"
+          "ontologyType": "Work",
+          "value": "KzPZAnMiJN"
         },
-        "version" : 60,
-        "modifiedTime" : "1945-07-07T10:18:32Z"
+        "version": 60,
+        "modifiedTime": "1945-07-07T10:18:32Z"
       },
-      "mergedTime" : "1945-07-07T10:18:32Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ]
+      "mergedTime": "1945-07-07T10:18:32Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "wmvuppum",
-      "title" : "title-ql7LBhP7Ng",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
+    "display": {
+      "id": "wmvuppum",
+      "title": "title-ql7LBhP7Ng",
+      "alternativeTitles": [],
+      "contributors": [
         {
-          "agent" : {
-            "label" : "Jake Paul",
-            "type" : "Person"
+          "agent": {
+            "label": "Jake Paul",
+            "type": "Person"
           },
-          "roles" : [
-          ],
-          "primary" : true,
-          "type" : "Contributor"
+          "roles": [],
+          "primary": true,
+          "type": "Contributor"
         }
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
+            "type": "IdentifierType"
           },
-          "value" : "KzPZAnMiJN",
-          "type" : "Identifier"
+          "value": "KzPZAnMiJN",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
     },
-    "query" : {
-      "id" : "wmvuppum",
-      "format.id" : null,
-      "workType" : "Standard",
-      "identifiers.value" : [
-        "KzPZAnMiJN"
-      ],
-      "title" : "title-ql7LBhP7Ng",
-      "alternativeTitles" : [
-      ],
-      "description" : null,
-      "physicalDescription" : null,
-      "edition" : null,
-      "notes.contents" : [
-      ],
-      "lettering" : null,
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "subjects.id" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.label" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "languages.id" : [
-      ],
-      "languages.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.label" : [
-        "Jake Paul"
-      ],
-      "production.label" : [
-      ],
-      "production.dates.range.from" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ],
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "referenceNumber" : null
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": ["Jake Paul"],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "wmvuppum",
+      "sourceIdentifier.value": "KzPZAnMiJN",
+      "identifiers.value": ["KzPZAnMiJN"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "title-ql7LBhP7Ng"
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres.label" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects.label" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent.label" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres.label": [],
+      "production.dates": [],
+      "subjects.label": [],
+      "languages": [],
+      "contributors.agent.label": [
         "{\"label\":\"Jake Paul\",\"type\":\"Person\"}"
       ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "subjects.label": [],
+      "contributors.agent.label": ["Jake Paul"],
+      "identifiers.value": ["KzPZAnMiJN"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    },
+    "type": "Visible"
   }
 }
