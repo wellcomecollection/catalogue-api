@@ -27,6 +27,7 @@
       "query.source.title.*^500"
     ],
     "type": "best_fields",
+    "tie_breaker": 0.4,
     "minimum_should_match": "-30%",
     "operator": "Or"
   }
