@@ -119,7 +119,7 @@ class WorksServiceTest
         expectedWorks = List("work-title-dodo"),
         expectedTotalResults = 1,
         worksSearchOptions = createWorksSearchOptionsWith(
-          searchQuery = Some(SearchQuery("dodo \""))
+          searchQuery = Some(SearchQuery("dodo\""))
         )
       )
     }
