@@ -43,7 +43,7 @@ echo "*** Publishing Docker image to ECR"
 
 aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
 
-IMAGE_REPOSITORY_PREFIX = "$ECR_REGISTRY/uk.ac.wellcome"
+IMAGE_REPOSITORY_PREFIX="$ECR_REGISTRY/uk.ac.wellcome"
 
 docker tag "$PROJECT_NAME:$IMAGE_TAG" "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:$IMAGE_TAG"
 docker push "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:$IMAGE_TAG"
