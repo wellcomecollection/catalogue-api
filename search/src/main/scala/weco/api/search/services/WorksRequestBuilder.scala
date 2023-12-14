@@ -177,7 +177,12 @@ object WorksRequestBuilder
           contributorQueries)
 
       case IdentifiersFilter(identifiers) =>
-        termsQuery("filterableValues.identifiers.value", identifiers)
+        // TODO we're using the value in `query` because it's lowercase-normalised,
+        // whereas the value in `filterableValues` is just a plain keyword and so
+        // is case sensitive. Particularly for archive refnos, case-insensitivity
+        // seems to be appropriate for this filter. We should add the normalizer
+        // to `filterableValues` and update the field used here once that's reindexed.
+        termsQuery("query.identifiers.value", identifiers)
 
       case LicenseFilter(licenseIds) =>
         termsQuery("filterableValues.items.locations.license.id", licenseIds)
