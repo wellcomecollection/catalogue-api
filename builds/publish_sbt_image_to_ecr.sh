@@ -33,21 +33,20 @@ fi
 if [[ "$PROJECT_NAME" == "requests" ]]
 then
   # identity
-  ECR_REGISTRY="770700576653.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
+  ECR_REGISTRY="770700576653.dkr.ecr.eu-west-1.amazonaws.com"
 else
   # catalogue
-  ECR_REGISTRY="756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome"
+  ECR_REGISTRY="756629837203.dkr.ecr.eu-west-1.amazonaws.com"
 fi
 
 echo "*** Publishing Docker image to ECR"
 
-eval $(aws ecr get-login-password \
-       | docker login \
-           --username AWS \
-           --password-stdin 760097843905.dkr.ecr.eu-west-1.amazonaws.com)
+aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
 
-docker tag "$PROJECT_NAME:$IMAGE_TAG" "$ECR_REGISTRY/$PROJECT_NAME:$IMAGE_TAG"
-docker push "$ECR_REGISTRY/$PROJECT_NAME:$IMAGE_TAG"
+IMAGE_REPOSITORY_PREFIX = "$ECR_REGISTRY/uk.ac.wellcome"
 
-docker tag "$PROJECT_NAME:$IMAGE_TAG" "$ECR_REGISTRY/$PROJECT_NAME:latest"
-docker push "$ECR_REGISTRY/$PROJECT_NAME:latest"
+docker tag "$PROJECT_NAME:$IMAGE_TAG" "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:$IMAGE_TAG"
+docker push "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:$IMAGE_TAG"
+
+docker tag "$PROJECT_NAME:$IMAGE_TAG" "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:latest"
+docker push "$IMAGE_REPOSITORY_PREFIX/$PROJECT_NAME:latest"
