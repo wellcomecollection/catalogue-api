@@ -72,3 +72,16 @@ variable "app_cpu" {
 variable "app_memory" {
   type = number
 }
+
+variable "tcp_healthcheck" {
+  # TODO: Remove this when all services use HTTP healthcheck
+  type    = bool
+  default = true
+}
+
+variable "healthcheck_path" {
+  # Note: this is only used when tcp_healthcheck is set to false
+  type    = string
+  default = "/management/healthcheck"
+}
+
