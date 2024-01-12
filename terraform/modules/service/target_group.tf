@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "tcp" {
   deregistration_delay = 90
 
   dynamic "health_check" {
-    for_each = var.tcp_healthcheck == true ? toset([]) : toset([1])
+    for_each = var.tcp_healthcheck == false ? toset([]) : toset([1])
 
     content {
       protocol = "TCP"
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "tcp" {
   }
 
   dynamic "health_check" {
-    for_each = var.tcp_healthcheck == false ? toset([]) : toset([1])
+    for_each = var.tcp_healthcheck == true ? toset([]) : toset([1])
 
     content {
       protocol = "HTTP"
