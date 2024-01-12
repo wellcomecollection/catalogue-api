@@ -29,6 +29,7 @@ resource "aws_lb_target_group" "tcp" {
     content {
       protocol = "HTTP"
       path     = var.healthcheck_path
+      matcher  = "200"
     }
   }
 }
