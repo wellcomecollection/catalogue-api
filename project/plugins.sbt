@@ -4,3 +4,4 @@ addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.15")
 addSbtPlugin("com.frugalmechanic" % "fm-sbt-s3-resolver" % "0.19.0")
 addSbtPlugin("ch.epfl.scala" % "sbt-bloop" % "1.3.2")
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
+addDependencyTreePlugin
