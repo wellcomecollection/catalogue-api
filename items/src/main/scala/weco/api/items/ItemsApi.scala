@@ -38,12 +38,11 @@ class ItemsApi(
       }
     },
     pathPrefix("management") {
-      concat(
-        path("healthcheck") {
-          get {
-            complete("message" -> "ok")
-          }
-        })
+      concat(path("healthcheck") {
+        get {
+          complete("message" -> "ok")
+        }
+      })
     }
   )
 }
