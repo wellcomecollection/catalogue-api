@@ -93,6 +93,9 @@ module "items_api" {
   vpc_id             = var.vpc_id
   load_balancer_arn  = aws_lb.catalogue_api.arn
 
+  # Use the HTTP healthcheck with a default path of /management/healthcheck
+  tcp_healthcheck = false
+
   use_fargate_spot              = var.environment_name == "stage" ? true : false
   turn_off_outside_office_hours = var.environment_name == "stage" ? true : false
 }
