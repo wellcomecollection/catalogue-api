@@ -36,6 +36,13 @@ class ItemsApi(
         case id =>
           notFound(s"Work not found for identifier $id")
       }
+    },
+    pathPrefix("management") {
+      concat(path("healthcheck") {
+        get {
+          complete("message" -> "ok")
+        }
+      })
     }
   )
 }
