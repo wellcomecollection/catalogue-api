@@ -5,6 +5,7 @@ import {
   conceptController,
   conceptsController,
   errorHandler,
+  healthcheckController,
 } from "./controllers";
 import { Config } from "../config";
 import { Clients } from "./types";
@@ -16,6 +17,7 @@ const createApp = (clients: Clients, config: Config) => {
 
   app.get("/concepts", conceptsController(clients, config));
   app.get("/concepts/:id", conceptController(clients, config));
+  app.get("/management/healthcheck", healthcheckController(config));
 
   app.use(errorHandler);
 
