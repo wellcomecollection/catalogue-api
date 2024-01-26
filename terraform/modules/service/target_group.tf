@@ -15,22 +15,10 @@ resource "aws_lb_target_group" "tcp" {
   # updated service.  Reducing this parameter to 90s makes deployments faster.
   deregistration_delay = 90
 
-  dynamic "health_check" {
-    for_each = var.tcp_healthcheck == false ? toset([]) : toset([1])
-
-    content {
-      protocol = "TCP"
-    }
-  }
-
-  dynamic "health_check" {
-    for_each = var.tcp_healthcheck == true ? toset([]) : toset([1])
-
-    content {
-      protocol = "HTTP"
-      path     = var.healthcheck_path
-      matcher  = "200"
-    }
+  health_check {
+    protocol = "HTTP"
+    path     = var.healthcheck_path
+    matcher  = "200"
   }
 }
 

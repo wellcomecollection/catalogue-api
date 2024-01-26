@@ -50,7 +50,14 @@ class RequestsApi(
           } ~ get {
             lookupRequests(userIdentifier)
           }
-      }
+      },
+    pathPrefix("management") {
+      concat(path("healthcheck") {
+        get {
+          complete("message" -> "ok")
+        }
+      })
+    }
   )
 }
 
