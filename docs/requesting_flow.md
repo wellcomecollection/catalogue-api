@@ -16,7 +16,7 @@ sequenceDiagram
      user->>front end: views a works page<br/> with items
 
      front end->>works API: get information about<br/>items on a work
-     works API->>front end:
+     works API->>front end: OK
 
      front end->>items API: get up-to-date status of items<br/>using catalogue ID
      items API->>works API: get matching Sierra IDs<br/>for catalogue IDs
