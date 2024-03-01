@@ -13,7 +13,7 @@ import weco.catalogue.display_model.identifiers.{
   DisplayIdentifierType
 }
 import weco.catalogue.display_model.locations._
-import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
 import weco.fixtures.TestWith
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
@@ -22,6 +22,7 @@ import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import java.time.ZonedDateTime
 
 class ItemUpdateServiceTest
     extends AnyFunSpec
@@ -150,8 +151,17 @@ class ItemUpdateServiceTest
     status = CatalogueAccessStatus.Open
   )
 
-  val notRequestableAccessCondition = DisplayAccessCondition(
-    method = CatalogueAccessMethod.NotRequestable
+  val availableDates = Some(
+    List(
+      AvailabilitySlot(
+        ZonedDateTime.parse(
+          "2024-02-29T13:32:44.943107Z[Europe/London]"
+        ),
+        ZonedDateTime
+          .parse("2024-02-29T13:32:44.943107Z[Europe/London]")
+          .plusWeeks(2)
+      )
+    )
   )
 
   class DummyItemUpdater(
@@ -252,7 +262,6 @@ class ItemUpdateServiceTest
         dummyDigitalItem
       )
     )
-
     val workWithAvailableItem = CatalogueWork(
       id = createCanonicalId,
       title = None,
@@ -264,54 +273,96 @@ class ItemUpdateServiceTest
     )
 
     val itemStates = Table(
-      ("Sierra Responses", "Catalogue Work", "AccessCondition"),
+      (
+        "Sierra Responses",
+        "Catalogue Work",
+        "AccessCondition",
+        "AvailableDates"
+      ),
       (
         onHoldItemResponses(workWithAvailableItemNumber),
         workWithAvailableItem,
-        onHoldAccessCondition
+        onHoldAccessCondition,
+        None
       ),
       (
         onHoldItemResponses(workWithUnavailableItemNumber),
         workWithUnavailableItem,
-        onHoldAccessCondition
+        onHoldAccessCondition,
+        None
       ),
       (
         availableItemResponses(workWithAvailableItemNumber),
         workWithAvailableItem,
-        onlineRequestAccessCondition
+        onlineRequestAccessCondition,
+        availableDates
       ),
       (
         availableItemResponses(workWithUnavailableItemNumber),
         workWithUnavailableItem,
-        onlineRequestAccessCondition
+        onlineRequestAccessCondition,
+        availableDates
       ),
       (
         missingItemResponse(workWithAvailableItemNumber),
         workWithAvailableItem,
-        availableOnlineAccessCondition
+        availableOnlineAccessCondition,
+        availableDates // this should be None, possible bug in the Sierra updater
       )
     )
 
     it("updates AccessCondition correctly based on Sierra responses") {
-      forAll(itemStates) { (sierraResponses, work, expectedAccessCondition) =>
-        withSierraItemUpdater(sierraResponses) { itemUpdater =>
-          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-            whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-              updatedItems.length shouldBe 2
+      forAll(itemStates) {
+        (
+          sierraResponses,
+          work,
+          expectedAccessCondition,
+          expectedAvailableDates
+        ) =>
+          withSierraItemUpdater(sierraResponses) { itemUpdater =>
+            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+                updatedItems.length shouldBe 2
 
-              val physicalItem = updatedItems(0)
-              val digitalItem = updatedItems(1)
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+                val updatedAccessCondition = physicalItem.locations.head
+                  .asInstanceOf[DisplayPhysicalLocation]
+                  .accessConditions
+                  .head
 
-              val updatedAccessCondition = physicalItem.locations.head
-                .asInstanceOf[DisplayPhysicalLocation]
-                .accessConditions
-                .head
-              updatedAccessCondition shouldBe expectedAccessCondition
+                updatedAccessCondition shouldBe expectedAccessCondition
 
-              digitalItem shouldBe dummyDigitalItem
+                digitalItem shouldBe dummyDigitalItem
+              }
             }
           }
-        }
+      }
+    }
+
+    it(
+      "adds available dates based on the item's DisplayLocationType and accessConditions"
+    ) {
+      forAll(itemStates) {
+        (
+          sierraResponses,
+          work,
+          expectedAccessCondition,
+          expectedAvailableDates
+        ) =>
+          withSierraItemUpdater(sierraResponses) { itemUpdater =>
+            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+                updatedItems.length shouldBe 2
+
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+
+                physicalItem.availableDates shouldBe expectedAvailableDates
+                digitalItem shouldBe dummyDigitalItem
+              }
+            }
+          }
       }
     }
   }

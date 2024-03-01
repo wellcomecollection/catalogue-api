@@ -8,13 +8,14 @@ import weco.catalogue.display_model.locations.{
   DisplayLocationType,
   DisplayPhysicalLocation
 }
-import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.{ExecutionContext, Future}
+import java.time.ZonedDateTime
 
 /** Updates the AccessCondition of sierra items
   *
@@ -93,7 +94,6 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     } yield accessConditions
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
-
     // item number -> item
     val itemMap = items.map { item =>
       SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
@@ -121,6 +121,31 @@ class SierraItemUpdater(sierraSource: SierraSource)(
             case None            => item
           }
       }
-    } yield updatedItems.toSeq
+
+      updatedItemsWithAvailableDates = updatedItems.map {
+        case (item) =>
+          val displayAccessConditionOps = new DisplayAccessConditionOps(
+            item.locations.head.accessConditions.head
+          )
+          displayAccessConditionOps.isRequestable match {
+            case true =>
+              item.copy(
+                availableDates = Some(
+                  List(
+                    AvailabilitySlot(
+                      ZonedDateTime.parse(
+                        "2024-02-29T13:32:44.943107Z[Europe/London]"
+                      ),
+                      ZonedDateTime
+                        .parse("2024-02-29T13:32:44.943107Z[Europe/London]")
+                        .plusWeeks(2)
+                    )
+                  )
+                )
+              )
+            case false => item
+          }
+      }
+    } yield updatedItemsWithAvailableDates.toSeq
   }
 }

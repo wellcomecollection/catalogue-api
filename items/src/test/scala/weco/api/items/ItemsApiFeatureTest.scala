@@ -95,6 +95,12 @@ class ItemsApiFeatureTest
              |          "type" : "PhysicalLocation"
              |        }
              |      ],
+             |      "availableDates" : [
+             |        {
+             |          "from" : "2024-02-29T13:32:44.943107Z[Europe/London]",
+             |          "to" : "2024-03-14T13:32:44.943107Z[Europe/London]"
+             |        }
+             |      ],
              |      "type" : "Item"
              |    }
              |  ]
