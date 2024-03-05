@@ -97,8 +97,8 @@ class ItemsApiFeatureTest
              |      ],
              |      "availableDates" : [
              |        {
-             |          "from" : "2024-02-29T13:32:44.943107Z[Europe/London]",
-             |          "to" : "2024-03-14T13:32:44.943107Z[Europe/London]"
+             |          "from" : "2022-01-10T10:00:00+0000",
+             |          "to" : "2022-01-11T10:00:00+0000"
              |        }
              |      ],
              |      "type" : "Item"
@@ -158,7 +158,7 @@ class ItemsApiFeatureTest
         (
           catalogueWorkRequest(workId),
           catalogueWorkResponse(resourceName)
-        ),
+        )
       )
 
       withItemsApi(catalogueResponses) { _ =>
