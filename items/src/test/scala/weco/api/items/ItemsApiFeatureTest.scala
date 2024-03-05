@@ -95,6 +95,12 @@ class ItemsApiFeatureTest
              |          "type" : "PhysicalLocation"
              |        }
              |      ],
+             |      "availableDates" : [
+             |        {
+             |          "from" : "2022-01-10T10:00:00+0000",
+             |          "to" : "2022-01-11T10:00:00+0000"
+             |        }
+             |      ],
              |      "type" : "Item"
              |    }
              |  ]
@@ -152,7 +158,7 @@ class ItemsApiFeatureTest
         (
           catalogueWorkRequest(workId),
           catalogueWorkResponse(resourceName)
-        ),
+        )
       )
 
       withItemsApi(catalogueResponses) { _ =>

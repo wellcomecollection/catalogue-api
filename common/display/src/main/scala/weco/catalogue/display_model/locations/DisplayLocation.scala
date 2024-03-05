@@ -2,7 +2,9 @@ package weco.catalogue.display_model.locations
 
 import io.circe.generic.extras.JsonKey
 
-sealed trait DisplayLocation
+sealed trait DisplayLocation {
+  val accessConditions: List[DisplayAccessCondition]
+}
 
 case class DisplayDigitalLocation(
   locationType: DisplayLocationType,

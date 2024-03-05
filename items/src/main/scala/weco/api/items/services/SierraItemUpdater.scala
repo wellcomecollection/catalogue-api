@@ -8,7 +8,7 @@ import weco.catalogue.display_model.locations.{
   DisplayLocationType,
   DisplayPhysicalLocation
 }
-import weco.catalogue.display_model.work.DisplayItem
+import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
 import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
@@ -92,8 +92,19 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
     } yield accessConditions
 
-  def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
+  private def getAvailableDates: Option[List[AvailabilitySlot]] =
+    // call Prismic to get opening times
+    // generate list of dates on now + opening times
+    Some(
+      List(
+        AvailabilitySlot(
+          "2022-01-10T10:00:00+0000",
+          "2022-01-11T10:00:00+0000"
+        )
+      )
+    )
 
+  def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     // item number -> item
     val itemMap = items.map { item =>
       SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
@@ -121,6 +132,16 @@ class SierraItemUpdater(sierraSource: SierraSource)(
             case None            => item
           }
       }
-    } yield updatedItems.toSeq
+
+      updatedItemsWithAvailableDates = updatedItems.map {
+        case (item) =>
+          // there is only ever one locations per physicalItem and one accessConditions per location
+          val itemAccessCondition = item.locations.head.accessConditions.head
+          itemAccessCondition.isRequestable match {
+            case true  => item.copy(availableDates = getAvailableDates)
+            case false => item
+          }
+      }
+    } yield updatedItemsWithAvailableDates.toSeq
   }
 }
