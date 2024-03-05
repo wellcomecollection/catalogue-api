@@ -15,7 +15,6 @@ import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.{ExecutionContext, Future}
-import java.time.ZonedDateTime
 
 /** Updates the AccessCondition of sierra items
   *
@@ -61,11 +60,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -92,6 +89,18 @@ class SierraItemUpdater(sierraSource: SierraSource)(
         .collect { case (itemId, Some(ac)) => itemId -> ac }
 
     } yield accessConditions
+
+  private def getAvailableDates: Option[List[AvailabilitySlot]] =
+    // call Prismic to get opening times
+    // generate list of dates on now + opening times
+    Some(
+      List(
+        AvailabilitySlot(
+          "2022-01-10T10:00:00+0000",
+          "2022-01-11T10:00:00+0000"
+        )
+      )
+    )
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     // item number -> item
@@ -124,25 +133,10 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
       updatedItemsWithAvailableDates = updatedItems.map {
         case (item) =>
-          val displayAccessConditionOps = new DisplayAccessConditionOps(
-            item.locations.head.accessConditions.head
-          )
-          displayAccessConditionOps.isRequestable match {
-            case true =>
-              item.copy(
-                availableDates = Some(
-                  List(
-                    AvailabilitySlot(
-                      ZonedDateTime.parse(
-                        "2024-02-29T13:32:44.943107Z[Europe/London]"
-                      ),
-                      ZonedDateTime
-                        .parse("2024-02-29T13:32:44.943107Z[Europe/London]")
-                        .plusWeeks(2)
-                    )
-                  )
-                )
-              )
+          // there is only ever one locations per physicalItem and one accessConditions per location
+          val itemAccessCondition = item.locations.head.accessConditions.head
+          itemAccessCondition.isRequestable match {
+            case true  => item.copy(availableDates = getAvailableDates)
             case false => item
           }
       }

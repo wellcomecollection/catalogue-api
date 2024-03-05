@@ -22,7 +22,6 @@ import weco.sierra.models.identifiers.SierraItemNumber
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import java.time.ZonedDateTime
 
 class ItemUpdateServiceTest
     extends AnyFunSpec
@@ -154,12 +153,8 @@ class ItemUpdateServiceTest
   val availableDates = Some(
     List(
       AvailabilitySlot(
-        ZonedDateTime.parse(
-          "2024-02-29T13:32:44.943107Z[Europe/London]"
-        ),
-        ZonedDateTime
-          .parse("2024-02-29T13:32:44.943107Z[Europe/London]")
-          .plusWeeks(2)
+        "2022-01-10T10:00:00+0000",
+        "2022-01-11T10:00:00+0000"
       )
     )
   )
