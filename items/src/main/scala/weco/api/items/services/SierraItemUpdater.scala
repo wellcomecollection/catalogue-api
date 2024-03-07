@@ -60,11 +60,9 @@ class SierraItemUpdater(sierraSource: SierraSource)(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -133,15 +131,20 @@ class SierraItemUpdater(sierraSource: SierraSource)(
           }
       }
 
-      updatedItemsWithAvailableDates = updatedItems.map {
-        case (item) =>
-          // there is only ever one locations per physicalItem and one accessConditions per location
-          val itemAccessCondition = item.locations.head.accessConditions.head
-          itemAccessCondition.isRequestable match {
-            case true  => item.copy(availableDates = getAvailableDates)
-            case false => item
-          }
-      }
+      updatedItemsWithAvailableDates = updatedItems.map(setAvailableDates)
     } yield updatedItemsWithAvailableDates.toSeq
+  }
+
+  def setAvailableDates(item: DisplayItem) = {
+
+    // there is only ever one location per physicalItem and one accessCondition per location,
+    // but this may sometimes be empty if it could not be fetched.
+    val isRequestable = item.locations.headOption
+      .flatMap(_.accessConditions.headOption)
+      .map(_.isRequestable)
+    isRequestable match {
+      case Some(true) => item.copy(availableDates = getAvailableDates)
+      case _          => item
+    }
   }
 }

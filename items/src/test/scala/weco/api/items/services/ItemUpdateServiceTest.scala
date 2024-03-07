@@ -360,6 +360,41 @@ class ItemUpdateServiceTest
           }
       }
     }
+
+    it(
+      "tolerates missing locations and conditions"
+    ) {
+      val itemNumber = createSierraItemNumber
+      val work = CatalogueWork(
+        id = createCanonicalId,
+        title = None,
+        identifiers = Nil,
+        items = List(
+          DisplayItem(
+            id = Some(createCanonicalId),
+            identifiers = List(
+              DisplayIdentifier(
+                identifierType = DisplayIdentifierType.SierraSystemNumber,
+                value = itemNumber.withCheckDigit
+              )
+            ),
+            locations = Nil
+          )
+        )
+      )
+      withSierraItemUpdater(missingItemResponse(itemNumber)) { itemUpdater =>
+        withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+          whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+            updatedItems.length shouldBe 1
+
+            val physicalItem = updatedItems.head
+
+            physicalItem.availableDates shouldBe None
+          }
+        }
+      }
+    }
+
   }
 
   def createPhysicalItemWith(
