@@ -43,15 +43,17 @@ class FilterAndAggregateByAvailabilityTest
         (2, "closed-stores", "Closed stores"),
         (2, "online", "Online"),
         (2, "open-shelves", "Open shelves")
-      ).map {
-        case (count, identifier, label) =>
-          (count, s"""
+      ).map { case (count, identifier, label) =>
+        (
+          count,
+          s"""
                |{
                |            "id" : "$identifier",
                |            "label" : "$label",
                |            "type" : "Availability"
                |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

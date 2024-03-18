@@ -21,8 +21,8 @@ case class WorkNotFoundError(id: String) extends WorkLookupError
 case class WorkGoneError(id: String) extends WorkLookupError
 case class UnknownWorkError(id: String, err: Throwable) extends WorkLookupError
 
-class WorkLookup(client: HttpClient with HttpGet)(
-  implicit as: ActorSystem,
+class WorkLookup(client: HttpClient with HttpGet)(implicit
+  as: ActorSystem,
   ec: ExecutionContext
 ) extends Logging {
 
@@ -30,7 +30,6 @@ class WorkLookup(client: HttpClient with HttpGet)(
     CirceMarshalling.fromDecoder[CatalogueWork]
 
   /** Returns the Work that corresponds to this canonical ID.
-    *
     */
   def byCanonicalId(
     id: String
@@ -44,7 +43,7 @@ class WorkLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[CatalogueWork].map { Right(_) }
+          Unmarshal(response.entity).to[CatalogueWork].map(Right(_))
 
         case StatusCodes.NotFound =>
           info(s"Not Found for GET to $path with $params")

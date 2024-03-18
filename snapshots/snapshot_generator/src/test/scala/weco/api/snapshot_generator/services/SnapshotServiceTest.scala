@@ -41,132 +41,128 @@ class SnapshotServiceTest
     }
 
   it("completes a snapshot generation") {
-    withFixtures {
-      case (snapshotService, worksIndex, bucket) =>
-        indexTestDocuments(worksIndex, works: _*)
+    withFixtures { case (snapshotService, worksIndex, bucket) =>
+      indexTestDocuments(worksIndex, works: _*)
 
-        val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
-        val snapshotJob = createSnapshotJob(
-          s3Location,
-          worksIndex,
-          query = SnapshotServiceFixture.visibleTermQuery
-        )
+      val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
+      val snapshotJob = createSnapshotJob(
+        s3Location,
+        worksIndex,
+        query = SnapshotServiceFixture.visibleTermQuery
+      )
 
-        val result = snapshotService.generateSnapshot(snapshotJob).success.value
+      val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
-        val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
+      val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
-        val expectedJsonLines =
-          readResource("expected-snapshot-works.txt").split("\n")
-        val actualLines = contents.split("\n")
+      val expectedJsonLines =
+        readResource("expected-snapshot-works.txt").split("\n")
+      val actualLines = contents.split("\n")
 
-        actualLines.zip(expectedJsonLines).foreach {
-          case (actualLine, expectedLine) =>
-            withClue(s"actualLine = <<$actualLine>>") {
-              assertJsonStringsAreEqual(actualLine, expectedLine)
-            }
-        }
+      actualLines.zip(expectedJsonLines).foreach {
+        case (actualLine, expectedLine) =>
+          withClue(s"actualLine = <<$actualLine>>") {
+            assertJsonStringsAreEqual(actualLine, expectedLine)
+          }
+      }
 
-        result.snapshotJob shouldBe snapshotJob
+      result.snapshotJob shouldBe snapshotJob
 
-        result.snapshotResult.indexName shouldBe worksIndex.name
-        result.snapshotResult.documentCount shouldBe visibleWorks.length
+      result.snapshotResult.indexName shouldBe worksIndex.name
+      result.snapshotResult.documentCount shouldBe visibleWorks.length
 
-        result.snapshotResult.startedAt shouldBe >=(
-          result.snapshotJob.requestedAt
-        )
-        result.snapshotResult.finishedAt shouldBe >(
-          result.snapshotResult.startedAt
-        )
+      result.snapshotResult.startedAt shouldBe >=(
+        result.snapshotJob.requestedAt
+      )
+      result.snapshotResult.finishedAt shouldBe >(
+        result.snapshotResult.startedAt
+      )
 
-        result.snapshotResult.s3Etag shouldBe s3Etag
-        result.snapshotResult.s3Size shouldBe s3Size
-        result.snapshotResult.s3Location shouldBe s3Location
+      result.snapshotResult.s3Etag shouldBe s3Etag
+      result.snapshotResult.s3Size shouldBe s3Size
+      result.snapshotResult.s3Location shouldBe s3Location
     }
   }
 
   it("completes a snapshot generation of an index with more than 10000 items") {
-    withFixtures {
-      case (snapshotService, worksIndex, bucket) =>
-        case class HasDisplay(
-          display: Json,
-          @JsonKey("type") ontologyType: String
-        )
+    withFixtures { case (snapshotService, worksIndex, bucket) =>
+      case class HasDisplay(
+        display: Json,
+        @JsonKey("type") ontologyType: String
+      )
 
-        val documents = (1 to 10100)
-          .map { i =>
-            val id = i.toString
-            val doc = HasDisplay(
-              display = Json.fromString(s"document $i"),
-              ontologyType = "Visible"
-            )
+      val documents = (1 to 10100)
+        .map { i =>
+          val id = i.toString
+          val doc = HasDisplay(
+            display = Json.fromString(s"document $i"),
+            ontologyType = "Visible"
+          )
 
-            (id, doc)
-          }
-
-        elasticClient.execute(
-          bulk(
-            documents.map {
-              case (id, doc) =>
-                indexInto(worksIndex)
-                  .id(id)
-                  .doc(doc.asJson.noSpaces)
-            }
-          ).refreshImmediately
-        )
-
-        eventually {
-          getSizeOf(worksIndex) shouldBe documents.length
+          (id, doc)
         }
 
-        val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
-        val snapshotJob = createSnapshotJob(
-          s3Location,
-          worksIndex,
-          query = SnapshotServiceFixture.visibleTermQuery
-        )
+      elasticClient.execute(
+        bulk(
+          documents.map { case (id, doc) =>
+            indexInto(worksIndex)
+              .id(id)
+              .doc(doc.asJson.noSpaces)
+          }
+        ).refreshImmediately
+      )
 
-        val result = snapshotService.generateSnapshot(snapshotJob).success.value
+      eventually {
+        getSizeOf(worksIndex) shouldBe documents.length
+      }
 
-        val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
+      val s3Location = S3ObjectLocation(bucket.name, key = "target.txt.gz")
+      val snapshotJob = createSnapshotJob(
+        s3Location,
+        worksIndex,
+        query = SnapshotServiceFixture.visibleTermQuery
+      )
 
-        val expectedContents = documents
-          .map { case (id, _) => s""""document $id"""" }
-          .mkString("\n") + "\n"
+      val result = snapshotService.generateSnapshot(snapshotJob).success.value
 
-        contents shouldBe expectedContents
+      val (s3Size, s3Etag, contents) = getGzipObjectFromS3(s3Location)
 
-        result.snapshotJob shouldBe snapshotJob
+      val expectedContents = documents
+        .map { case (id, _) => s""""document $id"""" }
+        .mkString("\n") + "\n"
 
-        result.snapshotResult.indexName shouldBe worksIndex.name
-        result.snapshotResult.documentCount shouldBe documents.length
+      contents shouldBe expectedContents
 
-        result.snapshotResult.startedAt shouldBe >=(
-          result.snapshotJob.requestedAt
-        )
-        result.snapshotResult.finishedAt shouldBe >=(
-          result.snapshotResult.startedAt
-        )
+      result.snapshotJob shouldBe snapshotJob
 
-        result.snapshotResult.s3Etag shouldBe s3Etag
-        result.snapshotResult.s3Size shouldBe s3Size
-        result.snapshotResult.s3Location shouldBe s3Location
+      result.snapshotResult.indexName shouldBe worksIndex.name
+      result.snapshotResult.documentCount shouldBe documents.length
+
+      result.snapshotResult.startedAt shouldBe >=(
+        result.snapshotJob.requestedAt
+      )
+      result.snapshotResult.finishedAt shouldBe >=(
+        result.snapshotResult.startedAt
+      )
+
+      result.snapshotResult.s3Etag shouldBe s3Etag
+      result.snapshotResult.s3Size shouldBe s3Size
+      result.snapshotResult.s3Location shouldBe s3Location
     }
   }
 
   it("returns a failed future if the S3 upload fails") {
-    withFixtures {
-      case (snapshotService, worksIndex, _) =>
-        indexTestDocuments(worksIndex, works: _*)
+    withFixtures { case (snapshotService, worksIndex, _) =>
+      indexTestDocuments(worksIndex, works: _*)
 
-        val snapshotJob = createSnapshotJob(
-          createS3ObjectLocation,
-          worksIndex,
-          query = SnapshotServiceFixture.visibleTermQuery
-        )
+      val snapshotJob = createSnapshotJob(
+        createS3ObjectLocation,
+        worksIndex,
+        query = SnapshotServiceFixture.visibleTermQuery
+      )
 
-        val exc = snapshotService.generateSnapshot(snapshotJob).failed.get
-        exc shouldBe a[NoSuchBucketException]
+      val exc = snapshotService.generateSnapshot(snapshotJob).failed.get
+      exc shouldBe a[NoSuchBucketException]
     }
   }
 

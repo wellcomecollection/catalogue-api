@@ -20,7 +20,8 @@ trait S3GzipUtils extends GzipUtils with S3Fixtures {
     downloadFile.delete()
 
     val getRequest =
-      GetObjectRequest.builder()
+      GetObjectRequest
+        .builder()
         .bucket(location.bucket)
         .key(location.key)
         .build()
@@ -28,13 +29,18 @@ trait S3GzipUtils extends GzipUtils with S3Fixtures {
     s3Client.getObject(getRequest, downloadFile.toPath)
 
     val headRequest =
-      HeadObjectRequest.builder()
+      HeadObjectRequest
+        .builder()
         .bucket(location.bucket)
         .key(location.key)
         .build()
 
     val headResponse = s3Client.headObject(headRequest)
 
-    (headResponse.contentLength(), headResponse.eTag(), readGzipFile(downloadFile.getPath))
+    (
+      headResponse.contentLength(),
+      headResponse.eTag(),
+      readGzipFile(downloadFile.getPath)
+    )
   }
 }

@@ -627,10 +627,12 @@ class RequestingScenarioTest
         ),
         (
           createListHoldsRequest(patronNumber),
-          createListHoldsResponse(patronNumber, items = (1 to holdLimit).map {
-            _ =>
+          createListHoldsResponse(
+            patronNumber,
+            items = (1 to holdLimit).map { _ =>
               createSierraItemNumber
-          })
+            }
+          )
         )
       )
 
@@ -1389,8 +1391,8 @@ class RequestingScenarioTest
     }
   }
 
-  def makePostRequest(path: String, entity: RequestEntity)(
-    implicit route: Route
+  def makePostRequest(path: String, entity: RequestEntity)(implicit
+    route: Route
   ): HttpResponse = {
     val request = HttpRequest(
       method = POST,
@@ -1408,18 +1410,21 @@ class RequestingScenarioTest
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     holdLimit: Int = 10
   ): Route = {
-    val sierraClient = new MemoryHttpClient(sierraResponses) with HttpGet
-    with HttpPost {
+    val sierraClient = new MemoryHttpClient(sierraResponses)
+      with HttpGet
+      with HttpPost {
       override val baseUri: Uri = Uri("http://sierra:1234")
     }
 
-    val catalogueClient = new MemoryHttpClient(catalogueResponses) with HttpGet
-    with HttpPost {
+    val catalogueClient = new MemoryHttpClient(catalogueResponses)
+      with HttpGet
+      with HttpPost {
       override val baseUri: Uri = Uri("http://catalogue:9001")
     }
 
     val requestsService = new RequestsService(
-      sierraService = SierraRequestsService(sierraClient, holdLimit = holdLimit),
+      sierraService =
+        SierraRequestsService(sierraClient, holdLimit = holdLimit),
       itemLookup = new ItemLookup(catalogueClient)
     )
 

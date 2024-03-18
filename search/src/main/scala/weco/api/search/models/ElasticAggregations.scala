@@ -19,12 +19,11 @@ trait ElasticAggregations extends Logging {
       aggregations
         .getAgg(name)
         .flatMap(
-          _.safeTo[Aggregation[T]](
-            (json: String) => AggregationMapping.aggregationParser[T](json)
-          ).recoverWith {
-            case err =>
-              warn("Failed to parse aggregation from ES", err)
-              Failure(err)
+          _.safeTo[Aggregation[T]]((json: String) =>
+            AggregationMapping.aggregationParser[T](json)
+          ).recoverWith { case err =>
+            warn("Failed to parse aggregation from ES", err)
+            Failure(err)
           }.toOption
         )
 
@@ -34,14 +33,11 @@ trait ElasticAggregations extends Logging {
       aggregations
         .getAgg(name)
         .flatMap(
-          _.safeTo[Aggregation[Json]](
-            (json: String) => {
-              AggregationMapping.jsonAggregationParse(json)
-            }
-          ).recoverWith {
-            case err =>
-              warn("Failed to parse aggregation from ES", err)
-              Failure(err)
+          _.safeTo[Aggregation[Json]] { (json: String) =>
+            AggregationMapping.jsonAggregationParse(json)
+          }.recoverWith { case err =>
+            warn("Failed to parse aggregation from ES", err)
+            Failure(err)
           }.toOption
         )
   }

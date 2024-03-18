@@ -110,7 +110,9 @@ class AggregationsTest
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b =>
+            getKey(b.data, "label").get.asString.get
+          ) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -154,7 +156,9 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe 7
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b =>
+            getKey(b.data, "label").get.asString.get
+          ) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",

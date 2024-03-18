@@ -43,8 +43,8 @@ trait CreateRequest extends ErrorDirectives with Logging {
               description = description
             )
         )
-    } recover {
-      case err => internalError(err)
+    } recover { case err =>
+      internalError(err)
     }
 
   private def handleError(

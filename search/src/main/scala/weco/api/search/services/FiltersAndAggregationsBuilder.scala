@@ -54,8 +54,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
   private def escapeRegexTokens(term: String): String =
     term.replaceAll("""([.?+*|{}<>&@\[\]()\\"])""", "\\\\$1")
 
-  /**
-    * An aggregation that will contain the filtered-upon value even
+  /** An aggregation that will contain the filtered-upon value even
     * if no documents in the aggregation context match it.
     */
   private def toSelfAggregation(
@@ -120,8 +119,7 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       filteredAggregation(aggReq)
     }
 
-  /**
-    *  Turn an aggregation request into an actual aggregation.
+  /**  Turn an aggregation request into an actual aggregation.
     *  The aggregation will be filtered using all filters that do not operate on the same field as the aggregation (if any).
     *  It also contains a subaggregation that *does* additionally filter on that field.  This ensures that the filtered
     *  values are returned even if they fall outside the top n buckets as defined by the main aggregation.

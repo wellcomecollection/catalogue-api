@@ -80,12 +80,11 @@ class ImagesServiceTest
           (0 to 5).map(i => s"images.similar-features.$i"): _*
         )
 
-        val expectedImages = (1 to 5).map(
-          i =>
-            IndexedImage(
-              display = getDisplayImage(s"images.similar-features.$i"),
-              vectorValues = getVectorValuesImage(s"images.similar-features.$i")
-            )
+        val expectedImages = (1 to 5).map(i =>
+          IndexedImage(
+            display = getDisplayImage(s"images.similar-features.$i"),
+            vectorValues = getVectorValuesImage(s"images.similar-features.$i")
+          )
         )
 
         val future =

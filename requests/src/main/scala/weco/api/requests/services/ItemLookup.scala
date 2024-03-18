@@ -28,8 +28,7 @@ case class CatalogueWorkResults(
   results: Seq[CatalogueWork]
 )
 
-class ItemLookup(client: HttpClient with HttpGet)(
-  implicit
+class ItemLookup(client: HttpClient with HttpGet)(implicit
   as: ActorSystem,
   ec: ExecutionContext
 ) extends Logging
@@ -100,7 +99,6 @@ class ItemLookup(client: HttpClient with HttpGet)(
     * at, but that's a bigger piece of work.  It involves UX input on how to best explain
     * the same item on multiple works.  Making this change is tracked in a separate ticket.
     * See https://github.com/wellcomecollection/platform/issues/5267
-    *
     */
   def bySourceIdentifier(
     itemIdentifiers: Seq[DisplayIdentifier]
@@ -182,8 +180,8 @@ class ItemLookup(client: HttpClient with HttpGet)(
           }
         }
       }
-      .recover {
-        case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
+      .recover { case e =>
+        itemIdentifiers.map(id => Left(UnknownItemError(id, e)))
       }
   }
 }

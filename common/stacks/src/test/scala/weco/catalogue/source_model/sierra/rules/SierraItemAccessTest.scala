@@ -3,12 +3,16 @@ package weco.catalogue.source_model.sierra.rules
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.stacks.models.CatalogueAccessMethod
-import weco.catalogue.display_model.locations.{CatalogueAccessStatus, DisplayAccessCondition, DisplayLocationType}
+import weco.catalogue.display_model.locations.{
+  CatalogueAccessStatus,
+  DisplayAccessCondition,
+  DisplayLocationType
+}
 import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.FixedField
 
 class SierraItemAccessTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with SierraDataGenerators {
 
@@ -31,15 +35,18 @@ class SierraItemAccessTest
               "79" -> FixedField(
                 label = "LOCATION",
                 value = "scmac",
-                display = "Closed stores Arch. & MSS"),
+                display = "Closed stores Arch. & MSS"
+              ),
               "88" -> FixedField(
                 label = "STATUS",
                 value = "-",
-                display = "Available"),
+                display = "Available"
+              ),
               "108" -> FixedField(
                 label = "OPACMSG",
                 value = "f",
-                display = "Online request"),
+                display = "Online request"
+              )
             )
           )
 
@@ -50,7 +57,8 @@ class SierraItemAccessTest
 
           ac.get shouldBe DisplayAccessCondition(
             method = CatalogueAccessMethod.OnlineRequest,
-            status = CatalogueAccessStatus.Open)
+            status = CatalogueAccessStatus.Open
+          )
         }
 
         it("if it's restricted") {
@@ -59,15 +67,18 @@ class SierraItemAccessTest
               "79" -> FixedField(
                 label = "LOCATION",
                 value = "scmac",
-                display = "Closed stores Arch. & MSS"),
+                display = "Closed stores Arch. & MSS"
+              ),
               "88" -> FixedField(
                 label = "STATUS",
                 value = "-",
-                display = "Available"),
+                display = "Available"
+              ),
               "108" -> FixedField(
                 label = "OPACMSG",
                 value = "c",
-                display = "Restricted"),
+                display = "Restricted"
+              )
             )
           )
 
@@ -79,7 +90,8 @@ class SierraItemAccessTest
           ac.get shouldBe
             DisplayAccessCondition(
               method = CatalogueAccessMethod.OnlineRequest,
-              status = CatalogueAccessStatus.Restricted)
+              status = CatalogueAccessStatus.Restricted
+            )
         }
       }
 
@@ -90,19 +102,23 @@ class SierraItemAccessTest
               "61" -> FixedField(
                 label = "I TYPE",
                 value = "4",
-                display = "serial"),
+                display = "serial"
+              ),
               "79" -> FixedField(
                 label = "LOCATION",
                 value = "sgser",
-                display = "Closed stores journals"),
+                display = "Closed stores journals"
+              ),
               "88" -> FixedField(
                 label = "STATUS",
                 value = "-",
-                display = "Available"),
+                display = "Available"
+              ),
               "108" -> FixedField(
                 label = "OPACMSG",
                 value = "n",
-                display = "Manual request"),
+                display = "Manual request"
+              )
             )
           )
 
@@ -124,15 +140,18 @@ class SierraItemAccessTest
             "79" -> FixedField(
               label = "LOCATION",
               value = "sgeph",
-              display = "Closed stores ephemera"),
+              display = "Closed stores ephemera"
+            ),
             "88" -> FixedField(
               label = "STATUS",
               value = "-",
-              display = "Available"),
+              display = "Available"
+            ),
             "108" -> FixedField(
               label = "OPACMSG",
               value = "f",
-              display = "Online request"),
+              display = "Online request"
+            )
           )
         )
 
@@ -146,7 +165,8 @@ class SierraItemAccessTest
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
       }
@@ -158,16 +178,19 @@ class SierraItemAccessTest
             "79" -> FixedField(
               label = "LOCATION",
               value = "sgeph",
-              display = "Closed stores ephemera"),
+              display = "Closed stores ephemera"
+            ),
             "87" -> FixedField(label = "LOANRULE", value = "5"),
             "88" -> FixedField(
               label = "STATUS",
               value = "-",
-              display = "Available"),
+              display = "Available"
+            ),
             "108" -> FixedField(
               label = "OPACMSG",
               value = "f",
-              display = "Online request"),
+              display = "Online request"
+            )
           )
         )
 
@@ -181,7 +204,8 @@ class SierraItemAccessTest
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
       }
@@ -193,19 +217,23 @@ class SierraItemAccessTest
             "61" -> FixedField(
               label = "I TYPE",
               value = "4",
-              display = "serial"),
+              display = "serial"
+            ),
             "79" -> FixedField(
               label = "LOCATION",
               value = "sgser",
-              display = "Closed stores journals"),
+              display = "Closed stores journals"
+            ),
             "88" -> FixedField(
               label = "STATUS",
               value = "-",
-              display = "Available"),
+              display = "Available"
+            ),
             "108" -> FixedField(
               label = "OPACMSG",
               value = "n",
-              display = "Manual request"),
+              display = "Manual request"
+            )
           )
         )
 
@@ -219,7 +247,8 @@ class SierraItemAccessTest
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
       }
@@ -231,15 +260,18 @@ class SierraItemAccessTest
             "79" -> FixedField(
               label = "LOCATION",
               value = "swms4",
-              display = "Closed stores WMS 4"),
+              display = "Closed stores WMS 4"
+            ),
             "88" -> FixedField(
               label = "STATUS",
               value = "!",
-              display = "On holdshelf"),
+              display = "On holdshelf"
+            ),
             "108" -> FixedField(
               label = "OPACMSG",
               value = "f",
-              display = "Online request"),
+              display = "Online request"
+            )
           )
         )
 
@@ -253,7 +285,8 @@ class SierraItemAccessTest
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
       }
@@ -268,15 +301,18 @@ class SierraItemAccessTest
             "79" -> FixedField(
               label = "LOCATION",
               value = "wgmem",
-              display = "Medical Collection"),
+              display = "Medical Collection"
+            ),
             "88" -> FixedField(
               label = "STATUS",
               value = "-",
-              display = "Available"),
+              display = "Available"
+            ),
             "108" -> FixedField(
               label = "OPACMSG",
               value = "o",
-              display = "Open shelves"),
+              display = "Open shelves"
+            )
           )
         )
 

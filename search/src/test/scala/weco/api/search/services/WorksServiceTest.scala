@@ -49,7 +49,9 @@ class WorksServiceTest
       )
     }
 
-    it("returns an empty result set when asked for a page that does not exist") {
+    it(
+      "returns an empty result set when asked for a page that does not exist"
+    ) {
       assertListOrSearchResultIsCorrect(
         allWorks = visibleWorks,
         expectedWorks = Seq(),
@@ -71,7 +73,8 @@ class WorksServiceTest
       assertListOrSearchResultIsCorrect(
         allWorks = worksFormat,
         expectedWorks = worksFormatBooks ++ worksFormatAudio,
-        expectedTotalResults = worksFormatBooks.length + worksFormatAudio.length,
+        expectedTotalResults =
+          worksFormatBooks.length + worksFormatAudio.length,
         worksSearchOptions = createWorksSearchOptionsWith(
           filters = List(FormatFilter(Seq("a", "i")))
         )

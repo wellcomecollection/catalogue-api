@@ -37,8 +37,9 @@ trait SierraServiceFixture
     holdLimit: Int = 10
   )(testWith: TestWith[SierraRequestsService, R]): R =
     withMaterializer { implicit mat =>
-      val httpClient = new MemoryHttpClient(responses) with HttpGet
-      with HttpPost {
+      val httpClient = new MemoryHttpClient(responses)
+        with HttpGet
+        with HttpPost {
         override val baseUri: Uri = Uri("http://sierra:1234")
       }
 
@@ -63,8 +64,8 @@ trait SierraServiceFixture
            |  "recordType": "i",
            |  "recordNumber": ${item.withoutCheckDigit},
            |  "note": "Requested for: ${DateTimeFormatter
-             .ofPattern("yyyy-MM-dd")
-             .format(pickupDate)}",
+          .ofPattern("yyyy-MM-dd")
+          .format(pickupDate)}",
            |  "pickupLocation": "unspecified"
            |}
            |""".stripMargin
@@ -111,8 +112,8 @@ trait SierraServiceFixture
            |  "start": 0,
            |  "entries": [
            |    ${items
-             .map(it => createListHoldEntry(patron, it))
-             .mkString(",")}
+          .map(it => createListHoldEntry(patron, it))
+          .mkString(",")}
            |  ]
            |}
            |""".stripMargin

@@ -68,16 +68,18 @@ class FilterAndAggregateBySubjectTest
         (2, "London (England)"),
         (2, "Psychology, Pathological"),
         (1, "Sanitation")
-      ).map {
-        case (count, label) =>
-          (count, s"""
+      ).map { case (count, label) =>
+        (
+          count,
+          s"""
                |{
                |  "concepts" : [
      |            ],
      |            "label" : "$label",
      |            "type" : "Subject"
      |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

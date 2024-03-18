@@ -19,7 +19,6 @@ import weco.sierra.models.data.SierraItemData
   *
   * We remove rules that would end in a "definitely not requestable" state, because
   * those items should be filtered out by the front end.
-  *
   */
 object SierraRulesForRequesting {
   def apply(itemData: SierraItemData): Option[NotRequestable] =
@@ -45,12 +44,13 @@ object SierraRulesForRequesting {
       //      for now.  TODO: Find an example of this.
       //
       case i
-        if i.fixedField("87").getOrElse("0") != "0" || i
-          .fixedField("88")
-          .contains("!") =>
+          if i.fixedField("87").getOrElse("0") != "0" || i
+            .fixedField("88")
+            .contains("!") =>
         Some(
           NotRequestable.InUseByAnotherReader(
-            "Item is in use by another reader. Please ask at Enquiry Desk.")
+            "Item is in use by another reader. Please ask at Enquiry Desk."
+          )
         )
 
       case _ => None
@@ -58,6 +58,6 @@ object SierraRulesForRequesting {
 
   private implicit class ItemDataOps(itemData: SierraItemData) {
     def fixedField(code: String): Option[String] =
-      itemData.fixedFields.get(code).map { _.value.trim }
+      itemData.fixedFields.get(code).map(_.value.trim)
   }
 }

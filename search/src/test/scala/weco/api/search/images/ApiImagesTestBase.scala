@@ -15,7 +15,7 @@ trait ApiImagesTestBase
     ids: Seq[String],
     strictOrdering: Boolean = false
   ): String = {
-    val works = ids.map { getDisplayImage }.map {
+    val works = ids.map(getDisplayImage).map {
       _.withIncludes(SingleImageIncludes.none)
     }
 

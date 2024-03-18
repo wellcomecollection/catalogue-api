@@ -378,8 +378,8 @@ class ItemLookupTest
 
       val workA = WorkStub(sourceIdentifier = "A", items = List(item1, item2))
       val workB = WorkStub(sourceIdentifier = "B", items = List(item2, item3))
-      val moreItem1works = (1 to 234).map(
-        n => WorkStub(sourceIdentifier = n.toString, items = List(item1))
+      val moreItem1works = (1 to 234).map(n =>
+        WorkStub(sourceIdentifier = n.toString, items = List(item1))
       )
 
       val responses = Seq(
@@ -509,9 +509,9 @@ class ItemLookupTest
            |{
            |  "totalResults": ${works.size},
            |  "results": [ ${works
-             .slice((page - 1) * pageSize, page * pageSize)
-             .map(catalogueWorkJson)
-             .mkString(",")} ]
+          .slice((page - 1) * pageSize, page * pageSize)
+          .map(catalogueWorkJson)
+          .mkString(",")} ]
            |}
            |""".stripMargin
       )
@@ -519,7 +519,7 @@ class ItemLookupTest
 
   private def itemAsJson(item: ItemStub): Json =
     item match {
-      case IdentifiedItemStub(id, sourceIdentifier, otherIdentifiers) => {
+      case IdentifiedItemStub(id, sourceIdentifier, otherIdentifiers) =>
         val identifiers =
           (sourceIdentifier +: otherIdentifiers).map(sourceIdentifier => s"""
              |{
@@ -545,7 +545,6 @@ class ItemLookupTest
              |}
              |""".stripMargin
         ).right.get
-      }
 
       case UnidentifiedItemStub() =>
         parse(

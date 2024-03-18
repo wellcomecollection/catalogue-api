@@ -10,8 +10,7 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Json
 import io.circe.syntax.EncoderOps
 
-/**
-  * Handler used by E4S ElasticClient.execute to turn a
+/** Handler used by E4S ElasticClient.execute to turn a
   * request (the E4S-style description of what we want the request to contain)
   * into an ElasticRequest (the method/url/body combination that will do that)
   *

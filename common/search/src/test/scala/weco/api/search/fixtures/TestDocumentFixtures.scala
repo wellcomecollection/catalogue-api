@@ -32,7 +32,8 @@ trait TestDocumentFixtures
   val worksFormatAudio = (7 to 8).map(i => s"works.formats.$i.Audio")
   val worksFormatPictures = (9 to 9).map(i => s"works.formats.$i.Pictures")
 
-  val worksFormat = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
+  val worksFormat =
+    worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
   val worksLicensed = (0 to 4).map(i => s"works.items-with-licenses.$i")
 
@@ -44,12 +45,10 @@ trait TestDocumentFixtures
     getKey(getDisplayImage(id), "id").get.asString.get
 
   def getVisibleWork(id: String): IndexedWork.Visible =
-    getTestDocuments(Seq(id))
-      .map(doc => {
-        val display = getKey(doc.document, "display").get
-        IndexedWork.Visible(display)
-      })
-      .head
+    getTestDocuments(Seq(id)).map { doc =>
+      val display = getKey(doc.document, "display").get
+      IndexedWork.Visible(display)
+    }.head
 
   def getDisplayImage(id: String): Json =
     getTestDocuments(Seq(id))

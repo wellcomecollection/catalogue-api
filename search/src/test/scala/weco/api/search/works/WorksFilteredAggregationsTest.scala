@@ -16,14 +16,14 @@ class WorksFilteredAggregationsTest
   val worksBooks =
     Seq(0, 4, 5, 7)
       .map(i => s"works.examples.filtered-aggregations-tests.$i")
-      .map { getVisibleWork }
+      .map(getVisibleWork)
       .map(_.display.withIncludes(WorksIncludes.none))
       .sortBy(w => getKey(w, "id").get.asString)
 
   val worksBooksAboutRats =
     Seq(0)
       .map(i => s"works.examples.filtered-aggregations-tests.$i")
-      .map { getVisibleWork }
+      .map(getVisibleWork)
       .map(_.display.withIncludes(WorksIncludes.none))
       .sortBy(w => getKey(w, "id").get.asString)
 
@@ -31,16 +31,15 @@ class WorksFilteredAggregationsTest
     "filters aggregation buckets with any filters that are not paired to the aggregation"
   ) {
     it("when those filters do not have a paired aggregation present") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, aggregatedWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            // We expect to see the language buckets for only the works with workType=a
-            path = s"$rootPath/works?workType=a&aggregations=languages"
-          ) {
-            Status.OK -> s"""
+        assertJsonResponse(
+          routes,
+          // We expect to see the language buckets for only the works with workType=a
+          path = s"$rootPath/works?workType=a&aggregations=languages"
+        ) {
+          Status.OK -> s"""
             {
               ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
@@ -72,22 +71,21 @@ class WorksFilteredAggregationsTest
               "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
-          }
+        }
       }
     }
 
     it("when those filters do have a paired aggregation present") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, aggregatedWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            // We expect to see the language buckets for only the works with workType=a
-            // We expect to see the workType buckets for all of the works
-            path = s"$rootPath/works?workType=a&aggregations=languages,workType"
-          ) {
-            Status.OK -> s"""
+        assertJsonResponse(
+          routes,
+          // We expect to see the language buckets for only the works with workType=a
+          // We expect to see the workType buckets for all of the works
+          path = s"$rootPath/works?workType=a&aggregations=languages,workType"
+        ) {
+          Status.OK -> s"""
             {
               ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
@@ -160,25 +158,24 @@ class WorksFilteredAggregationsTest
               "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
-          }
+        }
       }
     }
 
     it("but still returns empty buckets if their paired filter is present") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, aggregatedWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, aggregatedWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            // We expect to see the workType buckets for worktype i/Audio, because that
-            // has the language che/Chechen, and for a/Books, because a filter for it is
-            // present
-            path =
-              s"$rootPath/works?workType=a&languages=che&aggregations=workType"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          // We expect to see the workType buckets for worktype i/Audio, because that
+          // has the language che/Chechen, and for a/Books, because a filter for it is
+          // present
+          path =
+            s"$rootPath/works?workType=a&languages=che&aggregations=workType"
+        ) {
+          Status.OK ->
+            s"""
             {
               ${resultList(totalResults = 0, totalPages = 0)},
               "aggregations": {
@@ -210,32 +207,31 @@ class WorksFilteredAggregationsTest
               "results": []
             }
           """.stripMargin
-          }
+        }
       }
     }
   }
   it("safely handles terms with special characters") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        val doc = createWorkDocument(
-          "xkcd0327",
-          "Exploits Of a Mom",
-          Map(
-            "contributors.agent.label" -> Seq(
-              "Robert .?+*|{}<>&@[]()\" Tables"
-            )
+    withWorksApi { case (worksIndex, routes) =>
+      val doc = createWorkDocument(
+        "xkcd0327",
+        "Exploits Of a Mom",
+        Map(
+          "contributors.agent.label" -> Seq(
+            "Robert .?+*|{}<>&@[]()\" Tables"
           )
         )
+      )
 
-        indexLoadedTestDocuments(worksIndex, Seq(doc))
+      indexLoadedTestDocuments(worksIndex, Seq(doc))
 
-        assertJsonResponse(
-          routes,
-          path =
-            s"$rootPath/works?contributors.agent.label=${URLEncoder.encode("Robert .?+*|{}<>&@[]()\" Tables", "UTF-8")}&aggregations=contributors.agent.label"
-        ) {
-          Status.OK ->
-            s"""
+      assertJsonResponse(
+        routes,
+        path =
+          s"$rootPath/works?contributors.agent.label=${URLEncoder.encode("Robert .?+*|{}<>&@[]()\" Tables", "UTF-8")}&aggregations=contributors.agent.label"
+      ) {
+        Status.OK ->
+          s"""
           {
             ${resultList(totalResults = 1)},
             "results":[{"id":"xkcd0327","title":"Exploits Of a Mom"}],
@@ -254,20 +250,19 @@ class WorksFilteredAggregationsTest
               }
            }
         """.stripMargin
-        }
+      }
     }
   }
 
   it("applies the search query to aggregations paired with an applied filter") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, aggregatedWorks: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?query=rats&workType=a&aggregations=workType"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?query=rats&workType=a&aggregations=workType"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = worksBooksAboutRats.length)},
               "aggregations": {
@@ -308,20 +303,19 @@ class WorksFilteredAggregationsTest
               "results": [${worksBooksAboutRats.mkString(",")}]
             }
           """.stripMargin
-        }
+      }
     }
   }
 
   it("filters results but not aggregations paired with an applied filter") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, aggregatedWorks: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, aggregatedWorks: _*)
 
-        assertJsonResponse(
-          routes,
-          s"$rootPath/works?workType=a&aggregations=workType"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        s"$rootPath/works?workType=a&aggregations=workType"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = worksBooks.length)},
               "aggregations": {
@@ -371,7 +365,7 @@ class WorksFilteredAggregationsTest
               "results": [${worksBooks.mkString(",")}]
             }
           """.stripMargin
-        }
+      }
     }
   }
 }

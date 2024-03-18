@@ -4,16 +4,15 @@ import org.scalatest.funspec.AnyFunSpec
 
 class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
   it("aggregates by format") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksFormat: _*)
-        val displayWorks = getMinimalDisplayWorks(worksFormat)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, worksFormat: _*)
+      val displayWorks = getMinimalDisplayWorks(worksFormat)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=workType"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=workType"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = worksFormat.size)},
               "aggregations": {
@@ -65,21 +64,20 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by genre label") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, "works.genres")
-        val displayWorks = getMinimalDisplayWorks(ids = Seq("works.genres"))
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, "works.genres")
+      val displayWorks = getMinimalDisplayWorks(ids = Seq("works.genres"))
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=genres.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=genres.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = 1)},
               "aggregations": {
@@ -104,27 +102,26 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by production date") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        val works = Seq(
-          "work-production.1098",
-          "work-production.1904",
-          "work-production.2020"
-        )
+    withWorksApi { case (worksIndex, routes) =>
+      val works = Seq(
+        "work-production.1098",
+        "work-production.1904",
+        "work-production.2020"
+      )
 
-        indexTestDocuments(worksIndex, works: _*)
-        val displayWorks = getMinimalDisplayWorks(works)
+      indexTestDocuments(worksIndex, works: _*)
+      val displayWorks = getMinimalDisplayWorks(works)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=production.dates"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=production.dates"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = works.size)},
               "aggregations": {
@@ -164,31 +161,30 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by language") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        val ids = Seq(
-          "works.languages.0.eng",
-          "works.languages.1.eng",
-          "works.languages.2.eng",
-          "works.languages.3.eng+swe",
-          "works.languages.4.eng+swe+tur",
-          "works.languages.5.swe",
-          "works.languages.6.tur"
-        )
+    withWorksApi { case (worksIndex, routes) =>
+      val ids = Seq(
+        "works.languages.0.eng",
+        "works.languages.1.eng",
+        "works.languages.2.eng",
+        "works.languages.3.eng+swe",
+        "works.languages.4.eng+swe+tur",
+        "works.languages.5.swe",
+        "works.languages.6.tur"
+      )
 
-        indexTestDocuments(worksIndex, ids: _*)
-        val displayWorks = getMinimalDisplayWorks(ids)
+      indexTestDocuments(worksIndex, ids: _*)
+      val displayWorks = getMinimalDisplayWorks(ids)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=languages"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=languages"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = 7)},
               "aggregations": {
@@ -231,23 +227,22 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by subject label") {
     val works = (0 to 4).map(i => s"works.subjects.$i")
 
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
-        val displayWorks = getMinimalDisplayWorks(works)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, works: _*)
+      val displayWorks = getMinimalDisplayWorks(works)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=subjects.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=subjects.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = works.size)},
               "aggregations": {
@@ -281,23 +276,22 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by contributor agent label") {
     val works = (0 to 3).map(i => s"works.contributor.$i")
 
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, works: _*)
-        val displayWorks = getMinimalDisplayWorks(works)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, works: _*)
+      val displayWorks = getMinimalDisplayWorks(works)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=contributors.agent.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=contributors.agent.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = works.size)},
               "aggregations": {
@@ -345,23 +339,22 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by item license") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        val works = (0 to 4).map(i => s"works.items-with-licenses.$i")
+    withWorksApi { case (worksIndex, routes) =>
+      val works = (0 to 4).map(i => s"works.items-with-licenses.$i")
 
-        indexTestDocuments(worksIndex, works: _*)
-        val displayWorks = getMinimalDisplayWorks(works)
+      indexTestDocuments(worksIndex, works: _*)
+      val displayWorks = getMinimalDisplayWorks(works)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=items.locations.license"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=items.locations.license"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = 5)},
               "aggregations": {
@@ -397,29 +390,28 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
   it("aggregates by availability") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        val worksAvailabilities = Seq(
-          "works.examples.availabilities.open-only",
-          "works.examples.availabilities.closed-only",
-          "works.examples.availabilities.online-only",
-          "works.examples.availabilities.everywhere",
-          "works.examples.availabilities.nowhere"
-        )
+    withWorksApi { case (worksIndex, routes) =>
+      val worksAvailabilities = Seq(
+        "works.examples.availabilities.open-only",
+        "works.examples.availabilities.closed-only",
+        "works.examples.availabilities.online-only",
+        "works.examples.availabilities.everywhere",
+        "works.examples.availabilities.nowhere"
+      )
 
-        indexTestDocuments(worksIndex, worksAvailabilities: _*)
-        val displayWorks = getMinimalDisplayWorks(worksAvailabilities)
+      indexTestDocuments(worksIndex, worksAvailabilities: _*)
+      val displayWorks = getMinimalDisplayWorks(worksAvailabilities)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?aggregations=availabilities"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?aggregations=availabilities"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = worksAvailabilities.size)},
               "aggregations": {
@@ -462,7 +454,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
               ]
             }
           """.stripMargin
-        }
+      }
     }
   }
 }

@@ -24,13 +24,12 @@ class ImagesFacetingTest
   private def withFacetedAPI[R](
     docs: Option[Seq[TestDocument]]
   )(testWith: TestWith[JsonServer, R]): R =
-    withImagesApi[R] {
-      case (imagesIndex, route) =>
-        docs match {
-          case Some(docs) => indexLoadedTestDocuments(imagesIndex, docs)
-          case None       => indexTestDocuments(imagesIndex, aggregatedImages: _*)
-        }
-        testWith(new WorksJsonServer(route))
+    withImagesApi[R] { case (imagesIndex, route) =>
+      docs match {
+        case Some(docs) => indexLoadedTestDocuments(imagesIndex, docs)
+        case None       => indexTestDocuments(imagesIndex, aggregatedImages: _*)
+      }
+      testWith(new WorksJsonServer(route))
     }
 
   protected val oneAggregation: ScenarioData = ScenarioData(
@@ -119,10 +118,16 @@ class ImagesFacetingTest
       "source.subjects.label" -> Seq(
         toUnidentifiedBucket(2, "Fruit"),
         toUnidentifiedBucket(1, "Nursing"),
-        toUnidentifiedBucket(1, "Surgery") // Only one Surgery is a Daguerreotype
+        toUnidentifiedBucket(
+          1,
+          "Surgery"
+        ) // Only one Surgery is a Daguerreotype
       ),
       "source.genres.label" -> Seq(
-        toUnidentifiedBucket(1, "Daguerreotype"), // Only one Daguerreotype is Surgery
+        toUnidentifiedBucket(
+          1,
+          "Daguerreotype"
+        ), // Only one Daguerreotype is Surgery
         toUnidentifiedBucket(1, "Oil Painting")
       )
     )
@@ -174,8 +179,8 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.contributors.agent.label"),
     filters = Seq(("source.contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
-      "source.contributors.agent.label" -> (('a' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      "source.contributors.agent.label" -> (('a' to 't').map(n =>
+        toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
     )
   )
@@ -191,8 +196,8 @@ class ImagesFacetingTest
     expectedAggregationBuckets = Map(
       "source.contributors.agent.label" -> (Seq(
         toUnidentifiedBucket(3, "Beverley Crusher (a)")
-      ) ++ ('b' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      ) ++ ('b' to 't').map(n =>
+        toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) ++ Seq(
         toUnidentifiedBucket(2, "Beverley Crusher (z)"),
         toUnidentifiedBucket(1, "Mark Sloan"),
@@ -280,16 +285,17 @@ class ImagesFacetingTest
     )
   )
 
-  private val multipleUncommonContributors = top21Contributors :+ createImageDocument(
-    "baadf00d",
-    "top 1 and hapax legomenon",
-    Map(
-      "source.contributors.agent.label" -> Seq(
-        "Yuri Zhivago",
-        "Beverley Crusher (a)"
+  private val multipleUncommonContributors =
+    top21Contributors :+ createImageDocument(
+      "baadf00d",
+      "top 1 and hapax legomenon",
+      Map(
+        "source.contributors.agent.label" -> Seq(
+          "Yuri Zhivago",
+          "Beverley Crusher (a)"
+        )
       )
     )
-  )
 
   private val givens: Map[String, Seq[TestDocument]] = Map(
     "a dataset with multiple aggregable fields" -> threeImages,

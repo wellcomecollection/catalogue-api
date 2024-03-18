@@ -7,7 +7,7 @@ import weco.sierra.generators.SierraDataGenerators
 import weco.sierra.models.marc.FixedField
 
 class SierraRulesForRequestingTest
-  extends AnyFunSpec
+    extends AnyFunSpec
     with Matchers
     with SierraDataGenerators
     with TableDrivenPropertyChecks {
@@ -25,17 +25,15 @@ class SierraRulesForRequestingTest
       "c",
       "d",
       "e",
-      "y",
+      "y"
     )
 
-    forAll(testCases) {
-      status =>
-        val item = createSierraItemDataWith(
-          fixedFields =
-            Map("88" -> FixedField(label = "STATUS", value = status))
-        )
+    forAll(testCases) { status =>
+      val item = createSierraItemDataWith(
+        fixedFields = Map("88" -> FixedField(label = "STATUS", value = status))
+      )
 
-        SierraRulesForRequesting(item) shouldBe None
+      SierraRulesForRequesting(item) shouldBe None
     }
   }
 
@@ -46,7 +44,8 @@ class SierraRulesForRequestingTest
 
     SierraRulesForRequesting(item) shouldBe Some(
       NotRequestable.InUseByAnotherReader(
-        "Item is in use by another reader. Please ask at Enquiry Desk.")
+        "Item is in use by another reader. Please ask at Enquiry Desk."
+      )
     )
   }
 
@@ -57,7 +56,8 @@ class SierraRulesForRequestingTest
 
     SierraRulesForRequesting(item) shouldBe Some(
       NotRequestable.InUseByAnotherReader(
-        "Item is in use by another reader. Please ask at Enquiry Desk.")
+        "Item is in use by another reader. Please ask at Enquiry Desk."
+      )
     )
   }
 
@@ -87,7 +87,7 @@ class SierraRulesForRequestingTest
         fixedFields = Map(
           "61" -> FixedField(label = "I TYPE", value = "5")
         )
-      ),
+      )
     )
 
     forAll(testCases) {

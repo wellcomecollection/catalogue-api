@@ -12,20 +12,19 @@ trait AggregationDocumentGenerators {
     aggregables: Map[String, Seq[String]]
   ): TestDocument = {
 
-    val filterables: Map[String, Json] = aggregables.map {
-      case (key, values) => key -> values.asJson
+    val filterables: Map[String, Json] = aggregables.map { case (key, values) =>
+      key -> values.asJson
     }
 
     val queryables = filterables.filterKeys {
       case "contributors.agent.label" => true
-      case "genres.label" => true
-      case "subjects.label" => true
-      case _ => false
+      case "genres.label"             => true
+      case "subjects.label"           => true
+      case _                          => false
     } + ("title" -> title.asJson)
 
-    val aggregablesJson = aggregables.map {
-      case (key, values) =>
-        key -> values.map(toAggregable).asJson
+    val aggregablesJson = aggregables.map { case (key, values) =>
+      key -> values.map(toAggregable).asJson
     } asJson
 
     val doc = Json.obj(
@@ -48,20 +47,19 @@ trait AggregationDocumentGenerators {
     aggregables: Map[String, Seq[String]]
   ): TestDocument = {
 
-    val filterables: Map[String, Json] = aggregables.map {
-      case (key, values) => key -> values.asJson
+    val filterables: Map[String, Json] = aggregables.map { case (key, values) =>
+      key -> values.asJson
     }
 
     val queryables = filterables.filterKeys {
       case "source.contributors.agent.label" => true
-      case "source.genres.concepts.label" => true
-      case "source.subjects.concepts.label" => true
-      case _ => false
+      case "source.genres.concepts.label"    => true
+      case "source.subjects.concepts.label"  => true
+      case _                                 => false
     } + ("source.title" -> title.asJson)
 
-    val aggregablesJson = aggregables.map {
-      case (key, values) =>
-        key -> values.map(toAggregable).asJson
+    val aggregablesJson = aggregables.map { case (key, values) =>
+      key -> values.map(toAggregable).asJson
     } asJson
 
     val doc = Json.obj(

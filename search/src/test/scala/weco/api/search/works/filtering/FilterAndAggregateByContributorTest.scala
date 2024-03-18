@@ -61,14 +61,16 @@ class FilterAndAggregateByContributorTest
         (2, "Darwin \\\"Jones\\\", Charles"),
         (1, "Jake Paul"),
         (1, "Karl Marx")
-      ).map {
-        case (count, label) =>
-          (count, s"""
+      ).map { case (count, label) =>
+        (
+          count,
+          s"""
                |{
      |            "label" : "$label",
      |            "type" : "Person"
      |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

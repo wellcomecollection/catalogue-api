@@ -3,8 +3,7 @@ package weco.api.search.images
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.models.request.SingleImageIncludes
 
-class ImagesAggregationsTest extends AnyFunSpec
-with ApiImagesTestBase {
+class ImagesAggregationsTest extends AnyFunSpec with ApiImagesTestBase {
   it("aggregates by license") {
     val images = (0 to 6).map(i => s"images.different-licenses.$i")
     val displayImages = images
@@ -12,15 +11,14 @@ with ApiImagesTestBase {
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+    withImagesApi { case (imagesIndex, routes) =>
+      indexTestDocuments(imagesIndex, images: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?aggregations=locations.license"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/images?aggregations=locations.license"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = images.size)},
               "aggregations": {
@@ -56,7 +54,7 @@ with ApiImagesTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
@@ -67,16 +65,14 @@ with ApiImagesTestBase {
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+    withImagesApi { case (imagesIndex, routes) =>
+      indexTestDocuments(imagesIndex, images: _*)
 
-        assertJsonResponse(
-          routes,
-          path =
-            s"$rootPath/images?aggregations=source.contributors.agent.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/images?aggregations=source.contributors.agent.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = images.size)},
               "aggregations": {
@@ -116,7 +112,7 @@ with ApiImagesTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
@@ -127,15 +123,14 @@ with ApiImagesTestBase {
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+    withImagesApi { case (imagesIndex, routes) =>
+      indexTestDocuments(imagesIndex, images: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?aggregations=source.genres.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/images?aggregations=source.genres.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = images.size)},
               "aggregations": {
@@ -181,7 +176,7 @@ with ApiImagesTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 
@@ -198,15 +193,14 @@ with ApiImagesTestBase {
       .sortBy(w => getKey(w, "id").get.asString)
       .map(_.withIncludes(SingleImageIncludes.none).noSpaces)
 
-    withImagesApi {
-      case (imagesIndex, routes) =>
-        indexTestDocuments(imagesIndex, images: _*)
+    withImagesApi { case (imagesIndex, routes) =>
+      indexTestDocuments(imagesIndex, images: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?aggregations=source.subjects.label"
-        ) {
-          Status.OK -> s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/images?aggregations=source.subjects.label"
+      ) {
+        Status.OK -> s"""
             {
               ${resultList(totalResults = images.size)},
               "aggregations": {
@@ -262,7 +256,7 @@ with ApiImagesTestBase {
               ]
             }
           """
-        }
+      }
     }
   }
 

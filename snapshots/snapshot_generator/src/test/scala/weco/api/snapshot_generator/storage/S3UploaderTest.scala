@@ -38,7 +38,8 @@ class S3UploaderTest
       uploadResult.key() shouldBe location.key
 
       val headRequest =
-        HeadObjectRequest.builder()
+        HeadObjectRequest
+          .builder()
           .bucket(location.bucket)
           .key(location.key)
           .build()

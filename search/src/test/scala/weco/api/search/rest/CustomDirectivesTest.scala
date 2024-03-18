@@ -28,7 +28,9 @@ class CustomDirectivesTest
 
     it("returns a URI with the configured public host and path") {
       Get("/test") ~> testRoute ~> check {
-        responseAs[String] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
+        responseAs[
+          String
+        ] shouldBe "https://api-test.wellcomecollection.org/catalogue/v2/test"
       }
     }
   }
