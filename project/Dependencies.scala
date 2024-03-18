@@ -97,7 +97,7 @@ object ExternalDependencies {
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
     val scalacheckShapeless = "1.1.8"
-    val scalacsv = "1.3.5"
+    val scalacsv = "1.3.10"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
