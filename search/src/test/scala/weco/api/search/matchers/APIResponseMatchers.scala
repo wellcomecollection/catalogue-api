@@ -61,7 +61,9 @@ trait APIResponseMatchers {
       val rightOnly = expectedAggregations.toSet diff aggregationKeys.toSet
       MatchResult(
         leftOnly.isEmpty && rightOnly.isEmpty,
-        s"""API Response expected=${formatStringSeq(expectedAggregations)}, actual=${formatStringSeq(
+        s"""API Response expected=${formatStringSeq(
+          expectedAggregations
+        )}, actual=${formatStringSeq(
           aggregationKeys
         )}""",
         s"""API Response contained aggregations: ${formatStringSeq(

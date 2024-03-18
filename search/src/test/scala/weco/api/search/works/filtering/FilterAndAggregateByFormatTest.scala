@@ -5,7 +5,8 @@ class FilterAndAggregateByFormatTest
     with FilteringTestCases
     with AggregatingTestCases {
 
-  val testWorks = worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
+  val testWorks =
+    worksFormatBooks ++ worksFormatJournals ++ worksFormatAudio ++ worksFormatPictures
 
   val listingParams: String = "workType=k"
   val listingResponse: String = worksListResponse(
@@ -28,15 +29,17 @@ class FilterAndAggregateByFormatTest
         (3, "d", "Journals"),
         (2, "i", "Audio"),
         (1, "k", "Pictures")
-      ).map {
-        case (count, identifier, label) =>
-          (count, s"""
+      ).map { case (count, identifier, label) =>
+        (
+          count,
+          s"""
                |{
                |            "id" : "$identifier",
                |            "label" : "$label",
                |            "type" : "Format"
                |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

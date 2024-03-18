@@ -77,9 +77,8 @@ trait FacetingFeatures
   ): Assertion = {
     json.aggregationKeys should contain theSameElementsAs expectedAggregations.keys
 
-    forEvery(expectedAggregations) {
-      case (key, value) =>
-        json.aggregationBuckets(key) shouldBe value
+    forEvery(expectedAggregations) { case (key, value) =>
+      json.aggregationBuckets(key) shouldBe value
     }
   }
 
@@ -147,23 +146,24 @@ trait FacetingFeatures
     ) {
       Scenario("a request with a query and aggregations") {
         val scenarioData = queryAndAggregations
-        Given("a dataset with queryable content and multiple aggregable fields") {
-          server =>
-            val queryTerm = scenarioData.queryTerm.get
-            When(s"a query is made for the term '$queryTerm'")
-            val field1 = scenarioData.aggregationFields.head
-            val field2 = scenarioData.aggregationFields(1)
-            And(
-              s"the request asks for aggregations on fields '$field1' and '$field2'"
-            )
-            val responseJson = server.getJson(scenarioData.url)
-            Then(
-              "only documents that match the query are counted in the aggregations"
-            )
-            assertSameBuckets(
-              scenarioData.expectedAggregationBuckets,
-              responseJson
-            )
+        Given(
+          "a dataset with queryable content and multiple aggregable fields"
+        ) { server =>
+          val queryTerm = scenarioData.queryTerm.get
+          When(s"a query is made for the term '$queryTerm'")
+          val field1 = scenarioData.aggregationFields.head
+          val field2 = scenarioData.aggregationFields(1)
+          And(
+            s"the request asks for aggregations on fields '$field1' and '$field2'"
+          )
+          val responseJson = server.getJson(scenarioData.url)
+          Then(
+            "only documents that match the query are counted in the aggregations"
+          )
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
     }
@@ -246,7 +246,9 @@ trait FacetingFeatures
             s"the request has filters on two different fields, ${scenarioData.filters.map(_._1).mkString(" and ")}"
           )
           And("asks for an aggregation on the same fields")
-          scenarioData.filters.map(_._1) should contain theSameElementsAs scenarioData.aggregationFields
+          scenarioData.filters.map(
+            _._1
+          ) should contain theSameElementsAs scenarioData.aggregationFields
           val responseJson = server.getJson(scenarioData.url)
           Then(
             "only documents that match the filters on other fields are counted in the aggregation on each field"
@@ -411,35 +413,37 @@ trait FacetingFeatures
 
       Scenario("an aggregation with queries and filters") {
         val scenarioData = queryAndFilter
-        Given("a dataset with queryable content and multiple aggregable fields") {
-          server =>
-            When("a query is made")
-            And("the request is filtered on one field")
-            And("asks for aggregation on another field")
-            val responseJson = server.getJson(scenarioData.url)
-            Then(
-              "only documents that match the filter and the query are counted in the aggregations"
-            )
-            assertSameBuckets(
-              scenarioData.expectedAggregationBuckets,
-              responseJson
-            )
+        Given(
+          "a dataset with queryable content and multiple aggregable fields"
+        ) { server =>
+          When("a query is made")
+          And("the request is filtered on one field")
+          And("asks for aggregation on another field")
+          val responseJson = server.getJson(scenarioData.url)
+          Then(
+            "only documents that match the filter and the query are counted in the aggregations"
+          )
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
 
       Scenario("unexpected parameters") {
         val scenarioData = queryAndFilter
-        Given("a dataset with queryable content and multiple aggregable fields") {
-          server =>
-            When("a query is made")
-            And("the request contains unknown parameters")
-            val responseJson =
-              server.getJson(s"${scenarioData.url}&thisIsNotAFilter=SomeValue")
-            Then("the unknown parameters are ignored")
-            assertSameBuckets(
-              scenarioData.expectedAggregationBuckets,
-              responseJson
-            )
+        Given(
+          "a dataset with queryable content and multiple aggregable fields"
+        ) { server =>
+          When("a query is made")
+          And("the request contains unknown parameters")
+          val responseJson =
+            server.getJson(s"${scenarioData.url}&thisIsNotAFilter=SomeValue")
+          Then("the unknown parameters are ignored")
+          assertSameBuckets(
+            scenarioData.expectedAggregationBuckets,
+            responseJson
+          )
         }
       }
     }

@@ -14,14 +14,13 @@ class RgbColorTest
     val testCases = Table(
       ("hexString", "expectedColor"),
       ("ff0000", RgbColor(255, 0, 0)),
-      ("00ff00", RgbColor(0,255,0)),
-      ("0000ff", RgbColor(0,0, 255)),
-      ("00fa9a", RgbColor(0,250,154))
+      ("00ff00", RgbColor(0, 255, 0)),
+      ("0000ff", RgbColor(0, 0, 255)),
+      ("00fa9a", RgbColor(0, 250, 154))
     )
 
-    forAll(testCases) {
-      case (hexString, expectedColor) =>
-        RgbColor.fromHex(hexString).success.value shouldBe expectedColor
+    forAll(testCases) { case (hexString, expectedColor) =>
+      RgbColor.fromHex(hexString).success.value shouldBe expectedColor
     }
   }
 

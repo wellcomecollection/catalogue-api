@@ -6,7 +6,10 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.works.ApiWorksTestBase
 
-class ApiSearchTemplatesTest extends AnyFunSpec with ApiWorksTestBase with Matchers {
+class ApiSearchTemplatesTest
+    extends AnyFunSpec
+    with ApiWorksTestBase
+    with Matchers {
   it("renders a list of available search templates") {
     checkJson { json =>
       json.isObject shouldBe true

@@ -39,7 +39,7 @@ trait ItemsApiFixture extends SierraSourceFixture {
         )
 
         val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
-        with HttpGet {
+          with HttpGet {
           override val baseUri: Uri = Uri("http://catalogue:9001")
         }
 

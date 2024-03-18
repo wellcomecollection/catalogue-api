@@ -63,7 +63,7 @@ trait IndexFixtures extends ElasticsearchFixtures with LocalResources {
 
   def getSizeOf(index: Index): Long =
     elasticClient
-      .execute { count(index.name) }
+      .execute(count(index.name))
       .await
       .result
       .count

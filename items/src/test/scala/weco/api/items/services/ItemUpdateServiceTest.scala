@@ -176,12 +176,11 @@ class ItemUpdateServiceTest
     val itemUpdater = new DummyItemUpdater()
 
     val orderedItems = (1 to 3)
-      .map(
-        _ =>
-          DisplayItem(
-            id = Some(createCanonicalId),
-            identifiers = List(createSierraSystemSourceIdentifier)
-          )
+      .map(_ =>
+        DisplayItem(
+          id = Some(createCanonicalId),
+          identifiers = List(createSierraSystemSourceIdentifier)
+        )
       )
       .toList
 
@@ -222,12 +221,11 @@ class ItemUpdateServiceTest
       title = None,
       identifiers = Nil,
       items = (1 to 3)
-        .map(
-          _ =>
-            DisplayItem(
-              id = Some(createCanonicalId),
-              identifiers = List(createSierraSystemSourceIdentifier)
-            )
+        .map(_ =>
+          DisplayItem(
+            id = Some(createCanonicalId),
+            identifiers = List(createSierraSystemSourceIdentifier)
+          )
         )
         .toList
     )

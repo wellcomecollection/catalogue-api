@@ -38,8 +38,8 @@ object CommonDecoders {
 
 trait QueryParamsUtils extends Directives {
 
-  implicit def unmarshaller[T](
-    implicit decoder: Decoder[T]
+  implicit def unmarshaller[T](implicit
+    decoder: Decoder[T]
   ): Unmarshaller[String, T] =
     Unmarshaller.strict[String, T] { str =>
       decoder.decodeJson(Json.fromString(str)) match {
@@ -87,17 +87,16 @@ trait QueryParamsUtils extends Directives {
     Decoder.decodeInt.withErrorMessage("must be a valid Integer")
 
   def decodeCommaSeparated: Decoder[List[String]] =
-    Decoder.decodeString.emap(
-      str =>
-        Right(
-          CSVParser
-            .parse(
-              input = str,
-              escapeChar = '\\',
-              delimiter = ',',
-              quoteChar = '"'
-            )
-            .getOrElse(List(str))
+    Decoder.decodeString.emap(str =>
+      Right(
+        CSVParser
+          .parse(
+            input = str,
+            escapeChar = '\\',
+            delimiter = ',',
+            quoteChar = '"'
+          )
+          .getOrElse(List(str))
       )
     )
 
@@ -110,7 +109,7 @@ trait QueryParamsUtils extends Directives {
     }
 
   def decodeOneWithDefaultOf[T](default: T, values: (String, T)*): Decoder[T] =
-    Decoder.decodeString.map { values.toMap.getOrElse(_, default) }
+    Decoder.decodeString.map(values.toMap.getOrElse(_, default))
 
   def decodeOneOfCommaSeparated[T](values: (String, T)*): Decoder[List[T]] = {
     val mapping = values.toMap
@@ -185,7 +184,7 @@ trait QueryParamsUtils extends Directives {
         .getOrElse(Left(str))
     }
     val invalid = results.collect { case Left(error) => error }
-    val valid = results.collect { case Right(value)  => value }
+    val valid = results.collect { case Right(value) => value }
     (invalid, valid) match {
       case (Nil, results)     => Right(results)
       case (invalidValues, _) => Left(invalidValues)

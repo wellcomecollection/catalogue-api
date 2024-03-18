@@ -13,11 +13,10 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicRootUri = Uri(publicRoot),
         defaultPageSize = 10
       )
-    ) {
-      case ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
-        publicScheme shouldBe "https"
-        publicHost shouldBe "api.wellcomecollection.org"
-        publicRootPath shouldBe "/catalogue/v2"
+    ) { case ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
+      publicScheme shouldBe "https"
+      publicHost shouldBe "api.wellcomecollection.org"
+      publicRootPath shouldBe "/catalogue/v2"
     }
   }
 }

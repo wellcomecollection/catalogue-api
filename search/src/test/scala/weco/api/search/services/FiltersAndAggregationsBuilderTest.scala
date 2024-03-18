@@ -58,12 +58,11 @@ class FiltersAndAggregationsBuilderTest
         aggregationField(formatFieldName)
       )
 
-      inside(firstAgg.subaggs(1)) {
-        case selfFilter: FilterAggregation =>
-          selfFilter should have(
-            filter(formatFilter),
-            aggregationField(formatFieldName)
-          )
+      inside(firstAgg.subaggs(1)) { case selfFilter: FilterAggregation =>
+        selfFilter should have(
+          filter(formatFilter),
+          aggregationField(formatFieldName)
+        )
       }
 
       val secondAgg =
@@ -74,12 +73,11 @@ class FiltersAndAggregationsBuilderTest
         aggregationField(languagesFieldName)
       )
 
-      inside(secondAgg.subaggs(1)) {
-        case selfFilter: FilterAggregation =>
-          selfFilter should have(
-            filter(languagesFilter),
-            aggregationField(languagesFieldName)
-          )
+      inside(secondAgg.subaggs(1)) { case selfFilter: FilterAggregation =>
+        selfFilter should have(
+          filter(languagesFilter),
+          aggregationField(languagesFieldName)
+        )
       }
     }
 
@@ -178,7 +176,9 @@ class FiltersAndAggregationsBuilderTest
         // have only two.  i.e. not it's own
         filterQuery.filters should have length 2
         // And this ensures that it is the correct two.
-        filterQuery.filters.map(_.asInstanceOf[MockFilter].filter) should contain theSameElementsAs filters
+        filterQuery.filters.map(
+          _.asInstanceOf[MockFilter].filter
+        ) should contain theSameElementsAs filters
           .filterNot(_ == thisFilter)
       }
     }

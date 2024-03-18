@@ -44,7 +44,10 @@ trait ApiTestBase extends ApiFixture {
       "description": "$description"
     }"""
 
-  def resultListWithCalculatedPageCount(totalResults: Int, pageSize: Int = 10): String =
+  def resultListWithCalculatedPageCount(
+    totalResults: Int,
+    pageSize: Int = 10
+  ): String =
     resultList(
       pageSize,
       totalPages = math.ceil(totalResults.toDouble / pageSize).toInt,
@@ -82,12 +85,11 @@ trait ApiTestBase extends ApiFixture {
     }"""
 
   def assertIsBadRequest(path: String, description: String): Assertion =
-    withWorksApi {
-      case (_, routes) =>
-        assertJsonResponse(routes, path)(
-          Status.BadRequest ->
-            badRequest(description = description)
-        )
+    withWorksApi { case (_, routes) =>
+      assertJsonResponse(routes, path)(
+        Status.BadRequest ->
+          badRequest(description = description)
+      )
     }
 
   def assertBadRequest(

@@ -7,16 +7,15 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of identifiers on a list endpoint if we pass ?include=identifiers"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?include=identifiers"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?include=identifiers"
+        ) {
+          Status.OK ->
+            s"""
                  |
                  |{
                  |  "pageSize" : 10,
@@ -119,23 +118,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                  |  "type" : "ResultList"
                  |}
                  |""".stripMargin
-          }
+        }
       }
     }
 
     it(
       "includes a list of identifiers on a single work endpoint if we pass ?include=identifiers"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=identifiers"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=identifiers"
+        ) {
+          Status.OK ->
+            s"""
                  |{
                  |  "alternativeTitles" : [
                  |  ],
@@ -171,22 +169,21 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
-          }
+        }
       }
     }
   }
 
   it("renders the items if the items include is present") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, worksEverything: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works/tmdfbk5k?include=items"
-        ) {
-          Status.OK ->
-            s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works/tmdfbk5k?include=items"
+      ) {
+        Status.OK ->
+          s"""
                |{
                |  "alternativeTitles" : [
                |  ],
@@ -274,7 +271,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                |  "type" : "Work"
                |}
                |""".stripMargin
-        }
+      }
     }
   }
 
@@ -282,13 +279,12 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of subjects on a list endpoint if we pass ?include=subjects"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=subjects") {
-            Status.OK ->
-              """
+        assertJsonResponse(routes, path = s"$rootPath/works?include=subjects") {
+          Status.OK ->
+            """
                 {
                 "pageSize" : 10,
                 "results" : [
@@ -444,23 +440,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               }
                  """
-          }
+        }
       }
     }
 
     it(
       "includes a list of subjects on a single work endpoint if we pass ?include=subjects"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=subjects"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=subjects"
+        ) {
+          Status.OK ->
+            s"""
                  |
                  |{
                  |  "alternativeTitles" : [
@@ -515,7 +510,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                  |  "type" : "Work"
                  |}
                  |""".stripMargin
-          }
+        }
       }
     }
   }
@@ -524,13 +519,12 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of genres on a list endpoint if we pass ?include=genres"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=genres") {
-            Status.OK ->
-              s"""
+        assertJsonResponse(routes, path = s"$rootPath/works?include=genres") {
+          Status.OK ->
+            s"""
               {
                 "pageSize" : 10,
                 "results" : [
@@ -704,23 +698,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               } 
                 """
-          }
+        }
       }
     }
 
     it(
       "includes a list of genres on a single work endpoint if we pass ?include=genres"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=genres"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=genres"
+        ) {
+          Status.OK ->
+            s"""
                
               {
                 "alternativeTitles" : [
@@ -781,7 +774,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }
@@ -790,16 +783,15 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of contributors on a list endpoint if we pass ?include=contributors"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?include=contributors"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?include=contributors"
+        ) {
+          Status.OK ->
+            s"""
               
               {
                 "pageSize" : 10,
@@ -908,23 +900,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               }
                 """
-          }
+        }
       }
     }
 
     it(
       "includes a list of contributors on a single work endpoint if we pass ?include=contributors"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=contributors"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=contributors"
+        ) {
+          Status.OK ->
+            s"""
               
               {
                 "alternativeTitles" : [
@@ -963,7 +954,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }
@@ -972,16 +963,15 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of production events on a list endpoint if we pass ?include=production"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?include=production"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?include=production"
+        ) {
+          Status.OK ->
+            s"""
                {
                 "pageSize" : 10,
                 "results" : [
@@ -1161,23 +1151,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               } 
                 """
-          }
+        }
       }
     }
 
     it(
       "includes a list of production on a single work endpoint if we pass ?include=production"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=production"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=production"
+        ) {
+          Status.OK ->
+            s"""
                {
                 "alternativeTitles" : [
                 ],
@@ -1239,23 +1228,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }
 
   describe("languages includes") {
     it("includes languages on a list endpoint if we pass ?include=languages") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?include=languages"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?include=languages"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "pageSize" : 10,
                 "results" : [
@@ -1348,21 +1336,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               }
                 """
-          }
+        }
       }
     }
 
     it("includes languages on a work endpoint if we pass ?include=languages") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=languages"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=languages"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "alternativeTitles" : [
                 ],
@@ -1395,20 +1382,19 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               }
                 """
-          }
+        }
       }
     }
   }
 
   describe("notes includes") {
     it("includes notes on the list endpoint if we pass ?include=notes") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=notes") {
-            Status.OK ->
-              s"""
+        assertJsonResponse(routes, path = s"$rootPath/works?include=notes") {
+          Status.OK ->
+            s"""
                 
               {
                 "pageSize" : 10,
@@ -1559,21 +1545,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               } 
                 """
-          }
+        }
       }
     }
 
     it("includes notes on the single work endpoint if we pass ?include=notes") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=notes"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=notes"
+        ) {
+          Status.OK ->
+            s"""
                
               {
                 "alternativeTitles" : [
@@ -1626,22 +1611,21 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               }
                 """
-          }
+        }
       }
     }
   }
 
   it("includes formerFrequency if we pass ?include=formerFrequency") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, worksEverything: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?include=formerFrequency"
-        ) {
-          Status.OK ->
-            s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?include=formerFrequency"
+      ) {
+        Status.OK ->
+          s"""
                 {
               "pageSize" : 10,
               "results" : [
@@ -1695,21 +1679,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
               "type" : "ResultList"
             }
                 """
-        }
+      }
     }
   }
 
   it("includes designation if we pass ?include=designation") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, worksEverything: _*)
 
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/works?include=designation"
-        ) {
-          Status.OK ->
-            s"""
+      assertJsonResponse(
+        routes,
+        path = s"$rootPath/works?include=designation"
+      ) {
+        Status.OK ->
+          s"""
                 {
               "pageSize" : 10,
               "results" : [
@@ -1766,7 +1749,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
               "type" : "ResultList"
             }
                 """
-        }
+      }
     }
   }
 
@@ -1774,13 +1757,12 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     it(
       "includes a list of images on the list endpoint if we pass ?include=images"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
-            Status.OK ->
-              """
+        assertJsonResponse(routes, path = s"$rootPath/works?include=images") {
+          Status.OK ->
+            """
                {
                 "pageSize" : 10,
                 "results" : [
@@ -1852,23 +1834,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               } 
                 """
-          }
+        }
       }
     }
 
     it(
       "includes a list of images on a single work endpoint if we pass ?include=images"
     ) {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=images"
-          ) {
-            Status.OK ->
-              """
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=images"
+        ) {
+          Status.OK ->
+            """
                 {
                 "alternativeTitles" : [
                 ],
@@ -1894,23 +1875,22 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }
 
   describe("relation includes") {
     it("includes parts") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=parts"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=parts"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "alternativeTitles" : [
                 ],
@@ -1935,21 +1915,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               }
                 """
-          }
+        }
       }
     }
 
     it("includes partOf") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=partOf"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=partOf"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "alternativeTitles" : [
                 ],
@@ -1983,21 +1962,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               }
                 """
-          }
+        }
       }
     }
 
     it("includes precededBy") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=precededBy"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=precededBy"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "alternativeTitles" : [
                 ],
@@ -2022,21 +2000,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
 
     it("includes succeededBy") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=succeededBy"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=succeededBy"
+        ) {
+          Status.OK ->
+            s"""
                 
               {
                 "alternativeTitles" : [
@@ -2062,20 +2039,19 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }
 
   describe("holdings includes") {
     it("on the list endpoint") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?include=holdings") {
-            Status.OK ->
-              s"""
+        assertJsonResponse(routes, path = s"$rootPath/works?include=holdings") {
+          Status.OK ->
+            s"""
                 {
                 "pageSize" : 10,
                 "results" : [
@@ -2252,21 +2228,20 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "ResultList"
               } 
                 """
-          }
+        }
       }
     }
 
     it("on a single work endpoint") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works/tmdfbk5k?include=holdings"
-          ) {
-            Status.OK ->
-              s"""
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/tmdfbk5k?include=holdings"
+        ) {
+          Status.OK ->
+            s"""
                 {
                 "alternativeTitles" : [
                 ],
@@ -2335,7 +2310,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "type" : "Work"
               } 
                 """
-          }
+        }
       }
     }
   }

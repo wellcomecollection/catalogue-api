@@ -4,8 +4,7 @@ import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import io.circe.syntax.EncoderOps
 import io.circe.generic.auto._
 
-/**
-  * Builder for template-based search requests.
+/** Builder for template-based search requests.
   *
   * = Scoring =
   * Searches created by this trait may be ranked by query, or by KNN,
@@ -122,11 +121,11 @@ trait TemplateSearchBuilder extends Encoders {
        |  ]
        |}
        |""".stripMargin
-    // Normalise all whitespace - it only exists to make the code more
-    // readable here, but because this eventually gets converted into
-    // a string containing loads of escape characters, all the '\n'
-    // sequences and wide gaps actually make it harder to read.
-    // (it also saves a handful of bytes per request)
+      // Normalise all whitespace - it only exists to make the code more
+      // readable here, but because this eventually gets converted into
+      // a string containing loads of escape characters, all the '\n'
+      // sequences and wide gaps actually make it harder to read.
+      // (it also saves a handful of bytes per request)
       .replaceAll("\\s+", " ")
 
   def searchRequest(

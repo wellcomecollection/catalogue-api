@@ -12,44 +12,42 @@ class WorksFiltersTest
     with TableDrivenPropertyChecks {
 
   it("combines multiple filters") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(worksIndex, worksEverything: _*)
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(worksIndex, worksEverything: _*)
 
-        assertJsonResponse(
-          routes,
-          path =
-            s"$rootPath/works?genres.label=Uw1LvlTE5c&subjects.label=RGOo9Fg6ic"
-        ) {
-          Status.OK -> worksListResponse(
-            ids = Seq("work.visible.everything.0")
-          )
-        }
+      assertJsonResponse(
+        routes,
+        path =
+          s"$rootPath/works?genres.label=Uw1LvlTE5c&subjects.label=RGOo9Fg6ic"
+      ) {
+        Status.OK -> worksListResponse(
+          ids = Seq("work.visible.everything.0")
+        )
+      }
     }
   }
 
   it("filters works by item LocationType") {
-    withWorksApi {
-      case (worksIndex, routes) =>
-        indexTestDocuments(
-          worksIndex,
-          "work.items-with-location-types.0",
-          "work.items-with-location-types.1",
-          "work.items-with-location-types.2"
-        )
+    withWorksApi { case (worksIndex, routes) =>
+      indexTestDocuments(
+        worksIndex,
+        "work.items-with-location-types.0",
+        "work.items-with-location-types.1",
+        "work.items-with-location-types.2"
+      )
 
-        assertJsonResponse(
-          routes,
-          path =
-            s"$rootPath/works?items.locations.locationType=iiif-presentation,closed-stores"
-        ) {
-          Status.OK -> worksListResponse(
-            ids = Seq(
-              "work.items-with-location-types.1",
-              "work.items-with-location-types.2"
-            )
+      assertJsonResponse(
+        routes,
+        path =
+          s"$rootPath/works?items.locations.locationType=iiif-presentation,closed-stores"
+      ) {
+        Status.OK -> worksListResponse(
+          ids = Seq(
+            "work.items-with-location-types.1",
+            "work.items-with-location-types.2"
           )
-        }
+        )
+      }
     }
   }
 
@@ -63,60 +61,57 @@ class WorksFiltersTest
     )
 
     it("filters by date range") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, productionWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, productionWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq("work-production.1900", "work-production.1904")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?production.dates.from=1900-01-01&production.dates.to=1960-01-01"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work-production.1900", "work-production.1904")
+          )
+        }
       }
     }
 
     it("filters by from date") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, productionWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, productionWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?production.dates.from=1900-01-01"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "work-production.1900",
-                "work-production.1904",
-                "work-production.1976",
-                "work-production.2020"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?production.dates.from=1900-01-01"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-production.1900",
+              "work-production.1904",
+              "work-production.1976",
+              "work-production.2020"
             )
-          }
+          )
+        }
       }
     }
 
     it("filters by to date") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, productionWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, productionWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?production.dates.to=1960-01-01"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "work-production.1098",
-                "work-production.1900",
-                "work-production.1904"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?production.dates.to=1960-01-01"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-production.1098",
+              "work-production.1900",
+              "work-production.1904"
             )
-          }
+          )
+        }
       }
     }
 
@@ -151,17 +146,16 @@ class WorksFiltersTest
     def withGenreIdFilterRecords(
       testWith: TestWith[Route, Assertion]
     ): Assertion =
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(
-            worksIndex,
-            goodCafeSecondaryBaadFoodWork,
-            goodCafeWork,
-            baadFoodWork,
-            noConceptWork,
-            bothGenresWork
-          )
-          testWith(routes)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          goodCafeSecondaryBaadFoodWork,
+          goodCafeWork,
+          baadFoodWork,
+          noConceptWork,
+          bothGenresWork
+        )
+        testWith(routes)
       }
 
     it("does not apply the filter if there are no values provided") {
@@ -223,128 +217,118 @@ class WorksFiltersTest
 
   describe("filtering works by license") {
     it("filters by license") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksLicensed: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksLicensed: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?items.locations.license=cc-by"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.items-with-licenses.0",
-                "works.items-with-licenses.1",
-                "works.items-with-licenses.3"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.license=cc-by"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.items-with-licenses.0",
+              "works.items-with-licenses.1",
+              "works.items-with-licenses.3"
             )
-          }
+          )
+        }
       }
     }
 
     it("filters by multiple licenses") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksLicensed: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksLicensed: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?items.locations.license=cc-by,cc-by-nc"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.items-with-licenses.0",
-                "works.items-with-licenses.1",
-                "works.items-with-licenses.2",
-                "works.items-with-licenses.3"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.license=cc-by,cc-by-nc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.items-with-licenses.0",
+              "works.items-with-licenses.1",
+              "works.items-with-licenses.2",
+              "works.items-with-licenses.3"
             )
-          }
+          )
+        }
       }
     }
   }
 
   describe("Identifiers filter") {
     it("filters by a sourceIdentifier") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.0")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?identifiers=Aic5qOhRoS"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0")
+          )
+        }
       }
     }
 
     it("filters by multiple sourceIdentifiers") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,LMVvWxgXRS"
-          ) {
-            Status.OK -> worksListResponse(
-              ids =
-                Seq("work.visible.everything.0", "work.visible.everything.1")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?identifiers=Aic5qOhRoS,LMVvWxgXRS"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0", "work.visible.everything.1")
+          )
+        }
       }
     }
 
     it("filters by an otherIdentifier") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?identifiers=Hq3k05Fqag"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.2")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?identifiers=Hq3k05Fqag"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.2")
+          )
+        }
       }
     }
 
     it("filters by multiple otherIdentifiers") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?identifiers=UfcQYSxE7g,Hq3k05Fqag"
-          ) {
-            Status.OK -> worksListResponse(
-              ids =
-                Seq("work.visible.everything.0", "work.visible.everything.2")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?identifiers=UfcQYSxE7g,Hq3k05Fqag"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0", "work.visible.everything.2")
+          )
+        }
       }
     }
 
     it("filters by mixed identifiers") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,Hq3k05Fqag"
-          ) {
-            Status.OK -> worksListResponse(
-              ids =
-                Seq("work.visible.everything.0", "work.visible.everything.2")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?identifiers=Aic5qOhRoS,Hq3k05Fqag"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0", "work.visible.everything.2")
+          )
+        }
       }
     }
   }
@@ -354,21 +338,20 @@ class WorksFiltersTest
       (0 to 6).map(i => s"works.examples.access-status-filters-tests.$i")
 
     it("includes works by access status") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(0, 1, 2).map(
-                i => s"works.examples.access-status-filters-tests.$i"
-              )
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?items.locations.accessConditions.status=restricted,closed"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(0, 1, 2).map(i =>
+              s"works.examples.access-status-filters-tests.$i"
             )
-          }
+          )
+        }
       }
     }
 
@@ -377,40 +360,38 @@ class WorksFiltersTest
     //
     // Check we're handling it correctly.
     it("includes works which are licensed resources") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(5, 6).map(
-                i => s"works.examples.access-status-filters-tests.$i"
-              )
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?items.locations.accessConditions.status=licensed-resources"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(5, 6).map(i =>
+              s"works.examples.access-status-filters-tests.$i"
             )
-          }
+          )
+        }
       }
     }
 
     it("excludes works by access status") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, works: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, works: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(3, 4, 5, 6).map(
-                i => s"works.examples.access-status-filters-tests.$i"
-              )
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?items.locations.accessConditions.status=!restricted,!closed"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(3, 4, 5, 6).map(i =>
+              s"works.examples.access-status-filters-tests.$i"
             )
-          }
+          )
+        }
       }
     }
   }
@@ -424,72 +405,68 @@ class WorksFiltersTest
       "works.examples.availabilities.nowhere"
     )
     it("filters by availability ID") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksAvailabilities: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksAvailabilities: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?availabilities=open-shelves"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.availabilities.open-only",
-                "works.examples.availabilities.everywhere"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?availabilities=open-shelves"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.examples.availabilities.open-only",
+              "works.examples.availabilities.everywhere"
             )
-          }
+          )
+        }
       }
     }
 
     it("filters by multiple comma-separated availability IDs") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksAvailabilities: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksAvailabilities: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?availabilities=open-shelves,closed-stores"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.examples.availabilities.open-only",
-                "works.examples.availabilities.closed-only",
-                "works.examples.availabilities.everywhere"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?availabilities=open-shelves,closed-stores"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.examples.availabilities.open-only",
+              "works.examples.availabilities.closed-only",
+              "works.examples.availabilities.everywhere"
             )
-          }
+          )
+        }
       }
     }
   }
 
   describe("relation filters") {
     it("filters partOf by id") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?partOf=nrvdy0jg") {
-            Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.0")
-            )
-          }
+        assertJsonResponse(routes, path = s"$rootPath/works?partOf=nrvdy0jg") {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0")
+          )
+        }
       }
     }
 
     it("filters partOf by title") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?partOf.title=title-MS5Hy6x38N"
-          ) {
-            Status.OK -> worksListResponse(
-              ids = Seq("work.visible.everything.0")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?partOf.title=title-MS5Hy6x38N"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq("work.visible.everything.0")
+          )
+        }
       }
     }
   }
@@ -556,13 +533,12 @@ class WorksFiltersTest
       path: String,
       expectedIds: Seq[String]
     ): Assertion =
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, worksEverything: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path) {
-            Status.OK -> worksListResponse(ids = expectedIds)
-          }
+        assertJsonResponse(routes, path) {
+          Status.OK -> worksListResponse(ids = expectedIds)
+        }
       }
   }
 }

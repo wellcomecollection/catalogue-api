@@ -19,7 +19,6 @@ trait CatalogueJsonUtil {
       * We only remove the remaining fields on the top level because that's
       * where we expect them to appear, e.g. we don't expect "holdings" to be
       * anywhere but on the work itself.
-      *
       */
     def withIncludes(includes: WorksIncludes): Json =
       json
@@ -61,11 +60,10 @@ trait CatalogueJsonUtil {
       value: Option[Seq[IndexedImage]]
     ): Json =
       if (b)
-        json.mapObject(
-          jsonObj =>
-            value match {
-              case Some(v) => jsonObj.add(key, v.map(_.display).asJson)
-              case None    => jsonObj
+        json.mapObject(jsonObj =>
+          value match {
+            case Some(v) => jsonObj.add(key, v.map(_.display).asJson)
+            case None    => jsonObj
           }
         )
       else

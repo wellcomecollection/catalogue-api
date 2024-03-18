@@ -32,8 +32,8 @@ class RequestsApiFeatureTest
 
   describe("withUserId directive") {
     def userIdRoute =
-      RequestsApi.withUserId("a" / Segment / "b")(
-        patron => complete(patron.recordNumber)
+      RequestsApi.withUserId("a" / Segment / "b")(patron =>
+        complete(patron.recordNumber)
       )
 
     it("extracts a user ID from a path") {
@@ -44,7 +44,9 @@ class RequestsApiFeatureTest
     it(
       "extracts a user ID from the X-Wellcome-Caller-ID header when the path ID is 'me'"
     ) {
-      Get("/a/me/b").withHeaders(RawHeader("X-Wellcome-Caller-ID", "1234567")) ~> userIdRoute ~> check {
+      Get("/a/me/b").withHeaders(
+        RawHeader("X-Wellcome-Caller-ID", "1234567")
+      ) ~> userIdRoute ~> check {
         responseAs[String] shouldBe "1234567"
       }
     }

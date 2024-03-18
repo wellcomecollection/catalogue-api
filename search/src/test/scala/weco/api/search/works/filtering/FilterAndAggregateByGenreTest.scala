@@ -61,16 +61,18 @@ class FilterAndAggregateByGenreTest
         (2, "Pamphlets"),
         (2, "Psychology, Pathological"),
         (1, "Annual reports")
-      ).map {
-        case (count, label) =>
-          (count, s"""
+      ).map { case (count, label) =>
+        (
+          count,
+          s"""
                |{
                |            "concepts" : [
                |            ],
                |            "label" : ${label.asJson},
                |            "type" : "Genre"
                |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

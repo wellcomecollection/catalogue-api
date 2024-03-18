@@ -49,15 +49,17 @@ class FilterAndAggregateByLanguageTest
         (5, "eng", "English"),
         (3, "swe", "Swedish"),
         (2, "tur", "Turkish")
-      ).map {
-        case (count, identifier, label) =>
-          (count, s"""
+      ).map { case (count, identifier, label) =>
+        (
+          count,
+          s"""
                |{
                |            "id" : "$identifier",
                |            "label" : "$label",
                |            "type" : "Language"
                |          }
-               |""".stripMargin)
+               |""".stripMargin
+        )
       }
     )
   )

@@ -9,8 +9,7 @@ import weco.json.JsonUtil._
 
 import scala.concurrent.duration._
 
-class ElasticsearchIterator(
-  implicit
+class ElasticsearchIterator(implicit
   client: ElasticClient,
   keepAlive: FiniteDuration = 30 minutes
 ) extends Logging {

@@ -15,7 +15,7 @@ trait ApiWorksTestBase
 
   def getMinimalDisplayWorks(ids: Seq[String]): Seq[Json] =
     ids
-      .map { getVisibleWork }
+      .map(getVisibleWork)
       .map(_.display.withIncludes(WorksIncludes.none))
       .sortBy(w => getKey(w, "id").get.asString)
 
@@ -45,8 +45,8 @@ trait ApiWorksTestBase
     }
     s"""
        |  ${resultListWithCalculatedPageCount(
-         totalResults = ids.size
-       )},
+      totalResults = ids.size
+    )},
        |  "results": [
        |    ${sortedWorks.mkString(",")}
        |  ]
@@ -60,11 +60,9 @@ trait ApiWorksTestBase
     s"{${worksList(ids)}, ${aggregations(aggs)}}"
 
   private def aggregations(aggs: Map[String, Seq[(Int, String)]]): String = {
-    val aggregationEntries = aggs map {
-      case (key, buckets) =>
-        val aggregationBuckets = buckets map {
-          case (count, bucketData) =>
-            s"""
+    val aggregationEntries = aggs map { case (key, buckets) =>
+      val aggregationBuckets = buckets map { case (count, bucketData) =>
+        s"""
                |{
                |          "count" : $count,
                |          "data" : $bucketData,
@@ -72,10 +70,14 @@ trait ApiWorksTestBase
                |        }
                |""".stripMargin
 
-        }
-        s""""$key": {"buckets": [${aggregationBuckets.mkString(",")}], "type" : "Aggregation"}"""
+      }
+      s""""$key": {"buckets": [${aggregationBuckets.mkString(
+        ","
+      )}], "type" : "Aggregation"}"""
     }
-    s""" "aggregations":{${aggregationEntries.mkString(",")}, "type" : "Aggregations"}"""
+    s""" "aggregations":{${aggregationEntries.mkString(
+      ","
+    )}, "type" : "Aggregations"}"""
 
   }
 }

@@ -154,9 +154,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
       obj =>
         Json.obj(
           obj.toList
-            .map {
-              case (key, value) =>
-                (key, sortedJson(unordered)(value))
+            .map { case (key, value) =>
+              (key, sortedJson(unordered)(value))
             }
             .sortBy(tup => tup._1): _*
         )

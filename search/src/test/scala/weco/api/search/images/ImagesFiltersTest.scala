@@ -8,68 +8,65 @@ import weco.fixtures.TestWith
 class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
   describe("filtering images by license") {
     it("filters by license") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 6).map(i => s"images.different-licenses.$i"): _*
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 6).map(i => s"images.different-licenses.$i"): _*
+        )
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?locations.license=cc-by"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = (0 to 4).map(i => s"images.different-licenses.$i")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?locations.license=cc-by"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = (0 to 4).map(i => s"images.different-licenses.$i")
+          )
+        }
       }
     }
   }
 
   describe("filtering images by source contributors") {
     it("filters by contributors from the canonical source work") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2)
-              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 2)
+            .map(i => s"images.examples.contributor-filter-tests.$i"): _*
+        )
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq("images.examples.contributor-filter-tests.0")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path =
+            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo""""
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq("images.examples.contributor-filter-tests.0")
+          )
+        }
       }
     }
 
     it("filters by multiple contributors") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2)
-              .map(i => s"images.examples.contributor-filter-tests.$i"): _*
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 2)
+            .map(i => s"images.examples.contributor-filter-tests.$i"): _*
+        )
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
-          ) {
-            Status.OK -> imagesListResponse(
-              List(
-                "images.examples.contributor-filter-tests.0",
-                "images.examples.contributor-filter-tests.1"
-              )
+        assertJsonResponse(
+          routes,
+          path =
+            s"""$rootPath/images?source.contributors.agent.label="Machiavelli,%20Niccolo",Edward%20Said"""
+        ) {
+          Status.OK -> imagesListResponse(
+            List(
+              "images.examples.contributor-filter-tests.0",
+              "images.examples.contributor-filter-tests.1"
             )
-          }
+          )
+        }
       }
     }
   }
@@ -78,13 +75,12 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
     def withGenreFilterRecords(
       testWith: TestWith[Route, Assertion]
     ): Assertion =
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
-          )
-          testWith(routes)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          (0 to 2).map(i => s"images.examples.genre-filter-tests.$i"): _*
+        )
+        testWith(routes)
       }
 
     it("filters by genres from the canonical source work") {
@@ -193,43 +189,40 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
     ).map(s => s"images.subjects.$s")
 
     it("filters by subjects") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(imagesIndex, images: _*)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, images: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/images?source.subjects.label=Simple%20screwdrivers"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.subjects.screwdrivers-1",
-                "images.subjects.screwdrivers-2",
-                "images.subjects.squirrel,screwdriver"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.subjects.label=Simple%20screwdrivers"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.subjects.screwdrivers-1",
+              "images.subjects.screwdrivers-2",
+              "images.subjects.squirrel,screwdriver"
             )
-          }
+          )
+        }
       }
     }
 
     it("filters by multiple subjects") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(imagesIndex, images: _*)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, images: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/images?source.subjects.label=Square%20sounds,Struck%20samples"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.subjects.sounds",
-                "images.subjects.squirrel,sample"
-              )
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images?source.subjects.label=Square%20sounds,Struck%20samples"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.subjects.sounds",
+              "images.subjects.squirrel,sample"
             )
-          }
+          )
+        }
       }
     }
   }
@@ -244,60 +237,57 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
     )
 
     it("filters by date range") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(imagesIndex, productionImages: _*)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, productionImages: _*)
 
-          assertJsonResponse(
-            routes,
-            path =
-              s"$rootPath/images?source.production.dates.from=1900-01-01&source.production.dates.to=1960-01-01"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq("image-production.1900", "image-production.1904")
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/images?source.production.dates.from=1900-01-01&source.production.dates.to=1960-01-01"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq("image-production.1900", "image-production.1904")
+          )
+        }
       }
     }
 
     it("filters by from date") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(imagesIndex, productionImages: _*)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, productionImages: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.production.dates.from=1900-01-01"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "image-production.1900",
-                "image-production.1904",
-                "image-production.1976",
-                "image-production.2020"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.production.dates.from=1900-01-01"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "image-production.1900",
+              "image-production.1904",
+              "image-production.1976",
+              "image-production.2020"
             )
-          }
+          )
+        }
       }
     }
 
     it("filters by to date") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(imagesIndex, productionImages: _*)
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(imagesIndex, productionImages: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/images?source.production.dates.to=1960-01-01"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "image-production.1098",
-                "image-production.1900",
-                "image-production.1904"
-              )
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/images?source.production.dates.to=1960-01-01"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "image-production.1098",
+              "image-production.1900",
+              "image-production.1904"
             )
-          }
+          )
+        }
       }
     }
 
@@ -318,84 +308,81 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
 
   describe("filtering images by color") {
     it("scores by nearest neighbour") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.red",
-            "images.examples.color-filter-tests.even-less-red",
-            "images.examples.color-filter-tests.slightly-less-red",
-            "images.examples.color-filter-tests.blue"
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          "images.examples.color-filter-tests.red",
+          "images.examples.color-filter-tests.even-less-red",
+          "images.examples.color-filter-tests.slightly-less-red",
+          "images.examples.color-filter-tests.blue"
+        )
 
-          assertJsonResponse(
-            routes,
-            path = f"$rootPath/images?color=e02020"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.examples.color-filter-tests.red",
-                "images.examples.color-filter-tests.slightly-less-red",
-                "images.examples.color-filter-tests.even-less-red",
-                "images.examples.color-filter-tests.blue"
-              ),
-              strictOrdering = true
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = f"$rootPath/images?color=e02020"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.examples.color-filter-tests.red",
+              "images.examples.color-filter-tests.slightly-less-red",
+              "images.examples.color-filter-tests.even-less-red",
+              "images.examples.color-filter-tests.blue"
+            ),
+            strictOrdering = true
+          )
+        }
       }
     }
   }
 
   describe("filtering images by color and query") {
     it("combines query and colour filter") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.even-less-blue-foot",
-            "images.examples.color-filter-tests.blue-foot",
-            "images.examples.color-filter-tests.blue",
-            "images.examples.color-filter-tests.orange-foot",
-            "images.examples.color-filter-tests.slightly-less-blue-foot"
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          "images.examples.color-filter-tests.even-less-blue-foot",
+          "images.examples.color-filter-tests.blue-foot",
+          "images.examples.color-filter-tests.blue",
+          "images.examples.color-filter-tests.orange-foot",
+          "images.examples.color-filter-tests.slightly-less-blue-foot"
+        )
 
-          assertJsonResponse(
-            routes,
-            path = f"$rootPath/images?query=foot&color=22bbff"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.examples.color-filter-tests.blue-foot",
-                "images.examples.color-filter-tests.slightly-less-blue-foot",
-                "images.examples.color-filter-tests.even-less-blue-foot",
-                "images.examples.color-filter-tests.orange-foot"
-              ),
-              strictOrdering = true
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = f"$rootPath/images?query=foot&color=22bbff"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.examples.color-filter-tests.blue-foot",
+              "images.examples.color-filter-tests.slightly-less-blue-foot",
+              "images.examples.color-filter-tests.even-less-blue-foot",
+              "images.examples.color-filter-tests.orange-foot"
+            ),
+            strictOrdering = true
+          )
+        }
       }
     }
     it("combines multi-token query terms with AND") {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.examples.color-filter-tests.blue", // Green + Dye (subjects)
-            "images.examples.color-filter-tests.blue-foot", // Dye but not Green
-            "images.examples.color-filter-tests.even-less-blue-foot" // Neither Dye nor Green
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          "images.examples.color-filter-tests.blue", // Green + Dye (subjects)
+          "images.examples.color-filter-tests.blue-foot", // Dye but not Green
+          "images.examples.color-filter-tests.even-less-blue-foot" // Neither Dye nor Green
+        )
 
-          assertJsonResponse(
-            routes,
-            path = f"$rootPath/images?query=green+dye&color=22bbff"
-          ) {
-            Status.OK -> imagesListResponse(
-              ids = Seq(
-                "images.examples.color-filter-tests.blue"
-              ),
-              strictOrdering = true
-            )
-          }
+        assertJsonResponse(
+          routes,
+          path = f"$rootPath/images?query=green+dye&color=22bbff"
+        ) {
+          Status.OK -> imagesListResponse(
+            ids = Seq(
+              "images.examples.color-filter-tests.blue"
+            ),
+            strictOrdering = true
+          )
+        }
       }
     }
   }

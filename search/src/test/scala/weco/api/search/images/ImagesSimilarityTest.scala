@@ -5,8 +5,7 @@ import org.scalatest.funspec.AnyFunSpec
 
 class ImagesSimilarityTest extends AnyFunSpec with ApiImagesTestBase {
 
-  /**
-    * These tests treat the simple presence of the requested property as a proxy
+  /** These tests treat the simple presence of the requested property as a proxy
     * for populating the similar image lists.  Essentially, this is showing the
     * connection between the `include` querystring parameter and the resulting JSON.
     *
@@ -24,25 +23,24 @@ class ImagesSimilarityTest extends AnyFunSpec with ApiImagesTestBase {
     it(
       "includes images with similar features with ?include=withSimilarFeatures"
     ) {
-      withImagesApi {
-        case (imagesIndex, routes) =>
-          indexTestDocuments(
-            imagesIndex,
-            "images.similar-features.0"
-          )
+      withImagesApi { case (imagesIndex, routes) =>
+        indexTestDocuments(
+          imagesIndex,
+          "images.similar-features.0"
+        )
 
-          assertJsonResponseLike(
-            routes,
-            path =
-              s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures"
-          ) { responseJson =>
-            responseJson.hcursor
-              .get[Seq[Json]]("withSimilarFeatures")
-              .right
-              .get shouldBe Nil
-            assert(!responseJson.asObject.get.contains("visuallySimilar"))
-            assert(!responseJson.asObject.get.contains("withSimilarColors"))
-          }
+        assertJsonResponseLike(
+          routes,
+          path =
+            s"$rootPath/images/${getTestImageId("images.similar-features.0")}?include=withSimilarFeatures"
+        ) { responseJson =>
+          responseJson.hcursor
+            .get[Seq[Json]]("withSimilarFeatures")
+            .right
+            .get shouldBe Nil
+          assert(!responseJson.asObject.get.contains("visuallySimilar"))
+          assert(!responseJson.asObject.get.contains("withSimilarColors"))
+        }
 
       }
     }

@@ -25,8 +25,8 @@ class WorksFacetingTest
       (3, "d", "Journals"),
       (2, "i", "Audio"),
       (1, "k", "Pictures")
-    ) map {
-      case (count, code, label) => toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Format", count, code, label)
     }: _*
   )
   private val languageBuckets = Seq(
@@ -35,18 +35,16 @@ class WorksFacetingTest
       (3, "que", "Quechua"),
       (2, "mar", "Marathi"),
       (1, "che", "Chechen")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Language", count, code, label)
     }: _*
   )
   private val capybaraWorkTypeBuckets = Seq(
     Seq(
       (2, "a", "Books"),
       (1, "d", "Journals")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Format", count, code, label)
     }: _*
   )
 
@@ -54,9 +52,8 @@ class WorksFacetingTest
     Seq(
       (2, "mar", "Marathi"),
       (1, "bak", "Bashkir")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Language", count, code, label)
     }: _*
   )
 
@@ -64,9 +61,8 @@ class WorksFacetingTest
     Seq(
       (1, "a", "Books"),
       (1, "d", "Journals")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Format", count, code, label)
     }: _*
   )
 
@@ -74,9 +70,8 @@ class WorksFacetingTest
     Seq(
       (3, "bak", "Bashkir"),
       (1, "mar", "Marathi")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket("Language", count, code, label)
     }: _*
   )
 
@@ -102,16 +97,17 @@ class WorksFacetingTest
     )
   )
 
-  private val multipleUncommonContributors = top21Contributors :+ createWorkDocument(
-    "baadf00d",
-    "top 1 and hapax legomenon",
-    Map(
-      "contributors.agent.label" -> Seq(
-        "Yuri Zhivago",
-        "Beverley Crusher (a)"
+  private val multipleUncommonContributors =
+    top21Contributors :+ createWorkDocument(
+      "baadf00d",
+      "top 1 and hapax legomenon",
+      Map(
+        "contributors.agent.label" -> Seq(
+          "Yuri Zhivago",
+          "Beverley Crusher (a)"
+        )
       )
     )
-  )
 
   private val givens = Map[String, Seq[TestDocument]](
     "a dataset with some common aggregable values and a less common one" -> top21Contributors,
@@ -130,13 +126,12 @@ class WorksFacetingTest
   private def withFacetedAPI[R](
     docs: Option[Seq[TestDocument]]
   )(testWith: TestWith[JsonServer, R]): R =
-    withWorksApi[R] {
-      case (worksIndex, route) =>
-        docs match {
-          case Some(docs) => indexLoadedTestDocuments(worksIndex, docs)
-          case None       => indexTestDocuments(worksIndex, aggregatedWorks: _*)
-        }
-        testWith(new WorksJsonServer(route))
+    withWorksApi[R] { case (worksIndex, route) =>
+      docs match {
+        case Some(docs) => indexLoadedTestDocuments(worksIndex, docs)
+        case None       => indexTestDocuments(worksIndex, aggregatedWorks: _*)
+      }
+      testWith(new WorksJsonServer(route))
     }
 
   protected val oneAggregation: ScenarioData = ScenarioData(
@@ -236,8 +231,8 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
-      "contributors.agent.label" -> (('a' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      "contributors.agent.label" -> (('a' to 't').map(n =>
+        toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
     )
   )
@@ -253,8 +248,8 @@ class WorksFacetingTest
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> (Seq(
         toUnidentifiedBucket(3, "Beverley Crusher (a)")
-      ) ++ ('b' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+      ) ++ ('b' to 't').map(n =>
+        toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
       ) ++ Seq(
         toUnidentifiedBucket(2, "Beverley Crusher (z)"),
         toUnidentifiedBucket(1, "Mark Sloan"),

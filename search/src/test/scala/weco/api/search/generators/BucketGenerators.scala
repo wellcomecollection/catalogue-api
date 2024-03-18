@@ -4,13 +4,12 @@ import io.circe.parser.parse
 
 trait BucketGenerators {
   protected def toKeywordBucket(
-                                 dataType: String,
-                                 count: Int,
-                                 code: String,
-                                 label: String
-                               ): Json =
-    parse(
-      s"""
+    dataType: String,
+    count: Int,
+    code: String,
+    label: String
+  ): Json =
+    parse(s"""
          |{
          |"count": $count,
          |"data": {
@@ -22,11 +21,10 @@ trait BucketGenerators {
          |}""".stripMargin).right.get
 
   protected def toUnidentifiedBucket(
-                                      count: Int,
-                                      label: String
-                                    ): Json =
-    parse(
-      s"""
+    count: Int,
+    label: String
+  ): Json =
+    parse(s"""
          |{
          |"count": $count,
          |"data": {

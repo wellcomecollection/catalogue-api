@@ -53,7 +53,6 @@ trait DisplayItemOps {
       *
       * This mirrors logic in the front-end:
       * https://github.com/wellcomecollection/wellcomecollection.org/blob/fbec553332d061a6cdec5580c591ca810833e629/catalogue/webapp/components/PhysicalItems/PhysicalItems.tsx#L25-L28
-      *
       */
     def isStale: Boolean =
       physicalAccessCondition.forall(_.isStale)

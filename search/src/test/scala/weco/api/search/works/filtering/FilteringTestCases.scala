@@ -3,8 +3,7 @@ package weco.api.search.works.filtering
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.works.ApiWorksTestBase
 
-/**
-  * Test cases that cover filtering by simple values such as ids.
+/** Test cases that cover filtering by simple values such as ids.
   */
 trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
   this: SingleFieldFilterTest =>
@@ -22,41 +21,38 @@ trait FilteringTestCases extends AnyFunSpec with ApiWorksTestBase {
 
   describe(s"filtering $fieldName by simple values") {
     it("filters by one value when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, testWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, testWorks: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?$listingParams") {
-            Status.OK -> listingResponse
-          }
+        assertJsonResponse(routes, path = s"$rootPath/works?$listingParams") {
+          Status.OK -> listingResponse
+        }
       }
     }
 
     it("filters by multiple values when listing works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, testWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, testWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?$multipleParams"
-          ) {
-            Status.OK -> multipleResponse
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?$multipleParams"
+        ) {
+          Status.OK -> multipleResponse
+        }
       }
     }
 
     it("when searching for works") {
-      withWorksApi {
-        case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, testWorks: _*)
+      withWorksApi { case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, testWorks: _*)
 
-          assertJsonResponse(
-            routes,
-            path = s"$rootPath/works?$searchingParams"
-          ) {
-            Status.OK -> searchingResponse
-          }
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?$searchingParams"
+        ) {
+          Status.OK -> searchingResponse
+        }
       }
     }
   }
