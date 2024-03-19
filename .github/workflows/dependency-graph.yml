@@ -3,7 +3,7 @@ name: Update Dependency Graph
 on:
   push:
     branches:
-      - rk/use-gh-oidc-aws-federated # default branch of the project
+      - main
 
 permissions:
   id-token: write
