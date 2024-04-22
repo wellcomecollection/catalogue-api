@@ -7,6 +7,7 @@ import weco.Tracing
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,
+  VenueOpeningTimesLookup,
   WorkLookup
 }
 import weco.http.typesafe.HTTPServerBuilder
@@ -37,21 +38,26 @@ object Main extends WellcomeTypesafeApp {
     val client = SierraOauthHttpClientBuilder.build(config)
     val sierraSource = new SierraSource(client)
 
+    val contentHttpClient = new AkkaHttpClient() with HttpGet {
+      override val baseUri: Uri = config.getString("content.api.publicRoot")
+    }
+    val venueOpeningTimeLookup = new VenueOpeningTimesLookup(contentHttpClient)
+
     // To add an item updater for a new service:
     // implement ItemUpdater and add it to the list here
     val itemUpdaters = List(
-      new SierraItemUpdater(sierraSource)
+      new SierraItemUpdater(sierraSource, venueOpeningTimeLookup)
     )
 
     val itemUpdateService = new ItemUpdateService(itemUpdaters)
 
-    val httpClient = new AkkaHttpClient() with HttpGet {
+    val catalogueHttpClient = new AkkaHttpClient() with HttpGet {
       override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
     }
 
     val router = new ItemsApi(
       itemUpdateService = itemUpdateService,
-      workLookup = new WorkLookup(httpClient)
+      workLookup = new WorkLookup(catalogueHttpClient)
     )
 
     val appName = "ItemsApi"
