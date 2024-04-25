@@ -94,6 +94,9 @@ trait ItemsApiGenerators extends LocalResources {
       entity = HttpEntity(
         contentType = ContentTypes.`application/json`,
         s"""
+          {
+            "type": "ResultList",
+            "results": [
               {
                 "type": "Venue",
                 "id": "venue-id",
@@ -113,6 +116,8 @@ trait ItemsApiGenerators extends LocalResources {
                   }
                 ]
               }
+            ]
+          }
           """
       )
     )

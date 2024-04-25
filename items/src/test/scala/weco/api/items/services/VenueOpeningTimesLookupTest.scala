@@ -50,87 +50,92 @@ class VenueOpeningTimesLookupTest
             contentType = ContentTypes.`application/json`,
             s"""
               {
-                "type": "Venue",
-                "id": "$venueId",
-                "title": "$venueTitle",
-                "regularOpeningDays": [
+                "type": "ResultList",
+                "results": [
                   {
-                    "dayOfWeek": "monday",
-                    "opens": "10:00",
-                    "closes": "18:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "tuesday",
-                    "opens": "10:00",
-                    "closes": "18:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "wednesday",
-                    "opens": "10:00",
-                    "closes": "18:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "thursday",
-                    "opens": "10:00",
-                    "closes": "20:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "friday",
-                    "opens": "10:00",
-                    "closes": "18:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "saturday",
-                    "opens": "10:00",
-                    "closes": "16:00",
-                    "isClosed": false
-                  },
-                  {
-                    "dayOfWeek": "sunday",
-                    "opens": "00:00",
-                    "closes": "00:00",
-                    "isClosed": true
-                  }
-                ],
-                "exceptionalClosedDays": [
-                  {
-                    "overrideDate": "2024-12-24T00:00:00.000Z",
-                    "type": "Christmas and New Year",
-                    "startDateTime": "00:00",
-                    "endDateTime": "00:00"
-                  },
-                  {
-                    "overrideDate": "2024-12-30T00:00:00.000Z",
-                    "type": "Christmas and New Year",
-                    "startDateTime": "00:00",
-                    "endDateTime": "00:00"
-                  }
-                ],
-                "nextOpeningDates": [
-                  {
-                    "open": "2024-04-24T09:00:00.000Z",
-                    "close": "2024-04-24T17:00:00.000Z"
-                  },
-                  {
-                    "open": "2024-04-25T09:00:00.000Z",
-                    "close": "2024-04-25T19:00:00.000Z"
-                  },
-                  {
-                    "open": "2024-04-26T09:00:00.000Z",
-                    "close": "2024-04-26T17:00:00.000Z"
-                  },
-                  {
-                    "open": "2024-04-27T09:00:00.000Z",
-                    "close": "2024-04-27T15:00:00.000Z"
-                  },
-                  {
-                    "open": "2024-04-29T09:00:00.000Z",
-                    "close": "2024-04-29T17:00:00.000Z"
+                    "type": "Venue",
+                    "id": "$venueId",
+                    "title": "$venueTitle",
+                    "regularOpeningDays": [
+                      {
+                        "dayOfWeek": "monday",
+                        "opens": "10:00",
+                        "closes": "18:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "tuesday",
+                        "opens": "10:00",
+                        "closes": "18:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "wednesday",
+                        "opens": "10:00",
+                        "closes": "18:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "thursday",
+                        "opens": "10:00",
+                        "closes": "20:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "friday",
+                        "opens": "10:00",
+                        "closes": "18:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "saturday",
+                        "opens": "10:00",
+                        "closes": "16:00",
+                        "isClosed": false
+                      },
+                      {
+                        "dayOfWeek": "sunday",
+                        "opens": "00:00",
+                        "closes": "00:00",
+                        "isClosed": true
+                      }
+                    ],
+                    "exceptionalClosedDays": [
+                      {
+                        "overrideDate": "2024-12-24T00:00:00.000Z",
+                        "type": "Christmas and New Year",
+                        "startDateTime": "00:00",
+                        "endDateTime": "00:00"
+                      },
+                      {
+                        "overrideDate": "2024-12-30T00:00:00.000Z",
+                        "type": "Christmas and New Year",
+                        "startDateTime": "00:00",
+                        "endDateTime": "00:00"
+                      }
+                    ],
+                    "nextOpeningDates": [
+                      {
+                        "open": "2024-04-24T09:00:00.000Z",
+                        "close": "2024-04-24T17:00:00.000Z"
+                      },
+                      {
+                        "open": "2024-04-25T09:00:00.000Z",
+                        "close": "2024-04-25T19:00:00.000Z"
+                      },
+                      {
+                        "open": "2024-04-26T09:00:00.000Z",
+                        "close": "2024-04-26T17:00:00.000Z"
+                      },
+                      {
+                        "open": "2024-04-27T09:00:00.000Z",
+                        "close": "2024-04-27T15:00:00.000Z"
+                      },
+                      {
+                        "open": "2024-04-29T09:00:00.000Z",
+                        "close": "2024-04-29T17:00:00.000Z"
+                      }
+                    ]
                   }
                 ]
               }
@@ -143,7 +148,6 @@ class VenueOpeningTimesLookupTest
     val future = withLookup(responses) {
       _.byVenueName(Some(venueTitle))
     }
-
 
     whenReady(future) {
       _ shouldBe Right(

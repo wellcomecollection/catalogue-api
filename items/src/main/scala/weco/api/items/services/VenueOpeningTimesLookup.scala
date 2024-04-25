@@ -9,7 +9,7 @@ import weco.http.client.{HttpClient, HttpGet}
 import weco.http.json.CirceMarshalling
 import weco.json.JsonUtil._
 import scala.concurrent.{ExecutionContext, Future}
-import weco.api.items.models.VenueOpeningTimes
+import weco.api.items.models.{ContentApiVenueResponse, VenueOpeningTimes}
 
 sealed trait VenueOpeningTimesLookupError {
   val title: String
@@ -24,8 +24,8 @@ class VenueOpeningTimesLookup(client: HttpClient with HttpGet)(
   ec: ExecutionContext
 ) extends Logging {
 
-  implicit val um: Unmarshaller[HttpEntity, VenueOpeningTimes] =
-    CirceMarshalling.fromDecoder[VenueOpeningTimes]
+  implicit val um: Unmarshaller[HttpEntity, ContentApiVenueResponse] =
+    CirceMarshalling.fromDecoder[ContentApiVenueResponse]
 
   /** Returns the Work that corresponds to this canonical ID.
     *
@@ -46,8 +46,9 @@ class VenueOpeningTimesLookup(client: HttpClient with HttpGet)(
           result <- response.status match {
             case StatusCodes.OK =>
               info(s"OK for GET to $path with $params")
-              Unmarshal(response.entity).to[VenueOpeningTimes].map {
-                Right(_)
+              Unmarshal(response.entity).to[ContentApiVenueResponse].map {
+                response =>
+                  Right(response.results.head)
               }
 
             case StatusCodes.NotFound =>
