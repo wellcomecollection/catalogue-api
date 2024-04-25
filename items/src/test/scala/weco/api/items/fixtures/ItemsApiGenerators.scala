@@ -83,4 +83,46 @@ trait ItemsApiGenerators extends LocalResources {
         DisplayJsonUtil.toJson(DisplayError(statusCode = status))
       )
     )
+
+  def contentApiVenueRequest(title: String): HttpRequest =
+    HttpRequest(
+      uri = Uri(s"http://content:9002/venues?title=$title")
+    )
+
+  def contentApiVenueResponse(): HttpResponse =
+    HttpResponse(
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        s"""
+              {
+                "type": "Venue",
+                "id": "venue-id",
+                "title": "venue",
+                "nextOpeningDates": [
+                  {
+                    "open": "2024-04-24T09:00:00.000Z",
+                    "close": "2024-04-24T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-25T09:00:00.000Z",
+                    "close": "2024-04-25T19:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-26T09:00:00.000Z",
+                    "close": "2024-04-26T17:00:00.000Z"
+                  }
+                ]
+              }
+          """
+      )
+    )
+
+  def contentApiVenueErrorResponse(status: StatusCode): HttpResponse =
+    HttpResponse(
+      status = status,
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        DisplayJsonUtil.toJson(DisplayError(statusCode = status))
+      )
+    )
 }

@@ -1,7 +1,7 @@
 package weco.api.items.services
 
-import java.time.ZonedDateTime
 import grizzled.slf4j.Logging
+import weco.api.items.LondonClock
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
@@ -25,7 +25,8 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
-  VenueOpeningTimesLookup: VenueOpeningTimesLookup
+  VenueOpeningTimesLookup: VenueOpeningTimesLookup,
+  clock: LondonClock
 )(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
@@ -96,16 +97,17 @@ class SierraItemUpdater(
 
   private def setAvailableDates(
     item: DisplayItem
-  ): DisplayItem = {
+  ): Future[DisplayItem] = {
     // there is only ever one location per physicalItem and one accessCondition per location,
     // but this may sometimes be empty if it could not be fetched.
     val accessCondition = item.locations.headOption
       .flatMap(_.accessConditions.headOption)
 
     if ((accessCondition.isDefined && accessCondition.head.isRequestable)) {
-      item.copy(availableDates = getAvailableDates(accessCondition.head))
+      getAvailableDates(accessCondition.head)
+        .map(availableDates => item.copy(availableDates = Some(availableDates)))
     } else {
-      item
+      Future.successful(item)
     }
   }
 
@@ -116,10 +118,10 @@ class SierraItemUpdater(
       "online-request" -> "library"
       // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
-    val hourNow = ZonedDateTime.now().getHour
+    val hourNow = clock.getHour
     val leadTime = accessCondition.method.id match {
-      case "online-request" && hourNow < 10  => 1
-      case "online-request" && hourNow >= 10 => 2
+      case "online-request" if hourNow < 10  => 1
+      case "online-request" if hourNow >= 10 => 2
     }
 
     VenueOpeningTimesLookup
@@ -128,16 +130,17 @@ class SierraItemUpdater(
       )
       .map {
         case Right(venue) =>
-          venue.OpeningTimes
+          venue.openingTimes
             .map(
               openClose => AvailabilitySlot(openClose.open, openClose.close)
             )
+            .drop(leadTime)
         case Left(venueOpeningTimesLookupError) =>
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
           )
           List.empty
-      } filter (_ < leadTime)
+      }
   }
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
@@ -154,22 +157,24 @@ class SierraItemUpdater(
       s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
     )
 
-    for {
+    val allItems = for {
       accessConditions <- staleItems.size match {
         case 0 =>
           Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
         case _ => getAccessConditions(staleItems)
       }
 
-      updatedItems = itemMap.map {
-        case (sierraId, item) =>
-          accessConditions.get(sierraId) match {
-            case Some(updatedAc) => updateAccessCondition(item, updatedAc)
-            case None            => item
-          }
-      }
-      updatedItemsWithAvailableDates = updatedItems.map(setAvailableDates)
-    } yield updatedItemsWithAvailableDates.toSeq
-  }
+      updatedItems = itemMap
+        .map {
+          case (sierraId, item) =>
+            accessConditions.get(sierraId) match {
+              case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+              case None            => item
+            }
+        }
+        .map(setAvailableDates)
 
+    } yield Future.sequence(updatedItems.toSeq)
+    allItems.flatten
+  }
 }

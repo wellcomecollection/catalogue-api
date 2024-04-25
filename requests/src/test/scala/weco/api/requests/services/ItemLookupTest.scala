@@ -66,7 +66,8 @@ class ItemLookupTest
                 id = Some(item.id),
                 identifiers =
                   (item.sourceIdentifier +: item.otherIdentifiers).toList,
-                locations = List()
+                locations = List(),
+                availableDates = None
               )
             )
           }

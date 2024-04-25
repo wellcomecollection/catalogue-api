@@ -7,11 +7,9 @@ case class VenueOpeningTimes(
   @JsonKey("type") contentType: String,
   id: String,
   title: String,
-  OpeningTimes: List[OpenClose]
+  @JsonKey("nextOpeningDates") openingTimes: List[OpenClose]
 )
 case class OpenClose(
   open: String,
   close: String
 )
-
-// make that a list of VenueOpeningTimes

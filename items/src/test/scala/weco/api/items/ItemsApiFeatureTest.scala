@@ -47,7 +47,19 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, sierraResponses) { _ =>
+      val contentApiVenueResponses = Seq(
+        (
+          contentApiVenueRequest("library"),
+          contentApiVenueResponse()
+        )
+      )
+
+      withItemsApi(
+        catalogueResponses,
+        sierraResponses,
+        contentApiVenueResponses,
+        11
+      ) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -96,10 +108,10 @@ class ItemsApiFeatureTest
              |        }
              |      ],
              |      "availableDates" : [
-             |        {
-             |          "from" : "2022-01-10T10:00:00+0000",
-             |          "to" : "2022-01-11T10:00:00+0000"
-             |        }
+             |         {
+             |            "from": "2024-04-26T09:00:00.000Z",
+             |            "to": "2024-04-26T17:00:00.000Z"
+             |         }
              |      ],
              |      "type" : "Item"
              |    }
@@ -127,7 +139,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -161,7 +173,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -266,7 +278,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, sierraResponses) { _ =>
+      withItemsApi(catalogueResponses, sierraResponses, Seq(), 10) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -351,7 +363,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
@@ -387,7 +399,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
@@ -420,7 +432,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
         val path = s"/works/$id"
 
         val expectedError =

@@ -6,14 +6,17 @@ import weco.api.items.ItemsApi
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,
+  VenueOpeningTimesLookup,
   WorkLookup
 }
 import weco.api.search.models.ApiConfig
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
+import weco.api.items.LondonClock
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import java.time.{ZoneId, ZonedDateTime}
 
 trait ItemsApiFixture extends SierraSourceFixture {
   this: Suite =>
@@ -30,12 +33,29 @@ trait ItemsApiFixture extends SierraSourceFixture {
 
   def withItemsApi[R](
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
+    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    contentApiVenueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    time: Int
   )(testWith: TestWith[Unit, R]): R =
     withActorSystem { implicit actorSystem =>
       withSierraSource(sierraResponses) { sierraSource =>
+        val contentApiClient = new MemoryHttpClient(contentApiVenueResponses)
+        with HttpGet {
+          override val baseUri: Uri = Uri("http://content:9002")
+        }
+        val mockTime = ZonedDateTime
+          .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
+          .getHour
+        val clock = new LondonClock {
+          override def getHour: Int = mockTime
+        }
+
         val itemsUpdaters = List(
-          new SierraItemUpdater(sierraSource)
+          new SierraItemUpdater(
+            sierraSource,
+            new VenueOpeningTimesLookup(contentApiClient),
+            clock
+          )
         )
 
         val catalogueApiClient = new MemoryHttpClient(catalogueResponses)

@@ -2,6 +2,7 @@ package weco.api.items
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
+import java.time.{ZoneId, ZonedDateTime}
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.items.services.{
@@ -21,6 +22,15 @@ import weco.sierra.http.SierraSource
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
 
 import scala.concurrent.ExecutionContext
+
+trait Clock {
+  def now(): ZonedDateTime
+}
+class LondonClock extends Clock {
+  def now(): ZonedDateTime =
+    ZonedDateTime.now.withZoneSameLocal(ZoneId.of("Europe/London"))
+  def getHour: Int = now().getHour
+}
 
 object Main extends WellcomeTypesafeApp {
 
@@ -46,7 +56,11 @@ object Main extends WellcomeTypesafeApp {
     // To add an item updater for a new service:
     // implement ItemUpdater and add it to the list here
     val itemUpdaters = List(
-      new SierraItemUpdater(sierraSource, venueOpeningTimeLookup)
+      new SierraItemUpdater(
+        sierraSource,
+        venueOpeningTimeLookup,
+        new LondonClock()
+      )
     )
 
     val itemUpdateService = new ItemUpdateService(itemUpdaters)

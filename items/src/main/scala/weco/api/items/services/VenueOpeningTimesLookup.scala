@@ -31,33 +31,42 @@ class VenueOpeningTimesLookup(client: HttpClient with HttpGet)(
     *
     */
   def byVenueName(
-    title: String
-  ): Future[Either[VenueOpeningTimesLookupError, VenueOpeningTimes]] = {
-    val path = Path(s"/venues")
-    val params = Map("title" -> title)
+    title: Option[String]
+  ): Future[Either[VenueOpeningTimesLookupError, VenueOpeningTimes]] =
+    title match {
+      case None =>
+        throw new Throwable("A venue name was not supplied")
+      case Some(title) => {
+        val path = Path(s"venues")
+        val params = Map("title" -> title)
 
-    val httpResult = for {
-      response <- client.get(path = path, params = params)
+        val httpResult = for {
+          response <- client.get(path = path, params = params)
 
-      result <- response.status match {
-        case StatusCodes.OK =>
-          info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[VenueOpeningTimes].map { Right(_) }
+          result <- response.status match {
+            case StatusCodes.OK =>
+              info(s"OK for GET to $path with $params")
+              Unmarshal(response.entity).to[VenueOpeningTimes].map {
+                Right(_)
+              }
 
-        case StatusCodes.NotFound =>
-          info(s"Not Found for GET to $path with $params")
-          Future(Left(VenueOpeningTimesNotFoundError(title)))
+            case StatusCodes.NotFound =>
+              info(s"Not Found for GET to $path with $params")
+              Future(Left(VenueOpeningTimesNotFoundError(title)))
 
-        case status =>
-          val err = new Throwable(s"$status from the content API")
-          error(
-            s"Unexpected status from GET to $path with $params: $status",
-            err
-          )
-          Future(Left(UnknownOpeningTimesError(title, err)))
+            case status =>
+              val err = new Throwable(s"$status from the content API")
+              error(
+                s"Unexpected status from GET to $path with $params: $status",
+                err
+              )
+              Future(Left(UnknownOpeningTimesError(title, err)))
+          }
+        } yield result
+
+        httpResult.recover {
+          case e => Left(UnknownOpeningTimesError(title, e))
+        }
       }
-    } yield result
-
-    httpResult.recover { case e => Left(UnknownOpeningTimesError(title, e)) }
-  }
+    }
 }
