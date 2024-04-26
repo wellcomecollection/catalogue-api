@@ -14,6 +14,6 @@ case class DisplayItem(
   title: Option[String] = None,
   note: Option[String] = None,
   locations: List[DisplayLocation] = List(),
-  availableDates: Option[List[AvailabilitySlot]],
+  availableDates: Option[List[AvailabilitySlot]] = None,
   @JsonKey("type") ontologyType: String = "Item"
 )

@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
-  VenueOpeningTimesLookup: VenueOpeningTimesLookup,
+  venueOpeningTimesLookup: VenueOpeningTimesLookup,
   clock: LondonClock
 )(
   implicit executionContext: ExecutionContext
@@ -124,7 +124,7 @@ class SierraItemUpdater(
       case "online-request" if hourNow >= 10 => 2
     }
 
-    VenueOpeningTimesLookup
+    venueOpeningTimesLookup
       .byVenueName(
         venueFromDisplayAccessCondition.get(accessCondition.method.id)
       )

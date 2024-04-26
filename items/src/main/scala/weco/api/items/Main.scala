@@ -22,11 +22,8 @@ import weco.sierra.http.SierraSource
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
 
 import scala.concurrent.ExecutionContext
-
-trait Clock {
-  def now(): ZonedDateTime
-}
-class LondonClock extends Clock {
+//}
+class LondonClock {
   def now(): ZonedDateTime =
     ZonedDateTime.now.withZoneSameLocal(ZoneId.of("Europe/London"))
   def getHour: Int = now().getHour
