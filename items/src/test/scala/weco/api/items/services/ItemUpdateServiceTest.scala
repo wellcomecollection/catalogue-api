@@ -5,7 +5,6 @@ import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import weco.api.items.LondonClock
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
 import weco.catalogue.display_model.generators.IdentifiersGenerators
@@ -49,16 +48,15 @@ class ItemUpdateServiceTest
         }
         val mockTime = ZonedDateTime
           .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
-          .getHour
-        val clock = new LondonClock {
-          override def getHour: Int = mockTime
+        val londonClock = new LondonClock {
+          override def timeInLondon(): ZonedDateTime = mockTime
         }
 
         testWith(
           new SierraItemUpdater(
             sierraSource,
             new VenueOpeningTimesLookup(contentApiClient),
-            clock
+            londonClock
           )
         )
       }
@@ -308,14 +306,14 @@ class ItemUpdateServiceTest
       ),
       (
         onHoldItemResponses(workWithAvailableItemNumber),
-        Seq(),
+        Nil,
         workWithAvailableItem,
         onHoldAccessCondition,
         None
       ),
       (
         onHoldItemResponses(workWithUnavailableItemNumber),
-        Seq(),
+        Nil,
         workWithUnavailableItem,
         onHoldAccessCondition,
         None

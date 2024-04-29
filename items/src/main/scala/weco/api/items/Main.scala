@@ -2,7 +2,6 @@ package weco.api.items
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
-import java.time.{ZoneId, ZonedDateTime}
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.items.services.{
@@ -20,14 +19,9 @@ import weco.http.client.{AkkaHttpClient, HttpGet}
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
 import weco.sierra.typesafe.SierraOauthHttpClientBuilder
+import weco.api.items.services.LondonClock
 
 import scala.concurrent.ExecutionContext
-//}
-class LondonClock {
-  def now(): ZonedDateTime =
-    ZonedDateTime.now.withZoneSameLocal(ZoneId.of("Europe/London"))
-  def getHour: Int = now().getHour
-}
 
 object Main extends WellcomeTypesafeApp {
 

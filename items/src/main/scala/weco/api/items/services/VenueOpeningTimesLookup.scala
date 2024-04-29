@@ -27,7 +27,7 @@ class VenueOpeningTimesLookup(client: HttpClient with HttpGet)(
   implicit val um: Unmarshaller[HttpEntity, ContentApiVenueResponse] =
     CirceMarshalling.fromDecoder[ContentApiVenueResponse]
 
-  /** Returns the Work that corresponds to this canonical ID.
+  /** Returns venue that corresponds to the title.
     *
     */
   def byVenueName(

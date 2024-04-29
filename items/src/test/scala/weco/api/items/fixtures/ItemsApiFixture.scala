@@ -13,7 +13,7 @@ import weco.api.search.models.ApiConfig
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
-import weco.api.items.LondonClock
+import weco.api.items.services.LondonClock
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.{ZoneId, ZonedDateTime}
@@ -45,16 +45,15 @@ trait ItemsApiFixture extends SierraSourceFixture {
         }
         val mockTime = ZonedDateTime
           .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
-          .getHour
-        val clock = new LondonClock {
-          override def getHour: Int = mockTime
+        val londonClock = new LondonClock {
+          override def timeInLondon(): ZonedDateTime = mockTime
         }
 
         val itemsUpdaters = List(
           new SierraItemUpdater(
             sierraSource,
             new VenueOpeningTimesLookup(contentApiClient),
-            clock
+            londonClock
           )
         )
 

@@ -1,7 +1,6 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
-import weco.api.items.LondonClock
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
@@ -15,6 +14,8 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -103,7 +104,7 @@ class SierraItemUpdater(
     val accessCondition = item.locations.headOption
       .flatMap(_.accessConditions.headOption)
 
-    if ((accessCondition.isDefined && accessCondition.head.isRequestable)) {
+    if (accessCondition.exists(_.isRequestable)) {
       getAvailableDates(accessCondition.head)
         .map(availableDates => item.copy(availableDates = Some(availableDates)))
     } else {
@@ -118,10 +119,15 @@ class SierraItemUpdater(
       "online-request" -> "library"
       // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
-    val hourNow = clock.getHour
-    val leadTime = accessCondition.method.id match {
-      case "online-request" if hourNow < 10  => 1
-      case "online-request" if hourNow >= 10 => 2
+
+    val hourAtVenue = clock.timeInLondon().getHour
+    val leadTimeInDays = accessCondition.method.id match {
+      case "online-request" if hourAtVenue < 10  => 1
+      case "online-request" if hourAtVenue >= 10 => 2
+    }
+    def daysAwayFromNow(slot: AvailabilitySlot): Int = {
+      val closeTime = ZonedDateTime.parse(slot.to)
+      ChronoUnit.DAYS.between(clock.timeInLondon(), closeTime).toInt
     }
 
     venueOpeningTimesLookup
@@ -134,7 +140,7 @@ class SierraItemUpdater(
             .map(
               openClose => AvailabilitySlot(openClose.open, openClose.close)
             )
-            .drop(leadTime)
+            .dropWhile(slot => daysAwayFromNow(slot) < leadTimeInDays)
         case Left(venueOpeningTimesLookupError) =>
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
