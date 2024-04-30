@@ -15,7 +15,7 @@ import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import java.time.{Clock, ZoneId, ZonedDateTime}
+import java.time.{Clock, Instant, ZoneId}
 
 trait ItemsApiFixture extends SierraSourceFixture {
   this: Suite =>
@@ -67,10 +67,11 @@ trait ItemsApiFixture extends SierraSourceFixture {
       }
     }
 
-  def withClock(time: Int = 11): Clock = {
-    val mockTime = ZonedDateTime
-      .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
-      .toInstant
-    Clock.fixed(mockTime, ZoneId.of("Europe/London"))
+  def withClock[R](
+    dateTime: String = "2024-04-24T11:00:00.000Z"
+  )(testWith: TestWith[Clock, R]): R = {
+    val instant = Instant.parse(dateTime)
+    val zoneId = ZoneId.of("Europe/London")
+    testWith(Clock.fixed(instant, zoneId))
   }
 }

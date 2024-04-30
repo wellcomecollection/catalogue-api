@@ -54,75 +54,77 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(
-        catalogueResponses,
-        sierraResponses,
-        contentApiVenueResponses,
-        withClock()
-      ) { _ =>
-        val path = s"/works/$workId"
+      withClock() { clock =>
+        withItemsApi(
+          catalogueResponses,
+          sierraResponses,
+          contentApiVenueResponses,
+          clock
+        ) { _ =>
+          val path = s"/works/$workId"
 
-        val expectedJson =
-          s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 1,
-             |  "results" : [
-             |    {
-             |      "id" : "$itemId",
-             |      "identifiers" : [
-             |        {
-             |          "identifierType" : {
-             |            "id" : "sierra-system-number",
-             |            "label" : "Sierra system number",
-             |            "type" : "IdentifierType"
-             |          },
-             |          "value" : "${sierraItemNumber.withCheckDigit}",
-             |          "type" : "Identifier"
-             |        }
-             |      ],
-             |      "locations" : [
-             |        {
-             |          "locationType" : {
-             |            "id" : "closed-stores",
-             |            "label" : "Closed stores",
-             |            "type" : "LocationType"
-             |          },
-             |          "label" : "locationLabel",
-             |          "accessConditions" : [
-             |            {
-             |              "method" : {
-             |                "id" : "online-request",
-             |                "label" : "Online request",
-             |                "type" : "AccessMethod"
-             |              },
-             |              "status": {
-             |                "id" : "open",
-             |                "label" : "Open",
-             |                "type" : "AccessStatus"
-             |              },
-             |              "type" : "AccessCondition"
-             |            }
-             |          ],
-             |          "type" : "PhysicalLocation"
-             |        }
-             |      ],
-             |      "availableDates" : [
-             |         {
-             |            "from": "2024-04-26T09:00:00.000Z",
-             |            "to": "2024-04-26T17:00:00.000Z"
-             |         }
-             |      ],
-             |      "type" : "Item"
-             |    }
-             |  ]
-             |}""".stripMargin
+          val expectedJson =
+            s"""
+               |{
+               |  "type" : "ItemsList",
+               |  "totalResults" : 1,
+               |  "results" : [
+               |    {
+               |      "id" : "$itemId",
+               |      "identifiers" : [
+               |        {
+               |          "identifierType" : {
+               |            "id" : "sierra-system-number",
+               |            "label" : "Sierra system number",
+               |            "type" : "IdentifierType"
+               |          },
+               |          "value" : "${sierraItemNumber.withCheckDigit}",
+               |          "type" : "Identifier"
+               |        }
+               |      ],
+               |      "locations" : [
+               |        {
+               |          "locationType" : {
+               |            "id" : "closed-stores",
+               |            "label" : "Closed stores",
+               |            "type" : "LocationType"
+               |          },
+               |          "label" : "locationLabel",
+               |          "accessConditions" : [
+               |            {
+               |              "method" : {
+               |                "id" : "online-request",
+               |                "label" : "Online request",
+               |                "type" : "AccessMethod"
+               |              },
+               |              "status": {
+               |                "id" : "open",
+               |                "label" : "Open",
+               |                "type" : "AccessStatus"
+               |              },
+               |              "type" : "AccessCondition"
+               |            }
+               |          ],
+               |          "type" : "PhysicalLocation"
+               |        }
+               |      ],
+               |      "availableDates" : [
+               |         {
+               |            "from": "2024-04-26T09:00:00.000Z",
+               |            "to": "2024-04-26T17:00:00.000Z"
+               |         }
+               |      ],
+               |      "type" : "Item"
+               |    }
+               |  ]
+               |}""".stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedJson)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
           }
         }
       }
@@ -139,24 +141,26 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
-        val path = s"/works/$workId"
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, Nil, Nil, clock) { _ =>
+          val path = s"/works/$workId"
 
-        val expectedJson =
-          s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 0,
-             |  "results" : [
-             |  ]
-             |}
+          val expectedJson =
+            s"""
+               |{
+               |  "type" : "ItemsList",
+               |  "totalResults" : 0,
+               |  "results" : [
+               |  ]
+               |}
               """.stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedJson)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
           }
         }
       }
@@ -173,75 +177,77 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
-        val path = s"/works/$workId"
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, Nil, Nil, clock) { _ =>
+          val path = s"/works/$workId"
 
-        val expectedJson =
-          s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 1,
-             |  "results" : [
-             |    {
-             |      "id": "u8br9f3t",
-             |      "identifiers": [
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-system-number",
-             |            "label": "Sierra system number",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "i19520189",
-             |          "type": "Identifier"
-             |        },
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-identifier",
-             |            "label": "Sierra identifier",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "1952018",
-             |          "type": "Identifier"
-             |        }
-             |      ],
-             |      "locations": [
-             |        {
-             |          "locationType": {
-             |            "id": "closed-stores",
-             |            "label": "Closed stores",
-             |            "type": "LocationType"
-             |          },
-             |          "label": "Closed stores",
-             |          "accessConditions": [
-             |            {
-             |              "method": {
-             |                "id": "not-requestable",
-             |                "label": "Not requestable",
-             |                "type": "AccessMethod"
-             |              },
-             |              "status": {
-             |                "id": "temporarily-unavailable",
-             |                "label": "Temporarily unavailable",
-             |                "type": "AccessStatus"
-             |              },
-             |              "note": "This item is undergoing internal assessment or conservation work.",
-             |              "type": "AccessCondition"
-             |            }
-             |          ],
-             |          "type": "PhysicalLocation"
-             |        }
-             |      ],
-             |      "type": "Item"
-             |    }
-             |  ]
-             |}
+          val expectedJson =
+            s"""
+               |{
+               |  "type" : "ItemsList",
+               |  "totalResults" : 1,
+               |  "results" : [
+               |    {
+               |      "id": "u8br9f3t",
+               |      "identifiers": [
+               |        {
+               |          "identifierType": {
+               |            "id": "sierra-system-number",
+               |            "label": "Sierra system number",
+               |            "type": "IdentifierType"
+               |          },
+               |          "value": "i19520189",
+               |          "type": "Identifier"
+               |        },
+               |        {
+               |          "identifierType": {
+               |            "id": "sierra-identifier",
+               |            "label": "Sierra identifier",
+               |            "type": "IdentifierType"
+               |          },
+               |          "value": "1952018",
+               |          "type": "Identifier"
+               |        }
+               |      ],
+               |      "locations": [
+               |        {
+               |          "locationType": {
+               |            "id": "closed-stores",
+               |            "label": "Closed stores",
+               |            "type": "LocationType"
+               |          },
+               |          "label": "Closed stores",
+               |          "accessConditions": [
+               |            {
+               |              "method": {
+               |                "id": "not-requestable",
+               |                "label": "Not requestable",
+               |                "type": "AccessMethod"
+               |              },
+               |              "status": {
+               |                "id": "temporarily-unavailable",
+               |                "label": "Temporarily unavailable",
+               |                "type": "AccessStatus"
+               |              },
+               |              "note": "This item is undergoing internal assessment or conservation work.",
+               |              "type": "AccessCondition"
+               |            }
+               |          ],
+               |          "type": "PhysicalLocation"
+               |        }
+               |      ],
+               |      "type": "Item"
+               |    }
+               |  ]
+               |}
               """.stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedJson)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
           }
         }
       }
@@ -277,77 +283,78 @@ class ItemsApiFeatureTest
           )
         )
       )
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, sierraResponses, Nil, clock) { _ =>
+          val path = s"/works/$workId"
 
-      withItemsApi(catalogueResponses, sierraResponses, Nil, withClock()) { _ =>
-        val path = s"/works/$workId"
-
-        val expectedJson =
-          s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 1,
-             |  "results" : [
-             |    {
-             |      "id": "ankgmzj2",
-             |      "identifiers": [
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-system-number",
-             |            "label": "Sierra system number",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "i18355341",
-             |          "type": "Identifier"
-             |        },
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-identifier",
-             |            "label": "Sierra identifier",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "1835534",
-             |          "type": "Identifier"
-             |        }
-             |      ],
-             |      "locations": [
-             |        {
-             |          "label": "Medical Collection",
-             |          "accessConditions": [
-             |            {
-             |              "method": {
-             |                "id": "open-shelves",
-             |                "label": "Open shelves",
-             |                "type": "AccessMethod"
-             |              },
-             |              "status": {
-             |                "id": "temporarily-unavailable",
-             |                "label": "Temporarily unavailable",
-             |                "type": "AccessStatus"
-             |              },
-             |              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
-             |              "type": "AccessCondition"
-             |            }
-             |          ],
-             |          "shelfmark": "B105.T54 2004W48h",
-             |          "locationType": {
-             |            "id": "open-shelves",
-             |            "label": "Open shelves",
-             |            "type": "LocationType"
-             |          },
-             |          "type": "PhysicalLocation"
-             |        }
-             |      ],
-             |      "type": "Item"
-             |    }
-             |  ]
-             |}
+          val expectedJson =
+            s"""
+               |{
+               |  "type" : "ItemsList",
+               |  "totalResults" : 1,
+               |  "results" : [
+               |    {
+               |      "id": "ankgmzj2",
+               |      "identifiers": [
+               |        {
+               |          "identifierType": {
+               |            "id": "sierra-system-number",
+               |            "label": "Sierra system number",
+               |            "type": "IdentifierType"
+               |          },
+               |          "value": "i18355341",
+               |          "type": "Identifier"
+               |        },
+               |        {
+               |          "identifierType": {
+               |            "id": "sierra-identifier",
+               |            "label": "Sierra identifier",
+               |            "type": "IdentifierType"
+               |          },
+               |          "value": "1835534",
+               |          "type": "Identifier"
+               |        }
+               |      ],
+               |      "locations": [
+               |        {
+               |          "label": "Medical Collection",
+               |          "accessConditions": [
+               |            {
+               |              "method": {
+               |                "id": "open-shelves",
+               |                "label": "Open shelves",
+               |                "type": "AccessMethod"
+               |              },
+               |              "status": {
+               |                "id": "temporarily-unavailable",
+               |                "label": "Temporarily unavailable",
+               |                "type": "AccessStatus"
+               |              },
+               |              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
+               |              "type": "AccessCondition"
+               |            }
+               |          ],
+               |          "shelfmark": "B105.T54 2004W48h",
+               |          "locationType": {
+               |            "id": "open-shelves",
+               |            "label": "Open shelves",
+               |            "type": "LocationType"
+               |          },
+               |          "type": "PhysicalLocation"
+               |        }
+               |      ],
+               |      "type": "Item"
+               |    }
+               |  ]
+               |}
               """.stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.OK
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.OK
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedJson)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedJson)
+            }
           }
         }
       }
@@ -363,24 +370,26 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
-        val path = s"/works/$id"
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, Nil, Nil, clock) { _ =>
+          val path = s"/works/$id"
 
-        val expectedError =
-          s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "Work not found for identifier $id",
-             |  "type": "Error"
-             |}""".stripMargin
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "Work not found for identifier $id",
+               |  "type": "Error"
+               |}""".stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedError)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
           }
         }
       }
@@ -399,24 +408,26 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
-        val path = s"/works/$id"
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, Nil, Nil, clock) { _ =>
+          val path = s"/works/$id"
 
-        val expectedError =
-          s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "Work not found for identifier $id",
-             |  "type": "Error"
-             |}""".stripMargin
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 404,
+               |  "label": "Not Found",
+               |  "description": "Work not found for identifier $id",
+               |  "type": "Error"
+               |}""".stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.NotFound
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.NotFound
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedError)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
           }
         }
       }
@@ -432,24 +443,26 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
-        val path = s"/works/$id"
+      withClock() { clock =>
+        withItemsApi(catalogueResponses, Nil, Nil, clock) { _ =>
+          val path = s"/works/$id"
 
-        val expectedError =
-          s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 410,
-             |  "label": "Gone",
-             |  "description": "This work has been deleted",
-             |  "type": "Error"
-             |}""".stripMargin
+          val expectedError =
+            s"""
+               |{
+               |  "errorType": "http",
+               |  "httpStatus": 410,
+               |  "label": "Gone",
+               |  "description": "This work has been deleted",
+               |  "type": "Error"
+               |}""".stripMargin
 
-        whenGetRequestReady(path) { response =>
-          response.status shouldBe StatusCodes.Gone
+          whenGetRequestReady(path) { response =>
+            response.status shouldBe StatusCodes.Gone
 
-          withStringEntity(response.entity) {
-            assertJsonStringsAreEqual(_, expectedError)
+            withStringEntity(response.entity) {
+              assertJsonStringsAreEqual(_, expectedError)
+            }
           }
         }
       }
