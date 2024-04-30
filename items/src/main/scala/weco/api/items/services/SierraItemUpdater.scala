@@ -14,7 +14,7 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.ZonedDateTime
+import java.time.{Clock, LocalDateTime, ZonedDateTime}
 import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraItemUpdater(
   sierraSource: SierraSource,
   venueOpeningTimesLookup: VenueOpeningTimesLookup,
-  clock: LondonClock
+  clock: Clock
 )(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
@@ -120,14 +120,14 @@ class SierraItemUpdater(
       // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
 
-    val timeAtVenue = clock.timeInLondon()
+    val timeAtVenue = LocalDateTime.now(clock)
     val leadTimeInDays = accessCondition.method.id match {
       case "online-request" if timeAtVenue.getHour < 10  => 1
       case "online-request" if timeAtVenue.getHour >= 10 => 2
     }
     def daysAwayFromNow(slot: AvailabilitySlot): Int = {
       val openingTime = ZonedDateTime.parse(slot.to)
-      ChronoUnit.DAYS.between(clock.timeInLondon(), openingTime).toInt
+      ChronoUnit.DAYS.between(timeAtVenue, openingTime).toInt
     }
 
     venueOpeningTimesLookup

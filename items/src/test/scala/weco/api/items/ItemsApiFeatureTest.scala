@@ -58,7 +58,7 @@ class ItemsApiFeatureTest
         catalogueResponses,
         sierraResponses,
         contentApiVenueResponses,
-        11
+        withClock()
       ) { _ =>
         val path = s"/works/$workId"
 
@@ -139,7 +139,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -173,7 +173,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -278,7 +278,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, sierraResponses, Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, sierraResponses, Nil, withClock()) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -363,7 +363,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
@@ -399,7 +399,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
@@ -432,7 +432,7 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, Seq(), Seq(), 10) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil, withClock()) { _ =>
         val path = s"/works/$id"
 
         val expectedError =

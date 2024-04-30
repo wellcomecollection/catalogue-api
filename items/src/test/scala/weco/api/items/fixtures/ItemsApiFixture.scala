@@ -3,20 +3,14 @@ package weco.api.items.fixtures
 import akka.http.scaladsl.model.{HttpRequest, HttpResponse, Uri}
 import org.scalatest.Suite
 import weco.api.items.ItemsApi
-import weco.api.items.services.{
-  ItemUpdateService,
-  SierraItemUpdater,
-  VenueOpeningTimesLookup,
-  WorkLookup
-}
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater, VenueOpeningTimesLookup, WorkLookup}
 import weco.api.search.models.ApiConfig
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
-import weco.api.items.services.LondonClock
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{Clock, ZonedDateTime, ZoneId}
 
 trait ItemsApiFixture extends SierraSourceFixture {
   this: Suite =>
@@ -35,7 +29,7 @@ trait ItemsApiFixture extends SierraSourceFixture {
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     contentApiVenueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    time: Int
+    clock: Clock
   )(testWith: TestWith[Unit, R]): R =
     withActorSystem { implicit actorSystem =>
       withSierraSource(sierraResponses) { sierraSource =>
@@ -43,17 +37,16 @@ trait ItemsApiFixture extends SierraSourceFixture {
         with HttpGet {
           override val baseUri: Uri = Uri("http://content:9002")
         }
-        val mockTime = ZonedDateTime
-          .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
-        val londonClock = new LondonClock {
-          override def timeInLondon(): ZonedDateTime = mockTime
-        }
+//        val mockTime = ZonedDateTime
+//          .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
+//          .toInstant
+//        val clock = Clock.fixed(mockTime, ZoneId.of("Europe/London"))
 
         val itemsUpdaters = List(
           new SierraItemUpdater(
             sierraSource,
             new VenueOpeningTimesLookup(contentApiClient),
-            londonClock
+            clock
           )
         )
 
@@ -72,4 +65,11 @@ trait ItemsApiFixture extends SierraSourceFixture {
         }
       }
     }
+
+  def withClock(time: Int = 11): Clock = {
+    val mockTime = ZonedDateTime
+      .of(2024, 4, 24, time, 0, 0, 0, ZoneId.of("Europe/London"))
+      .toInstant
+    Clock.fixed(mockTime, ZoneId.of("Europe/London"))
+  }
 }
