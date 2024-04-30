@@ -26,6 +26,8 @@ The CI flow looks as follows:
 Currently only the search API can be run locally. It will use the configured pipeline index in
 [`ElastiConfig.scala`](../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala).
 
+You will need to have signed in to the AWS on the CLI to allow the application to assume the required role.
+
 From the root of the repository:
 
 ```bash
