@@ -8,32 +8,39 @@ case class ApiConfig(
   publicScheme: String,
   publicHost: String,
   publicRootPath: String,
-  defaultPageSize: Int
+  defaultPageSize: Int,
+  // Used to determine whether we're running in a dev environment
+  isDev: Boolean
 )
 
 object ApiConfig {
   private val defaultRootUri = "https://api.wellcomecollection.org/catalogue/v2"
 
-  def build(config: Config): ApiConfig =
+  def build(config: Config): ApiConfig = {
+    val apiPublicRoot = config
+      .getStringOption("api.public-root")
+      .getOrElse(defaultRootUri)
+
     ApiConfig(
-      publicRootUri = Uri(
-        config
-          .getStringOption("api.public-root")
-          .getOrElse(defaultRootUri)
-      ),
+      publicRootUri = Uri(apiPublicRoot),
       defaultPageSize = config
         .getIntOption("api.pageSize")
-        .getOrElse(10)
+        .getOrElse(10),
+      // Infer whether we're running in a dev environment from the public root
+      isDev = apiPublicRoot.contains("localhost")
     )
+  }
 
   def apply(
     publicRootUri: Uri,
-    defaultPageSize: Int
+    defaultPageSize: Int,
+    isDev: Boolean = false
   ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,
       publicRootPath = publicRootUri.path.toString,
-      defaultPageSize = defaultPageSize
+      defaultPageSize = defaultPageSize,
+      isDev = isDev
     )
 }

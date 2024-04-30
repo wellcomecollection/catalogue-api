@@ -1,6 +1,7 @@
 package weco.api.search.config.builders
 
 import com.sksamuel.elastic4s.ElasticClient
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import weco.api.search.models.PipelineClusterElasticConfig
@@ -18,14 +19,26 @@ object PipelineElasticClientBuilder {
 
   def apply(
     serviceName: String,
-    pipelineDate: String = PipelineClusterElasticConfig.pipelineDate
+    pipelineDate: String = PipelineClusterElasticConfig.pipelineDate,
+    isDev: Boolean = false
   ): ElasticClient = {
-    implicit val secretsClient: SecretsManagerClient =
-      SecretsManagerClient.builder().build()
+
+    val secretsManagerClientBuilder = SecretsManagerClient.builder()
+
+    implicit val secretsClient: SecretsManagerClient = if(isDev) {
+      secretsManagerClientBuilder
+        .credentialsProvider(ProfileCredentialsProvider.create("catalogue-developer"))
+        .build()
+    } else {
+      secretsManagerClientBuilder.build()
+    }
+
+    val hostType = if (isDev) "public_host" else "private_host"
 
     val hostname = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/private_host"
+      s"elasticsearch/pipeline_storage_$pipelineDate/$hostType"
     )
+
     val port = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/port"
     ).toInt

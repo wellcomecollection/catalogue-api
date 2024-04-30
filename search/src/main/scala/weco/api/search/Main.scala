@@ -21,11 +21,21 @@ object Main extends WellcomeTypesafeApp {
     implicit val executionContext: ExecutionContext =
       actorSystem.dispatcher
 
-    Tracing.init(config)
-
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = PipelineElasticClientBuilder("catalogue_api")
+    // Don't initialise tracing in dev environments
+    if (!apiConfig.isDev) {
+      info(s"Running in deployed mode @ ${apiConfig.publicHost}")
+      Tracing.init(config)
+    } else {
+      info(s"Running in dev mode @ ${apiConfig.publicHost}")
+    }
+
+    val elasticClient = PipelineElasticClientBuilder(
+      serviceName = "catalogue_api",
+      isDev = apiConfig.isDev
+    )
+
     val elasticConfig = PipelineClusterElasticConfig()
 
     val router = new SearchApi(
