@@ -33,7 +33,6 @@ class SearchApi(
     extends CustomDirectives
     with IdentifierDirectives {
 
-
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {

@@ -25,9 +25,10 @@ object PipelineElasticClientBuilder {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
 
-    implicit val secretsClient: SecretsManagerClient = if(isDev) {
+    implicit val secretsClient: SecretsManagerClient = if (isDev) {
       secretsManagerClientBuilder
-        .credentialsProvider(ProfileCredentialsProvider.create("catalogue-developer"))
+        .credentialsProvider(
+          ProfileCredentialsProvider.create("catalogue-developer"))
         .build()
     } else {
       secretsManagerClientBuilder.build()
