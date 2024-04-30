@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraItemUpdater(
   sierraSource: SierraSource,
   venueOpeningTimesLookup: VenueOpeningTimesLookup,
-  clock: Clock
+  venueClock: Clock
 )(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
@@ -66,11 +66,9 @@ class SierraItemUpdater(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -122,7 +120,7 @@ class SierraItemUpdater(
       // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
 
-    val timeAtVenue = LocalDateTime.now(clock)
+    val timeAtVenue = LocalDateTime.now(venueClock)
     val leadTimeInDays = accessCondition.method.id match {
       case "online-request" if timeAtVenue.getHour < 10  => 1
       case "online-request" if timeAtVenue.getHour >= 10 => 2

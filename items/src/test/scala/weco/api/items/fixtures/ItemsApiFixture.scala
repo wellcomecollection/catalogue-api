@@ -30,43 +30,6 @@ trait ItemsApiFixture extends SierraSourceFixture {
       publicRootPath = "/catalogue"
     )
 
-  def withItemsApi[R](
-    catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    contentApiVenueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    clock: Clock
-  )(testWith: TestWith[Unit, R]): R =
-    withActorSystem { implicit actorSystem =>
-      withSierraSource(sierraResponses) { sierraSource =>
-        val contentApiClient = new MemoryHttpClient(contentApiVenueResponses)
-        with HttpGet {
-          override val baseUri: Uri = Uri("http://content:9002")
-        }
-
-        val itemsUpdaters = List(
-          new SierraItemUpdater(
-            sierraSource,
-            new VenueOpeningTimesLookup(contentApiClient),
-            clock
-          )
-        )
-
-        val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
-        with HttpGet {
-          override val baseUri: Uri = Uri("http://catalogue:9001")
-        }
-
-        val api: ItemsApi = new ItemsApi(
-          itemUpdateService = new ItemUpdateService(itemsUpdaters),
-          workLookup = new WorkLookup(catalogueApiClient)
-        )
-
-        withApp(api.routes) { _ =>
-          testWith(())
-        }
-      }
-    }
-
   def withClock[R](
     dateTime: String = "2024-04-24T11:00:00.000Z"
   )(testWith: TestWith[Clock, R]): R = {
@@ -74,4 +37,42 @@ trait ItemsApiFixture extends SierraSourceFixture {
     val zoneId = ZoneId.of("Europe/London")
     testWith(Clock.fixed(instant, zoneId))
   }
+
+  def withItemsApi[R](
+    catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    contentApiVenueResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
+  )(testWith: TestWith[Unit, R]): R =
+    withActorSystem { implicit actorSystem =>
+      withClock() { clock =>
+        withSierraSource(sierraResponses) { sierraSource =>
+          val contentApiClient = new MemoryHttpClient(contentApiVenueResponses)
+          with HttpGet {
+            override val baseUri: Uri = Uri("http://content:9002")
+          }
+
+          val itemsUpdaters = List(
+            new SierraItemUpdater(
+              sierraSource,
+              new VenueOpeningTimesLookup(contentApiClient),
+              clock
+            )
+          )
+
+          val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
+          with HttpGet {
+            override val baseUri: Uri = Uri("http://catalogue:9001")
+          }
+
+          val api: ItemsApi = new ItemsApi(
+            itemUpdateService = new ItemUpdateService(itemsUpdaters),
+            workLookup = new WorkLookup(catalogueApiClient)
+          )
+
+          withApp(api.routes) { _ =>
+            testWith(())
+          }
+        }
+      }
+    }
 }

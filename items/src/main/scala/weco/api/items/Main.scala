@@ -43,7 +43,7 @@ object Main extends WellcomeTypesafeApp {
       override val baseUri: Uri = config.getString("content.api.publicRoot")
     }
     val venueOpeningTimeLookup = new VenueOpeningTimesLookup(contentHttpClient)
-    val clock = Clock.system(ZoneId.of("Europe/London"))
+    val venueClock = Clock.system(ZoneId.of("Europe/London"))
 
     // To add an item updater for a new service:
     // implement ItemUpdater and add it to the list here
@@ -51,7 +51,7 @@ object Main extends WellcomeTypesafeApp {
       new SierraItemUpdater(
         sierraSource,
         venueOpeningTimeLookup,
-        clock
+        venueClock
       )
     )
 
