@@ -47,7 +47,18 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses, sierraResponses) { _ =>
+      val contentApiVenueResponses = Seq(
+        (
+          contentApiVenueRequest("library"),
+          contentApiVenueResponse()
+        )
+      )
+
+      withItemsApi(
+        catalogueResponses,
+        sierraResponses,
+        contentApiVenueResponses
+      ) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
@@ -96,10 +107,10 @@ class ItemsApiFeatureTest
              |        }
              |      ],
              |      "availableDates" : [
-             |        {
-             |          "from" : "2022-01-10T10:00:00+0000",
-             |          "to" : "2022-01-11T10:00:00+0000"
-             |        }
+             |         {
+             |            "from": "2024-04-26T09:00:00.000Z",
+             |            "to": "2024-04-26T17:00:00.000Z"
+             |         }
              |      ],
              |      "type" : "Item"
              |    }
@@ -127,18 +138,18 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
           s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 0,
-             |  "results" : [
-             |  ]
-             |}
-              """.stripMargin
+                   |{
+                   |  "type" : "ItemsList",
+                   |  "totalResults" : 0,
+                   |  "results" : [
+                   |  ]
+                   |}
+                  """.stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.OK
@@ -161,69 +172,69 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
           s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 1,
-             |  "results" : [
-             |    {
-             |      "id": "u8br9f3t",
-             |      "identifiers": [
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-system-number",
-             |            "label": "Sierra system number",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "i19520189",
-             |          "type": "Identifier"
-             |        },
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-identifier",
-             |            "label": "Sierra identifier",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "1952018",
-             |          "type": "Identifier"
-             |        }
-             |      ],
-             |      "locations": [
-             |        {
-             |          "locationType": {
-             |            "id": "closed-stores",
-             |            "label": "Closed stores",
-             |            "type": "LocationType"
-             |          },
-             |          "label": "Closed stores",
-             |          "accessConditions": [
-             |            {
-             |              "method": {
-             |                "id": "not-requestable",
-             |                "label": "Not requestable",
-             |                "type": "AccessMethod"
-             |              },
-             |              "status": {
-             |                "id": "temporarily-unavailable",
-             |                "label": "Temporarily unavailable",
-             |                "type": "AccessStatus"
-             |              },
-             |              "note": "This item is undergoing internal assessment or conservation work.",
-             |              "type": "AccessCondition"
-             |            }
-             |          ],
-             |          "type": "PhysicalLocation"
-             |        }
-             |      ],
-             |      "type": "Item"
-             |    }
-             |  ]
-             |}
-              """.stripMargin
+                   |{
+                   |  "type" : "ItemsList",
+                   |  "totalResults" : 1,
+                   |  "results" : [
+                   |    {
+                   |      "id": "u8br9f3t",
+                   |      "identifiers": [
+                   |        {
+                   |          "identifierType": {
+                   |            "id": "sierra-system-number",
+                   |            "label": "Sierra system number",
+                   |            "type": "IdentifierType"
+                   |          },
+                   |          "value": "i19520189",
+                   |          "type": "Identifier"
+                   |        },
+                   |        {
+                   |          "identifierType": {
+                   |            "id": "sierra-identifier",
+                   |            "label": "Sierra identifier",
+                   |            "type": "IdentifierType"
+                   |          },
+                   |          "value": "1952018",
+                   |          "type": "Identifier"
+                   |        }
+                   |      ],
+                   |      "locations": [
+                   |        {
+                   |          "locationType": {
+                   |            "id": "closed-stores",
+                   |            "label": "Closed stores",
+                   |            "type": "LocationType"
+                   |          },
+                   |          "label": "Closed stores",
+                   |          "accessConditions": [
+                   |            {
+                   |              "method": {
+                   |                "id": "not-requestable",
+                   |                "label": "Not requestable",
+                   |                "type": "AccessMethod"
+                   |              },
+                   |              "status": {
+                   |                "id": "temporarily-unavailable",
+                   |                "label": "Temporarily unavailable",
+                   |                "type": "AccessStatus"
+                   |              },
+                   |              "note": "This item is undergoing internal assessment or conservation work.",
+                   |              "type": "AccessCondition"
+                   |            }
+                   |          ],
+                   |          "type": "PhysicalLocation"
+                   |        }
+                   |      ],
+                   |      "type": "Item"
+                   |    }
+                   |  ]
+                   |}
+                  """.stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.OK
@@ -253,83 +264,82 @@ class ItemsApiFeatureTest
             entity = HttpEntity(
               contentType = ContentTypes.`application/json`,
               f"""
-                 |{
-                 |  "total": 1,
-                 |  "start": 0,
-                 |  "entries": [
-                 |    ${readResource("sierra-item-on-loan.json")}
-                 |  ]
-                 |}
-                 |""".stripMargin
+                     |{
+                     |  "total": 1,
+                     |  "start": 0,
+                     |  "entries": [
+                     |    ${readResource("sierra-item-on-loan.json")}
+                     |  ]
+                     |}
+                     |""".stripMargin
             )
           )
         )
       )
-
-      withItemsApi(catalogueResponses, sierraResponses) { _ =>
+      withItemsApi(catalogueResponses, sierraResponses, Nil) { _ =>
         val path = s"/works/$workId"
 
         val expectedJson =
           s"""
-             |{
-             |  "type" : "ItemsList",
-             |  "totalResults" : 1,
-             |  "results" : [
-             |    {
-             |      "id": "ankgmzj2",
-             |      "identifiers": [
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-system-number",
-             |            "label": "Sierra system number",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "i18355341",
-             |          "type": "Identifier"
-             |        },
-             |        {
-             |          "identifierType": {
-             |            "id": "sierra-identifier",
-             |            "label": "Sierra identifier",
-             |            "type": "IdentifierType"
-             |          },
-             |          "value": "1835534",
-             |          "type": "Identifier"
-             |        }
-             |      ],
-             |      "locations": [
-             |        {
-             |          "label": "Medical Collection",
-             |          "accessConditions": [
-             |            {
-             |              "method": {
-             |                "id": "open-shelves",
-             |                "label": "Open shelves",
-             |                "type": "AccessMethod"
-             |              },
-             |              "status": {
-             |                "id": "temporarily-unavailable",
-             |                "label": "Temporarily unavailable",
-             |                "type": "AccessStatus"
-             |              },
-             |              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
-             |              "type": "AccessCondition"
-             |            }
-             |          ],
-             |          "shelfmark": "B105.T54 2004W48h",
-             |          "locationType": {
-             |            "id": "open-shelves",
-             |            "label": "Open shelves",
-             |            "type": "LocationType"
-             |          },
-             |          "type": "PhysicalLocation"
-             |        }
-             |      ],
-             |      "type": "Item"
-             |    }
-             |  ]
-             |}
-              """.stripMargin
+                   |{
+                   |  "type" : "ItemsList",
+                   |  "totalResults" : 1,
+                   |  "results" : [
+                   |    {
+                   |      "id": "ankgmzj2",
+                   |      "identifiers": [
+                   |        {
+                   |          "identifierType": {
+                   |            "id": "sierra-system-number",
+                   |            "label": "Sierra system number",
+                   |            "type": "IdentifierType"
+                   |          },
+                   |          "value": "i18355341",
+                   |          "type": "Identifier"
+                   |        },
+                   |        {
+                   |          "identifierType": {
+                   |            "id": "sierra-identifier",
+                   |            "label": "Sierra identifier",
+                   |            "type": "IdentifierType"
+                   |          },
+                   |          "value": "1835534",
+                   |          "type": "Identifier"
+                   |        }
+                   |      ],
+                   |      "locations": [
+                   |        {
+                   |          "label": "Medical Collection",
+                   |          "accessConditions": [
+                   |            {
+                   |              "method": {
+                   |                "id": "open-shelves",
+                   |                "label": "Open shelves",
+                   |                "type": "AccessMethod"
+                   |              },
+                   |              "status": {
+                   |                "id": "temporarily-unavailable",
+                   |                "label": "Temporarily unavailable",
+                   |                "type": "AccessStatus"
+                   |              },
+                   |              "note": "Item is in use by another reader. Please ask at Library Enquiry Desk.",
+                   |              "type": "AccessCondition"
+                   |            }
+                   |          ],
+                   |          "shelfmark": "B105.T54 2004W48h",
+                   |          "locationType": {
+                   |            "id": "open-shelves",
+                   |            "label": "Open shelves",
+                   |            "type": "LocationType"
+                   |          },
+                   |          "type": "PhysicalLocation"
+                   |        }
+                   |      ],
+                   |      "type": "Item"
+                   |    }
+                   |  ]
+                   |}
+                  """.stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.OK
@@ -351,18 +361,18 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
           s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "Work not found for identifier $id",
-             |  "type": "Error"
-             |}""".stripMargin
+                   |{
+                   |  "errorType": "http",
+                   |  "httpStatus": 404,
+                   |  "label": "Not Found",
+                   |  "description": "Work not found for identifier $id",
+                   |  "type": "Error"
+                   |}""".stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.NotFound
@@ -387,18 +397,18 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
           s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 404,
-             |  "label": "Not Found",
-             |  "description": "Work not found for identifier $id",
-             |  "type": "Error"
-             |}""".stripMargin
+                   |{
+                   |  "errorType": "http",
+                   |  "httpStatus": 404,
+                   |  "label": "Not Found",
+                   |  "description": "Work not found for identifier $id",
+                   |  "type": "Error"
+                   |}""".stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.NotFound
@@ -420,18 +430,18 @@ class ItemsApiFeatureTest
         )
       )
 
-      withItemsApi(catalogueResponses) { _ =>
+      withItemsApi(catalogueResponses, Nil, Nil) { _ =>
         val path = s"/works/$id"
 
         val expectedError =
           s"""
-             |{
-             |  "errorType": "http",
-             |  "httpStatus": 410,
-             |  "label": "Gone",
-             |  "description": "This work has been deleted",
-             |  "type": "Error"
-             |}""".stripMargin
+                   |{
+                   |  "errorType": "http",
+                   |  "httpStatus": 410,
+                   |  "label": "Gone",
+                   |  "description": "This work has been deleted",
+                   |  "type": "Error"
+                   |}""".stripMargin
 
         whenGetRequestReady(path) { response =>
           response.status shouldBe StatusCodes.Gone

@@ -15,11 +15,13 @@ import weco.catalogue.display_model.identifiers.{
 import weco.catalogue.display_model.locations._
 import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
 import weco.fixtures.TestWith
+import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.json.utils.JsonAssertions
 import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
 
+import java.time.{Clock, Instant, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -34,11 +36,34 @@ class ItemUpdateServiceTest
     with IntegrationPatience {
 
   def withSierraItemUpdater[R](
-    responses: Seq[(HttpRequest, HttpResponse)] = Seq()
+    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    contentApiResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    clock: Clock
   )(testWith: TestWith[ItemUpdater, R]): R =
-    withSierraSource(responses) { sierraSource =>
-      testWith(new SierraItemUpdater(sierraSource))
+    withActorSystem { implicit actorSystem =>
+      withSierraSource(sierraResponses) { sierraSource =>
+        val contentApiClient = new MemoryHttpClient(contentApiResponses)
+        with HttpGet {
+          override val baseUri: Uri = Uri("http://content:9002")
+        }
+
+        testWith(
+          new SierraItemUpdater(
+            sierraSource,
+            new VenueOpeningTimesLookup(contentApiClient),
+            clock
+          )
+        )
+      }
     }
+
+  def withClock[R](
+    dateTime: String = "2024-04-24T09:00:00.000Z"
+  )(testWith: TestWith[Clock, R]): R = {
+    val instant = Instant.parse(dateTime)
+    val zoneId = ZoneId.of("Europe/London")
+    testWith(Clock.fixed(instant, zoneId))
+  }
 
   def withItemUpdateService[R](
     itemUpdaters: List[ItemUpdater]
@@ -66,7 +91,8 @@ class ItemUpdateServiceTest
           ),
           accessConditions = Nil
         )
-      )
+      ),
+      availableDates = None
     )
 
   def missingItemResponse(sierraItemNumber: SierraItemNumber) = Seq(
@@ -153,8 +179,12 @@ class ItemUpdateServiceTest
   val availableDates = Some(
     List(
       AvailabilitySlot(
-        "2022-01-10T10:00:00+0000",
-        "2022-01-11T10:00:00+0000"
+        "2024-04-25T09:00:00.000Z",
+        "2024-04-25T19:00:00.000Z"
+      ),
+      AvailabilitySlot(
+        "2024-04-26T09:00:00.000Z",
+        "2024-04-26T17:00:00.000Z"
       )
     )
   )
@@ -180,7 +210,8 @@ class ItemUpdateServiceTest
         _ =>
           DisplayItem(
             id = Some(createCanonicalId),
-            identifiers = List(createSierraSystemSourceIdentifier)
+            identifiers = List(createSierraSystemSourceIdentifier),
+            availableDates = None
           )
       )
       .toList
@@ -226,7 +257,8 @@ class ItemUpdateServiceTest
           _ =>
             DisplayItem(
               id = Some(createCanonicalId),
-              identifiers = List(createSierraSystemSourceIdentifier)
+              identifiers = List(createSierraSystemSourceIdentifier),
+              availableDates = None
             )
         )
         .toList
@@ -270,39 +302,45 @@ class ItemUpdateServiceTest
     val itemStates = Table(
       (
         "Sierra Responses",
+        "Content api Venue Responses",
         "Catalogue Work",
         "AccessCondition",
         "AvailableDates"
       ),
       (
         onHoldItemResponses(workWithAvailableItemNumber),
+        Nil,
         workWithAvailableItem,
         onHoldAccessCondition,
         None
       ),
       (
         onHoldItemResponses(workWithUnavailableItemNumber),
+        Nil,
         workWithUnavailableItem,
         onHoldAccessCondition,
         None
       ),
       (
         availableItemResponses(workWithAvailableItemNumber),
+        Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
         workWithAvailableItem,
         onlineRequestAccessCondition,
         availableDates
       ),
       (
         availableItemResponses(workWithUnavailableItemNumber),
+        Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
         workWithUnavailableItem,
         onlineRequestAccessCondition,
         availableDates
       ),
       (
         missingItemResponse(workWithAvailableItemNumber),
+        Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
         workWithAvailableItem,
         availableOnlineAccessCondition,
-        availableDates // this should be None, possible bug in the Sierra updater
+        availableDates
       )
     )
 
@@ -310,54 +348,138 @@ class ItemUpdateServiceTest
       forAll(itemStates) {
         (
           sierraResponses,
+          contentApiVenueResponse,
           work,
           expectedAccessCondition,
           expectedAvailableDates
         ) =>
-          withSierraItemUpdater(sierraResponses) { itemUpdater =>
-            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-                updatedItems.length shouldBe 2
+          withClock("2018-04-29T10:15:30.00Z") { clock =>
+            withSierraItemUpdater(
+              sierraResponses,
+              contentApiVenueResponse,
+              clock
+            ) { itemUpdater =>
+              withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+                whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+                  updatedItems.length shouldBe 2
 
-                val physicalItem = updatedItems.head
-                val digitalItem = updatedItems(1)
-                val updatedAccessCondition = physicalItem.locations.head
-                  .asInstanceOf[DisplayPhysicalLocation]
-                  .accessConditions
-                  .head
+                  val physicalItem = updatedItems.head
+                  val digitalItem = updatedItems(1)
+                  val updatedAccessCondition = physicalItem.locations.head
+                    .asInstanceOf[DisplayPhysicalLocation]
+                    .accessConditions
+                    .head
 
-                updatedAccessCondition shouldBe expectedAccessCondition
+                  updatedAccessCondition shouldBe expectedAccessCondition
 
-                digitalItem shouldBe dummyDigitalItem
+                  digitalItem shouldBe dummyDigitalItem
+                }
               }
             }
           }
+
       }
     }
 
     it(
-      "adds available dates based on the item's DisplayLocationType and accessConditions"
+      "adds correct available dates based on the item's DisplayLocationType and accessConditions, request before 10am"
     ) {
-      forAll(itemStates) {
-        (
-          sierraResponses,
-          work,
-          expectedAccessCondition,
-          expectedAvailableDates
-        ) =>
-          withSierraItemUpdater(sierraResponses) { itemUpdater =>
-            withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-              whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+      withClock("2024-04-24T08:58:00.000Z") { clock =>
+        withSierraItemUpdater(
+          availableItemResponses(workWithAvailableItemNumber),
+          Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(workWithAvailableItem)) {
+              updatedItems =>
                 updatedItems.length shouldBe 2
 
                 val physicalItem = updatedItems.head
                 val digitalItem = updatedItems(1)
 
-                physicalItem.availableDates shouldBe expectedAvailableDates
+                physicalItem.availableDates shouldBe Some(
+                  List(
+                    AvailabilitySlot(
+                      "2024-04-25T09:00:00.000Z",
+                      "2024-04-25T19:00:00.000Z"
+                    ),
+                    AvailabilitySlot(
+                      "2024-04-26T09:00:00.000Z",
+                      "2024-04-26T17:00:00.000Z"
+                    )
+                  )
+                )
                 digitalItem shouldBe dummyDigitalItem
-              }
+            }
+
+          }
+        }
+      }
+
+    }
+
+    it(
+      "adds correct available dates based on the item's DisplayLocationType and accessConditions, request after 10am"
+    ) {
+      withClock() { clock =>
+        withSierraItemUpdater(
+          availableItemResponses(workWithAvailableItemNumber),
+          Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(workWithAvailableItem)) {
+              updatedItems =>
+                updatedItems.length shouldBe 2
+
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+
+                physicalItem.availableDates shouldBe Some(
+                  List(
+                    AvailabilitySlot(
+                      "2024-04-26T09:00:00.000Z",
+                      "2024-04-26T17:00:00.000Z"
+                    )
+                  )
+                )
+                digitalItem shouldBe dummyDigitalItem
             }
           }
+        }
+      }
+    }
+
+    it(
+      "adds available dates as an empty list if contentApiVenueRequest returns an error"
+    ) {
+      withClock() { clock =>
+        withSierraItemUpdater(
+          availableItemResponses(workWithAvailableItemNumber),
+          Seq(
+            (
+              contentApiVenueRequest("library"),
+              contentApiVenueErrorResponse(500)
+            )
+          ),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(workWithAvailableItem)) {
+              updatedItems =>
+                updatedItems.length shouldBe 2
+
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+
+                physicalItem.availableDates shouldBe Some(
+                  List()
+                )
+                digitalItem shouldBe dummyDigitalItem
+            }
+          }
+        }
       }
     }
 
@@ -378,23 +500,29 @@ class ItemUpdateServiceTest
                 value = itemNumber.withCheckDigit
               )
             ),
-            locations = Nil
+            locations = Nil,
+            availableDates = None
           )
         )
       )
-      withSierraItemUpdater(missingItemResponse(itemNumber)) { itemUpdater =>
-        withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
-          whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
-            updatedItems.length shouldBe 1
+      withClock() { clock =>
+        withSierraItemUpdater(
+          missingItemResponse(itemNumber),
+          Seq(),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(work)) { updatedItems =>
+              updatedItems.length shouldBe 1
 
-            val physicalItem = updatedItems.head
+              val physicalItem = updatedItems.head
 
-            physicalItem.availableDates shouldBe None
+              physicalItem.availableDates shouldBe None
+            }
           }
         }
       }
     }
-
   }
 
   def createPhysicalItemWith(
@@ -420,7 +548,8 @@ class ItemUpdateServiceTest
     DisplayItem(
       id = Some(createCanonicalId),
       identifiers = List(itemSourceIdentifier),
-      locations = List(physicalItemLocation)
+      locations = List(physicalItemLocation),
+      availableDates = None
     )
   }
 

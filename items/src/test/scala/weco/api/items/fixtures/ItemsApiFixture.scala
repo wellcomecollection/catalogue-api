@@ -6,6 +6,7 @@ import weco.api.items.ItemsApi
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,
+  VenueOpeningTimesLookup,
   WorkLookup
 }
 import weco.api.search.models.ApiConfig
@@ -14,6 +15,7 @@ import weco.http.client.{HttpGet, MemoryHttpClient}
 import weco.sierra.fixtures.SierraSourceFixture
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import java.time.{Clock, Instant, ZoneId}
 
 trait ItemsApiFixture extends SierraSourceFixture {
   this: Suite =>
@@ -28,28 +30,48 @@ trait ItemsApiFixture extends SierraSourceFixture {
       publicRootPath = "/catalogue"
     )
 
+  def withClock[R](
+    dateTime: String = "2024-04-24T11:00:00.000Z"
+  )(testWith: TestWith[Clock, R]): R = {
+    val instant = Instant.parse(dateTime)
+    val zoneId = ZoneId.of("Europe/London")
+    testWith(Clock.fixed(instant, zoneId))
+  }
+
   def withItemsApi[R](
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
+    sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
+    contentApiVenueResponses: Seq[(HttpRequest, HttpResponse)] = Seq()
   )(testWith: TestWith[Unit, R]): R =
     withActorSystem { implicit actorSystem =>
-      withSierraSource(sierraResponses) { sierraSource =>
-        val itemsUpdaters = List(
-          new SierraItemUpdater(sierraSource)
-        )
+      withClock() { clock =>
+        withSierraSource(sierraResponses) { sierraSource =>
+          val contentApiClient = new MemoryHttpClient(contentApiVenueResponses)
+          with HttpGet {
+            override val baseUri: Uri = Uri("http://content:9002")
+          }
 
-        val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
-        with HttpGet {
-          override val baseUri: Uri = Uri("http://catalogue:9001")
-        }
+          val itemsUpdaters = List(
+            new SierraItemUpdater(
+              sierraSource,
+              new VenueOpeningTimesLookup(contentApiClient),
+              clock
+            )
+          )
 
-        val api: ItemsApi = new ItemsApi(
-          itemUpdateService = new ItemUpdateService(itemsUpdaters),
-          workLookup = new WorkLookup(catalogueApiClient)
-        )
+          val catalogueApiClient = new MemoryHttpClient(catalogueResponses)
+          with HttpGet {
+            override val baseUri: Uri = Uri("http://catalogue:9001")
+          }
 
-        withApp(api.routes) { _ =>
-          testWith(())
+          val api: ItemsApi = new ItemsApi(
+            itemUpdateService = new ItemUpdateService(itemsUpdaters),
+            workLookup = new WorkLookup(catalogueApiClient)
+          )
+
+          withApp(api.routes) { _ =>
+            testWith(())
+          }
         }
       }
     }

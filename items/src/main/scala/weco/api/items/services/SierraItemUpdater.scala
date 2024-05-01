@@ -14,6 +14,8 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
+import java.time.{Clock, LocalDateTime, ZonedDateTime}
+import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -22,7 +24,11 @@ import scala.concurrent.{ExecutionContext, Future}
   *  can be placed on an item.
   *
   */
-class SierraItemUpdater(sierraSource: SierraSource)(
+class SierraItemUpdater(
+  sierraSource: SierraSource,
+  venueOpeningTimesLookup: VenueOpeningTimesLookup,
+  venueClock: Clock
+)(
   implicit executionContext: ExecutionContext
 ) extends ItemUpdater
     with Logging
@@ -92,17 +98,61 @@ class SierraItemUpdater(sierraSource: SierraSource)(
 
     } yield accessConditions
 
-  private def getAvailableDates: Option[List[AvailabilitySlot]] =
-    // call Prismic to get opening times
-    // generate list of dates on now + opening times
-    Some(
-      List(
-        AvailabilitySlot(
-          "2022-01-10T10:00:00+0000",
-          "2022-01-11T10:00:00+0000"
-        )
-      )
+  private def setAvailableDates(
+    item: DisplayItem
+  ): Future[DisplayItem] = {
+    // there is only ever one location per physicalItem and one accessCondition per location,
+    // but this may sometimes be empty if it could not be fetched.
+    val accessCondition = item.locations.headOption
+      .flatMap(_.accessConditions.headOption)
+
+    if (accessCondition.exists(_.isRequestable)) {
+      getAvailableDates(accessCondition.head)
+        .map(availableDates => item.copy(availableDates = Some(availableDates)))
+    } else {
+      Future.successful(item)
+    }
+  }
+
+  private def getAvailableDates(
+    accessCondition: DisplayAccessCondition
+  ): Future[List[AvailabilitySlot]] = {
+    val venueFromDisplayAccessCondition = Map(
+      "online-request" -> "library"
+      // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
+
+    val timeAtVenue = LocalDateTime.now(venueClock)
+    val leadTimeInDays = accessCondition.method.id match {
+      case "online-request" if timeAtVenue.getHour < 10  => 1
+      case "online-request" if timeAtVenue.getHour >= 10 => 2
+    }
+    def daysAwayFromNow(slot: AvailabilitySlot): Int = {
+      val openingTime = ZonedDateTime.parse(slot.to)
+      ChronoUnit.DAYS.between(timeAtVenue, openingTime).toInt
+    }
+
+    venueOpeningTimesLookup
+      .byVenueName(
+        venueFromDisplayAccessCondition.get(accessCondition.method.id)
+      )
+      .map {
+        case Right(venue) =>
+          venue.openingTimes
+            .map(
+              openClose => AvailabilitySlot(openClose.open, openClose.close)
+            )
+            // the list of AvailabilitySlots, as returned from VenueOpeningTimesLookup, starts at "today"
+            // however, it takes ${leadTimeInDays} days for the item to be fetched from stores
+            // so we need to drop slots that are less than ${leadTimeInDays} days away from today
+            .dropWhile(slot => daysAwayFromNow(slot) < leadTimeInDays)
+        case Left(venueOpeningTimesLookupError) =>
+          error(
+            s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
+          )
+          List.empty
+      }
+  }
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     // item number -> item
@@ -118,35 +168,24 @@ class SierraItemUpdater(sierraSource: SierraSource)(
       s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
     )
 
-    for {
+    val allItems = for {
       accessConditions <- staleItems.size match {
         case 0 =>
           Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
         case _ => getAccessConditions(staleItems)
       }
 
-      updatedItems = itemMap.map {
-        case (sierraId, item) =>
-          accessConditions.get(sierraId) match {
-            case Some(updatedAc) => updateAccessCondition(item, updatedAc)
-            case None            => item
-          }
-      }
+      updatedItems = itemMap
+        .map {
+          case (sierraId, item) =>
+            accessConditions.get(sierraId) match {
+              case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+              case None            => item
+            }
+        }
+        .map(setAvailableDates)
 
-      updatedItemsWithAvailableDates = updatedItems.map(setAvailableDates)
-    } yield updatedItemsWithAvailableDates.toSeq
-  }
-
-  def setAvailableDates(item: DisplayItem) = {
-
-    // there is only ever one location per physicalItem and one accessCondition per location,
-    // but this may sometimes be empty if it could not be fetched.
-    val isRequestable = item.locations.headOption
-      .flatMap(_.accessConditions.headOption)
-      .map(_.isRequestable)
-    isRequestable match {
-      case Some(true) => item.copy(availableDates = getAvailableDates)
-      case _          => item
-    }
+    } yield Future.sequence(updatedItems.toSeq)
+    allItems.flatten
   }
 }

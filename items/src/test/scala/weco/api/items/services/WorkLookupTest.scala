@@ -185,7 +185,8 @@ class WorkLookupTest
                     )
                   )
                 )
-              )
+              ),
+              availableDates = None
             )
           )
         )
