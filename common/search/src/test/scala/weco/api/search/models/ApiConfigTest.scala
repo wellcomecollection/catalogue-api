@@ -18,7 +18,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicScheme shouldBe "https"
         publicHost shouldBe "api.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
-        apiConfig.environment shouldBe ProdEnvironment
+        apiConfig.environment shouldBe ApiEnvironment.Prod
     }
   }
 
@@ -34,7 +34,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicScheme shouldBe "https"
         publicHost shouldBe "api-stage.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
-        apiConfig.environment shouldBe StageEnvironment
+        apiConfig.environment shouldBe ApiEnvironment.Stage
     }
   }
 
@@ -50,7 +50,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicScheme shouldBe "https"
         publicHost shouldBe "localhost"
         publicRootPath shouldBe "/catalogue/v2"
-        apiConfig.environment shouldBe DevEnvironment
+        apiConfig.environment shouldBe ApiEnvironment.Dev
     }
   }
 }
