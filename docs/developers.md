@@ -28,10 +28,10 @@ Currently only the search API can be run locally. It will use the configured pip
 
 You will need to have signed in to the AWS on the CLI to allow the application to assume the required role.
 
-From the root of the repository:
+To run with hot-reloading of code changes using [`sbt-revolver`](https://github.com/spray/sbt-revolver) from the root of the repository:
 
 ```bash
-sbt "project search" run
+sbt "project search" ~reStart
 ```
 
 You should then be able to access the API at `http://localhost:8080/works`.

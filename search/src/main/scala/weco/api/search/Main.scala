@@ -7,7 +7,6 @@ import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.models.{
   ApiConfig,
   ApiEnvironment,
-  DevEnvironment,
   PipelineClusterElasticConfig
 }
 import weco.typesafe.WellcomeTypesafeApp
@@ -28,12 +27,13 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    // Don't initialise tracing in dev environments
-    if (apiConfig.environment == ApiEnvironment.Dev) {
-      info(s"Running in dev mode @ ${apiConfig.publicHost}")
-    } else {
-      info(s"Running in deployed mode @ ${apiConfig.publicHost}")
-      Tracing.init(config)
+    apiConfig.environment match {
+      case ApiEnvironment.Dev =>
+        info(s"Running in dev mode.")
+      case _ =>
+        info(s"Running in deployed mode (environment=${apiConfig.environment})")
+        // Only initialise tracing in deployed environments
+        Tracing.init(config)
     }
 
     val elasticClient = PipelineElasticClientBuilder(
