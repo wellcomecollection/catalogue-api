@@ -11,7 +11,18 @@ case class ApiConfig(
   defaultPageSize: Int,
 ) {
   // Used to determine whether we're running in a dev environment
-  def isDev = publicHost == "localhost"
+  def environment: ApiEnvironment = publicHost match {
+    case "localhost" => ApiEnvironment.Dev
+    case _ if publicHost.contains("stage") => ApiEnvironment.Stage
+    case _ => ApiEnvironment.Prod
+  }
+}
+
+sealed trait ApiEnvironment
+object ApiEnvironment {
+  case object Dev extends ApiEnvironment
+  case object Stage extends ApiEnvironment
+  case object Prod extends ApiEnvironment
 }
 
 object ApiConfig {
@@ -31,10 +42,9 @@ object ApiConfig {
   }
 
   def apply(
-    publicRootUri: Uri,
-    defaultPageSize: Int,
-    isDev: Boolean = false
-  ): ApiConfig =
+             publicRootUri: Uri,
+             defaultPageSize: Int,
+           ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,

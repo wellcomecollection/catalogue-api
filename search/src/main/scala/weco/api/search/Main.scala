@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.models.{ApiConfig, PipelineClusterElasticConfig}
+import weco.api.search.models.{ApiConfig, ApiEnvironment, DevEnvironment, PipelineClusterElasticConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -24,16 +24,16 @@ object Main extends WellcomeTypesafeApp {
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
     // Don't initialise tracing in dev environments
-    if (!apiConfig.isDev) {
+    if (apiConfig.environment == ApiEnvironment.Dev) {
+      info(s"Running in dev mode @ ${apiConfig.publicHost}")
+    } else {
       info(s"Running in deployed mode @ ${apiConfig.publicHost}")
       Tracing.init(config)
-    } else {
-      info(s"Running in dev mode @ ${apiConfig.publicHost}")
     }
 
     val elasticClient = PipelineElasticClientBuilder(
       serviceName = "catalogue_api",
-      isDev = apiConfig.isDev
+      environment = apiConfig.environment
     )
 
     val elasticConfig = PipelineClusterElasticConfig()

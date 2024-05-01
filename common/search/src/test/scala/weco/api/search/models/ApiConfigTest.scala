@@ -18,7 +18,23 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicScheme shouldBe "https"
         publicHost shouldBe "api.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
-        apiConfig.isDev shouldBe false
+        apiConfig.environment shouldBe ProdEnvironment
+    }
+  }
+
+  it("correctly identifies a stage environment") {
+    val publicRoot = "https://api-stage.wellcomecollection.org/catalogue/v2"
+    inside(
+      ApiConfig(
+        publicRootUri = Uri(publicRoot),
+        defaultPageSize = 10
+      )
+    ) {
+      case apiConfig@ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
+        publicScheme shouldBe "https"
+        publicHost shouldBe "api-stage.wellcomecollection.org"
+        publicRootPath shouldBe "/catalogue/v2"
+        apiConfig.environment shouldBe StageEnvironment
     }
   }
 
@@ -34,7 +50,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         publicScheme shouldBe "https"
         publicHost shouldBe "localhost"
         publicRootPath shouldBe "/catalogue/v2"
-        apiConfig.isDev shouldBe true
+        apiConfig.environment shouldBe DevEnvironment
     }
   }
 }

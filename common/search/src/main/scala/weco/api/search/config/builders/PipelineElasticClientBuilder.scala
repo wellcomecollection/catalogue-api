@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticClient
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.api.search.models.PipelineClusterElasticConfig
+import weco.api.search.models.{ApiEnvironment, PipelineClusterElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
 
 object PipelineElasticClientBuilder {
@@ -20,22 +20,23 @@ object PipelineElasticClientBuilder {
   def apply(
     serviceName: String,
     pipelineDate: String = PipelineClusterElasticConfig.pipelineDate,
-    isDev: Boolean = false
+    environment: ApiEnvironment = ApiEnvironment.Prod
   ): ElasticClient = {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
 
-    implicit val secretsClient: SecretsManagerClient = if (isDev) {
-      secretsManagerClientBuilder
-        .credentialsProvider(
-          ProfileCredentialsProvider.create("catalogue-developer"))
-        .build()
-    } else {
-      secretsManagerClientBuilder.build()
+    val (hostType, secretsClientForEnv) = environment match {
+        case ApiEnvironment.Dev =>
+            ("public_host", secretsManagerClientBuilder
+            .credentialsProvider(
+                ProfileCredentialsProvider.create("catalogue-developer"))
+            .build())
+        case _ =>
+            ("private_host", secretsManagerClientBuilder.build())
     }
 
-    val hostType = if (isDev) "public_host" else "private_host"
-
+    implicit val secretsClient: SecretsManagerClient = secretsClientForEnv
+    
     val hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/$hostType"
     )
