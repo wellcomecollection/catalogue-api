@@ -12,9 +12,9 @@ case class ApiConfig(
 ) {
   // Used to determine whether we're running in a dev environment
   def environment: ApiEnvironment = publicHost match {
-    case "localhost" => ApiEnvironment.Dev
+    case "localhost"                       => ApiEnvironment.Dev
     case _ if publicHost.contains("stage") => ApiEnvironment.Stage
-    case _ => ApiEnvironment.Prod
+    case _                                 => ApiEnvironment.Prod
   }
 }
 
@@ -28,7 +28,7 @@ object ApiEnvironment {
 object ApiConfig {
   private val defaultRootUri = "https://api.wellcomecollection.org/catalogue/v2"
 
-  def build(config: Config): ApiConfig = {
+  def build(config: Config): ApiConfig =
     ApiConfig(
       publicRootUri = Uri(
         config
@@ -39,12 +39,11 @@ object ApiConfig {
         .getIntOption("api.pageSize")
         .getOrElse(10),
     )
-  }
 
   def apply(
-             publicRootUri: Uri,
-             defaultPageSize: Int,
-           ): ApiConfig =
+    publicRootUri: Uri,
+    defaultPageSize: Int,
+  ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,

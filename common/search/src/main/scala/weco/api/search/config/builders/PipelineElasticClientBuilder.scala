@@ -26,17 +26,19 @@ object PipelineElasticClientBuilder {
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
 
     val (hostType, secretsClientForEnv) = environment match {
-        case ApiEnvironment.Dev =>
-            ("public_host", secretsManagerClientBuilder
+      case ApiEnvironment.Dev =>
+        (
+          "public_host",
+          secretsManagerClientBuilder
             .credentialsProvider(
-                ProfileCredentialsProvider.create("catalogue-developer"))
+              ProfileCredentialsProvider.create("catalogue-developer"))
             .build())
-        case _ =>
-            ("private_host", secretsManagerClientBuilder.build())
+      case _ =>
+        ("private_host", secretsManagerClientBuilder.build())
     }
 
     implicit val secretsClient: SecretsManagerClient = secretsClientForEnv
-    
+
     val hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/$hostType"
     )
