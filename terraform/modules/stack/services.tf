@@ -15,7 +15,6 @@ locals {
 locals {
   catalogue_api_public_root = "https://${var.external_hostname}/catalogue/v2"
   content_api_public_root   = "https://${var.external_hostname}/content/v0"
-
 }
 
 module "search_api" {
@@ -64,13 +63,13 @@ module "items_api" {
   load_balancer_listener_port = local.items_lb_port
 
   environment = {
-    app_port             = local.container_ports.items
-    app_base_url         = "https://${var.external_hostname}/stacks/v1/items"
-    catalogue_base_url   = "https://${var.external_hostname}/catalogue/v2"
-    sierra_base_url      = "https://libsys.wellcomelibrary.org/iii/sierra-api"
-    content_api_base_url = "https://${var.external_hostname}/content/v0"
+    app_port           = local.container_ports.items
+    app_base_url       = "https://${var.external_hostname}/stacks/v1/items"
+    catalogue_base_url = "https://${var.external_hostname}/catalogue/v2"
+    sierra_base_url    = "https://libsys.wellcomelibrary.org/iii/sierra-api"
 
     catalogue_api_public_root = local.catalogue_api_public_root
+    content_api_public_root   = local.content_api_public_root
 
     api_host         = var.external_hostname
     apm_service_name = "items-api"
