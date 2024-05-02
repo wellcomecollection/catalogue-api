@@ -5,7 +5,12 @@ import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.items.config.builders.SierraOauthHttpClientBuilder
-import weco.api.items.services.{ItemUpdateService, SierraItemUpdater, VenueOpeningTimesLookup, WorkLookup}
+import weco.api.items.services.{
+  ItemUpdateService,
+  SierraItemUpdater,
+  VenueOpeningTimesLookup,
+  WorkLookup
+}
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, ApiEnvironment}

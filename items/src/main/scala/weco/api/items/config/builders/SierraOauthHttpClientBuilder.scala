@@ -28,7 +28,7 @@ object SierraOauthHttpClientBuilder {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
 
-    val secretsClientForEnv= environment match {
+    val secretsClientForEnv = environment match {
       case ApiEnvironment.Dev =>
         secretsManagerClientBuilder
           .credentialsProvider(
@@ -64,8 +64,8 @@ object SierraOauthHttpClientBuilder {
   }
 
   private def getSecretString(
-                               id: String
-                             )(implicit secretsClient: SecretsManagerClient) = {
+    id: String
+  )(implicit secretsClient: SecretsManagerClient) = {
     val request =
       GetSecretValueRequest
         .builder()
@@ -77,4 +77,3 @@ object SierraOauthHttpClientBuilder {
       .secretString()
   }
 }
-
