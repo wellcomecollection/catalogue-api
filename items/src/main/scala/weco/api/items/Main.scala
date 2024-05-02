@@ -4,21 +4,16 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.items.services.{
-  ItemUpdateService,
-  SierraItemUpdater,
-  VenueOpeningTimesLookup,
-  WorkLookup
-}
+import weco.api.items.config.builders.SierraOauthHttpClientBuilder
+import weco.api.items.services.{ItemUpdateService, SierraItemUpdater, VenueOpeningTimesLookup, WorkLookup}
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
-import weco.api.search.models.ApiConfig
+import weco.api.search.models.{ApiConfig, ApiEnvironment}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.client.{AkkaHttpClient, HttpGet}
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
-import weco.sierra.typesafe.SierraOauthHttpClientBuilder
 
 import java.time.{Clock, ZoneId}
 import scala.concurrent.ExecutionContext
@@ -31,12 +26,22 @@ object Main extends WellcomeTypesafeApp {
     implicit val executionContext: ExecutionContext =
       actorSystem.dispatcher
 
-    Tracing.init(config)
-
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
+    apiConfig.environment match {
+      case ApiEnvironment.Dev =>
+        info(s"Running in dev mode.")
+      case _ =>
+        info(s"Running in deployed mode (environment=${apiConfig.environment})")
+        // Only initialise tracing in deployed environments
+        Tracing.init(config)
+    }
+
     // We don't actually care about the hold limit in the items service.
-    val client = SierraOauthHttpClientBuilder.build(config)
+    val client = SierraOauthHttpClientBuilder.build(
+      config = config,
+      environment = apiConfig.environment
+    )
     val sierraSource = new SierraSource(client)
 
     val contentHttpClient = new AkkaHttpClient() with HttpGet {
