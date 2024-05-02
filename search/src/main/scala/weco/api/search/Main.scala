@@ -4,7 +4,11 @@ import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.models.{ApiConfig, PipelineClusterElasticConfig}
+import weco.api.search.models.{
+  ApiConfig,
+  ApiEnvironment,
+  PipelineClusterElasticConfig
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -21,11 +25,22 @@ object Main extends WellcomeTypesafeApp {
     implicit val executionContext: ExecutionContext =
       actorSystem.dispatcher
 
-    Tracing.init(config)
-
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val elasticClient = PipelineElasticClientBuilder("catalogue_api")
+    apiConfig.environment match {
+      case ApiEnvironment.Dev =>
+        info(s"Running in dev mode.")
+      case _ =>
+        info(s"Running in deployed mode (environment=${apiConfig.environment})")
+        // Only initialise tracing in deployed environments
+        Tracing.init(config)
+    }
+
+    val elasticClient = PipelineElasticClientBuilder(
+      serviceName = "catalogue_api",
+      environment = apiConfig.environment
+    )
+
     val elasticConfig = PipelineClusterElasticConfig()
 
     val router = new SearchApi(

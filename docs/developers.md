@@ -1,6 +1,6 @@
 ### Continuous integration
 
-The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue-api) build [deploys to staging automatically](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage). 
+The [current latest default branch](https://buildkite.com/wellcomecollection/catalogue-api) build [deploys to staging automatically](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage).
 
 After a deployment to stage environment, we run [smoke tests](smoke_tests/README.md) against the stage API and then [e2e tests](https://github.com/wellcomecollection/wellcomecollection.org/blob/main/playwright/README.md) on the front-end pointing the production wellcomecollection.org at the stage catalogue API.
 
@@ -14,9 +14,24 @@ The CI flow looks as follows:
 
 ## Dependencies
 
-* Java 1.8
-* Scala 2.12
-* SBT
-* Terraform
-* Docker
-* Make
+- Java 1.8
+- Scala 2.12
+- SBT
+- Terraform
+- Docker
+- Make
+
+## Running locally
+
+Currently only the search API can be run locally. It will use the configured pipeline index in
+[`ElastiConfig.scala`](../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala).
+
+You will need to have signed in to the AWS on the CLI to allow the application to assume the required role.
+
+To run with hot-reloading of code changes using [`sbt-revolver`](https://github.com/spray/sbt-revolver) from the root of the repository:
+
+```bash
+sbt "project search" ~reStart
+```
+
+You should then be able to access the API at `http://localhost:8080/works`.
