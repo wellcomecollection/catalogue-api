@@ -125,10 +125,7 @@ object ExternalDependencies {
   )
 
   val secretsDependencies = Seq(
-    "software.amazon.awssdk" % "secretsmanager" % versions.aws2
-  )
-
-  val stsDependencies = Seq(
+    "software.amazon.awssdk" % "secretsmanager" % versions.aws2,
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
@@ -153,8 +150,7 @@ object CatalogueDependencies {
       WellcomeDependencies.httpTypesafeLibrary ++
       ExternalDependencies.akkaHttpDependencies ++
       ExternalDependencies.scalacsvDependencies ++
-      ExternalDependencies.secretsDependencies ++
-      ExternalDependencies.stsDependencies
+      ExternalDependencies.secretsDependencies
 
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies
@@ -171,7 +167,9 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary
 
   val itemsDependencies: Seq[ModuleID] =
-    WellcomeDependencies.sierraTypesafeLibrary
+    WellcomeDependencies.sierraTypesafeLibrary ++
+      ExternalDependencies.secretsDependencies
+
 
   val requestsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary
