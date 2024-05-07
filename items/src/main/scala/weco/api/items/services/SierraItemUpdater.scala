@@ -14,8 +14,7 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.{Clock, LocalDateTime, ZonedDateTime}
-import java.time.temporal.ChronoUnit
+import java.time.{Clock, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -66,11 +65,9 @@ class SierraItemUpdater(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
           entries
             .map(item => {
@@ -127,10 +124,6 @@ class SierraItemUpdater(
       case "online-request" if timeAtVenue.getHour < 10  => 1
       case "online-request" if timeAtVenue.getHour >= 10 => 2
     }
-    def daysAwayFromNow(slot: AvailabilitySlot): Int = {
-      val openingTime = ZonedDateTime.parse(slot.to)
-      ChronoUnit.DAYS.between(timeAtVenue, openingTime).toInt
-    }
 
     venueOpeningTimesLookup
       .byVenueName(
@@ -142,10 +135,10 @@ class SierraItemUpdater(
             .map(
               openClose => AvailabilitySlot(openClose.open, openClose.close)
             )
-            // the list of AvailabilitySlots, as returned from VenueOpeningTimesLookup, starts at "today"
+            // the list of openingTimes, as returned from VenueOpeningTimesLookup, starts at "today"
             // however, it takes ${leadTimeInDays} days for the item to be fetched from stores
-            // so we need to drop slots that are less than ${leadTimeInDays} days away from today
-            .dropWhile(slot => daysAwayFromNow(slot) < leadTimeInDays)
+            // so we need to drop ${leadTimeInDays} elements from the list of openingTimes
+            .drop(leadTimeInDays)
         case Left(venueOpeningTimesLookupError) =>
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"

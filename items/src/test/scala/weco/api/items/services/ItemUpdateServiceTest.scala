@@ -452,6 +452,40 @@ class ItemUpdateServiceTest
     }
 
     it(
+      "adds correct available dates for the item, when the venue is closed for the next few days"
+      // item is normally available 2 days after the request is made, ie. on the 23rd. However the venue is closed on the 22nd anf 23rd,
+      // so the item is only available on the next opening day+2 days, ie. the 26th
+    ) {
+      withClock("2024-04-21T11:00:00.000Z") { clock =>
+        withSierraItemUpdater(
+          availableItemResponses(workWithAvailableItemNumber),
+          Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(workWithAvailableItem)) {
+              updatedItems =>
+                updatedItems.length shouldBe 2
+
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+
+                physicalItem.availableDates shouldBe Some(
+                  List(
+                    AvailabilitySlot(
+                      "2024-04-26T09:00:00.000Z",
+                      "2024-04-26T17:00:00.000Z"
+                    )
+                  )
+                )
+                digitalItem shouldBe dummyDigitalItem
+            }
+          }
+        }
+      }
+    }
+
+    it(
       "adds available dates as an empty list if contentApiVenueRequest returns an error"
     ) {
       withClock() { clock =>
