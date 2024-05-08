@@ -382,7 +382,7 @@ class ItemUpdateServiceTest
     }
 
     it(
-      "adds correct available dates based on the item's DisplayLocationType and accessConditions, request before 10am"
+      "adds correct available dates for the item, request made on working day before 10am"
     ) {
       withClock("2024-04-24T08:58:00.000Z") { clock =>
         withSierraItemUpdater(
@@ -420,7 +420,7 @@ class ItemUpdateServiceTest
     }
 
     it(
-      "adds correct available dates based on the item's DisplayLocationType and accessConditions, request after 10am"
+      "adds correct available dates for the item, request made on working day after 10am"
     ) {
       withClock() { clock =>
         withSierraItemUpdater(
@@ -452,11 +452,48 @@ class ItemUpdateServiceTest
     }
 
     it(
-      "adds correct available dates for the item, when the venue is closed for the next few days"
-      // item is normally available the day after the request is made, ie. on the 22nd. However the venue is closed on the 22nd anf 23rd,
-      // so the item is only available the day after the next opening day, ie. 25th
+      "adds correct available dates for the item, request made on non-working day before 10am"
+      // just to cover all cases, see below
     ) {
-      withClock("2024-04-21T08:00:00.000Z") { clock =>
+      withClock("2024-04-23T07:00:00.000Z") { clock =>
+        withSierraItemUpdater(
+          availableItemResponses(workWithAvailableItemNumber),
+          Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
+          clock
+        ) { itemUpdater =>
+          withItemUpdateService(List(itemUpdater)) { itemUpdateService =>
+            whenReady(itemUpdateService.updateItems(workWithAvailableItem)) {
+              updatedItems =>
+                updatedItems.length shouldBe 2
+
+                val physicalItem = updatedItems.head
+                val digitalItem = updatedItems(1)
+
+                physicalItem.availableDates shouldBe Some(
+                  List(
+                    AvailabilitySlot(
+                      "2024-04-25T09:00:00.000Z",
+                      "2024-04-25T19:00:00.000Z"
+                    ),
+                    AvailabilitySlot(
+                      "2024-04-26T09:00:00.000Z",
+                      "2024-04-26T17:00:00.000Z"
+                    )
+                  )
+                )
+                digitalItem shouldBe dummyDigitalItem
+            }
+          }
+        }
+      }
+    }
+
+    it(
+      "adds correct available dates for the item, request made on non-working day after 10am"
+      // edge case: a request made after 10am on a closed day will reach the staff before 10am on the next open day
+      // item will therefore available the following day
+    ) {
+      withClock("2024-04-23T13:00:00.000Z") { clock =>
         withSierraItemUpdater(
           availableItemResponses(workWithAvailableItemNumber),
           Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
