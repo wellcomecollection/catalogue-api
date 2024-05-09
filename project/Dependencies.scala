@@ -2,7 +2,8 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "32.40.4" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion =
+    "32.40.4" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -94,10 +95,10 @@ object WellcomeDependencies {
 object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
-    val scalatest = "3.2.3"
-    val scalatestplus = "3.1.2.0"
-    val scalacheckShapeless = "1.1.6"
-    val scalacsv = "1.3.5"
+    val scalatest = "3.2.18"
+    val scalatestplus = "3.1.4.0"
+    val scalacheckShapeless = "1.1.8"
+    val scalacsv = "1.3.10"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
@@ -169,7 +170,6 @@ object CatalogueDependencies {
   val itemsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary ++
       ExternalDependencies.secretsDependencies
-
 
   val requestsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary

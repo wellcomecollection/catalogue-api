@@ -23,14 +23,13 @@ import scala.concurrent.{ExecutionContext, Future}
   *
   *  This provides an up to date view on whether a hold
   *  can be placed on an item.
-  *
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
   venueOpeningTimesLookup: VenueOpeningTimesLookup,
   venueClock: Clock
-)(
-  implicit executionContext: ExecutionContext
+)(implicit
+  executionContext: ExecutionContext
 ) extends ItemUpdater
     with Logging
     with DisplayItemOps {
@@ -46,7 +45,6 @@ class SierraItemUpdater(
     *  PhysicalLocation. In data sourced from Sierra we can
     *  only have one PhysicalLocation, so we update it if
     *  we find it.
-    *
     */
   private def updateAccessCondition(
     item: DisplayItem,
@@ -67,28 +65,22 @@ class SierraItemUpdater(
     for {
       itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
 
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
+      maybeAccessConditions: Map[SierraItemNumber, Option[
+        DisplayAccessCondition
+      ]] = itemEither match {
         case Right(SierraItemDataEntries(_, _, entries)) =>
-          entries
-            .map(item => {
-              val location = existingItems.get(item.id).flatten
-              item.id -> item.accessCondition(location)
-            })
-            .toMap
+          entries.map { item =>
+            val location = existingItems.get(item.id).flatten
+            item.id -> item.accessCondition(location)
+          }.toMap
         case Left(
-            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+              SierraItemLookupError.MissingItems(missingItems, itemsReturned)
             ) =>
           warn(s"Item lookup missing items: $missingItems")
-          itemsReturned
-            .map(item => {
-              val location = existingItems.get(item.id).flatten
-              item.id -> item.accessCondition(location)
-            })
-            .toMap
+          itemsReturned.map { item =>
+            val location = existingItems.get(item.id).flatten
+            item.id -> item.accessCondition(location)
+          }.toMap
         case Left(itemLookupError) =>
           error(s"Item lookup failed: $itemLookupError")
           Map.empty[SierraItemNumber, Option[DisplayAccessCondition]]
@@ -145,9 +137,7 @@ class SierraItemUpdater(
       .map {
         case Right(venue) =>
           venue.openingTimes
-            .map(
-              openClose => AvailabilitySlot(openClose.open, openClose.close)
-            )
+            .map(openClose => AvailabilitySlot(openClose.open, openClose.close))
             // the list of openingTimes, as returned from VenueOpeningTimesLookup, starts at "closest open day"
             // (including today)
             // however, it takes ${leadTimeInDays} days for the item to be fetched from stores
@@ -183,12 +173,11 @@ class SierraItemUpdater(
       }
 
       updatedItems = itemMap
-        .map {
-          case (sierraId, item) =>
-            accessConditions.get(sierraId) match {
-              case Some(updatedAc) => updateAccessCondition(item, updatedAc)
-              case None            => item
-            }
+        .map { case (sierraId, item) =>
+          accessConditions.get(sierraId) match {
+            case Some(updatedAc) => updateAccessCondition(item, updatedAc)
+            case None            => item
+          }
         }
         .map(setAvailableDates)
 

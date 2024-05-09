@@ -38,14 +38,12 @@ object ColorQuery {
           (2 * pow(sigma, 2))
       )
 
-    for (x <- 0 until n_bins) {
-      for (y <- 0 until n_bins) {
+    for (x <- 0 until n_bins)
+      for (y <- 0 until n_bins)
         for (z <- 0 until n_bins) {
           val i = z + y * n_bins + x * n_bins * n_bins
           embedding = embedding.updated(i, gaussian(x, y, z))
         }
-      }
-    }
     val norm = Math.sqrt(embedding.foldLeft(0.0)((a, b) => a + b * b))
     embedding.map((x) => x / norm)
   }
