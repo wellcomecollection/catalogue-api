@@ -23,7 +23,7 @@ object SierraOauthHttpClientBuilder {
   def build(config: Config, environment: ApiEnvironment = ApiEnvironment.Prod)(
     implicit
     as: ActorSystem,
-    ec: ExecutionContext,
+    ec: ExecutionContext
   ): SierraOauthHttpClient = {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
@@ -32,7 +32,8 @@ object SierraOauthHttpClientBuilder {
       case ApiEnvironment.Dev =>
         secretsManagerClientBuilder
           .credentialsProvider(
-            ProfileCredentialsProvider.create("catalogue-developer"))
+            ProfileCredentialsProvider.create("catalogue-developer")
+          )
           .build()
       case _ =>
         secretsManagerClientBuilder.build()

@@ -63,8 +63,8 @@ object WorksRequestBuilder
 
   private def filteredAggregationBuilder(
     filters: List[WorkFilter with Pairable]
-  )(
-    implicit searchOptions: WorkSearchOptions
+  )(implicit
+    searchOptions: WorkSearchOptions
   ) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
@@ -132,12 +132,11 @@ object WorksRequestBuilder
         .field("aggregatableValues.availabilities")
   }
 
-  private def dateOrder(
-    implicit searchOptions: WorkSearchOptions
+  private def dateOrder(implicit
+    searchOptions: WorkSearchOptions
   ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst {
-      case ProductionDateSortRequest =>
-        searchOptions.sortOrder
+    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
+      searchOptions.sortOrder
     }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
@@ -159,7 +158,8 @@ object WorksRequestBuilder
         RangeQuery(
           "filterableValues.production.dates.range.from",
           lte = lte,
-          gte = gte)
+          gte = gte
+        )
       case LanguagesFilter(languageIds) =>
         termsQuery("filterableValues.languages.id", languageIds)
       case GenreFilter(genreQueries) =>
@@ -174,7 +174,8 @@ object WorksRequestBuilder
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
           "filterableValues.contributors.agent.label",
-          contributorQueries)
+          contributorQueries
+        )
 
       case IdentifiersFilter(identifiers) =>
         // TODO we're using the value in `query` because it's lowercase-normalised,
@@ -209,7 +210,8 @@ object WorksRequestBuilder
       case ItemLocationTypeIdFilter(itemLocationTypeIds) =>
         termsQuery(
           "filterableValues.items.locations.locationType.id",
-          itemLocationTypeIds)
+          itemLocationTypeIds
+        )
 
       case PartOfFilter(search_term) =>
         termQuery(

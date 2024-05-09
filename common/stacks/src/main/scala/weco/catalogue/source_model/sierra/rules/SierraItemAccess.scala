@@ -2,7 +2,11 @@ package weco.catalogue.source_model.sierra.rules
 
 import grizzled.slf4j.Logging
 import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueLocationType}
-import weco.catalogue.display_model.locations.{CatalogueAccessStatus, DisplayAccessCondition, DisplayLocationType}
+import weco.catalogue.display_model.locations.{
+  CatalogueAccessStatus,
+  DisplayAccessCondition,
+  DisplayLocationType
+}
 import weco.catalogue.source_model.sierra.source.{OpacMsg, Status}
 import weco.sierra.models.SierraQueryOps
 import weco.sierra.models.data.SierraItemData
@@ -22,7 +26,6 @@ import weco.sierra.models.data.SierraItemData
   *
   * We remove rules that would end in a "definitely not requestable" state, because
   * those items should be filtered out by the front end.
-  *
   */
 object SierraItemAccess extends SierraQueryOps with Logging {
   def apply(
@@ -48,10 +51,10 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       //
       // Otherwise, we copy the item note onto the access condition.
       case (Some(ac), Some(displayNote))
-        if ac.note.isDefined && displayNote.isAccessNote =>
+          if ac.note.isDefined && displayNote.isAccessNote =>
         (Some(ac), None)
       case (Some(ac), Some(displayNote))
-        if ac.note.isEmpty && displayNote.isAccessNote =>
+          if ac.note.isEmpty && displayNote.isAccessNote =>
         (Some(ac.copy(note = Some(displayNote))), None)
 
       // If the item note is nothing to do with the access condition, we return it to
@@ -68,18 +71,25 @@ object SierraItemAccess extends SierraQueryOps with Logging {
     locationTypeId: Option[String],
     itemData: SierraItemData
   ): Option[DisplayAccessCondition] =
-    (holdCount, status, opacmsg, rulesForRequestingResult, locationTypeId) match {
+    (
+      holdCount,
+      status,
+      opacmsg,
+      rulesForRequestingResult,
+      locationTypeId
+    ) match {
 
       // Items in the closed stores that aren't prevented from being requested get
       // the "Online request" condition.
       //
       // Example: b18799966 / i17571170
       case (
-        Some(0),
-        Some(Status.Available),
-        Some(OpacMsg.OnlineRequest),
-        None,
-        Some(CatalogueLocationType.ClosedStores)) =>
+            Some(0),
+            Some(Status.Available),
+            Some(OpacMsg.OnlineRequest),
+            None,
+            Some(CatalogueLocationType.ClosedStores)
+          ) =>
         Some(
           DisplayAccessCondition(
             method = CatalogueAccessMethod.OnlineRequest,
@@ -92,11 +102,12 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       //
       // Example: b29459126 / i19023340
       case (
-        Some(0),
-        Some(Status.Available),
-        Some(OpacMsg.Restricted),
-        None,
-        Some(CatalogueLocationType.ClosedStores)) =>
+            Some(0),
+            Some(Status.Available),
+            Some(OpacMsg.Restricted),
+            None,
+            Some(CatalogueLocationType.ClosedStores)
+          ) =>
         Some(
           DisplayAccessCondition(
             method = CatalogueAccessMethod.OnlineRequest,
@@ -118,30 +129,32 @@ object SierraItemAccess extends SierraQueryOps with Logging {
       // for requesting, e.g. some of our long-lived test holds didn't get cleared properly.
       // If an item seems to be stuck on a non-zero hold count, ask somebody to check Sierra.
       case (Some(holdCount), _, _, _, Some(CatalogueLocationType.ClosedStores))
-        if holdCount > 0 =>
+          if holdCount > 0 =>
         Some(
           DisplayAccessCondition(
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
         )
 
-
       case (
-        _,
-        _,
-        _,
-        Some(NotRequestable.InUseByAnotherReader(_)),
-        Some(CatalogueLocationType.ClosedStores)) =>
+            _,
+            _,
+            _,
+            Some(NotRequestable.InUseByAnotherReader(_)),
+            Some(CatalogueLocationType.ClosedStores)
+          ) =>
         Some(
           DisplayAccessCondition(
             method = CatalogueAccessMethod.NotRequestable,
             status = Some(CatalogueAccessStatus.TemporarilyUnavailable),
             note = Some(
-              "Item is in use by another reader. Please ask at Library Enquiry Desk."),
+              "Item is in use by another reader. Please ask at Library Enquiry Desk."
+            ),
             terms = None
           )
         )
@@ -160,10 +173,10 @@ object SierraItemAccess extends SierraQueryOps with Logging {
 
   implicit class ItemDataAccessOps(itemData: SierraItemData) {
     def status: Option[String] =
-      itemData.fixedFields.get("88").map { _.value.trim }
+      itemData.fixedFields.get("88").map(_.value.trim)
 
     def opacmsg: Option[String] =
-      itemData.fixedFields.get("108").map { _.value.trim }
+      itemData.fixedFields.get("108").map(_.value.trim)
   }
 
   // The display note field has been used for multiple purposes, in particular:
