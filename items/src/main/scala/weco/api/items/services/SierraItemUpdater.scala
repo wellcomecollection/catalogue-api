@@ -9,13 +9,14 @@ import weco.catalogue.display_model.locations.{
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
+import weco.api.items.models.OpenClose
 import weco.sierra.http.SierraSource
 import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.SierraItemDataEntries
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.{Clock, LocalDateTime, ZonedDateTime}
-import java.time.temporal.ChronoUnit
+import java.time.format.DateTimeFormatter
+import java.time.{Clock, LocalDate, LocalDateTime}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -122,14 +123,19 @@ class SierraItemUpdater(
       // other venue to be added as DisplayAccessMethod id -> content-api venue title
     )
 
-    val timeAtVenue = LocalDateTime.now(venueClock)
-    val leadTimeInDays = accessCondition.method.id match {
-      case "online-request" if timeAtVenue.getHour < 10  => 1
-      case "online-request" if timeAtVenue.getHour >= 10 => 2
-    }
-    def daysAwayFromNow(slot: AvailabilitySlot): Int = {
-      val openingTime = ZonedDateTime.parse(slot.to)
-      ChronoUnit.DAYS.between(timeAtVenue, openingTime).toInt
+    def getLeadTimeInDays(openingTimes: List[OpenClose]): Int = {
+      val timeAtVenue = LocalDateTime.now(venueClock)
+      val isWorkingDay = timeAtVenue.toLocalDate.isEqual(
+        LocalDate.parse(
+          openingTimes.head.open,
+          DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        )
+      )
+      accessCondition.method.id match {
+        case "online-request" if (timeAtVenue.getHour < 10 || !isWorkingDay) =>
+          1
+        case "online-request" if timeAtVenue.getHour >= 10 => 2
+      }
     }
 
     venueOpeningTimesLookup
@@ -142,10 +148,11 @@ class SierraItemUpdater(
             .map(
               openClose => AvailabilitySlot(openClose.open, openClose.close)
             )
-            // the list of AvailabilitySlots, as returned from VenueOpeningTimesLookup, starts at "today"
+            // the list of openingTimes, as returned from VenueOpeningTimesLookup, starts at "closest open day"
+            // (including today)
             // however, it takes ${leadTimeInDays} days for the item to be fetched from stores
-            // so we need to drop slots that are less than ${leadTimeInDays} days away from today
-            .dropWhile(slot => daysAwayFromNow(slot) < leadTimeInDays)
+            // so we need to drop ${leadTimeInDays} elements from the list of openingTimes
+            .drop(getLeadTimeInDays(venue.openingTimes))
         case Left(venueOpeningTimesLookupError) =>
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
