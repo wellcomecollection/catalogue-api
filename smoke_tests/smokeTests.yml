@@ -33,16 +33,16 @@ scenarios:
           url: "/images"
           expect:
             statusCode: 200
-  - name: "/works/awa6c6gm"
+  - name: "/works/b7nfeg9j"
     flow:
       - get:
-          url: "/works/awa6c6gm"
+          url: "/works/b7nfeg9j"
           expect:
             statusCode: 200
-  - name: "/works/awa6c6gm/items"
+  - name: "/works/b7nfeg9j/items"
     flow:
       - get:
-          url: "/works/awa6c6gm/items"
+          url: "/works/b7nfeg9j/items"
           beforeRequest: addApiKey
           expect:
             statusCode: 200
