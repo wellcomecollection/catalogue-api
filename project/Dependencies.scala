@@ -2,7 +2,7 @@ import sbt._
 
 object WellcomeDependencies {
 
-  val defaultVersion = "32.40.4" // This is automatically bumped by the scala-libs release process, do not edit this line manually
+  val defaultVersion = "32.41.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
 
   lazy val versions = new {
     val typesafe = defaultVersion
@@ -169,7 +169,6 @@ object CatalogueDependencies {
   val itemsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary ++
       ExternalDependencies.secretsDependencies
-
 
   val requestsDependencies: Seq[ModuleID] =
     WellcomeDependencies.sierraTypesafeLibrary
