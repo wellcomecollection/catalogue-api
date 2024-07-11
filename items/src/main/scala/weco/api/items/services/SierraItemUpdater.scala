@@ -8,7 +8,6 @@ import weco.catalogue.display_model.locations.{
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
-import weco.api.stacks.models.SierraItemDataOps.ItemDataOps
 import weco.sierra.http.SierraSource
 import weco.sierra.models.data.SierraItemData
 import weco.sierra.models.errors.SierraItemLookupError
@@ -95,7 +94,7 @@ class SierraItemUpdater(
     *  we find it.
     *
     */
-  private def updateAccessCondition(
+  def updateAccessCondition(
     item: DisplayItem,
     accessCondition: DisplayAccessCondition
   ): DisplayItem = {
@@ -107,7 +106,7 @@ class SierraItemUpdater(
     item.copy(locations = updatedItemLocations)
   }
 
-  private def setAvailableDates(
+  def setAvailableDates(
     item: DisplayItem,
     sierraItemLocation: SierraLocation
   ): Future[DisplayItem] = {

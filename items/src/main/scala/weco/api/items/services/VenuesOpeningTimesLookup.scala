@@ -11,7 +11,6 @@ import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 import weco.api.items.models.{ContentApiVenue, ContentApiVenueResponse}
-import weco.catalogue.display_model.work.AvailabilitySlot
 
 sealed trait VenueOpeningTimesLookupError {
   val title: String
