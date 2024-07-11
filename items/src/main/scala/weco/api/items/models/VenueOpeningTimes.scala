@@ -5,10 +5,10 @@ import io.circe.generic.extras.JsonKey
 // This represents opening times as we receive from the content-api
 case class ContentApiVenueResponse(
   @JsonKey("type") responseType: String,
-  results: List[VenueOpeningTimes]
+  results: List[ContentApiVenue]
 )
 
-case class VenueOpeningTimes(
+case class ContentApiVenue(
   @JsonKey("type") contentType: String,
   id: String,
   title: String,

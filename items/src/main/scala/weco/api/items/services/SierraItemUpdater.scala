@@ -5,14 +5,14 @@ import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
   DisplayAccessCondition,
-  DisplayLocationType,
   DisplayPhysicalLocation
 }
 import weco.catalogue.display_model.work.{AvailabilitySlot, DisplayItem}
-import weco.api.items.models.OpenClose
+import weco.api.stacks.models.SierraItemDataOps.ItemDataOps
 import weco.sierra.http.SierraSource
+import weco.sierra.models.data.SierraItemData
 import weco.sierra.models.errors.SierraItemLookupError
-import weco.sierra.models.fields.SierraItemDataEntries
+import weco.sierra.models.fields.{SierraItemDataEntries, SierraLocation}
 import weco.sierra.models.identifiers.SierraItemNumber
 
 import java.time.format.DateTimeFormatter
@@ -22,12 +22,13 @@ import scala.concurrent.{ExecutionContext, Future}
 /** Updates the AccessCondition of sierra items
   *
   *  This provides an up to date view on whether a hold
-  *  can be placed on an item.
+  *  can be placed on an item, and generates a list of dates
+  *  when the item can be viewed in the library
   *
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
-  venueOpeningTimesLookup: VenueOpeningTimesLookup,
+  venuesOpeningTimesLookup: VenuesOpeningTimesLookup,
   venueClock: Clock
 )(
   implicit executionContext: ExecutionContext
@@ -35,9 +36,55 @@ class SierraItemUpdater(
     with Logging
     with DisplayItemOps {
 
-  import weco.api.stacks.models.SierraItemDataOps._
+  val identifierType: DisplayIdentifierType =
+    DisplayIdentifierType.SierraSystemNumber
 
-  val identifierType = DisplayIdentifierType.SierraSystemNumber
+  private def lookupItems(
+    staleItemIds: Seq[SierraItemNumber]
+  ): Future[Map[SierraItemNumber, SierraItemData]] = {
+    val itemsEither = sierraSource.lookupItemEntries(staleItemIds)
+
+    itemsEither.map(itemEither => {
+      val items = itemEither match {
+        case Right(SierraItemDataEntries(_, _, entries)) =>
+          entries.map(entry => entry.id -> Some(entry)) toMap
+        case Left(
+            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+            ) =>
+          warn(s"Item lookup missing items: $missingItems")
+          itemsReturned.map(entry => entry.id -> Some(entry)) toMap
+        case Left(itemLookupError) =>
+          error(s"Item lookup failed: $itemLookupError")
+          Map.empty[SierraItemNumber, Option[SierraItemData]]
+      }
+      items collect {
+        case (sierraItemNumber, Some(sierraItemData)) =>
+          sierraItemNumber -> sierraItemData
+      }
+    })
+  }
+
+  private def updateItem(
+    item: DisplayItem,
+    freshSierraItemsData: Future[Map[SierraItemNumber, SierraItemData]]
+  ): Future[DisplayItem] =
+    for {
+      freshSierraItemData <- freshSierraItemsData
+      updatedItem: DisplayItem = freshSierraItemData.get(
+        SierraItemNumber(item.id)
+      ) match {
+        case Some(freshSierraItem) =>
+          val freshAccessCondition: DisplayAccessCondition =
+            freshSierraItem.accessCondition(item.physicalLocationType)
+          val withUpdatedAccessCondition =
+            updateAccessCondition(item, freshAccessCondition)
+          setAvailableDates(
+            withUpdatedAccessCondition,
+            freshSierraItem.location
+          )
+        case _ => item
+      }
+    } yield updatedItem
 
   /** Updates the AccessCondition for a single item
     *
@@ -57,142 +104,123 @@ class SierraItemUpdater(
         physicalLocation.copy(accessConditions = List(accessCondition))
       case location => location
     }
-
     item.copy(locations = updatedItemLocations)
   }
 
-  private def getAccessConditions(
-    existingItems: Map[SierraItemNumber, Option[DisplayLocationType]]
-  ): Future[Map[SierraItemNumber, DisplayAccessCondition]] =
-    for {
-      itemEither <- sierraSource.lookupItemEntries(existingItems.keys.toSeq)
-
-      maybeAccessConditions: Map[
-        SierraItemNumber,
-        Option[
-          DisplayAccessCondition
-        ]] = itemEither match {
-        case Right(SierraItemDataEntries(_, _, entries)) =>
-          entries
-            .map(item => {
-              val location = existingItems.get(item.id).flatten
-              item.id -> item.accessCondition(location)
-            })
-            .toMap
-        case Left(
-            SierraItemLookupError.MissingItems(missingItems, itemsReturned)
-            ) =>
-          warn(s"Item lookup missing items: $missingItems")
-          itemsReturned
-            .map(item => {
-              val location = existingItems.get(item.id).flatten
-              item.id -> item.accessCondition(location)
-            })
-            .toMap
-        case Left(itemLookupError) =>
-          error(s"Item lookup failed: $itemLookupError")
-          Map.empty[SierraItemNumber, Option[DisplayAccessCondition]]
-      }
-
-      accessConditions = maybeAccessConditions
-        .collect { case (itemId, Some(ac)) => itemId -> ac }
-
-    } yield accessConditions
-
   private def setAvailableDates(
-    item: DisplayItem
+    item: DisplayItem,
+    sierraItemLocation: SierraLocation
   ): Future[DisplayItem] = {
     // there is only ever one location per physicalItem and one accessCondition per location,
     // but this may sometimes be empty if it could not be fetched.
     val accessCondition = item.locations.headOption
       .flatMap(_.accessConditions.headOption)
 
+    val locationName = sierraItemLocation.code match {
+      case "harop" => "deepstore"
+      case _       => "library"
+    }
+
     if (accessCondition.exists(_.isRequestable)) {
-      getAvailableDates(accessCondition.head)
-        .map(availableDates => item.copy(availableDates = Some(availableDates)))
+      locationName match {
+        case "deepstore" =>
+          deepstoreItemAvailabilities(getVenuesOpeningTimes(locationName)).map(
+            availableDates =>
+              item.copy(
+                availableDates = Some(availableDates)
+              )
+          )
+        case "library" =>
+          libraryItemAvailabilities(getVenuesOpeningTimes(locationName)).map(
+            availableDates =>
+              item.copy(
+                availableDates = Some(availableDates)
+              )
+          )
+      }
     } else {
       Future.successful(item)
     }
   }
 
-  private def getAvailableDates(
-    accessCondition: DisplayAccessCondition
-  ): Future[List[AvailabilitySlot]] = {
-    val venueFromDisplayAccessCondition = Map(
-      "online-request" -> "library"
-      // other venue to be added as DisplayAccessMethod id -> content-api venue title
-    )
+  private def getVenuesOpeningTimes(
+    locationName: String
+  ): Future[Map[String, List[AvailabilitySlot]]] =
+    for {
+      venues <- venuesOpeningTimesLookup
+        .byVenueName(locationName)
 
-    def getLeadTimeInDays(openingTimes: List[OpenClose]): Int = {
-      val timeAtVenue = LocalDateTime.now(venueClock)
-      val isWorkingDay = timeAtVenue.toLocalDate.isEqual(
-        LocalDate.parse(
-          openingTimes.head.open,
-          DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-        )
-      )
-      accessCondition.method.id match {
-        case "online-request" if (timeAtVenue.getHour < 10 || !isWorkingDay) =>
-          1
-        case "online-request" if timeAtVenue.getHour >= 10 => 2
-      }
-    }
-
-    venueOpeningTimesLookup
-      .byVenueName(
-        venueFromDisplayAccessCondition.get(accessCondition.method.id)
-      )
-      .map {
-        case Right(venue) =>
-          venue.openingTimes
+      venuesOpeningTimes: Map[String, List[AvailabilitySlot]] = venues match {
+        case Right(venues) =>
+          venues
             .map(
-              openClose => AvailabilitySlot(openClose.open, openClose.close)
-            )
-            // the list of openingTimes, as returned from VenueOpeningTimesLookup, starts at "closest open day"
-            // (including today)
-            // however, it takes ${leadTimeInDays} days for the item to be fetched from stores
-            // so we need to drop ${leadTimeInDays} elements from the list of openingTimes
-            .drop(getLeadTimeInDays(venue.openingTimes))
+              venue =>
+                venue.title -> venue.openingTimes.map(
+                  openingTime =>
+                    AvailabilitySlot(openingTime.open, openingTime.close)
+              )
+          ) toMap
         case Left(venueOpeningTimesLookupError) =>
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
           )
-          List.empty
+          Map.empty
       }
-  }
+    } yield venuesOpeningTimes
+
+  private def libraryItemAvailabilities(
+    venuesOpeningTimes: Future[Map[String, List[AvailabilitySlot]]]
+  ): Future[List[AvailabilitySlot]] =
+    for {
+      venuesOpeningTimes <- venuesOpeningTimes
+
+      timeAtVenue = LocalDateTime.now(venueClock)
+      isWorkingDay = timeAtVenue.toLocalDate.isEqual(
+        LocalDate.parse(
+          venuesOpeningTimes("library").head.from,
+          DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        )
+      )
+      availabilitySlots = if (timeAtVenue.getHour < 10 | !isWorkingDay) {
+        venuesOpeningTimes("library").drop(1)
+      } else {
+        venuesOpeningTimes("library").drop(2)
+      }
+
+    } yield availabilitySlots
+
+  private def deepstoreItemAvailabilities(
+    venuesOpeningTimes: Future[Map[String, List[AvailabilitySlot]]]
+  ): Future[List[AvailabilitySlot]] =
+    for {
+      venuesOpeningTimes <- venuesOpeningTimes
+
+      firstAvailabilitySlot = venuesOpeningTimes(
+        "deepstore"
+      ).head
+      subsequentLibraryAvailabilitySlots = venuesOpeningTimes(
+        "library"
+      ).filter(
+        openingTime => openingTime.from > firstAvailabilitySlot.from
+      )
+
+    } yield firstAvailabilitySlot :: subsequentLibraryAvailabilitySlots
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
-    // item number -> item
-    val itemMap = items.map { item =>
-      SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head) -> item
-    } toMap
-
-    val staleItems = itemMap
-      .filter { case (_, item) => item.isStale }
-      .map { case (itemId, item) => itemId -> item.physicalLocationType }
+    val staleItemIds = items
+      .filter(item => item.isStale)
+      .map(
+        item => SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head)
+      )
 
     debug(
-      s"Asked to update items ${itemMap.keySet}, refreshing stale items ${staleItems.keySet}"
+      s"Refreshing stale items $staleItemIds"
     )
 
-    val allItems = for {
-      accessConditions <- staleItems.size match {
-        case 0 =>
-          Future.successful(Map.empty[SierraItemNumber, DisplayAccessCondition])
-        case _ => getAccessConditions(staleItems)
-      }
+    val freshSierraItemsData = lookupItems(staleItemIds)
 
-      updatedItems = itemMap
-        .map {
-          case (sierraId, item) =>
-            accessConditions.get(sierraId) match {
-              case Some(updatedAc) => updateAccessCondition(item, updatedAc)
-              case None            => item
-            }
-        }
-        .map(setAvailableDates)
-
-    } yield Future.sequence(updatedItems.toSeq)
-    allItems.flatten
+    Future.sequence(
+      items.map(item => updateItem(item, freshSierraItemsData))
+    )
   }
 }

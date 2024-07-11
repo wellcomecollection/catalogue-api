@@ -7,7 +7,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.akka.fixtures.Akka
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.items.models.{OpenClose, VenueOpeningTimes}
+import weco.api.items.models.{ContentApiVenue, OpenClose}
 import weco.catalogue.display_model.generators.IdentifiersGenerators
 import weco.fixtures.TestWith
 import weco.http.client.{HttpGet, MemoryHttpClient}
@@ -26,12 +26,12 @@ class VenueOpeningTimesLookupTest
 
   def withLookup[R](
     responses: Seq[(HttpRequest, HttpResponse)]
-  )(testWith: TestWith[VenueOpeningTimesLookup, R]): R =
+  )(testWith: TestWith[VenuesOpeningTimesLookup, R]): R =
     withActorSystem { implicit actorSystem =>
       val contentApiClient = new MemoryHttpClient(responses) with HttpGet {
         override val baseUri: Uri = Uri("http://content:9002")
       }
-      testWith(new VenueOpeningTimesLookup(contentApiClient))
+      testWith(new VenuesOpeningTimesLookup(contentApiClient))
     }
 
   it("decodes the content-api venue response into a VenueOpeningTimes") {
@@ -146,12 +146,12 @@ class VenueOpeningTimesLookupTest
     )
 
     val future = withLookup(responses) {
-      _.byVenueName(Some(venueTitle))
+      _.byVenueName(venueTitle)
     }
 
     whenReady(future) {
       _ shouldBe Right(
-        VenueOpeningTimes(
+        ContentApiVenue(
           contentType = "Venue",
           id = venueId,
           title = venueTitle,
@@ -178,7 +178,7 @@ class VenueOpeningTimesLookupTest
     )
 
     val future = withLookup(responses) {
-      _.byVenueName(Some(venueTitle))
+      _.byVenueName(venueTitle)
     }
 
     whenReady(future) {
@@ -197,7 +197,7 @@ class VenueOpeningTimesLookupTest
     )
 
     val future = withLookup(responses) {
-      _.byVenueName(Some(venueTitle))
+      _.byVenueName(venueTitle)
     }
 
     whenReady(future) {
@@ -219,9 +219,9 @@ class VenueOpeningTimesLookupTest
     }
 
     val future = withActorSystem { implicit as =>
-      val lookup = new VenueOpeningTimesLookup(brokenClient)
+      val lookup = new VenuesOpeningTimesLookup(brokenClient)
 
-      lookup.byVenueName(Some("Nice-try"))
+      lookup.byVenueName("Nice-try")
     }
 
     whenReady(future) {
