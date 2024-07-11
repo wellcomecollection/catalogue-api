@@ -150,7 +150,7 @@ class SierraItemUpdater(
       venues <- venuesOpeningTimesLookup
         .byVenueName(locationName)
 
-      venuesOpeningTimes: Map[String, List[AvailabilitySlot]] = venues match {
+      venuesOpeningTimes = venues match {
         case Right(venues) =>
           venues
             .map(
@@ -164,7 +164,7 @@ class SierraItemUpdater(
           error(
             s"Venue opening times lookup failed: $venueOpeningTimesLookupError"
           )
-          Map.empty
+          Map.empty[String, List[AvailabilitySlot]]
       }
     } yield venuesOpeningTimes
 
