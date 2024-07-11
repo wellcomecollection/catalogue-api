@@ -1,6 +1,7 @@
 package weco.api.items.services
 
 import grizzled.slf4j.Logging
+import weco.api.stacks.models.SierraItemDataOps.ItemDataOps
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}
 import weco.catalogue.display_model.identifiers.DisplayIdentifierType
 import weco.catalogue.display_model.locations.{
@@ -73,7 +74,7 @@ class SierraItemUpdater(
         SierraItemNumber(item.id)
       ) match {
         case Some(freshSierraItem) =>
-          val freshAccessCondition: DisplayAccessCondition =
+          val freshAccessCondition =
             freshSierraItem.accessCondition(item.physicalLocationType)
           val withUpdatedAccessCondition =
             updateAccessCondition(item, freshAccessCondition)
