@@ -11,7 +11,7 @@ import weco.api.requests.services.{
 }
 import weco.api.search.models.ApiConfig
 import weco.http.WellcomeHttpApp
-import weco.http.client.{PekkoHttpClient, HttpGet}
+import weco.http.client.{HttpGet, PekkoHttpClient}
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder

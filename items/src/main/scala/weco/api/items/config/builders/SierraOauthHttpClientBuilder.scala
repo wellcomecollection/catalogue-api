@@ -8,7 +8,7 @@ import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import weco.api.search.models.ApiEnvironment
-import weco.http.client.{PekkoHttpClient, HttpGet, HttpPost}
+import weco.http.client.{HttpGet, HttpPost, PekkoHttpClient}
 import weco.sierra.http.SierraOauthHttpClient
 import weco.typesafe.config.builders.EnrichConfig._
 

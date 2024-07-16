@@ -16,7 +16,7 @@ import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, ApiEnvironment}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
-import weco.http.client.{PekkoHttpClient, HttpGet}
+import weco.http.client.{HttpGet, PekkoHttpClient}
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
 

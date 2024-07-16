@@ -1,6 +1,10 @@
 package weco.api.items.responses
 
-import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
+import org.apache.pekko.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpResponse
+}
 import org.apache.pekko.http.scaladsl.server.Route
 import weco.api.items.models.DisplayItemsList
 import weco.api.items.services._
