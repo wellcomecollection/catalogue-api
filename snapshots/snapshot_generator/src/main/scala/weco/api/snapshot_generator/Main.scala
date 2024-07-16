@@ -1,6 +1,6 @@
 package weco.api.snapshot_generator
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import software.amazon.awssdk.services.s3.S3Client
 import weco.api.search.config.builders.PipelineElasticClientBuilder

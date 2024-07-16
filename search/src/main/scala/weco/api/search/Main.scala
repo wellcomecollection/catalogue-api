@@ -1,6 +1,6 @@
 package weco.api.search
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder

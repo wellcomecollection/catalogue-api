@@ -101,8 +101,8 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val akka = "2.6.20"
-    val akkaHttp = "10.2.9"
+    val pekko = "1.0.3"
+    val pekkoHttp = "1.0.1"
     val aws2 = "2.11.14"
   }
 
@@ -119,9 +119,9 @@ object ExternalDependencies {
     "org.scalatest" %% "scalatest" % versions.scalatest % "test"
   )
 
-  val akkaHttpDependencies = Seq(
-    "com.typesafe.akka" %% "akka-testkit" % versions.akka % "test",
-    "com.typesafe.akka" %% "akka-http-testkit" % versions.akkaHttp % "test"
+  val pekkoHttpDependencies = Seq(
+    "org.apache.pekko" %% "pekko-testkit" % versions.pekko % "test",
+    "org.apache.pekko" %% "pekko-http-testkit" % versions.pekkoHttp % "test"
   )
 
   val secretsDependencies = Seq(
@@ -148,7 +148,7 @@ object CatalogueDependencies {
       WellcomeDependencies.typesafeLibrary ++
       WellcomeDependencies.monitoringLibrary ++
       WellcomeDependencies.httpTypesafeLibrary ++
-      ExternalDependencies.akkaHttpDependencies ++
+      ExternalDependencies.pekkoHttpDependencies ++
       ExternalDependencies.scalacsvDependencies ++
       ExternalDependencies.secretsDependencies
 

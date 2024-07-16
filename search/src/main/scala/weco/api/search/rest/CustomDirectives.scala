@@ -1,7 +1,7 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.model.Uri
-import akka.http.scaladsl.server.{Directive, Route}
+import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.server.{Directive, Route}
 import weco.api.search.elasticsearch.{
   ElasticsearchError,
   ElasticsearchErrorHandler,
@@ -23,7 +23,7 @@ trait CustomDirectives extends FutureDirectives {
       uri
         .withScheme(apiConfig.publicScheme)
         .withHost(apiConfig.publicHost)
-        // akka-http uses 0 to indicate no explicit port in the URI
+        // pekko-http uses 0 to indicate no explicit port in the URI
         .withPort(0)
         .withPath(
           Uri.Path(apiConfig.publicRootPath) ++ uri.path

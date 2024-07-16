@@ -1,11 +1,11 @@
 package weco.api.items.services
 
-import akka.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.model._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.akka.fixtures.Akka
+import weco.pekko.fixtures.Pekko
 import weco.api.items.fixtures.ItemsApiGenerators
 import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
 import weco.catalogue.display_model.identifiers.{
@@ -30,7 +30,7 @@ class WorkLookupTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
-    with Akka
+    with Pekko
     with ScalaFutures
     with IdentifiersGenerators
     with ItemsApiGenerators {

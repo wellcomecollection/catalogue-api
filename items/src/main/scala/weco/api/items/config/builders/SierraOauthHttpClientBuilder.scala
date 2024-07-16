@@ -1,14 +1,14 @@
 package weco.api.items.config.builders
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.model.Uri
-import akka.http.scaladsl.model.headers.BasicHttpCredentials
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.headers.BasicHttpCredentials
 import com.typesafe.config.Config
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
 import weco.api.search.models.ApiEnvironment
-import weco.http.client.{AkkaHttpClient, HttpGet, HttpPost}
+import weco.http.client.{PekkoHttpClient, HttpGet, HttpPost}
 import weco.sierra.http.SierraOauthHttpClient
 import weco.typesafe.config.builders.EnrichConfig._
 
@@ -48,7 +48,7 @@ object SierraOauthHttpClientBuilder {
       s"stacks/prod/sierra_api_secret"
     )
 
-    val client = new AkkaHttpClient() with HttpGet with HttpPost {
+    val client = new PekkoHttpClient() with HttpGet with HttpPost {
       override val baseUri: Uri = Uri(
         config.requireString("sierra.api.baseUrl")
       )

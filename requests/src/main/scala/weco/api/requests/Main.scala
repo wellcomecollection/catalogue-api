@@ -1,7 +1,7 @@
 package weco.api.requests
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.model.Uri
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.requests.services.{
@@ -11,7 +11,7 @@ import weco.api.requests.services.{
 }
 import weco.api.search.models.ApiConfig
 import weco.http.WellcomeHttpApp
-import weco.http.client.{AkkaHttpClient, HttpGet}
+import weco.http.client.{PekkoHttpClient, HttpGet}
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
@@ -33,7 +33,7 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val httpClient = new AkkaHttpClient() with HttpGet {
+    val httpClient = new PekkoHttpClient() with HttpGet {
       override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
     }
 

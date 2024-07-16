@@ -1,6 +1,6 @@
 package weco.api.search.elasticsearch
 
-import akka.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.model.StatusCodes
 import com.sksamuel.elastic4s.ElasticError
 import grizzled.slf4j.Logging
 import weco.http.models.DisplayError

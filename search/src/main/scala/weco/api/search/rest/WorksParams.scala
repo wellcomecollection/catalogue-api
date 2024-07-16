@@ -1,6 +1,6 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.server.Directive
+import org.apache.pekko.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
 import weco.api.search.models.request._
@@ -14,11 +14,11 @@ case class SingleWorkParams(
 
 object SingleWorkParams extends QueryParamsUtils {
 
-  // This is a custom akka-http directive which extracts SingleWorkParams
+  // This is a custom pekko-http directive which extracts SingleWorkParams
   // data from the query string, returning an invalid response when any given
   // parameter is not correctly parsed. More info on custom directives is
   // available here:
-  // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
+  // https://pekko.apache.org/docs/pekko-http/1.0/routing-dsl/directives/custom-directives.html
   def parse: Directive[Tuple1[SingleWorkParams]] =
     parameters(
       "include".as[WorksIncludes].?
@@ -143,11 +143,11 @@ object MultipleWorksParams extends QueryParamsUtils {
   import CommonDecoders._
   import SingleWorkParams.includesDecoder
 
-  // This is a custom akka-http directive which extracts MultipleWorksParams
+  // This is a custom pekko-http directive which extracts MultipleWorksParams
   // data from the query string, returning an invalid response when any given
   // parameter is not correctly parsed. More info on custom directives is
   // available here:
-  // https://doc.akka.io/docs/akka-http/current/routing-dsl/directives/custom-directives.html
+  // https://pekko.apache.org/docs/pekko-http/1.0/routing-dsl/directives/custom-directives.html
   //
   // Scala has a max tuple size of about 22, so we break these up into nested
   // blocks to avoid hitting the limit.

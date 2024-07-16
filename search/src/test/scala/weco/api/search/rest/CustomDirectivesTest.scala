@@ -1,7 +1,7 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.model.Uri
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models.ApiConfig

@@ -1,6 +1,6 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import cats.implicits._
 import com.sksamuel.elastic4s.Index
 import weco.Tracing

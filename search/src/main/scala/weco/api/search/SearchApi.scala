@@ -1,12 +1,12 @@
 package weco.api.search
 
-import akka.http.scaladsl.model.{
+import org.apache.pekko.http.scaladsl.model.{
   ContentTypes,
   HttpEntity,
   HttpResponse,
   StatusCodes
 }
-import akka.http.scaladsl.server.{
+import org.apache.pekko.http.scaladsl.server.{
   MalformedQueryParamRejection,
   RejectionHandler,
   Route,

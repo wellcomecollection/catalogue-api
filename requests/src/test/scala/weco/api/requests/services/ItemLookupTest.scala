@@ -1,6 +1,6 @@
 package weco.api.requests.services
 
-import akka.http.scaladsl.model.{HttpResponse, Uri}
+import org.apache.pekko.http.scaladsl.model.{HttpResponse, Uri}
 import io.circe.Json
 import io.circe.parser._
 import org.scalatest.EitherValues

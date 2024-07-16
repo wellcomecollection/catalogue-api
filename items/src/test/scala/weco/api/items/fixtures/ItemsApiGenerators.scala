@@ -1,6 +1,6 @@
 package weco.api.items.fixtures
 
-import akka.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.model._
 import weco.fixtures.LocalResources
 import weco.http.json.DisplayJsonUtil
 import weco.http.models.DisplayError

@@ -1,6 +1,6 @@
 package weco.api.requests.fixtures
 
-import akka.http.scaladsl.model.{
+import org.apache.pekko.http.scaladsl.model.{
   ContentTypes,
   HttpEntity,
   HttpMethods,
@@ -8,7 +8,7 @@ import akka.http.scaladsl.model.{
   HttpResponse,
   Uri
 }
-import weco.akka.fixtures.Akka
+import weco.pekko.fixtures.Pekko
 import weco.api.requests.services.SierraRequestsService
 import weco.fixtures.{RandomGenerators, TestWith}
 import weco.http.client.{HttpGet, HttpPost, MemoryHttpClient}
@@ -22,7 +22,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SierraServiceFixture
     extends HttpFixtures
-    with Akka
+    with Pekko
     with RandomGenerators {
   def createItemRequest(itemNumber: SierraItemNumber): HttpRequest = {
     val fieldList = SierraSource.requiredItemFields.mkString(",")
