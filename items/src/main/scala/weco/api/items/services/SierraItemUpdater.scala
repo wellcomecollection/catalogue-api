@@ -105,8 +105,11 @@ class SierraItemUpdater(
       case None => item
     }
 
-  // Set availability slots for a single item based
-  // on its location and
+  /** Set availability slots for a single item
+    *  - if its physicalAccessCondition exists and is requestable
+    *  - based on its location
+    *  If any of the above are not true/defined, we return the item without availableDates
+    */
   private def setAvailableDates(
     item: DisplayItem,
     sierraItemLocation: Option[SierraLocation]
