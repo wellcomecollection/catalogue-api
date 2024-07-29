@@ -84,7 +84,7 @@ class ItemUpdateService(
                 preservedOrderItemsUpdate(
                   itemsWithIndex = itemsWithIndex,
                   updateFunction = updater.updateItems
-                )
+              )
             )
             .getOrElse(Future(itemsWithIndex))
 
