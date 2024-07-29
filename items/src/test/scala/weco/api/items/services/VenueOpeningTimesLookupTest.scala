@@ -151,16 +151,18 @@ class VenueOpeningTimesLookupTest
 
     whenReady(future) {
       _ shouldBe Right(
-        ContentApiVenue(
-          contentType = "Venue",
-          id = venueId,
-          title = venueTitle,
-          openingTimes = List(
-            OpenClose("2024-04-24T09:00:00.000Z", "2024-04-24T17:00:00.000Z"),
-            OpenClose("2024-04-25T09:00:00.000Z", "2024-04-25T19:00:00.000Z"),
-            OpenClose("2024-04-26T09:00:00.000Z", "2024-04-26T17:00:00.000Z"),
-            OpenClose("2024-04-27T09:00:00.000Z", "2024-04-27T15:00:00.000Z"),
-            OpenClose("2024-04-29T09:00:00.000Z", "2024-04-29T17:00:00.000Z")
+        List(
+          ContentApiVenue(
+            contentType = "Venue",
+            id = venueId,
+            title = venueTitle,
+            openingTimes = List(
+              OpenClose("2024-04-24T09:00:00.000Z", "2024-04-24T17:00:00.000Z"),
+              OpenClose("2024-04-25T09:00:00.000Z", "2024-04-25T19:00:00.000Z"),
+              OpenClose("2024-04-26T09:00:00.000Z", "2024-04-26T17:00:00.000Z"),
+              OpenClose("2024-04-27T09:00:00.000Z", "2024-04-27T15:00:00.000Z"),
+              OpenClose("2024-04-29T09:00:00.000Z", "2024-04-29T17:00:00.000Z")
+            )
           )
         )
       )

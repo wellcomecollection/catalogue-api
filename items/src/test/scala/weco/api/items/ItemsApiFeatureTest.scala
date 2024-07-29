@@ -47,12 +47,8 @@ class ItemsApiFeatureTest
         )
       )
 
-      val contentApiVenueResponses = Seq(
-        (
-          contentApiVenueRequest("library"),
-          contentApiVenueResponse()
-        )
-      )
+      val contentApiVenueResponses =
+        Seq((contentApiVenueRequest("library"), contentApiVenueResponse()))
 
       withItemsApi(
         catalogueResponses,

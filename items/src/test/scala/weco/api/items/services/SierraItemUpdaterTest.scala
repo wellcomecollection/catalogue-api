@@ -50,7 +50,7 @@ class SierraItemUpdaterTest
         testWith(
           new SierraItemUpdater(
             sierraSource,
-            new VenueOpeningTimesLookup(contentApiClient),
+            new VenuesOpeningTimesLookup(contentApiClient),
             clock
           )
         )
@@ -101,6 +101,20 @@ class SierraItemUpdaterTest
       HttpResponse(
         entity = sierraItemResponse(
           sierraItemNumber = sierraItemNumber
+        )
+      )
+    )
+  )
+
+  def availableDeepstoreItemResponse(
+    sierraItemNumber: SierraItemNumber
+  ): Seq[(HttpRequest, HttpResponse)] = Seq(
+    (
+      sierraItemRequest(sierraItemNumber),
+      HttpResponse(
+        entity = sierraItemResponse(
+          sierraItemNumber = sierraItemNumber,
+          locationCode = "harop"
         )
       )
     )
@@ -253,7 +267,7 @@ class SierraItemUpdaterTest
           contentApiVenueResponse,
           items,
           expectedAccessCondition,
-          expectedAvailableDates
+          _
         ) =>
           withClock("2018-04-29T10:15:30.00Z") { clock =>
             withSierraItemUpdater(
@@ -278,7 +292,7 @@ class SierraItemUpdaterTest
     }
 
     it(
-      "adds correct available dates for the item, request made on working day before 10am"
+      "adds correct available dates for on-site item, request made on working day before 10am"
     ) {
       withClock("2024-04-24T08:58:00.000Z") { clock =>
         withSierraItemUpdater(
@@ -311,7 +325,7 @@ class SierraItemUpdaterTest
     }
 
     it(
-      "adds correct available dates for the item, request made on working day after 10am"
+      "adds correct available dates for on-site item, request made on working day after 10am"
     ) {
       withClock() { clock =>
         withSierraItemUpdater(
@@ -339,7 +353,7 @@ class SierraItemUpdaterTest
     }
 
     it(
-      "adds correct available dates for the item, request made on non-working day before 10am"
+      "adds correct available dates for on-site item, request made on non-working day before 10am"
       // just to cover all cases, see below
     ) {
       withClock("2024-04-23T07:00:00.000Z") { clock =>
@@ -372,7 +386,7 @@ class SierraItemUpdaterTest
     }
 
     it(
-      "adds correct available dates for the item, request made on non-working day after 10am"
+      "adds correct available dates for on-site item, request made on non-working day after 10am"
       // edge case: a request made after 10am on a closed day will reach the staff before 10am on the next open day
       // item will therefore available the following day
     ) {
@@ -385,7 +399,6 @@ class SierraItemUpdaterTest
           whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
             updatedItems =>
               updatedItems.length shouldBe 1
-
               val physicalItem = updatedItems.head
 
               physicalItem.availableDates shouldBe Some(
@@ -397,6 +410,44 @@ class SierraItemUpdaterTest
                   AvailabilitySlot(
                     "2024-04-26T09:00:00.000Z",
                     "2024-04-26T17:00:00.000Z"
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
+    it(
+      "adds correct available dates for deepstore item"
+    ) {
+      // a deepstore item requested on 23/04 will be available in the library 10 days later, from 04/05
+      withClock("2024-04-23T13:00:00.000Z") { clock =>
+        withSierraItemUpdater(
+          availableDeepstoreItemResponse(workWithAvailableItemNumber),
+          Seq(
+            (
+              contentApiVenueRequest("deepstore"),
+              contentApiVenueResponse("deepstore")
+            )
+          ),
+          clock
+        ) { sierraItemUpdater =>
+          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
+            updatedItems =>
+              updatedItems.length shouldBe 1
+
+              val physicalItem = updatedItems.head
+
+              physicalItem.availableDates shouldBe Some(
+                List(
+                  AvailabilitySlot(
+                    "2024-05-04T09:00:00.000Z",
+                    "2024-05-04T17:00:00.000Z"
+                  ),
+                  AvailabilitySlot(
+                    "2024-05-05T09:00:00.000Z",
+                    "2024-05-05T17:00:00.000Z"
                   )
                 )
               )

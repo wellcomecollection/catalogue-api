@@ -2,7 +2,7 @@ package weco.api.items.services
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Path
-import akka.http.scaladsl.model.{HttpEntity, StatusCodes}
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import grizzled.slf4j.Logging
 import weco.http.client.{HttpClient, HttpGet}
@@ -32,40 +32,48 @@ class VenuesOpeningTimesLookup(client: HttpClient with HttpGet)(
     *
     */
   def byVenueName(
-    title: String
+    venueName: String
   ): Future[
     Either[VenueOpeningTimesLookupError, List[ContentApiVenue]]
   ] = {
     val path = Path(s"venues")
-    val params = Map("title" -> "library", "title" -> title)
+    // on-site and deepstore items are both viewed in the library, so we fetch it by default
+    val params = Map("title" -> s"library,$venueName")
 
     val httpResult = for {
       response <- client.get(path = path, params = params)
 
-      result <- response.status match {
-        case StatusCodes.OK =>
-          info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[ContentApiVenueResponse].map {
-            response =>
-              Right(response.results)
-          }
-
-        case StatusCodes.NotFound =>
-          info(s"Not Found for GET to $path with $params")
-          Future(Left(VenueOpeningTimesNotFoundError(title)))
-
-        case status =>
-          val err = new Throwable(s"$status from the content API")
-          error(
-            s"Unexpected status from GET to $path with $params: $status",
-            err
-          )
-          Future(Left(UnknownOpeningTimesError(title, err)))
-      }
+      result <- matchResponseToResult(response, path, params, venueName)
     } yield result
 
     httpResult.recover {
-      case e => Left(UnknownOpeningTimesError(title, e))
+      case e => Left(UnknownOpeningTimesError(venueName, e))
     }
   }
+
+  private def matchResponseToResult(
+    response: HttpResponse,
+    path: Path,
+    params: Map[String, String],
+    venueName: String
+  ): Future[Either[VenueOpeningTimesLookupError, List[ContentApiVenue]]] =
+    response.status match {
+      case StatusCodes.OK =>
+        info(s"OK for GET to $path with $params")
+        Unmarshal(response.entity).to[ContentApiVenueResponse].map { response =>
+          Right(response.results)
+        }
+
+      case StatusCodes.NotFound =>
+        error(s"Not Found for GET to $path with $params")
+        Future(Left(VenueOpeningTimesNotFoundError(venueName)))
+
+      case status =>
+        val err = new Throwable(s"$status from the content API")
+        error(
+          s"Unexpected status from GET to $path with $params: $status",
+          err
+        )
+        Future(Left(UnknownOpeningTimesError(venueName, err)))
+    }
 }
