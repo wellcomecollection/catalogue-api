@@ -1,7 +1,7 @@
 package weco.api.requests
 
-import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{
+import org.apache.pekko.http.scaladsl.model.headers.RawHeader
+import org.apache.pekko.http.scaladsl.model.{
   ContentTypes,
   HttpEntity,
   HttpMethods,
@@ -9,8 +9,8 @@ import akka.http.scaladsl.model.{
   HttpResponse,
   StatusCodes
 }
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
 import org.scalatest.concurrent.IntegrationPatience
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

@@ -1,9 +1,9 @@
 package weco.api.search.fixtures
 
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.http.scaladsl.model.{ContentTypes, StatusCode, Uri}
-import akka.http.scaladsl.model.headers.Host
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.http.scaladsl.model.{ContentTypes, StatusCode, Uri}
+import org.apache.pekko.http.scaladsl.model.headers.Host
+import org.apache.pekko.http.scaladsl.server.Route
 import com.sksamuel.elastic4s.Index
 import io.circe.parser.parse
 import io.circe.Json
@@ -14,7 +14,7 @@ import weco.api.search.models.{ApiConfig, ElasticConfig}
 
 trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   this: Suite =>
-  val Status = akka.http.scaladsl.model.StatusCodes
+  val Status = org.apache.pekko.http.scaladsl.model.StatusCodes
 
   val publicRootUri: String
 

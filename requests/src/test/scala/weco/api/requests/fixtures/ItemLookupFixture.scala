@@ -1,7 +1,7 @@
 package weco.api.requests.fixtures
 
-import akka.http.scaladsl.model._
-import weco.akka.fixtures.Akka
+import org.apache.pekko.http.scaladsl.model._
+import weco.pekko.fixtures.Pekko
 import weco.api.requests.services.ItemLookup
 import weco.catalogue.display_model.identifiers.DisplayIdentifier
 import weco.fixtures.TestWith
@@ -10,7 +10,7 @@ import weco.http.fixtures.HttpFixtures
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait ItemLookupFixture extends Akka with HttpFixtures {
+trait ItemLookupFixture extends Pekko with HttpFixtures {
   def withItemLookup[R](
     responses: Seq[(HttpRequest, HttpResponse)]
   )(testWith: TestWith[ItemLookup, R]): R =

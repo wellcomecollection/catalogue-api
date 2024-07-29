@@ -1,6 +1,6 @@
 package weco.api.items
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
 import weco.api.items.services.{ItemUpdateService, WorkLookup}

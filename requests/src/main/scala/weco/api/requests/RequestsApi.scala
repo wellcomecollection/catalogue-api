@@ -1,7 +1,7 @@
 package weco.api.requests
 
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.{Directive, PathMatcher, Route}
+import org.apache.pekko.http.scaladsl.model.StatusCodes
+import org.apache.pekko.http.scaladsl.server.{Directive, PathMatcher, Route}
 import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.requests.services.RequestsService

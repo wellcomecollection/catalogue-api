@@ -1,6 +1,6 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.Uri
 import io.circe.Json
 import io.circe.generic.extras.JsonKey
 import weco.api.search.json.CatalogueJsonUtil

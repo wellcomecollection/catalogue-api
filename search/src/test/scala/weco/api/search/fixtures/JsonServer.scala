@@ -1,6 +1,6 @@
 package weco.api.search.fixtures
 
-import akka.http.scaladsl.model.StatusCode
+import org.apache.pekko.http.scaladsl.model.StatusCode
 import io.circe.Json
 
 trait JsonServer {

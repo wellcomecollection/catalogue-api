@@ -1,7 +1,7 @@
 package weco.api.search.fixtures
 
-import akka.http.scaladsl.model.{ContentTypes, StatusCode}
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.model.{ContentTypes, StatusCode}
+import org.apache.pekko.http.scaladsl.server.Route
 import io.circe.Json
 import org.scalatest.TestSuite
 import weco.api.search.ApiTestBase

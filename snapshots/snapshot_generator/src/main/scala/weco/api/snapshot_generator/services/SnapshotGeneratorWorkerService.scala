@@ -1,6 +1,6 @@
 package weco.api.snapshot_generator.services
 
-import akka.Done
+import org.apache.pekko.Done
 import weco.api.snapshot_generator.models.SnapshotJob
 import weco.json.JsonUtil._
 import weco.messaging.MessageSender

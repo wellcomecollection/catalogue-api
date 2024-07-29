@@ -1,6 +1,6 @@
 package weco.api.requests.services
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import grizzled.slf4j.Logging
 import weco.api.requests.models.{HoldAccepted, HoldNote, HoldRejected}
 import weco.api.stacks.models.{DisplayItemOps, SierraItemIdentifier}

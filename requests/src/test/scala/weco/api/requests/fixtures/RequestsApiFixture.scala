@@ -1,6 +1,6 @@
 package weco.api.requests.fixtures
 
-import akka.http.scaladsl.model.{HttpRequest, HttpResponse}
+import org.apache.pekko.http.scaladsl.model.{HttpRequest, HttpResponse}
 import org.scalatest.Suite
 import weco.api.requests.RequestsApi
 import weco.api.requests.services.RequestsService

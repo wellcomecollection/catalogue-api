@@ -5,7 +5,7 @@ import org.scalatest.Assertion
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.akka.fixtures.Akka
+import weco.pekko.fixtures.Pekko
 import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.snapshot_generator.fixtures.{
   SnapshotServiceFixture,
@@ -25,7 +25,7 @@ class SnapshotGeneratorFeatureTest
     extends AnyFunSpec
     with Eventually
     with Matchers
-    with Akka
+    with Pekko
     with S3GzipUtils
     with JsonAssertions
     with IntegrationPatience
