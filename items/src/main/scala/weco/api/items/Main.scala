@@ -1,7 +1,7 @@
 package weco.api.items
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.model.Uri
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.items.config.builders.SierraOauthHttpClientBuilder
@@ -16,7 +16,7 @@ import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, ApiEnvironment}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
-import weco.http.client.{AkkaHttpClient, HttpGet}
+import weco.http.client.{HttpGet, PekkoHttpClient}
 import weco.http.monitoring.HttpMetrics
 import weco.sierra.http.SierraSource
 
@@ -49,7 +49,7 @@ object Main extends WellcomeTypesafeApp {
     )
     val sierraSource = new SierraSource(client)
 
-    val contentHttpClient = new AkkaHttpClient() with HttpGet {
+    val contentHttpClient = new PekkoHttpClient() with HttpGet {
       override val baseUri: Uri = config.getString("content.api.publicRoot")
     }
     val venueOpeningTimeLookup = new VenueOpeningTimesLookup(contentHttpClient)
@@ -67,7 +67,7 @@ object Main extends WellcomeTypesafeApp {
 
     val itemUpdateService = new ItemUpdateService(itemUpdaters)
 
-    val catalogueHttpClient = new AkkaHttpClient() with HttpGet {
+    val catalogueHttpClient = new PekkoHttpClient() with HttpGet {
       override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
     }
 

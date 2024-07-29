@@ -1,6 +1,6 @@
 package weco.api.search
 
-import akka.http.scaladsl.model.ContentTypes
+import org.apache.pekko.http.scaladsl.model.ContentTypes
 import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

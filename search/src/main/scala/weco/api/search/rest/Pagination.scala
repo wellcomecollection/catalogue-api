@@ -1,6 +1,6 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.Uri
 import weco.api.search.models.{ResultList, SearchOptions}
 
 object PaginationLimits {

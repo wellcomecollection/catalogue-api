@@ -1,6 +1,6 @@
 package weco.api.search
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.fixtures.ApiFixture
 

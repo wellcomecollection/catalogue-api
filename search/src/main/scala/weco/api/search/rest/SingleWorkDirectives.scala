@@ -1,7 +1,7 @@
 package weco.api.search.rest
 
-import akka.http.scaladsl.model.StatusCodes.Found
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.model.StatusCodes.Found
+import org.apache.pekko.http.scaladsl.server.Route
 import weco.api.search.elasticsearch.ElasticsearchError
 import weco.api.search.models.index.IndexedWork
 

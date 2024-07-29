@@ -1,6 +1,6 @@
 package weco.api.search.models
 
-import akka.http.scaladsl.model.Uri
+import org.apache.pekko.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 

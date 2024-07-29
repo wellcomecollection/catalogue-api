@@ -1,6 +1,6 @@
 package weco.api.search.works
 
-import akka.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.server.Route
 import org.scalatest.Assertion
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
