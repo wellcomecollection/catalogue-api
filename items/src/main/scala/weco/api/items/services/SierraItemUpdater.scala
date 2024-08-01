@@ -150,11 +150,11 @@ class SierraItemUpdater(
           venuesList
             .map(
               venue =>
-                venue.title -> venue.openingTimes.map(
+                venue.title.toLowerCase() -> venue.openingTimes.map(
                   openingTime =>
                     AvailabilitySlot(openingTime.open, openingTime.close)
-            )
-        )
+              )
+          )
     ) toMap
 
   private def libraryItemAvailabilities(
