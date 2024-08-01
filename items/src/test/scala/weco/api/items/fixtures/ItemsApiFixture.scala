@@ -6,7 +6,7 @@ import weco.api.items.ItemsApi
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,
-  VenueOpeningTimesLookup,
+  VenuesOpeningTimesLookup,
   WorkLookup
 }
 import weco.api.search.models.ApiConfig
@@ -54,7 +54,7 @@ trait ItemsApiFixture extends SierraSourceFixture {
           val itemsUpdaters = List(
             new SierraItemUpdater(
               sierraSource,
-              new VenueOpeningTimesLookup(contentApiClient),
+              new VenuesOpeningTimesLookup(contentApiClient),
               clock
             )
           )

@@ -12,7 +12,8 @@ trait ItemsApiGenerators extends LocalResources {
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
     suppressed: String = "false",
-    holdCount: Int = 0
+    holdCount: Int = 0,
+    locationCode: String = "some-location-code"
   ) = f"""
                         |{
                         |  "id": "${sierraItemNumber.withoutCheckDigit}",
@@ -23,7 +24,8 @@ trait ItemsApiGenerators extends LocalResources {
                         |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
                         |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
                         |  },
-                        |  "holdCount": $holdCount
+                        |  "holdCount": $holdCount,
+                        |  "location": {"code": "$locationCode", "name": "some-location-name"}
                         |}
                         |""".stripMargin
 
@@ -41,11 +43,12 @@ trait ItemsApiGenerators extends LocalResources {
     sierraItemNumber: SierraItemNumber,
     deleted: String = "false",
     suppressed: String = "false",
-    holdCount: Int = 0
+    holdCount: Int = 0,
+    locationCode: String = "some-location-code"
   ): HttpEntity.Strict = {
 
     val entries = Seq(
-      buildEntry(sierraItemNumber, deleted, suppressed, holdCount)
+      buildEntry(sierraItemNumber, deleted, suppressed, holdCount, locationCode)
     ).mkString(",\n")
 
     HttpEntity(
@@ -84,9 +87,9 @@ trait ItemsApiGenerators extends LocalResources {
       )
     )
 
-  def contentApiVenueRequest(title: String): HttpRequest =
+  def contentApiVenueRequest(venueName: String): HttpRequest =
     HttpRequest(
-      uri = Uri(s"http://content:9002/venues?title=$title")
+      uri = Uri(s"http://content:9002/venues?title=library,$venueName")
     )
 
   def contentApiVenueResponse(): HttpResponse =
@@ -100,7 +103,7 @@ trait ItemsApiGenerators extends LocalResources {
               {
                 "type": "Venue",
                 "id": "venue-id",
-                "title": "venue",
+                "title": "library",
                 "nextOpeningDates": [
                   {
                     "open": "2024-04-24T09:00:00.000Z",
@@ -113,6 +116,126 @@ trait ItemsApiGenerators extends LocalResources {
                   {
                     "open": "2024-04-26T09:00:00.000Z",
                     "close": "2024-04-26T17:00:00.000Z"
+                  }
+                ]
+              }
+            ]
+          }
+          """
+      )
+    )
+
+  def contentApiVenueResponse(venueName: String): HttpResponse =
+    HttpResponse(
+      entity = HttpEntity(
+        contentType = ContentTypes.`application/json`,
+        s"""
+          {
+            "type": "ResultList",
+            "results": [
+              {
+                "type": "Venue",
+                "id": "venue-id",
+                "title": "library",
+                "nextOpeningDates": [
+                  {
+                    "open": "2024-04-24T09:00:00.000Z",
+                    "close": "2024-04-24T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-25T09:00:00.000Z",
+                    "close": "2024-04-25T19:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-26T09:00:00.000Z",
+                    "close": "2024-04-26T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-27T09:00:00.000Z",
+                    "close": "2024-04-27T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-28T09:00:00.000Z",
+                    "close": "2024-04-28T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-29T09:00:00.000Z",
+                    "close": "2024-04-29T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-30T09:00:00.000Z",
+                    "close": "2024-04-30T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-01T09:00:00.000Z",
+                    "close": "2024-05-01T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-02T09:00:00.000Z",
+                    "close": "2024-05-02T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-03T09:00:00.000Z",
+                    "close": "2024-05-03T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-04T09:00:00.000Z",
+                    "close": "2024-05-04T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-05T09:00:00.000Z",
+                    "close": "2024-05-05T17:00:00.000Z"
+                  }
+                ]
+              },
+             {
+                "type": "Venue",
+                "id": "venue-id",
+                "title": "$venueName",
+                "nextOpeningDates": [
+                  {
+                    "open": "2024-04-24T09:00:00.000Z",
+                    "close": "2024-04-24T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-25T09:00:00.000Z",
+                    "close": "2024-04-25T19:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-26T09:00:00.000Z",
+                    "close": "2024-04-26T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-27T09:00:00.000Z",
+                    "close": "2024-04-27T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-28T09:00:00.000Z",
+                    "close": "2024-04-28T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-29T09:00:00.000Z",
+                    "close": "2024-04-29T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-04-30T09:00:00.000Z",
+                    "close": "2024-04-30T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-01T09:00:00.000Z",
+                    "close": "2024-05-01T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-02T09:00:00.000Z",
+                    "close": "2024-05-02T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-03T09:00:00.000Z",
+                    "close": "2024-05-03T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-04T09:00:00.000Z",
+                    "close": "2024-05-04T17:00:00.000Z"
                   }
                 ]
               }

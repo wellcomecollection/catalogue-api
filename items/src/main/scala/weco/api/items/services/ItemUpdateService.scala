@@ -14,7 +14,7 @@ class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
 )(implicit executionContext: ExecutionContext) {
 
-  type ItemsWithIndex = Seq[(DisplayItem, Int)]
+  private type ItemsWithIndex = Seq[(DisplayItem, Int)]
 
   private final val itemUpdatesMap = itemUpdaters
     .map(updater => updater.identifierType.id -> updater)

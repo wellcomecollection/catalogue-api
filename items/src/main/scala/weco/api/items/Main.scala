@@ -8,7 +8,7 @@ import weco.api.items.config.builders.SierraOauthHttpClientBuilder
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,
-  VenueOpeningTimesLookup,
+  VenuesOpeningTimesLookup,
   WorkLookup
 }
 import weco.http.typesafe.HTTPServerBuilder
@@ -52,7 +52,7 @@ object Main extends WellcomeTypesafeApp {
     val contentHttpClient = new PekkoHttpClient() with HttpGet {
       override val baseUri: Uri = config.getString("content.api.publicRoot")
     }
-    val venueOpeningTimeLookup = new VenueOpeningTimesLookup(contentHttpClient)
+    val venueOpeningTimeLookup = new VenuesOpeningTimesLookup(contentHttpClient)
     val venueClock = Clock.system(ZoneId.of("Europe/London"))
 
     // To add an item updater for a new service:
