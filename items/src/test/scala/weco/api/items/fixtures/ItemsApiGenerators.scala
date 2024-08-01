@@ -103,7 +103,7 @@ trait ItemsApiGenerators extends LocalResources {
               {
                 "type": "Venue",
                 "id": "venue-id",
-                "title": "library",
+                "title": "Library",
                 "nextOpeningDates": [
                   {
                     "open": "2024-04-24T09:00:00.000Z",
@@ -136,7 +136,7 @@ trait ItemsApiGenerators extends LocalResources {
               {
                 "type": "Venue",
                 "id": "venue-id",
-                "title": "library",
+                "title": "Library",
                 "nextOpeningDates": [
                   {
                     "open": "2024-04-24T09:00:00.000Z",
