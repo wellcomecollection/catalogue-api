@@ -442,8 +442,8 @@ class SierraItemUpdaterTest
               physicalItem.availableDates shouldBe Some(
                 List(
                   AvailabilitySlot(
-                    "2024-05-04T08:00:00.000Z",
-                    "2024-05-04T15:00:00.000Z"
+                    "2024-05-04T09:00:00.000Z",
+                    "2024-05-04T17:00:00.000Z"
                   ),
                   AvailabilitySlot(
                     "2024-05-05T09:00:00.000Z",
