@@ -162,7 +162,10 @@ class SierraItemUpdater(
   ): List[AvailabilitySlot] = {
     val timeAtVenue = LocalDateTime.now(venueClock)
     val isWorkingDay = timeAtVenue.toLocalDate.isEqual(
-      parseISOStringToLocalDate(venuesOpeningTimes("library").head.from)
+      LocalDate.parse(
+        venuesOpeningTimes("library").head.from,
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+      )
     )
     if (timeAtVenue.getHour < 10 | !isWorkingDay) {
       venuesOpeningTimes("library").drop(1)
@@ -182,11 +185,7 @@ class SierraItemUpdater(
     val subsequentLibraryAvailabilitySlots = venuesOpeningTimes(
       "library"
     ).filter(
-      openingTime =>
-        parseISOStringToLocalDate(openingTime.from)
-          .isAfter(
-            parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
-        )
+      openingTime => openingTime.from > firstDeepstoreAvailabilitySlot.from
     )
     firstDeepstoreAvailabilitySlot :: subsequentLibraryAvailabilitySlots
   }
@@ -210,11 +209,4 @@ class SierraItemUpdater(
         } yield updatedItems
     }
   }
-
-  private def parseISOStringToLocalDate(isoString: String): LocalDate =
-    LocalDate.parse(
-      isoString,
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    )
-
 }
