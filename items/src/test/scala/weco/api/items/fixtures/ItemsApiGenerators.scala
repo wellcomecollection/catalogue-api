@@ -15,19 +15,19 @@ trait ItemsApiGenerators extends LocalResources {
     holdCount: Int = 0,
     locationCode: String = "some-location-code"
   ) = f"""
-                        |{
-                        |  "id": "${sierraItemNumber.withoutCheckDigit}",
-                        |  "deleted": $deleted,
-                        |  "suppressed": $suppressed,
-                        |  "fixedFields": {
-                        |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
-                        |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
-                        |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
-                        |  },
-                        |  "holdCount": $holdCount,
-                        |  "location": {"code": "$locationCode", "name": "some-location-name"}
-                        |}
-                        |""".stripMargin
+                       |{
+                       |  "id": "${sierraItemNumber.withoutCheckDigit}",
+                       |  "deleted": $deleted,
+                       |  "suppressed": $suppressed,
+                       |  "fixedFields": {
+                       |    "79": {"label": "LOCATION", "value": "scmwf", "display": "Closed stores A&MSS Well.Found."},
+                       |    "88": {"label": "STATUS", "value": "-", "display": "Available"},
+                       |    "108": {"label": "OPACMSG", "value": "f", "display": "Online request"}
+                       |  },
+                       |  "holdCount": $holdCount,
+                       |  "location": {"code": "$locationCode", "name": "some-location-name"}
+                       |}
+                       |""".stripMargin
 
   def sierraItemRequest(itemNumber: SierraItemNumber): HttpRequest = {
     val fieldList = SierraSource.requiredItemFields.mkString(",")
@@ -54,14 +54,14 @@ trait ItemsApiGenerators extends LocalResources {
     HttpEntity(
       contentType = ContentTypes.`application/json`,
       f"""
-        |{
-        |  "total": ${entries.length},
-        |  "start": 0,
-        |  "entries": [
-        |    $entries
-        |  ]
-        |}
-        |""".stripMargin
+         |{
+         |  "total": ${entries.length},
+         |  "start": 0,
+         |  "entries": [
+         |    $entries
+         |  ]
+         |}
+         |""".stripMargin
     )
   }
 
@@ -194,48 +194,48 @@ trait ItemsApiGenerators extends LocalResources {
                 "title": "$venueName",
                 "nextOpeningDates": [
                   {
-                    "open": "2024-04-24T09:00:00.000Z",
-                    "close": "2024-04-24T17:00:00.000Z"
+                    "open": "2024-04-24T08:00:00.000Z",
+                    "close": "2024-04-24T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-25T09:00:00.000Z",
+                    "open": "2024-04-25T08:00:00.000Z",
                     "close": "2024-04-25T19:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-26T09:00:00.000Z",
-                    "close": "2024-04-26T17:00:00.000Z"
+                    "open": "2024-04-26T08:00:00.000Z",
+                    "close": "2024-04-26T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-27T09:00:00.000Z",
-                    "close": "2024-04-27T17:00:00.000Z"
+                    "open": "2024-04-27T08:00:00.000Z",
+                    "close": "2024-04-27T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-28T09:00:00.000Z",
-                    "close": "2024-04-28T17:00:00.000Z"
+                    "open": "2024-04-28T08:00:00.000Z",
+                    "close": "2024-04-28T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-29T09:00:00.000Z",
-                    "close": "2024-04-29T17:00:00.000Z"
+                    "open": "2024-04-29T08:00:00.000Z",
+                    "close": "2024-04-29T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-04-30T09:00:00.000Z",
-                    "close": "2024-04-30T17:00:00.000Z"
+                    "open": "2024-04-30T08:00:00.000Z",
+                    "close": "2024-04-30T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-05-01T09:00:00.000Z",
-                    "close": "2024-05-01T17:00:00.000Z"
+                    "open": "2024-05-01T08:00:00.000Z",
+                    "close": "2024-05-01T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-05-02T09:00:00.000Z",
-                    "close": "2024-05-02T17:00:00.000Z"
+                    "open": "2024-05-02T08:00:00.000Z",
+                    "close": "2024-05-02T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-05-03T09:00:00.000Z",
-                    "close": "2024-05-03T17:00:00.000Z"
+                    "open": "2024-05-03T08:00:00.000Z",
+                    "close": "2024-05-03T15:00:00.000Z"
                   },
                   {
-                    "open": "2024-05-04T09:00:00.000Z",
-                    "close": "2024-05-04T17:00:00.000Z"
+                    "open": "2024-05-04T08:00:00.000Z",
+                    "close": "2024-05-04T15:00:00.000Z"
                   }
                 ]
               }
