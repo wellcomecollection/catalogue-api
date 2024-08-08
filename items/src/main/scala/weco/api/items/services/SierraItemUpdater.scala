@@ -153,8 +153,8 @@ class SierraItemUpdater(
                 venue.title.toLowerCase() -> venue.openingTimes.map(
                   openingTime =>
                     AvailabilitySlot(openingTime.open, openingTime.close)
-              )
-          )
+            )
+        )
     ) toMap
 
   private def libraryItemAvailabilities(
@@ -186,7 +186,7 @@ class SierraItemUpdater(
         parseISOStringToLocalDate(openingTime.from)
           .isAfter(
             parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
-          )
+        )
     )
     firstDeepstoreAvailabilitySlot :: subsequentLibraryAvailabilitySlots
   }
