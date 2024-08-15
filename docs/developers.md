@@ -36,3 +36,9 @@ sbt "project items" ~reStart
 ```
 
 You should then be able to access the API at `http://localhost:8080/works`.
+
+To specify a different pipeline index, you can set the `pipelineDate` environment variable for the search API:
+
+```bash
+pipelineDate=2021-01-01 sbt "project search" ~reStart
+```
