@@ -4,7 +4,12 @@ import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.models.{ApiConfig, ApiEnvironment, ElasticConfig, PipelineClusterElasticConfig}
+import weco.api.search.models.{
+  ApiConfig,
+  ApiEnvironment,
+  ElasticConfig,
+  PipelineClusterElasticConfig
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -24,12 +29,14 @@ object Main extends WellcomeTypesafeApp {
 
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    val (elasticClient, elasticConfig) =  apiConfig.environment match {
+    val (elasticClient, elasticConfig) = apiConfig.environment match {
       case ApiEnvironment.Dev =>
         info(s"Running in dev mode.")
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
-        val pipelineDate = pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
-        if(pipelineDateOverride.isDefined) warn(s"Overridden pipeline date: $pipelineDate")
+        val pipelineDate =
+          pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
+        if (pipelineDateOverride.isDefined)
+          warn(s"Overridden pipeline date: $pipelineDate")
 
         (
           PipelineElasticClientBuilder(
