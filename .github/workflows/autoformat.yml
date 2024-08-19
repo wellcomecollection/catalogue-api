@@ -1,0 +1,12 @@
+# Runs auto-formatting script on push to any branch except main
+name: "Run auto formatting"
+
+on: push
+
+jobs:
+  autoformat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        id: autoformat
+      - run: bash ./builds/run_formatting.sh
