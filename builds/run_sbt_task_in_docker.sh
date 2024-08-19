@@ -47,6 +47,8 @@ else
   HOST_COURSIER_CACHE=~/$LINUX_COURSIER_CACHE
 fi
 
+aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
+
 docker run --tty --rm \
   --volume ~/.sbt:/root/.sbt \
   --volume ~/.ivy2:/root/.ivy2 \
