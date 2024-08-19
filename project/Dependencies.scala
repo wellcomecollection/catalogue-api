@@ -103,7 +103,7 @@ object ExternalDependencies {
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val pekko = "1.0.3"
     val pekkoHttp = "1.0.1"
-    val aws2 = "2.11.14"
+    val aws2 = "2.25.28"
   }
 
   val circeOpticsDependencies = Seq(
@@ -129,6 +129,10 @@ object ExternalDependencies {
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
+  val otherAwsDependencies  = Seq(
+    "software.amazon.awssdk" % "sso" % versions.aws2
+  )
+
   val scalacsvDependencies = Seq(
     "com.github.tototoshi" %% "scala-csv" % versions.scalacsv
   )
@@ -150,7 +154,8 @@ object CatalogueDependencies {
       WellcomeDependencies.httpTypesafeLibrary ++
       ExternalDependencies.pekkoHttpDependencies ++
       ExternalDependencies.scalacsvDependencies ++
-      ExternalDependencies.secretsDependencies
+      ExternalDependencies.secretsDependencies ++
+      ExternalDependencies.otherAwsDependencies
 
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies
