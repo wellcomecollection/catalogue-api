@@ -1,4 +1,4 @@
-# Runs auto-formatting script on push to any branch except main
+# Runs auto-formatting script on push to any branch
 name: "Run auto formatting"
 
 permissions:
@@ -13,10 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@master
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          audience: sts.amazonaws.com
           role-to-assume: ${{ secrets.GHA_PLATFORM_ECR_READ_ROLE_ARN }}
       - uses: aws-actions/amazon-ecr-login@v2
         env:
