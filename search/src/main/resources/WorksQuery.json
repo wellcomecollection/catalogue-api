@@ -47,6 +47,7 @@
             "query.identifiers.value",
             "query.items.id",
             "query.items.identifiers.value",
+            "query.items.shelfmark.value",
             "query.images.id",
             "query.images.identifiers.value",
             "query.referenceNumber*",
