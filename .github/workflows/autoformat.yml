@@ -12,9 +12,6 @@ jobs:
     name: autoformat
     runs-on: ubuntu-latest
     steps:
-      - name: Debug AWS Credentials
-        run: |
-          echo "GHA ROLE ARN: ${{ secrets.GHA_PLATFORM_ECR_READ_ROLE_ARN }}"
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
         with:
