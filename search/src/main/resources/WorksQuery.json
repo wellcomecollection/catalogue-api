@@ -47,14 +47,24 @@
             "query.identifiers.value",
             "query.items.id",
             "query.items.identifiers.value",
-            "query.items.shelfmark*",
             "query.images.id",
             "query.images.identifiers.value",
-            "query.referenceNumber*",
-            "query.collectionPath*"
+            "query.referenceNumber*"
           ],
           "type": "cross_fields",
           "boost": 100,
+          "operator": "OR",
+          "minimum_should_match": 1
+        }
+      },
+      {
+        "multi_match": {
+          "_name": "ids_with_path_lax",
+          "query": "{{query}}",
+          "analyzer": "lowercase_whitespace_tokens",
+          "fields": ["query.items.shelfmark*", "query.collectionPath*"],
+          "type": "cross_fields",
+          "boost": 50,
           "operator": "OR",
           "minimum_should_match": 1
         }
