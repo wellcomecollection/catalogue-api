@@ -18,6 +18,6 @@ jobs:
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.GHA_PLATFORM_ECR_READ_ROLE_ARN }}
       - uses: aws-actions/amazon-ecr-login@v2
-        env:
-          AWS_REGION: us-east-1
+        with:
+          aws-region: us-east-1
       - run: bash ./builds/run_formatting.sh
