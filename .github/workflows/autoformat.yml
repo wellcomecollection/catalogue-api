@@ -29,12 +29,12 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          role-to-assume: ${{ secrets.GHA_PLATFORM_S3_SCALA_LIBS_READ_ROLE_ARN }}
+          role-to-assume: ${{ secrets.S3_SCALA_RELEASES_READ_ROLE_ARN }}
           output-credentials: true
 
       - name: Run formatting
         run: bash ./builds/run_formatting.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.s3_credentials.outputs.aws-access-key-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.s3_credentials.outputs.aws-secret-access-key }}
+          AWS_SECRET_KEY: ${{ steps.s3_credentials.outputs.aws-secret-access-key }}
 
