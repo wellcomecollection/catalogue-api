@@ -12,7 +12,9 @@ jobs:
     name: autoformat
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out project
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials for ECR
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -23,15 +25,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Configure AWS credentials for S3
-        id: s3_creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          role-to-assume: ${{ secrets.S3_SCALA_RELEASES_READ_ROLE_ARN }}
+          role-to-assume: ${{ secrets.GHA_PLATFORM_S3_SCALA_LIBS_READ_ROLE_ARN }}
 
       - name: Run formatting
         run: bash ./builds/run_formatting.sh
-        with:
-          aws-region: eu-west-1
-          aws-access-key-id: ${{ steps.s3_creds.outputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ steps.s3_creds.outputs.aws-secret-access-key }}
