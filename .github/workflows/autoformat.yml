@@ -15,23 +15,15 @@ jobs:
       - name: Check out project
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials for ECR
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
-          role-to-assume: ${{ secrets.GHA_PLATFORM_ECR_READ_ROLE_ARN }}
+          role-to-assume: ${{ secrets.GHA_SCALA_FORMATTING_ROLE_ARN }}
 
       - name: Log in to private ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Configure AWS credentials for S3
-        id: s3_credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.S3_SCALA_RELEASES_READ_ROLE_ARN }}
-
       - name: Run formatting
-        run: |
-          aws configure set role_arn "${{ secrets.S3_SCALA_RELEASES_READ_ROLE_ARN }}"
-          bash ./builds/run_formatting.sh
+        run: bash ./builds/run_formatting.sh
+
