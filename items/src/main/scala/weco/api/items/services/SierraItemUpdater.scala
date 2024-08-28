@@ -212,9 +212,5 @@ class SierraItemUpdater(
   }
 
   private def parseISOStringToLocalDate(isoString: String): LocalDate =
-    LocalDate.parse(
-      isoString,
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    )
-
+    LocalDate.parse(isoString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
 }
