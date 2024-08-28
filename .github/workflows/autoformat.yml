@@ -32,5 +32,6 @@ jobs:
           aws-region: eu-west-1
           AWS_ACCESS_KEY_ID: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
           AWS_SECRET_KEY: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
+          aws-session-token: ${{ steps.aws_credentials.outputs.aws-session-token }}
 
 
