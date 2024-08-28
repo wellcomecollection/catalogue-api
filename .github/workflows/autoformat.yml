@@ -29,7 +29,6 @@ jobs:
       - name: Run formatting
         run: bash ./builds/run_formatting.sh
         env:
-          aws-region: eu-west-1
           AWS_ACCESS_KEY_ID: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
           AWS_SECRET_KEY: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_credentials.outputs.aws-session-token }}
