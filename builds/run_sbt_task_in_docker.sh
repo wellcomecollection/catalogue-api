@@ -58,5 +58,5 @@ docker run --tty --rm \
   --workdir "$ROOT" \
   -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
   -e AWS_SECRET_KEY=$AWS_SECRET_KEY \
-  -e aws-session-token=$aws-session-token \
+  -e AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN \
   "$ECR_REGISTRY/wellcome/sbt_wrapper" "$@"
