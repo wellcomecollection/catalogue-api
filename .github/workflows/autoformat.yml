@@ -16,14 +16,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
+        id: aws_credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.GHA_SCALA_FORMATTING_ROLE_ARN }}
+          output-credentials: true
 
       - name: Log in to private ECR
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Run formatting
         run: bash ./builds/run_formatting.sh
+        env:
+          aws-region: eu-west-1
+          aws-access-key-id: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
+
 
