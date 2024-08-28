@@ -56,4 +56,6 @@ docker run --tty --rm \
   --net host \
   --volume "$ROOT:$ROOT" \
   --workdir "$ROOT" \
+  -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+  -e AWS_SECRET_KEY=$AWS_SECRET_KEY \
   "$ECR_REGISTRY/wellcome/sbt_wrapper" "$@"
