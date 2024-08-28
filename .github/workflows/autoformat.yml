@@ -33,4 +33,10 @@ jobs:
           AWS_SECRET_KEY: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
           AWS_SESSION_TOKEN: ${{ steps.aws_credentials.outputs.aws-session-token }}
 
+      - name: Commit formatting changes
+        run: |
+          git config user.name "Buildkite on behalf of Wellcome Collection"
+          git config user.email "wellcomedigitalplatform@wellcome.ac.uk"
+          git commit -am "Apply auto-formatting rules"
+          git push
 
