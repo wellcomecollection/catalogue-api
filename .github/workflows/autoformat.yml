@@ -3,7 +3,7 @@ name: "Run auto formatting"
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 on: push
 
