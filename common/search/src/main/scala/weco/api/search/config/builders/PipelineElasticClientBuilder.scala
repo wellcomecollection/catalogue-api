@@ -4,7 +4,7 @@ import com.sksamuel.elastic4s.ElasticClient
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.api.search.models.{ApiEnvironment, PipelineClusterElasticConfig}
+import weco.api.search.models.{ApiEnvironment, ElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
 
 object PipelineElasticClientBuilder {
@@ -19,7 +19,7 @@ object PipelineElasticClientBuilder {
 
   def apply(
     serviceName: String,
-    pipelineDate: String = PipelineClusterElasticConfig.pipelineDate,
+    pipelineDate: String = ElasticConfig.pipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod
   ): ElasticClient = {
 
