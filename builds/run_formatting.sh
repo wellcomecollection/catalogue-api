@@ -12,7 +12,7 @@ docker run --tty --rm \
 	--workdir /repo \
 	"public.ecr.aws/hashicorp/terraform:light" fmt -recursive
 
-./builds/run_sbt_task_in_docker.sh "scalafmt" AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_KEY=$AWS_SECRET_KEY
+./builds/run_sbt_task_in_docker.sh "scalafmt" AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID AWS_SECRET_KEY=$AWS_SECRET_KEY aws-session-token=$aws-session-token
 
 # Undo any formatting changes to the source_model code copied from
 # the pipeline repo.  Ideally I'd have scalafmt ignore them, but I
