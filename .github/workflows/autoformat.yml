@@ -30,7 +30,7 @@ jobs:
         run: bash ./builds/run_formatting.sh
         env:
           aws-region: eu-west-1
-          aws-access-key-id: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
+          AWS_ACCESS_KEY_ID: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
+          AWS_SECRET_KEY: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
 
 
