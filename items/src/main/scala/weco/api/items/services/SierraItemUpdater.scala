@@ -194,7 +194,8 @@ class SierraItemUpdater(
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     val staleItemIds = items
       .filter(item => item.isStale)
-      .map(item => SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head))
+      .map(item =>
+        SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head))
 
     staleItemIds.size match {
       case 0 => Future.successful(items)
@@ -210,5 +211,7 @@ class SierraItemUpdater(
   }
 
   private def parseISOStringToLocalDate(isoString: String): LocalDate =
-    LocalDate.parse(isoString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+    LocalDate.parse(
+      isoString,
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
 }
