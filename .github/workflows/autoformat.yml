@@ -1,50 +1,12 @@
 # Runs auto-formatting script on push to any branch
-name: "Run auto formatting"
+name: "Scala auto-formatting"
+
+on: push
 
 permissions:
   id-token: write
   contents: write
 
-on: push
-
 jobs:
   autoformat:
-    name: autoformat
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out project
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        id: aws_credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.GHA_SCALA_FORMATTING_ROLE_ARN }}
-          output-credentials: true
-
-      - name: Log in to private ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Run formatting
-        run: bash ./builds/run_formatting.sh
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.aws_credentials.outputs.aws-access-key-id }}
-          AWS_SECRET_KEY: ${{ steps.aws_credentials.outputs.aws-secret-access-key }}
-          AWS_SESSION_TOKEN: ${{ steps.aws_credentials.outputs.aws-session-token }}
-
-      - name: Check for formatting changes
-        id: check_formatting_changes
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-              echo "changes=true" >> "$GITHUB_OUTPUT"; 
-          fi
-
-      - name: Commit and push formatting changes
-        if: steps.check_formatting_changes.outputs.changes == 'true'
-        run: |
-          git config user.name "GithubAction on behalf of Wellcome Collection"
-          git config user.email "wellcomedigitalplatform@wellcome.ac.uk"
-          git commit -am "Apply auto-formatting rules"
-          git push
-
+    uses: wellcomecollection/.github/.github/workflows/autoformat.yml@make-reformatting-workflow-reusable
