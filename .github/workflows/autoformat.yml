@@ -10,3 +10,4 @@ permissions:
 jobs:
   autoformat:
     uses: wellcomecollection/.github/.github/workflows/scala_formatting.yml@make-reformatting-workflow-reusable
+    secrets: inherit
