@@ -1,6 +1,6 @@
 steps:
   - command: ./builds/run_linting.sh
-    label: "autoformat"
+    label: "linting"
     agents:
       queue: "scala"
 
