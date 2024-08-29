@@ -194,9 +194,7 @@ class SierraItemUpdater(
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     val staleItemIds = items
       .filter(item => item.isStale)
-      .map(
-        item => SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head)
-      )
+      .map(item => SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head))
 
     staleItemIds.size match {
       case 0 => Future.successful(items)
