@@ -96,7 +96,7 @@ object ExternalDependencies {
     val circeOptics = "0.14.1"
     val scalatest = "3.2.3"
     val scalatestplus = "3.1.2.0"
-    val scalacheckShapeless = "1.1.6"
+    val scalacheckShapeless = "1.1.8"
     val scalacsv = "1.3.5"
 
     // This should match the version used in scala-libs
@@ -129,7 +129,7 @@ object ExternalDependencies {
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
-  val otherAwsDependencies  = Seq(
+  val otherAwsDependencies = Seq(
     "software.amazon.awssdk" % "sso" % versions.aws2
   )
 
