@@ -101,7 +101,7 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val pekko = "1.0.3"
+    val pekko = "1.1.0"
     val pekkoHttp = "1.0.1"
     val aws2 = "2.25.28"
   }
