@@ -20,10 +20,9 @@ import scala.concurrent.duration._
   *
   *       org.apache.http.ContentTooLongException: entity content is too
   *       long [167209080] for the configured buffer limit [104857600]
-  *
   */
-class ElasticsearchScanner()(
-  implicit client: ElasticClient,
+class ElasticsearchScanner()(implicit
+  client: ElasticClient,
   keepAlive: FiniteDuration = 30 minutes,
   bulkSize: Int = 10000
 ) extends Logging {
@@ -42,18 +41,17 @@ class ElasticsearchScanner()(
         // 1-index the documents for humans
         case (hit, index) => (hit, index + 1)
       }
-      .map {
-        case (hit, index) =>
-          if (index % bulkSize == 0) {
-            info(
-              s"Received another ${intComma(bulkSize)} hits " +
-                s"(${intComma(index)} so far) from ${request.indexes.string()}"
-            )
-          }
+      .map { case (hit, index) =>
+        if (index % bulkSize == 0) {
+          info(
+            s"Received another ${intComma(bulkSize)} hits " +
+              s"(${intComma(index)} so far) from ${request.indexes.string()}"
+          )
+        }
 
-          hit
+        hit
       }
-      .map { _.safeTo[T].get }
+      .map(_.safeTo[T].get)
 
   private def intComma(number: Long): String =
     NumberFormat.getInstance().format(number)

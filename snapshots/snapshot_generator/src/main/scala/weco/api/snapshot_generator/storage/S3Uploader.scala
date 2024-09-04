@@ -13,12 +13,14 @@ import weco.storage.store.s3.S3MultipartUploader
 
 import scala.util.Try
 
-class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
-  implicit val s3Client: S3Client
+class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(implicit
+  val s3Client: S3Client
 ) extends S3MultipartUploader {
 
-  def upload(location: S3ObjectLocation,
-             bytes: Iterator[Byte]): Try[CompleteMultipartUploadResponse] =
+  def upload(
+    location: S3ObjectLocation,
+    bytes: Iterator[Byte]
+  ): Try[CompleteMultipartUploadResponse] =
     for {
       uploadId <- createMultipartUpload(location)
       completedParts <- uploadParts(location, uploadId, bytes)
@@ -37,27 +39,26 @@ class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
         // Part numbers in S3 multi-part uploads are 1-indexed
         case (partBytes, index) => (partBytes, index + 1)
       }
-      .map {
-        case (partBytes, partNumber) =>
-          val uploadPartRequest =
-            UploadPartRequest
-              .builder()
-              .bucket(location.bucket)
-              .key(location.key)
-              .uploadId(uploadId)
-              .partNumber(partNumber)
-              .build()
-
-          val requestBody = RequestBody.fromBytes(partBytes.toArray)
-
-          val uploadPartResponse =
-            s3Client.uploadPart(uploadPartRequest, requestBody)
-
-          CompletedPart
+      .map { case (partBytes, partNumber) =>
+        val uploadPartRequest =
+          UploadPartRequest
             .builder()
-            .eTag(uploadPartResponse.eTag())
+            .bucket(location.bucket)
+            .key(location.key)
+            .uploadId(uploadId)
             .partNumber(partNumber)
             .build()
+
+        val requestBody = RequestBody.fromBytes(partBytes.toArray)
+
+        val uploadPartResponse =
+          s3Client.uploadPart(uploadPartRequest, requestBody)
+
+        CompletedPart
+          .builder()
+          .eTag(uploadPartResponse.eTag())
+          .partNumber(partNumber)
+          .build()
       }
       .toList
   }

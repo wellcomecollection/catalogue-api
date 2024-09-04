@@ -23,8 +23,8 @@ object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
       "include".as[SingleImageIncludes].?
-    ).tmap {
-      case Tuple1(include) => SingleImageParams(include)
+    ).tmap { case Tuple1(include) =>
+      SingleImageParams(include)
     }
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
@@ -111,14 +111,13 @@ object MultipleImagesParams extends QueryParamsUtils {
     }
 
   implicit val rgbColorDecoder: Decoder[RgbColor] =
-    Decoder.decodeString.emap(
-      colorString =>
-        RgbColor.fromHex(colorString) match {
-          case Success(rgbColor) => Right(rgbColor)
-          case Failure(_) =>
-            Left(
-              s"'$colorString' is not a valid value. Please supply a single hex string."
-            )
+    Decoder.decodeString.emap(colorString =>
+      RgbColor.fromHex(colorString) match {
+        case Success(rgbColor) => Right(rgbColor)
+        case Failure(_) =>
+          Left(
+            s"'$colorString' is not a valid value. Please supply a single hex string."
+          )
       }
     )
 

@@ -13,8 +13,7 @@ import scala.concurrent.ExecutionContext
 class ItemsApi(
   val itemUpdateService: ItemUpdateService,
   val workLookup: WorkLookup
-)(
-  implicit
+)(implicit
   val ec: ExecutionContext,
   val apiConfig: ApiConfig
 ) extends LookupItemStatus
