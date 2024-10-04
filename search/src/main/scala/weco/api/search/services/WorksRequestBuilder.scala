@@ -64,8 +64,7 @@ object WorksRequestBuilder
   private def filteredAggregationBuilder(
     filters: List[WorkFilter with Pairable]
   )(implicit
-    searchOptions: WorkSearchOptions
-  ) =
+    searchOptions: WorkSearchOptions) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = filters,
@@ -132,11 +131,12 @@ object WorksRequestBuilder
         .field("aggregatableValues.availabilities")
   }
 
-  private def dateOrder(implicit
-    searchOptions: WorkSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =

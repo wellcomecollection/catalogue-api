@@ -69,8 +69,7 @@ class ImagesRequestBuilder()
   private def filteredAggregationBuilder(
     filters: List[ImageFilter with Pairable]
   )(implicit
-    searchOptions: ImageSearchOptions
-  ) =
+    searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = filters,
@@ -105,11 +104,12 @@ class ImagesRequestBuilder()
         .field("aggregatableValues.source.subjects.label")
   }
 
-  private def dateOrder(implicit
-    searchOptions: ImageSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: ImageSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   private def buildImageFilterQuery(filter: ImageFilter): Query =

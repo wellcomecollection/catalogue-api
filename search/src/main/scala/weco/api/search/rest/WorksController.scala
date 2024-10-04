@@ -56,8 +56,7 @@ class WorksController(
           worksService
             .findById(id)(worksIndex)
             .mapVisible(work =>
-              Future.successful(complete(work.display.withIncludes(includes)))
-            )
+              Future.successful(complete(work.display.withIncludes(includes))))
         }
       }
     }

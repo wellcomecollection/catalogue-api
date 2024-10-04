@@ -19,9 +19,10 @@ import weco.json.JsonUtil._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WorksService(val elasticsearchService: ElasticsearchService)(implicit
-  val ec: ExecutionContext
-) extends SearchService[
+class WorksService(val elasticsearchService: ElasticsearchService)(
+  implicit
+  val ec: ExecutionContext)
+    extends SearchService[
       IndexedWork,
       IndexedWork.Visible,
       WorkAggregations,
@@ -62,8 +63,9 @@ class WorksService(val elasticsearchService: ElasticsearchService)(implicit
             .decodeAgg[String]("work_type")
             .get
             .buckets
-            .map { case AggregationBucket(data, count) =>
-              data -> count
+            .map {
+              case AggregationBucket(data, count) =>
+                data -> count
             }
             .toMap
         )

@@ -17,8 +17,8 @@ class RequestsApi(
   val requestsService: RequestsService
 )(implicit
   val ec: ExecutionContext,
-  val apiConfig: ApiConfig
-) extends CreateRequest
+  val apiConfig: ApiConfig)
+    extends CreateRequest
     with LookupPendingRequests
     with IdentifierDirectives {
 
@@ -27,23 +27,24 @@ class RequestsApi(
       .withUserId("users" / Segment / "item-requests") {
         userIdentifier: SierraPatronNumber =>
           post {
-            entity(as[ItemRequest]) { itemRequest: ItemRequest =>
-              // TODO: We get the work ID as part of the item request, although right now
-              // it's only for future-proofing, in case it's useful later.
-              // Should we query based on the work ID?
-              itemRequest.itemId match {
-                case itemId if looksLikeCanonicalId(itemId) =>
-                  withFuture {
-                    createRequest(
-                      itemId = itemId,
-                      pickupDate = itemRequest.pickupDate,
-                      patronNumber = userIdentifier
-                    )
-                  }
+            entity(as[ItemRequest]) {
+              itemRequest: ItemRequest =>
+                // TODO: We get the work ID as part of the item request, although right now
+                // it's only for future-proofing, in case it's useful later.
+                // Should we query based on the work ID?
+                itemRequest.itemId match {
+                  case itemId if looksLikeCanonicalId(itemId) =>
+                    withFuture {
+                      createRequest(
+                        itemId = itemId,
+                        pickupDate = itemRequest.pickupDate,
+                        patronNumber = userIdentifier
+                      )
+                    }
 
-                case itemId =>
-                  notFound(s"Item not found for identifier $itemId")
-              }
+                  case itemId =>
+                    notFound(s"Item not found for identifier $itemId")
+                }
             }
           } ~ get {
             lookupRequests(userIdentifier)

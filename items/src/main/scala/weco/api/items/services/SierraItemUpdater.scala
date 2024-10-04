@@ -31,8 +31,8 @@ class SierraItemUpdater(
   venuesOpeningTimesLookup: VenuesOpeningTimesLookup,
   venueClock: Clock
 )(implicit
-  executionContext: ExecutionContext
-) extends ItemUpdater
+  executionContext: ExecutionContext)
+    extends ItemUpdater
     with Logging
     with DisplayItemOps {
 
@@ -49,7 +49,7 @@ class SierraItemUpdater(
           case Right(SierraItemDataEntries(_, _, entries)) =>
             entries.map(entry => entry.id -> Some(entry)) toMap
           case Left(
-                SierraItemLookupError.MissingItems(missingItems, itemsReturned)
+              SierraItemLookupError.MissingItems(missingItems, itemsReturned)
               ) =>
             warn(s"Item lookup missing items: $missingItems")
             itemsReturned.map(entry => entry.id -> Some(entry)) toMap
@@ -57,8 +57,9 @@ class SierraItemUpdater(
             error(s"Item lookup failed: $itemLookupError")
             Map.empty[SierraItemNumber, Option[SierraItemData]]
         }
-        items collect { case (sierraItemNumber, Some(sierraItemData)) =>
-          sierraItemNumber -> sierraItemData
+        items collect {
+          case (sierraItemNumber, Some(sierraItemData)) =>
+            sierraItemNumber -> sierraItemData
         }
       }
 
@@ -112,26 +113,23 @@ class SierraItemUpdater(
     item: DisplayItem,
     sierraItemLocation: Option[SierraLocation]
   ): Future[DisplayItem] =
-    if (
-      item.physicalAccessCondition.exists(
-        _.isRequestable
-      ) && sierraItemLocation.isDefined
-    ) {
+    if (item.physicalAccessCondition.exists(
+          _.isRequestable
+        ) && sierraItemLocation.isDefined) {
       val locationName = sierraItemLocation.get.code match {
         case "harop" => "deepstore"
         case _       => "library"
       }
       for {
         openingTimes <- getVenuesOpeningTimes(locationName)
-        availableDates =
-          if (openingTimes.nonEmpty) {
-            locationName match {
-              case "deepstore" => deepstoreItemAvailabilities(openingTimes)
-              case "library"   => libraryItemAvailabilities(openingTimes)
-            }
-          } else {
-            List.empty
+        availableDates = if (openingTimes.nonEmpty) {
+          locationName match {
+            case "deepstore" => deepstoreItemAvailabilities(openingTimes)
+            case "library"   => libraryItemAvailabilities(openingTimes)
           }
+        } else {
+          List.empty
+        }
       } yield item.copy(availableDates = Some(availableDates))
     } else {
       Future.successful(item)
@@ -148,14 +146,12 @@ class SierraItemUpdater(
     venuesEither: Either[VenueOpeningTimesLookupError, List[ContentApiVenue]]
   ): Map[String, List[AvailabilitySlot]] =
     venuesEither.toSeq
-      .flatMap(venuesList =>
-        venuesList
-          .map(venue =>
-            venue.title.toLowerCase() -> venue.openingTimes.map(openingTime =>
-              AvailabilitySlot(openingTime.open, openingTime.close)
-            )
-          )
-      ) toMap
+      .flatMap(
+        venuesList =>
+          venuesList
+            .map(venue =>
+              venue.title.toLowerCase() -> venue.openingTimes.map(openingTime =>
+                AvailabilitySlot(openingTime.open, openingTime.close)))) toMap
 
   private def libraryItemAvailabilities(
     venuesOpeningTimes: Map[String, List[AvailabilitySlot]]
@@ -181,12 +177,12 @@ class SierraItemUpdater(
     // the item is then available on subsequent library opening days
     val subsequentLibraryAvailabilitySlots = venuesOpeningTimes(
       "library"
-    ).filter(openingTime =>
-      parseISOStringToLocalDate(openingTime.from)
-        .isAfter(
-          parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
-        )
-    )
+    ).filter(
+      openingTime =>
+        parseISOStringToLocalDate(openingTime.from)
+          .isAfter(
+            parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
+        ))
     firstDeepstoreAvailabilitySlot :: subsequentLibraryAvailabilitySlots
   }
 
@@ -194,8 +190,7 @@ class SierraItemUpdater(
     val staleItemIds = items
       .filter(item => item.isStale)
       .map(item =>
-        SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head)
-      )
+        SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head))
 
     staleItemIds.size match {
       case 0 => Future.successful(items)

@@ -21,8 +21,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class ElasticsearchService(elasticClient: ElasticClient)(implicit
-  ec: ExecutionContext
-) extends Logging
+                                                         ec: ExecutionContext)
+    extends Logging
     with Tracing
     with TemplateSearchHandlers {
 
@@ -60,8 +60,7 @@ class ElasticsearchService(elasticClient: ElasticClient)(implicit
   def findByMultiSearch[T](
     request: MultiSearchRequest
   )(implicit
-    decoder: Decoder[T]
-  ): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
+    decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
     for {
       multiSearchResults <- executeMultiSearchRequest(request)
       deserialisedResults = multiSearchResults.map {
@@ -166,8 +165,9 @@ class ElasticsearchService(elasticClient: ElasticClient)(implicit
                 }
               }
 
-            finalTimesTaken.zipWithIndex.map { case (timeTaken, index) =>
-              transaction.setLabel(s"elasticTook-$index", timeTaken)
+            finalTimesTaken.zipWithIndex.map {
+              case (timeTaken, index) =>
+                transaction.setLabel(s"elasticTook-$index", timeTaken)
             }
             transaction.setLabel("elasticTookTotal", finalTotalTimeTaken)
 
