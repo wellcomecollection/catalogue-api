@@ -2,15 +2,15 @@ import sbt._
 
 object WellcomeDependencies {
   lazy val versions = new {
-    val typesafe = "32.42.1"
-    val fixtures = "32.42.1"
-    val http = "32.42.1"
-    val json = "32.42.1"
-    val messaging = "32.42.1"
-    val monitoring = "32.42.1"
-    val storage = "32.42.1"
-    val elasticsearch = "32.42.1"
-    val sierra = "32.42.1"
+    val typesafe = "32.43.1"
+    val fixtures = "32.43.1"
+    val http = "32.43.1"
+    val json = "32.43.1"
+    val messaging = "32.43.1"
+    val monitoring = "32.43.1"
+    val storage = "32.43.1"
+    val elasticsearch = "32.43.1"
+    val sierra = "32.43.1"
   }
 
   val jsonLibrary: Seq[ModuleID] = Seq(
@@ -93,9 +93,9 @@ object ExternalDependencies {
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val pekko = "1.1.0"
-    val pekkoHttp = "1.0.1"
-    val aws2 = "2.25.28"
+    val pekko = "1.1.1"
+    val pekkoHttp = "1.1.0"
+    val aws2 = "2.25.70"
   }
 
   val circeOpticsDependencies = Seq(
