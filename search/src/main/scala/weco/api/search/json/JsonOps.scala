@@ -35,7 +35,6 @@ object JsonOps {
       j.removeKey(key)
         .mapArray(jsonArr => jsonArr.map(v => v.removeKeyRecursively(key)))
         .mapObject(jsonObj =>
-          jsonObj.mapValues(v => v.removeKeyRecursively(key))
-        )
+          jsonObj.mapValues(v => v.removeKeyRecursively(key)))
   }
 }

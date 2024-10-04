@@ -13,9 +13,10 @@ import weco.storage.store.s3.S3MultipartUploader
 
 import scala.util.Try
 
-class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(implicit
-  val s3Client: S3Client
-) extends S3MultipartUploader {
+class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
+  implicit
+  val s3Client: S3Client)
+    extends S3MultipartUploader {
 
   def upload(
     location: S3ObjectLocation,
@@ -39,26 +40,27 @@ class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(implicit
         // Part numbers in S3 multi-part uploads are 1-indexed
         case (partBytes, index) => (partBytes, index + 1)
       }
-      .map { case (partBytes, partNumber) =>
-        val uploadPartRequest =
-          UploadPartRequest
+      .map {
+        case (partBytes, partNumber) =>
+          val uploadPartRequest =
+            UploadPartRequest
+              .builder()
+              .bucket(location.bucket)
+              .key(location.key)
+              .uploadId(uploadId)
+              .partNumber(partNumber)
+              .build()
+
+          val requestBody = RequestBody.fromBytes(partBytes.toArray)
+
+          val uploadPartResponse =
+            s3Client.uploadPart(uploadPartRequest, requestBody)
+
+          CompletedPart
             .builder()
-            .bucket(location.bucket)
-            .key(location.key)
-            .uploadId(uploadId)
+            .eTag(uploadPartResponse.eTag())
             .partNumber(partNumber)
             .build()
-
-        val requestBody = RequestBody.fromBytes(partBytes.toArray)
-
-        val uploadPartResponse =
-          s3Client.uploadPart(uploadPartRequest, requestBody)
-
-        CompletedPart
-          .builder()
-          .eTag(uploadPartResponse.eTag())
-          .partNumber(partNumber)
-          .build()
       }
       .toList
   }

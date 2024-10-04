@@ -95,6 +95,7 @@ object ExternalDependencies {
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val pekko = "1.1.1"
     val pekkoHttp = "1.1.0"
+
     val aws2 = "2.25.70"
   }
 

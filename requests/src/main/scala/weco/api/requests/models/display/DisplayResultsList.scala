@@ -17,8 +17,9 @@ object DisplayResultsList {
     itemHolds: List[(SierraHold, RequestedItemWithWork)]
   ): DisplayResultsList =
     DisplayResultsList(
-      results = itemHolds.map { case (hold, itemWithWork) =>
-        DisplayRequest(hold, itemWithWork)
+      results = itemHolds.map {
+        case (hold, itemWithWork) =>
+          DisplayRequest(hold, itemWithWork)
       },
       totalResults = itemHolds.size
     )

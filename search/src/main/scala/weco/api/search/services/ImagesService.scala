@@ -14,8 +14,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ImagesService(
   val elasticsearchService: ElasticsearchService
 )(implicit
-  val ec: ExecutionContext
-) extends SearchService[
+  val ec: ExecutionContext)
+    extends SearchService[
       IndexedImage,
       IndexedImage,
       ImageAggregations,

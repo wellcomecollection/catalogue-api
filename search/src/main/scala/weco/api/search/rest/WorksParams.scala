@@ -22,8 +22,9 @@ object SingleWorkParams extends QueryParamsUtils {
   def parse: Directive[Tuple1[SingleWorkParams]] =
     parameters(
       "include".as[WorksIncludes].?
-    ).tmap { case Tuple1(include) =>
-      SingleWorkParams(include)
+    ).tmap {
+      case Tuple1(include) =>
+        SingleWorkParams(include)
     }
 
   implicit val decodePaths: Decoder[List[String]] =
@@ -170,18 +171,18 @@ object MultipleWorksParams extends QueryParamsUtils {
       "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
       case (
-            items,
-            license,
-            identifiers,
-            locationType,
-            accessStatus,
-            page,
-            pageSize,
-            sort,
-            sortOrder,
-            query,
-            includes,
-            aggregations
+          items,
+          license,
+          identifiers,
+          locationType,
+          accessStatus,
+          page,
+          pageSize,
+          sort,
+          sortOrder,
+          query,
+          includes,
+          aggregations
           ) =>
         val itemsParams = ItemsParams(
           items,
@@ -209,19 +210,19 @@ object MultipleWorksParams extends QueryParamsUtils {
           "type".as[WorkTypeFilter].?
         ).tflatMap {
           case (
-                format,
-                dateFrom,
-                dateTo,
-                languages,
-                genres,
-                genreConcepts,
-                subjectLabels,
-                contributors,
-                identifiers,
-                partOf,
-                partOfTitle,
-                availabilities,
-                workType
+              format,
+              dateFrom,
+              dateTo,
+              languages,
+              genres,
+              genreConcepts,
+              subjectLabels,
+              contributors,
+              identifiers,
+              partOf,
+              partOfTitle,
+              availabilities,
+              workType
               ) =>
             val filterParams = WorkFilterParams(
               format,
@@ -283,8 +284,9 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
     decodeIncludesAndExcludes(CatalogueAccessStatus.values)
-      .emap { case IncludesAndExcludes(includes, excludes) =>
-        Right(AccessStatusFilter(includes, excludes))
+      .emap {
+        case IncludesAndExcludes(includes, excludes) =>
+          Right(AccessStatusFilter(includes, excludes))
       }
 
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
