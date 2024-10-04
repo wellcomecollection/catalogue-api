@@ -95,7 +95,7 @@ object ExternalDependencies {
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
     val pekko = "1.0.3"
     val pekkoHttp = "1.0.1"
-    val aws2 = "2.25.28"
+    val aws2 = "2.25.70"
   }
 
   val circeOpticsDependencies = Seq(
@@ -121,7 +121,7 @@ object ExternalDependencies {
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
-  val otherAwsDependencies  = Seq(
+  val otherAwsDependencies = Seq(
     "software.amazon.awssdk" % "sso" % versions.aws2
   )
 
