@@ -25,15 +25,14 @@ import scala.concurrent.{ExecutionContext, Future}
   *  This provides an up to date view on whether a hold
   *  can be placed on an item, and generates a list of dates
   *  when the item can be viewed in the library
-  *
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
   venuesOpeningTimesLookup: VenuesOpeningTimesLookup,
   venueClock: Clock
-)(
-  implicit executionContext: ExecutionContext
-) extends ItemUpdater
+)(implicit
+  executionContext: ExecutionContext)
+    extends ItemUpdater
     with Logging
     with DisplayItemOps {
 
@@ -45,7 +44,7 @@ class SierraItemUpdater(
   ): Future[Map[SierraItemNumber, SierraItemData]] =
     sierraSource
       .lookupItemEntries(staleItemIds)
-      .map(itemEither => {
+      .map { itemEither =>
         val items = itemEither match {
           case Right(SierraItemDataEntries(_, _, entries)) =>
             entries.map(entry => entry.id -> Some(entry)) toMap
@@ -62,7 +61,7 @@ class SierraItemUpdater(
           case (sierraItemNumber, Some(sierraItemData)) =>
             sierraItemNumber -> sierraItemData
         }
-      })
+      }
 
   private def updateItem(
     item: DisplayItem,
@@ -114,7 +113,9 @@ class SierraItemUpdater(
     item: DisplayItem,
     sierraItemLocation: Option[SierraLocation]
   ): Future[DisplayItem] =
-    if (item.physicalAccessCondition.exists(_.isRequestable) && sierraItemLocation.isDefined) {
+    if (item.physicalAccessCondition.exists(
+          _.isRequestable
+        ) && sierraItemLocation.isDefined) {
       val locationName = sierraItemLocation.get.code match {
         case "harop" => "deepstore"
         case _       => "library"
@@ -148,14 +149,9 @@ class SierraItemUpdater(
       .flatMap(
         venuesList =>
           venuesList
-            .map(
-              venue =>
-                venue.title.toLowerCase() -> venue.openingTimes.map(
-                  openingTime =>
-                    AvailabilitySlot(openingTime.open, openingTime.close)
-            )
-        )
-    ) toMap
+            .map(venue =>
+              venue.title.toLowerCase() -> venue.openingTimes.map(openingTime =>
+                AvailabilitySlot(openingTime.open, openingTime.close)))) toMap
 
   private def libraryItemAvailabilities(
     venuesOpeningTimes: Map[String, List[AvailabilitySlot]]
@@ -186,8 +182,7 @@ class SierraItemUpdater(
         parseISOStringToLocalDate(openingTime.from)
           .isAfter(
             parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
-        )
-    )
+        ))
     firstDeepstoreAvailabilitySlot :: subsequentLibraryAvailabilitySlots
   }
 
@@ -213,5 +208,6 @@ class SierraItemUpdater(
   private def parseISOStringToLocalDate(isoString: String): LocalDate =
     LocalDate.parse(
       isoString,
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"))
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    )
 }

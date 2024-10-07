@@ -23,7 +23,8 @@ object SingleWorkParams extends QueryParamsUtils {
     parameters(
       "include".as[WorksIncludes].?
     ).tmap {
-      case Tuple1(include) => SingleWorkParams(include)
+      case Tuple1(include) =>
+        SingleWorkParams(include)
     }
 
   implicit val decodePaths: Decoder[List[String]] =
@@ -91,7 +92,7 @@ case class MultipleWorksParams(
   filterParams: WorkFilterParams,
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
-  query: Option[String],
+  query: Option[String]
 ) extends QueryParams
     with Paginated {
 
@@ -133,7 +134,10 @@ case class MultipleWorksParams(
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
-    (filterParams.`production.dates.from`, filterParams.`production.dates.to`) match {
+    (
+      filterParams.`production.dates.from`,
+      filterParams.`production.dates.to`
+    ) match {
       case (None, None)       => None
       case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
     }
@@ -242,7 +246,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               filterParams = filterParams,
               include = includes,
               aggregations = aggregations,
-              query = query,
+              query = query
             )
             validated(params.paginationErrors, params)
         }

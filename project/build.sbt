@@ -1,1 +1,1 @@
-scalaVersion := "2.12.16"
+scalaVersion := "2.12.19"
