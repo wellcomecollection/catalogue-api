@@ -15,11 +15,10 @@ import scala.concurrent.ExecutionContext
 
 class RequestsApi(
   val requestsService: RequestsService
-)(
-  implicit
+)(implicit
   val ec: ExecutionContext,
-  val apiConfig: ApiConfig
-) extends CreateRequest
+  val apiConfig: ApiConfig)
+    extends CreateRequest
     with LookupPendingRequests
     with IdentifierDirectives {
 

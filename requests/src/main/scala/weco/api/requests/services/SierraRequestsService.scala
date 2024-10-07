@@ -20,7 +20,6 @@ import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 /** @param holdLimit What's the most items a single user can have on hold at once?
-  *
   */
 class SierraRequestsService(
   sierraSource: SierraSource,

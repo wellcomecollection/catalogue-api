@@ -2,15 +2,15 @@ import sbt._
 
 object WellcomeDependencies {
   lazy val versions = new {
-    val typesafe = "32.42.1"
-    val fixtures = "32.42.1"
-    val http = "32.42.1"
-    val json = "32.42.1"
-    val messaging = "32.42.1"
-    val monitoring = "32.42.1"
-    val storage = "32.42.1"
-    val elasticsearch = "32.42.1"
-    val sierra = "32.42.1"
+    val typesafe = "32.43.2"
+    val fixtures = "32.43.2"
+    val http = "32.43.2"
+    val json = "32.43.2"
+    val messaging = "32.43.2"
+    val monitoring = "32.43.2"
+    val storage = "32.43.2"
+    val elasticsearch = "32.43.2"
+    val sierra = "32.43.2"
   }
 
   val jsonLibrary: Seq[ModuleID] = Seq(
@@ -86,16 +86,17 @@ object WellcomeDependencies {
 object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
-    val scalatest = "3.2.3"
-    val scalatestplus = "3.1.2.0"
-    val scalacheckShapeless = "1.1.6"
-    val scalacsv = "1.3.5"
+    val scalatest = "3.2.19"
+    val scalatestplus = "3.1.4.0"
+    val scalacheckShapeless = "1.1.8"
+    val scalacsv = "1.3.10"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val pekko = "1.0.3"
-    val pekkoHttp = "1.0.1"
-    val aws2 = "2.25.28"
+    val pekko = "1.1.1"
+    val pekkoHttp = "1.1.0"
+
+    val aws2 = "2.25.70"
   }
 
   val circeOpticsDependencies = Seq(
@@ -121,7 +122,7 @@ object ExternalDependencies {
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
-  val otherAwsDependencies  = Seq(
+  val otherAwsDependencies = Seq(
     "software.amazon.awssdk" % "sso" % versions.aws2
   )
 
