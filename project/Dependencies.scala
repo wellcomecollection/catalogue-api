@@ -87,9 +87,9 @@ object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
     val scalatest = "3.2.19"
-    val scalatestplus = "3.1.4.0"
+    val scalatestplus = "3.2.2.0"
     val scalacheckShapeless = "1.1.8"
-    val scalacsv = "1.3.10"
+    val scalacsv = "1.4.1"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
