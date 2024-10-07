@@ -50,7 +50,8 @@ class ImagesRequestBuilder()
           from = PaginationQuery.safeGetFrom(searchOptions),
           size = searchOptions.pageSize,
           sortByDate = dateOrder,
-          sortByScore = searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
+          sortByScore =
+            searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
           preFilter = buildImageFilterQuery(unpairables),
@@ -67,9 +68,8 @@ class ImagesRequestBuilder()
 
   private def filteredAggregationBuilder(
     filters: List[ImageFilter with Pairable]
-  )(
-    implicit searchOptions: ImageSearchOptions
-  ) =
+  )(implicit
+    searchOptions: ImageSearchOptions) =
     new ImageFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = filters,
@@ -105,8 +105,8 @@ class ImagesRequestBuilder()
   }
 
   private def dateOrder(
-    implicit searchOptions: ImageSearchOptions
-  ): Option[SortingOrder] =
+    implicit
+    searchOptions: ImageSearchOptions): Option[SortingOrder] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         searchOptions.sortOrder
@@ -117,7 +117,8 @@ class ImagesRequestBuilder()
       case LicenseFilter(licenseIds) =>
         termsQuery(
           field = "filterableValues.locations.license.id",
-          values = licenseIds)
+          values = licenseIds
+        )
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
           "filterableValues.source.contributors.agent.label",
@@ -142,7 +143,7 @@ class ImagesRequestBuilder()
     }
 
   private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
-    filters.map { buildImageFilterQuery } filter (_ != NoopQuery)
+    filters.map(buildImageFilterQuery) filter (_ != NoopQuery)
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =

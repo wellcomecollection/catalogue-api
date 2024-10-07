@@ -20,9 +20,9 @@ import weco.api.search.elasticsearch.templateSearch.{
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class ElasticsearchService(elasticClient: ElasticClient)(
-  implicit ec: ExecutionContext
-) extends Logging
+class ElasticsearchService(elasticClient: ElasticClient)(implicit
+                                                         ec: ExecutionContext)
+    extends Logging
     with Tracing
     with TemplateSearchHandlers {
 
@@ -59,15 +59,13 @@ class ElasticsearchService(elasticClient: ElasticClient)(
 
   def findByMultiSearch[T](
     request: MultiSearchRequest
-  )(
-    implicit decoder: Decoder[T]
-  ): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
+  )(implicit
+    decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
     for {
       multiSearchResults <- executeMultiSearchRequest(request)
       deserialisedResults = multiSearchResults.map {
-        case Right(searchResponse) => {
+        case Right(searchResponse) =>
           Right(searchResponse.hits.hits.map(deserialize[T]).toSeq)
-        }
         case Left(err) => Left(err)
       }
     } yield deserialisedResults
@@ -151,21 +149,19 @@ class ElasticsearchService(elasticClient: ElasticClient)(
                 val (timeTakenTotal, timesTaken, results) = acc
 
                 item.response match {
-                  case Right(itemResponse) => {
+                  case Right(itemResponse) =>
                     (
                       timeTakenTotal + itemResponse.took,
                       timesTaken :+ itemResponse.took,
                       results :+ Right(itemResponse)
                     )
-                  }
 
-                  case Left(error) => {
+                  case Left(error) =>
                     (
                       timeTakenTotal,
                       timesTaken,
                       results :+ Left(ElasticsearchError(error))
                     )
-                  }
                 }
               }
 

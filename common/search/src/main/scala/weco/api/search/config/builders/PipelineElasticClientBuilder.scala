@@ -31,8 +31,10 @@ object PipelineElasticClientBuilder {
           "public_host",
           secretsManagerClientBuilder
             .credentialsProvider(
-              ProfileCredentialsProvider.create("catalogue-developer"))
-            .build())
+              ProfileCredentialsProvider.create("catalogue-developer")
+            )
+            .build()
+        )
       case _ =>
         ("private_host", secretsManagerClientBuilder.build())
     }

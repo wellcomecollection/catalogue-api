@@ -20,7 +20,6 @@ object JsonOps {
       *
       *     removeKey("blue triangle", "sides")
       *     ~> "blue triangle"
-      *
       */
     def removeKey(key: String): Json =
       j.mapObject(_.remove(key))
@@ -31,16 +30,11 @@ object JsonOps {
       *
       *     removeKey({"name": "square", "colour": {"red": 255, "green": 0, "blue": 0}}, "blue")
       *     ~> {"name": "square", "colour": {"red": 255, "green": 0}}
-      *
       */
     def removeKeyRecursively(key: String): Json =
       j.removeKey(key)
         .mapArray(jsonArr => jsonArr.map(v => v.removeKeyRecursively(key)))
-        .mapObject(
-          jsonObj =>
-            jsonObj.mapValues(
-              v => v.removeKeyRecursively(key)
-          )
-        )
+        .mapObject(jsonObj =>
+          jsonObj.mapValues(v => v.removeKeyRecursively(key)))
   }
 }

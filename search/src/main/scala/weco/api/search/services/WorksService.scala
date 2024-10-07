@@ -21,8 +21,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WorksService(val elasticsearchService: ElasticsearchService)(
   implicit
-  val ec: ExecutionContext
-) extends SearchService[
+  val ec: ExecutionContext)
+    extends SearchService[
       IndexedWork,
       IndexedWork.Visible,
       WorkAggregations,
@@ -64,7 +64,8 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
             .get
             .buckets
             .map {
-              case AggregationBucket(data, count) => data -> count
+              case AggregationBucket(data, count) =>
+                data -> count
             }
             .toMap
         )
