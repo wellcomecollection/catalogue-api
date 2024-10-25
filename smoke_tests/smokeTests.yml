@@ -43,6 +43,8 @@ scenarios:
     flow:
       - get:
           url: "/works/b7nfeg9j/items"
+          headers:
+            x-api-key:
           beforeRequest: addApiKey
           expect:
             statusCode: 200
