@@ -20,7 +20,7 @@ h11==0.11.0
     # via httpcore
 httpcore==0.12.0
     # via httpx
-httpx==0.16.0
+httpx==0.27.2
     # via -r requirements.in
 humanize==3.0.1
     # via -r requirements.in
