@@ -71,7 +71,9 @@ class AlreadyAtLatestVersionException(Exception):
     pass
 
 
-def update_catalogue_pipeline_version(*, concepts_pipeline_date, catalogue_pipeline_date):
+def update_catalogue_pipeline_version(
+    *, concepts_pipeline_date, catalogue_pipeline_date
+):
     old_lines = list(open("infrastructure/main.tf"))
 
     with open(f"infrastructure/{concepts_pipeline_date}/main.tf", "r+") as out_file:
@@ -101,12 +103,19 @@ def get_github_api_key():
 def create_concepts_pipeline_pull_request(*, pipeline_date):
     with cloned_repo("git@github.com:wellcomecollection/concepts-pipeline.git"):
         # Match dates in the format YYYY-MM-DD
-        pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')
-        concepts_pipeline_dates = [f.name for f in os.scandir("infrastructure") if f.is_dir() and pattern.match(f.name)]
-        
-        for concept_pipeline_date in concepts_pipeline_dates:        
+        pattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+        concepts_pipeline_dates = [
+            f.name
+            for f in os.scandir("infrastructure")
+            if f.is_dir() and pattern.match(f.name)
+        ]
+
+        for concept_pipeline_date in concepts_pipeline_dates:
             try:
-                update_catalogue_pipeline_version(concepts_pipeline_date=concept_pipeline_date, catalogue_pipeline_date=pipeline_date)
+                update_catalogue_pipeline_version(
+                    concepts_pipeline_date=concept_pipeline_date,
+                    catalogue_pipeline_date=pipeline_date,
+                )
             except AlreadyAtLatestVersionException:
                 print("concepts-pipeline repo is up to date, nothing to do!")
                 return
