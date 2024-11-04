@@ -96,7 +96,7 @@ object ExternalDependencies {
     val pekko = "1.1.1"
     val pekkoHttp = "1.1.0"
 
-    val aws2 = "2.25.70"
+    val aws2 = "2.29.6"
   }
 
   val circeOpticsDependencies = Seq(
