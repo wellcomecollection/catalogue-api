@@ -1,124 +1,195 @@
 {
-  "description": "examples for the contributor filter tests",
-  "createdAt": "2023-11-21T15:39:35.242599Z",
-  "id": "dklf9ebg",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "dklf9ebg",
-        "identifier": {
-          "identifierType": {
-            "id": "miro-image-number"
+  "description" : "examples for the contributor filter tests",
+  "createdAt" : "2024-11-13T08:43:26.618807Z",
+  "id" : "ijnwmvup",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "ijnwmvup",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "calm-record-id"
           },
-          "ontologyType": "Work",
-          "value": "GGLKeJCppC"
+          "ontologyType" : "Work",
+          "value" : "Kd2KzPZAnM"
         },
-        "version": 3,
-        "modifiedTime": "2026-01-09T00:00:01Z"
+        "version" : 98,
+        "modifiedTime" : "1968-12-03T01:32:55Z"
       },
-      "mergedTime": "2026-01-09T00:00:01Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "mergedTime" : "1968-12-03T01:32:55Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
+      ],
+      "mergeCandidates" : [
+      ]
     },
-    "display": {
-      "id": "dklf9ebg",
-      "title": "title-vJlw8MZygt",
-      "alternativeTitles": [],
-      "contributors": [
+    "display" : {
+      "id" : "ijnwmvup",
+      "title" : "title-uMNql7LBhP",
+      "alternativeTitles" : [
+      ],
+      "contributors" : [
         {
-          "agent": {
-            "label": "Bath, Patricia",
-            "type": "Person"
+          "agent" : {
+            "label" : "Bath, Patricia",
+            "type" : "Person"
           },
-          "roles": [],
-          "primary": true,
-          "type": "Contributor"
+          "roles" : [
+          ],
+          "primary" : true,
+          "type" : "Contributor"
         }
       ],
-      "identifiers": [
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
+            "type" : "IdentifierType"
           },
-          "value": "GGLKeJCppC",
-          "type": "Identifier"
+          "value" : "Kd2KzPZAnM",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
-      "type": "Work"
+      "subjects" : [
+      ],
+      "genres" : [
+      ],
+      "items" : [
+      ],
+      "holdings" : [
+      ],
+      "availabilities" : [
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "formerFrequency" : [
+      ],
+      "designation" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
     },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": ["Bath, Patricia"],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [],
-      "id": "dklf9ebg",
-      "sourceIdentifier.value": "GGLKeJCppC",
-      "identifiers.value": ["GGLKeJCppC"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
-      "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
-      "physicalDescription": null,
-      "production.label": [],
-      "referenceNumber": null,
-      "subjects.concepts.label": [],
-      "title": "title-vJlw8MZygt"
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
+      ],
+      "contributors.agent.label" : [
+        "Bath, Patricia"
+      ],
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
+      ],
+      "id" : "ijnwmvup",
+      "sourceIdentifier.value" : "Kd2KzPZAnM",
+      "identifiers.value" : [
+        "Kd2KzPZAnM"
+      ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.shelfmark.value" : [
+      ],
+      "languages.label" : [
+      ],
+      "lettering" : null,
+      "notes.contents" : [
+      ],
+      "partOf.title" : [
+      ],
+      "physicalDescription" : null,
+      "production.label" : [
+      ],
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
+      ],
+      "title" : "title-uMNql7LBhP"
     },
-    "aggregatableValues": {
-      "workType": [],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [],
-      "languages": [],
-      "contributors.agent.label": [
+    "aggregatableValues" : {
+      "workType" : [
+      ],
+      "genres.label" : [
+      ],
+      "production.dates" : [
+      ],
+      "subjects.label" : [
+      ],
+      "languages" : [
+      ],
+      "contributors.agent.label" : [
         "{\"label\":\"Bath, Patricia\",\"type\":\"Person\"}"
       ],
-      "items.locations.license": [],
-      "availabilities": []
+      "items.locations.license" : [
+      ],
+      "availabilities" : [
+      ]
     },
-    "filterableValues": {
-      "format.id": null,
-      "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": [],
-      "contributors.agent.label": ["Bath, Patricia"],
-      "identifiers.value": ["GGLKeJCppC"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+    "filterableValues" : {
+      "format.id" : null,
+      "workType" : "Standard",
+      "production.dates.range.from" : [
+      ],
+      "languages.id" : [
+      ],
+      "genres.label" : [
+      ],
+      "genres.concepts.id" : [
+      ],
+      "genres.concepts.sourceIdentifier" : [
+      ],
+      "subjects.label" : [
+      ],
+      "subjects.concepts.id" : [
+      ],
+      "subjects.concepts.sourceIdentifier" : [
+      ],
+      "contributors.agent.label" : [
+        "Bath, Patricia"
+      ],
+      "contributors.agent.id" : [
+      ],
+      "contributors.agent.sourceIdentifier" : [
+      ],
+      "identifiers.value" : [
+        "Kd2KzPZAnM"
+      ],
+      "items.locations.license.id" : [
+      ],
+      "items.locations.accessConditions.status.id" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.locations.locationType.id" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+      ]
     },
-    "type": "Visible"
+    "type" : "Visible"
   }
 }

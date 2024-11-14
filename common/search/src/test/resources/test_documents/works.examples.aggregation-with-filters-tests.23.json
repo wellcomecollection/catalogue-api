@@ -1,22 +1,22 @@
 {
-  "description" : "examples for the genre tests",
-  "createdAt" : "2024-11-13T08:43:26.602371Z",
-  "id" : "xowd5kj1",
+  "description" : "examples for the aggregation-with-filters tests",
+  "createdAt" : "2024-11-13T08:43:26.581599Z",
+  "id" : "y6iujg4j",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "xowd5kj1",
+        "id" : "y6iujg4j",
         "identifier" : {
           "identifierType" : {
-            "id" : "miro-image-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "tYS1KOlZmZ"
+          "value" : "xGjZEnp6i2"
         },
-        "version" : 99,
-        "modifiedTime" : "1971-02-26T13:40:07Z"
+        "version" : 42,
+        "modifiedTime" : "2052-01-06T08:18:52Z"
       },
-      "mergedTime" : "1971-02-26T13:40:07Z",
+      "mergedTime" : "2052-01-06T08:18:52Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ],
@@ -24,64 +24,49 @@
       ]
     },
     "display" : {
-      "id" : "xowd5kj1",
-      "title" : "title-X3OfWNE6m5",
+      "id" : "y6iujg4j",
+      "title" : "title-CRDZnkaHR8",
       "alternativeTitles" : [
       ],
+      "workType" : {
+        "id" : "x",
+        "label" : "Manuscripts",
+        "type" : "Format"
+      },
       "contributors" : [
       ],
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "tYS1KOlZmZ",
+          "value" : "xGjZEnp6i2",
           "type" : "Identifier"
         }
       ],
       "subjects" : [
-      ],
-      "genres" : [
         {
-          "label" : "Annual reports",
+          "label" : "hQnFei9OwD",
           "concepts" : [
             {
-              "id" : "g00dcafe",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "sierra-system-number",
-                    "label" : "Sierra system number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "T9fhswtSuP",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "mWNKiLGpm85YYFF",
-              "type" : "Genre"
+              "label" : "HmXSsBa8UqTG3Gu",
+              "type" : "Concept"
             },
             {
-              "id" : "baadf00d",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "WKJQbCBtOF",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "Oo0o5Odfdodercw",
+              "label" : "W07LA7wtXxMtg7d",
+              "type" : "Concept"
+            },
+            {
+              "label" : "koPI8hxmCeKjABF",
               "type" : "Concept"
             }
           ],
-          "type" : "Genre"
+          "type" : "Subject"
         }
+      ],
+      "genres" : [
       ],
       "items" : [
       ],
@@ -121,13 +106,11 @@
       "description" : null,
       "edition" : null,
       "genres.concepts.label" : [
-        "mWNKiLGpm85YYFF",
-        "Oo0o5Odfdodercw"
       ],
-      "id" : "xowd5kj1",
-      "sourceIdentifier.value" : "tYS1KOlZmZ",
+      "id" : "y6iujg4j",
+      "sourceIdentifier.value" : "xGjZEnp6i2",
       "identifiers.value" : [
-        "tYS1KOlZmZ"
+        "xGjZEnp6i2"
       ],
       "images.id" : [
       ],
@@ -151,18 +134,22 @@
       ],
       "referenceNumber" : null,
       "subjects.concepts.label" : [
+        "HmXSsBa8UqTG3Gu",
+        "W07LA7wtXxMtg7d",
+        "koPI8hxmCeKjABF"
       ],
-      "title" : "title-X3OfWNE6m5"
+      "title" : "title-CRDZnkaHR8"
     },
     "aggregatableValues" : {
       "workType" : [
+        "{\"id\":\"x\",\"label\":\"Manuscripts\",\"type\":\"Format\"}"
       ],
       "genres.label" : [
-        "{\"label\":\"Annual reports\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
       "production.dates" : [
       ],
       "subjects.label" : [
+        "{\"label\":\"hQnFei9OwD\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages" : [
       ],
@@ -174,22 +161,20 @@
       ]
     },
     "filterableValues" : {
-      "format.id" : null,
+      "format.id" : "x",
       "workType" : "Standard",
       "production.dates.range.from" : [
       ],
       "languages.id" : [
       ],
       "genres.label" : [
-        "Annual reports"
       ],
       "genres.concepts.id" : [
-        "g00dcafe"
       ],
       "genres.concepts.sourceIdentifier" : [
-        "T9fhswtSuP"
       ],
       "subjects.label" : [
+        "hQnFei9OwD"
       ],
       "subjects.concepts.id" : [
       ],
@@ -202,7 +187,7 @@
       "contributors.agent.sourceIdentifier" : [
       ],
       "identifiers.value" : [
-        "tYS1KOlZmZ"
+        "xGjZEnp6i2"
       ],
       "items.locations.license.id" : [
       ],
