@@ -31,7 +31,7 @@ def current_pipeline_date():
 
     m = re.search(r"\d{4}-\d{2}-\d{2}", works_index)
     if m is None:
-        raise RuntimeError(f"Could not work out what the current pipeline date is!")
+        raise RuntimeError("Could not work out what the current pipeline date is!")
 
     return m.group(0)
 
@@ -71,13 +71,15 @@ class AlreadyAtLatestVersionException(Exception):
     pass
 
 
-def update_catalogue_pipeline_version(*, pipeline_date):
+def update_catalogue_pipeline_version(
+    *, concepts_pipeline_date, catalogue_pipeline_date
+):
     old_lines = list(open("infrastructure/main.tf"))
 
-    with open("infrastructure/main.tf", "w") as out_file:
+    with open(f"infrastructure/{concepts_pipeline_date}/main.tf", "r+") as out_file:
         for line in old_lines:
             if line.startswith("  catalogue_namespace = "):
-                new_line = f'  catalogue_namespace = "{pipeline_date}" // This is automatically bumped by the catalogue-api repo\n'
+                new_line = f'  catalogue_namespace = "{catalogue_pipeline_date}" // This is automatically bumped by the catalogue-api repo\n'
 
                 if new_line == line:
                     raise AlreadyAtLatestVersionException()
@@ -100,11 +102,23 @@ def get_github_api_key():
 
 def create_concepts_pipeline_pull_request(*, pipeline_date):
     with cloned_repo("git@github.com:wellcomecollection/concepts-pipeline.git"):
-        try:
-            update_catalogue_pipeline_version(pipeline_date=pipeline_date)
-        except AlreadyAtLatestVersionException:
-            print("concepts-pipeline repo is up to date, nothing to do!")
-            return
+        # Match dates in the format YYYY-MM-DD
+        pattern = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+        concepts_pipeline_dates = [
+            f.name
+            for f in os.scandir("infrastructure")
+            if f.is_dir() and pattern.match(f.name)
+        ]
+
+        for concept_pipeline_date in concepts_pipeline_dates:
+            try:
+                update_catalogue_pipeline_version(
+                    concepts_pipeline_date=concept_pipeline_date,
+                    catalogue_pipeline_date=pipeline_date,
+                )
+            except AlreadyAtLatestVersionException:
+                print("concepts-pipeline repo is up to date, nothing to do!")
+                return
 
         branch_name = f"point-concepts-pipeline-at-{pipeline_date}"
 
@@ -126,7 +140,7 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         client = httpx.Client(auth=("weco-bot", api_key))
 
         r = client.post(
-            f"https://api.github.com/repos/wellcomecollection/concepts-pipeline/pulls",
+            "https://api.github.com/repos/wellcomecollection/concepts-pipeline/pulls",
             headers={"Accept": "application/vnd.github.v3+json"},
             json={
                 "head": branch_name,
