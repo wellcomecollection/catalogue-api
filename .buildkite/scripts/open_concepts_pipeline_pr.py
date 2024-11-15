@@ -74,7 +74,7 @@ class AlreadyAtLatestVersionException(Exception):
 def update_catalogue_pipeline_version(
     *, concepts_pipeline_date, catalogue_pipeline_date
 ):
-    old_lines = list(open("infrastructure/main.tf"))
+    old_lines = list(open(f"infrastructure/{concepts_pipeline_date}/main.tf"))
 
     with open(f"infrastructure/{concepts_pipeline_date}/main.tf", "r+") as out_file:
         for line in old_lines:
@@ -131,7 +131,10 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         )
 
         git("checkout", "-b", branch_name)
-        git("add", "infrastructure/main.tf")
+
+        for concept_pipeline_date in concepts_pipeline_dates:
+            git("add", f"infrastructure/{concept_pipeline_date}/main.tf")
+
         git("commit", "-m", f"Point concepts-pipeline at {pipeline_date}")
         git("push", "origin", branch_name)
 
@@ -161,7 +164,7 @@ def create_concepts_pipeline_pull_request(*, pipeline_date):
         r = client.post(
             f"https://api.github.com/repos/wellcomecollection/concepts-pipeline/pulls/{new_pr_number}/requested_reviewers",
             headers={"Accept": "application/vnd.github.v3+json"},
-            json={"team_reviewers": ["scala-reviewers"]},
+            json={"team_reviewers": ["digital-platform"]},
         )
 
         print(r.json())
