@@ -46,6 +46,7 @@ case class MultipleImagesParams(
   query: Option[String],
   license: Option[LicenseFilter],
   `source.contributors.agent.label`: Option[ContributorsFilter],
+  `source.contributors.concepts`: Option[ContributorsConceptFilter],
   `source.genres.label`: Option[GenreFilter],
   `source.genres.concepts`: Option[GenreConceptFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
@@ -74,6 +75,7 @@ case class MultipleImagesParams(
     List(
       license,
       `source.contributors.agent.label`,
+      `source.contributors.concepts`,
       `source.genres.label`,
       `source.genres.concepts`,
       `source.subjects.label`,
@@ -100,6 +102,7 @@ object MultipleImagesParams extends QueryParamsUtils {
       "query".as[String].?,
       "locations.license".as[LicenseFilter].?,
       "source.contributors.agent.label".as[ContributorsFilter].?,
+      "source.contributors.concepts".as[ContributorsConceptFilter].?,
       "source.genres.label".as[GenreFilter].?,
       "source.genres.concepts".as[GenreConceptFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,

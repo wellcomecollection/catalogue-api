@@ -52,6 +52,10 @@ case class ContributorsFilter(contributorQueries: Seq[String])
     with ImageFilter
     with Pairable
 
+case class ContributorsConceptFilter(conceptIds: Seq[String])
+  extends WorkFilter
+    with ImageFilter
+
 case class LicenseFilter(licenseIds: Seq[String])
     extends WorkFilter
     with ImageFilter

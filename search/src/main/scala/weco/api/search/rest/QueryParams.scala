@@ -6,7 +6,7 @@ import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshaller
 import com.github.tototoshi.csv.CSVParser
 import io.circe.{Decoder, Json}
 import weco.api.search.rest.MultipleWorksParams.{decodeCommaSeparated, stringListFilter}
-import weco.api.search.models.{ContributorsFilter, GenreConceptFilter, GenreFilter, LicenseFilter, SubjectConceptFilter, SubjectLabelFilter}
+import weco.api.search.models.{ContributorsConceptFilter, ContributorsFilter, GenreConceptFilter, GenreFilter, LicenseFilter, SubjectConceptFilter, SubjectLabelFilter}
 
 trait QueryParams
 
@@ -28,6 +28,9 @@ object CommonDecoders {
 
   implicit val subjectsConceptFilter: Decoder[SubjectConceptFilter] =
     stringListFilter(SubjectConceptFilter)
+
+  implicit val contributorsConceptFilter: Decoder[ContributorsConceptFilter] =
+    stringListFilter(ContributorsConceptFilter)
 
 }
 

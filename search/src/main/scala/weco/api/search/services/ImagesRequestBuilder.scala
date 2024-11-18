@@ -124,6 +124,11 @@ class ImagesRequestBuilder()
           "filterableValues.source.contributors.agent.label",
           contributorQueries
         )
+      case ContributorsConceptFilter(conceptIds) =>
+        termsQuery(
+          "filterableValues.source.contributors.agent.id",
+          conceptIds
+        )
       case GenreFilter(genreLabels) =>
         termsQuery("filterableValues.source.genres.label", genreLabels)
       case GenreConceptFilter(conceptIds) =>

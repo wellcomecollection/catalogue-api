@@ -181,6 +181,12 @@ object WorksRequestBuilder
           contributorQueries
         )
 
+      case ContributorsConceptFilter(conceptIds) =>
+        termsQuery(
+          "filterableValues.contributors.agent.id",
+          conceptIds
+        )
+
       case IdentifiersFilter(identifiers) =>
         // TODO we're using the value in `query` because it's lowercase-normalised,
         // whereas the value in `filterableValues` is just a plain keyword and so
