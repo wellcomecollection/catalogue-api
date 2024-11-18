@@ -132,6 +132,9 @@ class ImagesRequestBuilder()
           termsQuery("filterableValues.source.genres.concepts.id", conceptIds)
       case SubjectLabelFilter(subjectLabels) =>
         termsQuery("filterableValues.source.subjects.label", subjectLabels)
+      case SubjectConceptFilter(conceptIds) =>
+        if (conceptIds.isEmpty) NoopQuery
+        else termsQuery("filterableValues.source.subjects.concepts.id", conceptIds)
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
