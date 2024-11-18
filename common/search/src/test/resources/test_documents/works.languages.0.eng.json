@@ -1,190 +1,190 @@
 {
-  "description" : "one of a list of works with a variety of languages",
-  "createdAt" : "2024-11-13T08:43:26.464112Z",
-  "id" : "9pon81hb",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "9pon81hb",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "one of a list of works with a variety of languages",
+  "createdAt": "2024-11-13T08:43:26.464112Z",
+  "id": "9pon81hb",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "9pon81hb",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "mVHoe2r6sk"
+          "ontologyType": "Work",
+          "value": "mVHoe2r6sk"
         },
-        "version" : 97,
-        "modifiedTime" : "2020-11-07T23:22:13Z"
+        "version": 97,
+        "modifiedTime": "2020-11-07T23:22:13Z"
       },
-      "mergedTime" : "2020-11-07T23:22:13Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "2020-11-07T23:22:13Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "9pon81hb",
-      "title" : "A work with languages English",
-      "alternativeTitles" : [
+    "display": {
+      "id": "9pon81hb",
+      "title": "A work with languages English",
+      "alternativeTitles": [
       ],
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "mVHoe2r6sk",
-          "type" : "Identifier"
+          "value": "mVHoe2r6sk",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
       ],
-      "items" : [
+      "items": [
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
         {
-          "id" : "eng",
-          "label" : "English",
-          "type" : "Language"
+          "id": "eng",
+          "label": "English",
+          "type": "Language"
         }
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
       ],
-      "id" : "9pon81hb",
-      "sourceIdentifier.value" : "mVHoe2r6sk",
-      "identifiers.value" : [
+      "id": "9pon81hb",
+      "sourceIdentifier.value": "mVHoe2r6sk",
+      "identifiers.value": [
         "mVHoe2r6sk"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
       ],
-      "languages.label" : [
+      "languages.label": [
         "English"
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "A work with languages English"
+      "title": "A work with languages English"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
         "{\"id\":\"eng\",\"label\":\"English\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ]
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
         "eng"
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "mVHoe2r6sk"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }

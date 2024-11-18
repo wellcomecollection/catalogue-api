@@ -1,190 +1,190 @@
 {
-  "description" : "one of a list of works with a variety of languages",
-  "createdAt" : "2024-11-13T08:43:26.475246Z",
-  "id" : "olhrstrz",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "olhrstrz",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "one of a list of works with a variety of languages",
+  "createdAt": "2024-11-13T08:43:26.475246Z",
+  "id": "olhrstrz",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "olhrstrz",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "UagAbkJTEE"
+          "ontologyType": "Work",
+          "value": "UagAbkJTEE"
         },
-        "version" : 58,
-        "modifiedTime" : "2026-09-11T17:29:57Z"
+        "version": 58,
+        "modifiedTime": "2026-09-11T17:29:57Z"
       },
-      "mergedTime" : "2026-09-11T17:29:57Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "2026-09-11T17:29:57Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "olhrstrz",
-      "title" : "A work with languages Swedish",
-      "alternativeTitles" : [
+    "display": {
+      "id": "olhrstrz",
+      "title": "A work with languages Swedish",
+      "alternativeTitles": [
       ],
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "UagAbkJTEE",
-          "type" : "Identifier"
+          "value": "UagAbkJTEE",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
       ],
-      "items" : [
+      "items": [
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
         {
-          "id" : "swe",
-          "label" : "Swedish",
-          "type" : "Language"
+          "id": "swe",
+          "label": "Swedish",
+          "type": "Language"
         }
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
       ],
-      "id" : "olhrstrz",
-      "sourceIdentifier.value" : "UagAbkJTEE",
-      "identifiers.value" : [
+      "id": "olhrstrz",
+      "sourceIdentifier.value": "UagAbkJTEE",
+      "identifiers.value": [
         "UagAbkJTEE"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
       ],
-      "languages.label" : [
+      "languages.label": [
         "Swedish"
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "A work with languages Swedish"
+      "title": "A work with languages Swedish"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
         "{\"id\":\"swe\",\"label\":\"Swedish\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ]
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
         "swe"
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "UagAbkJTEE"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }

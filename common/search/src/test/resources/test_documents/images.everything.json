@@ -1,150 +1,150 @@
 {
-  "description" : "an image with every include",
-  "createdAt" : "2024-11-14T14:37:56.485860Z",
-  "id" : "b25is1mw",
-  "document" : {
-    "modifiedTime" : "1943-09-17T11:31:58Z",
-    "display" : {
-      "id" : "b25is1mw",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
+  "description": "an image with every include",
+  "createdAt": "2024-11-14T14:37:56.485860Z",
+  "id": "b25is1mw",
+  "document": {
+    "modifiedTime": "1943-09-17T11:31:58Z",
+    "display": {
+      "id": "b25is1mw",
+      "thumbnail": {
+        "locationType": {
+          "id": "iiif-image",
+          "label": "IIIF Image API",
+          "type": "LocationType"
         },
-        "url" : "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
+        "url": "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "url": "http://creativecommons.org/licenses/by/4.0/",
+          "type": "License"
         },
-        "accessConditions" : [
+        "accessConditions": [
         ],
-        "type" : "DigitalLocation"
+        "type": "DigitalLocation"
       },
-      "locations" : [
+      "locations": [
         {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
+          "url": "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/",
+            "type": "License"
           },
-          "accessConditions" : [
+          "accessConditions": [
           ],
-          "type" : "DigitalLocation"
+          "type": "DigitalLocation"
         }
       ],
-      "aspectRatio" : 0.38759995,
-      "averageColor" : "#42424B",
-      "source" : {
-        "id" : "dqxovw56",
-        "title" : "Apple agitator",
-        "contributors" : [
+      "aspectRatio": 0.38759995,
+      "averageColor": "#42424B",
+      "source": {
+        "id": "dqxovw56",
+        "title": "Apple agitator",
+        "contributors": [
           {
-            "agent" : {
-              "label" : "Adrian Aardvark",
-              "type" : "Person"
+            "agent": {
+              "label": "Adrian Aardvark",
+              "type": "Person"
             },
-            "roles" : [
+            "roles": [
             ],
-            "primary" : true,
-            "type" : "Contributor"
+            "primary": true,
+            "type": "Contributor"
           },
           {
-            "agent" : {
-              "label" : "Beatrice Buffalo",
-              "type" : "Person"
+            "agent": {
+              "label": "Beatrice Buffalo",
+              "type": "Person"
             },
-            "roles" : [
+            "roles": [
             ],
-            "primary" : true,
-            "type" : "Contributor"
+            "primary": true,
+            "type": "Contributor"
           }
         ],
-        "languages" : [
+        "languages": [
           {
-            "id" : "eng",
-            "label" : "English",
-            "type" : "Language"
+            "id": "eng",
+            "label": "English",
+            "type": "Language"
           },
           {
-            "id" : "tur",
-            "label" : "Turkish",
-            "type" : "Language"
+            "id": "tur",
+            "label": "Turkish",
+            "type": "Language"
           }
         ],
-        "genres" : [
+        "genres": [
           {
-            "label" : "Crumbly cabbages",
-            "concepts" : [
+            "label": "Crumbly cabbages",
+            "concepts": [
               {
-                "id" : "lejca71h",
-                "label" : "ugoW7DPjY7eEyUr",
-                "type" : "Genre"
+                "id": "lejca71h",
+                "label": "ugoW7DPjY7eEyUr",
+                "type": "Genre"
               },
               {
-                "id" : "wmf04cfl",
-                "label" : "9VrODZy7KkifsFe",
-                "type" : "Concept"
+                "id": "wmf04cfl",
+                "label": "9VrODZy7KkifsFe",
+                "type": "Concept"
               },
               {
-                "id" : "aepyhklp",
-                "label" : "rYYrQmMYtpbz1Al",
-                "type" : "Concept"
+                "id": "aepyhklp",
+                "label": "rYYrQmMYtpbz1Al",
+                "type": "Concept"
               }
             ],
-            "type" : "Genre"
+            "type": "Genre"
           },
           {
-            "label" : "Deadly durians",
-            "concepts" : [
+            "label": "Deadly durians",
+            "concepts": [
               {
-                "id" : "lksf0yuj",
-                "label" : "706t7mv7kanMOW5",
-                "type" : "Genre"
+                "id": "lksf0yuj",
+                "label": "706t7mv7kanMOW5",
+                "type": "Genre"
               },
               {
-                "id" : "ywn40rop",
-                "label" : "VMoAMmioWNbDYqh",
-                "type" : "Concept"
+                "id": "ywn40rop",
+                "label": "VMoAMmioWNbDYqh",
+                "type": "Concept"
               },
               {
-                "id" : "gxjzwfd7",
-                "label" : "1lbnmi1f4IMuqCy",
-                "type" : "Concept"
+                "id": "gxjzwfd7",
+                "label": "1lbnmi1f4IMuqCy",
+                "type": "Concept"
               }
             ],
-            "type" : "Genre"
+            "type": "Genre"
           }
         ],
-        "subjects" : [
+        "subjects": [
         ],
-        "type" : "Work"
+        "type": "Work"
       },
-      "type" : "Image"
+      "type": "Image"
     },
-    "query" : {
-      "id" : "b25is1mw",
-      "source" : {
-        "collectionPath.label" : null,
-        "collectionPath.path" : null,
-        "alternativeTitles" : [
+    "query": {
+      "id": "b25is1mw",
+      "source": {
+        "collectionPath.label": null,
+        "collectionPath.path": null,
+        "alternativeTitles": [
         ],
-        "contributors.agent.label" : [
+        "contributors.agent.label": [
           "Adrian Aardvark",
           "Beatrice Buffalo"
         ],
-        "description" : null,
-        "edition" : null,
-        "genres.concepts.label" : [
+        "description": null,
+        "edition": null,
+        "genres.concepts.label": [
           "ugoW7DPjY7eEyUr",
           "9VrODZy7KkifsFe",
           "rYYrQmMYtpbz1Al",
@@ -152,88 +152,88 @@
           "VMoAMmioWNbDYqh",
           "1lbnmi1f4IMuqCy"
         ],
-        "id" : "dqxovw56",
-        "sourceIdentifier.value" : "XIR7wFyImk",
-        "identifiers.value" : [
+        "id": "dqxovw56",
+        "sourceIdentifier.value": "XIR7wFyImk",
+        "identifiers.value": [
           "XIR7wFyImk"
         ],
-        "images.id" : [
+        "images.id": [
         ],
-        "images.identifiers.value" : [
+        "images.identifiers.value": [
         ],
-        "items.id" : [
+        "items.id": [
         ],
-        "items.identifiers.value" : [
+        "items.identifiers.value": [
         ],
-        "items.shelfmark.value" : [
+        "items.shelfmark.value": [
         ],
-        "languages.label" : [
+        "languages.label": [
           "English",
           "Turkish"
         ],
-        "lettering" : null,
-        "notes.contents" : [
+        "lettering": null,
+        "notes.contents": [
         ],
-        "partOf.title" : [
+        "partOf.title": [
         ],
-        "physicalDescription" : null,
-        "production.label" : [
+        "physicalDescription": null,
+        "production.label": [
         ],
-        "referenceNumber" : null,
-        "subjects.concepts.label" : [
+        "referenceNumber": null,
+        "subjects.concepts.label": [
         ],
-        "title" : "Apple agitator"
+        "title": "Apple agitator"
       }
     },
-    "aggregatableValues" : {
-      "locations.license" : [
+    "aggregatableValues": {
+      "locations.license": [
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "{\"label\":\"Adrian Aardvark\",\"type\":\"Person\"}",
         "{\"label\":\"Beatrice Buffalo\",\"type\":\"Person\"}"
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
         "{\"label\":\"Crumbly cabbages\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"Deadly durians\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ]
     },
-    "filterableValues" : {
-      "locations.license.id" : [
+    "filterableValues": {
+      "locations.license.id": [
         "cc-by"
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "Adrian Aardvark",
         "Beatrice Buffalo"
       ],
-      "source.contributors.agent.id" : [
+      "source.contributors.agent.id": [
       ],
-      "source.contributors.agent.sourceIdentifier" : [
+      "source.contributors.agent.sourceIdentifier": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
         "Crumbly cabbages",
         "Deadly durians"
       ],
-      "source.genres.concepts.id" : [
+      "source.genres.concepts.id": [
         "lejca71h",
         "lksf0yuj"
       ],
-      "source.genres.concepts.sourceIdentifier" : [
+      "source.genres.concepts.sourceIdentifier": [
         "d4QLaGJW1M",
         "33Lvz6nnqJ"
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ],
-      "source.subjects.concepts.id" : [
+      "source.subjects.concepts.id": [
       ],
-      "source.subjects.concepts.sourceIdentifier" : [
+      "source.subjects.concepts.sourceIdentifier": [
       ],
-      "source.production.dates.range.from" : [
+      "source.production.dates.range.from": [
       ]
     },
-    "vectorValues" : {
-      "features" : [
+    "vectorValues": {
+      "features": [
         0.024940599,
         0.0080954945,
         0.031152552,
@@ -4331,7 +4331,7 @@
         0.0072650504,
         0.010552883
       ],
-      "paletteEmbedding" : [
+      "paletteEmbedding": [
         -0.0610284,
         0.01730373,
         -0.04553182,
@@ -5334,8 +5334,8 @@
         -0.027492827
       ]
     },
-    "debug" : {
-      "indexedTime" : "2001-01-01T01:01:01Z"
+    "debug": {
+      "indexedTime": "2001-01-01T01:01:01Z"
     }
   }
 }

@@ -1,166 +1,166 @@
 {
-  "description" : "images with different subjects",
-  "createdAt" : "2024-11-14T14:37:56.565016Z",
-  "id" : "m3maupg3",
-  "document" : {
-    "modifiedTime" : "2047-03-03T17:12:17Z",
-    "display" : {
-      "id" : "m3maupg3",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
+  "description": "images with different subjects",
+  "createdAt": "2024-11-14T14:37:56.565016Z",
+  "id": "m3maupg3",
+  "document": {
+    "modifiedTime": "2047-03-03T17:12:17Z",
+    "display": {
+      "id": "m3maupg3",
+      "thumbnail": {
+        "locationType": {
+          "id": "iiif-image",
+          "label": "IIIF Image API",
+          "type": "LocationType"
         },
-        "url" : "https://iiif.wellcomecollection.org/image/7cV.jpg/info.json",
-        "credit" : "Credit line: OYCYtD",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
+        "url": "https://iiif.wellcomecollection.org/image/7cV.jpg/info.json",
+        "credit": "Credit line: OYCYtD",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "url": "http://creativecommons.org/licenses/by/4.0/",
+          "type": "License"
         },
-        "accessConditions" : [
+        "accessConditions": [
         ],
-        "type" : "DigitalLocation"
+        "type": "DigitalLocation"
       },
-      "locations" : [
+      "locations": [
         {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/7cV.jpg/info.json",
-          "credit" : "Credit line: OYCYtD",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
+          "url": "https://iiif.wellcomecollection.org/image/7cV.jpg/info.json",
+          "credit": "Credit line: OYCYtD",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/",
+            "type": "License"
           },
-          "accessConditions" : [
+          "accessConditions": [
           ],
-          "type" : "DigitalLocation"
+          "type": "DigitalLocation"
         }
       ],
-      "aspectRatio" : 0.38759995,
-      "averageColor" : "#C2504D",
-      "source" : {
-        "id" : "efyngkg4",
-        "title" : "title-xah7C7EJsw",
-        "contributors" : [
+      "aspectRatio": 0.38759995,
+      "averageColor": "#C2504D",
+      "source": {
+        "id": "efyngkg4",
+        "title": "title-xah7C7EJsw",
+        "contributors": [
         ],
-        "languages" : [
+        "languages": [
         ],
-        "genres" : [
+        "genres": [
         ],
-        "subjects" : [
+        "subjects": [
           {
-            "label" : "Squashed squirrels",
-            "concepts" : [
+            "label": "Squashed squirrels",
+            "concepts": [
             ],
-            "type" : "Subject"
+            "type": "Subject"
           },
           {
-            "id" : "subject2",
-            "label" : "Struck samples",
-            "concepts" : [
+            "id": "subject2",
+            "label": "Struck samples",
+            "concepts": [
             ],
-            "type" : "Subject"
+            "type": "Subject"
           }
         ],
-        "type" : "Work"
+        "type": "Work"
       },
-      "type" : "Image"
+      "type": "Image"
     },
-    "query" : {
-      "id" : "m3maupg3",
-      "source" : {
-        "collectionPath.label" : null,
-        "collectionPath.path" : null,
-        "alternativeTitles" : [
+    "query": {
+      "id": "m3maupg3",
+      "source": {
+        "collectionPath.label": null,
+        "collectionPath.path": null,
+        "alternativeTitles": [
         ],
-        "contributors.agent.label" : [
+        "contributors.agent.label": [
         ],
-        "description" : null,
-        "edition" : null,
-        "genres.concepts.label" : [
+        "description": null,
+        "edition": null,
+        "genres.concepts.label": [
         ],
-        "id" : "efyngkg4",
-        "sourceIdentifier.value" : "2bPmn3zVI7",
-        "identifiers.value" : [
+        "id": "efyngkg4",
+        "sourceIdentifier.value": "2bPmn3zVI7",
+        "identifiers.value": [
           "2bPmn3zVI7"
         ],
-        "images.id" : [
+        "images.id": [
         ],
-        "images.identifiers.value" : [
+        "images.identifiers.value": [
         ],
-        "items.id" : [
+        "items.id": [
         ],
-        "items.identifiers.value" : [
+        "items.identifiers.value": [
         ],
-        "items.shelfmark.value" : [
+        "items.shelfmark.value": [
         ],
-        "languages.label" : [
+        "languages.label": [
         ],
-        "lettering" : null,
-        "notes.contents" : [
+        "lettering": null,
+        "notes.contents": [
         ],
-        "partOf.title" : [
+        "partOf.title": [
         ],
-        "physicalDescription" : null,
-        "production.label" : [
+        "physicalDescription": null,
+        "production.label": [
         ],
-        "referenceNumber" : null,
-        "subjects.concepts.label" : [
+        "referenceNumber": null,
+        "subjects.concepts.label": [
         ],
-        "title" : "title-xah7C7EJsw"
+        "title": "title-xah7C7EJsw"
       }
     },
-    "aggregatableValues" : {
-      "locations.license" : [
+    "aggregatableValues": {
+      "locations.license": [
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
         "{\"label\":\"Squashed squirrels\",\"concepts\":[],\"type\":\"Subject\"}",
         "{\"label\":\"Struck samples\",\"concepts\":[],\"type\":\"Subject\"}"
       ]
     },
-    "filterableValues" : {
-      "locations.license.id" : [
+    "filterableValues": {
+      "locations.license.id": [
         "cc-by"
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
       ],
-      "source.contributors.agent.id" : [
+      "source.contributors.agent.id": [
       ],
-      "source.contributors.agent.sourceIdentifier" : [
+      "source.contributors.agent.sourceIdentifier": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.genres.concepts.id" : [
+      "source.genres.concepts.id": [
       ],
-      "source.genres.concepts.sourceIdentifier" : [
+      "source.genres.concepts.sourceIdentifier": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
         "Squashed squirrels",
         "Struck samples"
       ],
-      "source.subjects.concepts.id" : [
+      "source.subjects.concepts.id": [
         "subject2"
       ],
-      "source.subjects.concepts.sourceIdentifier" : [
+      "source.subjects.concepts.sourceIdentifier": [
         "03y8UH48Sz"
       ],
-      "source.production.dates.range.from" : [
+      "source.production.dates.range.from": [
       ]
     },
-    "vectorValues" : {
-      "features" : [
+    "vectorValues": {
+      "features": [
         -0.013064202,
         0.027516874,
         0.0038179387,
@@ -4258,7 +4258,7 @@
         0.015030676,
         -4.7415524E-4
       ],
-      "paletteEmbedding" : [
+      "paletteEmbedding": [
         -0.0026239895,
         -0.016358543,
         -0.0068920176,
@@ -5261,8 +5261,8 @@
         -0.042300895
       ]
     },
-    "debug" : {
-      "indexedTime" : "2001-01-01T01:01:01Z"
+    "debug": {
+      "indexedTime": "2001-01-01T01:01:01Z"
     }
   }
 }

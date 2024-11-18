@@ -1,196 +1,196 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2024-11-13T08:43:26.645281Z",
-  "id" : "rfckqwuh",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "rfckqwuh",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the works filtered aggregations tests",
+  "createdAt": "2024-11-13T08:43:26.645281Z",
+  "id": "rfckqwuh",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "rfckqwuh",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "e1HWk1Ah2x"
+          "ontologyType": "Work",
+          "value": "e1HWk1Ah2x"
         },
-        "version" : 48,
-        "modifiedTime" : "1997-05-16T00:21:21Z"
+        "version": 48,
+        "modifiedTime": "1997-05-16T00:21:21Z"
       },
-      "mergedTime" : "1997-05-16T00:21:21Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "1997-05-16T00:21:21Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "rfckqwuh",
-      "title" : "capybara",
-      "alternativeTitles" : [
+    "display": {
+      "id": "rfckqwuh",
+      "title": "capybara",
+      "alternativeTitles": [
       ],
-      "workType" : {
-        "id" : "a",
-        "label" : "Books",
-        "type" : "Format"
+      "workType": {
+        "id": "a",
+        "label": "Books",
+        "type": "Format"
       },
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "e1HWk1Ah2x",
-          "type" : "Identifier"
+          "value": "e1HWk1Ah2x",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
       ],
-      "items" : [
+      "items": [
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
         {
-          "id" : "mar",
-          "label" : "Marathi",
-          "type" : "Language"
+          "id": "mar",
+          "label": "Marathi",
+          "type": "Language"
         }
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
       ],
-      "id" : "rfckqwuh",
-      "sourceIdentifier.value" : "e1HWk1Ah2x",
-      "identifiers.value" : [
+      "id": "rfckqwuh",
+      "sourceIdentifier.value": "e1HWk1Ah2x",
+      "identifiers.value": [
         "e1HWk1Ah2x"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
       ],
-      "languages.label" : [
+      "languages.label": [
         "Marathi"
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "capybara"
+      "title": "capybara"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
         "{\"id\":\"a\",\"label\":\"Books\",\"type\":\"Format\"}"
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
         "{\"id\":\"mar\",\"label\":\"Marathi\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ]
     },
-    "filterableValues" : {
-      "format.id" : "a",
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": "a",
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
         "mar"
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "e1HWk1Ah2x"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }

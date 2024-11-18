@@ -1,209 +1,209 @@
 {
-  "description" : "examples for the genre tests",
-  "createdAt" : "2024-11-13T08:43:26.603188Z",
-  "id" : "avugqd3s",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "avugqd3s",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "examples for the genre tests",
+  "createdAt": "2024-11-13T08:43:26.603188Z",
+  "id": "avugqd3s",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "avugqd3s",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "WGGaiNvMk5"
+          "ontologyType": "Work",
+          "value": "WGGaiNvMk5"
         },
-        "version" : 67,
-        "modifiedTime" : "2031-04-13T18:09:40Z"
+        "version": 67,
+        "modifiedTime": "2031-04-13T18:09:40Z"
       },
-      "mergedTime" : "2031-04-13T18:09:40Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "2031-04-13T18:09:40Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "avugqd3s",
-      "title" : "title-RQFJOR9VqA",
-      "alternativeTitles" : [
+    "display": {
+      "id": "avugqd3s",
+      "title": "title-RQFJOR9VqA",
+      "alternativeTitles": [
       ],
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "WGGaiNvMk5",
-          "type" : "Identifier"
+          "value": "WGGaiNvMk5",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
         {
-          "label" : "Psychology, Pathological",
-          "concepts" : [
+          "label": "Psychology, Pathological",
+          "concepts": [
             {
-              "id" : "baadf00d",
-              "identifiers" : [
+              "id": "baadf00d",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "miro-image-number",
+                    "label": "Miro image number",
+                    "type": "IdentifierType"
                   },
-                  "value" : "um1qUlCcjg",
-                  "type" : "Identifier"
+                  "value": "um1qUlCcjg",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "qnu7hZZtHlWPIpZ",
-              "type" : "Genre"
+              "label": "qnu7hZZtHlWPIpZ",
+              "type": "Genre"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         }
       ],
-      "items" : [
+      "items": [
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
         "qnu7hZZtHlWPIpZ"
       ],
-      "id" : "avugqd3s",
-      "sourceIdentifier.value" : "WGGaiNvMk5",
-      "identifiers.value" : [
+      "id": "avugqd3s",
+      "sourceIdentifier.value": "WGGaiNvMk5",
+      "identifiers.value": [
         "WGGaiNvMk5"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
       ],
-      "languages.label" : [
+      "languages.label": [
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "title-RQFJOR9VqA"
+      "title": "title-RQFJOR9VqA"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
       ],
-      "genres.label" : [
+      "genres.label": [
         "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ]
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
       ],
-      "genres.label" : [
+      "genres.label": [
         "Psychology, Pathological"
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
         "baadf00d"
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
         "um1qUlCcjg"
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "WGGaiNvMk5"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }

@@ -1,76 +1,76 @@
 {
-  "description" : "an image with inferred data in the wrong format",
-  "createdAt" : "2023-03-17T09:13:02.832741Z",
-  "id" : "cap1allo",
-  "document" : {
-    "modifiedTime" : "2027-12-29T00:13:45Z",
-    "display" : {
-      "id" : "cap1allo",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
+  "description": "an image with inferred data in the wrong format",
+  "createdAt": "2023-03-17T09:13:02.832741Z",
+  "id": "cap1allo",
+  "document": {
+    "modifiedTime": "2027-12-29T00:13:45Z",
+    "display": {
+      "id": "cap1allo",
+      "thumbnail": {
+        "locationType": {
+          "id": "iiif-image",
+          "label": "IIIF Image API",
+          "type": "LocationType"
         },
-        "url" : "https://iiif.wellcomecollection.org/image/n0t.jpg/info.json",
-        "credit" : "Credit line: qRsGvQRNlt",
-        "linkText" : "Link text: cC5IfN",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
+        "url": "https://iiif.wellcomecollection.org/image/n0t.jpg/info.json",
+        "credit": "Credit line: qRsGvQRNlt",
+        "linkText": "Link text: cC5IfN",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "url": "http://creativecommons.org/licenses/by/4.0/",
+          "type": "License"
         },
-        "accessConditions" : [
+        "accessConditions": [
         ],
-        "type" : "DigitalLocation"
+        "type": "DigitalLocation"
       },
-      "locations" : [
+      "locations": [
         {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/n0t.jpg/info.json",
-          "credit" : "Credit line: qRsGvQRNlt",
-          "linkText" : "Link text: cC5IfN",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
+          "url": "https://iiif.wellcomecollection.org/image/n0t.jpg/info.json",
+          "credit": "Credit line: qRsGvQRNlt",
+          "linkText": "Link text: cC5IfN",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/",
+            "type": "License"
           },
-          "accessConditions" : [
+          "accessConditions": [
           ],
-          "type" : "DigitalLocation"
+          "type": "DigitalLocation"
         }
       ],
-      "aspectRatio" : 0.8347602,
-      "averageColor" : "#6F1F4D",
-      "source" : {
-        "id" : "gxhh6ohu",
-        "title" : "title-F7UXrqfzss",
-        "contributors" : [
+      "aspectRatio": 0.8347602,
+      "averageColor": "#6F1F4D",
+      "source": {
+        "id": "gxhh6ohu",
+        "title": "title-F7UXrqfzss",
+        "contributors": [
         ],
-        "languages" : [
+        "languages": [
         ],
-        "genres" : [
+        "genres": [
         ],
-        "subjects" : [
+        "subjects": [
         ],
-        "type" : "Work"
+        "type": "Work"
       },
-      "type" : "Image"
+      "type": "Image"
     },
-    "query" : {
-      "id" : "cap1allo",
-      "sourceIdentifier.value" : "nyAtdgajcS",
-      "locations.license.id" : [
+    "query": {
+      "id": "cap1allo",
+      "sourceIdentifier.value": "nyAtdgajcS",
+      "locations.license.id": [
         "cc-by"
       ],
-      "inferredData" : {
-        "features" : [
+      "inferredData": {
+        "features": [
           -0.0038104886,
           -0.004290749,
           0.015628112,
@@ -4168,7 +4168,7 @@
           0.009221715,
           0.0042489874
         ],
-        "palette" : [
+        "palette": [
           "4/0",
           "9/0",
           "2/0",
@@ -4269,96 +4269,96 @@
           "183/2",
           "265/2"
         ],
-        "averageColorHex" : "#6F1F4D",
-        "binSizes" : [
+        "averageColorHex": "#6F1F4D",
+        "binSizes": [
           [
             1
           ]
         ],
-        "binMinima" : [
+        "binMinima": [
           1.0
         ],
-        "aspectRatio" : 0.8347602
+        "aspectRatio": 0.8347602
       },
-      "source" : {
-        "id" : "gxhh6ohu",
-        "format.id" : null,
-        "workType" : "Standard",
-        "identifiers.value" : [
+      "source": {
+        "id": "gxhh6ohu",
+        "format.id": null,
+        "workType": "Standard",
+        "identifiers.value": [
           "xtq2tnsNWe",
           "TcZ2yVy8dM",
           "l15HHOaGqx"
         ],
-        "title" : "title-F7UXrqfzss",
-        "alternativeTitles" : [
+        "title": "title-F7UXrqfzss",
+        "alternativeTitles": [
         ],
-        "description" : null,
-        "physicalDescription" : null,
-        "edition" : null,
-        "notes.contents" : [
+        "description": null,
+        "physicalDescription": null,
+        "edition": null,
+        "notes.contents": [
         ],
-        "lettering" : null,
-        "images.id" : [
+        "lettering": null,
+        "images.id": [
         ],
-        "images.identifiers.value" : [
+        "images.identifiers.value": [
         ],
-        "items.id" : [
+        "items.id": [
         ],
-        "items.identifiers.value" : [
+        "items.identifiers.value": [
         ],
-        "items.locations.accessConditions.status.id" : [
+        "items.locations.accessConditions.status.id": [
         ],
-        "items.locations.license.id" : [
+        "items.locations.license.id": [
         ],
-        "items.locations.locationType.id" : [
+        "items.locations.locationType.id": [
         ],
-        "subjects.id" : [
+        "subjects.id": [
         ],
-        "subjects.label" : [
+        "subjects.label": [
         ],
-        "subjects.concepts.label" : [
+        "subjects.concepts.label": [
         ],
-        "genres.label" : [
+        "genres.label": [
         ],
-        "genres.concepts.label" : [
+        "genres.concepts.label": [
         ],
-        "genres.concepts.id" : [
+        "genres.concepts.id": [
         ],
-        "languages.id" : [
+        "languages.id": [
         ],
-        "languages.label" : [
+        "languages.label": [
         ],
-        "contributors.agent.id" : [
+        "contributors.agent.id": [
         ],
-        "contributors.agent.label" : [
+        "contributors.agent.label": [
         ],
-        "production.label" : [
+        "production.label": [
         ],
-        "production.dates.range.from" : [
+        "production.dates.range.from": [
         ],
-        "partOf.id" : [
+        "partOf.id": [
         ],
-        "partOf.title" : [
+        "partOf.title": [
         ],
-        "availabilities.id" : [
+        "availabilities.id": [
         ],
-        "collectionPath.label" : null,
-        "collectionPath.path" : null,
-        "referenceNumber" : null
+        "collectionPath.label": null,
+        "collectionPath.path": null,
+        "referenceNumber": null
       }
     },
-    "aggregatableValues" : {
-      "locations.license" : [
+    "aggregatableValues": {
+      "locations.license": [
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ]
     },
-    "debug" : {
-      "indexedTime" : "2001-01-01T01:01:01Z"
+    "debug": {
+      "indexedTime": "2001-01-01T01:01:01Z"
     }
   }
 }

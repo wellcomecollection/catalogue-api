@@ -1,232 +1,232 @@
 {
-  "description" : "items with different location types",
-  "createdAt" : "2024-11-13T08:43:26.564840Z",
-  "id" : "gubhlxq1",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "gubhlxq1",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "items with different location types",
+  "createdAt": "2024-11-13T08:43:26.564840Z",
+  "id": "gubhlxq1",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "gubhlxq1",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
           },
-          "ontologyType" : "Work",
-          "value" : "Qiy0B0TSmD"
+          "ontologyType": "Work",
+          "value": "Qiy0B0TSmD"
         },
-        "version" : 52,
-        "modifiedTime" : "1954-07-26T16:28:04Z"
+        "version": 52,
+        "modifiedTime": "1954-07-26T16:28:04Z"
       },
-      "mergedTime" : "1954-07-26T16:28:04Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "1954-07-26T16:28:04Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "gubhlxq1",
-      "title" : "title-wO98EpYD0E",
-      "alternativeTitles" : [
+    "display": {
+      "id": "gubhlxq1",
+      "title": "title-wO98EpYD0E",
+      "alternativeTitles": [
       ],
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
           },
-          "value" : "Qiy0B0TSmD",
-          "type" : "Identifier"
+          "value": "Qiy0B0TSmD",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
       ],
-      "items" : [
+      "items": [
         {
-          "id" : "iptnnwys",
-          "identifiers" : [
+          "id": "iptnnwys",
+          "identifiers": [
             {
-              "identifierType" : {
-                "id" : "calm-record-id",
-                "label" : "Calm RecordIdentifier",
-                "type" : "IdentifierType"
+              "identifierType": {
+                "id": "calm-record-id",
+                "label": "Calm RecordIdentifier",
+                "type": "IdentifierType"
               },
-              "value" : "EYydewbq2T",
-              "type" : "Identifier"
+              "value": "EYydewbq2T",
+              "type": "Identifier"
             }
           ],
-          "locations" : [
+          "locations": [
             {
-              "locationType" : {
-                "id" : "closed-stores",
-                "label" : "Closed stores",
-                "type" : "LocationType"
+              "locationType": {
+                "id": "closed-stores",
+                "label": "Closed stores",
+                "type": "LocationType"
               },
-              "label" : "locationLabel",
-              "license" : {
-                "id" : "ogl",
-                "label" : "Open Government Licence",
-                "url" : "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                "type" : "License"
+              "label": "locationLabel",
+              "license": {
+                "id": "ogl",
+                "label": "Open Government Licence",
+                "url": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+                "type": "License"
               },
-              "shelfmark" : "Shelfmark: A6uWTQ",
-              "accessConditions" : [
+              "shelfmark": "Shelfmark: A6uWTQ",
+              "accessConditions": [
               ],
-              "type" : "PhysicalLocation"
+              "type": "PhysicalLocation"
             }
           ],
-          "type" : "Item"
+          "type": "Item"
         }
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
         {
-          "id" : "closed-stores",
-          "label" : "Closed stores",
-          "type" : "Availability"
+          "id": "closed-stores",
+          "label": "Closed stores",
+          "type": "Availability"
         }
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
       ],
-      "id" : "gubhlxq1",
-      "sourceIdentifier.value" : "Qiy0B0TSmD",
-      "identifiers.value" : [
+      "id": "gubhlxq1",
+      "sourceIdentifier.value": "Qiy0B0TSmD",
+      "identifiers.value": [
         "Qiy0B0TSmD"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
         "iptnnwys"
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
         "EYydewbq2T"
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
         "Shelfmark: A6uWTQ"
       ],
-      "languages.label" : [
+      "languages.label": [
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "title-wO98EpYD0E"
+      "title": "title-wO98EpYD0E"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
         "{\"id\":\"ogl\",\"label\":\"Open Government Licence\",\"url\":\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\",\"type\":\"License\"}"
       ],
-      "availabilities" : [
+      "availabilities": [
         "{\"id\":\"closed-stores\",\"label\":\"Closed stores\",\"type\":\"Availability\"}"
       ]
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
       ],
-      "genres.label" : [
+      "genres.label": [
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "Qiy0B0TSmD"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
         "ogl"
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
         "iptnnwys"
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
         "EYydewbq2T"
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
         "closed-stores"
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
         "closed-stores"
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }

@@ -1,160 +1,160 @@
 {
-  "description" : "examples for the contributor filter tests",
-  "createdAt" : "2024-11-14T14:37:56.432335Z",
-  "id" : "yz1oofkv",
-  "document" : {
-    "modifiedTime" : "2048-11-08T23:06:02Z",
-    "display" : {
-      "id" : "yz1oofkv",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
+  "description": "examples for the contributor filter tests",
+  "createdAt": "2024-11-14T14:37:56.432335Z",
+  "id": "yz1oofkv",
+  "document": {
+    "modifiedTime": "2048-11-08T23:06:02Z",
+    "display": {
+      "id": "yz1oofkv",
+      "thumbnail": {
+        "locationType": {
+          "id": "iiif-image",
+          "label": "IIIF Image API",
+          "type": "LocationType"
         },
-        "url" : "https://iiif.wellcomecollection.org/image/tmC.jpg/info.json",
-        "credit" : "Credit line: 6cSt3uoF",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
+        "url": "https://iiif.wellcomecollection.org/image/tmC.jpg/info.json",
+        "credit": "Credit line: 6cSt3uoF",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "url": "http://creativecommons.org/licenses/by/4.0/",
+          "type": "License"
         },
-        "accessConditions" : [
+        "accessConditions": [
         ],
-        "type" : "DigitalLocation"
+        "type": "DigitalLocation"
       },
-      "locations" : [
+      "locations": [
         {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/tmC.jpg/info.json",
-          "credit" : "Credit line: 6cSt3uoF",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
+          "url": "https://iiif.wellcomecollection.org/image/tmC.jpg/info.json",
+          "credit": "Credit line: 6cSt3uoF",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/",
+            "type": "License"
           },
-          "accessConditions" : [
+          "accessConditions": [
           ],
-          "type" : "DigitalLocation"
+          "type": "DigitalLocation"
         }
       ],
-      "aspectRatio" : 0.38759995,
-      "averageColor" : "#6C0D2B",
-      "source" : {
-        "id" : "xzva25jt",
-        "title" : "title-6sEQsGdb5O",
-        "contributors" : [
+      "aspectRatio": 0.38759995,
+      "averageColor": "#6C0D2B",
+      "source": {
+        "id": "xzva25jt",
+        "title": "title-6sEQsGdb5O",
+        "contributors": [
           {
-            "agent" : {
-              "label" : "Machiavelli, Niccolo",
-              "type" : "Person"
+            "agent": {
+              "label": "Machiavelli, Niccolo",
+              "type": "Person"
             },
-            "roles" : [
+            "roles": [
             ],
-            "primary" : true,
-            "type" : "Contributor"
+            "primary": true,
+            "type": "Contributor"
           }
         ],
-        "languages" : [
+        "languages": [
         ],
-        "genres" : [
+        "genres": [
         ],
-        "subjects" : [
+        "subjects": [
         ],
-        "type" : "Work"
+        "type": "Work"
       },
-      "type" : "Image"
+      "type": "Image"
     },
-    "query" : {
-      "id" : "yz1oofkv",
-      "source" : {
-        "collectionPath.label" : null,
-        "collectionPath.path" : null,
-        "alternativeTitles" : [
+    "query": {
+      "id": "yz1oofkv",
+      "source": {
+        "collectionPath.label": null,
+        "collectionPath.path": null,
+        "alternativeTitles": [
         ],
-        "contributors.agent.label" : [
+        "contributors.agent.label": [
           "Machiavelli, Niccolo"
         ],
-        "description" : null,
-        "edition" : null,
-        "genres.concepts.label" : [
+        "description": null,
+        "edition": null,
+        "genres.concepts.label": [
         ],
-        "id" : "xzva25jt",
-        "sourceIdentifier.value" : "KVsY0AgisP",
-        "identifiers.value" : [
+        "id": "xzva25jt",
+        "sourceIdentifier.value": "KVsY0AgisP",
+        "identifiers.value": [
           "KVsY0AgisP"
         ],
-        "images.id" : [
+        "images.id": [
         ],
-        "images.identifiers.value" : [
+        "images.identifiers.value": [
         ],
-        "items.id" : [
+        "items.id": [
         ],
-        "items.identifiers.value" : [
+        "items.identifiers.value": [
         ],
-        "items.shelfmark.value" : [
+        "items.shelfmark.value": [
         ],
-        "languages.label" : [
+        "languages.label": [
         ],
-        "lettering" : null,
-        "notes.contents" : [
+        "lettering": null,
+        "notes.contents": [
         ],
-        "partOf.title" : [
+        "partOf.title": [
         ],
-        "physicalDescription" : null,
-        "production.label" : [
+        "physicalDescription": null,
+        "production.label": [
         ],
-        "referenceNumber" : null,
-        "subjects.concepts.label" : [
+        "referenceNumber": null,
+        "subjects.concepts.label": [
         ],
-        "title" : "title-6sEQsGdb5O"
+        "title": "title-6sEQsGdb5O"
       }
     },
-    "aggregatableValues" : {
-      "locations.license" : [
+    "aggregatableValues": {
+      "locations.license": [
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "{\"label\":\"Machiavelli, Niccolo\",\"type\":\"Person\"}"
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ]
     },
-    "filterableValues" : {
-      "locations.license.id" : [
+    "filterableValues": {
+      "locations.license.id": [
         "cc-by"
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "Machiavelli, Niccolo"
       ],
-      "source.contributors.agent.id" : [
+      "source.contributors.agent.id": [
       ],
-      "source.contributors.agent.sourceIdentifier" : [
+      "source.contributors.agent.sourceIdentifier": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.genres.concepts.id" : [
+      "source.genres.concepts.id": [
       ],
-      "source.genres.concepts.sourceIdentifier" : [
+      "source.genres.concepts.sourceIdentifier": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ],
-      "source.subjects.concepts.id" : [
+      "source.subjects.concepts.id": [
       ],
-      "source.subjects.concepts.sourceIdentifier" : [
+      "source.subjects.concepts.sourceIdentifier": [
       ],
-      "source.production.dates.range.from" : [
+      "source.production.dates.range.from": [
       ]
     },
-    "vectorValues" : {
-      "features" : [
+    "vectorValues": {
+      "features": [
         -0.009975942,
         4.5055928E-4,
         -0.0050335284,
@@ -4252,7 +4252,7 @@
         -0.009693718,
         0.0044719824
       ],
-      "paletteEmbedding" : [
+      "paletteEmbedding": [
         0.004411244,
         0.008407737,
         0.030684348,
@@ -5255,8 +5255,8 @@
         -0.01759402
       ]
     },
-    "debug" : {
-      "indexedTime" : "2001-01-01T01:01:01Z"
+    "debug": {
+      "indexedTime": "2001-01-01T01:01:01Z"
     }
   }
 }

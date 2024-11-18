@@ -1,173 +1,173 @@
 {
-  "description" : "images with different contributors",
-  "createdAt" : "2024-11-14T14:37:56.379788Z",
-  "id" : "8p59sfry",
-  "document" : {
-    "modifiedTime" : "2021-10-07T09:48:56Z",
-    "display" : {
-      "id" : "8p59sfry",
-      "thumbnail" : {
-        "locationType" : {
-          "id" : "iiif-image",
-          "label" : "IIIF Image API",
-          "type" : "LocationType"
+  "description": "images with different contributors",
+  "createdAt": "2024-11-14T14:37:56.379788Z",
+  "id": "8p59sfry",
+  "document": {
+    "modifiedTime": "2021-10-07T09:48:56Z",
+    "display": {
+      "id": "8p59sfry",
+      "thumbnail": {
+        "locationType": {
+          "id": "iiif-image",
+          "label": "IIIF Image API",
+          "type": "LocationType"
         },
-        "url" : "https://iiif.wellcomecollection.org/image/NWO.jpg/info.json",
-        "linkText" : "Link text: YQuA86b",
-        "license" : {
-          "id" : "cc-by",
-          "label" : "Attribution 4.0 International (CC BY 4.0)",
-          "url" : "http://creativecommons.org/licenses/by/4.0/",
-          "type" : "License"
+        "url": "https://iiif.wellcomecollection.org/image/NWO.jpg/info.json",
+        "linkText": "Link text: YQuA86b",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "url": "http://creativecommons.org/licenses/by/4.0/",
+          "type": "License"
         },
-        "accessConditions" : [
+        "accessConditions": [
         ],
-        "type" : "DigitalLocation"
+        "type": "DigitalLocation"
       },
-      "locations" : [
+      "locations": [
         {
-          "locationType" : {
-            "id" : "iiif-image",
-            "label" : "IIIF Image API",
-            "type" : "LocationType"
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
           },
-          "url" : "https://iiif.wellcomecollection.org/image/NWO.jpg/info.json",
-          "linkText" : "Link text: YQuA86b",
-          "license" : {
-            "id" : "cc-by",
-            "label" : "Attribution 4.0 International (CC BY 4.0)",
-            "url" : "http://creativecommons.org/licenses/by/4.0/",
-            "type" : "License"
+          "url": "https://iiif.wellcomecollection.org/image/NWO.jpg/info.json",
+          "linkText": "Link text: YQuA86b",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/",
+            "type": "License"
           },
-          "accessConditions" : [
+          "accessConditions": [
           ],
-          "type" : "DigitalLocation"
+          "type": "DigitalLocation"
         }
       ],
-      "aspectRatio" : 0.38759995,
-      "averageColor" : "#BD862E",
-      "source" : {
-        "id" : "zejavmqr",
-        "title" : "title-FrRzbLm9dz",
-        "contributors" : [
+      "aspectRatio": 0.38759995,
+      "averageColor": "#BD862E",
+      "source": {
+        "id": "zejavmqr",
+        "title": "title-FrRzbLm9dz",
+        "contributors": [
           {
-            "agent" : {
-              "label" : "carrots",
-              "type" : "Agent"
+            "agent": {
+              "label": "carrots",
+              "type": "Agent"
             },
-            "roles" : [
+            "roles": [
             ],
-            "primary" : true,
-            "type" : "Contributor"
+            "primary": true,
+            "type": "Contributor"
           },
           {
-            "agent" : {
-              "label" : "parrots",
-              "type" : "Organisation"
+            "agent": {
+              "label": "parrots",
+              "type": "Organisation"
             },
-            "roles" : [
+            "roles": [
             ],
-            "primary" : true,
-            "type" : "Contributor"
+            "primary": true,
+            "type": "Contributor"
           }
         ],
-        "languages" : [
+        "languages": [
         ],
-        "genres" : [
+        "genres": [
         ],
-        "subjects" : [
+        "subjects": [
         ],
-        "type" : "Work"
+        "type": "Work"
       },
-      "type" : "Image"
+      "type": "Image"
     },
-    "query" : {
-      "id" : "8p59sfry",
-      "source" : {
-        "collectionPath.label" : null,
-        "collectionPath.path" : null,
-        "alternativeTitles" : [
+    "query": {
+      "id": "8p59sfry",
+      "source": {
+        "collectionPath.label": null,
+        "collectionPath.path": null,
+        "alternativeTitles": [
         ],
-        "contributors.agent.label" : [
+        "contributors.agent.label": [
           "carrots",
           "parrots"
         ],
-        "description" : null,
-        "edition" : null,
-        "genres.concepts.label" : [
+        "description": null,
+        "edition": null,
+        "genres.concepts.label": [
         ],
-        "id" : "zejavmqr",
-        "sourceIdentifier.value" : "4xvNzKQ7nP",
-        "identifiers.value" : [
+        "id": "zejavmqr",
+        "sourceIdentifier.value": "4xvNzKQ7nP",
+        "identifiers.value": [
           "4xvNzKQ7nP"
         ],
-        "images.id" : [
+        "images.id": [
         ],
-        "images.identifiers.value" : [
+        "images.identifiers.value": [
         ],
-        "items.id" : [
+        "items.id": [
         ],
-        "items.identifiers.value" : [
+        "items.identifiers.value": [
         ],
-        "items.shelfmark.value" : [
+        "items.shelfmark.value": [
         ],
-        "languages.label" : [
+        "languages.label": [
         ],
-        "lettering" : null,
-        "notes.contents" : [
+        "lettering": null,
+        "notes.contents": [
         ],
-        "partOf.title" : [
+        "partOf.title": [
         ],
-        "physicalDescription" : null,
-        "production.label" : [
+        "physicalDescription": null,
+        "production.label": [
         ],
-        "referenceNumber" : null,
-        "subjects.concepts.label" : [
+        "referenceNumber": null,
+        "subjects.concepts.label": [
         ],
-        "title" : "title-FrRzbLm9dz"
+        "title": "title-FrRzbLm9dz"
       }
     },
-    "aggregatableValues" : {
-      "locations.license" : [
+    "aggregatableValues": {
+      "locations.license": [
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "{\"label\":\"carrots\",\"type\":\"Agent\"}",
         "{\"label\":\"parrots\",\"type\":\"Organisation\"}"
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ]
     },
-    "filterableValues" : {
-      "locations.license.id" : [
+    "filterableValues": {
+      "locations.license.id": [
         "cc-by"
       ],
-      "source.contributors.agent.label" : [
+      "source.contributors.agent.label": [
         "carrots",
         "parrots"
       ],
-      "source.contributors.agent.id" : [
+      "source.contributors.agent.id": [
       ],
-      "source.contributors.agent.sourceIdentifier" : [
+      "source.contributors.agent.sourceIdentifier": [
       ],
-      "source.genres.label" : [
+      "source.genres.label": [
       ],
-      "source.genres.concepts.id" : [
+      "source.genres.concepts.id": [
       ],
-      "source.genres.concepts.sourceIdentifier" : [
+      "source.genres.concepts.sourceIdentifier": [
       ],
-      "source.subjects.label" : [
+      "source.subjects.label": [
       ],
-      "source.subjects.concepts.id" : [
+      "source.subjects.concepts.id": [
       ],
-      "source.subjects.concepts.sourceIdentifier" : [
+      "source.subjects.concepts.sourceIdentifier": [
       ],
-      "source.production.dates.range.from" : [
+      "source.production.dates.range.from": [
       ]
     },
-    "vectorValues" : {
-      "features" : [
+    "vectorValues": {
+      "features": [
         0.013218495,
         0.025846567,
         -0.042770065,
@@ -4265,7 +4265,7 @@
         0.018829614,
         0.021396482
       ],
-      "paletteEmbedding" : [
+      "paletteEmbedding": [
         -0.009844284,
         -0.037177544,
         -0.014458217,
@@ -5268,8 +5268,8 @@
         -0.023543477
       ]
     },
-    "debug" : {
-      "indexedTime" : "2001-01-01T01:01:01Z"
+    "debug": {
+      "indexedTime": "2001-01-01T01:01:01Z"
     }
   }
 }

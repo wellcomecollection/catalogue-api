@@ -1,297 +1,297 @@
 {
-  "description" : "examples for the genre tests",
-  "createdAt" : "2024-11-13T08:43:26.604274Z",
-  "id" : "plxkke6n",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "plxkke6n",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the genre tests",
+  "createdAt": "2024-11-13T08:43:26.604274Z",
+  "id": "plxkke6n",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "plxkke6n",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "1R485o02Dx"
+          "ontologyType": "Work",
+          "value": "1R485o02Dx"
         },
-        "version" : 26,
-        "modifiedTime" : "1986-05-12T09:04:10Z"
+        "version": 26,
+        "modifiedTime": "1986-05-12T09:04:10Z"
       },
-      "mergedTime" : "1986-05-12T09:04:10Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
+      "mergedTime": "1986-05-12T09:04:10Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [
       ],
-      "mergeCandidates" : [
+      "mergeCandidates": [
       ]
     },
-    "display" : {
-      "id" : "plxkke6n",
-      "title" : "title-cQ8QOPJdAX",
-      "alternativeTitles" : [
+    "display": {
+      "id": "plxkke6n",
+      "title": "title-cQ8QOPJdAX",
+      "alternativeTitles": [
       ],
-      "contributors" : [
+      "contributors": [
       ],
-      "identifiers" : [
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
           },
-          "value" : "1R485o02Dx",
-          "type" : "Identifier"
+          "value": "1R485o02Dx",
+          "type": "Identifier"
         }
       ],
-      "subjects" : [
+      "subjects": [
       ],
-      "genres" : [
+      "genres": [
         {
-          "label" : "Pamphlets",
-          "concepts" : [
+          "label": "Pamphlets",
+          "concepts": [
             {
-              "id" : "g00dcafe",
-              "identifiers" : [
+              "id": "g00dcafe",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "sierra-system-number",
-                    "label" : "Sierra system number",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "label": "Sierra system number",
+                    "type": "IdentifierType"
                   },
-                  "value" : "dmKTFidDls",
-                  "type" : "Identifier"
+                  "value": "dmKTFidDls",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "9X3cVR8q4GIgcsJ",
-              "type" : "Genre"
+              "label": "9X3cVR8q4GIgcsJ",
+              "type": "Genre"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         },
         {
-          "label" : "Psychology, Pathological",
-          "concepts" : [
+          "label": "Psychology, Pathological",
+          "concepts": [
             {
-              "id" : "baadf00d",
-              "identifiers" : [
+              "id": "baadf00d",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "miro-image-number",
+                    "label": "Miro image number",
+                    "type": "IdentifierType"
                   },
-                  "value" : "um1qUlCcjg",
-                  "type" : "Identifier"
+                  "value": "um1qUlCcjg",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "qnu7hZZtHlWPIpZ",
-              "type" : "Genre"
+              "label": "qnu7hZZtHlWPIpZ",
+              "type": "Genre"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         },
         {
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
+          "label": "Darwin \"Jones\", Charles",
+          "concepts": [
             {
-              "id" : "lmpakqz5",
-              "identifiers" : [
+              "id": "lmpakqz5",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "sierra-system-number",
-                    "label" : "Sierra system number",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "label": "Sierra system number",
+                    "type": "IdentifierType"
                   },
-                  "value" : "DpKgb0Wdy2",
-                  "type" : "Identifier"
+                  "value": "DpKgb0Wdy2",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "5SIuLPMgIG177tc",
-              "type" : "Genre"
+              "label": "5SIuLPMgIG177tc",
+              "type": "Genre"
             },
             {
-              "id" : "nmumczq1",
-              "identifiers" : [
+              "id": "nmumczq1",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "calm-record-id",
-                    "label" : "Calm RecordIdentifier",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "calm-record-id",
+                    "label": "Calm RecordIdentifier",
+                    "type": "IdentifierType"
                   },
-                  "value" : "Q4CK8DrDsk",
-                  "type" : "Identifier"
+                  "value": "Q4CK8DrDsk",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "JcxukacPWKUROxB",
-              "type" : "Concept"
+              "label": "JcxukacPWKUROxB",
+              "type": "Concept"
             },
             {
-              "id" : "2kcagurh",
-              "identifiers" : [
+              "id": "2kcagurh",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "calm-record-id",
-                    "label" : "Calm RecordIdentifier",
-                    "type" : "IdentifierType"
+                  "identifierType": {
+                    "id": "calm-record-id",
+                    "label": "Calm RecordIdentifier",
+                    "type": "IdentifierType"
                   },
-                  "value" : "p5zfssscK3",
-                  "type" : "Identifier"
+                  "value": "p5zfssscK3",
+                  "type": "Identifier"
                 }
               ],
-              "label" : "x40zJbSlLwDNn2E",
-              "type" : "Concept"
+              "label": "x40zJbSlLwDNn2E",
+              "type": "Concept"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         }
       ],
-      "items" : [
+      "items": [
       ],
-      "holdings" : [
+      "holdings": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ],
-      "production" : [
+      "production": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "notes" : [
+      "notes": [
       ],
-      "formerFrequency" : [
+      "formerFrequency": [
       ],
-      "designation" : [
+      "designation": [
       ],
-      "images" : [
+      "images": [
       ],
-      "parts" : [
+      "parts": [
       ],
-      "partOf" : [
+      "partOf": [
       ],
-      "precededBy" : [
+      "precededBy": [
       ],
-      "succeededBy" : [
+      "succeededBy": [
       ],
-      "type" : "Work"
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [
         "9X3cVR8q4GIgcsJ",
         "qnu7hZZtHlWPIpZ",
         "5SIuLPMgIG177tc",
         "JcxukacPWKUROxB",
         "x40zJbSlLwDNn2E"
       ],
-      "id" : "plxkke6n",
-      "sourceIdentifier.value" : "1R485o02Dx",
-      "identifiers.value" : [
+      "id": "plxkke6n",
+      "sourceIdentifier.value": "1R485o02Dx",
+      "identifiers.value": [
         "1R485o02Dx"
       ],
-      "images.id" : [
+      "images.id": [
       ],
-      "images.identifiers.value" : [
+      "images.identifiers.value": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.shelfmark.value" : [
+      "items.shelfmark.value": [
       ],
-      "languages.label" : [
+      "languages.label": [
       ],
-      "lettering" : null,
-      "notes.contents" : [
+      "lettering": null,
+      "notes.contents": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "physicalDescription" : null,
-      "production.label" : [
+      "physicalDescription": null,
+      "production.label": [
       ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
+      "referenceNumber": null,
+      "subjects.concepts.label": [
       ],
-      "title" : "title-cQ8QOPJdAX"
+      "title": "title-cQ8QOPJdAX"
     },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
       ],
-      "genres.label" : [
+      "genres.label": [
         "{\"label\":\"Pamphlets\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates" : [
+      "production.dates": [
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "languages" : [
+      "languages": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "items.locations.license" : [
+      "items.locations.license": [
       ],
-      "availabilities" : [
+      "availabilities": [
       ]
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [
       ],
-      "languages.id" : [
+      "languages.id": [
       ],
-      "genres.label" : [
+      "genres.label": [
         "Pamphlets",
         "Psychology, Pathological",
         "Darwin \"Jones\", Charles"
       ],
-      "genres.concepts.id" : [
+      "genres.concepts.id": [
         "g00dcafe",
         "baadf00d",
         "lmpakqz5"
       ],
-      "genres.concepts.sourceIdentifier" : [
+      "genres.concepts.sourceIdentifier": [
         "dmKTFidDls",
         "um1qUlCcjg",
         "DpKgb0Wdy2"
       ],
-      "subjects.label" : [
+      "subjects.label": [
       ],
-      "subjects.concepts.id" : [
+      "subjects.concepts.id": [
       ],
-      "subjects.concepts.sourceIdentifier" : [
+      "subjects.concepts.sourceIdentifier": [
       ],
-      "contributors.agent.label" : [
+      "contributors.agent.label": [
       ],
-      "contributors.agent.id" : [
+      "contributors.agent.id": [
       ],
-      "contributors.agent.sourceIdentifier" : [
+      "contributors.agent.sourceIdentifier": [
       ],
-      "identifiers.value" : [
+      "identifiers.value": [
         "1R485o02Dx"
       ],
-      "items.locations.license.id" : [
+      "items.locations.license.id": [
       ],
-      "items.locations.accessConditions.status.id" : [
+      "items.locations.accessConditions.status.id": [
       ],
-      "items.id" : [
+      "items.id": [
       ],
-      "items.identifiers.value" : [
+      "items.identifiers.value": [
       ],
-      "items.locations.locationType.id" : [
+      "items.locations.locationType.id": [
       ],
-      "partOf.id" : [
+      "partOf.id": [
       ],
-      "partOf.title" : [
+      "partOf.title": [
       ],
-      "availabilities.id" : [
+      "availabilities.id": [
       ]
     },
-    "type" : "Visible"
+    "type": "Visible"
   }
 }
