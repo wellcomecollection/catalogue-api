@@ -114,8 +114,9 @@ object AggregationMapping {
         }
       }
       .map { tally =>
-        tally.collect { case (Right(t), count) =>
-          AggregationBucket(t, count = count)
+        tally.collect {
+          case (Right(t), count) =>
+            AggregationBucket(t, count = count)
         }
       }
       .map { buckets =>
