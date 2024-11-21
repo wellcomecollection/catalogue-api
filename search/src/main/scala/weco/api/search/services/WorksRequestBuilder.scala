@@ -50,10 +50,10 @@ object WorksRequestBuilder
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
-          preFilter = buildWorkFilterQuery(VisibleWorkFilter :: unpairables),
+          preFilter = (VisibleWorkFilter :: unpairables).map(buildWorkFilterQuery),
           postFilter = Some(
             must(
-              buildWorkFilterQuery(pairables)
+              pairables.map(buildWorkFilterQuery)
             )
           )
         )
@@ -139,11 +139,6 @@ object WorksRequestBuilder
         searchOptions.sortOrder
     }
 
-  private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =
-    filters.map {
-      buildWorkFilterQuery
-    } filter (_ != NoopQuery)
-
   private def buildWorkFilterQuery(workFilter: WorkFilter): Query =
     workFilter match {
       case VisibleWorkFilter =>
@@ -161,20 +156,30 @@ object WorksRequestBuilder
           gte = gte
         )
       case LanguagesFilter(languageIds) =>
-        termsQuery("filterableValues.languages.id", languageIds)
+        termsQuery(
+          "filterableValues.languages.id",
+          languageIds
+        )
       case GenreFilter(genreQueries) =>
-        termsQuery("filterableValues.genres.label", genreQueries)
-      case GenreConceptFilter(conceptIds) =>
-        if (conceptIds.isEmpty) NoopQuery
-        else termsQuery("filterableValues.genres.concepts.id", conceptIds)
-
+        termsQuery(
+          "filterableValues.genres.label",
+          genreQueries
+        )
+      case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+        termsQuery(
+          "filterableValues.genres.concepts.id",
+          conceptIds
+        )
       case SubjectLabelFilter(labels) =>
-        termsQuery("filterableValues.subjects.label", labels)
-
-      case SubjectConceptFilter(conceptIds) =>
-        if (conceptIds.isEmpty) NoopQuery
-        else termsQuery("filterableValues.subjects.concepts.id", conceptIds)
-
+        termsQuery(
+          "filterableValues.subjects.label",
+          labels
+        )
+      case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty  =>
+        termsQuery(
+          "filterableValues.subjects.concepts.id",
+          conceptIds
+        )
       case ContributorsFilter(contributorQueries) =>
         termsQuery(
           "filterableValues.contributors.agent.label",

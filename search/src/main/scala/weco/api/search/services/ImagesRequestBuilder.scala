@@ -5,7 +5,6 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.{
-  NoopQuery,
   Query,
   RangeQuery
 }
@@ -54,10 +53,10 @@ class ImagesRequestBuilder()
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
-          preFilter = buildImageFilterQuery(unpairables),
+          preFilter = unpairables.map(buildImageFilterQuery),
           postFilter = Some(
             must(
-              buildImageFilterQuery(searchOptions.filters)
+              searchOptions.filters.map(buildImageFilterQuery)
             )
           ),
           knn = searchOptions.color.map(ColorQuery(_))
@@ -130,28 +129,35 @@ class ImagesRequestBuilder()
           conceptIds
         )
       case GenreFilter(genreLabels) =>
-        termsQuery("filterableValues.source.genres.label", genreLabels)
-      case GenreConceptFilter(conceptIds) =>
-        if (conceptIds.isEmpty) NoopQuery
-        else
-          termsQuery("filterableValues.source.genres.concepts.id", conceptIds)
+        termsQuery(
+          "filterableValues.source.genres.label",
+          genreLabels
+        )
+      case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+          termsQuery(
+            "filterableValues.source.genres.concepts.id",
+            conceptIds
+          )
       case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("filterableValues.source.subjects.label", subjectLabels)
-      case SubjectConceptFilter(conceptIds) =>
-        if (conceptIds.isEmpty) NoopQuery
-        else termsQuery("filterableValues.source.subjects.concepts.id", conceptIds)
+        termsQuery(
+          "filterableValues.source.subjects.label",
+          subjectLabels
+        )
+      case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+        termsQuery(
+          "filterableValues.source.subjects.concepts.id",
+          conceptIds
+        )
       case DateRangeFilter(fromDate, toDate) =>
         val (gte, lte) =
           (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
+
         RangeQuery(
           "filterableValues.source.production.dates.range.from",
           lte = lte,
           gte = gte
         )
     }
-
-  private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
-    filters.map(buildImageFilterQuery) filter (_ != NoopQuery)
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
