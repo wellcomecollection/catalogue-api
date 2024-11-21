@@ -4,10 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
-import com.sksamuel.elastic4s.requests.searches.queries.{
-  Query,
-  RangeQuery
-}
+import com.sksamuel.elastic4s.requests.searches.queries.{Query, RangeQuery}
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
@@ -111,52 +108,52 @@ class ImagesRequestBuilder()
         searchOptions.sortOrder
     }
 
-  private val buildImageFilterQuery: PartialFunction[ImageFilter, Query] =  {
-      case LicenseFilter(licenseIds) =>
-        termsQuery(
-          field = "filterableValues.locations.license.id",
-          values = licenseIds
-        )
-      case ContributorsFilter(contributorQueries) =>
-        termsQuery(
-          "filterableValues.source.contributors.agent.label",
-          contributorQueries
-        )
-      case ContributorsConceptFilter(conceptIds) =>
-        termsQuery(
-          "filterableValues.source.contributors.agent.id",
-          conceptIds
-        )
-      case GenreFilter(genreLabels) =>
-        termsQuery(
-          "filterableValues.source.genres.label",
-          genreLabels
-        )
-      case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
-        termsQuery(
-          "filterableValues.source.genres.concepts.id",
-          conceptIds
-        )
-      case SubjectLabelFilter(subjectLabels) =>
-        termsQuery(
-          "filterableValues.source.subjects.label",
-          subjectLabels
-        )
-      case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
-        termsQuery(
-          "filterableValues.source.subjects.concepts.id",
-          conceptIds
-        )
-      case DateRangeFilter(fromDate, toDate) =>
-        val (gte, lte) =
-          (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
+  private val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {
+    case LicenseFilter(licenseIds) =>
+      termsQuery(
+        field = "filterableValues.locations.license.id",
+        values = licenseIds
+      )
+    case ContributorsFilter(contributorQueries) =>
+      termsQuery(
+        "filterableValues.source.contributors.agent.label",
+        contributorQueries
+      )
+    case ContributorsConceptFilter(conceptIds) =>
+      termsQuery(
+        "filterableValues.source.contributors.agent.id",
+        conceptIds
+      )
+    case GenreFilter(genreLabels) =>
+      termsQuery(
+        "filterableValues.source.genres.label",
+        genreLabels
+      )
+    case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+      termsQuery(
+        "filterableValues.source.genres.concepts.id",
+        conceptIds
+      )
+    case SubjectLabelFilter(subjectLabels) =>
+      termsQuery(
+        "filterableValues.source.subjects.label",
+        subjectLabels
+      )
+    case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+      termsQuery(
+        "filterableValues.source.subjects.concepts.id",
+        conceptIds
+      )
+    case DateRangeFilter(fromDate, toDate) =>
+      val (gte, lte) =
+        (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
 
-        RangeQuery(
-          "filterableValues.source.production.dates.range.from",
-          lte = lte,
-          gte = gte
-        )
-    }
+      RangeQuery(
+        "filterableValues.source.production.dates.range.from",
+        lte = lte,
+        gte = gte
+      )
+  }
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
