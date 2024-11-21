@@ -50,10 +50,10 @@ object WorksRequestBuilder
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
-          preFilter = (VisibleWorkFilter :: unpairables).map(buildWorkFilterQuery),
+          preFilter = (VisibleWorkFilter :: unpairables).collect(buildWorkFilterQuery),
           postFilter = Some(
             must(
-              pairables.map(buildWorkFilterQuery)
+              pairables.collect(buildWorkFilterQuery)
             )
           )
         )
@@ -139,8 +139,7 @@ object WorksRequestBuilder
         searchOptions.sortOrder
     }
 
-  private def buildWorkFilterQuery(workFilter: WorkFilter): Query =
-    workFilter match {
+  val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
       case VisibleWorkFilter =>
         termQuery(field = "type", value = "Visible")
       case FormatFilter(formatIds) =>

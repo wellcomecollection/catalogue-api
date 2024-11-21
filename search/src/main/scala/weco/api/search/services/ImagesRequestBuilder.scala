@@ -53,10 +53,10 @@ class ImagesRequestBuilder()
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
-          preFilter = unpairables.map(buildImageFilterQuery),
+          preFilter = unpairables.collect(buildImageFilterQuery),
           postFilter = Some(
             must(
-              searchOptions.filters.map(buildImageFilterQuery)
+              searchOptions.filters.collect(buildImageFilterQuery)
             )
           ),
           knn = searchOptions.color.map(ColorQuery(_))
@@ -111,8 +111,7 @@ class ImagesRequestBuilder()
         searchOptions.sortOrder
     }
 
-  private def buildImageFilterQuery(filter: ImageFilter): Query =
-    filter match {
+  private val buildImageFilterQuery: PartialFunction[ImageFilter, Query] =  {
       case LicenseFilter(licenseIds) =>
         termsQuery(
           field = "filterableValues.locations.license.id",
@@ -134,10 +133,10 @@ class ImagesRequestBuilder()
           genreLabels
         )
       case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
-          termsQuery(
-            "filterableValues.source.genres.concepts.id",
-            conceptIds
-          )
+        termsQuery(
+          "filterableValues.source.genres.concepts.id",
+          conceptIds
+        )
       case SubjectLabelFilter(subjectLabels) =>
         termsQuery(
           "filterableValues.source.subjects.label",
