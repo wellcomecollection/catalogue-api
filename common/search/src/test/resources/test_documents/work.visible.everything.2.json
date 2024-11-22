@@ -1,6 +1,6 @@
 {
   "description": "a list of work with all the include-able fields",
-  "createdAt": "2023-11-21T15:39:33.161811Z",
+  "createdAt": "2024-11-13T08:43:26.428912Z",
   "id": "kspmagtl",
   "document": {
     "debug": {
@@ -18,19 +18,24 @@
       },
       "mergedTime": "2040-10-31T18:04:56Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
       "id": "kspmagtl",
       "title": "A work with all the include-able fields",
-      "alternativeTitles": [],
+      "alternativeTitles": [
+      ],
       "contributors": [
         {
           "agent": {
             "label": "person-h9jhXW",
             "type": "Person"
           },
-          "roles": [],
+          "roles": [
+          ],
           "primary": true,
           "type": "Contributor"
         },
@@ -39,7 +44,8 @@
             "label": "person-QdWhUu",
             "type": "Person"
           },
-          "roles": [],
+          "roles": [
+          ],
           "primary": true,
           "type": "Contributor"
         }
@@ -241,7 +247,8 @@
                 "url": "http://creativecommons.org/licenses/by/4.0/",
                 "type": "License"
               },
-              "accessConditions": [],
+              "accessConditions": [
+              ],
               "type": "DigitalLocation"
             }
           ],
@@ -275,14 +282,16 @@
                 "url": "http://creativecommons.org/licenses/by/4.0/",
                 "type": "License"
               },
-              "accessConditions": [],
+              "accessConditions": [
+              ],
               "type": "DigitalLocation"
             }
           ],
           "type": "Item"
         },
         {
-          "identifiers": [],
+          "identifiers": [
+          ],
           "locations": [
             {
               "locationType": {
@@ -299,7 +308,8 @@
                 "url": "http://creativecommons.org/licenses/by/4.0/",
                 "type": "License"
               },
-              "accessConditions": [],
+              "accessConditions": [
+              ],
               "type": "DigitalLocation"
             }
           ],
@@ -324,7 +334,11 @@
         },
         {
           "note": "qavjz8rXQ",
-          "enumeration": ["ESu6j0cajz", "IwEsWu", "kQm30wp"],
+          "enumeration": [
+            "ESu6j0cajz",
+            "IwEsWu",
+            "kQm30wp"
+          ],
           "type": "Holdings"
         },
         {
@@ -341,7 +355,8 @@
           "type": "Holdings"
         }
       ],
-      "availabilities": [],
+      "availabilities": [
+      ],
       "production": [
         {
           "label": "4DIByCcllibcScRo1F5OxZThZ",
@@ -407,16 +422,10 @@
       ],
       "notes": [
         {
-          "contents": ["KatsdMX"],
-          "noteType": {
-            "id": "general-note",
-            "label": "Notes",
-            "type": "NoteType"
-          },
-          "type": "Note"
-        },
-        {
-          "contents": ["1009JS", "Gxz9bfcN5B"],
+          "contents": [
+            "1009JS",
+            "Gxz9bfcN5B"
+          ],
           "noteType": {
             "id": "location-of-duplicates",
             "label": "Location of duplicates",
@@ -425,17 +434,37 @@
           "type": "Note"
         },
         {
-          "contents": ["bf5YSWx"],
+          "contents": [
+            "bf5YSWx"
+          ],
           "noteType": {
             "id": "funding-info",
             "label": "Funding information",
             "type": "NoteType"
           },
           "type": "Note"
+        },
+        {
+          "contents": [
+            "KatsdMX"
+          ],
+          "noteType": {
+            "id": "general-note",
+            "label": "Notes",
+            "type": "NoteType"
+          },
+          "type": "Note"
         }
       ],
-      "formerFrequency": ["Published in 2001", "Published in 2002"],
-      "designation": ["Designation #1", "Designation #2", "Designation #3"],
+      "formerFrequency": [
+        "Published in 2001",
+        "Published in 2002"
+      ],
+      "designation": [
+        "Designation #1",
+        "Designation #2",
+        "Designation #3"
+      ],
       "images": [
         {
           "id": "6fuh8tqe",
@@ -496,8 +525,12 @@
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": ["person-h9jhXW", "person-QdWhUu"],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+        "person-h9jhXW",
+        "person-QdWhUu"
+      ],
       "description": null,
       "edition": null,
       "genres.concepts.label": [
@@ -510,15 +543,44 @@
       ],
       "id": "kspmagtl",
       "sourceIdentifier.value": "bWRaGNi2Hd",
-      "identifiers.value": ["bWRaGNi2Hd", "Hq3k05Fqag"],
-      "images.id": ["6fuh8tqe", "ej3tqgsk"],
-      "images.identifiers.value": ["1RAcTOrmRe", "AsAu4Ye9KY"],
-      "items.id": ["9indplmm", "b7xfovxp"],
-      "items.identifiers.value": ["KUpoh3lSc6", "da6nNHPpdW"],
-      "languages.label": ["E6F0oBW", "TlqNXqK", "hldbPB44o8"],
+      "identifiers.value": [
+        "bWRaGNi2Hd",
+        "Hq3k05Fqag"
+      ],
+      "images.id": [
+        "6fuh8tqe",
+        "ej3tqgsk"
+      ],
+      "images.identifiers.value": [
+        "1RAcTOrmRe",
+        "AsAu4Ye9KY"
+      ],
+      "items.id": [
+        "9indplmm",
+        "b7xfovxp"
+      ],
+      "items.identifiers.value": [
+        "KUpoh3lSc6",
+        "da6nNHPpdW"
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+        "E6F0oBW",
+        "TlqNXqK",
+        "hldbPB44o8"
+      ],
       "lettering": null,
-      "notes.contents": ["1009JS", "bf5YSWx", "KatsdMX", "Gxz9bfcN5B"],
-      "partOf.title": ["title-ZZ4OU9Z1es", "title-e1K5osW8hK"],
+      "notes.contents": [
+        "1009JS",
+        "bf5YSWx",
+        "KatsdMX",
+        "Gxz9bfcN5B"
+      ],
+      "partOf.title": [
+        "title-ZZ4OU9Z1es",
+        "title-e1K5osW8hK"
+      ],
       "physicalDescription": null,
       "production.label": [
         "Zrd6sRqVgE",
@@ -540,12 +602,14 @@
       "title": "A work with all the include-able fields"
     },
     "aggregatableValues": {
-      "workType": [],
+      "workType": [
+      ],
       "genres.label": [
         "{\"label\":\"DKbwserVib\",\"concepts\":[],\"type\":\"Genre\"}",
         "{\"label\":\"6uOUAue10N\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates": [],
+      "production.dates": [
+      ],
       "subjects.label": [
         "{\"label\":\"Uauios0IzD\",\"concepts\":[],\"type\":\"Subject\"}",
         "{\"label\":\"6n2QtjPUbf\",\"concepts\":[],\"type\":\"Subject\"}"
@@ -564,30 +628,81 @@
         "{\"id\":\"cc-by\",\"label\":\"Attribution 4.0 International (CC BY 4.0)\",\"url\":\"http://creativecommons.org/licenses/by/4.0/\",\"type\":\"License\"}",
         "{\"id\":\"cc-by\",\"label\":\"Attribution 4.0 International (CC BY 4.0)\",\"url\":\"http://creativecommons.org/licenses/by/4.0/\",\"type\":\"License\"}"
       ],
-      "availabilities": []
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": null,
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": ["BRh", "52j", "K4Q"],
-      "genres.label": ["DKbwserVib", "6uOUAue10N"],
-      "genres.concepts.id": ["co3t5a2c", "vp7gvran"],
-      "subjects.label": ["Uauios0IzD", "6n2QtjPUbf"],
-      "contributors.agent.label": ["person-h9jhXW", "person-QdWhUu"],
-      "identifiers.value": ["bWRaGNi2Hd", "Hq3k05Fqag"],
-      "items.locations.license.id": ["cc-by", "cc-by", "cc-by"],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": ["9indplmm", "b7xfovxp"],
-      "items.identifiers.value": ["KUpoh3lSc6", "da6nNHPpdW"],
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+        "BRh",
+        "52j",
+        "K4Q"
+      ],
+      "genres.label": [
+        "DKbwserVib",
+        "6uOUAue10N"
+      ],
+      "genres.concepts.id": [
+        "co3t5a2c",
+        "vp7gvran"
+      ],
+      "genres.concepts.sourceIdentifier": [
+        "KLw3A3d2Sg",
+        "okW4LcPBC1"
+      ],
+      "subjects.label": [
+        "Uauios0IzD",
+        "6n2QtjPUbf"
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+        "person-h9jhXW",
+        "person-QdWhUu"
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "bWRaGNi2Hd",
+        "Hq3k05Fqag"
+      ],
+      "items.locations.license.id": [
+        "cc-by",
+        "cc-by",
+        "cc-by"
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+        "9indplmm",
+        "b7xfovxp"
+      ],
+      "items.identifiers.value": [
+        "KUpoh3lSc6",
+        "da6nNHPpdW"
+      ],
       "items.locations.locationType.id": [
         "iiif-presentation",
         "iiif-presentation",
         "iiif-presentation"
       ],
-      "partOf.id": ["ajgcgp8j", "vjvef8bd"],
-      "partOf.title": ["title-ZZ4OU9Z1es", "title-e1K5osW8hK"],
-      "availabilities.id": []
+      "partOf.id": [
+        "ajgcgp8j",
+        "vjvef8bd"
+      ],
+      "partOf.title": [
+        "title-ZZ4OU9Z1es",
+        "title-e1K5osW8hK"
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

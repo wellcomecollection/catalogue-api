@@ -6,7 +6,7 @@ import io.circe.{Json, JsonObject}
 
 case object ImageSimilarity {
   def features: (String, IndexedImage) => JsonObject =
-    knnQuery("vectorValues.reducedFeatures")
+    knnQuery("vectorValues.features")
 
   private def knnQuery(
     field: String
@@ -15,7 +15,7 @@ case object ImageSimilarity {
       .obj(
         "knn" -> Json.obj(
           "field" -> field.asJson,
-          "query_vector" -> image.reducedFeatures.asJson,
+          "query_vector" -> image.features.asJson,
           "k" -> 10.asJson,
           "num_candidates" -> 100.asJson,
           "filter" -> Json.obj(

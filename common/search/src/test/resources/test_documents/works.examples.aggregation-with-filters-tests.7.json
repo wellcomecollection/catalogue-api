@@ -1,141 +1,210 @@
 {
   "description": "examples for the aggregation-with-filters tests",
-  "createdAt": "2023-11-21T15:39:34.754297Z",
-  "id": "cdqpxiaz",
+  "createdAt": "2024-11-13T08:43:26.573376Z",
+  "id": "p7zbfaov",
   "document": {
     "debug": {
       "source": {
-        "id": "cdqpxiaz",
+        "id": "p7zbfaov",
         "identifier": {
           "identifierType": {
-            "id": "calm-record-id"
+            "id": "miro-image-number"
           },
           "ontologyType": "Work",
-          "value": "kYbman54cI"
+          "value": "pYub9JXopb"
         },
-        "version": 11,
-        "modifiedTime": "1975-05-07T19:46:33Z"
+        "version": 85,
+        "modifiedTime": "1944-12-17T09:08:30Z"
       },
-      "mergedTime": "1975-05-07T19:46:33Z",
+      "mergedTime": "1944-12-17T09:08:30Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "cdqpxiaz",
-      "title": "title-ajt54m4dWp",
-      "alternativeTitles": [],
+      "id": "p7zbfaov",
+      "title": "title-IZx0zgHgbz",
+      "alternativeTitles": [
+      ],
       "workType": {
         "id": "m",
         "label": "CD-Roms",
         "type": "Format"
       },
-      "contributors": [],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "calm-record-id",
-            "label": "Calm RecordIdentifier",
+            "id": "miro-image-number",
+            "label": "Miro image number",
             "type": "IdentifierType"
           },
-          "value": "kYbman54cI",
+          "value": "pYub9JXopb",
           "type": "Identifier"
         }
       ],
       "subjects": [
         {
-          "label": "1tcWDr9iTo",
+          "label": "S4hioTvwQl",
           "concepts": [
             {
-              "label": "VJbp9ESZHkohLBq",
+              "label": "eJkqVbD7mxTT1Dn",
               "type": "Concept"
             },
             {
-              "label": "VqYS4hioTvwQleJ",
+              "label": "ad9SceRNaTElZtf",
               "type": "Concept"
             },
             {
-              "label": "kqVbD7mxTT1Dnad",
+              "label": "G4qEc4MTvdPAcgp",
               "type": "Concept"
             }
           ],
           "type": "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
+      "languages": [
+      ],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "cdqpxiaz",
-      "sourceIdentifier.value": "kYbman54cI",
-      "identifiers.value": ["kYbman54cI"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
+      "genres.concepts.label": [
+      ],
+      "id": "p7zbfaov",
+      "sourceIdentifier.value": "pYub9JXopb",
+      "identifiers.value": [
+        "pYub9JXopb"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
       "subjects.concepts.label": [
-        "VJbp9ESZHkohLBq",
-        "VqYS4hioTvwQleJ",
-        "kqVbD7mxTT1Dnad"
+        "eJkqVbD7mxTT1Dn",
+        "ad9SceRNaTElZtf",
+        "G4qEc4MTvdPAcgp"
       ],
-      "title": "title-ajt54m4dWp"
+      "title": "title-IZx0zgHgbz"
     },
     "aggregatableValues": {
-      "workType": ["{\"id\":\"m\",\"label\":\"CD-Roms\",\"type\":\"Format\"}"],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [
-        "{\"label\":\"1tcWDr9iTo\",\"concepts\":[],\"type\":\"Subject\"}"
+      "workType": [
+        "{\"id\":\"m\",\"label\":\"CD-Roms\",\"type\":\"Format\"}"
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
+      "subjects.label": [
+        "{\"label\":\"S4hioTvwQl\",\"concepts\":[],\"type\":\"Subject\"}"
+      ],
+      "languages": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": "m",
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": ["1tcWDr9iTo"],
-      "contributors.agent.label": [],
-      "identifiers.value": ["kYbman54cI"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+        "S4hioTvwQl"
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "pYub9JXopb"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

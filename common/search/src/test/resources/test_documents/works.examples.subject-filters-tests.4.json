@@ -1,38 +1,43 @@
 {
   "description": "examples for the subject filter tests",
-  "createdAt": "2023-11-21T15:39:35.219837Z",
-  "id": "t8hhmnzs",
+  "createdAt": "2024-11-13T08:43:26.613143Z",
+  "id": "ppcdklf9",
   "document": {
     "debug": {
       "source": {
-        "id": "t8hhmnzs",
+        "id": "ppcdklf9",
         "identifier": {
           "identifierType": {
-            "id": "sierra-system-number"
+            "id": "miro-image-number"
           },
           "ontologyType": "Work",
-          "value": "7erLcgxEad"
+          "value": "3o0GGLKeJC"
         },
-        "version": 3,
-        "modifiedTime": "2013-05-09T02:35:31Z"
+        "version": 31,
+        "modifiedTime": "2004-11-14T20:49:37Z"
       },
-      "mergedTime": "2013-05-09T02:35:31Z",
+      "mergedTime": "2004-11-14T20:49:37Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "t8hhmnzs",
-      "title": "title-RFusVBNn8S",
-      "alternativeTitles": [],
-      "contributors": [],
+      "id": "ppcdklf9",
+      "title": "title-BG0vJlw8MZ",
+      "alternativeTitles": [
+      ],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "sierra-system-number",
-            "label": "Sierra system number",
+            "id": "miro-image-number",
+            "label": "Miro image number",
             "type": "IdentifierType"
           },
-          "value": "7erLcgxEad",
+          "value": "3o0GGLKeJC",
           "type": "Identifier"
         }
       ],
@@ -41,15 +46,15 @@
           "label": "London (England)",
           "concepts": [
             {
-              "label": "Z5Ju5hoUH5ZhFqr",
+              "label": "lxZzGryOg3KGy7M",
               "type": "Concept"
             },
             {
-              "label": "BAO66qqlbcmHn7a",
+              "label": "z5GNUj1it3ic4OR",
               "type": "Concept"
             },
             {
-              "label": "ct97zOQ6G6Rkv6Q",
+              "label": "9LzJV7M3Kvqw9fG",
               "type": "Concept"
             }
           ],
@@ -59,15 +64,15 @@
           "label": "Psychology, Pathological",
           "concepts": [
             {
-              "label": "H5zn9bqmY6Obq6l",
+              "label": "ol7E1K1L8XUhcLZ",
               "type": "Concept"
             },
             {
-              "label": "xZzGryOg3KGy7Mz",
+              "label": "hc35m9C4DAgxJAj",
               "type": "Concept"
             },
             {
-              "label": "5GNUj1it3ic4OR9",
+              "label": "Eybh6q7wkoWRiNO",
               "type": "Concept"
             }
           ],
@@ -89,108 +94,171 @@
           "label": "Darwin \"Jones\", Charles",
           "concepts": [
             {
-              "label": "LzJV7M3Kvqw9fGo",
+              "label": "oLbpS5jRX3FqozN",
               "type": "Concept"
             },
             {
-              "label": "l7E1K1L8XUhcLZh",
+              "label": "GJ9PfCPwnrkDO6V",
               "type": "Concept"
             },
             {
-              "label": "c35m9C4DAgxJAjE",
+              "label": "p3bULWghZ3Z5q2k",
               "type": "Concept"
             }
           ],
           "type": "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
+      "languages": [
+      ],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "t8hhmnzs",
-      "sourceIdentifier.value": "7erLcgxEad",
-      "identifiers.value": ["7erLcgxEad"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
+      "genres.concepts.label": [
+      ],
+      "id": "ppcdklf9",
+      "sourceIdentifier.value": "3o0GGLKeJC",
+      "identifiers.value": [
+        "3o0GGLKeJC"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
       "subjects.concepts.label": [
-        "Z5Ju5hoUH5ZhFqr",
-        "BAO66qqlbcmHn7a",
-        "ct97zOQ6G6Rkv6Q",
-        "H5zn9bqmY6Obq6l",
-        "xZzGryOg3KGy7Mz",
-        "5GNUj1it3ic4OR9",
-        "LzJV7M3Kvqw9fGo",
-        "l7E1K1L8XUhcLZh",
-        "c35m9C4DAgxJAjE"
+        "lxZzGryOg3KGy7M",
+        "z5GNUj1it3ic4OR",
+        "9LzJV7M3Kvqw9fG",
+        "ol7E1K1L8XUhcLZ",
+        "hc35m9C4DAgxJAj",
+        "Eybh6q7wkoWRiNO",
+        "oLbpS5jRX3FqozN",
+        "GJ9PfCPwnrkDO6V",
+        "p3bULWghZ3Z5q2k"
       ],
-      "title": "title-RFusVBNn8S"
+      "title": "title-BG0vJlw8MZ"
     },
     "aggregatableValues": {
-      "workType": [],
-      "genres.label": [],
-      "production.dates": [],
+      "workType": [
+      ],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
       "subjects.label": [
         "{\"label\":\"London (England)\",\"concepts\":[],\"type\":\"Subject\"}",
         "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Subject\"}",
         "{\"label\":\"Darwin \\\"Jones\\\", Charles\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "languages": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": null,
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
       "subjects.label": [
         "London (England)",
         "Psychology, Pathological",
         "Darwin \"Jones\", Charles"
       ],
-      "contributors.agent.label": [],
-      "identifiers.value": ["7erLcgxEad"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "subjects.concepts.id": [
+        "darwin01"
+      ],
+      "subjects.concepts.sourceIdentifier": [
+        "lcnames-darwin"
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "3o0GGLKeJC"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

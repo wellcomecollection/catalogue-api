@@ -1,35 +1,40 @@
 {
   "description": "examples for the works filtered aggregations tests",
-  "createdAt": "2023-11-21T15:39:35.410651Z",
-  "id": "c3ls9khw",
+  "createdAt": "2024-11-13T08:43:26.644673Z",
+  "id": "crmdnx7u",
   "document": {
     "debug": {
       "source": {
-        "id": "c3ls9khw",
+        "id": "crmdnx7u",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "Pdet7fsTs5"
+          "value": "7z5sgyOBC4"
         },
-        "version": 22,
-        "modifiedTime": "2041-05-31T20:04:19Z"
+        "version": 86,
+        "modifiedTime": "2054-08-12T01:30:45Z"
       },
-      "mergedTime": "2041-05-31T20:04:19Z",
+      "mergedTime": "2054-08-12T01:30:45Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "c3ls9khw",
+      "id": "crmdnx7u",
       "title": "tapirs",
-      "alternativeTitles": [],
+      "alternativeTitles": [
+      ],
       "workType": {
         "id": "a",
         "label": "Books",
         "type": "Format"
       },
-      "contributors": [],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
@@ -37,16 +42,22 @@
             "label": "Sierra system number",
             "type": "IdentifierType"
           },
-          "value": "Pdet7fsTs5",
+          "value": "7z5sgyOBC4",
           "type": "Identifier"
         }
       ],
-      "subjects": [],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
+      "subjects": [
+      ],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
       "languages": [
         {
           "id": "bak",
@@ -54,71 +65,131 @@
           "type": "Language"
         }
       ],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "c3ls9khw",
-      "sourceIdentifier.value": "Pdet7fsTs5",
-      "identifiers.value": ["Pdet7fsTs5"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": ["Bashkir"],
+      "genres.concepts.label": [
+      ],
+      "id": "crmdnx7u",
+      "sourceIdentifier.value": "7z5sgyOBC4",
+      "identifiers.value": [
+        "7z5sgyOBC4"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+        "Bashkir"
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
-      "subjects.concepts.label": [],
+      "subjects.concepts.label": [
+      ],
       "title": "tapirs"
     },
     "aggregatableValues": {
-      "workType": ["{\"id\":\"a\",\"label\":\"Books\",\"type\":\"Format\"}"],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [],
+      "workType": [
+        "{\"id\":\"a\",\"label\":\"Books\",\"type\":\"Format\"}"
+      ],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
+      "subjects.label": [
+      ],
       "languages": [
         "{\"id\":\"bak\",\"label\":\"Bashkir\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": "a",
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": ["bak"],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": [],
-      "contributors.agent.label": [],
-      "identifiers.value": ["Pdet7fsTs5"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+        "bak"
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "7z5sgyOBC4"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

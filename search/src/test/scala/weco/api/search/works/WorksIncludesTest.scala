@@ -1422,17 +1422,6 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                     "notes" : [
                       {
                         "contents" : [
-                          "BD4V4eC"
-                        ],
-                        "noteType" : {
-                          "id" : "general-note",
-                          "label" : "Notes",
-                          "type" : "NoteType"
-                        },
-                        "type" : "Note"
-                      },
-                      {
-                        "contents" : [
                           "PxyMQW"
                         ],
                         "noteType" : {
@@ -1453,6 +1442,17 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                           "type" : "NoteType"
                         },
                         "type" : "Note"
+                      },
+                      {
+                        "contents" : [
+                          "BD4V4eC"
+                        ],
+                        "noteType" : {
+                          "id" : "general-note",
+                          "label" : "Notes",
+                          "type" : "NoteType"
+                        },
+                        "type" : "Note"
                       }
                     ],
                     "title" : "A work with all the include-able fields",
@@ -1465,17 +1465,6 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                     ],
                     "id" : "kspmagtl",
                     "notes" : [
-                      {
-                        "contents" : [
-                          "KatsdMX"
-                        ],
-                        "noteType" : {
-                          "id" : "general-note",
-                          "label" : "Notes",
-                          "type" : "NoteType"
-                        },
-                        "type" : "Note"
-                      },
                       {
                         "contents" : [
                           "1009JS",
@@ -1495,6 +1484,17 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                         "noteType" : {
                           "id" : "funding-info",
                           "label" : "Funding information",
+                          "type" : "NoteType"
+                        },
+                        "type" : "Note"
+                      },
+                      {
+                        "contents" : [
+                          "KatsdMX"
+                        ],
+                        "noteType" : {
+                          "id" : "general-note",
+                          "label" : "Notes",
                           "type" : "NoteType"
                         },
                         "type" : "Note"
@@ -1528,23 +1528,23 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                       },
                       {
                         "contents" : [
-                          "pneMkt"
-                        ],
-                        "noteType" : {
-                          "id" : "location-of-duplicates",
-                          "label" : "Location of duplicates",
-                          "type" : "NoteType"
-                        },
-                        "type" : "Note"
-                      },
-                      {
-                        "contents" : [
                           "w1YfRQ9an",
                           "5wdlW2gcpt"
                         ],
                         "noteType" : {
                           "id" : "funding-info",
                           "label" : "Funding information",
+                          "type" : "NoteType"
+                        },
+                        "type" : "Note"
+                      },
+                      {
+                        "contents" : [
+                          "pneMkt"
+                        ],
+                        "noteType" : {
+                          "id" : "location-of-duplicates",
+                          "label" : "Location of duplicates",
                           "type" : "NoteType"
                         },
                         "type" : "Note"
@@ -1557,7 +1557,7 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                 "totalPages" : 1,
                 "totalResults" : 3,
                 "type" : "ResultList"
-              } 
+              }
                 """
           }
       }
@@ -1600,23 +1600,23 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
                   },
                   {
                     "contents" : [
-                      "pneMkt"
-                    ],
-                    "noteType" : {
-                      "id" : "location-of-duplicates",
-                      "label" : "Location of duplicates",
-                      "type" : "NoteType"
-                    },
-                    "type" : "Note"
-                  },
-                  {
-                    "contents" : [
                       "w1YfRQ9an",
                       "5wdlW2gcpt"
                     ],
                     "noteType" : {
                       "id" : "funding-info",
                       "label" : "Funding information",
+                      "type" : "NoteType"
+                    },
+                    "type" : "Note"
+                  },
+                  {
+                    "contents" : [
+                      "pneMkt"
+                    ],
+                    "noteType" : {
+                      "id" : "location-of-duplicates",
+                      "label" : "Location of duplicates",
                       "type" : "NoteType"
                     },
                     "type" : "Note"

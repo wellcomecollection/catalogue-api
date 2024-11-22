@@ -1,143 +1,210 @@
 {
   "description": "examples for the aggregation-with-filters tests",
-  "createdAt": "2023-11-21T15:39:34.837730Z",
-  "id": "vuylz3bd",
+  "createdAt": "2024-11-13T08:43:26.581174Z",
+  "id": "fnqpflgg",
   "document": {
     "debug": {
       "source": {
-        "id": "vuylz3bd",
+        "id": "fnqpflgg",
         "identifier": {
           "identifierType": {
-            "id": "miro-image-number"
+            "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "pOSQnJOeXj"
+          "value": "J0y4QwQTlr"
         },
-        "version": 13,
-        "modifiedTime": "1943-07-01T12:05:25Z"
+        "version": 57,
+        "modifiedTime": "1967-06-20T04:44:31Z"
       },
-      "mergedTime": "1943-07-01T12:05:25Z",
+      "mergedTime": "1967-06-20T04:44:31Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "vuylz3bd",
-      "title": "title-IViYo3qvsJ",
-      "alternativeTitles": [],
+      "id": "fnqpflgg",
+      "title": "title-RAV0ZsJywt",
+      "alternativeTitles": [
+      ],
       "workType": {
-        "id": "x",
-        "label": "Manuscripts",
+        "id": "f",
+        "label": "E-videos",
         "type": "Format"
       },
-      "contributors": [],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
             "type": "IdentifierType"
           },
-          "value": "pOSQnJOeXj",
+          "value": "J0y4QwQTlr",
           "type": "Identifier"
         }
       ],
       "subjects": [
         {
-          "label": "IhNdLDgGiV",
+          "label": "hQnFei9OwD",
           "concepts": [
             {
-              "label": "W1mQ40pgbiIgGzg",
+              "label": "HmXSsBa8UqTG3Gu",
               "type": "Concept"
             },
             {
-              "label": "YBChQnFei9OwDHm",
+              "label": "W07LA7wtXxMtg7d",
               "type": "Concept"
             },
             {
-              "label": "XSsBa8UqTG3GuW0",
+              "label": "koPI8hxmCeKjABF",
               "type": "Concept"
             }
           ],
           "type": "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
+      "languages": [
+      ],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "vuylz3bd",
-      "sourceIdentifier.value": "pOSQnJOeXj",
-      "identifiers.value": ["pOSQnJOeXj"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
+      "genres.concepts.label": [
+      ],
+      "id": "fnqpflgg",
+      "sourceIdentifier.value": "J0y4QwQTlr",
+      "identifiers.value": [
+        "J0y4QwQTlr"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
       "subjects.concepts.label": [
-        "W1mQ40pgbiIgGzg",
-        "YBChQnFei9OwDHm",
-        "XSsBa8UqTG3GuW0"
+        "HmXSsBa8UqTG3Gu",
+        "W07LA7wtXxMtg7d",
+        "koPI8hxmCeKjABF"
       ],
-      "title": "title-IViYo3qvsJ"
+      "title": "title-RAV0ZsJywt"
     },
     "aggregatableValues": {
       "workType": [
-        "{\"id\":\"x\",\"label\":\"Manuscripts\",\"type\":\"Format\"}"
+        "{\"id\":\"f\",\"label\":\"E-videos\",\"type\":\"Format\"}"
       ],
-      "genres.label": [],
-      "production.dates": [],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
       "subjects.label": [
-        "{\"label\":\"IhNdLDgGiV\",\"concepts\":[],\"type\":\"Subject\"}"
+        "{\"label\":\"hQnFei9OwD\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "languages": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
-      "format.id": "x",
+      "format.id": "f",
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": ["IhNdLDgGiV"],
-      "contributors.agent.label": [],
-      "identifiers.value": ["pOSQnJOeXj"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+        "hQnFei9OwD"
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "J0y4QwQTlr"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

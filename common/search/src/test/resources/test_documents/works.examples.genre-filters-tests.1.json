@@ -1,42 +1,48 @@
 {
   "description": "examples for the genre tests",
-  "createdAt": "2023-11-21T15:39:35.042124Z",
-  "id": "wdnn2etp",
+  "createdAt": "2024-11-13T08:43:26.602785Z",
+  "id": "yzj9dwdl",
   "document": {
     "debug": {
       "source": {
-        "id": "wdnn2etp",
+        "id": "yzj9dwdl",
         "identifier": {
           "identifierType": {
-            "id": "miro-image-number"
+            "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "hx40zJbSlL"
+          "value": "AYys6jP7Ji"
         },
-        "version": 23,
-        "modifiedTime": "1953-09-20T12:06:56Z"
+        "version": 36,
+        "modifiedTime": "1955-12-24T22:52:57Z"
       },
-      "mergedTime": "1953-09-20T12:06:56Z",
+      "mergedTime": "1955-12-24T22:52:57Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "wdnn2etp",
-      "title": "title-zfssscK3St",
-      "alternativeTitles": [],
-      "contributors": [],
+      "id": "yzj9dwdl",
+      "title": "title-2RdbNpFC2P",
+      "alternativeTitles": [
+      ],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
             "type": "IdentifierType"
           },
-          "value": "hx40zJbSlL",
+          "value": "AYys6jP7Ji",
           "type": "Identifier"
         }
       ],
-      "subjects": [],
+      "subjects": [
+      ],
       "genres": [
         {
           "label": "Pamphlets",
@@ -46,91 +52,157 @@
               "identifiers": [
                 {
                   "identifierType": {
-                    "id": "calm-record-id",
-                    "label": "Calm RecordIdentifier",
+                    "id": "sierra-system-number",
+                    "label": "Sierra system number",
                     "type": "IdentifierType"
                   },
-                  "value": "85YYFFvT9f",
+                  "value": "dmKTFidDls",
                   "type": "Identifier"
                 }
               ],
-              "label": "df4bTPrmWNKiLGp",
+              "label": "9X3cVR8q4GIgcsJ",
               "type": "Genre"
             }
           ],
           "type": "Genre"
         }
       ],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
+      "languages": [
+      ],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": ["df4bTPrmWNKiLGp"],
-      "id": "wdnn2etp",
-      "sourceIdentifier.value": "hx40zJbSlL",
-      "identifiers.value": ["hx40zJbSlL"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
+      "genres.concepts.label": [
+        "9X3cVR8q4GIgcsJ"
+      ],
+      "id": "yzj9dwdl",
+      "sourceIdentifier.value": "AYys6jP7Ji",
+      "identifiers.value": [
+        "AYys6jP7Ji"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
-      "subjects.concepts.label": [],
-      "title": "title-zfssscK3St"
+      "subjects.concepts.label": [
+      ],
+      "title": "title-2RdbNpFC2P"
     },
     "aggregatableValues": {
-      "workType": [],
+      "workType": [
+      ],
       "genres.label": [
         "{\"label\":\"Pamphlets\",\"concepts\":[],\"type\":\"Genre\"}"
       ],
-      "production.dates": [],
-      "subjects.label": [],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "production.dates": [
+      ],
+      "subjects.label": [
+      ],
+      "languages": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": null,
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": ["Pamphlets"],
-      "genres.concepts.id": ["g00dcafe"],
-      "subjects.label": [],
-      "contributors.agent.label": [],
-      "identifiers.value": ["hx40zJbSlL"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+      ],
+      "genres.label": [
+        "Pamphlets"
+      ],
+      "genres.concepts.id": [
+        "g00dcafe"
+      ],
+      "genres.concepts.sourceIdentifier": [
+        "dmKTFidDls"
+      ],
+      "subjects.label": [
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "AYys6jP7Ji"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }
