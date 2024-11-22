@@ -43,10 +43,18 @@ case class SubjectLabelFilter(labels: Seq[String])
     with ImageFilter
     with Pairable
 
+case class SubjectConceptFilter(conceptIds: Seq[String])
+    extends WorkFilter
+    with ImageFilter
+
 case class ContributorsFilter(contributorQueries: Seq[String])
     extends WorkFilter
     with ImageFilter
     with Pairable
+
+case class ContributorsConceptFilter(conceptIds: Seq[String])
+    extends WorkFilter
+    with ImageFilter
 
 case class LicenseFilter(licenseIds: Seq[String])
     extends WorkFilter
