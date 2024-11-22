@@ -108,6 +108,7 @@ class AggregationsTest
             "E-videos",
             "Videos",
             "Archives and manuscripts",
+            "Born-digital archives",
             "Audio",
             "E-journals",
             "Pictures",
@@ -121,7 +122,6 @@ class AggregationsTest
             "Standing order",
             "E-books",
             "Student dissertations",
-            "Manuscripts",
             "Web sites"
           )
         }

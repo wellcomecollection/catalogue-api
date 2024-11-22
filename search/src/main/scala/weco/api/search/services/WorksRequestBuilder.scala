@@ -81,12 +81,12 @@ object WorksRequestBuilder
       .field(s"$nestedFieldPath.id")
       .subAggregations(termsAgg("labels", s"$nestedFieldPath.label").size(1))
 
-//  private def toLabelBasedAggregation(
-//    aggregationName: String,
-//    idFieldPath: String,
-//    size: Int
-//  ) =
-//    TermsAggregation(aggregationName).size(size).field(idFieldPath)
+  private def toLabelBasedAggregation(
+    aggregationName: String,
+    idFieldPath: String,
+    size: Int
+  ) =
+    TermsAggregation(aggregationName).size(size).field(idFieldPath)
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -98,9 +98,9 @@ object WorksRequestBuilder
       toIdBasedAggregation("format", "aggregatableValues.workType", size = 30)
 
     case WorkAggregationRequest.ProductionDate =>
-      toIdBasedAggregation(
+      toLabelBasedAggregation(
         "productionDates",
-        "aggregatableValues.production.dates",
+        "aggregatableValues.production.dates.label",
         size = 10
       ).minDocCount(1)
 

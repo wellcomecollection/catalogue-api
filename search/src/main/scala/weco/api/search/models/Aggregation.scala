@@ -79,7 +79,7 @@ object AggregationMapping {
             firstBucket <- labelBuckets.headOption
           } yield firstBucket
 
-          val key = bucket.key.toString
+          val key = bucket.key.as[String].toOption.get
 
           // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
           val label = firstLabelBucket.map(_.key).getOrElse(key)

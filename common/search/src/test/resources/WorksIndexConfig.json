@@ -94,8 +94,6 @@
         },
         "subjects": {
           "properties": {
-            "label": {
-              "properties": {
                 "id": {
                   "type": "keyword",
                   "eager_global_ordinals": true
@@ -104,9 +102,7 @@
                   "type": "keyword",
                   "eager_global_ordinals": true
                 }
-              }
             }
-          }
         },
         "workType": {
           "properties": {
