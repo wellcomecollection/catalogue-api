@@ -1,7 +1,6 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
-import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
@@ -69,21 +68,11 @@ class AggregationsTest
           Aggregation(
             List(
               AggregationBucket(
-                data = Json.fromFields(
-                  Seq(
-                    ("label", Json.fromString("1960")),
-                    ("type", Json.fromString("Period"))
-                  )
-                ),
+                AggregationBucketData(id = "1960", label = "1960"),
                 count = 2
               ),
               AggregationBucket(
-                data = Json.fromFields(
-                  Seq(
-                    ("label", Json.fromString("1962")),
-                    ("type", Json.fromString("Period"))
-                  )
-                ),
+                AggregationBucketData(id = "1962", label = "1962"),
                 count = 1
               )
             )
@@ -110,7 +99,7 @@ class AggregationsTest
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b => b.data.label) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -154,7 +143,7 @@ class AggregationsTest
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe 7
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b => b.data.label) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",

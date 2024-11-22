@@ -1,11 +1,11 @@
 package weco.api.search.models
 
 import io.circe.generic.extras.JsonKey
-import io.circe.{Error, Json}
+import io.circe.{Json}
 import io.circe.parser._
 import io.circe.optics.JsonPath._
 
-import scala.util.{Success, Try}
+import scala.util.{Try}
 
 // This object maps an aggregation result from Elasticsearch into our
 // Aggregation data type.  The results from ES are of the form:
@@ -24,39 +24,14 @@ import scala.util.{Success, Try}
 //      ...
 //    }
 //
-// If the buckets have a subaggregation named "filtered", then we use the
-// count from there; otherwise we use the count from the root of the bucket.
-//
-// Some results will come wrapped in a global aggregation, they will have the
-// above form inside an unknown key:
-//
-//    {
-//      "doc_count": 123,
-//      "some_name": {
-//        "buckets": [
-//          {
-//            "key": "chi",
-//            "doc_count": 4,
-//            "filtered": {
-//              "doc_count": 3
-//            }
-//          },
-//        ...
-//        ],
-//        ...
-//      },
-//      ...
-//    }
 object AggregationMapping {
   import weco.json.JsonUtil._
-  private case class Result(buckets: Option[Seq[Bucket]])
-
   // We can't predict the key name of the resultant sub-aggregation.
   // This optic says, "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
-  private val globalAggBuckets = root.each.buckets.each.as[Bucket]
+  private val globalAggBuckets = root.each.buckets.each.as[RawAggregationBucket]
   // This optic does the same for buckets within the self aggregation
-  private val selfAggBuckets = root.self.each.buckets.each.as[Bucket]
+  private val selfAggBuckets = root.self.each.buckets.each.as[RawAggregationBucket]
 
   // When we use the self aggregation pattern, buckets are returned
   // in aggregations at multiple depths. This will return
@@ -68,63 +43,56 @@ object AggregationMapping {
   // the main aggregation.
   // If any of the filtered terms are present in the main aggregation, then they will be duplicated
   // in the self buckets, hence the need for distinct.
-  private def bucketsFromAnywhere(json: Json): Seq[Bucket] =
+  private def bucketsFromAnywhere(json: Json): Seq[RawAggregationBucket] =
     (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
 
-  private case class Bucket(
+  private case class LabelBucket(
+    key: String,
+    doc_count: Int
+  )
+
+  private case class RawAggregationBucket(
     key: Json,
-    @JsonKey("doc_count") count: Int,
-    filtered: Option[FilteredResult]
-  ) {
-    def docCount: Int =
-      filtered match {
-        case Some(f) => f.count
-        case None    => count
-      }
-  }
+    @JsonKey("labels") labelSubAggregation: Option[Json],
+    @JsonKey("doc_count") count: Int
+  )
 
-  private case class FilteredResult(@JsonKey("doc_count") count: Int)
-
-  trait AggregationDecoder[T] {
-    def apply(json: Json): Either[Error, T]
-  }
-
-  object AggregationDecoder {
-    implicit val jsonAggregationDecoder: AggregationDecoder[Json] =
-      (json: Json) => json.as[String].flatMap(parse)
-    implicit val stringAggregationDecoder: AggregationDecoder[String] =
-      (json: Json) => json.as[String]
-  }
-
-  def aggregationParser[T: AggregationDecoder](
+  def aggregationParser(
     jsonString: String
-  )(implicit decoder: AggregationDecoder[T]): Try[Aggregation[T]] =
-    fromJson[Result](jsonString)
-      .flatMap {
-        case Result(Some(buckets)) =>
-          Success(buckets)
-        case Result(None) =>
-          parse(jsonString)
-            .map(bucketsFromAnywhere)
-            .toTry
-      }
-      .map { buckets =>
-        buckets.map { b =>
-          (decoder(b.key), b.docCount)
+  ): Try[Aggregation] = {
+    parse(jsonString)
+      .map(bucketsFromAnywhere)
+      .toTry
+      .map(buckets =>
+        buckets.map { bucket =>
+          // Each ID-based aggregation bucket contain a list of label-based sub-aggregation buckets,
+          // storing a list of labels associated with a given ID.
+          val labelBucketsOption = bucket.labelSubAggregation.map(_.hcursor.downField("buckets").as[Seq[LabelBucket]])
+
+          // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
+          // but we only want to expose the most commonly used one to the frontend.
+          val firstLabelBucket: Option[LabelBucket] = for {
+            decoderResult <- labelBucketsOption
+            labelBuckets <- decoderResult.toOption
+            firstBucket <- labelBuckets.headOption
+          } yield firstBucket
+
+          val key = bucket.key.toString
+
+          // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
+          val label = firstLabelBucket.map(_.key).getOrElse(key)
+
+          AggregationBucket(
+            data = AggregationBucketData(id=key, label),
+            count = bucket.count
+          )
         }
-      }
-      .map { tally =>
-        tally.collect {
-          case (Right(t), count) =>
-            AggregationBucket(t, count = count)
-        }
-      }
-      .map { buckets =>
-        Aggregation(
-          buckets.toList
-        )
-      }
+      )
+      .map(buckets => Aggregation(buckets.toList))
+  }
+
 }
 
-case class Aggregation[+T](buckets: List[AggregationBucket[T]])
-case class AggregationBucket[+T](data: T, count: Int)
+case class Aggregation(buckets: List[AggregationBucket])
+case class AggregationBucket(data: AggregationBucketData, count: Int)
+case class AggregationBucketData(id: String, label: String)

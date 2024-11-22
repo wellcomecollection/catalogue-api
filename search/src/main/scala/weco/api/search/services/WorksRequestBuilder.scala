@@ -63,14 +63,30 @@ object WorksRequestBuilder
 
   private def filteredAggregationBuilder(
     filters: List[WorkFilter with Pairable]
-  )(implicit
-    searchOptions: WorkSearchOptions) =
+  )(implicit searchOptions: WorkSearchOptions) =
     new WorkFiltersAndAggregationsBuilder(
       aggregationRequests = searchOptions.aggregations,
       filters = filters,
       requestToAggregation = toAggregation,
       filterToQuery = buildWorkFilterQuery
     )
+
+  private def toIdBasedAggregation(
+    aggregationName: String,
+    nestedFieldPath: String,
+    size: Int
+  ) =
+    TermsAggregation(aggregationName)
+      .size(size)
+      .field(s"$nestedFieldPath.id")
+      .subAggregations(termsAgg("labels", s"$nestedFieldPath.label").size(1))
+
+//  private def toLabelBasedAggregation(
+//    aggregationName: String,
+//    idFieldPath: String,
+//    size: Int
+//  ) =
+//    TermsAggregation(aggregationName).size(size).field(idFieldPath)
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -79,36 +95,31 @@ object WorksRequestBuilder
     // At time of writing (May 2022), we have 23 different formats; I've used
     // 30 here so we have some headroom if we add new formats in future.
     case WorkAggregationRequest.Format =>
-      TermsAggregation("format")
-        .size(30)
-        .field("aggregatableValues.workType")
+      toIdBasedAggregation("format", "aggregatableValues.workType", size = 30)
 
     case WorkAggregationRequest.ProductionDate =>
-      TermsAggregation("productionDates")
-        .field("aggregatableValues.production.dates")
+      toIdBasedAggregation(
+        "productionDates",
+        "aggregatableValues.production.dates",
+        size = 10
+      )
         .minDocCount(1)
 
-    // We don't split genres into concepts, as the data isn't great,
-    // and for rendering isn't useful at the moment.
     case WorkAggregationRequest.Genre =>
-      TermsAggregation("genres")
-        .size(20)
-        .field("aggregatableValues.genres.label")
+      toIdBasedAggregation("genres", "aggregatableValues.genres", size = 20)
 
     case WorkAggregationRequest.Subject =>
-      TermsAggregation("subjects")
-        .size(20)
-        .field("aggregatableValues.subjects.label")
+      toIdBasedAggregation("subjects", "aggregatableValues.subjects", size = 20)
 
     case WorkAggregationRequest.Contributor =>
-      TermsAggregation("contributors")
-        .size(20)
-        .field("aggregatableValues.contributors.agent.label")
+      toIdBasedAggregation(
+        "contributors",
+        "aggregatableValues.contributors.agent",
+        size = 20
+      )
 
     case WorkAggregationRequest.Languages =>
-      TermsAggregation("languages")
-        .size(200)
-        .field("aggregatableValues.languages")
+      toIdBasedAggregation("languages", "aggregatableValues.languages", size = 200)
 
     // Note: we want these aggregations to return every possible value, so we
     // want this to be as many licenses as we support in the catalogue pipeline.
@@ -116,9 +127,11 @@ object WorksRequestBuilder
     // At time of writing (May 2022), we have 11 different licenses; I've used
     // 20 here so we have some headroom if we add new licenses in future.
     case WorkAggregationRequest.License =>
-      TermsAggregation("license")
-        .size(20)
-        .field("aggregatableValues.items.locations.license")
+      toIdBasedAggregation(
+        "license",
+        "aggregatableValues.items.locations.license",
+        size = 20
+      )
 
     // Note: we want these aggregations to return every possible value, so we
     // want this to be as many availabilities as we support in the catalogue pipeline.
@@ -126,17 +139,18 @@ object WorksRequestBuilder
     // At time of writing (May 2022), we have 3 different availabilities; I've used
     // 10 here so we have some headroom if we add new ones in future.
     case WorkAggregationRequest.Availabilities =>
-      TermsAggregation("availabilities")
-        .size(10)
-        .field("aggregatableValues.availabilities")
+      toIdBasedAggregation(
+        "availabilities",
+        "aggregatableValues.availabilities",
+        size = 10
+      )
   }
 
-  private def dateOrder(
-    implicit
-    searchOptions: WorkSearchOptions): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst {
-      case ProductionDateSortRequest =>
-        searchOptions.sortOrder
+  private def dateOrder(implicit
+    searchOptions: WorkSearchOptions
+  ): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
+      searchOptions.sortOrder
     }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =

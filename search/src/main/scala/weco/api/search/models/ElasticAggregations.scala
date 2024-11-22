@@ -4,8 +4,6 @@ import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
   Aggregations => Elastic4sAggregations
 }
 import grizzled.slf4j.Logging
-import io.circe.Json
-import weco.api.search.models.AggregationMapping.AggregationDecoder
 
 import scala.util.Failure
 
@@ -16,13 +14,13 @@ trait ElasticAggregations extends Logging {
   }
 
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
-    def decodeAgg[T: AggregationDecoder](name: String): Option[Aggregation[T]] =
+    def decodeAgg(name: String): Option[Aggregation] = {
       aggregations
         .getAgg(name)
         .flatMap(
-          _.safeTo[Aggregation[T]](
+          _.safeTo[Aggregation](
             (json: String) => {
-              AggregationMapping.aggregationParser[T](json)
+              AggregationMapping.aggregationParser(json)
             }
           ).recoverWith {
             case err =>
@@ -30,8 +28,6 @@ trait ElasticAggregations extends Logging {
               Failure(err)
           }.toOption
         )
-
-    def decodeJsonAgg(name: String): Option[Aggregation[Json]] =
-      decodeAgg[Json](name)
+    }
   }
 }

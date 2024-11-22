@@ -6,7 +6,6 @@ import com.sksamuel.elastic4s.requests.searches.{
   SearchResponse,
   Total
 }
-import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -49,9 +48,15 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     singleAgg.get.format shouldBe Some(
       Aggregation(
         buckets = List(
-          AggregationBucket(data = Json.fromString("apple"), count = 393145),
-          AggregationBucket(data = Json.fromString("banana"), count = 5696),
-          AggregationBucket(data = Json.fromString("coconut"), count = 9)
+          AggregationBucket(
+            AggregationBucketData("123", "apple"),
+            count = 393145
+          ),
+          AggregationBucket(
+            AggregationBucketData("456", "banana"),
+            count = 5696
+          ),
+          AggregationBucket(AggregationBucketData("789", "coconut"), count = 9)
         )
       )
     )
@@ -77,10 +82,15 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           "buckets" -> List(
             Map(
               "key" -> """ "artichoke" """,
-              "doc_count" -> 393145,
-              "filtered" -> Map(
-                "doc_count" -> 1234
-              )
+              "labels" -> Map(
+                "buckets" -> List(
+                  Map(
+                    "key" -> "idid",
+                    "doc_count" -> 23
+                  )
+                )
+              ),
+              "doc_count" -> 393145
             )
           )
         )
@@ -91,7 +101,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       Aggregation(
         buckets = List(
           AggregationBucket(
-            data = Json.fromString("artichoke"),
+            AggregationBucketData("a123", "artichoke"),
             count = 1234
           )
         )
@@ -136,7 +146,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       Aggregation(
         buckets = List(
           AggregationBucket(
-            data = Json.fromString("absinthe"),
+            AggregationBucketData("a456", "absinthe"),
             count = 1234
           )
         )

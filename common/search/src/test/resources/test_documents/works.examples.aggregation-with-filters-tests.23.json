@@ -1,22 +1,22 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2024-11-21T12:05:51.408328Z",
-  "id" : "pgnx8xiu",
+  "description" : "examples for the aggregation-with-filters tests",
+  "createdAt" : "2024-11-21T12:05:51.338988Z",
+  "id" : "y6iujg4j",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "pgnx8xiu",
+        "id" : "y6iujg4j",
         "identifier" : {
           "identifierType" : {
-            "id" : "sierra-system-number"
+            "id" : "calm-record-id"
           },
           "ontologyType" : "Work",
-          "value" : "ahC4keAffG"
+          "value" : "xGjZEnp6i2"
         },
-        "version" : 53,
-        "modifiedTime" : "2044-04-23T02:39:03Z"
+        "version" : 42,
+        "modifiedTime" : "2052-01-06T08:18:52Z"
       },
-      "mergedTime" : "2044-04-23T02:39:03Z",
+      "mergedTime" : "2052-01-06T08:18:52Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ],
@@ -24,13 +24,13 @@
       ]
     },
     "display" : {
-      "id" : "pgnx8xiu",
-      "title" : "rats",
+      "id" : "y6iujg4j",
+      "title" : "title-CRDZnkaHR8",
       "alternativeTitles" : [
       ],
       "workType" : {
-        "id" : "a",
-        "label" : "Books",
+        "id" : "x",
+        "label" : "Manuscripts",
         "type" : "Format"
       },
       "contributors" : [
@@ -38,15 +38,33 @@
       "identifiers" : [
         {
           "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
             "type" : "IdentifierType"
           },
-          "value" : "ahC4keAffG",
+          "value" : "xGjZEnp6i2",
           "type" : "Identifier"
         }
       ],
       "subjects" : [
+        {
+          "label" : "hQnFei9OwD",
+          "concepts" : [
+            {
+              "label" : "HmXSsBa8UqTG3Gu",
+              "type" : "Concept"
+            },
+            {
+              "label" : "W07LA7wtXxMtg7d",
+              "type" : "Concept"
+            },
+            {
+              "label" : "koPI8hxmCeKjABF",
+              "type" : "Concept"
+            }
+          ],
+          "type" : "Subject"
+        }
       ],
       "genres" : [
       ],
@@ -59,11 +77,6 @@
       "production" : [
       ],
       "languages" : [
-        {
-          "id" : "bak",
-          "label" : "Bashkir",
-          "type" : "Language"
-        }
       ],
       "notes" : [
       ],
@@ -94,10 +107,10 @@
       "edition" : null,
       "genres.concepts.label" : [
       ],
-      "id" : "pgnx8xiu",
-      "sourceIdentifier.value" : "ahC4keAffG",
+      "id" : "y6iujg4j",
+      "sourceIdentifier.value" : "xGjZEnp6i2",
       "identifiers.value" : [
-        "ahC4keAffG"
+        "xGjZEnp6i2"
       ],
       "images.id" : [
       ],
@@ -110,7 +123,6 @@
       "items.shelfmark.value" : [
       ],
       "languages.label" : [
-        "Bashkir"
       ],
       "lettering" : null,
       "notes.contents" : [
@@ -122,14 +134,17 @@
       ],
       "referenceNumber" : null,
       "subjects.concepts.label" : [
+        "HmXSsBa8UqTG3Gu",
+        "W07LA7wtXxMtg7d",
+        "koPI8hxmCeKjABF"
       ],
-      "title" : "rats"
+      "title" : "title-CRDZnkaHR8"
     },
     "aggregatableValues" : {
       "workType" : [
         {
-          "id" : "a",
-          "label" : "Books"
+          "id" : "x",
+          "label" : "Manuscripts"
         }
       ],
       "genres" : [
@@ -137,12 +152,12 @@
       "production.dates" : [
       ],
       "subjects" : [
+        {
+          "id" : null,
+          "label" : "hQnFei9OwD"
+        }
       ],
       "languages" : [
-        {
-          "id" : "bak",
-          "label" : "Bashkir"
-        }
       ],
       "contributors.agent" : [
       ],
@@ -152,12 +167,11 @@
       ]
     },
     "filterableValues" : {
-      "format.id" : "a",
+      "format.id" : "x",
       "workType" : "Standard",
       "production.dates.range.from" : [
       ],
       "languages.id" : [
-        "bak"
       ],
       "genres.label" : [
       ],
@@ -166,6 +180,7 @@
       "genres.concepts.sourceIdentifier" : [
       ],
       "subjects.label" : [
+        "hQnFei9OwD"
       ],
       "subjects.concepts.id" : [
       ],
@@ -178,7 +193,7 @@
       "contributors.agent.sourceIdentifier" : [
       ],
       "identifiers.value" : [
-        "ahC4keAffG"
+        "xGjZEnp6i2"
       ],
       "items.locations.license.id" : [
       ],

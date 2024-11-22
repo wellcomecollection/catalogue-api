@@ -1,22 +1,22 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2024-11-21T12:05:51.408328Z",
-  "id" : "pgnx8xiu",
+  "description" : "works with every format",
+  "createdAt" : "2024-11-21T12:05:51.296767Z",
+  "id" : "cgfghm8m",
   "document" : {
     "debug" : {
       "source" : {
-        "id" : "pgnx8xiu",
+        "id" : "cgfghm8m",
         "identifier" : {
           "identifierType" : {
             "id" : "sierra-system-number"
           },
           "ontologyType" : "Work",
-          "value" : "ahC4keAffG"
+          "value" : "mh0pYazvpR"
         },
-        "version" : 53,
-        "modifiedTime" : "2044-04-23T02:39:03Z"
+        "version" : 37,
+        "modifiedTime" : "1945-01-10T19:58:56Z"
       },
-      "mergedTime" : "2044-04-23T02:39:03Z",
+      "mergedTime" : "1945-01-10T19:58:56Z",
       "indexedTime" : "2001-01-01T01:01:01Z",
       "redirectSources" : [
       ],
@@ -24,13 +24,13 @@
       ]
     },
     "display" : {
-      "id" : "pgnx8xiu",
-      "title" : "rats",
+      "id" : "cgfghm8m",
+      "title" : "title-oOAv5vdS0Y",
       "alternativeTitles" : [
       ],
       "workType" : {
-        "id" : "a",
-        "label" : "Books",
+        "id" : "x",
+        "label" : "Manuscripts",
         "type" : "Format"
       },
       "contributors" : [
@@ -42,7 +42,7 @@
             "label" : "Sierra system number",
             "type" : "IdentifierType"
           },
-          "value" : "ahC4keAffG",
+          "value" : "mh0pYazvpR",
           "type" : "Identifier"
         }
       ],
@@ -59,11 +59,6 @@
       "production" : [
       ],
       "languages" : [
-        {
-          "id" : "bak",
-          "label" : "Bashkir",
-          "type" : "Language"
-        }
       ],
       "notes" : [
       ],
@@ -94,10 +89,10 @@
       "edition" : null,
       "genres.concepts.label" : [
       ],
-      "id" : "pgnx8xiu",
-      "sourceIdentifier.value" : "ahC4keAffG",
+      "id" : "cgfghm8m",
+      "sourceIdentifier.value" : "mh0pYazvpR",
       "identifiers.value" : [
-        "ahC4keAffG"
+        "mh0pYazvpR"
       ],
       "images.id" : [
       ],
@@ -110,7 +105,6 @@
       "items.shelfmark.value" : [
       ],
       "languages.label" : [
-        "Bashkir"
       ],
       "lettering" : null,
       "notes.contents" : [
@@ -123,13 +117,13 @@
       "referenceNumber" : null,
       "subjects.concepts.label" : [
       ],
-      "title" : "rats"
+      "title" : "title-oOAv5vdS0Y"
     },
     "aggregatableValues" : {
       "workType" : [
         {
-          "id" : "a",
-          "label" : "Books"
+          "id" : "x",
+          "label" : "Manuscripts"
         }
       ],
       "genres" : [
@@ -139,10 +133,6 @@
       "subjects" : [
       ],
       "languages" : [
-        {
-          "id" : "bak",
-          "label" : "Bashkir"
-        }
       ],
       "contributors.agent" : [
       ],
@@ -152,12 +142,11 @@
       ]
     },
     "filterableValues" : {
-      "format.id" : "a",
+      "format.id" : "x",
       "workType" : "Standard",
       "production.dates.range.from" : [
       ],
       "languages.id" : [
-        "bak"
       ],
       "genres.label" : [
       ],
@@ -178,7 +167,7 @@
       "contributors.agent.sourceIdentifier" : [
       ],
       "identifiers.value" : [
-        "ahC4keAffG"
+        "mh0pYazvpR"
       ],
       "items.locations.license.id" : [
       ],

@@ -1,142 +1,217 @@
 {
-  "description": "examples for the aggregation-with-filters tests",
-  "createdAt": "2023-11-21T15:39:34.824171Z",
-  "id": "4hdjmnto",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "4hdjmnto",
-        "identifier": {
-          "identifierType": {
-            "id": "calm-record-id"
+  "description" : "examples for the aggregation-with-filters tests",
+  "createdAt" : "2024-11-21T12:05:51.337996Z",
+  "id" : "kw3kldau",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "kw3kldau",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "miro-image-number"
           },
-          "ontologyType": "Work",
-          "value": "7ZYKrzxgMS"
+          "ontologyType" : "Work",
+          "value" : "lzYfNgtG1S"
         },
-        "version": 70,
-        "modifiedTime": "1970-06-23T06:21:51Z"
+        "version" : 8,
+        "modifiedTime" : "1959-09-06T22:36:54Z"
       },
-      "mergedTime": "1970-06-23T06:21:51Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "mergedTime" : "1959-09-06T22:36:54Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
+      ],
+      "mergeCandidates" : [
+      ]
     },
-    "display": {
-      "id": "4hdjmnto",
-      "title": "title-weq2UFKJPl",
-      "alternativeTitles": [],
-      "workType": {
-        "id": "s",
-        "label": "E-sound",
-        "type": "Format"
+    "display" : {
+      "id" : "kw3kldau",
+      "title" : "title-4GKNsXvX3N",
+      "alternativeTitles" : [
+      ],
+      "workType" : {
+        "id" : "v",
+        "label" : "E-books",
+        "type" : "Format"
       },
-      "contributors": [],
-      "identifiers": [
+      "contributors" : [
+      ],
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "calm-record-id",
-            "label": "Calm RecordIdentifier",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "miro-image-number",
+            "label" : "Miro image number",
+            "type" : "IdentifierType"
           },
-          "value": "7ZYKrzxgMS",
-          "type": "Identifier"
+          "value" : "lzYfNgtG1S",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
         {
-          "label": "IhNdLDgGiV",
-          "concepts": [
+          "label" : "hQnFei9OwD",
+          "concepts" : [
             {
-              "label": "W1mQ40pgbiIgGzg",
-              "type": "Concept"
+              "label" : "HmXSsBa8UqTG3Gu",
+              "type" : "Concept"
             },
             {
-              "label": "YBChQnFei9OwDHm",
-              "type": "Concept"
+              "label" : "W07LA7wtXxMtg7d",
+              "type" : "Concept"
             },
             {
-              "label": "XSsBa8UqTG3GuW0",
-              "type": "Concept"
+              "label" : "koPI8hxmCeKjABF",
+              "type" : "Concept"
             }
           ],
-          "type": "Subject"
+          "type" : "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
-      "type": "Work"
-    },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [],
-      "id": "4hdjmnto",
-      "sourceIdentifier.value": "7ZYKrzxgMS",
-      "identifiers.value": ["7ZYKrzxgMS"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
-      "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
-      "physicalDescription": null,
-      "production.label": [],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
-        "W1mQ40pgbiIgGzg",
-        "YBChQnFei9OwDHm",
-        "XSsBa8UqTG3GuW0"
+      "genres" : [
       ],
-      "title": "title-weq2UFKJPl"
-    },
-    "aggregatableValues": {
-      "workType": ["{\"id\":\"s\",\"label\":\"E-sound\",\"type\":\"Format\"}"],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [
-        "{\"label\":\"IhNdLDgGiV\",\"concepts\":[],\"type\":\"Subject\"}"
+      "items" : [
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "holdings" : [
+      ],
+      "availabilities" : [
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "formerFrequency" : [
+      ],
+      "designation" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
     },
-    "filterableValues": {
-      "format.id": "s",
-      "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": ["IhNdLDgGiV"],
-      "contributors.agent.label": [],
-      "identifiers.value": ["7ZYKrzxgMS"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
+      ],
+      "id" : "kw3kldau",
+      "sourceIdentifier.value" : "lzYfNgtG1S",
+      "identifiers.value" : [
+        "lzYfNgtG1S"
+      ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.shelfmark.value" : [
+      ],
+      "languages.label" : [
+      ],
+      "lettering" : null,
+      "notes.contents" : [
+      ],
+      "partOf.title" : [
+      ],
+      "physicalDescription" : null,
+      "production.label" : [
+      ],
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
+        "HmXSsBa8UqTG3Gu",
+        "W07LA7wtXxMtg7d",
+        "koPI8hxmCeKjABF"
+      ],
+      "title" : "title-4GKNsXvX3N"
     },
-    "type": "Visible"
+    "aggregatableValues" : {
+      "workType" : [
+        {
+          "id" : "v",
+          "label" : "E-books"
+        }
+      ],
+      "genres" : [
+      ],
+      "production.dates" : [
+      ],
+      "subjects" : [
+        {
+          "id" : null,
+          "label" : "hQnFei9OwD"
+        }
+      ],
+      "languages" : [
+      ],
+      "contributors.agent" : [
+      ],
+      "items.locations.license" : [
+      ],
+      "availabilities" : [
+      ]
+    },
+    "filterableValues" : {
+      "format.id" : "v",
+      "workType" : "Standard",
+      "production.dates.range.from" : [
+      ],
+      "languages.id" : [
+      ],
+      "genres.label" : [
+      ],
+      "genres.concepts.id" : [
+      ],
+      "genres.concepts.sourceIdentifier" : [
+      ],
+      "subjects.label" : [
+        "hQnFei9OwD"
+      ],
+      "subjects.concepts.id" : [
+      ],
+      "subjects.concepts.sourceIdentifier" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "contributors.agent.id" : [
+      ],
+      "contributors.agent.sourceIdentifier" : [
+      ],
+      "identifiers.value" : [
+        "lzYfNgtG1S"
+      ],
+      "items.locations.license.id" : [
+      ],
+      "items.locations.accessConditions.status.id" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.locations.locationType.id" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+      ]
+    },
+    "type" : "Visible"
   }
 }

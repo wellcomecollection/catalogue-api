@@ -1,41 +1,27 @@
 package weco.api.search.models.display
 
-import io.circe.Json
-import weco.api.search.models.{
-  AvailabilitiesFilter,
-  ContributorsFilter,
-  DocumentFilter,
-  FormatFilter,
-  GenreFilter,
-  LanguagesFilter,
-  LicenseFilter,
-  SubjectLabelFilter
-}
+import weco.api.search.models.{AggregationBucket, AvailabilitiesFilter, ContributorsFilter, DocumentFilter, FormatFilter, GenreFilter, LanguagesFilter, LicenseFilter, SubjectLabelFilter}
 
 trait FilterAggregationMatcher {
-  def matchBucket(bucketData: Json): Boolean
+  def matchBucket(bucketData: AggregationBucket): Boolean
 }
 
 case class AggregationDataLabelInFilter(labels: Seq[String])
     extends FilterAggregationMatcher {
-  def matchBucket(bucketData: Json): Boolean =
-    bucketData.hcursor.get[String]("label") match {
-      case Right(value) => labels.contains(value)
-      case _            => false
-    }
+  def matchBucket(bucket: AggregationBucket): Boolean = {
+    labels.contains(bucket.data.label)
+  }
 }
 
 case class AggregationDataIdInFilter(labels: Seq[String])
     extends FilterAggregationMatcher {
-  def matchBucket(bucketData: Json): Boolean =
-    bucketData.hcursor.get[String]("id") match {
-      case Right(value) => labels.contains(value)
-      case _            => false
-    }
+  def matchBucket(bucket: AggregationBucket): Boolean =
+    labels.contains(bucket.data.id)
+
 }
 
 case class NeverAggregationMatcher() extends FilterAggregationMatcher {
-  def matchBucket(bucketData: Json): Boolean =
+  def matchBucket(bucket: AggregationBucket): Boolean =
     false
 }
 
@@ -54,10 +40,10 @@ class FilterBucketMatcher(
 
   def matchBucket(
     aggregationType: FilterWithMatchingAggregation
-  )(bucketData: Json): Boolean =
+  )(bucket: AggregationBucket): Boolean =
     filters
       .getOrElse(aggregationType, NeverAggregationMatcher())
-      .matchBucket(bucketData)
+      .matchBucket(bucket)
 }
 
 object FilterBucketMatcher {

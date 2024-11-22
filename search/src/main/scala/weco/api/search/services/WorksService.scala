@@ -60,12 +60,12 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
       case Right(resp) =>
         Right(
           resp.aggregations
-            .decodeAgg[String]("work_type")
+            .decodeAgg("work_type")
             .get
             .buckets
             .map {
               case AggregationBucket(data, count) =>
-                data -> count
+                data.id -> count
             }
             .toMap
         )

@@ -46,14 +46,6 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
     filter: Filter with Pairable
   ): List[AggregationRequest]
 
-  // Ensure that characters like parentheses can still be returned by the self aggregation, escape any
-  // regex tokens that might appear in filter terms.
-  // (as present in some labels, e.g. /concepts/gafuyqgp: "Nicholson, Michael C. (Michael Christopher), 1962-"
-  // Any regex tokens that are enabled by default in ES must be escaped.
-  // https://www.elastic.co/guide/en/elasticsearch/reference/current/regexp-syntax.html#_valid_values
-  private def escapeRegexTokens(term: String): String =
-    term.replaceAll("""([.?+*|{}<>&@\[\]()\\"])""", "\\\\$1")
-
   /**
     * An aggregation that will contain the filtered-upon value even
     * if no documents in the aggregation context match it.
@@ -66,28 +58,12 @@ trait FiltersAndAggregationsBuilder[Filter, AggregationRequest] {
       case terms: TermsAggregation =>
         filterQuery match {
           case TermsQuery(_, values, _, _, _, _, _) =>
-            //Aggregable values are a JSON object encoded as a string
-            // Filter terms correspond to a property of this JSON
-            // object (normally id or label).
-            // In order to ensure that this aggregation only matches
-            // the whole value in question, it is enclosed in
-            // escaped quotes.
-            // This is not perfect, but should be sufficient.
-            // If (e.g.) this filter operates
-            // on id and there is a label for a different value
-            // that exactly matches it, then both will be returned.
-            // This is an unlikely scenario, and will still result
-            // in the desired value being returned.
-            val filterTerm = s"""\\"(${values
-              .map(value => escapeRegexTokens(value.toString))
-              .mkString("|")})\\""""
-
             // The aggregation context may be excluding all documents
             // that match this filter term. Setting minDocCount to 0
             // allows the term in question to be returned.
             terms
               .minDocCount(0)
-              .includeRegex(s".*($filterTerm).*")
+              .includeExactValues(values.map(value => value.toString).toSeq)
           case _ =>
             throw new NotImplementedError(
               "Only aggregations paired with terms filters have been implemented as paired aggregations"
