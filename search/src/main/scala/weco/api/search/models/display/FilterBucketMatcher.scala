@@ -1,6 +1,16 @@
 package weco.api.search.models.display
 
-import weco.api.search.models.{AggregationBucket, AvailabilitiesFilter, ContributorsFilter, DocumentFilter, FormatFilter, GenreFilter, LanguagesFilter, LicenseFilter, SubjectLabelFilter}
+import weco.api.search.models.{
+  AggregationBucket,
+  AvailabilitiesFilter,
+  ContributorsFilter,
+  DocumentFilter,
+  FormatFilter,
+  GenreFilter,
+  LanguagesFilter,
+  LicenseFilter,
+  SubjectLabelFilter
+}
 
 trait FilterAggregationMatcher {
   def matchBucket(bucketData: AggregationBucket): Boolean
@@ -8,9 +18,8 @@ trait FilterAggregationMatcher {
 
 case class AggregationDataLabelInFilter(labels: Seq[String])
     extends FilterAggregationMatcher {
-  def matchBucket(bucket: AggregationBucket): Boolean = {
+  def matchBucket(bucket: AggregationBucket): Boolean =
     labels.contains(bucket.data.label)
-  }
 }
 
 case class AggregationDataIdInFilter(labels: Seq[String])

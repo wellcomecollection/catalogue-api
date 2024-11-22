@@ -25,8 +25,7 @@ object WorkAggregations extends ElasticAggregations {
           languages = e4sAggregations.decodeAgg("languages"),
           subjectsLabel = e4sAggregations.decodeAgg("subjects"),
           // TODO decode only agents here once `contributors` is removed
-          contributorsAgentsLabel =
-            e4sAggregations.decodeAgg("contributors"),
+          contributorsAgentsLabel = e4sAggregations.decodeAgg("contributors"),
           itemsLocationsLicense = e4sAggregations.decodeAgg("license"),
           availabilities = e4sAggregations.decodeAgg("availabilities")
         )

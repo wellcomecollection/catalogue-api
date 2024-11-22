@@ -102,8 +102,7 @@ object WorksRequestBuilder
         "productionDates",
         "aggregatableValues.production.dates",
         size = 10
-      )
-        .minDocCount(1)
+      ).minDocCount(1)
 
     case WorkAggregationRequest.Genre =>
       toIdBasedAggregation("genres", "aggregatableValues.genres", size = 20)
@@ -119,7 +118,10 @@ object WorksRequestBuilder
       )
 
     case WorkAggregationRequest.Languages =>
-      toIdBasedAggregation("languages", "aggregatableValues.languages", size = 200)
+      toIdBasedAggregation(
+        "languages",
+        "aggregatableValues.languages",
+        size = 200)
 
     // Note: we want these aggregations to return every possible value, so we
     // want this to be as many licenses as we support in the catalogue pipeline.
@@ -146,11 +148,12 @@ object WorksRequestBuilder
       )
   }
 
-  private def dateOrder(implicit
-    searchOptions: WorkSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   private def buildWorkFilterQuery(filters: Seq[WorkFilter]): Seq[Query] =

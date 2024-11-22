@@ -31,7 +31,8 @@ object AggregationMapping {
   // the value of that field as an array of Buckets"
   private val globalAggBuckets = root.each.buckets.each.as[RawAggregationBucket]
   // This optic does the same for buckets within the self aggregation
-  private val selfAggBuckets = root.self.each.buckets.each.as[RawAggregationBucket]
+  private val selfAggBuckets =
+    root.self.each.buckets.each.as[RawAggregationBucket]
 
   // When we use the self aggregation pattern, buckets are returned
   // in aggregations at multiple depths. This will return
@@ -59,7 +60,7 @@ object AggregationMapping {
 
   def aggregationParser(
     jsonString: String
-  ): Try[Aggregation] = {
+  ): Try[Aggregation] =
     parse(jsonString)
       .map(bucketsFromAnywhere)
       .toTry
@@ -67,7 +68,8 @@ object AggregationMapping {
         buckets.map { bucket =>
           // Each ID-based aggregation bucket contain a list of label-based sub-aggregation buckets,
           // storing a list of labels associated with a given ID.
-          val labelBucketsOption = bucket.labelSubAggregation.map(_.hcursor.downField("buckets").as[Seq[LabelBucket]])
+          val labelBucketsOption = bucket.labelSubAggregation.map(
+            _.hcursor.downField("buckets").as[Seq[LabelBucket]])
 
           // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
           // but we only want to expose the most commonly used one to the frontend.
@@ -83,13 +85,11 @@ object AggregationMapping {
           val label = firstLabelBucket.map(_.key).getOrElse(key)
 
           AggregationBucket(
-            data = AggregationBucketData(id=key, label),
+            data = AggregationBucketData(id = key, label),
             count = bucket.count
           )
-        }
-      )
+      })
       .map(buckets => Aggregation(buckets.toList))
-  }
 
 }
 

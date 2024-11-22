@@ -1,7 +1,11 @@
 package weco.api.search.models.display
 
 import io.circe.generic.extras.JsonKey
-import weco.api.search.models.{Aggregation, AggregationBucket, AggregationBucketData}
+import weco.api.search.models.{
+  Aggregation,
+  AggregationBucket,
+  AggregationBucketData
+}
 
 case class DisplayAggregation(
   buckets: List[DisplayAggregationBucket],
