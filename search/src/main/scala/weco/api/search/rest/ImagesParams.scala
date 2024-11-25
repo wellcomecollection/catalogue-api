@@ -46,9 +46,11 @@ case class MultipleImagesParams(
   query: Option[String],
   license: Option[LicenseFilter],
   `source.contributors.agent.label`: Option[ContributorsFilter],
+  `source.contributors.concepts`: Option[ContributorsConceptFilter],
   `source.genres.label`: Option[GenreFilter],
   `source.genres.concepts`: Option[GenreConceptFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
+  `source.subjects.concepts`: Option[SubjectConceptFilter],
   `source.production.dates.from`: Option[LocalDate],
   `source.production.dates.to`: Option[LocalDate],
   color: Option[RgbColor],
@@ -73,9 +75,11 @@ case class MultipleImagesParams(
     List(
       license,
       `source.contributors.agent.label`,
+      `source.contributors.concepts`,
       `source.genres.label`,
       `source.genres.concepts`,
       `source.subjects.label`,
+      `source.subjects.concepts`,
       dateFilter
     ).flatten
 
@@ -98,9 +102,11 @@ object MultipleImagesParams extends QueryParamsUtils {
       "query".as[String].?,
       "locations.license".as[LicenseFilter].?,
       "source.contributors.agent.label".as[ContributorsFilter].?,
+      "source.contributors.concepts".as[ContributorsConceptFilter].?,
       "source.genres.label".as[GenreFilter].?,
       "source.genres.concepts".as[GenreConceptFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,
+      "source.subjects.concepts".as[SubjectConceptFilter].?,
       "source.production.dates.from".as[LocalDate].?,
       "source.production.dates.to".as[LocalDate].?,
       "color".as[RgbColor].?,

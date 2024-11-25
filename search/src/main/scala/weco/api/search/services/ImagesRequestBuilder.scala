@@ -4,11 +4,7 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.aggs.TermsAggregation
-import com.sksamuel.elastic4s.requests.searches.queries.{
-  NoopQuery,
-  Query,
-  RangeQuery
-}
+import com.sksamuel.elastic4s.requests.searches.queries.{Query, RangeQuery}
 import com.sksamuel.elastic4s.requests.searches.sort._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
@@ -54,10 +50,10 @@ class ImagesRequestBuilder()
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.reducedFeatures"),
           aggs = filteredAggregationBuilder(pairables).filteredAggregations,
-          preFilter = buildImageFilterQuery(unpairables),
+          preFilter = unpairables.collect(buildImageFilterQuery),
           postFilter = Some(
             must(
-              buildImageFilterQuery(searchOptions.filters)
+              searchOptions.filters.collect(buildImageFilterQuery)
             )
           ),
           knn = searchOptions.color.map(ColorQuery(_))
@@ -112,38 +108,52 @@ class ImagesRequestBuilder()
         searchOptions.sortOrder
     }
 
-  private def buildImageFilterQuery(filter: ImageFilter): Query =
-    filter match {
-      case LicenseFilter(licenseIds) =>
-        termsQuery(
-          field = "filterableValues.locations.license.id",
-          values = licenseIds
-        )
-      case ContributorsFilter(contributorQueries) =>
-        termsQuery(
-          "filterableValues.source.contributors.agent.label",
-          contributorQueries
-        )
-      case GenreFilter(genreLabels) =>
-        termsQuery("filterableValues.source.genres.label", genreLabels)
-      case GenreConceptFilter(conceptIds) =>
-        if (conceptIds.isEmpty) NoopQuery
-        else
-          termsQuery("filterableValues.source.genres.concepts.id", conceptIds)
-      case SubjectLabelFilter(subjectLabels) =>
-        termsQuery("filterableValues.source.subjects.label", subjectLabels)
-      case DateRangeFilter(fromDate, toDate) =>
-        val (gte, lte) =
-          (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
-        RangeQuery(
-          "filterableValues.source.production.dates.range.from",
-          lte = lte,
-          gte = gte
-        )
-    }
+  private val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {
+    case LicenseFilter(licenseIds) =>
+      termsQuery(
+        field = "filterableValues.locations.license.id",
+        values = licenseIds
+      )
+    case ContributorsFilter(contributorQueries) =>
+      termsQuery(
+        "filterableValues.source.contributors.agent.label",
+        contributorQueries
+      )
+    case ContributorsConceptFilter(conceptIds) =>
+      termsQuery(
+        "filterableValues.source.contributors.agent.id",
+        conceptIds
+      )
+    case GenreFilter(genreLabels) =>
+      termsQuery(
+        "filterableValues.source.genres.label",
+        genreLabels
+      )
+    case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+      termsQuery(
+        "filterableValues.source.genres.concepts.id",
+        conceptIds
+      )
+    case SubjectLabelFilter(subjectLabels) =>
+      termsQuery(
+        "filterableValues.source.subjects.label",
+        subjectLabels
+      )
+    case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+      termsQuery(
+        "filterableValues.source.subjects.concepts.id",
+        conceptIds
+      )
+    case DateRangeFilter(fromDate, toDate) =>
+      val (gte, lte) =
+        (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
 
-  private def buildImageFilterQuery(filters: Seq[ImageFilter]): Seq[Query] =
-    filters.map(buildImageFilterQuery) filter (_ != NoopQuery)
+      RangeQuery(
+        "filterableValues.source.production.dates.range.from",
+        lte = lte,
+        gte = gte
+      )
+  }
 
   def requestWithSimilarFeatures
     : (Index, String, IndexedImage, Int, Double) => SearchRequest =
