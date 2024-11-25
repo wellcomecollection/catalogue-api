@@ -25,44 +25,50 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "doc_count_error_upper_bound" -> 0,
-          "sum_other_doc_count" -> 0,
-          "buckets" -> List(
-            Map(
-              "key" -> """ "apple" """,
-              "doc_count" -> 393145
-            ),
-            Map(
-              "key" -> """ "banana" """,
-              "doc_count" -> 5696
-            ),
-            Map(
-              "key" -> """ "coconut" """,
-              "doc_count" -> 9
+          "format" -> Map(
+            "doc_count_error_upper_bound" -> 0,
+            "sum_other_doc_count" -> 0,
+            "buckets" -> List(
+              Map(
+                "key" -> "apple",
+                "doc_count" -> 393145
+              ),
+              Map(
+                "key" -> "banana",
+                "doc_count" -> 5696
+              ),
+              Map(
+                "key" -> "coconut",
+                "doc_count" -> 9
+              )
             )
           )
         )
       )
     )
+    println(searchResponse)
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
       Aggregation(
         buckets = List(
           AggregationBucket(
-            AggregationBucketData("123", "apple"),
+            AggregationBucketData("apple", "apple"),
             count = 393145
           ),
           AggregationBucket(
-            AggregationBucketData("456", "banana"),
+            AggregationBucketData("banana", "banana"),
             count = 5696
           ),
-          AggregationBucket(AggregationBucketData("789", "coconut"), count = 9)
+          AggregationBucket(
+            AggregationBucketData("coconut", "coconut"),
+            count = 9
+          )
         )
       )
     )
   }
 
-  it("uses the filtered count for aggregations with a filter subaggregation") {
+  it("populates AggregationBucketData with the same label and ID if no nested 'labels' bucket provided") {
     val searchResponse = SearchResponse(
       took = 1234,
       isTimedOut = false,
@@ -77,20 +83,14 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "doc_count_error_upper_bound" -> 0,
-          "sum_other_doc_count" -> 0,
-          "buckets" -> List(
-            Map(
-              "key" -> """ "artichoke" """,
-              "labels" -> Map(
-                "buckets" -> List(
-                  Map(
-                    "key" -> "idid",
-                    "doc_count" -> 23
-                  )
-                )
-              ),
-              "doc_count" -> 393145
+          "format" -> Map(
+            "doc_count_error_upper_bound" -> 0,
+            "sum_other_doc_count" -> 0,
+            "buckets" -> List(
+              Map(
+                "key" -> "artichoke",
+                "doc_count" -> 393145
+              )
             )
           )
         )
@@ -101,15 +101,15 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       Aggregation(
         buckets = List(
           AggregationBucket(
-            AggregationBucketData("a123", "artichoke"),
-            count = 1234
+            AggregationBucketData("artichoke", "artichoke"),
+            count = 393145
           )
         )
       )
     )
   }
 
-  it("uses the buckets from the global aggregation when present") {
+  it("correctly populates AggregationBucketData with IDs and labels if a nested 'labels' bucket is provided for each ID") {
     val searchResponse = SearchResponse(
       took = 1234,
       isTimedOut = false,
@@ -130,13 +130,30 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
             "sum_other_doc_count" -> 0,
             "buckets" -> List(
               Map(
-                "key" -> """ "absinthe" """,
+                "key" -> "123",
                 "doc_count" -> 393145,
-                "filtered" -> Map(
-                  "doc_count" -> 1234
+                "labels" -> Map(
+                  "buckets" -> List(
+                    Map(
+                      "key" -> "absinthe",
+                      "doc_count" -> 393145
+                    )
+                  )
+                )
+              ),
+              Map(
+                "key" -> "456",
+                "doc_count" -> 34,
+                "labels" -> Map(
+                  "buckets" -> List(
+                    Map(
+                      "key" -> "apple",
+                      "doc_count" -> 34
+                    )
+                  )
                 )
               )
-            )
+            ),
           )
         )
       )
@@ -146,8 +163,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       Aggregation(
         buckets = List(
           AggregationBucket(
-            AggregationBucketData("a456", "absinthe"),
-            count = 1234
+            AggregationBucketData("123", "absinthe"),
+            count = 393145
           )
         )
       )
