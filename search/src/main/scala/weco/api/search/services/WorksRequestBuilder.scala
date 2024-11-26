@@ -72,7 +72,6 @@ object WorksRequestBuilder
       filterToQuery = buildWorkFilterQuery
     )
 
-
   /** Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
     * are `id`-based, with a `label`-based sub-aggregation to get Elasticsearch to return all `label` values associated
     * with each `id` bucket. (Usually each `id` value only has one one `label` value associated with it, but not always.
