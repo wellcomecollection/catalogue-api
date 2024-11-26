@@ -99,8 +99,7 @@ class WorksFilteredAggregationsTest
                       "count" : 3,
                       "data" : {
                         "id" : "bak",
-                        "label" : "Bashkir",
-                        "type" : "Language"
+                        "label" : "Bashkir"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -108,8 +107,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "mar",
-                        "label" : "Marathi",
-                        "type" : "Language"
+                        "label" : "Marathi"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -122,8 +120,7 @@ class WorksFilteredAggregationsTest
                       "count" : 4,
                       "data" : {
                         "id" : "a",
-                        "label" : "Books",
-                        "type" : "Format"
+                        "label" : "Books"
                       },
                       "type" : "AggregationBucket"
                     },
