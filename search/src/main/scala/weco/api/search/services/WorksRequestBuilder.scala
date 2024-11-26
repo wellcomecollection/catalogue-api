@@ -72,12 +72,12 @@ object WorksRequestBuilder
       filterToQuery = buildWorkFilterQuery
     )
 
-  /**
-   * Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
-   * are `id`-based, with a `label`-based sub-aggregation to get Elasticsearch to return all `label` values associated
-   * with each `id` bucket. (Usually each `id` value only has one one `label` value associated with it, but not always.
-   * For example, different Works can use different labels for a given LoC Subject Heading.)
-   */
+
+  /** Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
+    * are `id`-based, with a `label`-based sub-aggregation to get Elasticsearch to return all `label` values associated
+    * with each `id` bucket. (Usually each `id` value only has one one `label` value associated with it, but not always.
+    * For example, different Works can use different labels for a given LoC Subject Heading.)
+    */
   private def toIdBasedAggregation(
     aggregationName: String,
     nestedFieldPath: String,
@@ -88,7 +88,9 @@ object WorksRequestBuilder
       .field(s"$nestedFieldPath.id")
       .subAggregations(termsAgg("labels", s"$nestedFieldPath.label").size(1))
 
-  @deprecated("This method is included for backward compatibility reasons and will be removed soon.", "25-10-2024")
+//   @deprecated(
+//    "This method is included for backward compatibility reasons and will be removed soon.",
+//    "25-10-2024")
   private def toLegacyAggregation(
     aggregationName: String,
     aggregatedFieldPath: String,
@@ -129,7 +131,8 @@ object WorksRequestBuilder
       toIdBasedAggregation(
         "languages",
         "aggregatableValues.languages",
-        size = 200)
+        size = 200
+      )
 
     // Note: we want these aggregations to return every possible value, so we
     // want this to be as many licenses as we support in the catalogue pipeline.
@@ -156,12 +159,11 @@ object WorksRequestBuilder
       )
   }
 
-  private def dateOrder(
-    implicit
-    searchOptions: WorkSearchOptions): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst {
-      case ProductionDateSortRequest =>
-        searchOptions.sortOrder
+  private def dateOrder(implicit
+    searchOptions: WorkSearchOptions
+  ): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
+      searchOptions.sortOrder
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
