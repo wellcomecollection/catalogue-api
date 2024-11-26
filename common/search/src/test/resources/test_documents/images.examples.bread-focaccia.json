@@ -1,147 +1,147 @@
 {
-  "description": "an example of images with work metadata for the API tests",
-  "createdAt": "2024-11-14T14:37:56.532694Z",
-  "id": "a0jqzjtw",
-  "document": {
-    "modifiedTime": "1958-01-12T23:10:27Z",
-    "display": {
-      "id": "a0jqzjtw",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "an example of images with work metadata for the API tests",
+  "createdAt" : "2024-11-25T15:14:41.239069Z",
+  "id" : "a0jqzjtw",
+  "document" : {
+    "modifiedTime" : "1958-01-12T23:10:27Z",
+    "display" : {
+      "id" : "a0jqzjtw",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/HIR.jpg/info.json",
-        "credit": "Credit line: oF56Pxe",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/HIR.jpg/info.json",
+        "credit" : "Credit line: oF56Pxe",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/HIR.jpg/info.json",
-          "credit": "Credit line: oF56Pxe",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/HIR.jpg/info.json",
+          "credit" : "Credit line: oF56Pxe",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#BC1300",
-      "source": {
-        "id": "0nicager",
-        "title": "A Ligurian style of bread, Focaccia is a flat Italian bread",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#BC1300",
+      "source" : {
+        "id" : "0nicager",
+        "title" : "A Ligurian style of bread, Focaccia is a flat Italian bread",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
         ],
-        "subjects": [
+        "subjects" : [
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "a0jqzjtw",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "a0jqzjtw",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
         ],
-        "id": "0nicager",
-        "sourceIdentifier.value": "o97hEiMpb7",
-        "identifiers.value": [
+        "id" : "0nicager",
+        "sourceIdentifier.value" : "o97hEiMpb7",
+        "identifiers.value" : [
           "o97hEiMpb7"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "A Ligurian style of bread, Focaccia is a flat Italian bread"
+        "title" : "A Ligurian style of bread, Focaccia is a flat Italian bread"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
+      "source.genres" : [
       ],
-      "source.subjects.label": [
+      "source.subjects" : [
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         0.0013886964,
         0.011064052,
         -0.009729621,
@@ -4239,7 +4239,7 @@
         -0.0056894612,
         0.01828093
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         0.06807296,
         0.040722467,
         -0.03441322,
@@ -5242,8 +5242,8 @@
         0.006234683
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

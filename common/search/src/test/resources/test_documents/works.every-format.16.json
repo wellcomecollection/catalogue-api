@@ -1,188 +1,191 @@
 {
-  "description": "works with every format",
-  "createdAt": "2024-11-13T08:43:26.534887Z",
-  "id": "4blsy3iy",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "4blsy3iy",
-        "identifier": {
-          "identifierType": {
-            "id": "calm-record-id"
+  "description" : "works with every format",
+  "createdAt" : "2024-11-25T15:15:12.383095Z",
+  "id" : "4blsy3iy",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "4blsy3iy",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "calm-record-id"
           },
-          "ontologyType": "Work",
-          "value": "CwPK521Yf5"
+          "ontologyType" : "Work",
+          "value" : "CwPK521Yf5"
         },
-        "version": 80,
-        "modifiedTime": "1989-12-01T18:27:04Z"
+        "version" : 80,
+        "modifiedTime" : "1989-12-01T18:27:04Z"
       },
-      "mergedTime": "1989-12-01T18:27:04Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": [
+      "mergedTime" : "1989-12-01T18:27:04Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
       ],
-      "mergeCandidates": [
+      "mergeCandidates" : [
       ]
     },
-    "display": {
-      "id": "4blsy3iy",
-      "title": "title-rQHICakdbo",
-      "alternativeTitles": [
+    "display" : {
+      "id" : "4blsy3iy",
+      "title" : "title-rQHICakdbo",
+      "alternativeTitles" : [
       ],
-      "workType": {
-        "id": "c",
-        "label": "Music",
-        "type": "Format"
+      "workType" : {
+        "id" : "c",
+        "label" : "Music",
+        "type" : "Format"
       },
-      "contributors": [
+      "contributors" : [
       ],
-      "identifiers": [
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "calm-record-id",
-            "label": "Calm RecordIdentifier",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
+            "type" : "IdentifierType"
           },
-          "value": "CwPK521Yf5",
-          "type": "Identifier"
+          "value" : "CwPK521Yf5",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
       ],
-      "genres": [
+      "genres" : [
       ],
-      "items": [
+      "items" : [
       ],
-      "holdings": [
+      "holdings" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ],
-      "production": [
+      "production" : [
       ],
-      "languages": [
+      "languages" : [
       ],
-      "notes": [
+      "notes" : [
       ],
-      "formerFrequency": [
+      "formerFrequency" : [
       ],
-      "designation": [
+      "designation" : [
       ],
-      "images": [
+      "images" : [
       ],
-      "parts": [
+      "parts" : [
       ],
-      "partOf": [
+      "partOf" : [
       ],
-      "precededBy": [
+      "precededBy" : [
       ],
-      "succeededBy": [
+      "succeededBy" : [
       ],
-      "type": "Work"
+      "type" : "Work"
     },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
       ],
-      "id": "4blsy3iy",
-      "sourceIdentifier.value": "CwPK521Yf5",
-      "identifiers.value": [
+      "id" : "4blsy3iy",
+      "sourceIdentifier.value" : "CwPK521Yf5",
+      "identifiers.value" : [
         "CwPK521Yf5"
       ],
-      "images.id": [
+      "images.id" : [
       ],
-      "images.identifiers.value": [
+      "images.identifiers.value" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.shelfmark.value": [
+      "items.shelfmark.value" : [
       ],
-      "languages.label": [
+      "languages.label" : [
       ],
-      "lettering": null,
-      "notes.contents": [
+      "lettering" : null,
+      "notes.contents" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "physicalDescription": null,
-      "production.label": [
+      "physicalDescription" : null,
+      "production.label" : [
       ],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
       ],
-      "title": "title-rQHICakdbo"
+      "title" : "title-rQHICakdbo"
     },
-    "aggregatableValues": {
-      "workType": [
-        "{\"id\":\"c\",\"label\":\"Music\",\"type\":\"Format\"}"
+    "aggregatableValues" : {
+      "workType" : [
+        {
+          "id" : "c",
+          "label" : "Music"
+        }
       ],
-      "genres.label": [
+      "genres" : [
       ],
-      "production.dates": [
+      "production.dates" : [
       ],
-      "subjects.label": [
+      "subjects" : [
       ],
-      "languages": [
+      "languages" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent" : [
       ],
-      "items.locations.license": [
+      "items.locations.license" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ]
     },
-    "filterableValues": {
-      "format.id": "c",
-      "workType": "Standard",
-      "production.dates.range.from": [
+    "filterableValues" : {
+      "format.id" : "c",
+      "workType" : "Standard",
+      "production.dates.range.from" : [
       ],
-      "languages.id": [
+      "languages.id" : [
       ],
-      "genres.label": [
+      "genres.label" : [
       ],
-      "genres.concepts.id": [
+      "genres.concepts.id" : [
       ],
-      "genres.concepts.sourceIdentifier": [
+      "genres.concepts.sourceIdentifier" : [
       ],
-      "subjects.label": [
+      "subjects.label" : [
       ],
-      "subjects.concepts.id": [
+      "subjects.concepts.id" : [
       ],
-      "subjects.concepts.sourceIdentifier": [
+      "subjects.concepts.sourceIdentifier" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "contributors.agent.id": [
+      "contributors.agent.id" : [
       ],
-      "contributors.agent.sourceIdentifier": [
+      "contributors.agent.sourceIdentifier" : [
       ],
-      "identifiers.value": [
+      "identifiers.value" : [
         "CwPK521Yf5"
       ],
-      "items.locations.license.id": [
+      "items.locations.license.id" : [
       ],
-      "items.locations.accessConditions.status.id": [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.locations.locationType.id": [
+      "items.locations.locationType.id" : [
       ],
-      "partOf.id": [
+      "partOf.id" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "availabilities.id": [
+      "availabilities.id" : [
       ]
     },
-    "type": "Visible"
+    "type" : "Visible"
   }
 }

@@ -1,155 +1,158 @@
 {
-  "description": "images with different subjects",
-  "createdAt": "2024-11-14T14:37:56.552107Z",
-  "id": "kzssqpi3",
-  "document": {
-    "modifiedTime": "1988-08-30T19:53:42Z",
-    "display": {
-      "id": "kzssqpi3",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "images with different subjects",
+  "createdAt" : "2024-11-25T15:14:41.257309Z",
+  "id" : "kzssqpi3",
+  "document" : {
+    "modifiedTime" : "1988-08-30T19:53:42Z",
+    "display" : {
+      "id" : "kzssqpi3",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/cmY.jpg/info.json",
-        "linkText": "Link text: TnpH5i",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/cmY.jpg/info.json",
+        "linkText" : "Link text: TnpH5i",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/cmY.jpg/info.json",
-          "linkText": "Link text: TnpH5i",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/cmY.jpg/info.json",
+          "linkText" : "Link text: TnpH5i",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#16E474",
-      "source": {
-        "id": "tcqskq12",
-        "title": "title-TjuvcW2P6K",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#16E474",
+      "source" : {
+        "id" : "tcqskq12",
+        "title" : "title-TjuvcW2P6K",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
         ],
-        "subjects": [
+        "subjects" : [
           {
-            "label": "Square sounds",
-            "concepts": [
+            "label" : "Square sounds",
+            "concepts" : [
             ],
-            "type": "Subject"
+            "type" : "Subject"
           }
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "kzssqpi3",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "kzssqpi3",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
         ],
-        "id": "tcqskq12",
-        "sourceIdentifier.value": "nEWqpoAGwP",
-        "identifiers.value": [
+        "id" : "tcqskq12",
+        "sourceIdentifier.value" : "nEWqpoAGwP",
+        "identifiers.value" : [
           "nEWqpoAGwP"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-TjuvcW2P6K"
+        "title" : "title-TjuvcW2P6K"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
+      "source.genres" : [
       ],
-      "source.subjects.label": [
-        "{\"label\":\"Square sounds\",\"concepts\":[],\"type\":\"Subject\"}"
+      "source.subjects" : [
+        {
+          "id" : "Square sounds",
+          "label" : "Square sounds"
+        }
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
         "Square sounds"
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         -0.027123732,
         0.024278343,
         0.010769607,
@@ -4247,7 +4250,7 @@
         0.018701838,
         -0.01027819
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         -0.0026479736,
         -0.03839519,
         -0.012416301,
@@ -5250,8 +5253,8 @@
         0.049604274
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

@@ -1,199 +1,199 @@
 {
-  "description": "a work with a thumbnail",
-  "createdAt": "2024-11-13T08:43:26.254004Z",
-  "id": "sahqcluh",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "sahqcluh",
-        "identifier": {
-          "identifierType": {
-            "id": "sierra-system-number"
+  "description" : "a work with a thumbnail",
+  "createdAt" : "2024-11-25T15:15:12.112483Z",
+  "id" : "sahqcluh",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "sahqcluh",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "sierra-system-number"
           },
-          "ontologyType": "Work",
-          "value": "rRRYGQYiF7"
+          "ontologyType" : "Work",
+          "value" : "rRRYGQYiF7"
         },
-        "version": 9,
-        "modifiedTime": "2052-06-26T19:25:07Z"
+        "version" : 9,
+        "modifiedTime" : "2052-06-26T19:25:07Z"
       },
-      "mergedTime": "2052-06-26T19:25:07Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": [
+      "mergedTime" : "2052-06-26T19:25:07Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
       ],
-      "mergeCandidates": [
+      "mergeCandidates" : [
       ]
     },
-    "display": {
-      "id": "sahqcluh",
-      "title": "title-LSfnjHB2TS",
-      "alternativeTitles": [
+    "display" : {
+      "id" : "sahqcluh",
+      "title" : "title-LSfnjHB2TS",
+      "alternativeTitles" : [
       ],
-      "contributors": [
+      "contributors" : [
       ],
-      "identifiers": [
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "sierra-system-number",
-            "label": "Sierra system number",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "sierra-system-number",
+            "label" : "Sierra system number",
+            "type" : "IdentifierType"
           },
-          "value": "rRRYGQYiF7",
-          "type": "Identifier"
+          "value" : "rRRYGQYiF7",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
       ],
-      "genres": [
+      "genres" : [
       ],
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-presentation",
-          "label": "IIIF Presentation API",
-          "type": "LocationType"
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-presentation",
+          "label" : "IIIF Presentation API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/547.jpg/info.json",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/547.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "items": [
+      "items" : [
       ],
-      "holdings": [
+      "holdings" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ],
-      "production": [
+      "production" : [
       ],
-      "languages": [
+      "languages" : [
       ],
-      "notes": [
+      "notes" : [
       ],
-      "formerFrequency": [
+      "formerFrequency" : [
       ],
-      "designation": [
+      "designation" : [
       ],
-      "images": [
+      "images" : [
       ],
-      "parts": [
+      "parts" : [
       ],
-      "partOf": [
+      "partOf" : [
       ],
-      "precededBy": [
+      "precededBy" : [
       ],
-      "succeededBy": [
+      "succeededBy" : [
       ],
-      "type": "Work"
+      "type" : "Work"
     },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
       ],
-      "id": "sahqcluh",
-      "sourceIdentifier.value": "rRRYGQYiF7",
-      "identifiers.value": [
+      "id" : "sahqcluh",
+      "sourceIdentifier.value" : "rRRYGQYiF7",
+      "identifiers.value" : [
         "rRRYGQYiF7"
       ],
-      "images.id": [
+      "images.id" : [
       ],
-      "images.identifiers.value": [
+      "images.identifiers.value" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.shelfmark.value": [
+      "items.shelfmark.value" : [
       ],
-      "languages.label": [
+      "languages.label" : [
       ],
-      "lettering": null,
-      "notes.contents": [
+      "lettering" : null,
+      "notes.contents" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "physicalDescription": null,
-      "production.label": [
+      "physicalDescription" : null,
+      "production.label" : [
       ],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
       ],
-      "title": "title-LSfnjHB2TS"
+      "title" : "title-LSfnjHB2TS"
     },
-    "aggregatableValues": {
-      "workType": [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "genres.label": [
+      "genres" : [
       ],
-      "production.dates": [
+      "production.dates" : [
       ],
-      "subjects.label": [
+      "subjects" : [
       ],
-      "languages": [
+      "languages" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent" : [
       ],
-      "items.locations.license": [
+      "items.locations.license" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ]
     },
-    "filterableValues": {
-      "format.id": null,
-      "workType": "Standard",
-      "production.dates.range.from": [
+    "filterableValues" : {
+      "format.id" : null,
+      "workType" : "Standard",
+      "production.dates.range.from" : [
       ],
-      "languages.id": [
+      "languages.id" : [
       ],
-      "genres.label": [
+      "genres.label" : [
       ],
-      "genres.concepts.id": [
+      "genres.concepts.id" : [
       ],
-      "genres.concepts.sourceIdentifier": [
+      "genres.concepts.sourceIdentifier" : [
       ],
-      "subjects.label": [
+      "subjects.label" : [
       ],
-      "subjects.concepts.id": [
+      "subjects.concepts.id" : [
       ],
-      "subjects.concepts.sourceIdentifier": [
+      "subjects.concepts.sourceIdentifier" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "contributors.agent.id": [
+      "contributors.agent.id" : [
       ],
-      "contributors.agent.sourceIdentifier": [
+      "contributors.agent.sourceIdentifier" : [
       ],
-      "identifiers.value": [
+      "identifiers.value" : [
         "rRRYGQYiF7"
       ],
-      "items.locations.license.id": [
+      "items.locations.license.id" : [
       ],
-      "items.locations.accessConditions.status.id": [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.locations.locationType.id": [
+      "items.locations.locationType.id" : [
       ],
-      "partOf.id": [
+      "partOf.id" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "availabilities.id": [
+      "availabilities.id" : [
       ]
     },
-    "type": "Visible"
+    "type" : "Visible"
   }
 }

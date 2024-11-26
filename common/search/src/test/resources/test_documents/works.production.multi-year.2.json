@@ -1,209 +1,212 @@
 {
-  "description": "works with multi-year production ranges",
-  "createdAt": "2024-11-13T08:43:26.556758Z",
-  "id": "v2jj5pko",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "v2jj5pko",
-        "identifier": {
-          "identifierType": {
-            "id": "sierra-system-number"
+  "description" : "works with multi-year production ranges",
+  "createdAt" : "2024-11-25T15:15:12.403189Z",
+  "id" : "v2jj5pko",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "v2jj5pko",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "sierra-system-number"
           },
-          "ontologyType": "Work",
-          "value": "XKeDQMh6zv"
+          "ontologyType" : "Work",
+          "value" : "XKeDQMh6zv"
         },
-        "version": 34,
-        "modifiedTime": "1975-08-31T16:12:40Z"
+        "version" : 34,
+        "modifiedTime" : "1975-08-31T16:12:40Z"
       },
-      "mergedTime": "1975-08-31T16:12:40Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": [
+      "mergedTime" : "1975-08-31T16:12:40Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
       ],
-      "mergeCandidates": [
+      "mergeCandidates" : [
       ]
     },
-    "display": {
-      "id": "v2jj5pko",
-      "title": "title-kAlfIDxe8F",
-      "alternativeTitles": [
+    "display" : {
+      "id" : "v2jj5pko",
+      "title" : "title-kAlfIDxe8F",
+      "alternativeTitles" : [
       ],
-      "contributors": [
+      "contributors" : [
       ],
-      "identifiers": [
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "sierra-system-number",
-            "label": "Sierra system number",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "sierra-system-number",
+            "label" : "Sierra system number",
+            "type" : "IdentifierType"
           },
-          "value": "XKeDQMh6zv",
-          "type": "Identifier"
+          "value" : "XKeDQMh6zv",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
       ],
-      "genres": [
+      "genres" : [
       ],
-      "items": [
+      "items" : [
       ],
-      "holdings": [
+      "holdings" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ],
-      "production": [
+      "production" : [
         {
-          "label": "T0mobVH4nMKaFfllypAUqLQ0g",
-          "places": [
+          "label" : "T0mobVH4nMKaFfllypAUqLQ0g",
+          "places" : [
             {
-              "label": "UKbghZ727m",
-              "type": "Place"
+              "label" : "UKbghZ727m",
+              "type" : "Place"
             }
           ],
-          "agents": [
+          "agents" : [
             {
-              "label": "8zTnSvRiZt",
-              "type": "Person"
+              "label" : "8zTnSvRiZt",
+              "type" : "Person"
             }
           ],
-          "dates": [
+          "dates" : [
             {
-              "label": "1860-1960",
-              "type": "Period"
+              "label" : "1860-1960",
+              "type" : "Period"
             }
           ],
-          "type": "ProductionEvent"
+          "type" : "ProductionEvent"
         }
       ],
-      "languages": [
+      "languages" : [
       ],
-      "notes": [
+      "notes" : [
       ],
-      "formerFrequency": [
+      "formerFrequency" : [
       ],
-      "designation": [
+      "designation" : [
       ],
-      "images": [
+      "images" : [
       ],
-      "parts": [
+      "parts" : [
       ],
-      "partOf": [
+      "partOf" : [
       ],
-      "precededBy": [
+      "precededBy" : [
       ],
-      "succeededBy": [
+      "succeededBy" : [
       ],
-      "type": "Work"
+      "type" : "Work"
     },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
       ],
-      "id": "v2jj5pko",
-      "sourceIdentifier.value": "XKeDQMh6zv",
-      "identifiers.value": [
+      "id" : "v2jj5pko",
+      "sourceIdentifier.value" : "XKeDQMh6zv",
+      "identifiers.value" : [
         "XKeDQMh6zv"
       ],
-      "images.id": [
+      "images.id" : [
       ],
-      "images.identifiers.value": [
+      "images.identifiers.value" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.shelfmark.value": [
+      "items.shelfmark.value" : [
       ],
-      "languages.label": [
+      "languages.label" : [
       ],
-      "lettering": null,
-      "notes.contents": [
+      "lettering" : null,
+      "notes.contents" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "physicalDescription": null,
-      "production.label": [
+      "physicalDescription" : null,
+      "production.label" : [
         "UKbghZ727m",
         "8zTnSvRiZt",
         "1860-1960"
       ],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
       ],
-      "title": "title-kAlfIDxe8F"
+      "title" : "title-kAlfIDxe8F"
     },
-    "aggregatableValues": {
-      "workType": [
+    "aggregatableValues" : {
+      "workType" : [
       ],
-      "genres.label": [
+      "genres" : [
       ],
-      "production.dates": [
-        "{\"label\":\"1860\",\"type\":\"Period\"}"
+      "production.dates" : [
+        {
+          "id" : "1860",
+          "label" : "1860"
+        }
       ],
-      "subjects.label": [
+      "subjects" : [
       ],
-      "languages": [
+      "languages" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent" : [
       ],
-      "items.locations.license": [
+      "items.locations.license" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ]
     },
-    "filterableValues": {
-      "format.id": null,
-      "workType": "Standard",
-      "production.dates.range.from": [
+    "filterableValues" : {
+      "format.id" : null,
+      "workType" : "Standard",
+      "production.dates.range.from" : [
         -3471292800000
       ],
-      "languages.id": [
+      "languages.id" : [
       ],
-      "genres.label": [
+      "genres.label" : [
       ],
-      "genres.concepts.id": [
+      "genres.concepts.id" : [
       ],
-      "genres.concepts.sourceIdentifier": [
+      "genres.concepts.sourceIdentifier" : [
       ],
-      "subjects.label": [
+      "subjects.label" : [
       ],
-      "subjects.concepts.id": [
+      "subjects.concepts.id" : [
       ],
-      "subjects.concepts.sourceIdentifier": [
+      "subjects.concepts.sourceIdentifier" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "contributors.agent.id": [
+      "contributors.agent.id" : [
       ],
-      "contributors.agent.sourceIdentifier": [
+      "contributors.agent.sourceIdentifier" : [
       ],
-      "identifiers.value": [
+      "identifiers.value" : [
         "XKeDQMh6zv"
       ],
-      "items.locations.license.id": [
+      "items.locations.license.id" : [
       ],
-      "items.locations.accessConditions.status.id": [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.locations.locationType.id": [
+      "items.locations.locationType.id" : [
       ],
-      "partOf.id": [
+      "partOf.id" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "availabilities.id": [
+      "availabilities.id" : [
       ]
     },
-    "type": "Visible"
+    "type" : "Visible"
   }
 }

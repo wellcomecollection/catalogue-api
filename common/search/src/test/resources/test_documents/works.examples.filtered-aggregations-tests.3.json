@@ -1,196 +1,202 @@
 {
-  "description": "examples for the works filtered aggregations tests",
-  "createdAt": "2024-11-13T08:43:26.644082Z",
-  "id": "sts5c3ls",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "sts5c3ls",
-        "identifier": {
-          "identifierType": {
-            "id": "calm-record-id"
+  "description" : "examples for the works filtered aggregations tests",
+  "createdAt" : "2024-11-25T15:15:12.494024Z",
+  "id" : "sts5c3ls",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "sts5c3ls",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "calm-record-id"
           },
-          "ontologyType": "Work",
-          "value": "bQuZPdet7f"
+          "ontologyType" : "Work",
+          "value" : "bQuZPdet7f"
         },
-        "version": 36,
-        "modifiedTime": "1950-01-25T21:30:47Z"
+        "version" : 36,
+        "modifiedTime" : "1950-01-25T21:30:47Z"
       },
-      "mergedTime": "1950-01-25T21:30:47Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": [
+      "mergedTime" : "1950-01-25T21:30:47Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
       ],
-      "mergeCandidates": [
+      "mergeCandidates" : [
       ]
     },
-    "display": {
-      "id": "sts5c3ls",
-      "title": "rats",
-      "alternativeTitles": [
+    "display" : {
+      "id" : "sts5c3ls",
+      "title" : "rats",
+      "alternativeTitles" : [
       ],
-      "workType": {
-        "id": "i",
-        "label": "Audio",
-        "type": "Format"
+      "workType" : {
+        "id" : "i",
+        "label" : "Audio",
+        "type" : "Format"
       },
-      "contributors": [
+      "contributors" : [
       ],
-      "identifiers": [
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "calm-record-id",
-            "label": "Calm RecordIdentifier",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
+            "type" : "IdentifierType"
           },
-          "value": "bQuZPdet7f",
-          "type": "Identifier"
+          "value" : "bQuZPdet7f",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
       ],
-      "genres": [
+      "genres" : [
       ],
-      "items": [
+      "items" : [
       ],
-      "holdings": [
+      "holdings" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ],
-      "production": [
+      "production" : [
       ],
-      "languages": [
+      "languages" : [
         {
-          "id": "bak",
-          "label": "Bashkir",
-          "type": "Language"
+          "id" : "bak",
+          "label" : "Bashkir",
+          "type" : "Language"
         }
       ],
-      "notes": [
+      "notes" : [
       ],
-      "formerFrequency": [
+      "formerFrequency" : [
       ],
-      "designation": [
+      "designation" : [
       ],
-      "images": [
+      "images" : [
       ],
-      "parts": [
+      "parts" : [
       ],
-      "partOf": [
+      "partOf" : [
       ],
-      "precededBy": [
+      "precededBy" : [
       ],
-      "succeededBy": [
+      "succeededBy" : [
       ],
-      "type": "Work"
+      "type" : "Work"
     },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
       ],
-      "id": "sts5c3ls",
-      "sourceIdentifier.value": "bQuZPdet7f",
-      "identifiers.value": [
+      "id" : "sts5c3ls",
+      "sourceIdentifier.value" : "bQuZPdet7f",
+      "identifiers.value" : [
         "bQuZPdet7f"
       ],
-      "images.id": [
+      "images.id" : [
       ],
-      "images.identifiers.value": [
+      "images.identifiers.value" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.shelfmark.value": [
+      "items.shelfmark.value" : [
       ],
-      "languages.label": [
+      "languages.label" : [
         "Bashkir"
       ],
-      "lettering": null,
-      "notes.contents": [
+      "lettering" : null,
+      "notes.contents" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "physicalDescription": null,
-      "production.label": [
+      "physicalDescription" : null,
+      "production.label" : [
       ],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
       ],
-      "title": "rats"
+      "title" : "rats"
     },
-    "aggregatableValues": {
-      "workType": [
-        "{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"
+    "aggregatableValues" : {
+      "workType" : [
+        {
+          "id" : "i",
+          "label" : "Audio"
+        }
       ],
-      "genres.label": [
+      "genres" : [
       ],
-      "production.dates": [
+      "production.dates" : [
       ],
-      "subjects.label": [
+      "subjects" : [
       ],
-      "languages": [
-        "{\"id\":\"bak\",\"label\":\"Bashkir\",\"type\":\"Language\"}"
+      "languages" : [
+        {
+          "id" : "bak",
+          "label" : "Bashkir"
+        }
       ],
-      "contributors.agent.label": [
+      "contributors.agent" : [
       ],
-      "items.locations.license": [
+      "items.locations.license" : [
       ],
-      "availabilities": [
+      "availabilities" : [
       ]
     },
-    "filterableValues": {
-      "format.id": "i",
-      "workType": "Standard",
-      "production.dates.range.from": [
+    "filterableValues" : {
+      "format.id" : "i",
+      "workType" : "Standard",
+      "production.dates.range.from" : [
       ],
-      "languages.id": [
+      "languages.id" : [
         "bak"
       ],
-      "genres.label": [
+      "genres.label" : [
       ],
-      "genres.concepts.id": [
+      "genres.concepts.id" : [
       ],
-      "genres.concepts.sourceIdentifier": [
+      "genres.concepts.sourceIdentifier" : [
       ],
-      "subjects.label": [
+      "subjects.label" : [
       ],
-      "subjects.concepts.id": [
+      "subjects.concepts.id" : [
       ],
-      "subjects.concepts.sourceIdentifier": [
+      "subjects.concepts.sourceIdentifier" : [
       ],
-      "contributors.agent.label": [
+      "contributors.agent.label" : [
       ],
-      "contributors.agent.id": [
+      "contributors.agent.id" : [
       ],
-      "contributors.agent.sourceIdentifier": [
+      "contributors.agent.sourceIdentifier" : [
       ],
-      "identifiers.value": [
+      "identifiers.value" : [
         "bQuZPdet7f"
       ],
-      "items.locations.license.id": [
+      "items.locations.license.id" : [
       ],
-      "items.locations.accessConditions.status.id": [
+      "items.locations.accessConditions.status.id" : [
       ],
-      "items.id": [
+      "items.id" : [
       ],
-      "items.identifiers.value": [
+      "items.identifiers.value" : [
       ],
-      "items.locations.locationType.id": [
+      "items.locations.locationType.id" : [
       ],
-      "partOf.id": [
+      "partOf.id" : [
       ],
-      "partOf.title": [
+      "partOf.title" : [
       ],
-      "availabilities.id": [
+      "availabilities.id" : [
       ]
     },
-    "type": "Visible"
+    "type" : "Visible"
   }
 }

@@ -1,151 +1,151 @@
 {
-  "description": "images linked with another work",
-  "createdAt": "2024-11-14T14:37:56.520561Z",
-  "id": "hsgnyw8m",
-  "document": {
-    "modifiedTime": "2000-11-29T00:19:37Z",
-    "display": {
-      "id": "hsgnyw8m",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "images linked with another work",
+  "createdAt" : "2024-11-25T15:14:41.227982Z",
+  "id" : "hsgnyw8m",
+  "document" : {
+    "modifiedTime" : "2000-11-29T00:19:37Z",
+    "display" : {
+      "id" : "hsgnyw8m",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/Ozr.jpg/info.json",
-        "credit": "Credit line: Igw4LN",
-        "linkText": "Link text: BLRn04h0",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/Ozr.jpg/info.json",
+        "credit" : "Credit line: Igw4LN",
+        "linkText" : "Link text: BLRn04h0",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/Ozr.jpg/info.json",
-          "credit": "Credit line: Igw4LN",
-          "linkText": "Link text: BLRn04h0",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/Ozr.jpg/info.json",
+          "credit" : "Credit line: Igw4LN",
+          "linkText" : "Link text: BLRn04h0",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#A0C8A8",
-      "source": {
-        "id": "immezksj",
-        "title": "title-ncEHT1NLb6",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#A0C8A8",
+      "source" : {
+        "id" : "immezksj",
+        "title" : "title-ncEHT1NLb6",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
         ],
-        "subjects": [
+        "subjects" : [
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "hsgnyw8m",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "hsgnyw8m",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
         ],
-        "id": "immezksj",
-        "sourceIdentifier.value": "fBj197N48n",
-        "identifiers.value": [
+        "id" : "immezksj",
+        "sourceIdentifier.value" : "fBj197N48n",
+        "identifiers.value" : [
           "fBj197N48n",
           "7Qx3WYHrc4",
           "OXpjxG6OXo"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-ncEHT1NLb6"
+        "title" : "title-ncEHT1NLb6"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
+      "source.genres" : [
       ],
-      "source.subjects.label": [
+      "source.subjects" : [
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         -0.020090086,
         0.012813995,
         3.1020242E-4,
@@ -4243,7 +4243,7 @@
         -0.0016017318,
         0.02772019
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         -0.0048597767,
         -0.0036105372,
         -0.04832014,
@@ -5246,8 +5246,8 @@
         0.04645499
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

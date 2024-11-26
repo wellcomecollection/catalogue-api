@@ -1,150 +1,153 @@
 {
-  "description": "images with different licenses",
-  "createdAt": "2024-11-14T14:37:56.309393Z",
-  "id": "u9wiz5n2",
-  "document": {
-    "modifiedTime": "2008-12-14T05:36:25Z",
-    "display": {
-      "id": "u9wiz5n2",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "images with different licenses",
+  "createdAt" : "2024-11-25T15:14:41.008631Z",
+  "id" : "u9wiz5n2",
+  "document" : {
+    "modifiedTime" : "2008-12-14T05:36:25Z",
+    "display" : {
+      "id" : "u9wiz5n2",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/5t7.jpg/info.json",
-        "credit": "Credit line: 5lwIC612t",
-        "license": {
-          "id": "pdm",
-          "label": "Public Domain Mark",
-          "url": "https://creativecommons.org/share-your-work/public-domain/pdm/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/5t7.jpg/info.json",
+        "credit" : "Credit line: 5lwIC612t",
+        "license" : {
+          "id" : "pdm",
+          "label" : "Public Domain Mark",
+          "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/5t7.jpg/info.json",
-          "credit": "Credit line: 5lwIC612t",
-          "license": {
-            "id": "pdm",
-            "label": "Public Domain Mark",
-            "url": "https://creativecommons.org/share-your-work/public-domain/pdm/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/5t7.jpg/info.json",
+          "credit" : "Credit line: 5lwIC612t",
+          "license" : {
+            "id" : "pdm",
+            "label" : "Public Domain Mark",
+            "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#18E8D9",
-      "source": {
-        "id": "yfajql1v",
-        "title": "title-4cjq66N1qo",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#18E8D9",
+      "source" : {
+        "id" : "yfajql1v",
+        "title" : "title-4cjq66N1qo",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
         ],
-        "subjects": [
+        "subjects" : [
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "u9wiz5n2",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "u9wiz5n2",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
         ],
-        "id": "yfajql1v",
-        "sourceIdentifier.value": "DL10ex6AGz",
-        "identifiers.value": [
+        "id" : "yfajql1v",
+        "sourceIdentifier.value" : "DL10ex6AGz",
+        "identifiers.value" : [
           "DL10ex6AGz",
           "xdXZyyHpak",
           "qtcggmBJGC"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-4cjq66N1qo"
+        "title" : "title-4cjq66N1qo"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
-        "{\"id\":\"pdm\",\"label\":\"Public Domain Mark\",\"url\":\"https://creativecommons.org/share-your-work/public-domain/pdm/\",\"type\":\"License\"}"
+    "aggregatableValues" : {
+      "locations.license" : [
+        {
+          "id" : "pdm",
+          "label" : "Public Domain Mark"
+        }
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
+      "source.genres" : [
       ],
-      "source.subjects.label": [
+      "source.subjects" : [
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "pdm"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         7.334739E-4,
         0.009664426,
         0.00692691,
@@ -4242,7 +4245,7 @@
         0.004361391,
         0.012620446
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         -0.005657998,
         0.016745279,
         -0.017943755,
@@ -5245,8 +5248,8 @@
         0.036316402
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

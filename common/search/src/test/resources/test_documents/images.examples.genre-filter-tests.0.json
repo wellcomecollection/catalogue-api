@@ -1,167 +1,170 @@
 {
-  "description": "examples for the genre filter tests",
-  "createdAt": "2024-11-14T14:37:56.463276Z",
-  "id": "dtsaqjqy",
-  "document": {
-    "modifiedTime": "2040-01-25T01:22:51Z",
-    "display": {
-      "id": "dtsaqjqy",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "examples for the genre filter tests",
+  "createdAt" : "2024-11-25T15:14:41.187746Z",
+  "id" : "dtsaqjqy",
+  "document" : {
+    "modifiedTime" : "2040-01-25T01:22:51Z",
+    "display" : {
+      "id" : "dtsaqjqy",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/9u7.jpg/info.json",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/9u7.jpg/info.json",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/9u7.jpg/info.json",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/9u7.jpg/info.json",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#FEEF0C",
-      "source": {
-        "id": "avnlzlwu",
-        "title": "title-XanTinRi9y",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#FEEF0C",
+      "source" : {
+        "id" : "avnlzlwu",
+        "title" : "title-XanTinRi9y",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
           {
-            "label": "Carrot counselling",
-            "concepts": [
+            "label" : "Carrot counselling",
+            "concepts" : [
               {
-                "id": "g00dcafe",
-                "label": "ZYpXDgtEHOLRkyW",
-                "type": "Genre"
+                "id" : "g00dcafe",
+                "label" : "ZYpXDgtEHOLRkyW",
+                "type" : "Genre"
               },
               {
-                "id": "baadf00d",
-                "label": "Gz6jlJqCwJjS1yp",
-                "type": "Concept"
+                "id" : "baadf00d",
+                "label" : "Gz6jlJqCwJjS1yp",
+                "type" : "Concept"
               }
             ],
-            "type": "Genre"
+            "type" : "Genre"
           }
         ],
-        "subjects": [
+        "subjects" : [
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "dtsaqjqy",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "dtsaqjqy",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
           "ZYpXDgtEHOLRkyW",
           "Gz6jlJqCwJjS1yp"
         ],
-        "id": "avnlzlwu",
-        "sourceIdentifier.value": "PnNjvYlLJE",
-        "identifiers.value": [
+        "id" : "avnlzlwu",
+        "sourceIdentifier.value" : "PnNjvYlLJE",
+        "identifiers.value" : [
           "PnNjvYlLJE"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-XanTinRi9y"
+        "title" : "title-XanTinRi9y"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
-        "{\"label\":\"Carrot counselling\",\"concepts\":[],\"type\":\"Genre\"}"
+      "source.genres" : [
+        {
+          "id" : "g00dcafe",
+          "label" : "Carrot counselling"
+        }
       ],
-      "source.subjects.label": [
+      "source.subjects" : [
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
         "Carrot counselling"
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
         "g00dcafe"
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
         "L6MtHDV6LX"
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         -0.016438505,
         0.00657761,
         0.01612595,
@@ -4259,7 +4262,7 @@
         -0.0033713363,
         -0.022579655
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         0.04292064,
         0.024802417,
         -0.0044846274,
@@ -5262,8 +5265,8 @@
         -0.03267974
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

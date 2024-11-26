@@ -1,179 +1,185 @@
 {
-  "description": "examples for the genre filter tests",
-  "createdAt": "2024-11-14T14:37:56.465133Z",
-  "id": "xmlsowlq",
-  "document": {
-    "modifiedTime": "1970-11-30T11:53:00Z",
-    "display": {
-      "id": "xmlsowlq",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "examples for the genre filter tests",
+  "createdAt" : "2024-11-25T15:14:41.189539Z",
+  "id" : "xmlsowlq",
+  "document" : {
+    "modifiedTime" : "1970-11-30T11:53:00Z",
+    "display" : {
+      "id" : "xmlsowlq",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/osx.jpg/info.json",
-        "linkText": "Link text: AKLim43",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/osx.jpg/info.json",
+        "linkText" : "Link text: AKLim43",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/osx.jpg/info.json",
-          "linkText": "Link text: AKLim43",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/osx.jpg/info.json",
+          "linkText" : "Link text: AKLim43",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#B8DE7E",
-      "source": {
-        "id": "gdpxcgp2",
-        "title": "title-ktG7wwBwmf",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#B8DE7E",
+      "source" : {
+        "id" : "gdpxcgp2",
+        "title" : "title-ktG7wwBwmf",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
           {
-            "label": "Emu entrepreneurship",
-            "concepts": [
+            "label" : "Emu entrepreneurship",
+            "concepts" : [
               {
-                "id": "g00dcafe",
-                "label": "jBVxL1V4oewPM67",
-                "type": "Genre"
+                "id" : "g00dcafe",
+                "label" : "jBVxL1V4oewPM67",
+                "type" : "Genre"
               }
             ],
-            "type": "Genre"
+            "type" : "Genre"
           },
           {
-            "label": "Falcon finances",
-            "concepts": [
+            "label" : "Falcon finances",
+            "concepts" : [
               {
-                "id": "baadf00d",
-                "label": "ND4ajrHSr7cFUI5",
-                "type": "Genre"
+                "id" : "baadf00d",
+                "label" : "ND4ajrHSr7cFUI5",
+                "type" : "Genre"
               }
             ],
-            "type": "Genre"
+            "type" : "Genre"
           }
         ],
-        "subjects": [
+        "subjects" : [
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "xmlsowlq",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "xmlsowlq",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
           "jBVxL1V4oewPM67",
           "ND4ajrHSr7cFUI5"
         ],
-        "id": "gdpxcgp2",
-        "sourceIdentifier.value": "yi3e0o56QQ",
-        "identifiers.value": [
+        "id" : "gdpxcgp2",
+        "sourceIdentifier.value" : "yi3e0o56QQ",
+        "identifiers.value" : [
           "yi3e0o56QQ"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-ktG7wwBwmf"
+        "title" : "title-ktG7wwBwmf"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
-        "{\"label\":\"Emu entrepreneurship\",\"concepts\":[],\"type\":\"Genre\"}",
-        "{\"label\":\"Falcon finances\",\"concepts\":[],\"type\":\"Genre\"}"
+      "source.genres" : [
+        {
+          "id" : "g00dcafe",
+          "label" : "Emu entrepreneurship"
+        },
+        {
+          "id" : "baadf00d",
+          "label" : "Falcon finances"
+        }
       ],
-      "source.subjects.label": [
+      "source.subjects" : [
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
         "Emu entrepreneurship",
         "Falcon finances"
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
         "g00dcafe",
         "baadf00d"
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
         "G6PXCJ2IuI",
         "OezVopin48"
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         0.023446029,
         0.028897293,
         -0.0023543043,
@@ -4271,7 +4277,7 @@
         0.0073085045,
         3.7157428E-5
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         -0.028580276,
         -0.014974573,
         0.010604396,
@@ -5274,8 +5280,8 @@
         -0.040184803
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }

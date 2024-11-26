@@ -165,6 +165,10 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           AggregationBucket(
             AggregationBucketData("123", "absinthe"),
             count = 393145
+          ),
+          AggregationBucket(
+            AggregationBucketData("456", "apple"),
+            count = 34
           )
         )
       )

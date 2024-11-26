@@ -1,158 +1,161 @@
 {
-  "description": "images with different subjects",
-  "createdAt": "2024-11-14T14:37:56.560672Z",
-  "id": "o2eny5un",
-  "document": {
-    "modifiedTime": "2032-02-29T09:36:29Z",
-    "display": {
-      "id": "o2eny5un",
-      "thumbnail": {
-        "locationType": {
-          "id": "iiif-image",
-          "label": "IIIF Image API",
-          "type": "LocationType"
+  "description" : "images with different subjects",
+  "createdAt" : "2024-11-25T15:14:41.263740Z",
+  "id" : "o2eny5un",
+  "document" : {
+    "modifiedTime" : "2032-02-29T09:36:29Z",
+    "display" : {
+      "id" : "o2eny5un",
+      "thumbnail" : {
+        "locationType" : {
+          "id" : "iiif-image",
+          "label" : "IIIF Image API",
+          "type" : "LocationType"
         },
-        "url": "https://iiif.wellcomecollection.org/image/lCM.jpg/info.json",
-        "credit": "Credit line: TPXQJURr",
-        "license": {
-          "id": "cc-by",
-          "label": "Attribution 4.0 International (CC BY 4.0)",
-          "url": "http://creativecommons.org/licenses/by/4.0/",
-          "type": "License"
+        "url" : "https://iiif.wellcomecollection.org/image/lCM.jpg/info.json",
+        "credit" : "Credit line: TPXQJURr",
+        "license" : {
+          "id" : "cc-by",
+          "label" : "Attribution 4.0 International (CC BY 4.0)",
+          "url" : "http://creativecommons.org/licenses/by/4.0/",
+          "type" : "License"
         },
-        "accessConditions": [
+        "accessConditions" : [
         ],
-        "type": "DigitalLocation"
+        "type" : "DigitalLocation"
       },
-      "locations": [
+      "locations" : [
         {
-          "locationType": {
-            "id": "iiif-image",
-            "label": "IIIF Image API",
-            "type": "LocationType"
+          "locationType" : {
+            "id" : "iiif-image",
+            "label" : "IIIF Image API",
+            "type" : "LocationType"
           },
-          "url": "https://iiif.wellcomecollection.org/image/lCM.jpg/info.json",
-          "credit": "Credit line: TPXQJURr",
-          "license": {
-            "id": "cc-by",
-            "label": "Attribution 4.0 International (CC BY 4.0)",
-            "url": "http://creativecommons.org/licenses/by/4.0/",
-            "type": "License"
+          "url" : "https://iiif.wellcomecollection.org/image/lCM.jpg/info.json",
+          "credit" : "Credit line: TPXQJURr",
+          "license" : {
+            "id" : "cc-by",
+            "label" : "Attribution 4.0 International (CC BY 4.0)",
+            "url" : "http://creativecommons.org/licenses/by/4.0/",
+            "type" : "License"
           },
-          "accessConditions": [
+          "accessConditions" : [
           ],
-          "type": "DigitalLocation"
+          "type" : "DigitalLocation"
         }
       ],
-      "aspectRatio": 0.38759995,
-      "averageColor": "#F53850",
-      "source": {
-        "id": "zhq69pbg",
-        "title": "title-nrylbhuzNp",
-        "contributors": [
+      "aspectRatio" : 0.38759995,
+      "averageColor" : "#F53850",
+      "source" : {
+        "id" : "zhq69pbg",
+        "title" : "title-nrylbhuzNp",
+        "contributors" : [
         ],
-        "languages": [
+        "languages" : [
         ],
-        "genres": [
+        "genres" : [
         ],
-        "subjects": [
+        "subjects" : [
           {
-            "id": "subject1",
-            "label": "Simple screwdrivers",
-            "concepts": [
+            "id" : "subject1",
+            "label" : "Simple screwdrivers",
+            "concepts" : [
             ],
-            "type": "Subject"
+            "type" : "Subject"
           }
         ],
-        "type": "Work"
+        "type" : "Work"
       },
-      "type": "Image"
+      "type" : "Image"
     },
-    "query": {
-      "id": "o2eny5un",
-      "source": {
-        "collectionPath.label": null,
-        "collectionPath.path": null,
-        "alternativeTitles": [
+    "query" : {
+      "id" : "o2eny5un",
+      "source" : {
+        "collectionPath.label" : null,
+        "collectionPath.path" : null,
+        "alternativeTitles" : [
         ],
-        "contributors.agent.label": [
+        "contributors.agent.label" : [
         ],
-        "description": null,
-        "edition": null,
-        "genres.concepts.label": [
+        "description" : null,
+        "edition" : null,
+        "genres.concepts.label" : [
         ],
-        "id": "zhq69pbg",
-        "sourceIdentifier.value": "TJdU5sqC9R",
-        "identifiers.value": [
+        "id" : "zhq69pbg",
+        "sourceIdentifier.value" : "TJdU5sqC9R",
+        "identifiers.value" : [
           "TJdU5sqC9R"
         ],
-        "images.id": [
+        "images.id" : [
         ],
-        "images.identifiers.value": [
+        "images.identifiers.value" : [
         ],
-        "items.id": [
+        "items.id" : [
         ],
-        "items.identifiers.value": [
+        "items.identifiers.value" : [
         ],
-        "items.shelfmark.value": [
+        "items.shelfmark.value" : [
         ],
-        "languages.label": [
+        "languages.label" : [
         ],
-        "lettering": null,
-        "notes.contents": [
+        "lettering" : null,
+        "notes.contents" : [
         ],
-        "partOf.title": [
+        "partOf.title" : [
         ],
-        "physicalDescription": null,
-        "production.label": [
+        "physicalDescription" : null,
+        "production.label" : [
         ],
-        "referenceNumber": null,
-        "subjects.concepts.label": [
+        "referenceNumber" : null,
+        "subjects.concepts.label" : [
         ],
-        "title": "title-nrylbhuzNp"
+        "title" : "title-nrylbhuzNp"
       }
     },
-    "aggregatableValues": {
-      "locations.license": [
+    "aggregatableValues" : {
+      "locations.license" : [
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent" : [
       ],
-      "source.genres.label": [
+      "source.genres" : [
       ],
-      "source.subjects.label": [
-        "{\"label\":\"Simple screwdrivers\",\"concepts\":[],\"type\":\"Subject\"}"
+      "source.subjects" : [
+        {
+          "id" : "subject1",
+          "label" : "Simple screwdrivers"
+        }
       ]
     },
-    "filterableValues": {
-      "locations.license.id": [
+    "filterableValues" : {
+      "locations.license.id" : [
         "cc-by"
       ],
-      "source.contributors.agent.label": [
+      "source.contributors.agent.label" : [
       ],
-      "source.contributors.agent.id": [
+      "source.contributors.agent.id" : [
       ],
-      "source.contributors.agent.sourceIdentifier": [
+      "source.contributors.agent.sourceIdentifier" : [
       ],
-      "source.genres.label": [
+      "source.genres.label" : [
       ],
-      "source.genres.concepts.id": [
+      "source.genres.concepts.id" : [
       ],
-      "source.genres.concepts.sourceIdentifier": [
+      "source.genres.concepts.sourceIdentifier" : [
       ],
-      "source.subjects.label": [
+      "source.subjects.label" : [
         "Simple screwdrivers"
       ],
-      "source.subjects.concepts.id": [
+      "source.subjects.concepts.id" : [
         "subject1"
       ],
-      "source.subjects.concepts.sourceIdentifier": [
+      "source.subjects.concepts.sourceIdentifier" : [
         "y8ZBmObzMW"
       ],
-      "source.production.dates.range.from": [
+      "source.production.dates.range.from" : [
       ]
     },
-    "vectorValues": {
-      "features": [
+    "vectorValues" : {
+      "features" : [
         -0.012124317,
         -0.021299876,
         -0.005733557,
@@ -4250,7 +4253,7 @@
         -0.03894818,
         2.7688028E-4
       ],
-      "paletteEmbedding": [
+      "paletteEmbedding" : [
         -0.029970823,
         -0.02675187,
         0.014035577,
@@ -5253,8 +5256,8 @@
         0.043071184
       ]
     },
-    "debug": {
-      "indexedTime": "2001-01-01T01:01:01Z"
+    "debug" : {
+      "indexedTime" : "2001-01-01T01:01:01Z"
     }
   }
 }
