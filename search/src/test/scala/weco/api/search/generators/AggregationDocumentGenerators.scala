@@ -70,7 +70,7 @@ trait AggregationDocumentGenerators {
       "aggregatableValues" -> aggregablesJson,
       "filterableValues" -> filterables.asJson,
       "vectorValues" -> Json.obj(
-        "reducedFeatures" -> reducedFeaturePlaceholder.asJson
+        "features" -> featuresPlaceholder.asJson
       )
     )
 
@@ -83,8 +83,8 @@ trait AggregationDocumentGenerators {
   private def toAggregable(value: String): String =
     s"""{"label":${value.asJson}}"""
 
-  private val reducedFeaturePlaceholder: Seq[Float] =
-    normalize(Seq.fill(1024)(random.nextGaussian().toFloat))
+  private val featuresPlaceholder: Seq[Float] =
+    normalize(Seq.fill(4096)(random.nextGaussian().toFloat))
 
   private def norm(vec: Seq[Float]): Float =
     math.sqrt(vec.fold(0.0f)((total, i) => total + (i * i))).toFloat

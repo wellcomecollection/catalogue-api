@@ -137,7 +137,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("9SceRNaTEl"))
+            SubjectLabelFilter(Seq("fIbfVPkqaf"))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
@@ -148,9 +148,10 @@ class AggregationsTest
             "Manuscripts",
             "Music",
             "Archives and manuscripts",
+            "Born-digital archives",
             "Film",
             "Standing order",
-            "Web sites"
+            "Books"
           )
         }
       }
@@ -165,7 +166,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("y0B0TSmDGU"))
+            SubjectLabelFilter(Seq("6rJpSUKd2d"))
           )
         )
         val results =
@@ -187,7 +188,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain("y0B0TSmDGU"))
+          .foreach(subjects => subjects should contain("6rJpSUKd2d"))
       }
     }
   }
