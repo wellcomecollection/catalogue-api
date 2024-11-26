@@ -159,11 +159,12 @@ object WorksRequestBuilder
       )
   }
 
-  private def dateOrder(implicit
-    searchOptions: WorkSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {

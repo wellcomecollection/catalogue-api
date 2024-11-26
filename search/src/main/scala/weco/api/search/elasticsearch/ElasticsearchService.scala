@@ -185,4 +185,3 @@ class ElasticsearchService(elasticClient: ElasticClient)(implicit
         )
     }
 }
-
