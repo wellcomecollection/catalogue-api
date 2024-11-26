@@ -103,6 +103,7 @@ trait TestDocumentFixtures
     // With a large number of works this can take a long time
     // 30 seconds should be enough
     whenReady(result, Timeout(Span(30, Seconds))) { _ =>
+      println(result)
       getSizeOf(index) shouldBe documents.size
     }
   }

@@ -158,7 +158,7 @@
         "properties": {
           "features": {
             "type": "dense_vector",
-            "dims": 2048,
+            "dims": 4096,
             "index": true,
             "similarity": "cosine"
           },

@@ -60,7 +60,8 @@ object AggregationMapping {
 
   def aggregationParser(
     jsonString: String
-  ): Try[Aggregation] =
+  ): Try[Aggregation] = {
+    println(jsonString)
     parse(jsonString)
       .map(bucketsFromAnywhere)
       .toTry
@@ -90,6 +91,7 @@ object AggregationMapping {
           )
       })
       .map(buckets => Aggregation(buckets.toList))
+  }
 
 }
 
