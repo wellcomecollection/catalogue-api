@@ -72,6 +72,12 @@ object WorksRequestBuilder
       filterToQuery = buildWorkFilterQuery
     )
 
+  /**
+   * Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
+   * are `id`-based, with a `label`-based sub-aggregation to get Elasticsearch to return all `label` values associated
+   * with each `id` bucket. (Usually each `id` value only has one one `label` value associated with it, but not always.
+   * For example, different Works can use different labels for a given LoC Subject Heading.)
+   */
   private def toIdBasedAggregation(
     aggregationName: String,
     nestedFieldPath: String,
@@ -82,12 +88,13 @@ object WorksRequestBuilder
       .field(s"$nestedFieldPath.id")
       .subAggregations(termsAgg("labels", s"$nestedFieldPath.label").size(1))
 
-  private def toLabelBasedAggregation(
+  @deprecated("This method is included for backward compatibility reasons and will be removed soon.", "25-10-2024")
+  private def toLegacyAggregation(
     aggregationName: String,
-    idFieldPath: String,
+    aggregatedFieldPath: String,
     size: Int
   ) =
-    TermsAggregation(aggregationName).size(size).field(idFieldPath)
+    TermsAggregation(aggregationName).size(size).field(aggregatedFieldPath)
 
   private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
     // Note: we want these aggregations to return every possible value, so we
@@ -99,7 +106,7 @@ object WorksRequestBuilder
       toIdBasedAggregation("format", "aggregatableValues.workType", size = 30)
 
     case WorkAggregationRequest.ProductionDate =>
-      toLabelBasedAggregation(
+      toLegacyAggregation(
         "productionDates",
         "aggregatableValues.production.dates.label",
         size = 10

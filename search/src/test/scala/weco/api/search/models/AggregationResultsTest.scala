@@ -109,7 +109,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
   }
 
-  it("correctly populates AggregationBucketData with IDs and labels if a nested 'labels' bucket is provided for each ID") {
+  it("correctly populates AggregationBucketData with IDs and labels if a nested 'labels' bucket is provided for each ID bucket") {
     val searchResponse = SearchResponse(
       took = 1234,
       isTimedOut = false,
