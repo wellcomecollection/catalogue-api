@@ -9,10 +9,7 @@ import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{ColorQuery, ImageSimilarity}
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ProductionDateSortRequest,
-  SortingOrder
-}
+import weco.api.search.models.request.{ProductionDateSortRequest, SortingOrder}
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
@@ -47,7 +44,8 @@ object ImagesRequestBuilder
           sortByScore =
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.features"),
-          aggs = ImagesAggregationsBuilder.getAggregations(pairables, searchOptions.aggregations),
+          aggs = ImagesAggregationsBuilder
+            .getAggregations(pairables, searchOptions.aggregations),
           preFilter = unpairables.collect(buildImageFilterQuery),
           postFilter = Some(
             must(
@@ -60,11 +58,12 @@ object ImagesRequestBuilder
     )
   }
 
-  private def dateOrder(implicit
-    searchOptions: ImageSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: ImageSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {

@@ -34,7 +34,8 @@ class ImagesService(
   ): Option[ImageAggregations] =
     ImageAggregations(searchResponse)
 
-  override protected val requestBuilder: ElasticsearchRequestBuilder[ImageSearchOptions] =
+  override protected val requestBuilder
+    : ElasticsearchRequestBuilder[ImageSearchOptions] =
     ImagesRequestBuilder
 
   def retrieveSimilarImages(

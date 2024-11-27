@@ -68,7 +68,7 @@ object AggregationMapping {
       )
     }.toList
 
-  private def parseNestedAggregationBuckets(aggregationJson: Json) = {
+  private def parseNestedAggregationBuckets(aggregationJson: Json) =
     bucketsFromAnywhere(aggregationJson).map { bucket =>
       // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
       // storing a list of labels associated with a given ID.
@@ -95,23 +95,22 @@ object AggregationMapping {
         count = bucket.count
       )
     }.toList
-  }
 
   def aggregationParser(
     jsonString: String
   ): Try[Aggregation] = {
     println(jsonString)
     parse(jsonString)
-      .map(json =>
-        root.nested
-          .as[Json]
-          .getOption(json)
-          .orElse(root.nestedSelf.as[Json].getOption(json)) match {
-          case Some(nestedJson) =>
-            Aggregation(parseNestedAggregationBuckets(nestedJson))
-          case _ => Aggregation(parseAggregationBuckets(json))
-        }
-      )
+      .map(
+        json =>
+          root.nested
+            .as[Json]
+            .getOption(json)
+            .orElse(root.nestedSelf.as[Json].getOption(json)) match {
+            case Some(nestedJson) =>
+              Aggregation(parseNestedAggregationBuckets(nestedJson))
+            case _ => Aggregation(parseAggregationBuckets(json))
+        })
       .toTry
   }
 

@@ -1,7 +1,13 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticApi.{boolQuery, termsAgg}
-import com.sksamuel.elastic4s.requests.searches.aggs.{Aggregation, FilterAggregation, NestedAggregation, TermsAggregation, TermsOrder}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  Aggregation,
+  FilterAggregation,
+  NestedAggregation,
+  TermsAggregation,
+  TermsOrder
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models.Pairable
@@ -21,7 +27,8 @@ case class AggregationParams(
 )
 
 trait AggregationsBuilder[AggregationRequest, Filter] {
-  def pairedAggregationRequests(filter: Filter with Pairable): List[AggregationRequest]
+  def pairedAggregationRequests(
+    filter: Filter with Pairable): List[AggregationRequest]
   def getAggregationParams(request: AggregationRequest): AggregationParams
   def buildFilterQuery: PartialFunction[Filter, Query]
 
@@ -34,7 +41,9 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
         .contains(aggregationRequest)
     }
 
-  def getAggregations(filters: List[Filter with Pairable], aggregationRequests: List[AggregationRequest]): Seq[FilterAggregation] = {
+  def getAggregations(
+    filters: List[Filter with Pairable],
+    aggregationRequests: List[AggregationRequest]): Seq[FilterAggregation] =
     aggregationRequests.map { aggregationRequest =>
       val aggregationParams = getAggregationParams(aggregationRequest)
 
@@ -56,21 +65,28 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
           )
       }
     }
-  }
   private def toFilterAggregation(
     params: AggregationParams,
     query: List[Query],
     pairedQuery: Option[Query]
   ): FilterAggregation = {
-    val toAggregation: (AggregationParams, List[String]) => Aggregation = params.aggregationType match {
-      case AggregationType.LabeledIdAggregation => toLabeledIdAggregation
-      case AggregationType.LabelOnlyAggregation => toTermsAggregation
-    }
+    val toAggregation: (AggregationParams, List[String]) => Aggregation =
+      params.aggregationType match {
+        case AggregationType.LabeledIdAggregation => toLabeledIdAggregation
+        case AggregationType.LabelOnlyAggregation => toTermsAggregation
+      }
 
     val selfAggregation: Option[Aggregation] = pairedQuery match {
       case Some(TermsQuery(_, values, _, _, _, _, _)) =>
         val pairedValues = values.map(value => value.toString).toList
-        Some(toAggregation(AggregationParams("self", params.fieldPath, params.size, params.aggregationType), pairedValues))
+        Some(
+          toAggregation(
+            AggregationParams(
+              "self",
+              params.fieldPath,
+              params.size,
+              params.aggregationType),
+            pairedValues))
       case _ => None
     }
 
@@ -109,7 +125,13 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val idAggregation =
-      toTermsAggregation(AggregationParams(params.name, s"${params.fieldPath}.id", params.size, params.aggregationType), include)
+      toTermsAggregation(
+        AggregationParams(
+          params.name,
+          s"${params.fieldPath}.id",
+          params.size,
+          params.aggregationType),
+        include)
     val labelAggregation =
       termsAgg("labels", s"${params.fieldPath}.label").size(1)
     val nestedAggregation = idAggregation.subAggregations(labelAggregation)

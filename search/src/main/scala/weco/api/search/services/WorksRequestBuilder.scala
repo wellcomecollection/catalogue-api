@@ -43,7 +43,8 @@ object WorksRequestBuilder
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
-          aggs = WorksAggregationsBuilder.getAggregations(pairables, searchOptions.aggregations),
+          aggs = WorksAggregationsBuilder
+            .getAggregations(pairables, searchOptions.aggregations),
           preFilter =
             (VisibleWorkFilter :: unpairables).collect(buildWorkFilterQuery),
           postFilter = Some(
@@ -56,11 +57,12 @@ object WorksRequestBuilder
     )
   }
 
-  private def dateOrder(implicit
-    searchOptions: WorkSearchOptions
-  ): Option[SortingOrder] =
-    searchOptions.sortBy collectFirst { case ProductionDateSortRequest =>
-      searchOptions.sortOrder
+  private def dateOrder(
+    implicit
+    searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    searchOptions.sortBy collectFirst {
+      case ProductionDateSortRequest =>
+        searchOptions.sortOrder
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
