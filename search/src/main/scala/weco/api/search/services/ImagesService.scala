@@ -34,8 +34,8 @@ class ImagesService(
   ): Option[ImageAggregations] =
     ImageAggregations(searchResponse)
 
-  override protected val requestBuilder: ImagesRequestBuilder =
-    new ImagesRequestBuilder()
+  override protected val requestBuilder: ElasticsearchRequestBuilder[ImageSearchOptions] =
+    ImagesRequestBuilder
 
   def retrieveSimilarImages(
     index: Index,
@@ -43,7 +43,7 @@ class ImagesService(
     image: IndexedImage,
     minScore: Option[Double] = None
   ): Future[List[IndexedImage]] = {
-    val builder = requestBuilder.requestWithSimilarFeatures
+    val builder = ImagesRequestBuilder.requestWithSimilarFeatures
     // The features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
     val defaultMinScore = 0
     val minScoreValue: Double = minScore.getOrElse(defaultMinScore)

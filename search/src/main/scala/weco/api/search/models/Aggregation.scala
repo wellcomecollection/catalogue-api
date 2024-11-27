@@ -58,39 +58,61 @@ object AggregationMapping {
     @JsonKey("doc_count") count: Int
   )
 
+  private def parseAggregationBuckets(aggregationJson: Json) =
+    bucketsFromAnywhere(aggregationJson).map { bucket =>
+      val key = bucket.key.as[String].toOption.get
+
+      AggregationBucket(
+        data = AggregationBucketData(id = key, label = key),
+        count = bucket.count
+      )
+    }.toList
+
+  private def parseNestedAggregationBuckets(aggregationJson: Json) = {
+    bucketsFromAnywhere(aggregationJson).map { bucket =>
+      // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
+      // storing a list of labels associated with a given ID.
+      val labelBuckets = bucket.labelSubAggregation
+        .map(
+          _.hcursor.downField("buckets").as[Seq[LabelBucket]]
+        )
+        .get
+
+      // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
+      // but we only want to expose the most commonly used one to the frontend.
+      val firstLabelBucket: Option[LabelBucket] = for {
+        labelBuckets <- labelBuckets.toOption
+        firstBucket <- labelBuckets.headOption
+      } yield firstBucket
+
+      val key = bucket.key.as[String].toOption.get
+
+      // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
+      val label = firstLabelBucket.map(_.key).getOrElse(key)
+
+      AggregationBucket(
+        data = AggregationBucketData(id = key, label),
+        count = bucket.count
+      )
+    }.toList
+  }
+
   def aggregationParser(
     jsonString: String
   ): Try[Aggregation] = {
     println(jsonString)
     parse(jsonString)
-      .map(bucketsFromAnywhere)
+      .map(json =>
+        root.nested
+          .as[Json]
+          .getOption(json)
+          .orElse(root.nestedSelf.as[Json].getOption(json)) match {
+          case Some(nestedJson) =>
+            Aggregation(parseNestedAggregationBuckets(nestedJson))
+          case _ => Aggregation(parseAggregationBuckets(json))
+        }
+      )
       .toTry
-      .map(buckets =>
-        buckets.map { bucket =>
-          // Each ID-based aggregation bucket contain a list of label-based sub-aggregation buckets,
-          // storing a list of labels associated with a given ID.
-          val labelBucketsOption = bucket.labelSubAggregation.map(
-            _.hcursor.downField("buckets").as[Seq[LabelBucket]])
-
-          // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
-          // but we only want to expose the most commonly used one to the frontend.
-          val firstLabelBucket: Option[LabelBucket] = for {
-            decoderResult <- labelBucketsOption
-            labelBuckets <- decoderResult.toOption
-            firstBucket <- labelBuckets.headOption
-          } yield firstBucket
-
-          val key = bucket.key.as[String].toOption.get
-
-          // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
-          val label = firstLabelBucket.map(_.key).getOrElse(key)
-
-          AggregationBucket(
-            data = AggregationBucketData(id = key, label),
-            count = bucket.count
-          )
-      })
-      .map(buckets => Aggregation(buckets.toList))
   }
 
 }

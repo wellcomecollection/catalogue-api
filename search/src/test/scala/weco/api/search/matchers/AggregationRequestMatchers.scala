@@ -1,27 +1,17 @@
 package weco.api.search.matchers
 
-import com.sksamuel.elastic4s.requests.searches.aggs.{
-  FilterAggregation,
-  TermsAggregation
-}
+import com.sksamuel.elastic4s.requests.searches.aggs.{FilterAggregation, NestedAggregation, TermsAggregation}
+import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
-import weco.api.search.models.WorkFilter
 
 trait AggregationRequestMatchers {
-  trait MockFilter {
-    val filter: WorkFilter
-  }
-
   def filters(
-    expectedFilters: Seq[WorkFilter]
-  ): HavePropertyMatcher[FilterAggregation, Seq[WorkFilter]] =
+    expectedFilters: Seq[Query]
+  ): HavePropertyMatcher[FilterAggregation, Seq[Query]] =
     (left: FilterAggregation) => {
-      val actualFilters = left.query
-        .asInstanceOf[BoolQuery]
-        .filters
-        .asInstanceOf[Seq[MockFilter]]
-        .map(_.filter)
+      val actualFilters = left.query.asInstanceOf[BoolQuery].filters
+
       HavePropertyMatchResult(
         actualFilters == expectedFilters,
         "filters",
@@ -31,12 +21,11 @@ trait AggregationRequestMatchers {
     }
 
   def filter(
-    expectedFilter: WorkFilter
-  ): HavePropertyMatcher[FilterAggregation, WorkFilter] =
+    expectedFilter: Query
+  ): HavePropertyMatcher[FilterAggregation, Query] =
     (left: FilterAggregation) => {
       val actualFilter = left.query
-        .asInstanceOf[MockFilter]
-        .filter
+
       HavePropertyMatchResult(
         actualFilter == expectedFilter,
         "filter",
@@ -50,7 +39,8 @@ trait AggregationRequestMatchers {
   ): HavePropertyMatcher[FilterAggregation, String] =
     (left: FilterAggregation) => {
       val actualField =
-        left.subaggs.head.asInstanceOf[TermsAggregation].field.get
+        left.subaggs.head.asInstanceOf[NestedAggregation].subaggs.head.asInstanceOf[TermsAggregation].field.get
+
       HavePropertyMatchResult(
         actualField == expectedField,
         "aggregationField",
