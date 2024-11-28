@@ -7,32 +7,15 @@ import io.circe.optics.JsonPath._
 
 import scala.util.{Try}
 
-// This object maps an aggregation result from Elasticsearch into our
-// Aggregation data type.  The results from ES are of the form:
-//
-//    {
-//      "buckets": [
-//        {
-//          "key": "chi",
-//          "doc_count": 4,
-//          "filtered": {
-//            "doc_count": 3
-//          }
-//        },
-//        ...
-//      ],
-//      ...
-//    }
-//
 object AggregationMapping {
   import weco.json.JsonUtil._
   // We can't predict the key name of the resultant sub-aggregation.
   // This optic says, "for each key of the root object that has a key `buckets`, decode
   // the value of that field as an array of Buckets"
-  private val globalAggBuckets = root.each.buckets.each.as[RawAggregationBucket]
+  private val globalAggBuckets = root.nested.each.buckets.each.as[RawAggregationBucket]
   // This optic does the same for buckets within the self aggregation
   private val selfAggBuckets =
-    root.self.each.buckets.each.as[RawAggregationBucket]
+    root.nestedSelf.each.buckets.each.as[RawAggregationBucket]
 
   // When we use the self aggregation pattern, buckets are returned
   // in aggregations at multiple depths. This will return
@@ -58,30 +41,22 @@ object AggregationMapping {
     @JsonKey("doc_count") count: Int
   )
 
-  private def parseAggregationBuckets(aggregationJson: Json) =
-    bucketsFromAnywhere(aggregationJson).map { bucket =>
-      val key = bucket.key.as[String].toOption.get
-
-      AggregationBucket(
-        data = AggregationBucketData(id = key, label = key),
-        count = bucket.count
-      )
-    }.toList
-
-  private def parseNestedAggregationBuckets(aggregationJson: Json) =
-    bucketsFromAnywhere(aggregationJson).map { bucket =>
+  private def parseNestedAggregationBuckets(
+    buckets: Seq[RawAggregationBucket]
+  ) = {
+    buckets.map { bucket =>
       // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
       // storing a list of labels associated with a given ID.
-      val labelBuckets = bucket.labelSubAggregation
+      val labelBucketsOption = bucket.labelSubAggregation
         .map(
           _.hcursor.downField("buckets").as[Seq[LabelBucket]]
         )
-        .get
 
       // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
       // but we only want to expose the most commonly used one to the frontend.
       val firstLabelBucket: Option[LabelBucket] = for {
-        labelBuckets <- labelBuckets.toOption
+        decoderResult <- labelBucketsOption
+        labelBuckets <- decoderResult.toOption
         firstBucket <- labelBuckets.headOption
       } yield firstBucket
 
@@ -94,26 +69,20 @@ object AggregationMapping {
         data = AggregationBucketData(id = key, label),
         count = bucket.count
       )
-    }.toList
+    }.toList.sortBy(b => (-b.count, b.data.label))
+  }
 
   def aggregationParser(
     jsonString: String
   ): Try[Aggregation] = {
     println(jsonString)
     parse(jsonString)
-      .map(
-        json =>
-          root.nested
-            .as[Json]
-            .getOption(json)
-            .orElse(root.nestedSelf.as[Json].getOption(json)) match {
-            case Some(nestedJson) =>
-              Aggregation(parseNestedAggregationBuckets(nestedJson))
-            case _ => Aggregation(parseAggregationBuckets(json))
-        })
+      .map { json =>
+          val nestedBuckets = parseNestedAggregationBuckets(bucketsFromAnywhere(json))
+          Aggregation(nestedBuckets)
+        }
+      }
       .toTry
-  }
-
 }
 
 case class Aggregation(buckets: List[AggregationBucket])

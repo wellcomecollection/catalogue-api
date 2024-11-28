@@ -1,6 +1,9 @@
 package weco.api.search.matchers
 
-import com.sksamuel.elastic4s.requests.searches.aggs.{FilterAggregation, NestedAggregation, TermsAggregation}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  FilterAggregation,
+  TermsAggregation
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
@@ -36,10 +39,9 @@ trait AggregationRequestMatchers {
 
   def aggregationField(
     expectedField: String
-  ): HavePropertyMatcher[FilterAggregation, String] =
-    (left: FilterAggregation) => {
-      val actualField =
-        left.subaggs.head.asInstanceOf[NestedAggregation].subaggs.head.asInstanceOf[TermsAggregation].field.get
+  ): HavePropertyMatcher[TermsAggregation, String] =
+    (left: TermsAggregation) => {
+      val actualField = left.field.get
 
       HavePropertyMatchResult(
         actualField == expectedField,

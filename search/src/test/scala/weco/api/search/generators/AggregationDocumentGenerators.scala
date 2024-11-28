@@ -9,13 +9,9 @@ trait AggregationDocumentGenerators {
   def createWorkDocument(
     docId: String,
     title: String = "",
-    aggregables: Map[String, Seq[String]]
+    aggregables: Map[String, Seq[Json]],
+    filterables: Map[String, Json]
   ): TestDocument = {
-
-    val filterables: Map[String, Json] = aggregables.map {
-      case (key, values) => key -> values.asJson
-    }
-
     val queryables = filterables.filterKeys {
       case "contributors.agent.label" => true
       case "genres.label" => true
@@ -23,16 +19,11 @@ trait AggregationDocumentGenerators {
       case _ => false
     } + ("title" -> title.asJson)
 
-    val aggregablesJson = aggregables.map {
-      case (key, values) =>
-        key -> values.map(toAggregable).asJson
-    } asJson
-
     val doc = Json.obj(
       "display" -> Json.obj("id" -> docId.asJson, "title" -> title.asJson),
       "type" -> Json.fromString("Visible"),
       "query" -> queryables.asJson,
-      "aggregatableValues" -> aggregablesJson,
+      "aggregatableValues" -> aggregables.asJson,
       "filterableValues" -> filterables.asJson
     )
 
@@ -42,16 +33,23 @@ trait AggregationDocumentGenerators {
     )
   }
 
+  def createAggregatableField(id: String, label: String): Json = {
+    Json.obj(
+      "id" -> id.asJson,
+      "label" -> label.asJson
+    )
+  }
+
+  def createAggregatableField(label: String): Json = {
+    createAggregatableField(label, label)
+  }
+
   def createImageDocument(
     docId: String,
     title: String = "",
-    aggregables: Map[String, Seq[String]]
+    aggregables: Map[String, Seq[Json]],
+    filterables: Map[String, Json]
   ): TestDocument = {
-
-    val filterables: Map[String, Json] = aggregables.map {
-      case (key, values) => key -> values.asJson
-    }
-
     val queryables = filterables.filterKeys {
       case "source.contributors.agent.label" => true
       case "source.genres.concepts.label" => true
@@ -59,15 +57,10 @@ trait AggregationDocumentGenerators {
       case _ => false
     } + ("source.title" -> title.asJson)
 
-    val aggregablesJson = aggregables.map {
-      case (key, values) =>
-        key -> values.map(toAggregable).asJson
-    } asJson
-
     val doc = Json.obj(
       "display" -> Json.obj("id" -> docId.asJson, "title" -> title.asJson),
       "query" -> queryables.asJson,
-      "aggregatableValues" -> aggregablesJson,
+      "aggregatableValues" -> aggregables.asJson,
       "filterableValues" -> filterables.asJson,
       "vectorValues" -> Json.obj(
         "features" -> featuresPlaceholder.asJson
@@ -79,9 +72,6 @@ trait AggregationDocumentGenerators {
       doc
     )
   }
-
-  private def toAggregable(value: String): String =
-    s"""{"label":${value.asJson}}"""
 
   private val featuresPlaceholder: Seq[Float] =
     normalize(Seq.fill(4096)(random.nextGaussian().toFloat))

@@ -1,7 +1,7 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticDsl.termsQuery
-import com.sksamuel.elastic4s.requests.searches.aggs.{AbstractAggregation, FilterAggregation, NestedAggregation, TermsAggregation}
+import com.sksamuel.elastic4s.requests.searches.aggs.{FilterAggregation, NestedAggregation, TermsAggregation}
 import com.sksamuel.elastic4s.requests.searches.queries.compound.BoolQuery
 import org.scalatest.{Inside, LoneElement}
 import org.scalatest.funspec.AnyFunSpec
@@ -10,6 +10,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.matchers.AggregationRequestMatchers
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.models.{FormatFilter, GenreFilter, LanguagesFilter, WorkFilter}
+import weco.api.search.services.WorksRequestBuilder.buildWorkFilterQuery
 
 class AggregationsBuilderTest
     extends AnyFunSpec
@@ -37,33 +38,39 @@ class AggregationsBuilderTest
 
       aggregations should have length 2
 
+      val firstNestedAggregation = aggregations.head.subaggs.head.asInstanceOf[NestedAggregation]
+      val firstSelfNestedAggregation = aggregations.head.subaggs(1).asInstanceOf[NestedAggregation]
+
       // The first aggregation is the Format one, filtered with the languages filter.
       aggregations.head should have(
         filters(Seq(languagesFilterQuery)),
-        aggregationField(formatFieldName)
+      )
+      firstNestedAggregation.subaggs.head.asInstanceOf[TermsAggregation] should have(
+        aggregationField(s"${formatFieldName}.id")
       )
 
-      println(aggregations.head.subaggs(0))
-      println(aggregations.head.subaggs(1).asInstanceOf[NestedAggregation].subaggs.head)
-//
-//      inside(aggregations.head.subaggs(1).asInstanceOf[NestedAggregation].subaggs.head) {
-//        case selfFilter: TermsAggregation =>
-//          selfFilter should have(
-//          filter(languagesFilterQuery),
-//          aggregationField(languagesFieldName)
-//        )
-//      }
+      inside(firstSelfNestedAggregation.subaggs.head) {
+        case selfFilter: TermsAggregation =>
+          selfFilter should have(
+            aggregationField(s"${formatFieldName}.id")
+          )
+      }
+
+      val secondNestedAggregation = aggregations(1).subaggs.head.asInstanceOf[NestedAggregation]
+      val secondSelfNestedAggregation = aggregations(1).subaggs(1).asInstanceOf[NestedAggregation]
+
 
       // The second aggregation is the Languages one, filtered with the format filter.
       aggregations(1) should have(
         filters(Seq(formatFilterQuery)),
-        aggregationField(languagesFieldName)
+      )
+      secondNestedAggregation.subaggs.head.asInstanceOf[TermsAggregation] should have(
+        aggregationField(s"${languagesFieldName}.id")
       )
 
-      inside(aggregations(1).subaggs(1)) { case selfFilter: FilterAggregation =>
+      inside(secondSelfNestedAggregation.subaggs.head) { case selfFilter: TermsAggregation =>
         selfFilter should have(
-          filter(languagesFilterQuery),
-          aggregationField(languagesFieldName)
+          aggregationField(s"${languagesFieldName}.id")
         )
       }
     }
@@ -78,14 +85,33 @@ class AggregationsBuilderTest
 
       // The aggregation list is just the requested aggregation
       // filtered by the requested (unpaired) filter.
-      aggregations.loneElement
-        .asInstanceOf[FilterAggregation]
-        .subaggs
-        .loneElement // This marks the absence of the "self" filteraggregation
-        .asInstanceOf[TermsAggregation]
-        .field
-        .get shouldBe WorkAggregationRequest.Format.toString
+      val filterAggregation = aggregations.loneElement
+      val nestedAggregation = filterAggregation.subaggs.loneElement.asInstanceOf[NestedAggregation] // This marks the absence of the "self" aggregation
+      val termsAggregation = nestedAggregation.subaggs.loneElement.asInstanceOf[TermsAggregation]
+
+      termsAggregation.field.get shouldBe s"${formatFieldName}.id"
     }
+
+    it("includes a label-based subaggregation") {
+      val languagesFilter = LanguagesFilter(Seq("en"))
+
+      val aggregations = WorksAggregationsBuilder.getAggregations(
+        List(languagesFilter),
+        List(WorkAggregationRequest.Format)
+      )
+
+      // The aggregation list is just the requested aggregation
+      // filtered by the requested (unpaired) filter.
+      val filterAggregation = aggregations.loneElement
+      val nestedAggregation = filterAggregation.subaggs.loneElement.asInstanceOf[NestedAggregation] // This marks the absence of the "self" aggregation
+      val termsAggregation = nestedAggregation.subaggs.loneElement.asInstanceOf[TermsAggregation]
+
+      val labelSubaggregation = termsAggregation.subaggs.loneElement.asInstanceOf[TermsAggregation]
+
+      labelSubaggregation.field.get shouldBe s"${formatFieldName}.label"
+      labelSubaggregation.size shouldBe Some(1)
+    }
+
 
     it("applies paired filters to non-paired aggregations") {
       val formatFilter = FormatFilter(Seq("bananas"))
@@ -99,28 +125,30 @@ class AggregationsBuilderTest
       //The first aggregation is Format, which has a "self" subaggregation.
       // The details of the content of this aggregation are examined
       // in the "applies to aggregations with a paired filter" test.
-      val firstAgg = aggregations.head
-        .asInstanceOf[FilterAggregation]
+      val firstAggregation = aggregations.head
+      firstAggregation.subaggs should have length 2
 
-      firstAgg.subaggs should have length 2
-      firstAgg should have(
-        filters(Nil),
-        aggregationField(WorkAggregationRequest.Format.toString)
+      val firstNestedAggregation = firstAggregation.subaggs.head.asInstanceOf[NestedAggregation]
+
+      firstNestedAggregation.subaggs.head.asInstanceOf[TermsAggregation] should have(
+        aggregationField(s"${formatFieldName}.id")
       )
 
       //The second aggregation is Language, which has no corresponding
       // filter in this query, so does not have a "self" subaggregation
-      val secondAgg = aggregations(1)
-        .asInstanceOf[FilterAggregation]
-
-      secondAgg.subaggs should have length 1
+      val secondAggregation = aggregations(1)
+      secondAggregation.subaggs should have length 1
 
       // But it should still be filtered using the format filter
-      secondAgg should have(
-        filters(Seq(formatFilterQuery)),
-        aggregationField(WorkAggregationRequest.Languages.toString)
+      secondAggregation should have(
+        filters(Seq(formatFilterQuery))
       )
 
+      val secondNestedAggregation = secondAggregation.subaggs.head.asInstanceOf[NestedAggregation]
+
+      secondNestedAggregation.subaggs.head.asInstanceOf[TermsAggregation] should have(
+        aggregationField(s"${languagesFieldName}.id")
+      )
     }
 
     it("applies all other aggregation-dependent filters to the paired filter") {
@@ -134,7 +162,7 @@ class AggregationsBuilderTest
         List(
           WorkAggregationRequest.Format,
           WorkAggregationRequest.Languages,
-          WorkAggregationRequest.Genre
+          WorkAggregationRequest.GenreLabel
         )
       )
 
@@ -150,17 +178,15 @@ class AggregationsBuilderTest
             filters
           ): _*
         )
-      ) { (agg: AbstractAggregation, thisFilter: WorkFilter) =>
-        val filterQuery = agg
-          .asInstanceOf[FilterAggregation]
-          .query
-          .asInstanceOf[BoolQuery]
+      ) { (agg: FilterAggregation, thisFilter: WorkFilter) =>
+        val filterQuery = agg.query.asInstanceOf[BoolQuery]
+
         //Three filters are requested, each aggregation should
         // have only two.  i.e. not it's own
         filterQuery.filters should have length 2
         // And this ensures that it is the correct two.
         filterQuery.filters should contain theSameElementsAs filters
-          .filterNot(_ == thisFilter)
+          .filterNot(_ == thisFilter).map(buildWorkFilterQuery)
       }
     }
   }

@@ -1,5 +1,6 @@
 package weco.api.search.works
 
+import io.circe.syntax.EncoderOps
 import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.generators.AggregationDocumentGenerators
 import weco.api.search.models.request.WorksIncludes
@@ -52,8 +53,7 @@ class WorksFilteredAggregationsTest
                       "count" : 3,
                       "data" : {
                         "id" : "bak",
-                        "label" : "Bashkir",
-                        "type" : "Language"
+                        "label" : "Bashkir"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -61,8 +61,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "mar",
-                        "label" : "Marathi",
-                        "type" : "Language"
+                        "label" : "Marathi"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -128,8 +127,7 @@ class WorksFilteredAggregationsTest
                       "count" : 3,
                       "data" : {
                         "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
+                        "label" : "Journals"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -137,8 +135,7 @@ class WorksFilteredAggregationsTest
                       "count" : 2,
                       "data" : {
                         "id" : "i",
-                        "label" : "Audio",
-                        "type" : "Format"
+                        "label" : "Audio"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -146,8 +143,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
+                        "label" : "Pictures"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -187,8 +183,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "i",
-                        "label" : "Audio",
-                        "type" : "Format"
+                        "label" : "Audio"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -196,8 +191,7 @@ class WorksFilteredAggregationsTest
                       "count" : 0,
                       "data" : {
                         "id" : "a",
-                        "label" : "Books",
-                        "type" : "Format"
+                        "label" : "Books"
                       },
                       "type" : "AggregationBucket"
                     } 
@@ -217,11 +211,8 @@ class WorksFilteredAggregationsTest
         val doc = createWorkDocument(
           "xkcd0327",
           "Exploits Of a Mom",
-          Map(
-            "contributors.agent.label" -> Seq(
-              "Robert .?+*|{}<>&@[]()\" Tables"
-            )
-          )
+          Map("contributors.agent" -> Seq(createAggregatableField("Robert .?+*|{}<>&@[]()\" Tables"))),
+          Map("contributors.agent.label" -> Seq("Robert .?+*|{}<>&@[]()\" Tables").asJson)
         )
 
         indexLoadedTestDocuments(worksIndex, Seq(doc))
@@ -240,6 +231,7 @@ class WorksFilteredAggregationsTest
               "contributors.agent.label": {
                 "buckets": [{
                   "data": {
+                    "id" : "Robert .?+*|{}<>&@[]()\\" Tables",
                     "label": "Robert .?+*|{}<>&@[]()\\" Tables"
                     },
                     "count":1,
@@ -276,8 +268,7 @@ class WorksFilteredAggregationsTest
                       "count" : 2,
                       "data" : {
                         "id" : "i",
-                        "label" : "Audio",
-                        "type" : "Format"
+                        "label" : "Audio"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -285,8 +276,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "a",
-                        "label" : "Books",
-                        "type" : "Format"
+                        "label" : "Books"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -294,8 +284,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
+                        "label" : "Journals"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -330,8 +319,7 @@ class WorksFilteredAggregationsTest
                       "count" : 4,
                       "data" : {
                         "id" : "a",
-                        "label" : "Books",
-                        "type" : "Format"
+                        "label" : "Books"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -339,8 +327,7 @@ class WorksFilteredAggregationsTest
                       "count" : 3,
                       "data" : {
                         "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
+                        "label" : "Journals"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -348,8 +335,7 @@ class WorksFilteredAggregationsTest
                       "count" : 2,
                       "data" : {
                         "id" : "i",
-                        "label" : "Audio",
-                        "type" : "Format"
+                        "label" : "Audio"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -357,8 +343,7 @@ class WorksFilteredAggregationsTest
                       "count" : 1,
                       "data" : {
                         "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
+                        "label" : "Pictures"
                       },
                       "type" : "AggregationBucket"
                     }

@@ -302,11 +302,14 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
     decodeOneOfCommaSeparated(
       "workType" -> WorkAggregationRequest.Format,
-      "genres.label" -> WorkAggregationRequest.Genre,
+      "genres.label" -> WorkAggregationRequest.GenreLabel,
+      "genres.id" -> WorkAggregationRequest.GenreId,
       "production.dates" -> WorkAggregationRequest.ProductionDate,
-      "subjects.label" -> WorkAggregationRequest.Subject,
+      "subjects.label" -> WorkAggregationRequest.SubjectLabel,
+      "subjects.id" -> WorkAggregationRequest.SubjectId,
       "languages" -> WorkAggregationRequest.Languages,
-      "contributors.agent.label" -> WorkAggregationRequest.Contributor,
+      "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
+      "contributors.agent.id" -> WorkAggregationRequest.ContributorId,
       "items.locations.license" -> WorkAggregationRequest.License,
       "availabilities" -> WorkAggregationRequest.Availabilities
     )

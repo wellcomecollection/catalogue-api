@@ -23,9 +23,8 @@ object SingleImageParams extends QueryParamsUtils {
   def parse =
     parameter(
       "include".as[SingleImageIncludes].?
-    ).tmap {
-      case Tuple1(include) =>
-        SingleImageParams(include)
+    ).tmap { case Tuple1(include) =>
+      SingleImageParams(include)
     }
 
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
@@ -125,7 +124,8 @@ object MultipleImagesParams extends QueryParamsUtils {
           Left(
             s"'$colorString' is not a valid value. Please supply a single hex string."
           )
-    })
+      }
+    )
 
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
     decodeOneOfCommaSeparated(
@@ -138,9 +138,12 @@ object MultipleImagesParams extends QueryParamsUtils {
   implicit val aggregationsDecoder: Decoder[List[ImageAggregationRequest]] =
     decodeOneOfCommaSeparated(
       "locations.license" -> ImageAggregationRequest.License,
-      "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgents,
-      "source.genres.label" -> ImageAggregationRequest.SourceGenres,
-      "source.subjects.label" -> ImageAggregationRequest.SourceSubjects
+      "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgentsLabel,
+      "source.contributors.agent.id" -> ImageAggregationRequest.SourceContributorAgentsId,
+      "source.genres.label" -> ImageAggregationRequest.SourceGenresLabel,
+      "source.genres.id" -> ImageAggregationRequest.SourceGenresId,
+      "source.subjects.label" -> ImageAggregationRequest.SourceSubjectsLabel,
+      "source.subjects.id" -> ImageAggregationRequest.SourceSubjectsId
     )
 
   implicit val sortDecoder: Decoder[List[SortRequest]] =

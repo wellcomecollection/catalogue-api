@@ -25,28 +25,42 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "format" -> Map(
-            "doc_count_error_upper_bound" -> 0,
-            "sum_other_doc_count" -> 0,
-            "buckets" -> List(
-              Map(
-                "key" -> "apple",
-                "doc_count" -> 393145
-              ),
-              Map(
-                "key" -> "banana",
-                "doc_count" -> 5696
-              ),
-              Map(
-                "key" -> "coconut",
-                "doc_count" -> 9
+          "nested" -> Map(
+            "format" -> Map(
+              "doc_count_error_upper_bound" -> 0,
+              "sum_other_doc_count" -> 0,
+              "buckets" -> List(
+                Map(
+                  "key" -> "apple",
+                  "doc_count" -> 393145
+                ),
+                Map(
+                  "key" -> "banana",
+                  "doc_count" -> 5696
+                ),
+                Map(
+                  "key" -> "coconut",
+                  "doc_count" -> 9
+                )
+              )
+            )
+          ),
+          "nestedSelf" -> Map(
+            "format" -> Map(
+              "doc_count_error_upper_bound" -> 0,
+              "sum_other_doc_count" -> 0,
+              "buckets" -> List(
+                Map(
+                  "key" -> "rare fruit",
+                  "doc_count" -> 1
+                ),
               )
             )
           )
         )
       )
     )
-    println(searchResponse)
+
     val singleAgg = WorkAggregations(searchResponse)
     singleAgg.get.format shouldBe Some(
       Aggregation(
@@ -62,13 +76,19 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           AggregationBucket(
             AggregationBucketData("coconut", "coconut"),
             count = 9
+          ),
+          AggregationBucket(
+            AggregationBucketData("rare fruit", "rare fruit"),
+            count = 1
           )
         )
       )
     )
   }
 
-  it("populates AggregationBucketData with the same label and ID if no nested 'labels' bucket provided") {
+  it(
+    "populates AggregationBucketData with the same label and ID if no nested 'labels' bucket provided"
+  ) {
     val searchResponse = SearchResponse(
       took = 1234,
       isTimedOut = false,
@@ -83,13 +103,15 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "format" -> Map(
-            "doc_count_error_upper_bound" -> 0,
-            "sum_other_doc_count" -> 0,
-            "buckets" -> List(
-              Map(
-                "key" -> "artichoke",
-                "doc_count" -> 393145
+          "nested" -> Map(
+            "format" -> Map(
+              "doc_count_error_upper_bound" -> 0,
+              "sum_other_doc_count" -> 0,
+              "buckets" -> List(
+                Map(
+                  "key" -> "artichoke",
+                  "doc_count" -> 393145
+                )
               )
             )
           )
@@ -109,7 +131,9 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
     )
   }
 
-  it("correctly populates AggregationBucketData with IDs and labels if a nested 'labels' bucket is provided for each ID bucket") {
+  it(
+    "correctly populates AggregationBucketData with IDs and labels if a nested 'labels' bucket is provided for each ID bucket"
+  ) {
     val searchResponse = SearchResponse(
       took = 1234,
       isTimedOut = false,
@@ -125,35 +149,37 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count" -> 12345,
-          "format" -> Map(
-            "doc_count_error_upper_bound" -> 0,
-            "sum_other_doc_count" -> 0,
-            "buckets" -> List(
-              Map(
-                "key" -> "123",
-                "doc_count" -> 393145,
-                "labels" -> Map(
-                  "buckets" -> List(
-                    Map(
-                      "key" -> "absinthe",
-                      "doc_count" -> 393145
+          "nested" -> Map(
+            "format" -> Map(
+              "doc_count_error_upper_bound" -> 0,
+              "sum_other_doc_count" -> 0,
+              "buckets" -> List(
+                Map(
+                  "key" -> "123",
+                  "doc_count" -> 393145,
+                  "labels" -> Map(
+                    "buckets" -> List(
+                      Map(
+                        "key" -> "absinthe",
+                        "doc_count" -> 393145
+                      )
                     )
                   )
-                )
-              ),
-              Map(
-                "key" -> "456",
-                "doc_count" -> 34,
-                "labels" -> Map(
-                  "buckets" -> List(
-                    Map(
-                      "key" -> "apple",
-                      "doc_count" -> 34
+                ),
+                Map(
+                  "key" -> "456",
+                  "doc_count" -> 34,
+                  "labels" -> Map(
+                    "buckets" -> List(
+                      Map(
+                        "key" -> "apple",
+                        "doc_count" -> 34
+                      )
                     )
                   )
                 )
               )
-            ),
+            )
           )
         )
       )

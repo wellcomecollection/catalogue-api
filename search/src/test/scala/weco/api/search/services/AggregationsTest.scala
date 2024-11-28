@@ -92,7 +92,7 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(FormatFilter(List("a")))
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
@@ -134,7 +134,7 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
             SubjectLabelFilter(Seq("fIbfVPkqaf"))
@@ -163,7 +163,7 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
             SubjectLabelFilter(Seq("6rJpSUKd2d"))

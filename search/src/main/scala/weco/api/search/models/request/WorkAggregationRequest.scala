@@ -7,11 +7,18 @@ object WorkAggregationRequest {
 
   case object ProductionDate extends WorkAggregationRequest
 
-  case object Genre extends WorkAggregationRequest
+  case object GenreLabel extends WorkAggregationRequest
 
-  case object Subject extends WorkAggregationRequest
+  case object GenreId extends WorkAggregationRequest
 
-  case object Contributor extends WorkAggregationRequest
+
+  case object SubjectLabel extends WorkAggregationRequest
+
+  case object SubjectId extends WorkAggregationRequest
+
+  case object ContributorLabel extends WorkAggregationRequest
+
+  case object ContributorId extends WorkAggregationRequest
 
   case object Languages extends WorkAggregationRequest
 

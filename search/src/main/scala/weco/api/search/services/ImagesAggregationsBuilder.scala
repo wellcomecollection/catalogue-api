@@ -7,6 +7,31 @@ import weco.api.search.services.ImagesRequestBuilder.buildImageFilterQuery
 
 object ImagesAggregationsBuilder
     extends AggregationsBuilder[ImageAggregationRequest, ImageFilter] {
+
+  private def getSourceGenreParams(aggregationType: AggregationType) =
+    AggregationParams(
+      "sourceGenres",
+      "aggregatableValues.source.genres",
+      20,
+      aggregationType
+    )
+
+  private def getSourceSubjectParams(aggregationType: AggregationType) =
+    AggregationParams(
+      "sourceSubjects",
+      "aggregatableValues.source.subjects",
+      20,
+      aggregationType
+    )
+
+  private def getSourceContributorParams(aggregationType: AggregationType) =
+    AggregationParams(
+      "sourceContributorAgents",
+      "aggregatableValues.source.contributors.agent",
+      20,
+      aggregationType
+    )
+
   override def getAggregationParams(
     aggReq: ImageAggregationRequest
   ): AggregationParams =
@@ -24,29 +49,23 @@ object ImagesAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
-      case ImageAggregationRequest.SourceContributorAgents =>
-        AggregationParams(
-          "sourceContributorAgents",
-          "aggregatableValues.source.contributors.agent",
-          20,
-          AggregationType.LabeledIdAggregation
-        )
+      case ImageAggregationRequest.SourceContributorAgentsLabel =>
+        getSourceContributorParams(AggregationType.LabelOnlyAggregation)
 
-      case ImageAggregationRequest.SourceGenres =>
-        AggregationParams(
-          "sourceGenres",
-          "aggregatableValues.source.genres",
-          20,
-          AggregationType.LabeledIdAggregation
-        )
+      case ImageAggregationRequest.SourceContributorAgentsId =>
+        getSourceContributorParams(AggregationType.LabeledIdAggregation)
 
-      case ImageAggregationRequest.SourceSubjects =>
-        AggregationParams(
-          "sourceSubjects",
-          "aggregatableValues.source.subjects",
-          20,
-          AggregationType.LabeledIdAggregation
-        )
+      case ImageAggregationRequest.SourceGenresLabel =>
+        getSourceGenreParams(AggregationType.LabelOnlyAggregation)
+
+      case ImageAggregationRequest.SourceGenresId =>
+        getSourceGenreParams(AggregationType.LabeledIdAggregation)
+
+      case ImageAggregationRequest.SourceSubjectsLabel =>
+        getSourceSubjectParams(AggregationType.LabelOnlyAggregation)
+
+      case ImageAggregationRequest.SourceSubjectsId =>
+        getSourceSubjectParams(AggregationType.LabeledIdAggregation)
     }
 
   override def pairedAggregationRequests(
@@ -55,9 +74,9 @@ object ImagesAggregationsBuilder
     filter match {
       case _: LicenseFilter => List(ImageAggregationRequest.License)
       case _: ContributorsFilter =>
-        List(ImageAggregationRequest.SourceContributorAgents)
-      case _: GenreFilter        => List(ImageAggregationRequest.SourceGenres)
-      case _: SubjectLabelFilter => List(ImageAggregationRequest.SourceSubjects)
+        List(ImageAggregationRequest.SourceContributorAgentsLabel)
+      case _: GenreFilter        => List(ImageAggregationRequest.SourceGenresLabel)
+      case _: SubjectLabelFilter => List(ImageAggregationRequest.SourceSubjectsLabel)
     }
   override def buildFilterQuery: PartialFunction[ImageFilter, Query] =
     buildImageFilterQuery

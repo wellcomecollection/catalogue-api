@@ -28,7 +28,8 @@ case class AggregationParams(
 
 trait AggregationsBuilder[AggregationRequest, Filter] {
   def pairedAggregationRequests(
-    filter: Filter with Pairable): List[AggregationRequest]
+    filter: Filter with Pairable
+  ): List[AggregationRequest]
   def getAggregationParams(request: AggregationRequest): AggregationParams
   def buildFilterQuery: PartialFunction[Filter, Query]
 
@@ -43,67 +44,56 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
 
   def getAggregations(
     filters: List[Filter with Pairable],
-    aggregationRequests: List[AggregationRequest]): Seq[FilterAggregation] =
+    aggregationRequests: List[AggregationRequest]
+  ): Seq[FilterAggregation] =
     aggregationRequests.map { aggregationRequest =>
       val aggregationParams = getAggregationParams(aggregationRequest)
 
-      pairedFilter(filters, aggregationRequest) match {
-        case Some(paired) =>
-          val nonPairedQueries =
-            filters.filterNot(_ == paired).map(buildFilterQuery)
-          val pairedQuery = buildFilterQuery(paired)
-          toFilterAggregation(
-            aggregationParams,
-            nonPairedQueries,
-            Some(pairedQuery)
-          )
-        case _ =>
-          toFilterAggregation(
-            aggregationParams,
-            filters.map(buildFilterQuery),
-            None
-          )
-      }
+      val (queries, pairedQuery) =
+        pairedFilter(filters, aggregationRequest) match {
+          case Some(paired) =>
+            val nonPairedQueries =
+              filters.filterNot(_ == paired).map(buildFilterQuery)
+            (nonPairedQueries, Some(buildFilterQuery(paired)))
+          case _ =>
+            (filters.map(buildFilterQuery), None)
+        }
+
+      toFilterAggregation(aggregationParams, queries, pairedQuery)
     }
+
   private def toFilterAggregation(
     params: AggregationParams,
     query: List[Query],
     pairedQuery: Option[Query]
   ): FilterAggregation = {
-    val toAggregation: (AggregationParams, List[String]) => Aggregation =
+    val toAggregation: AggregationParams => Aggregation =
       params.aggregationType match {
         case AggregationType.LabeledIdAggregation => toLabeledIdAggregation
-        case AggregationType.LabelOnlyAggregation => toTermsAggregation
+        case AggregationType.LabelOnlyAggregation => toLabelOnlyAggregation
+      }
+
+    val toSelfAggregation: (AggregationParams, List[String]) => Aggregation =
+      params.aggregationType match {
+        case AggregationType.LabeledIdAggregation => toSelfLabeledIdAggregation
+        case AggregationType.LabelOnlyAggregation => toSelfLabelOnlyAggregation
       }
 
     val selfAggregation: Option[Aggregation] = pairedQuery match {
       case Some(TermsQuery(_, values, _, _, _, _, _)) =>
         val pairedValues = values.map(value => value.toString).toList
-        Some(
-          toAggregation(
-            AggregationParams(
-              "self",
-              params.fieldPath,
-              params.size,
-              params.aggregationType),
-            pairedValues))
+        Some(toSelfAggregation(params, pairedValues))
       case _ => None
     }
 
     FilterAggregation(
       name = params.name,
       boolQuery.filter(query),
-      subaggs = Seq(
-        toAggregation(params, List()),
-        selfAggregation.orNull
-      ).filter(_ != null)
+      subaggs = Seq(Some(toAggregation(params)), selfAggregation).flatten
     )
   }
 
-  private def toTermsAggregation(
-    params: AggregationParams,
-    include: List[String]
-  ): TermsAggregation =
+  private def toTermsAggregation(params: AggregationParams): TermsAggregation =
     termsAgg(params.name, params.fieldPath)
       .size(params.size)
       .order(
@@ -112,7 +102,13 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
           TermsOrder("_key", asc = true)
         )
       )
-//      .minDocCount(1)
+
+  private def toSelfTermsAggregation(
+    params: AggregationParams,
+    include: List[String]
+  ): TermsAggregation =
+    toTermsAggregation(params)
+      .minDocCount(0)
       .includeExactValues(include)
 
   /** Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
@@ -121,31 +117,66 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     * For example, different Works can use different labels for a given LoC Subject Heading.)
     */
   private def toLabeledIdAggregation(
+    params: AggregationParams
+  ): NestedAggregation = {
+    val idAggregation =
+      toTermsAggregation(params.copy(fieldPath = s"${params.fieldPath}.id"))
+    val labelAggregation =
+      termsAgg("labels", s"${params.fieldPath}.label").size(1)
+
+    NestedAggregation(
+      name = "nested",
+      path = params.fieldPath,
+      subaggs = List(idAggregation.subAggregations(labelAggregation))
+    )
+  }
+
+  private def toLabelOnlyAggregation(
+    params: AggregationParams
+  ): NestedAggregation = {
+    val labelAggregation =
+      toTermsAggregation(params.copy(fieldPath = s"${params.fieldPath}.label"))
+
+    NestedAggregation(
+      name = "nested",
+      path = params.fieldPath,
+      subaggs = List(labelAggregation)
+    )
+  }
+
+  private def toSelfLabeledIdAggregation(
     params: AggregationParams,
     include: List[String]
   ): NestedAggregation = {
     val idAggregation =
-      toTermsAggregation(
-        AggregationParams(
-          params.name,
-          s"${params.fieldPath}.id",
-          params.size,
-          params.aggregationType),
-        include)
+      toSelfTermsAggregation(
+        params.copy(fieldPath = s"${params.fieldPath}.id"),
+        include
+      )
     val labelAggregation =
       termsAgg("labels", s"${params.fieldPath}.label").size(1)
-    val nestedAggregation = idAggregation.subAggregations(labelAggregation)
-
-    val name = if (include.nonEmpty) {
-      "nestedSelf"
-    } else {
-      "nested"
-    }
 
     NestedAggregation(
-      name = name,
+      name = "nestedSelf",
       path = params.fieldPath,
-      subaggs = List(nestedAggregation)
+      subaggs = List(idAggregation.subAggregations(labelAggregation))
+    )
+  }
+
+  private def toSelfLabelOnlyAggregation(
+    params: AggregationParams,
+    include: List[String]
+  ): NestedAggregation = {
+    val labelAggregation =
+      toSelfTermsAggregation(
+        params.copy(fieldPath = s"${params.fieldPath}.label"),
+        include
+      )
+
+    NestedAggregation(
+      name = "nestedSelf",
+      path = params.fieldPath,
+      subaggs = List(labelAggregation)
     )
   }
 }
