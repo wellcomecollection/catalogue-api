@@ -85,7 +85,6 @@ class ElasticsearchService(elasticClient: ElasticClient)(implicit
         .map(_.toEither)
         .map {
           case Right(response) =>
-            println(response)
             transaction.setLabel("elasticTook", response.took)
             Right(response)
 

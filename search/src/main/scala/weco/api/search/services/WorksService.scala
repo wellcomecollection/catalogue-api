@@ -10,7 +10,6 @@ import weco.api.search.elasticsearch.{ElasticsearchError, ElasticsearchService}
 import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.{
-  AggregationBucket,
   ElasticAggregations,
   WorkAggregations,
   WorkSearchOptions
@@ -51,24 +50,20 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
       search(index)
         .size(0)
         .aggregations(
-          TermsAggregation("work_type")
+          TermsAggregation("workType")
             .field("type")
         )
     )
 
     searchResponse.map {
-      case Right(resp) =>
+      case Right(resp) => {
+        val workTypeAggregation = resp.aggregations.getAgg("workType").get
+        val workTypeBuckets = workTypeAggregation.data("buckets").asInstanceOf[List[Map[String, Any]]]
+
         Right(
-          resp.aggregations
-            .decodeAgg("work_type")
-            .get
-            .buckets
-            .map {
-              case AggregationBucket(data, count) =>
-                data.id -> count
-            }
-            .toMap
+          workTypeBuckets.map(bucket => bucket("key").asInstanceOf[String] -> bucket("doc_count").asInstanceOf[Int]).toMap
         )
+      }
       case Left(err) => Left(err)
     }
   }

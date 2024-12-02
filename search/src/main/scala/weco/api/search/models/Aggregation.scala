@@ -78,7 +78,6 @@ object AggregationMapping {
   def aggregationParser(
     jsonString: String
   ): Try[Aggregation] = {
-    println(jsonString)
     parse(jsonString)
       .map { json =>
         val nestedBuckets =
