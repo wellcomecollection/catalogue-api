@@ -133,10 +133,10 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
   }
 
   /**
-   * Label-only aggregations are based on the `label` subfield of each nested aggregatable field, the `id` subfield
-   * is ignored.This aggregation type is included to keep supporting label-based concept aggregations, and can be
-   * removed once we switch to ID-based aggregations.
-   */
+    * Label-only aggregations are based on the `label` subfield of each nested aggregatable field, the `id` subfield
+    * is ignored.This aggregation type is included to keep supporting label-based concept aggregations, and can be
+    * removed once we switch to ID-based aggregations.
+    */
   private def toLabelOnlyAggregation(
     params: AggregationParams,
     nestedAggregationName: String,
