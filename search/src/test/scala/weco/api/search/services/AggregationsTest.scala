@@ -144,14 +144,13 @@ class AggregationsTest
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe 7
           buckets.map(b => b.data.label) should contain theSameElementsAs List(
-            "Books",
-            "Manuscripts",
-            "Music",
             "Archives and manuscripts",
+            "Books",
             "Born-digital archives",
             "Film",
-            "Standing order",
-            "Books"
+            "Manuscripts",
+            "Music",
+            "Standing order"
           )
         }
       }
