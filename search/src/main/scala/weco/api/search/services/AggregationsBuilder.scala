@@ -108,7 +108,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     else aggregation
   }
 
-  /** Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. All aggregations
+  /** Each aggregatable field is indexed as a nested field with an `id` value and a `label` value. Labeled ID aggregations
     * are `id`-based, with a `label`-based sub-aggregation to get Elasticsearch to return all `label` values associated
     * with each `id` bucket. (Usually each `id` value only has one one `label` value associated with it, but not always.
     * For example, different Works can use different labels for a given LoC Subject Heading.)
@@ -132,6 +132,11 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     )
   }
 
+  /**
+   * Label-only aggregations are based on the `label` subfield of each nested aggregatable field, the `id` subfield
+   * is ignored.This aggregation type is included to keep supporting label-based concept aggregations, and can be
+   * removed once we switch to ID-based aggregations.
+   */
   private def toLabelOnlyAggregation(
     params: AggregationParams,
     nestedAggregationName: String,
