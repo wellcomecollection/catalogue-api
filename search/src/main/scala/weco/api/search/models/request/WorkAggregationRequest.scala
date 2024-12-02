@@ -11,7 +11,6 @@ object WorkAggregationRequest {
 
   case object GenreId extends WorkAggregationRequest
 
-
   case object SubjectLabel extends WorkAggregationRequest
 
   case object SubjectId extends WorkAggregationRequest
