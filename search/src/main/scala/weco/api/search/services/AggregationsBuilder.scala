@@ -67,7 +67,8 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     query: List[Query],
     pairedQuery: Option[Query]
   ): FilterAggregation = {
-    val toAggregation: (AggregationParams, String, List[String]) => Aggregation =
+    val toAggregation
+      : (AggregationParams, String, List[String]) => Aggregation =
       params.aggregationType match {
         case AggregationType.LabeledIdAggregation => toLabeledIdAggregation
         case AggregationType.LabelOnlyAggregation => toLabelOnlyAggregation
@@ -83,7 +84,9 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     FilterAggregation(
       name = params.name,
       boolQuery.filter(query),
-      subaggs = Seq(Some(toAggregation(params, "nested", List())), selfAggregation).flatten
+      subaggs = Seq(
+        Some(toAggregation(params, "nested", List())),
+        selfAggregation).flatten
     )
   }
 
@@ -116,7 +119,9 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val idAggregation =
-      toTermsAggregation(params.copy(fieldPath = s"${params.fieldPath}.id"), include)
+      toTermsAggregation(
+        params.copy(fieldPath = s"${params.fieldPath}.id"),
+        include)
     val labelAggregation =
       termsAgg("labels", s"${params.fieldPath}.label").size(1)
 
@@ -133,7 +138,9 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val labelAggregation =
-      toTermsAggregation(params.copy(fieldPath = s"${params.fieldPath}.label"), include)
+      toTermsAggregation(
+        params.copy(fieldPath = s"${params.fieldPath}.label"),
+        include)
 
     NestedAggregation(
       name = nestedAggregationName,
