@@ -108,8 +108,11 @@ object AggregationMapping {
       .sortBy(b => (-b.count, b.data.label))
 
   private def getUnfilteredIdLabelMapping(json: Json): Map[String, String] = {
-    val unfilteredSelfBuckets = parseNestedAggregationBuckets(unfilteredSelfAggBuckets.getAll(json))
-    unfilteredSelfBuckets.map(bucket => bucket.data.id -> bucket.data.label).toMap
+    val unfilteredSelfBuckets = parseNestedAggregationBuckets(
+      unfilteredSelfAggBuckets.getAll(json))
+    unfilteredSelfBuckets
+      .map(bucket => bucket.data.id -> bucket.data.label)
+      .toMap
   }
 
   def aggregationParser(
@@ -117,12 +120,16 @@ object AggregationMapping {
   ): Try[Aggregation] = {
     parse(jsonString)
       .map { json =>
-        val nestedBuckets = parseNestedAggregationBuckets(bucketsFromAnywhere(json))
+        val nestedBuckets =
+          parseNestedAggregationBuckets(bucketsFromAnywhere(json))
         val unfilteredIdLabelMap = getUnfilteredIdLabelMapping(json)
 
         val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
           val id = bucket.data.id
-          bucket.copy(data = AggregationBucketData(id = id, unfilteredIdLabelMap.getOrElse(id, bucket.data.label)))
+          bucket.copy(
+            data = AggregationBucketData(
+              id = id,
+              unfilteredIdLabelMap.getOrElse(id, bucket.data.label)))
         }
         Aggregation(nestedBucketsWithUpdatedLabels)
       }

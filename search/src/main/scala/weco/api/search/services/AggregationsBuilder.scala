@@ -1,7 +1,13 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticApi.{boolQuery, matchAllQuery, termsAgg}
-import com.sksamuel.elastic4s.requests.searches.aggs.{Aggregation, FilterAggregation, NestedAggregation, TermsAggregation, TermsOrder}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  Aggregation,
+  FilterAggregation,
+  NestedAggregation,
+  TermsAggregation,
+  TermsOrder
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models.Pairable
@@ -121,7 +127,11 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val idAggregation =
-      toTermsAggregation("terms", s"${params.fieldPath}.id", params.size, include)
+      toTermsAggregation(
+        "terms",
+        s"${params.fieldPath}.id",
+        params.size,
+        include)
     val labelAggregation =
       termsAgg("labels", s"${params.fieldPath}.label").size(1)
 
@@ -143,7 +153,11 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val labelAggregation =
-      toTermsAggregation("terms", s"${params.fieldPath}.label", params.size, include)
+      toTermsAggregation(
+        "terms",
+        s"${params.fieldPath}.label",
+        params.size,
+        include)
 
     NestedAggregation(
       name = nestedAggregationName,
