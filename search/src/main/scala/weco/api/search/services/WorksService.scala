@@ -58,10 +58,17 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
     searchResponse.map {
       case Right(resp) => {
         val workTypeAggregation = resp.aggregations.getAgg("workType").get
-        val workTypeBuckets = workTypeAggregation.data("buckets").asInstanceOf[List[Map[String, Any]]]
+        val workTypeBuckets = workTypeAggregation
+          .data("buckets")
+          .asInstanceOf[List[Map[String, Any]]]
 
         Right(
-          workTypeBuckets.map(bucket => bucket("key").asInstanceOf[String] -> bucket("doc_count").asInstanceOf[Int]).toMap
+          workTypeBuckets
+            .map(
+              bucket =>
+                bucket("key").asInstanceOf[String] -> bucket("doc_count")
+                  .asInstanceOf[Int])
+            .toMap
         )
       }
       case Left(err) => Left(err)

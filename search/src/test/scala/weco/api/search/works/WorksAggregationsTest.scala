@@ -322,7 +322,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "count" : 1,
                       "data" : {
-                        "id" : "GCHQ"
+                        "id" : "GCHQ",
                         "label" : "GCHQ"
                       },
                       "type" : "AggregationBucket"
@@ -363,9 +363,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count" : 3,
                       "data" : {
                         "id" : "cc-by",
-                        "label" : "Attribution 4.0 International (CC BY 4.0)",
-                        "type" : "License",
-                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                        "label" : "Attribution 4.0 International (CC BY 4.0)"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -373,9 +371,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count" : 2,
                       "data" : {
                         "id" : "cc-by-nc",
-                        "label" : "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
-                        "type" : "License",
-                        "url" : "https://creativecommons.org/licenses/by-nc/4.0/"
+                        "label" : "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -419,8 +415,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count": 2,
                       "data": {
                         "label": "Closed stores",
-                        "id": "closed-stores",
-                        "type" : "Availability"
+                        "id": "closed-stores"
                       },
                       "type": "AggregationBucket"
                     },
@@ -428,8 +423,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     "count" : 2,
                     "data" : {
                       "id" : "online",
-                      "label" : "Online",
-                      "type" : "Availability"
+                      "label" : "Online"
                     },
                     "type" : "AggregationBucket"
                   },
