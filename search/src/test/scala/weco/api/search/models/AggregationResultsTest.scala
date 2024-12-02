@@ -25,35 +25,37 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "nested" -> Map(
-            "format" -> Map(
-              "doc_count_error_upper_bound" -> 0,
-              "sum_other_doc_count" -> 0,
-              "buckets" -> List(
-                Map(
-                  "key" -> "apple",
-                  "doc_count" -> 393145
-                ),
-                Map(
-                  "key" -> "banana",
-                  "doc_count" -> 5696
-                ),
-                Map(
-                  "key" -> "coconut",
-                  "doc_count" -> 9
+          "filtered" -> Map(
+            "nested" -> Map(
+              "terms" -> Map(
+                "doc_count_error_upper_bound" -> 0,
+                "sum_other_doc_count" -> 0,
+                "buckets" -> List(
+                  Map(
+                    "key" -> "apple",
+                    "doc_count" -> 393145
+                  ),
+                  Map(
+                    "key" -> "banana",
+                    "doc_count" -> 5696
+                  ),
+                  Map(
+                    "key" -> "coconut",
+                    "doc_count" -> 9
+                  )
                 )
               )
-            )
-          ),
-          "nestedSelf" -> Map(
-            "format" -> Map(
-              "doc_count_error_upper_bound" -> 0,
-              "sum_other_doc_count" -> 0,
-              "buckets" -> List(
-                Map(
-                  "key" -> "rare fruit",
-                  "doc_count" -> 1
-                ),
+            ),
+            "nestedSelf" -> Map(
+              "terms" -> Map(
+                "doc_count_error_upper_bound" -> 0,
+                "sum_other_doc_count" -> 0,
+                "buckets" -> List(
+                  Map(
+                    "key" -> "rare fruit",
+                    "doc_count" -> 1
+                  )
+                )
               )
             )
           )
@@ -103,14 +105,16 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       ),
       _aggregationsAsMap = Map(
         "format" -> Map(
-          "nested" -> Map(
-            "format" -> Map(
-              "doc_count_error_upper_bound" -> 0,
-              "sum_other_doc_count" -> 0,
-              "buckets" -> List(
-                Map(
-                  "key" -> "artichoke",
-                  "doc_count" -> 393145
+          "filtered" -> Map(
+            "nested" -> Map(
+              "terms" -> Map(
+                "doc_count_error_upper_bound" -> 0,
+                "sum_other_doc_count" -> 0,
+                "buckets" -> List(
+                  Map(
+                    "key" -> "artichoke",
+                    "doc_count" -> 393145
+                  )
                 )
               )
             )
@@ -149,31 +153,33 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       _aggregationsAsMap = Map(
         "format" -> Map(
           "doc_count" -> 12345,
-          "nested" -> Map(
-            "format" -> Map(
-              "doc_count_error_upper_bound" -> 0,
-              "sum_other_doc_count" -> 0,
-              "buckets" -> List(
-                Map(
-                  "key" -> "123",
-                  "doc_count" -> 393145,
-                  "labels" -> Map(
-                    "buckets" -> List(
-                      Map(
-                        "key" -> "absinthe",
-                        "doc_count" -> 393145
+          "filtered" -> Map(
+            "nested" -> Map(
+              "terms" -> Map(
+                "doc_count_error_upper_bound" -> 0,
+                "sum_other_doc_count" -> 0,
+                "buckets" -> List(
+                  Map(
+                    "key" -> "123",
+                    "doc_count" -> 393145,
+                    "labels" -> Map(
+                      "buckets" -> List(
+                        Map(
+                          "key" -> "absinthe",
+                          "doc_count" -> 393145
+                        )
                       )
                     )
-                  )
-                ),
-                Map(
-                  "key" -> "456",
-                  "doc_count" -> 34,
-                  "labels" -> Map(
-                    "buckets" -> List(
-                      Map(
-                        "key" -> "apple",
-                        "doc_count" -> 34
+                  ),
+                  Map(
+                    "key" -> "456",
+                    "doc_count" -> 34,
+                    "labels" -> Map(
+                      "buckets" -> List(
+                        Map(
+                          "key" -> "apple",
+                          "doc_count" -> 34
+                        )
                       )
                     )
                   )

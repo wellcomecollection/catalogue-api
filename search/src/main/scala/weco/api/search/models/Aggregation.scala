@@ -7,16 +7,48 @@ import io.circe.optics.JsonPath._
 
 import scala.util.{Try}
 
+// Each field we aggregate on will return aggregation buckets in the following nested format:
+//{
+//  "filtered": {
+//    "nestedSelf": {
+//      "terms": {
+//        "buckets": [...]
+//      }
+//    },
+//    "nested": {
+//     "terms": {
+//        "buckets": [...]
+//      }
+//    }
+//  },
+//  "nestedSelf": {
+//    "terms": {
+//      "buckets": [...]
+//    }
+//  }
+//}
+
+// Each bucket then has the following format:
+//{
+//  "key": "i",
+//  "doc_count": 1,
+//  "labels": {
+//    "buckets": [
+//      {
+//        "key": "Audio",
+//        "doc_count": 1
+//      }
+//    ]
+//  }
+//}
 object AggregationMapping {
   import weco.json.JsonUtil._
-  // We can't predict the key name of the resultant sub-aggregation.
-  // This optic says, "for each key of the root object that has a key `buckets`, decode
-  // the value of that field as an array of Buckets"
   private val globalAggBuckets =
-    root.nested.each.buckets.each.as[RawAggregationBucket]
-  // This optic does the same for buckets within the self aggregation
+    root.filtered.nested.terms.buckets.each.as[RawAggregationBucket]
   private val selfAggBuckets =
-    root.nestedSelf.each.buckets.each.as[RawAggregationBucket]
+    root.filtered.nestedSelf.terms.buckets.each.as[RawAggregationBucket]
+  private val unfilteredSelfAggBuckets =
+    root.nestedSelf.terms.buckets.each.as[RawAggregationBucket]
 
   // When we use the self aggregation pattern, buckets are returned
   // in aggregations at multiple depths. This will return
@@ -75,14 +107,24 @@ object AggregationMapping {
       .toList
       .sortBy(b => (-b.count, b.data.label))
 
+  private def getUnfilteredIdLabelMapping(json: Json): Map[String, String] = {
+    val unfilteredSelfBuckets = parseNestedAggregationBuckets(unfilteredSelfAggBuckets.getAll(json))
+    unfilteredSelfBuckets.map(bucket => bucket.data.id -> bucket.data.label).toMap
+  }
+
   def aggregationParser(
     jsonString: String
   ): Try[Aggregation] = {
     parse(jsonString)
       .map { json =>
-        val nestedBuckets =
-          parseNestedAggregationBuckets(bucketsFromAnywhere(json))
-        Aggregation(nestedBuckets)
+        val nestedBuckets = parseNestedAggregationBuckets(bucketsFromAnywhere(json))
+        val unfilteredIdLabelMap = getUnfilteredIdLabelMapping(json)
+
+        val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
+          val id = bucket.data.id
+          bucket.copy(data = AggregationBucketData(id = id, unfilteredIdLabelMap.getOrElse(id, bucket.data.label)))
+        }
+        Aggregation(nestedBucketsWithUpdatedLabels)
       }
   }.toTry
 }

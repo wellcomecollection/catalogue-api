@@ -1,13 +1,7 @@
 package weco.api.search.services
 
-import com.sksamuel.elastic4s.ElasticApi.{boolQuery, termsAgg}
-import com.sksamuel.elastic4s.requests.searches.aggs.{
-  Aggregation,
-  FilterAggregation,
-  NestedAggregation,
-  TermsAggregation,
-  TermsOrder
-}
+import com.sksamuel.elastic4s.ElasticApi.{boolQuery, matchAllQuery, termsAgg}
+import com.sksamuel.elastic4s.requests.searches.aggs.{Aggregation, FilterAggregation, NestedAggregation, TermsAggregation, TermsOrder}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models.Pairable
@@ -81,21 +75,29 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
       case _ => None
     }
 
-    FilterAggregation(
-      name = params.name,
+    val filterAggregation = FilterAggregation(
+      name = "filtered",
       boolQuery.filter(query),
       subaggs = Seq(
         Some(toAggregation(params, "nested", List())),
         selfAggregation).flatten
     )
+
+    FilterAggregation(
+      name = params.name,
+      query = matchAllQuery(),
+      subaggs = Seq(Some(filterAggregation), selfAggregation).flatten
+    )
   }
 
   private def toTermsAggregation(
-    params: AggregationParams,
+    name: String,
+    fieldPath: String,
+    size: Int,
     include: List[String]
   ): TermsAggregation = {
-    val aggregation = termsAgg(params.name, params.fieldPath)
-      .size(params.size)
+    val aggregation = termsAgg(name, fieldPath)
+      .size(size)
       .order(
         Seq(
           TermsOrder("_count", asc = false),
@@ -119,9 +121,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val idAggregation =
-      toTermsAggregation(
-        params.copy(fieldPath = s"${params.fieldPath}.id"),
-        include)
+      toTermsAggregation("terms", s"${params.fieldPath}.id", params.size, include)
     val labelAggregation =
       termsAgg("labels", s"${params.fieldPath}.label").size(1)
 
@@ -143,9 +143,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     include: List[String]
   ): NestedAggregation = {
     val labelAggregation =
-      toTermsAggregation(
-        params.copy(fieldPath = s"${params.fieldPath}.label"),
-        include)
+      toTermsAggregation("terms", s"${params.fieldPath}.label", params.size, include)
 
     NestedAggregation(
       name = nestedAggregationName,
