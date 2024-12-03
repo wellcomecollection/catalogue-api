@@ -72,22 +72,22 @@ object ImagesRequestBuilder
         field = "filterableValues.locations.license.id",
         values = licenseIds
       )
-    case ContributorsFilter(contributorQueries) =>
+    case ContributorsLabelFilter(contributorQueries) =>
       termsQuery(
         "filterableValues.source.contributors.agent.label",
         contributorQueries
       )
-    case ContributorsConceptFilter(conceptIds) =>
+    case ContributorsIdFilter(conceptIds) =>
       termsQuery(
         "filterableValues.source.contributors.agent.id",
         conceptIds
       )
-    case GenreFilter(genreLabels) =>
+    case GenreLabelFilter(genreLabels) =>
       termsQuery(
         "filterableValues.source.genres.label",
         genreLabels
       )
-    case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case GenreIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.source.genres.concepts.id",
         conceptIds
@@ -97,7 +97,7 @@ object ImagesRequestBuilder
         "filterableValues.source.subjects.label",
         subjectLabels
       )
-    case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case SubjectIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.source.subjects.concepts.id",
         conceptIds

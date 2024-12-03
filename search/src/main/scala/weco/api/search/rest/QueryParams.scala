@@ -1,27 +1,12 @@
 package weco.api.search.rest
 
 import java.time.LocalDate
-import org.apache.pekko.http.scaladsl.server.{
-  Directive,
-  Directives,
-  ValidationRejection
-}
+import org.apache.pekko.http.scaladsl.server.{Directive, Directives, ValidationRejection}
 import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshaller
 import com.github.tototoshi.csv.CSVParser
 import io.circe.{Decoder, Json}
-import weco.api.search.rest.MultipleWorksParams.{
-  decodeCommaSeparated,
-  stringListFilter
-}
-import weco.api.search.models.{
-  ContributorsConceptFilter,
-  ContributorsFilter,
-  GenreConceptFilter,
-  GenreFilter,
-  LicenseFilter,
-  SubjectConceptFilter,
-  SubjectLabelFilter
-}
+import weco.api.search.rest.MultipleWorksParams.{decodeCommaSeparated, stringListFilter}
+import weco.api.search.models.{ContributorsIdFilter, ContributorsLabelFilter, GenreIdFilter, GenreLabelFilter, LicenseFilter, SubjectIdFilter, SubjectLabelFilter}
 
 trait QueryParams
 
@@ -29,23 +14,23 @@ object CommonDecoders {
   implicit val licenseFilter: Decoder[LicenseFilter] =
     decodeCommaSeparated.emap(strs => Right(LicenseFilter(strs)))
 
-  implicit val contributorsFilter: Decoder[ContributorsFilter] =
-    stringListFilter(ContributorsFilter)
+  implicit val contributorsFilter: Decoder[ContributorsLabelFilter] =
+    stringListFilter(ContributorsLabelFilter)
 
-  implicit val genreFilter: Decoder[GenreFilter] =
-    stringListFilter(GenreFilter)
+  implicit val genreFilter: Decoder[GenreLabelFilter] =
+    stringListFilter(GenreLabelFilter)
 
-  implicit val genreConceptFilter: Decoder[GenreConceptFilter] =
-    stringListFilter(GenreConceptFilter)
+  implicit val genreIdFilter: Decoder[GenreIdFilter] =
+    stringListFilter(GenreIdFilter)
 
   implicit val subjectsFilter: Decoder[SubjectLabelFilter] =
     stringListFilter(SubjectLabelFilter)
 
-  implicit val subjectsConceptFilter: Decoder[SubjectConceptFilter] =
-    stringListFilter(SubjectConceptFilter)
+  implicit val subjectsIdFilter: Decoder[SubjectIdFilter] =
+    stringListFilter(SubjectIdFilter)
 
-  implicit val contributorsConceptFilter: Decoder[ContributorsConceptFilter] =
-    stringListFilter(ContributorsConceptFilter)
+  implicit val contributorsConceptFilter: Decoder[ContributorsIdFilter] =
+    stringListFilter(ContributorsIdFilter)
 
 }
 

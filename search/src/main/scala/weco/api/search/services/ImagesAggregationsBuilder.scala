@@ -73,15 +73,15 @@ object ImagesAggregationsBuilder
   ): List[ImageAggregationRequest] =
     filter match {
       case _: LicenseFilter => List(ImageAggregationRequest.License)
-      case _: ContributorsFilter =>
+      case _: ContributorsLabelFilter =>
         List(ImageAggregationRequest.SourceContributorAgentsLabel)
-      case _: ContributorsConceptFilter =>
+      case _: ContributorsIdFilter =>
         List(ImageAggregationRequest.SourceContributorAgentsId)
-      case _: GenreFilter        => List(ImageAggregationRequest.SourceGenresLabel)
-      case _: GenreConceptFilter => List(ImageAggregationRequest.SourceGenresId)
+      case _: GenreLabelFilter        => List(ImageAggregationRequest.SourceGenresLabel)
+      case _: GenreIdFilter => List(ImageAggregationRequest.SourceGenresId)
       case _: SubjectLabelFilter =>
         List(ImageAggregationRequest.SourceSubjectsLabel)
-      case _: SubjectConceptFilter =>
+      case _: SubjectIdFilter =>
         List(ImageAggregationRequest.SourceSubjectsId)
     }
   override def buildFilterQuery: PartialFunction[ImageFilter, Query] =

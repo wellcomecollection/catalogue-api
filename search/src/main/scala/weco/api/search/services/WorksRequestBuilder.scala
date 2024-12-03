@@ -85,12 +85,12 @@ object WorksRequestBuilder
         "filterableValues.languages.id",
         languageIds
       )
-    case GenreFilter(genreQueries) =>
+    case GenreLabelFilter(genreQueries) =>
       termsQuery(
         "filterableValues.genres.label",
         genreQueries
       )
-    case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case GenreIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.genres.concepts.id",
         conceptIds
@@ -100,18 +100,18 @@ object WorksRequestBuilder
         "filterableValues.subjects.label",
         labels
       )
-    case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case SubjectIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.subjects.concepts.id",
         conceptIds
       )
-    case ContributorsFilter(contributorQueries) =>
+    case ContributorsLabelFilter(contributorQueries) =>
       termsQuery(
         "filterableValues.contributors.agent.label",
         contributorQueries
       )
 
-    case ContributorsConceptFilter(conceptIds) =>
+    case ContributorsIdFilter(conceptIds) =>
       termsQuery(
         "filterableValues.contributors.agent.id",
         conceptIds

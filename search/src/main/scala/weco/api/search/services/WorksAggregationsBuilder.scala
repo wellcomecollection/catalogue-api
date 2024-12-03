@@ -1,20 +1,7 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.queries.Query
-import weco.api.search.models.{
-  AvailabilitiesFilter,
-  ContributorsConceptFilter,
-  ContributorsFilter,
-  FormatFilter,
-  GenreConceptFilter,
-  GenreFilter,
-  LanguagesFilter,
-  LicenseFilter,
-  Pairable,
-  SubjectConceptFilter,
-  SubjectLabelFilter,
-  WorkFilter
-}
+import weco.api.search.models.{AvailabilitiesFilter, ContributorsIdFilter, ContributorsLabelFilter, FormatFilter, GenreIdFilter, GenreLabelFilter, LanguagesFilter, LicenseFilter, Pairable, SubjectIdFilter, SubjectLabelFilter, WorkFilter}
 import weco.api.search.models.request.WorkAggregationRequest
 import weco.api.search.services.WorksRequestBuilder.buildWorkFilterQuery
 
@@ -129,13 +116,13 @@ object WorksAggregationsBuilder
     filter match {
       case _: FormatFilter         => List(WorkAggregationRequest.Format)
       case _: LanguagesFilter      => List(WorkAggregationRequest.Languages)
-      case _: GenreFilter          => List(WorkAggregationRequest.GenreLabel)
-      case _: GenreConceptFilter   => List(WorkAggregationRequest.GenreId)
+      case _: GenreLabelFilter          => List(WorkAggregationRequest.GenreLabel)
+      case _: GenreIdFilter   => List(WorkAggregationRequest.GenreId)
       case _: SubjectLabelFilter   => List(WorkAggregationRequest.SubjectLabel)
-      case _: SubjectConceptFilter => List(WorkAggregationRequest.SubjectId)
-      case _: ContributorsFilter =>
+      case _: SubjectIdFilter => List(WorkAggregationRequest.SubjectId)
+      case _: ContributorsIdFilter =>
         List(WorkAggregationRequest.ContributorLabel)
-      case _: ContributorsConceptFilter =>
+      case _: ContributorsLabelFilter =>
         List(WorkAggregationRequest.ContributorId)
       case _: LicenseFilter => List(WorkAggregationRequest.License)
       case _: AvailabilitiesFilter =>

@@ -9,7 +9,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks
 import weco.api.search.matchers.AggregationRequestMatchers
 import weco.api.search.models.request.WorkAggregationRequest
-import weco.api.search.models.{FormatFilter, GenreFilter, LanguagesFilter, WorkFilter}
+import weco.api.search.models.{FormatFilter, GenreLabelFilter, LanguagesFilter, WorkFilter}
 import weco.api.search.services.WorksRequestBuilder.buildWorkFilterQuery
 
 class AggregationsBuilderTest
@@ -184,7 +184,7 @@ class AggregationsBuilderTest
     it("applies all other aggregation-dependent filters to the paired filter") {
       val formatFilter = FormatFilter(Seq("bananas"))
       val languagesFilter = LanguagesFilter(Seq("en"))
-      val genreFilter = GenreFilter(Seq("durian"))
+      val genreFilter = GenreLabelFilter(Seq("durian"))
       val filters = List(formatFilter, languagesFilter, genreFilter)
 
       val aggregations = WorksAggregationsBuilder.getAggregations(

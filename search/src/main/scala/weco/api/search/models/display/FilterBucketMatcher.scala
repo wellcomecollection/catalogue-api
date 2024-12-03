@@ -1,16 +1,6 @@
 package weco.api.search.models.display
 
-import weco.api.search.models.{
-  AggregationBucket,
-  AvailabilitiesFilter,
-  ContributorsFilter,
-  DocumentFilter,
-  FormatFilter,
-  GenreFilter,
-  LanguagesFilter,
-  LicenseFilter,
-  SubjectLabelFilter
-}
+import weco.api.search.models.{AggregationBucket, AvailabilitiesFilter, ContributorsLabelFilter, DocumentFilter, FormatFilter, GenreLabelFilter, LanguagesFilter, LicenseFilter, SubjectLabelFilter}
 
 trait FilterAggregationMatcher {
   def matchBucket(bucketData: AggregationBucket): Boolean
@@ -63,12 +53,12 @@ object FilterBucketMatcher {
           FormatFilterAgg -> AggregationDataIdInFilter(ids)
         case LanguagesFilter(ids) =>
           LanguagesFilterAgg -> AggregationDataIdInFilter(ids)
-        case GenreFilter(labels) =>
+        case GenreLabelFilter(labels) =>
           GenreFilterAgg -> AggregationDataLabelInFilter(labels)
         case SubjectLabelFilter(labels) =>
           SubjectLabelFilterAgg ->
             AggregationDataLabelInFilter(labels)
-        case ContributorsFilter(labels) =>
+        case ContributorsLabelFilter(labels) =>
           ContributorsFilterAgg ->
             AggregationDataLabelInFilter(labels)
         case LicenseFilter(ids) =>

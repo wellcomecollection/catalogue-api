@@ -50,14 +50,14 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
       search(index)
         .size(0)
         .aggregations(
-          TermsAggregation("workType")
+          TermsAggregation("work_type")
             .field("type")
         )
     )
 
     searchResponse.map {
       case Right(resp) => {
-        val workTypeAggregation = resp.aggregations.getAgg("workType").get
+        val workTypeAggregation = resp.aggregations.getAgg("work_type").get
         val workTypeBuckets = workTypeAggregation
           .data("buckets")
           .asInstanceOf[List[Map[String, Any]]]
