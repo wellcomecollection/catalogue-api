@@ -48,8 +48,7 @@ class FilterAndAggregateByAvailabilityTest
           (count, s"""
                |{
                |            "id" : "$identifier",
-               |            "label" : "$label",
-               |            "type" : "Availability"
+               |            "label" : "$label"
                |          }
                |""".stripMargin)
       }
@@ -59,8 +58,7 @@ class FilterAndAggregateByAvailabilityTest
     "availabilities=online&genres.label=ThisIsNotAGenre&aggregations=availabilities"
   val redundantFilterBucket: String = """{
                                        |            "id" : "online",
-                                       |            "label" : "Online",
-                                       |            "type" : "Availability"
+                                       |            "label" : "Online"
                                        |          }""".stripMargin
   val unattestedValueParams: String =
     "availabilities=on-the-moon&genres.label=ThisIsNotAGenre&aggregations=availabilities"

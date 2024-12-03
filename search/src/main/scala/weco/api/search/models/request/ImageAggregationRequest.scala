@@ -4,7 +4,10 @@ sealed trait ImageAggregationRequest
 
 object ImageAggregationRequest {
   case object License extends ImageAggregationRequest
-  case object SourceContributorAgents extends ImageAggregationRequest
-  case object SourceGenres extends ImageAggregationRequest
-  case object SourceSubjects extends ImageAggregationRequest
+  case object SourceContributorAgentsLabel extends ImageAggregationRequest
+  case object SourceContributorAgentsId extends ImageAggregationRequest
+  case object SourceGenresLabel extends ImageAggregationRequest
+  case object SourceGenresId extends ImageAggregationRequest
+  case object SourceSubjectsLabel extends ImageAggregationRequest
+  case object SourceSubjectsId extends ImageAggregationRequest
 }

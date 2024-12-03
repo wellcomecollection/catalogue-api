@@ -34,9 +34,7 @@ class ImagesFilteredAggregationsTest extends AnyFunSpec with ApiImagesTestBase {
                     {
                       "data" : {
                         "id" : "cc-by",
-                        "label" : "Attribution 4.0 International (CC BY 4.0)",
-                        "type" : "License",
-                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                        "label" : "Attribution 4.0 International (CC BY 4.0)"
                       },
                       "count" : 5,
                       "type" : "AggregationBucket"
@@ -44,9 +42,7 @@ class ImagesFilteredAggregationsTest extends AnyFunSpec with ApiImagesTestBase {
                     {
                       "data" : {
                         "id" : "pdm",
-                        "label" : "Public Domain Mark",
-                        "type" : "License",
-                        "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                        "label" : "Public Domain Mark"
                       },
                       "count" : 2,
                       "type" : "AggregationBucket"

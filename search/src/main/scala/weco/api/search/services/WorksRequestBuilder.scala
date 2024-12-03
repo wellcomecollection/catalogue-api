@@ -2,16 +2,10 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s._
-import com.sksamuel.elastic4s.requests.searches.aggs._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
-
 import weco.api.search.models._
-import weco.api.search.models.request.{
-  ProductionDateSortRequest,
-  SortingOrder,
-  WorkAggregationRequest
-}
+import weco.api.search.models.request.{ProductionDateSortRequest, SortingOrder}
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
@@ -49,7 +43,8 @@ object WorksRequestBuilder
           sortByDate = dateOrder,
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
-          aggs = filteredAggregationBuilder(pairables).filteredAggregations,
+          aggs = WorksAggregationsBuilder
+            .getAggregations(pairables, searchOptions.aggregations),
           preFilter =
             (VisibleWorkFilter :: unpairables).collect(buildWorkFilterQuery),
           postFilter = Some(
@@ -60,76 +55,6 @@ object WorksRequestBuilder
         )
       )
     )
-  }
-
-  private def filteredAggregationBuilder(
-    filters: List[WorkFilter with Pairable]
-  )(implicit
-    searchOptions: WorkSearchOptions) =
-    new WorkFiltersAndAggregationsBuilder(
-      aggregationRequests = searchOptions.aggregations,
-      filters = filters,
-      requestToAggregation = toAggregation,
-      filterToQuery = buildWorkFilterQuery
-    )
-
-  private def toAggregation(aggReq: WorkAggregationRequest) = aggReq match {
-    // Note: we want these aggregations to return every possible value, so we
-    // want this to be as many formats as we support in the catalogue pipeline.
-    //
-    // At time of writing (May 2022), we have 23 different formats; I've used
-    // 30 here so we have some headroom if we add new formats in future.
-    case WorkAggregationRequest.Format =>
-      TermsAggregation("format")
-        .size(30)
-        .field("aggregatableValues.workType")
-
-    case WorkAggregationRequest.ProductionDate =>
-      TermsAggregation("productionDates")
-        .field("aggregatableValues.production.dates")
-        .minDocCount(1)
-
-    // We don't split genres into concepts, as the data isn't great,
-    // and for rendering isn't useful at the moment.
-    case WorkAggregationRequest.Genre =>
-      TermsAggregation("genres")
-        .size(20)
-        .field("aggregatableValues.genres.label")
-
-    case WorkAggregationRequest.Subject =>
-      TermsAggregation("subjects")
-        .size(20)
-        .field("aggregatableValues.subjects.label")
-
-    case WorkAggregationRequest.Contributor =>
-      TermsAggregation("contributors")
-        .size(20)
-        .field("aggregatableValues.contributors.agent.label")
-
-    case WorkAggregationRequest.Languages =>
-      TermsAggregation("languages")
-        .size(200)
-        .field("aggregatableValues.languages")
-
-    // Note: we want these aggregations to return every possible value, so we
-    // want this to be as many licenses as we support in the catalogue pipeline.
-    //
-    // At time of writing (May 2022), we have 11 different licenses; I've used
-    // 20 here so we have some headroom if we add new licenses in future.
-    case WorkAggregationRequest.License =>
-      TermsAggregation("license")
-        .size(20)
-        .field("aggregatableValues.items.locations.license")
-
-    // Note: we want these aggregations to return every possible value, so we
-    // want this to be as many availabilities as we support in the catalogue pipeline.
-    //
-    // At time of writing (May 2022), we have 3 different availabilities; I've used
-    // 10 here so we have some headroom if we add new ones in future.
-    case WorkAggregationRequest.Availabilities =>
-      TermsAggregation("availabilities")
-        .size(10)
-        .field("aggregatableValues.availabilities")
   }
 
   private def dateOrder(
@@ -160,12 +85,12 @@ object WorksRequestBuilder
         "filterableValues.languages.id",
         languageIds
       )
-    case GenreFilter(genreQueries) =>
+    case GenreLabelFilter(genreQueries) =>
       termsQuery(
         "filterableValues.genres.label",
         genreQueries
       )
-    case GenreConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case GenreIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.genres.concepts.id",
         conceptIds
@@ -175,18 +100,18 @@ object WorksRequestBuilder
         "filterableValues.subjects.label",
         labels
       )
-    case SubjectConceptFilter(conceptIds) if conceptIds.nonEmpty =>
+    case SubjectIdFilter(conceptIds) if conceptIds.nonEmpty =>
       termsQuery(
         "filterableValues.subjects.concepts.id",
         conceptIds
       )
-    case ContributorsFilter(contributorQueries) =>
+    case ContributorsLabelFilter(contributorQueries) =>
       termsQuery(
         "filterableValues.contributors.agent.label",
         contributorQueries
       )
 
-    case ContributorsConceptFilter(conceptIds) =>
+    case ContributorsIdFilter(conceptIds) =>
       termsQuery(
         "filterableValues.contributors.agent.id",
         conceptIds
@@ -244,5 +169,4 @@ object WorksRequestBuilder
         values = availabilityIds
       )
   }
-
 }

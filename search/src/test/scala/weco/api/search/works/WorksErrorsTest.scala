@@ -54,7 +54,7 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
   }
 
   val aggregationsString =
-    "['workType', 'genres.label', 'production.dates', 'subjects.label', 'languages', 'contributors.agent.label', 'items.locations.license', 'availabilities']"
+    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
 
   describe(
     "returns a 400 Bad Request for errors in the ?aggregations parameter"

@@ -1,13 +1,12 @@
 package weco.api.search.models
 
 import com.sksamuel.elastic4s.requests.searches.SearchResponse
-import io.circe.Json
 
 case class ImageAggregations(
-  license: Option[Aggregation[Json]] = None,
-  sourceContributorAgents: Option[Aggregation[Json]] = None,
-  sourceGenres: Option[Aggregation[Json]] = None,
-  sourceSubjects: Option[Aggregation[Json]] = None
+  license: Option[Aggregation] = None,
+  sourceContributorAgents: Option[Aggregation] = None,
+  sourceGenres: Option[Aggregation] = None,
+  sourceSubjects: Option[Aggregation] = None
 )
 
 object ImageAggregations extends ElasticAggregations {
@@ -16,11 +15,11 @@ object ImageAggregations extends ElasticAggregations {
     if (e4sAggregations.data.nonEmpty) {
       Some(
         ImageAggregations(
-          license = e4sAggregations.decodeJsonAgg("license"),
+          license = e4sAggregations.decodeAgg("license"),
           sourceContributorAgents =
-            e4sAggregations.decodeJsonAgg("sourceContributorAgents"),
-          sourceGenres = e4sAggregations.decodeJsonAgg("sourceGenres"),
-          sourceSubjects = e4sAggregations.decodeJsonAgg("sourceSubjects")
+            e4sAggregations.decodeAgg("sourceContributorAgents"),
+          sourceGenres = e4sAggregations.decodeAgg("sourceGenres"),
+          sourceSubjects = e4sAggregations.decodeAgg("sourceSubjects")
         )
       )
     } else {

@@ -1,7 +1,6 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.Index
-import io.circe.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
@@ -69,21 +68,11 @@ class AggregationsTest
           Aggregation(
             List(
               AggregationBucket(
-                data = Json.fromFields(
-                  Seq(
-                    ("label", Json.fromString("1960")),
-                    ("type", Json.fromString("Period"))
-                  )
-                ),
+                AggregationBucketData(id = "1960", label = "1960"),
                 count = 2
               ),
               AggregationBucket(
-                data = Json.fromFields(
-                  Seq(
-                    ("label", Json.fromString("1962")),
-                    ("type", Json.fromString("Period"))
-                  )
-                ),
+                AggregationBucketData(id = "1962", label = "1962"),
                 count = 1
               )
             )
@@ -103,14 +92,14 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(FormatFilter(List("a")))
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           aggs.format should not be empty
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe works.length
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b => b.data.label) should contain theSameElementsAs List(
             "Books",
             "Manuscripts",
             "Music",
@@ -119,6 +108,7 @@ class AggregationsTest
             "E-videos",
             "Videos",
             "Archives and manuscripts",
+            "Born-digital archives",
             "Audio",
             "E-journals",
             "Pictures",
@@ -132,7 +122,6 @@ class AggregationsTest
             "Standing order",
             "E-books",
             "Student dissertations",
-            "Manuscripts",
             "Web sites"
           )
         }
@@ -145,23 +134,23 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("9SceRNaTEl"))
+            SubjectLabelFilter(Seq("fIbfVPkqaf"))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
           buckets.length shouldBe 7
-          buckets.map(b => getKey(b.data, "label").get.asString.get) should contain theSameElementsAs List(
+          buckets.map(b => b.data.label) should contain theSameElementsAs List(
+            "Archives and manuscripts",
             "Books",
+            "Born-digital archives",
+            "Film",
             "Manuscripts",
             "Music",
-            "Archives and manuscripts",
-            "Film",
-            "Standing order",
-            "Web sites"
+            "Standing order"
           )
         }
       }
@@ -173,10 +162,10 @@ class AggregationsTest
 
         val searchOptions = createWorksSearchOptionsWith(
           aggregations =
-            List(WorkAggregationRequest.Format, WorkAggregationRequest.Subject),
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("y0B0TSmDGU"))
+            SubjectLabelFilter(Seq("6rJpSUKd2d"))
           )
         )
         val results =
@@ -198,7 +187,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain("y0B0TSmDGU"))
+          .foreach(subjects => subjects should contain("6rJpSUKd2d"))
       }
     }
   }

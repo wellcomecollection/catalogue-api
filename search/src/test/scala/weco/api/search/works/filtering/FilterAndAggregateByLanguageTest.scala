@@ -54,8 +54,7 @@ class FilterAndAggregateByLanguageTest
           (count, s"""
                |{
                |            "id" : "$identifier",
-               |            "label" : "$label",
-               |            "type" : "Language"
+               |            "label" : "$label"
                |          }
                |""".stripMargin)
       }
@@ -67,8 +66,7 @@ class FilterAndAggregateByLanguageTest
     """
       |{
       |            "id" : "eng",
-      |            "label" : "English",
-      |            "type" : "Language"
+      |            "label" : "English"
       |          }
       |""".stripMargin
   val aggregationName: String = "languages"

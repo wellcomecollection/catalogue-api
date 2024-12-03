@@ -45,12 +45,12 @@ case class MultipleImagesParams(
   sortOrder: Option[SortingOrder],
   query: Option[String],
   license: Option[LicenseFilter],
-  `source.contributors.agent.label`: Option[ContributorsFilter],
-  `source.contributors.concepts`: Option[ContributorsConceptFilter],
-  `source.genres.label`: Option[GenreFilter],
-  `source.genres.concepts`: Option[GenreConceptFilter],
+  `source.contributors.agent.label`: Option[ContributorsLabelFilter],
+  `source.contributors.agent`: Option[ContributorsIdFilter],
+  `source.genres.label`: Option[GenreLabelFilter],
+  `source.genres`: Option[GenreIdFilter],
   `source.subjects.label`: Option[SubjectLabelFilter],
-  `source.subjects.concepts`: Option[SubjectConceptFilter],
+  `source.subjects`: Option[SubjectIdFilter],
   `source.production.dates.from`: Option[LocalDate],
   `source.production.dates.to`: Option[LocalDate],
   color: Option[RgbColor],
@@ -75,11 +75,11 @@ case class MultipleImagesParams(
     List(
       license,
       `source.contributors.agent.label`,
-      `source.contributors.concepts`,
+      `source.contributors.agent`,
       `source.genres.label`,
-      `source.genres.concepts`,
+      `source.genres`,
       `source.subjects.label`,
-      `source.subjects.concepts`,
+      `source.subjects`,
       dateFilter
     ).flatten
 
@@ -101,12 +101,12 @@ object MultipleImagesParams extends QueryParamsUtils {
       "sortOrder".as[SortingOrder].?,
       "query".as[String].?,
       "locations.license".as[LicenseFilter].?,
-      "source.contributors.agent.label".as[ContributorsFilter].?,
-      "source.contributors.concepts".as[ContributorsConceptFilter].?,
-      "source.genres.label".as[GenreFilter].?,
-      "source.genres.concepts".as[GenreConceptFilter].?,
+      "source.contributors.agent.label".as[ContributorsLabelFilter].?,
+      "source.contributors.agent".as[ContributorsIdFilter].?,
+      "source.genres.label".as[GenreLabelFilter].?,
+      "source.genres".as[GenreIdFilter].?,
       "source.subjects.label".as[SubjectLabelFilter].?,
-      "source.subjects.concepts".as[SubjectConceptFilter].?,
+      "source.subjects".as[SubjectIdFilter].?,
       "source.production.dates.from".as[LocalDate].?,
       "source.production.dates.to".as[LocalDate].?,
       "color".as[RgbColor].?,
@@ -138,9 +138,12 @@ object MultipleImagesParams extends QueryParamsUtils {
   implicit val aggregationsDecoder: Decoder[List[ImageAggregationRequest]] =
     decodeOneOfCommaSeparated(
       "locations.license" -> ImageAggregationRequest.License,
-      "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgents,
-      "source.genres.label" -> ImageAggregationRequest.SourceGenres,
-      "source.subjects.label" -> ImageAggregationRequest.SourceSubjects
+      "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgentsLabel,
+      "source.contributors.agent" -> ImageAggregationRequest.SourceContributorAgentsId,
+      "source.genres.label" -> ImageAggregationRequest.SourceGenresLabel,
+      "source.genres" -> ImageAggregationRequest.SourceGenresId,
+      "source.subjects.label" -> ImageAggregationRequest.SourceSubjectsLabel,
+      "source.subjects" -> ImageAggregationRequest.SourceSubjectsId
     )
 
   implicit val sortDecoder: Decoder[List[SortRequest]] =

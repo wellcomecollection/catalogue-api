@@ -72,10 +72,8 @@ class FilterAndAggregateBySubjectTest
         case (count, label) =>
           (count, s"""
                |{
-               |  "concepts" : [
-     |            ],
-     |            "label" : "$label",
-     |            "type" : "Subject"
+     |            "id" : "$label",
+     |            "label" : "$label"
      |          }
                |""".stripMargin)
       }
@@ -86,10 +84,8 @@ class FilterAndAggregateBySubjectTest
   val redundantFilterBucket: String =
     """
       |{
-      |           "concepts" : [
-      |            ],
-      |            "label" : "Psychology, Pathological",
-      |            "type" : "Subject"
+      |            "id" : "Psychology, Pathological",
+      |            "label" : "Psychology, Pathological"
       |          }
       |""".stripMargin
   val aggregationName: String = "subjects.label"

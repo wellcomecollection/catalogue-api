@@ -65,10 +65,8 @@ class FilterAndAggregateByGenreTest
         case (count, label) =>
           (count, s"""
                |{
-               |            "concepts" : [
-               |            ],
-               |            "label" : ${label.asJson},
-               |            "type" : "Genre"
+               |            "id" : ${label.asJson},
+               |            "label" : ${label.asJson}
                |          }
                |""".stripMargin)
       }
@@ -80,10 +78,8 @@ class FilterAndAggregateByGenreTest
   val redundantFilterBucket: String =
     """
       |{
-      |            "concepts" : [
-      |            ],
-      |            "label" : "Pamphlets",
-      |            "type" : "Genre"
+      |            "id" : "Pamphlets",
+      |            "label" : "Pamphlets"
       |          }
       |""".stripMargin
   val aggregationName: String = "genres.label"

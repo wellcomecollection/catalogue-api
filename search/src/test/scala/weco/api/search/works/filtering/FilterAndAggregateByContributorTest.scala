@@ -65,8 +65,8 @@ class FilterAndAggregateByContributorTest
         case (count, label) =>
           (count, s"""
                |{
-     |            "label" : "$label",
-     |            "type" : "Person"
+     |            "id" : "$label",
+     |            "label" : "$label"
      |          }
                |""".stripMargin)
       }
@@ -77,8 +77,8 @@ class FilterAndAggregateByContributorTest
   val redundantFilterBucket: String =
     """
       |{
-      |            "label" : "Karl Marx",
-      |            "type" : "Person"
+      |            "id" : "Karl Marx",
+      |            "label" : "Karl Marx"
       |          }
       |""".stripMargin
 

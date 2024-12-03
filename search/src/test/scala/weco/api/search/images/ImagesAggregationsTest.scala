@@ -31,9 +31,7 @@ with ApiImagesTestBase {
                     {
                       "data" : {
                         "id" : "cc-by",
-                        "label" : "Attribution 4.0 International (CC BY 4.0)",
-                        "type" : "License",
-                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                        "label" : "Attribution 4.0 International (CC BY 4.0)"
                       },
                       "count" : 5,
                       "type" : "AggregationBucket"
@@ -41,9 +39,7 @@ with ApiImagesTestBase {
                     {
                       "data" : {
                         "id" : "pdm",
-                        "label" : "Public Domain Mark",
-                        "type" : "License",
-                        "url" : "https://creativecommons.org/share-your-work/public-domain/pdm/"
+                        "label" : "Public Domain Mark"
                       },
                       "count" : 2,
                       "type" : "AggregationBucket"
@@ -86,26 +82,18 @@ with ApiImagesTestBase {
                   "buckets": [
                     {
                       "data": {
-                        "label" : "carrots",
-                        "type" : "Agent"
+                        "id" : "carrots",
+                        "label" : "carrots"
                       },
                       "count": 3,
                       "type": "AggregationBucket"
                     },
                     {
                       "data": {
-                        "label" : "parrots",
-                        "type" : "Meeting"
+                        "id" : "parrots",
+                        "label" : "parrots"
                       },
-                      "count": 1,
-                      "type": "AggregationBucket"
-                    },
-                    {
-                      "data": {
-                        "label" : "parrots",
-                        "type" : "Organisation"
-                      },
-                      "count": 1,
+                      "count": 2,
                       "type": "AggregationBucket"
                     }
                   ]
@@ -145,30 +133,24 @@ with ApiImagesTestBase {
                   "buckets": [
                     {
                       "data": {
-                        "concepts" : [
-                        ],
-                        "label" : "Carrot counselling",
-                        "type" : "Genre"
+                        "id" : "Carrot counselling",
+                        "label" : "Carrot counselling"
                       },
                       "count": 2,
                       "type": "AggregationBucket"
                     },
                     {
                       "data": {
-                        "concepts" : [
-                        ],
-                        "label" : "Emu entrepreneurship",
-                        "type" : "Genre"
+                        "id" : "Emu entrepreneurship",
+                        "label" : "Emu entrepreneurship"
                       },
                       "count": 1,
                       "type": "AggregationBucket"
                     },
                     {
                       "data": {
-                        "concepts" : [
-                        ],
-                        "label" : "Falcon finances",
-                        "type" : "Genre"
+                        "id" : "Falcon finances",
+                        "label" : "Falcon finances"
                       },
                       "count": 1,
                       "type": "AggregationBucket"
@@ -217,40 +199,32 @@ with ApiImagesTestBase {
                     {
                       "count" : 3,
                       "data" : {
-                        "concepts" : [
-                        ],
-                        "label" : "Simple screwdrivers",
-                        "type" : "Subject"
+                        "id" : "Simple screwdrivers",
+                        "label" : "Simple screwdrivers"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
                       "data" : {
-                        "concepts" : [
-                        ],
-                        "label" : "Squashed squirrels",
-                        "type" : "Subject"
+                        "id" : "Squashed squirrels",
+                        "label" : "Squashed squirrels"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
                       "data" : {
-                        "concepts" : [
-                        ],
-                        "label" : "Square sounds",
-                        "type" : "Subject"
+                        "id" : "Square sounds",
+                        "label" : "Square sounds"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
                       "data" : {
-                        "concepts" : [
-                        ],
                         "label" : "Struck samples",
-                        "type" : "Subject"
+                        "id" : "Struck samples"
                       },
                       "type" : "AggregationBucket"
                     }

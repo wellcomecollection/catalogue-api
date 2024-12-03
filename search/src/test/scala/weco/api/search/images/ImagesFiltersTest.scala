@@ -133,7 +133,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.concepts="
+            path = s"$rootPath/images?source.genres="
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -150,7 +150,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.concepts=baadf00d"
+            path = s"$rootPath/images?source.genres=baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
@@ -167,7 +167,7 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
         withGenreFilterRecords { routes =>
           assertJsonResponse(
             routes,
-            path = s"$rootPath/images?source.genres.concepts=g00dcafe,baadf00d"
+            path = s"$rootPath/images?source.genres=g00dcafe,baadf00d"
           ) {
             Status.OK -> imagesListResponse(
               ids = Seq(
