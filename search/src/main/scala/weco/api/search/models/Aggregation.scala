@@ -10,12 +10,12 @@ import scala.util.{Try}
 // Each field we aggregate on will return aggregation buckets in the following nested format:
 //{
 //  "filtered": {
-//    "nestedSelf": {
+//    "nested": {
 //      "terms": {
 //        "buckets": [...]
 //      }
 //    },
-//    "nested": {
+//    "nestedSelf": {
 //     "terms": {
 //        "buckets": [...]
 //      }
@@ -28,7 +28,7 @@ import scala.util.{Try}
 //  }
 //}
 
-// Each bucket then has the following format:
+// Each bucket then has the following format (the nested buckets are only included in 'labeled ID' aggregations):
 //{
 //  "key": "i",
 //  "doc_count": 1,

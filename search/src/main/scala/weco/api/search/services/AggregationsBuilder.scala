@@ -26,6 +26,15 @@ case class AggregationParams(
   aggregationType: AggregationType
 )
 
+
+/**
+ * Each aggregation follows the same nested aggregation structure to respect our aggregation and faceting principles, defined in RFC 37 (https://github.com/wellcomecollection/docs/tree/main/rfcs/037-api-faceting-principles):
+ *  - [some.field.path]: A no-op filter aggregation which works as a container for sub-aggregations. Named in accordance with the requested field (see rule 3 in RFC 37).
+ *    - 'filtered': A filter aggregation which applies all filters, *except for* filters paired to the aggregated field itself (see rule 5 in RFC 37).
+ *        - 'nested': A nested aggregation which contains a 'labeled ID' sub-aggregation, or a 'label-only' sub-aggregation (see below for more info).
+ *        - 'nestedSelf': Only included if a paired filter exists. Same as 'nested', but with a `includeExactValues` property set to the filtered values defined in the paired filter. This ensures that aggregation buckets corresponding to filtered values are always returned, even if they are not in the top N buckets returned by 'nested' (see rule 6 in RFC 37).
+ *    - 'nestedSelf': Same as the other 'nestedSelf' but with no filters applied. Only included to cover the special case of a 'labeled ID' aggregation bucket returning 0 results, in which case the 'nestedSelf' aggregation is not able to determined the label corresponding to the ID (see rule 6 in RFC 37).
+ */
 trait AggregationsBuilder[AggregationRequest, Filter] {
   def pairedAggregationRequests(
     filter: Filter with Pairable
