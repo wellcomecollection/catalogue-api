@@ -168,7 +168,7 @@ class WorksFiltersTest
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.id="
+          path = s"$rootPath/works?genres="
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
@@ -188,7 +188,7 @@ class WorksFiltersTest
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.id=baadf00d"
+          path = s"$rootPath/works?genres=baadf00d"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
@@ -206,7 +206,7 @@ class WorksFiltersTest
       withGenreIdFilterRecords { routes =>
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?genres.id=g00dcafe,baadf00d"
+          path = s"$rootPath/works?genres=g00dcafe,baadf00d"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
