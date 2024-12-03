@@ -133,9 +133,9 @@ object WorksAggregationsBuilder
       case _: GenreIdFilter      => List(WorkAggregationRequest.GenreId)
       case _: SubjectLabelFilter => List(WorkAggregationRequest.SubjectLabel)
       case _: SubjectIdFilter    => List(WorkAggregationRequest.SubjectId)
-      case _: ContributorsIdFilter =>
-        List(WorkAggregationRequest.ContributorLabel)
       case _: ContributorsLabelFilter =>
+        List(WorkAggregationRequest.ContributorLabel)
+      case _: ContributorsIdFilter =>
         List(WorkAggregationRequest.ContributorId)
       case _: LicenseFilter => List(WorkAggregationRequest.License)
       case _: AvailabilitiesFilter =>

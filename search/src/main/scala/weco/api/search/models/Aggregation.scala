@@ -7,7 +7,8 @@ import io.circe.optics.JsonPath._
 
 import scala.util.{Try}
 
-// Each field we aggregate on will return aggregation buckets in the following nested format:
+// Each aggregated field returns aggregation buckets in the following nested format (the two 'nestedSelf' sets of buckets
+// are only included for aggregations with a paired filter):
 //{
 //  "filtered": {
 //    "nested": {
@@ -27,8 +28,8 @@ import scala.util.{Try}
 //    }
 //  }
 //}
-
-// Each bucket then has the following format (the nested buckets are only included in 'labeled ID' aggregations):
+//
+// Each bucket has the following format (the nested buckets are only included in 'labelled ID' aggregations):
 //{
 //  "key": "i",
 //  "doc_count": 1,
@@ -41,8 +42,11 @@ import scala.util.{Try}
 //    ]
 //  }
 //}
+// For more information about why aggregations are structured this way, see the AggregationsBuilder class
 object AggregationMapping {
   import weco.json.JsonUtil._
+
+  // Optics for retrieving buckets from all three possible locations
   private val globalAggBuckets =
     root.filtered.nested.terms.buckets.each.as[RawAggregationBucket]
   private val selfAggBuckets =
@@ -50,17 +54,11 @@ object AggregationMapping {
   private val unfilteredSelfAggBuckets =
     root.nestedSelf.terms.buckets.each.as[RawAggregationBucket]
 
-  // When we use the self aggregation pattern, buckets are returned
-  // in aggregations at multiple depths. This will return
-  // buckets from the expected locations.
-  // The order of sub aggregations vs the top-level aggregation is not guaranteed,
-  // so construct a sequence consisting of first the top-level buckets, then the self buckets.
-  // The top-level buckets will contain all the properly counted bucket values.  The self buckets
-  // exist only to "top up" the main list with the filtered values if those values were not returned in
-  // the main aggregation.
+  // Retrieve all 'nested' buckets, followed by all 'nestedSelf' buckets. The self buckets exist only to "top up"
+  // the main list with the filtered values if those values were not returned in the main ('nested') aggregation.
   // If any of the filtered terms are present in the main aggregation, then they will be duplicated
   // in the self buckets, hence the need for distinct.
-  private def bucketsFromAnywhere(json: Json): Seq[RawAggregationBucket] =
+  private def getAllFilteredBuckets(json: Json): Seq[RawAggregationBucket] =
     (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
 
   private case class LabelBucket(
@@ -107,7 +105,10 @@ object AggregationMapping {
       .toList
       .sortBy(b => (-b.count, b.data.label))
 
-  private def getUnfilteredIdLabelMapping(json: Json): Map[String, String] = {
+  // Create a map of IDs to labels for all values included in the paired filter. This is to cover the special case of
+  // a filtered 'nestedSelf' aggregation bucket returning an item count of 0. When this happens, there is no way for the
+  // filtered aggregation to map IDs to labels, so we use this mapping to fill in the gaps.
+  private def getUnfilteredIdLabelMap(json: Json): Map[String, String] = {
     val unfilteredSelfBuckets = parseNestedAggregationBuckets(
       unfilteredSelfAggBuckets.getAll(json))
     unfilteredSelfBuckets
@@ -121,8 +122,8 @@ object AggregationMapping {
     parse(jsonString)
       .map { json =>
         val nestedBuckets =
-          parseNestedAggregationBuckets(bucketsFromAnywhere(json))
-        val unfilteredIdLabelMap = getUnfilteredIdLabelMapping(json)
+          parseNestedAggregationBuckets(getAllFilteredBuckets(json))
+        val unfilteredIdLabelMap = getUnfilteredIdLabelMap(json)
 
         val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
           val id = bucket.data.id

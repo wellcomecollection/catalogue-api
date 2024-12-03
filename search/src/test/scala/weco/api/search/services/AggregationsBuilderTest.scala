@@ -35,9 +35,7 @@ class AggregationsBuilderTest
     unfilteredSelfTerms: Option[TermsAggregation]
   )
 
-  // -> FilterAggregation -> FilterAggregation ("filtered")       -> NestedAggregation ("nested")         -> TermsAggregation -> TermsAggregation
-  //                                                              -> SelfNestedAggregation ("nestedSelf") -> TermsAggregation -> TermsAggregation
-  //                      -> SelfNestedAggregation ("nestedSelf") -> TermsAggregation -> TermsAggregation
+  // See AggregationsBuilder class for an explanation of why aggregations are structured this way
   private def decomposeRootAggregation(rootAggregation: FilterAggregation): DecomposedAggregation = {
     val filteredAggregation = rootAggregation.subaggs.head.asInstanceOf[FilterAggregation]
     val filteredNestedAggregation = filteredAggregation.subaggs.head.asInstanceOf[NestedAggregation]
