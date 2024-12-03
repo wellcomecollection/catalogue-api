@@ -77,7 +77,8 @@ object ImagesAggregationsBuilder
         List(ImageAggregationRequest.SourceContributorAgentsLabel)
       case _: ContributorsIdFilter =>
         List(ImageAggregationRequest.SourceContributorAgentsId)
-      case _: GenreLabelFilter        => List(ImageAggregationRequest.SourceGenresLabel)
+      case _: GenreLabelFilter =>
+        List(ImageAggregationRequest.SourceGenresLabel)
       case _: GenreIdFilter => List(ImageAggregationRequest.SourceGenresId)
       case _: SubjectLabelFilter =>
         List(ImageAggregationRequest.SourceSubjectsLabel)

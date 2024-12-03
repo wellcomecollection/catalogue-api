@@ -1,12 +1,27 @@
 package weco.api.search.rest
 
 import java.time.LocalDate
-import org.apache.pekko.http.scaladsl.server.{Directive, Directives, ValidationRejection}
+import org.apache.pekko.http.scaladsl.server.{
+  Directive,
+  Directives,
+  ValidationRejection
+}
 import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshaller
 import com.github.tototoshi.csv.CSVParser
 import io.circe.{Decoder, Json}
-import weco.api.search.rest.MultipleWorksParams.{decodeCommaSeparated, stringListFilter}
-import weco.api.search.models.{ContributorsIdFilter, ContributorsLabelFilter, GenreIdFilter, GenreLabelFilter, LicenseFilter, SubjectIdFilter, SubjectLabelFilter}
+import weco.api.search.rest.MultipleWorksParams.{
+  decodeCommaSeparated,
+  stringListFilter
+}
+import weco.api.search.models.{
+  ContributorsIdFilter,
+  ContributorsLabelFilter,
+  GenreIdFilter,
+  GenreLabelFilter,
+  LicenseFilter,
+  SubjectIdFilter,
+  SubjectLabelFilter
+}
 
 trait QueryParams
 

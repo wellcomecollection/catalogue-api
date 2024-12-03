@@ -1,6 +1,16 @@
 package weco.api.search.models.display
 
-import weco.api.search.models.{AggregationBucket, AvailabilitiesFilter, ContributorsLabelFilter, DocumentFilter, FormatFilter, GenreLabelFilter, LanguagesFilter, LicenseFilter, SubjectLabelFilter}
+import weco.api.search.models.{
+  AggregationBucket,
+  AvailabilitiesFilter,
+  ContributorsLabelFilter,
+  DocumentFilter,
+  FormatFilter,
+  GenreLabelFilter,
+  LanguagesFilter,
+  LicenseFilter,
+  SubjectLabelFilter
+}
 
 trait FilterAggregationMatcher {
   def matchBucket(bucketData: AggregationBucket): Boolean
