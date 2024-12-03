@@ -3,12 +3,15 @@ package weco.api.search.services
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.{
   AvailabilitiesFilter,
+  ContributorsConceptFilter,
   ContributorsFilter,
   FormatFilter,
+  GenreConceptFilter,
   GenreFilter,
   LanguagesFilter,
   LicenseFilter,
   Pairable,
+  SubjectConceptFilter,
   SubjectLabelFilter,
   WorkFilter
 }
@@ -124,12 +127,16 @@ object WorksAggregationsBuilder
     filter: WorkFilter with Pairable
   ): List[WorkAggregationRequest] =
     filter match {
-      case _: FormatFilter       => List(WorkAggregationRequest.Format)
-      case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
-      case _: GenreFilter        => List(WorkAggregationRequest.GenreLabel)
-      case _: SubjectLabelFilter => List(WorkAggregationRequest.SubjectLabel)
+      case _: FormatFilter         => List(WorkAggregationRequest.Format)
+      case _: LanguagesFilter      => List(WorkAggregationRequest.Languages)
+      case _: GenreFilter          => List(WorkAggregationRequest.GenreLabel)
+      case _: GenreConceptFilter   => List(WorkAggregationRequest.GenreId)
+      case _: SubjectLabelFilter   => List(WorkAggregationRequest.SubjectLabel)
+      case _: SubjectConceptFilter => List(WorkAggregationRequest.SubjectId)
       case _: ContributorsFilter =>
         List(WorkAggregationRequest.ContributorLabel)
+      case _: ContributorsConceptFilter =>
+        List(WorkAggregationRequest.ContributorId)
       case _: LicenseFilter => List(WorkAggregationRequest.License)
       case _: AvailabilitiesFilter =>
         List(WorkAggregationRequest.Availabilities)

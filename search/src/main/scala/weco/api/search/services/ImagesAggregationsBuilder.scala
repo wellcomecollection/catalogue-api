@@ -75,9 +75,14 @@ object ImagesAggregationsBuilder
       case _: LicenseFilter => List(ImageAggregationRequest.License)
       case _: ContributorsFilter =>
         List(ImageAggregationRequest.SourceContributorAgentsLabel)
-      case _: GenreFilter => List(ImageAggregationRequest.SourceGenresLabel)
+      case _: ContributorsConceptFilter =>
+        List(ImageAggregationRequest.SourceContributorAgentsId)
+      case _: GenreFilter        => List(ImageAggregationRequest.SourceGenresLabel)
+      case _: GenreConceptFilter => List(ImageAggregationRequest.SourceGenresId)
       case _: SubjectLabelFilter =>
         List(ImageAggregationRequest.SourceSubjectsLabel)
+      case _: SubjectConceptFilter =>
+        List(ImageAggregationRequest.SourceSubjectsId)
     }
   override def buildFilterQuery: PartialFunction[ImageFilter, Query] =
     buildImageFilterQuery
