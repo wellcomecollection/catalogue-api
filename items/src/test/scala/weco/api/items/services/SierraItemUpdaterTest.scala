@@ -425,8 +425,8 @@ class SierraItemUpdaterTest
     it(
       "adds correct available dates for deepstore item"
     ) {
-      // a deepstore item requested on 23/04 will be available in the library 10 days later, from 04/05
-      withClock("2024-04-23T13:00:00.000Z") { clock =>
+      // a deepstore item will be available in the library 10 days later
+      withClock() { clock =>
         withSierraItemUpdater(
           availableDeepstoreItemResponse(workWithAvailableItemNumber),
           Seq(
@@ -449,6 +449,49 @@ class SierraItemUpdaterTest
                 AvailabilitySlot(
                   "2024-05-05T09:00:00.000Z",
                   "2024-05-05T17:00:00.000Z"
+                )
+              )
+            )
+          }
+        }
+      }
+    }
+
+    it(
+      "start the list of available dates with a open day at the library"
+    ) {
+      // if the deepstore lead time ends on a day when the library is closed
+      // we start the list with the next day the library is open
+      withClock("2024-04-26T13:00:00.000Z") { clock =>
+        withSierraItemUpdater(
+          availableDeepstoreItemResponse(workWithAvailableItemNumber),
+          Seq(
+            (
+              contentApiVenueRequest("deepstore"),
+              contentApiVenueResponse(
+                "deepstore",
+                deepstoreOpenLibraryClosed = true
+              )
+            )
+          ),
+          clock
+        ) { sierraItemUpdater =>
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
+
+            val physicalItem = updatedItems.head
+
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-05-05T09:00:00.000Z",
+                  "2024-05-05T17:00:00.000Z"
+                ),
+                AvailabilitySlot(
+                  "2024-05-06T09:00:00.000Z",
+                  "2024-05-06T17:00:00.000Z"
                 )
               )
             )
