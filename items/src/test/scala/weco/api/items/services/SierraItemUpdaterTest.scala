@@ -462,7 +462,7 @@ class SierraItemUpdaterTest
     ) {
       // if the deepstore lead time ends on a day when the library is closed
       // we start the list with the next day the library is open
-      withClock("2024-04-26T13:00:00.000Z") { clock =>
+      withClock() { clock =>
         withSierraItemUpdater(
           availableDeepstoreItemResponse(workWithAvailableItemNumber),
           Seq(
