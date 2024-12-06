@@ -488,10 +488,6 @@ class SierraItemUpdaterTest
                 AvailabilitySlot(
                   "2024-05-05T09:00:00.000Z",
                   "2024-05-05T17:00:00.000Z"
-                ),
-                AvailabilitySlot(
-                  "2024-05-06T09:00:00.000Z",
-                  "2024-05-06T17:00:00.000Z"
                 )
               )
             )

@@ -139,6 +139,14 @@ trait ItemsApiGenerators extends LocalResources {
                 "title": "Library",
                 "nextOpeningDates": [
                   {
+                    "open": "2024-05-02T09:00:00.000Z",
+                    "close": "2024-05-02T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-03T09:00:00.000Z",
+                    "close": "2024-05-03T17:00:00.000Z"
+                  },
+                  {
                     "open": "2024-05-04T09:00:00.000Z",
                     "close": "2024-05-04T17:00:00.000Z"
                   },
@@ -221,13 +229,17 @@ trait ItemsApiGenerators extends LocalResources {
                 "id": "venue-id",
                 "title": "Library",
                 "nextOpeningDates": [
+                                    {
+                    "open": "2024-05-02T09:00:00.000Z",
+                    "close": "2024-05-02T17:00:00.000Z"
+                  },
+                  {
+                    "open": "2024-05-03T09:00:00.000Z",
+                    "close": "2024-05-03T17:00:00.000Z"
+                  },
                   {
                     "open": "2024-05-05T09:00:00.000Z",
                     "close": "2024-05-05T17:00:00.000Z"
-                  },
-                  {
-                    "open": "2024-05-06T09:00:00.000Z",
-                    "close": "2024-05-06T17:00:00.000Z"
                   }
                 ]
               },
