@@ -43,7 +43,7 @@ class SierraItemUpdaterTest
     withActorSystem { implicit actorSystem =>
       withSierraSource(sierraResponses) { sierraSource =>
         val contentApiClient = new MemoryHttpClient(contentApiResponses)
-        with HttpGet {
+          with HttpGet {
           override val baseUri: Uri = Uri("http://content:9002")
         }
 
@@ -300,24 +300,25 @@ class SierraItemUpdaterTest
           Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
 
-              val physicalItem = updatedItems.head
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List(
-                  AvailabilitySlot(
-                    "2024-04-25T09:00:00.000Z",
-                    "2024-04-25T19:00:00.000Z"
-                  ),
-                  AvailabilitySlot(
-                    "2024-04-26T09:00:00.000Z",
-                    "2024-04-26T17:00:00.000Z"
-                  )
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-04-25T09:00:00.000Z",
+                  "2024-04-25T19:00:00.000Z"
+                ),
+                AvailabilitySlot(
+                  "2024-04-26T09:00:00.000Z",
+                  "2024-04-26T17:00:00.000Z"
                 )
               )
+            )
           }
 
         }
@@ -333,20 +334,21 @@ class SierraItemUpdaterTest
           Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
 
-              val physicalItem = updatedItems.head
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List(
-                  AvailabilitySlot(
-                    "2024-04-26T09:00:00.000Z",
-                    "2024-04-26T17:00:00.000Z"
-                  )
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-04-26T09:00:00.000Z",
+                  "2024-04-26T17:00:00.000Z"
                 )
               )
+            )
           }
         }
       }
@@ -362,24 +364,25 @@ class SierraItemUpdaterTest
           Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
 
-              val physicalItem = updatedItems.head
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List(
-                  AvailabilitySlot(
-                    "2024-04-25T09:00:00.000Z",
-                    "2024-04-25T19:00:00.000Z"
-                  ),
-                  AvailabilitySlot(
-                    "2024-04-26T09:00:00.000Z",
-                    "2024-04-26T17:00:00.000Z"
-                  )
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-04-25T09:00:00.000Z",
+                  "2024-04-25T19:00:00.000Z"
+                ),
+                AvailabilitySlot(
+                  "2024-04-26T09:00:00.000Z",
+                  "2024-04-26T17:00:00.000Z"
                 )
               )
+            )
           }
         }
       }
@@ -396,23 +399,24 @@ class SierraItemUpdaterTest
           Seq((contentApiVenueRequest("library"), contentApiVenueResponse())),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
-              val physicalItem = updatedItems.head
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List(
-                  AvailabilitySlot(
-                    "2024-04-25T09:00:00.000Z",
-                    "2024-04-25T19:00:00.000Z"
-                  ),
-                  AvailabilitySlot(
-                    "2024-04-26T09:00:00.000Z",
-                    "2024-04-26T17:00:00.000Z"
-                  )
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-04-25T09:00:00.000Z",
+                  "2024-04-25T19:00:00.000Z"
+                ),
+                AvailabilitySlot(
+                  "2024-04-26T09:00:00.000Z",
+                  "2024-04-26T17:00:00.000Z"
                 )
               )
+            )
           }
         }
       }
@@ -433,24 +437,21 @@ class SierraItemUpdaterTest
           ),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
 
-              val physicalItem = updatedItems.head
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List(
-                  AvailabilitySlot(
-                    "2024-05-04T08:00:00.000Z",
-                    "2024-05-04T15:00:00.000Z"
-                  ),
-                  AvailabilitySlot(
-                    "2024-05-05T09:00:00.000Z",
-                    "2024-05-05T17:00:00.000Z"
-                  )
+            physicalItem.availableDates shouldBe Some(
+              List(
+                AvailabilitySlot(
+                  "2024-05-05T09:00:00.000Z",
+                  "2024-05-05T17:00:00.000Z"
                 )
               )
+            )
           }
         }
       }
@@ -470,15 +471,16 @@ class SierraItemUpdaterTest
           ),
           clock
         ) { sierraItemUpdater =>
-          whenReady(sierraItemUpdater.updateItems(workWithAvailableItem.items)) {
-            updatedItems =>
-              updatedItems.length shouldBe 1
+          whenReady(
+            sierraItemUpdater.updateItems(workWithAvailableItem.items)
+          ) { updatedItems =>
+            updatedItems.length shouldBe 1
 
-              val physicalItem = updatedItems.head
+            val physicalItem = updatedItems.head
 
-              physicalItem.availableDates shouldBe Some(
-                List()
-              )
+            physicalItem.availableDates shouldBe Some(
+              List()
+            )
           }
         }
       }
