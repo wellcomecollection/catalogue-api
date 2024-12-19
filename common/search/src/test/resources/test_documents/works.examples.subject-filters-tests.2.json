@@ -1,38 +1,43 @@
 {
   "description": "examples for the subject filter tests",
-  "createdAt": "2023-11-21T15:39:35.209365Z",
-  "id": "cerujhar",
+  "createdAt": "2024-11-13T08:43:26.611529Z",
+  "id": "eadt8hhm",
   "document": {
     "debug": {
       "source": {
-        "id": "cerujhar",
+        "id": "eadt8hhm",
         "identifier": {
           "identifierType": {
-            "id": "sierra-system-number"
+            "id": "calm-record-id"
           },
           "ontologyType": "Work",
-          "value": "xzBExh6kx6"
+          "value": "SSg7erLcgx"
         },
-        "version": 30,
-        "modifiedTime": "2050-03-03T12:29:26Z"
+        "version": 18,
+        "modifiedTime": "2010-09-19T13:34:03Z"
       },
-      "mergedTime": "2050-03-03T12:29:26Z",
+      "mergedTime": "2010-09-19T13:34:03Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "cerujhar",
-      "title": "title-MdSJPD8H80",
-      "alternativeTitles": [],
-      "contributors": [],
+      "id": "eadt8hhm",
+      "title": "title-zSHRFusVBN",
+      "alternativeTitles": [
+      ],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "sierra-system-number",
-            "label": "Sierra system number",
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
             "type": "IdentifierType"
           },
-          "value": "xzBExh6kx6",
+          "value": "SSg7erLcgx",
           "type": "Identifier"
         }
       ],
@@ -41,96 +46,159 @@
           "label": "Psychology, Pathological",
           "concepts": [
             {
-              "label": "H5zn9bqmY6Obq6l",
+              "label": "ol7E1K1L8XUhcLZ",
               "type": "Concept"
             },
             {
-              "label": "xZzGryOg3KGy7Mz",
+              "label": "hc35m9C4DAgxJAj",
               "type": "Concept"
             },
             {
-              "label": "5GNUj1it3ic4OR9",
+              "label": "Eybh6q7wkoWRiNO",
               "type": "Concept"
             }
           ],
           "type": "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
+      "languages": [
+      ],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "cerujhar",
-      "sourceIdentifier.value": "xzBExh6kx6",
-      "identifiers.value": ["xzBExh6kx6"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
+      "genres.concepts.label": [
+      ],
+      "id": "eadt8hhm",
+      "sourceIdentifier.value": "SSg7erLcgx",
+      "identifiers.value": [
+        "SSg7erLcgx"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
       "subjects.concepts.label": [
-        "H5zn9bqmY6Obq6l",
-        "xZzGryOg3KGy7Mz",
-        "5GNUj1it3ic4OR9"
+        "ol7E1K1L8XUhcLZ",
+        "hc35m9C4DAgxJAj",
+        "Eybh6q7wkoWRiNO"
       ],
-      "title": "title-MdSJPD8H80"
+      "title": "title-zSHRFusVBN"
     },
     "aggregatableValues": {
-      "workType": [],
-      "genres.label": [],
-      "production.dates": [],
+      "workType": [
+      ],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
       "subjects.label": [
         "{\"label\":\"Psychology, Pathological\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "languages": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": null,
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": ["Psychology, Pathological"],
-      "contributors.agent.label": [],
-      "identifiers.value": ["xzBExh6kx6"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+        "Psychology, Pathological"
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "SSg7erLcgx"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

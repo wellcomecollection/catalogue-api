@@ -1,52 +1,63 @@
 {
   "description": "examples for the works filtered aggregations tests",
-  "createdAt": "2023-11-21T15:39:35.409030Z",
-  "id": "1ndk3ton",
+  "createdAt": "2024-11-13T08:43:26.643470Z",
+  "id": "ryawvgup",
   "document": {
     "debug": {
       "source": {
-        "id": "1ndk3ton",
+        "id": "ryawvgup",
         "identifier": {
           "identifierType": {
-            "id": "miro-image-number"
+            "id": "calm-record-id"
           },
           "ontologyType": "Work",
-          "value": "HgjmZ1Psfx"
+          "value": "jHeY6Fz9Kp"
         },
-        "version": 31,
-        "modifiedTime": "1942-02-08T16:28:55Z"
+        "version": 72,
+        "modifiedTime": "2059-12-28T14:23:34Z"
       },
-      "mergedTime": "1942-02-08T16:28:55Z",
+      "mergedTime": "2059-12-28T14:23:34Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "1ndk3ton",
+      "id": "ryawvgup",
       "title": "capybara",
-      "alternativeTitles": [],
+      "alternativeTitles": [
+      ],
       "workType": {
         "id": "d",
         "label": "Journals",
         "type": "Format"
       },
-      "contributors": [],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
             "type": "IdentifierType"
           },
-          "value": "HgjmZ1Psfx",
+          "value": "jHeY6Fz9Kp",
           "type": "Identifier"
         }
       ],
-      "subjects": [],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
+      "subjects": [
+      ],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
       "languages": [
         {
           "id": "mar",
@@ -54,71 +65,131 @@
           "type": "Language"
         }
       ],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "1ndk3ton",
-      "sourceIdentifier.value": "HgjmZ1Psfx",
-      "identifiers.value": ["HgjmZ1Psfx"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": ["Marathi"],
+      "genres.concepts.label": [
+      ],
+      "id": "ryawvgup",
+      "sourceIdentifier.value": "jHeY6Fz9Kp",
+      "identifiers.value": [
+        "jHeY6Fz9Kp"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+        "Marathi"
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
-      "subjects.concepts.label": [],
+      "subjects.concepts.label": [
+      ],
       "title": "capybara"
     },
     "aggregatableValues": {
-      "workType": ["{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [],
+      "workType": [
+        "{\"id\":\"d\",\"label\":\"Journals\",\"type\":\"Format\"}"
+      ],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
+      "subjects.label": [
+      ],
       "languages": [
         "{\"id\":\"mar\",\"label\":\"Marathi\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": "d",
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": ["mar"],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": [],
-      "contributors.agent.label": [],
-      "identifiers.value": ["HgjmZ1Psfx"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+        "mar"
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "jHeY6Fz9Kp"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

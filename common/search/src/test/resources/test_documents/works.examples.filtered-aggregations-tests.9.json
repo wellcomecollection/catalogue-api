@@ -1,35 +1,40 @@
 {
   "description": "examples for the works filtered aggregations tests",
-  "createdAt": "2023-11-21T15:39:35.421772Z",
-  "id": "qwuhqead",
+  "createdAt": "2024-11-13T08:43:26.645904Z",
+  "id": "svnlbwse",
   "document": {
     "debug": {
       "source": {
-        "id": "qwuhqead",
+        "id": "svnlbwse",
         "identifier": {
           "identifierType": {
             "id": "calm-record-id"
           },
           "ontologyType": "Work",
-          "value": "k1Ah2xRfCk"
+          "value": "JFu0QVu8iR"
         },
-        "version": 61,
-        "modifiedTime": "1940-07-03T22:01:02Z"
+        "version": 62,
+        "modifiedTime": "2025-11-29T16:51:43Z"
       },
-      "mergedTime": "1940-07-03T22:01:02Z",
+      "mergedTime": "2025-11-29T16:51:43Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "redirectSources": [
+      ],
+      "mergeCandidates": [
+      ]
     },
     "display": {
-      "id": "qwuhqead",
+      "id": "svnlbwse",
       "title": "rats",
-      "alternativeTitles": [],
+      "alternativeTitles": [
+      ],
       "workType": {
         "id": "i",
         "label": "Audio",
         "type": "Format"
       },
-      "contributors": [],
+      "contributors": [
+      ],
       "identifiers": [
         {
           "identifierType": {
@@ -37,16 +42,22 @@
             "label": "Calm RecordIdentifier",
             "type": "IdentifierType"
           },
-          "value": "k1Ah2xRfCk",
+          "value": "JFu0QVu8iR",
           "type": "Identifier"
         }
       ],
-      "subjects": [],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
+      "subjects": [
+      ],
+      "genres": [
+      ],
+      "items": [
+      ],
+      "holdings": [
+      ],
+      "availabilities": [
+      ],
+      "production": [
+      ],
       "languages": [
         {
           "id": "che",
@@ -54,71 +65,131 @@
           "type": "Language"
         }
       ],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
+      "notes": [
+      ],
+      "formerFrequency": [
+      ],
+      "designation": [
+      ],
+      "images": [
+      ],
+      "parts": [
+      ],
+      "partOf": [
+      ],
+      "precededBy": [
+      ],
+      "succeededBy": [
+      ],
       "type": "Work"
     },
     "query": {
       "collectionPath.label": null,
       "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
+      "alternativeTitles": [
+      ],
+      "contributors.agent.label": [
+      ],
       "description": null,
       "edition": null,
-      "genres.concepts.label": [],
-      "id": "qwuhqead",
-      "sourceIdentifier.value": "k1Ah2xRfCk",
-      "identifiers.value": ["k1Ah2xRfCk"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": ["Chechen"],
+      "genres.concepts.label": [
+      ],
+      "id": "svnlbwse",
+      "sourceIdentifier.value": "JFu0QVu8iR",
+      "identifiers.value": [
+        "JFu0QVu8iR"
+      ],
+      "images.id": [
+      ],
+      "images.identifiers.value": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.shelfmark.value": [
+      ],
+      "languages.label": [
+        "Chechen"
+      ],
       "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
+      "notes.contents": [
+      ],
+      "partOf.title": [
+      ],
       "physicalDescription": null,
-      "production.label": [],
+      "production.label": [
+      ],
       "referenceNumber": null,
-      "subjects.concepts.label": [],
+      "subjects.concepts.label": [
+      ],
       "title": "rats"
     },
     "aggregatableValues": {
-      "workType": ["{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [],
+      "workType": [
+        "{\"id\":\"i\",\"label\":\"Audio\",\"type\":\"Format\"}"
+      ],
+      "genres.label": [
+      ],
+      "production.dates": [
+      ],
+      "subjects.label": [
+      ],
       "languages": [
         "{\"id\":\"che\",\"label\":\"Chechen\",\"type\":\"Language\"}"
       ],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "contributors.agent.label": [
+      ],
+      "items.locations.license": [
+      ],
+      "availabilities": [
+      ]
     },
     "filterableValues": {
       "format.id": "i",
       "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": ["che"],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": [],
-      "contributors.agent.label": [],
-      "identifiers.value": ["k1Ah2xRfCk"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+      "production.dates.range.from": [
+      ],
+      "languages.id": [
+        "che"
+      ],
+      "genres.label": [
+      ],
+      "genres.concepts.id": [
+      ],
+      "genres.concepts.sourceIdentifier": [
+      ],
+      "subjects.label": [
+      ],
+      "subjects.concepts.id": [
+      ],
+      "subjects.concepts.sourceIdentifier": [
+      ],
+      "contributors.agent.label": [
+      ],
+      "contributors.agent.id": [
+      ],
+      "contributors.agent.sourceIdentifier": [
+      ],
+      "identifiers.value": [
+        "JFu0QVu8iR"
+      ],
+      "items.locations.license.id": [
+      ],
+      "items.locations.accessConditions.status.id": [
+      ],
+      "items.id": [
+      ],
+      "items.identifiers.value": [
+      ],
+      "items.locations.locationType.id": [
+      ],
+      "partOf.id": [
+      ],
+      "partOf.title": [
+      ],
+      "availabilities.id": [
+      ]
     },
     "type": "Visible"
   }

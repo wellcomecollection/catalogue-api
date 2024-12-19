@@ -1,22 +1,22 @@
 {
-  "description": "one of a list of works with a variety of formats",
-  "createdAt": "2024-11-13T08:43:26.444809Z",
-  "id": "cfrzpe3b",
+  "description": "examples for the aggregation-with-filters tests",
+  "createdAt": "2024-11-13T08:43:26.581599Z",
+  "id": "y6iujg4j",
   "document": {
     "debug": {
       "source": {
-        "id": "cfrzpe3b",
+        "id": "y6iujg4j",
         "identifier": {
           "identifierType": {
-            "id": "miro-image-number"
+            "id": "calm-record-id"
           },
           "ontologyType": "Work",
-          "value": "yPjPNkcxB9"
+          "value": "xGjZEnp6i2"
         },
-        "version": 65,
-        "modifiedTime": "1960-07-19T22:15:33Z"
+        "version": 42,
+        "modifiedTime": "2052-01-06T08:18:52Z"
       },
-      "mergedTime": "1960-07-19T22:15:33Z",
+      "mergedTime": "2052-01-06T08:18:52Z",
       "indexedTime": "2001-01-01T01:01:01Z",
       "redirectSources": [
       ],
@@ -24,13 +24,13 @@
       ]
     },
     "display": {
-      "id": "cfrzpe3b",
-      "title": "A work with format Books",
+      "id": "y6iujg4j",
+      "title": "title-CRDZnkaHR8",
       "alternativeTitles": [
       ],
       "workType": {
-        "id": "a",
-        "label": "Books",
+        "id": "x",
+        "label": "Manuscripts",
         "type": "Format"
       },
       "contributors": [
@@ -38,15 +38,33 @@
       "identifiers": [
         {
           "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
+            "id": "calm-record-id",
+            "label": "Calm RecordIdentifier",
             "type": "IdentifierType"
           },
-          "value": "yPjPNkcxB9",
+          "value": "xGjZEnp6i2",
           "type": "Identifier"
         }
       ],
       "subjects": [
+        {
+          "label": "hQnFei9OwD",
+          "concepts": [
+            {
+              "label": "HmXSsBa8UqTG3Gu",
+              "type": "Concept"
+            },
+            {
+              "label": "W07LA7wtXxMtg7d",
+              "type": "Concept"
+            },
+            {
+              "label": "koPI8hxmCeKjABF",
+              "type": "Concept"
+            }
+          ],
+          "type": "Subject"
+        }
       ],
       "genres": [
       ],
@@ -89,10 +107,10 @@
       "edition": null,
       "genres.concepts.label": [
       ],
-      "id": "cfrzpe3b",
-      "sourceIdentifier.value": "yPjPNkcxB9",
+      "id": "y6iujg4j",
+      "sourceIdentifier.value": "xGjZEnp6i2",
       "identifiers.value": [
-        "yPjPNkcxB9"
+        "xGjZEnp6i2"
       ],
       "images.id": [
       ],
@@ -116,18 +134,22 @@
       ],
       "referenceNumber": null,
       "subjects.concepts.label": [
+        "HmXSsBa8UqTG3Gu",
+        "W07LA7wtXxMtg7d",
+        "koPI8hxmCeKjABF"
       ],
-      "title": "A work with format Books"
+      "title": "title-CRDZnkaHR8"
     },
     "aggregatableValues": {
       "workType": [
-        "{\"id\":\"a\",\"label\":\"Books\",\"type\":\"Format\"}"
+        "{\"id\":\"x\",\"label\":\"Manuscripts\",\"type\":\"Format\"}"
       ],
       "genres.label": [
       ],
       "production.dates": [
       ],
       "subjects.label": [
+        "{\"label\":\"hQnFei9OwD\",\"concepts\":[],\"type\":\"Subject\"}"
       ],
       "languages": [
       ],
@@ -139,7 +161,7 @@
       ]
     },
     "filterableValues": {
-      "format.id": "a",
+      "format.id": "x",
       "workType": "Standard",
       "production.dates.range.from": [
       ],
@@ -152,6 +174,7 @@
       "genres.concepts.sourceIdentifier": [
       ],
       "subjects.label": [
+        "hQnFei9OwD"
       ],
       "subjects.concepts.id": [
       ],
@@ -164,7 +187,7 @@
       "contributors.agent.sourceIdentifier": [
       ],
       "identifiers.value": [
-        "yPjPNkcxB9"
+        "xGjZEnp6i2"
       ],
       "items.locations.license.id": [
       ],
