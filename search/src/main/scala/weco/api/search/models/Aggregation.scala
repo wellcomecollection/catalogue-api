@@ -1,152 +1,142 @@
 package weco.api.search.models
 
 import io.circe.generic.extras.JsonKey
-import io.circe.{Decoder, Json}
+import io.circe.{Json}
 import io.circe.parser._
 import io.circe.optics.JsonPath._
 
-import scala.util.{Success, Try}
+import scala.util.{Try}
 
-// This object maps an aggregation result from Elasticsearch into our
-// Aggregation data type.  The results from ES are of the form:
-//
-//    {
-//      "buckets": [
-//        {
-//          "key": "chi",
-//          "doc_count": 4,
-//          "filtered": {
-//            "doc_count": 3
-//          }
-//        },
-//        ...
-//      ],
-//      ...
+// Each aggregated field returns aggregation buckets in the following nested format (the two 'nestedSelf' sets of buckets
+// are only included for aggregations with a paired filter):
+//{
+//  "filtered": {
+//    "nested": {
+//      "terms": {
+//        "buckets": [...]
+//      }
+//    },
+//    "nestedSelf": {
+//     "terms": {
+//        "buckets": [...]
+//      }
 //    }
-//
-// If the buckets have a subaggregation named "filtered", then we use the
-// count from there; otherwise we use the count from the root of the bucket.
-//
-// Some results will come wrapped in a global aggregation, they will have the
-// above form inside an unknown key:
-//
-//    {
-//      "doc_count": 123,
-//      "some_name": {
-//        "buckets": [
-//          {
-//            "key": "chi",
-//            "doc_count": 4,
-//            "filtered": {
-//              "doc_count": 3
-//            }
-//          },
-//        ...
-//        ],
-//        ...
-//      },
-//      ...
+//  },
+//  "nestedSelf": {
+//    "terms": {
+//      "buckets": [...]
 //    }
+//  }
+//}
+//
+// Each bucket has the following format (the nested buckets are only included in 'labelled ID' aggregations):
+//{
+//  "key": "i",
+//  "doc_count": 1,
+//  "labels": {
+//    "buckets": [
+//      {
+//        "key": "Audio",
+//        "doc_count": 1
+//      }
+//    ]
+//  }
+//}
+// For more information about why aggregations are structured this way, see the AggregationsBuilder class
 object AggregationMapping {
   import weco.json.JsonUtil._
-  private case class Result(buckets: Option[Seq[Bucket]])
 
-  // We can't predict the key name of the resultant sub-aggregation.
-  // This optic says, "for each key of the root object that has a key `buckets`, decode
-  // the value of that field as an array of Buckets"
-  private val globalAggBuckets = root.each.buckets.each.as[Bucket]
-  // This optic does the same for buckets within the self aggregation
-  private val selfAggBuckets = root.self.each.buckets.each.as[Bucket]
+  // Optics for retrieving buckets from all three possible locations
+  private val globalAggBuckets =
+    root.filtered.nested.terms.buckets.each.as[RawAggregationBucket]
+  private val selfAggBuckets =
+    root.filtered.nestedSelf.terms.buckets.each.as[RawAggregationBucket]
+  private val unfilteredSelfAggBuckets =
+    root.nestedSelf.terms.buckets.each.as[RawAggregationBucket]
 
-  // When we use the self aggregation pattern, buckets are returned
-  // in aggregations at multiple depths. This will return
-  // buckets from the expected locations.
-  // The order of sub aggregations vs the top-level aggregation is not guaranteed,
-  // so construct a sequence consisting of first the top-level buckets, then the self buckets.
-  // The top-level buckets will contain all the properly counted bucket values.  The self buckets
-  // exist only to "top up" the main list with the filtered values if those values were not returned in
-  // the main aggregation.
+  // Retrieve all 'nested' buckets, followed by all 'nestedSelf' buckets. The self buckets exist only to "top up"
+  // the main list with the filtered values if those values were not returned in the main ('nested') aggregation.
   // If any of the filtered terms are present in the main aggregation, then they will be duplicated
   // in the self buckets, hence the need for distinct.
-  private def bucketsFromAnywhere(json: Json): Seq[Bucket] =
+  private def getAllFilteredBuckets(json: Json): Seq[RawAggregationBucket] =
     (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
 
-  private case class Bucket(
+  private case class LabelBucket(
+    key: String,
+    doc_count: Int
+  )
+
+  private case class RawAggregationBucket(
     key: Json,
-    @JsonKey("doc_count") count: Int,
-    filtered: Option[FilteredResult]
-  ) {
-    def docCount: Int =
-      filtered match {
-        case Some(f) => f.count
-        case None    => count
+    @JsonKey("labels") labelSubAggregation: Option[Json],
+    @JsonKey("doc_count") count: Int
+  )
+
+  private def parseNestedAggregationBuckets(
+    buckets: Seq[RawAggregationBucket]
+  ) =
+    buckets
+      .map { bucket =>
+        // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
+        // storing a list of labels associated with a given ID.
+        val labelBucketsOption = bucket.labelSubAggregation
+          .map(
+            _.hcursor.downField("buckets").as[Seq[LabelBucket]]
+          )
+
+        // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
+        // but we only want to expose the most commonly used one to the frontend.
+        val firstLabelBucket: Option[LabelBucket] = for {
+          decoderResult <- labelBucketsOption
+          labelBuckets <- decoderResult.toOption
+          firstBucket <- labelBuckets.headOption
+        } yield firstBucket
+
+        val key = bucket.key.as[String].toOption.get
+
+        // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
+        val label = firstLabelBucket.map(_.key).getOrElse(key)
+
+        AggregationBucket(
+          data = AggregationBucketData(id = key, label),
+          count = bucket.count
+        )
       }
+      .toList
+      .sortBy(b => (-b.count, b.data.label))
+
+  // Create a map of IDs to labels for all values included in the paired filter. This is to cover the special case of
+  // a filtered 'nestedSelf' aggregation bucket returning an item count of 0. When this happens, there is no way for the
+  // filtered aggregation to map IDs to labels, so we use this mapping to fill in the gaps.
+  private def getUnfilteredIdLabelMap(json: Json): Map[String, String] = {
+    val unfilteredSelfBuckets = parseNestedAggregationBuckets(
+      unfilteredSelfAggBuckets.getAll(json))
+    unfilteredSelfBuckets
+      .map(bucket => bucket.data.id -> bucket.data.label)
+      .toMap
   }
 
-  private case class FilteredResult(@JsonKey("doc_count") count: Int)
+  def aggregationParser(
+    jsonString: String
+  ): Try[Aggregation] = {
+    parse(jsonString)
+      .map { json =>
+        val nestedBuckets =
+          parseNestedAggregationBuckets(getAllFilteredBuckets(json))
+        val unfilteredIdLabelMap = getUnfilteredIdLabelMap(json)
 
-  def jsonAggregationParse(jsonString: String): Try[Aggregation[Json]] =
-    fromJson[Result](jsonString)
-      .flatMap {
-        case Result(Some(buckets)) =>
-          Success(buckets)
-        case Result(None) =>
-          parse(jsonString)
-            .map(bucketsFromAnywhere)
-            .toTry
-      }
-      .map { buckets =>
-        buckets.map { b =>
-          val key = b.key.as[String].flatMap(parse)
-          val docCount = b.docCount
-
-          (key, docCount)
+        val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
+          val id = bucket.data.id
+          bucket.copy(
+            data = AggregationBucketData(
+              id = id,
+              unfilteredIdLabelMap.getOrElse(id, bucket.data.label)))
         }
+        Aggregation(nestedBucketsWithUpdatedLabels)
       }
-      .map { tally =>
-        tally.collect {
-          case (Right(t), count) =>
-            AggregationBucket(t, count = count)
-        }
-      }
-      .map { buckets =>
-        Aggregation(
-          buckets.toList
-        )
-      }
-
-  def aggregationParser[T: Decoder](jsonString: String): Try[Aggregation[T]] =
-    fromJson[Result](jsonString)
-      .flatMap {
-        case Result(Some(buckets)) =>
-          Success(buckets)
-        case Result(None) =>
-          parse(jsonString)
-            .map(globalAggBuckets.getAll)
-            .toTry
-      }
-      .map { buckets =>
-        buckets.map { b =>
-          (b.key.as[T], b.docCount)
-        }
-      }
-      .map { tally =>
-        tally.collect {
-          case (Right(t), count) =>
-            AggregationBucket(t, count = count)
-        }
-      }
-      .map { buckets =>
-        Aggregation(
-          buckets
-          // Sort manually here because filtered aggregations are bucketed before filtering
-          // therefore they are not always ordered by their final counts.
-          // Sorting in Scala is stable.
-            .sortBy(_.count)(Ordering[Int].reverse)
-            .toList
-        )
-      }
+  }.toTry
 }
 
-case class Aggregation[+T](buckets: List[AggregationBucket[T]])
-case class AggregationBucket[+T](data: T, count: Int)
+case class Aggregation(buckets: List[AggregationBucket])
+case class AggregationBucket(data: AggregationBucketData, count: Int)
+case class AggregationBucketData(id: String, label: String)
