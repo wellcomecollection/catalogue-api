@@ -59,7 +59,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
               )
             )
           )
-        )
+        ),
+        "formatGlobal" -> Map("global" -> Map())
       )
     )
 
@@ -119,7 +120,9 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
               )
             )
           )
-        )
+        ),
+        "formatGlobal" -> Map("global" -> Map())
+
       )
     )
     val singleAgg = WorkAggregations(searchResponse)
@@ -187,7 +190,8 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
               )
             )
           )
-        )
+        ),
+        "formatGlobal" -> Map("global" -> Map())
       )
     )
     val singleAgg = WorkAggregations(searchResponse)
