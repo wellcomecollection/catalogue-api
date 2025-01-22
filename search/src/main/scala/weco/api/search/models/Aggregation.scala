@@ -120,10 +120,11 @@ object AggregationMapping {
     jsonString: String,
     globalJsonString: String
   ): Try[Aggregation] = {
-    val unfilteredIdLabelMap = parse(globalJsonString).map {
-      json =>
+    val unfilteredIdLabelMap = parse(globalJsonString)
+      .map { json =>
         getUnfilteredIdLabelMap(json)
-    }.getOrElse(Map())
+      }
+      .getOrElse(Map())
 
     parse(jsonString)
       .map { json =>

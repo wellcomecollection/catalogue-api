@@ -12,10 +12,10 @@ trait ElasticAggregations extends Logging {
   }
 
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
-    def decodeAgg(name: String): Option[Aggregation] = {
+    def decodeAgg(name: String): Option[Aggregation] =
       for {
         aggJson1 <- aggregations.getAgg(name)
-        aggJson2 <-  aggregations.getAgg(name + "Global")
+        aggJson2 <- aggregations.getAgg(name + "Global")
         parsedAggregation <- aggJson1
           .safeTo[Aggregation] { json =>
             aggJson2.safeTo[Aggregation] { json2 =>
@@ -24,6 +24,5 @@ trait ElasticAggregations extends Logging {
           }
           .toOption
       } yield parsedAggregation
-    }
   }
 }

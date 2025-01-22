@@ -1,7 +1,14 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticApi.{boolQuery, matchAllQuery, termsAgg}
-import com.sksamuel.elastic4s.requests.searches.aggs.{Aggregation, FilterAggregation, GlobalAggregation, NestedAggregation, TermsAggregation, TermsOrder}
+import com.sksamuel.elastic4s.requests.searches.aggs.{
+  Aggregation,
+  FilterAggregation,
+  GlobalAggregation,
+  NestedAggregation,
+  TermsAggregation,
+  TermsOrder
+}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models.Pairable
@@ -98,7 +105,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
         subaggs = Seq(Some(filterAggregation)).flatten
       ),
       GlobalAggregation(
-        name = params.name  + "Global",
+        name = params.name + "Global",
         subaggs = Seq(selfAggregation).flatten
       )
     )
