@@ -14,12 +14,12 @@ trait ElasticAggregations extends Logging {
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
     def decodeAgg(name: String): Option[Aggregation] =
       for {
-        aggJson1 <- aggregations.getAgg(name)
-        aggJson2 <- aggregations.getAgg(name + "Global")
-        parsedAggregation <- aggJson1
-          .safeTo[Aggregation] { json =>
-            aggJson2.safeTo[Aggregation] { json2 =>
-              AggregationMapping.aggregationParser(json, json2)
+        filteredAggregation <- aggregations.getAgg(name)
+        globalAggregation <- aggregations.getAgg(name + "Global")
+        parsedAggregation <- filteredAggregation
+          .safeTo[Aggregation] { filteredJson =>
+            globalAggregation.safeTo[Aggregation] { globalJson =>
+              AggregationMapping.aggregationParser(filteredJson, globalJson)
             }
           }
           .toOption

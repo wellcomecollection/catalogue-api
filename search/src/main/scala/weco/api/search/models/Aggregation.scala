@@ -7,8 +7,10 @@ import io.circe.optics.JsonPath._
 
 import scala.util.{Try}
 
-// Each aggregated field returns aggregation buckets in the following nested format (the two 'nestedSelf' sets of buckets
-// are only included for aggregations with a paired filter):
+// Each aggregated field is associated with two aggregations - a 'filtered' aggregation and a 'global' aggregation.
+//
+// The 'filtered' aggregation has the following structure (the 'nestedSelf' bucket
+// is only included for aggregations with a paired filter):
 //{
 //  "filtered": {
 //    "nested": {
@@ -21,7 +23,11 @@ import scala.util.{Try}
 //        "buckets": [...]
 //      }
 //    }
-//  },
+//  }
+//}
+//
+// The 'global' aggregation has the following structure:
+//{
 //  "nestedSelf": {
 //    "terms": {
 //      "buckets": [...]
@@ -117,7 +123,7 @@ object AggregationMapping {
   }
 
   def aggregationParser(
-    jsonString: String,
+    filteredJsonString: String,
     globalJsonString: String
   ): Try[Aggregation] = {
     val unfilteredIdLabelMap = parse(globalJsonString)
@@ -126,7 +132,7 @@ object AggregationMapping {
       }
       .getOrElse(Map())
 
-    parse(jsonString)
+    parse(filteredJsonString)
       .map { json =>
         val nestedBuckets =
           parseNestedAggregationBuckets(getAllFilteredBuckets(json))
