@@ -117,13 +117,18 @@ object AggregationMapping {
   }
 
   def aggregationParser(
-    jsonString: String
+    jsonString: String,
+    globalJsonString: String
   ): Try[Aggregation] = {
+    val unfilteredIdLabelMap = parse(globalJsonString).map {
+      json =>
+        getUnfilteredIdLabelMap(json)
+    }.getOrElse(Map())
+
     parse(jsonString)
       .map { json =>
         val nestedBuckets =
           parseNestedAggregationBuckets(getAllFilteredBuckets(json))
-        val unfilteredIdLabelMap = getUnfilteredIdLabelMap(json)
 
         val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
           val id = bucket.data.id

@@ -1,13 +1,7 @@
 package weco.api.search.services
 
 import com.sksamuel.elastic4s.ElasticApi.{boolQuery, matchAllQuery, termsAgg}
-import com.sksamuel.elastic4s.requests.searches.aggs.{
-  Aggregation,
-  FilterAggregation,
-  NestedAggregation,
-  TermsAggregation,
-  TermsOrder
-}
+import com.sksamuel.elastic4s.requests.searches.aggs.{Aggregation, FilterAggregation, GlobalAggregation, NestedAggregation, TermsAggregation, TermsOrder}
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import com.sksamuel.elastic4s.requests.searches.term.TermsQuery
 import weco.api.search.models.Pairable
@@ -53,8 +47,8 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
   def getAggregations(
     filters: List[Filter with Pairable],
     aggregationRequests: List[AggregationRequest]
-  ): Seq[FilterAggregation] =
-    aggregationRequests.map { aggregationRequest =>
+  ): Seq[Aggregation] =
+    aggregationRequests.flatMap { aggregationRequest =>
       val aggregationParams = getAggregationParams(aggregationRequest)
 
       val (queries, pairedQuery) =
@@ -74,7 +68,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     params: AggregationParams,
     query: List[Query],
     pairedQuery: Option[Query]
-  ): FilterAggregation = {
+  ): List[Aggregation] = {
     val toAggregation
       : (AggregationParams, String, List[String]) => Aggregation =
       params.aggregationType match {
@@ -97,10 +91,16 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
         selfAggregation).flatten
     )
 
-    FilterAggregation(
-      name = params.name,
-      query = matchAllQuery(),
-      subaggs = Seq(Some(filterAggregation), selfAggregation).flatten
+    List(
+      FilterAggregation(
+        name = params.name,
+        query = matchAllQuery(),
+        subaggs = Seq(Some(filterAggregation)).flatten
+      ),
+      GlobalAggregation(
+        name = params.name  + "Global",
+        subaggs = Seq(selfAggregation).flatten
+      )
     )
   }
 
