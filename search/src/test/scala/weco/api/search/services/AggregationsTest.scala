@@ -190,6 +190,31 @@ class AggregationsTest
           .foreach(subjects => subjects should contain("6rJpSUKd2d"))
       }
     }
+
+    it("correctly returns aggregation labels even when no search results are returned") {
+      withLocalWorksIndex { index =>
+        indexTestDocuments(index, works: _*)
+
+        val searchOptions = createWorksSearchOptionsWith(
+           searchQuery = Option(SearchQuery("awdawdawdawda")), // A search query returning 0 results
+          aggregations =
+            List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
+          filters = List(
+            FormatFilter(List("a")),
+            SubjectLabelFilter(Seq("fIbfVPkqaf"))
+          )
+        )
+        println(searchOptions.aggregations)
+        whenReady(aggregationQuery(index, searchOptions)) { aggs =>
+          val buckets = aggs.format.get.buckets
+
+          buckets.length shouldBe 1
+          buckets.map(b => b.data.label) should contain theSameElementsAs List(
+            "Books",
+          )
+        }
+      }
+    }
   }
 
   private def aggregationQuery(index: Index, searchOptions: WorkSearchOptions) =

@@ -122,7 +122,6 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
           )
         ),
         "formatGlobal" -> Map("global" -> Map())
-
       )
     )
     val singleAgg = WorkAggregations(searchResponse)
@@ -210,4 +209,78 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       )
     )
   }
+
+  it(
+    "correctly populates AggregationBucketData with IDs and labels, even if the filtered aggregation results 0 results"
+  ) {
+    val searchResponse = SearchResponse(
+      took = 1234,
+      isTimedOut = false,
+      isTerminatedEarly = false,
+      suggest = Map(),
+      _shards = Shards(total = 1, failed = 0, successful = 1),
+      scrollId = None,
+      hits = SearchHits(
+        total = Total(0, "potatoes"),
+        maxScore = 0.0,
+        hits = Array()
+      ),
+      _aggregationsAsMap = Map(
+        "format" -> Map(
+          "doc_count" -> 0,
+          "filtered" -> Map(
+            "nested" -> Map(
+              "terms" -> Map(
+                "doc_count_error_upper_bound" -> 0,
+                "sum_other_doc_count" -> 0,
+                "buckets" -> List(
+                  Map(
+                    "key" -> "123",
+                    "doc_count" -> 0,
+                    "labels" -> Map(
+                      "buckets" -> List()
+                    )
+                  )
+                )
+              )
+            )
+          )
+        ),
+        "formatGlobal" -> Map(
+          "nestedSelf" -> Map(
+            "terms" -> Map(
+              "doc_count_error_upper_bound" -> 0,
+              "sum_other_doc_count" -> 0,
+              "buckets" -> List(
+                Map(
+                  "key" -> "123",
+                  "doc_count" -> 393145,
+                  "labels" -> Map(
+                    "buckets" -> List(
+                      Map(
+                        "key" -> "absinthe",
+                        "doc_count" -> 393145
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    val singleAgg = WorkAggregations(searchResponse)
+    singleAgg.get.format shouldBe Some(
+      Aggregation(
+        buckets = List(
+          AggregationBucket(
+            AggregationBucketData("123", "absinthe"),
+            count = 0
+          )
+        )
+      )
+    )
+  }
+
 }
