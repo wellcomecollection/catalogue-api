@@ -1,109 +1,102 @@
 import sbt._
 
 object WellcomeDependencies {
-
-  val defaultVersion = "32.42.0" // This is automatically bumped by the scala-libs release process, do not edit this line manually
-
   lazy val versions = new {
-    val typesafe = defaultVersion
-    val fixtures = defaultVersion
-    val http = defaultVersion
-    val json = defaultVersion
-    val messaging = defaultVersion
-    val monitoring = defaultVersion
-    val storage = defaultVersion
-    val elasticsearch = defaultVersion
+    val typesafe = "32.43.2"
+    val fixtures = "32.43.2"
+    val http = "32.43.2"
+    val json = "32.43.2"
+    val messaging = "32.43.2"
+    val monitoring = "32.43.2"
+    val storage = "32.43.2"
+    val elasticsearch = "32.43.2"
+    val sierra = "32.43.2"
   }
 
-  val jsonLibrary: Seq[ModuleID] = library(
-    name = "json",
-    version = versions.json
+  val jsonLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "json" % versions.json,
+    "org.wellcomecollection" %% "json" % versions.json % "test" classifier "tests"
   )
 
-  val fixturesLibrary: Seq[ModuleID] = library(
-    name = "fixtures",
-    version = versions.fixtures
+  val fixturesLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "fixtures" % versions.fixtures,
+    "org.wellcomecollection" %% "fixtures" % versions.fixtures % "test" classifier "tests"
   )
 
-  val messagingLibrary: Seq[ModuleID] = library(
-    name = "messaging",
-    version = versions.messaging
+  val messagingLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "messaging" % versions.messaging,
+    "org.wellcomecollection" %% "messaging" % versions.messaging % "test" classifier "tests"
   )
 
-  val elasticsearchLibrary: Seq[ModuleID] = library(
-    name = "elasticsearch",
-    version = versions.elasticsearch
+  val elasticsearchLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "elasticsearch" % versions.elasticsearch,
+    "org.wellcomecollection" %% "elasticsearch" % versions.elasticsearch % "test" classifier "tests"
   )
 
-  val elasticsearchTypesafeLibrary: Seq[ModuleID] = library(
-    name = "elasticsearch_typesafe",
-    version = versions.elasticsearch
+  val elasticsearchTypesafeLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "elasticsearch_typesafe" % versions.elasticsearch,
+    "org.wellcomecollection" %% "elasticsearch_typesafe" % versions.elasticsearch % "test" classifier "tests"
   )
 
-  val monitoringLibrary: Seq[ModuleID] = library(
-    name = "monitoring",
-    version = versions.monitoring
+  val monitoringLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "monitoring" % versions.monitoring,
+    "org.wellcomecollection" %% "monitoring" % versions.monitoring % "test" classifier "tests"
   )
 
-  val monitoringTypesafeLibrary: Seq[ModuleID] = monitoringLibrary ++ library(
-    name = "monitoring_typesafe",
-    version = versions.monitoring
+  val monitoringTypesafeLibrary: Seq[ModuleID] = monitoringLibrary ++ Seq(
+    "org.wellcomecollection" %% "monitoring_typesafe" % versions.monitoring,
+    "org.wellcomecollection" %% "monitoring_typesafe" % versions.monitoring % "test" classifier "tests"
   )
 
-  val storageLibrary: Seq[ModuleID] = library(
-    name = "storage",
-    version = versions.storage
+  val storageLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "storage" % versions.storage,
+    "org.wellcomecollection" %% "storage" % versions.storage % "test" classifier "tests"
   )
 
-  val typesafeLibrary: Seq[ModuleID] = library(
-    name = "typesafe_app",
-    version = versions.typesafe
+  val typesafeLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "typesafe_app" % versions.typesafe,
+    "org.wellcomecollection" %% "typesafe_app" % versions.typesafe % "test" classifier "tests"
   ) ++ fixturesLibrary
 
-  val messagingTypesafeLibrary: Seq[ModuleID] = messagingLibrary ++ library(
-    name = "messaging_typesafe",
-    version = versions.messaging
+  val messagingTypesafeLibrary: Seq[ModuleID] = messagingLibrary ++ Seq(
+    "org.wellcomecollection" %% "messaging_typesafe" % versions.messaging,
+    "org.wellcomecollection" %% "messaging_typesafe" % versions.messaging % "test" classifier "tests"
   ) ++ monitoringLibrary
 
-  val httpLibrary: Seq[ModuleID] = library(
-    name = "http",
-    version = versions.http
+  val httpLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "http" % versions.http,
+    "org.wellcomecollection" %% "http" % versions.http % "test" classifier "tests"
   )
 
-  val httpTypesafeLibrary: Seq[ModuleID] = library(
-    name = "http_typesafe",
-    version = versions.http
+  val httpTypesafeLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "http_typesafe" % versions.http,
+    "org.wellcomecollection" %% "http_typesafe" % versions.http % "test" classifier "tests"
+  )
+  val sierraLibrary: Seq[ModuleID] = Seq(
+    "org.wellcomecollection" %% "sierra" % versions.sierra,
+    "org.wellcomecollection" %% "sierra" % versions.sierra % "test" classifier "tests"
   )
 
-  val sierraLibrary: Seq[ModuleID] = library(
-    name = "sierra",
-    version = versions.http
-  )
-
-  val sierraTypesafeLibrary: Seq[ModuleID] = sierraLibrary ++ library(
-    name = "sierra_typesafe",
-    version = versions.http
-  )
-
-  private def library(name: String, version: String): Seq[ModuleID] = Seq(
-    "weco" %% name % version,
-    "weco" %% name % version % "test" classifier "tests"
+  val sierraTypesafeLibrary: Seq[ModuleID] = sierraLibrary ++ Seq(
+    "org.wellcomecollection" %% "sierra_typesafe" % versions.sierra,
+    "org.wellcomecollection" %% "sierra_typesafe" % versions.sierra % "test" classifier "tests"
   )
 }
 
 object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
-    val scalatest = "3.2.3"
-    val scalatestplus = "3.1.2.0"
-    val scalacheckShapeless = "1.1.6"
-    val scalacsv = "1.3.5"
+    val scalatest = "3.2.19"
+    val scalatestplus = "3.1.4.0"
+    val scalacheckShapeless = "1.1.8"
+    val scalacsv = "1.3.10"
 
     // This should match the version used in scala-libs
     // See https://github.com/wellcomecollection/scala-libs/blob/main/project/Dependencies.scala
-    val pekko = "1.0.3"
-    val pekkoHttp = "1.0.1"
-    val aws2 = "2.25.28"
+    val pekko = "1.1.1"
+    val pekkoHttp = "1.1.0"
+
+    val aws2 = "2.25.70"
   }
 
   val circeOpticsDependencies = Seq(
@@ -129,7 +122,7 @@ object ExternalDependencies {
     "software.amazon.awssdk" % "sts" % versions.aws2
   )
 
-  val otherAwsDependencies  = Seq(
+  val otherAwsDependencies = Seq(
     "software.amazon.awssdk" % "sso" % versions.aws2
   )
 

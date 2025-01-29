@@ -7,9 +7,9 @@ object RgbColor {
   def fromHex(color: String): Try[RgbColor] = Try {
     val n = Integer.parseInt(color, 16)
     val (r, g, b) = (
-      (n >> 16) & 0xFF,
-      (n >> 8) & 0xFF,
-      n & 0xFF
+      (n >> 16) & 0xff,
+      (n >> 8) & 0xff,
+      n & 0xff
     )
     RgbColor(r, g, b)
   }

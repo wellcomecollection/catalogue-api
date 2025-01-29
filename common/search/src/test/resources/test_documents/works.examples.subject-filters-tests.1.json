@@ -1,137 +1,208 @@
 {
-  "description": "examples for the subject filter tests",
-  "createdAt": "2023-11-21T15:39:35.207896Z",
-  "id": "6vp3bulw",
-  "document": {
-    "debug": {
-      "source": {
-        "id": "6vp3bulw",
-        "identifier": {
-          "identifierType": {
-            "id": "sierra-system-number"
+  "description" : "examples for the subject filter tests",
+  "createdAt" : "2024-11-25T15:15:12.455620Z",
+  "id" : "85vigluy",
+  "document" : {
+    "debug" : {
+      "source" : {
+        "id" : "85vigluy",
+        "identifier" : {
+          "identifierType" : {
+            "id" : "calm-record-id"
           },
-          "ontologyType": "Work",
-          "value": "PfCPwnrkDO"
+          "ontologyType" : "Work",
+          "value" : "0xrR5Stsp3"
         },
-        "version": 45,
-        "modifiedTime": "2034-03-26T04:42:25Z"
+        "version" : 24,
+        "modifiedTime" : "1940-04-20T21:57:32Z"
       },
-      "mergedTime": "2034-03-26T04:42:25Z",
-      "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": []
+      "mergedTime" : "1940-04-20T21:57:32Z",
+      "indexedTime" : "2001-01-01T01:01:01Z",
+      "redirectSources" : [
+      ],
+      "mergeCandidates" : [
+      ]
     },
-    "display": {
-      "id": "6vp3bulw",
-      "title": "title-hZ3Z5q2ktK",
-      "alternativeTitles": [],
-      "contributors": [],
-      "identifiers": [
+    "display" : {
+      "id" : "85vigluy",
+      "title" : "title-YlnwWOedI3",
+      "alternativeTitles" : [
+      ],
+      "contributors" : [
+      ],
+      "identifiers" : [
         {
-          "identifierType": {
-            "id": "sierra-system-number",
-            "label": "Sierra system number",
-            "type": "IdentifierType"
+          "identifierType" : {
+            "id" : "calm-record-id",
+            "label" : "Calm RecordIdentifier",
+            "type" : "IdentifierType"
           },
-          "value": "PfCPwnrkDO",
-          "type": "Identifier"
+          "value" : "0xrR5Stsp3",
+          "type" : "Identifier"
         }
       ],
-      "subjects": [
+      "subjects" : [
         {
-          "label": "London (England)",
-          "concepts": [
+          "label" : "London (England)",
+          "concepts" : [
             {
-              "label": "Z5Ju5hoUH5ZhFqr",
-              "type": "Concept"
+              "label" : "lxZzGryOg3KGy7M",
+              "type" : "Concept"
             },
             {
-              "label": "BAO66qqlbcmHn7a",
-              "type": "Concept"
+              "label" : "z5GNUj1it3ic4OR",
+              "type" : "Concept"
             },
             {
-              "label": "ct97zOQ6G6Rkv6Q",
-              "type": "Concept"
+              "label" : "9LzJV7M3Kvqw9fG",
+              "type" : "Concept"
             }
           ],
-          "type": "Subject"
+          "type" : "Subject"
         }
       ],
-      "genres": [],
-      "items": [],
-      "holdings": [],
-      "availabilities": [],
-      "production": [],
-      "languages": [],
-      "notes": [],
-      "formerFrequency": [],
-      "designation": [],
-      "images": [],
-      "parts": [],
-      "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
-      "type": "Work"
-    },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [],
-      "id": "6vp3bulw",
-      "sourceIdentifier.value": "PfCPwnrkDO",
-      "identifiers.value": ["PfCPwnrkDO"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "languages.label": [],
-      "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
-      "physicalDescription": null,
-      "production.label": [],
-      "referenceNumber": null,
-      "subjects.concepts.label": [
-        "Z5Ju5hoUH5ZhFqr",
-        "BAO66qqlbcmHn7a",
-        "ct97zOQ6G6Rkv6Q"
+      "genres" : [
       ],
-      "title": "title-hZ3Z5q2ktK"
-    },
-    "aggregatableValues": {
-      "workType": [],
-      "genres.label": [],
-      "production.dates": [],
-      "subjects.label": [
-        "{\"label\":\"London (England)\",\"concepts\":[],\"type\":\"Subject\"}"
+      "items" : [
       ],
-      "languages": [],
-      "contributors.agent.label": [],
-      "items.locations.license": [],
-      "availabilities": []
+      "holdings" : [
+      ],
+      "availabilities" : [
+      ],
+      "production" : [
+      ],
+      "languages" : [
+      ],
+      "notes" : [
+      ],
+      "formerFrequency" : [
+      ],
+      "designation" : [
+      ],
+      "images" : [
+      ],
+      "parts" : [
+      ],
+      "partOf" : [
+      ],
+      "precededBy" : [
+      ],
+      "succeededBy" : [
+      ],
+      "type" : "Work"
     },
-    "filterableValues": {
-      "format.id": null,
-      "workType": "Standard",
-      "production.dates.range.from": [],
-      "languages.id": [],
-      "genres.label": [],
-      "genres.concepts.id": [],
-      "subjects.label": ["London (England)"],
-      "contributors.agent.label": [],
-      "identifiers.value": ["PfCPwnrkDO"],
-      "items.locations.license.id": [],
-      "items.locations.accessConditions.status.id": [],
-      "items.id": [],
-      "items.identifiers.value": [],
-      "items.locations.locationType.id": [],
-      "partOf.id": [],
-      "partOf.title": [],
-      "availabilities.id": []
+    "query" : {
+      "collectionPath.label" : null,
+      "collectionPath.path" : null,
+      "alternativeTitles" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "description" : null,
+      "edition" : null,
+      "genres.concepts.label" : [
+      ],
+      "id" : "85vigluy",
+      "sourceIdentifier.value" : "0xrR5Stsp3",
+      "identifiers.value" : [
+        "0xrR5Stsp3"
+      ],
+      "images.id" : [
+      ],
+      "images.identifiers.value" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.shelfmark.value" : [
+      ],
+      "languages.label" : [
+      ],
+      "lettering" : null,
+      "notes.contents" : [
+      ],
+      "partOf.title" : [
+      ],
+      "physicalDescription" : null,
+      "production.label" : [
+      ],
+      "referenceNumber" : null,
+      "subjects.concepts.label" : [
+        "lxZzGryOg3KGy7M",
+        "z5GNUj1it3ic4OR",
+        "9LzJV7M3Kvqw9fG"
+      ],
+      "title" : "title-YlnwWOedI3"
     },
-    "type": "Visible"
+    "aggregatableValues" : {
+      "workType" : [
+      ],
+      "genres" : [
+      ],
+      "production.dates" : [
+      ],
+      "subjects" : [
+        {
+          "id" : "London (England)",
+          "label" : "London (England)"
+        }
+      ],
+      "languages" : [
+      ],
+      "contributors.agent" : [
+      ],
+      "items.locations.license" : [
+      ],
+      "availabilities" : [
+      ]
+    },
+    "filterableValues" : {
+      "format.id" : null,
+      "workType" : "Standard",
+      "production.dates.range.from" : [
+      ],
+      "languages.id" : [
+      ],
+      "genres.label" : [
+      ],
+      "genres.concepts.id" : [
+      ],
+      "genres.concepts.sourceIdentifier" : [
+      ],
+      "subjects.label" : [
+        "London (England)"
+      ],
+      "subjects.concepts.id" : [
+      ],
+      "subjects.concepts.sourceIdentifier" : [
+      ],
+      "contributors.agent.label" : [
+      ],
+      "contributors.agent.id" : [
+      ],
+      "contributors.agent.sourceIdentifier" : [
+      ],
+      "identifiers.value" : [
+        "0xrR5Stsp3"
+      ],
+      "items.locations.license.id" : [
+      ],
+      "items.locations.accessConditions.status.id" : [
+      ],
+      "items.id" : [
+      ],
+      "items.identifiers.value" : [
+      ],
+      "items.locations.locationType.id" : [
+      ],
+      "partOf.id" : [
+      ],
+      "partOf.title" : [
+      ],
+      "availabilities.id" : [
+      ]
+    },
+    "type" : "Visible"
   }
 }
