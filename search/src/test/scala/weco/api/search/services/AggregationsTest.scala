@@ -204,7 +204,6 @@ class AggregationsTest
             SubjectLabelFilter(Seq("fIbfVPkqaf"))
           )
         )
-        println(searchOptions.aggregations)
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
           val buckets = aggs.format.get.buckets
 
