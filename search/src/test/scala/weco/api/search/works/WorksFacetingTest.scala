@@ -1,12 +1,11 @@
 package weco.api.search.works
 
+import io.circe.Json
+import io.circe.syntax.EncoderOps
 import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
 import weco.api.search.fixtures.{JsonServer, LocalJsonServerFixture}
-import weco.api.search.generators.{
-  AggregationDocumentGenerators,
-  BucketGenerators
-}
+import weco.api.search.generators.{AggregationDocumentGenerators, BucketGenerators}
 import weco.fixtures.TestWith
 
 class WorksFacetingTest
@@ -25,8 +24,8 @@ class WorksFacetingTest
       (3, "d", "Journals"),
       (2, "i", "Audio"),
       (1, "k", "Pictures")
-    ) map {
-      case (count, code, label) => toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
   private val languageBuckets = Seq(
@@ -35,18 +34,16 @@ class WorksFacetingTest
       (3, "que", "Quechua"),
       (2, "mar", "Marathi"),
       (1, "che", "Chechen")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
   private val capybaraWorkTypeBuckets = Seq(
     Seq(
       (2, "a", "Books"),
       (1, "d", "Journals")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
 
@@ -54,9 +51,8 @@ class WorksFacetingTest
     Seq(
       (2, "mar", "Marathi"),
       (1, "bak", "Bashkir")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
 
@@ -64,9 +60,8 @@ class WorksFacetingTest
     Seq(
       (1, "a", "Books"),
       (1, "d", "Journals")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Format", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
 
@@ -74,44 +69,45 @@ class WorksFacetingTest
     Seq(
       (3, "bak", "Bashkir"),
       (1, "mar", "Marathi")
-    ) map {
-      case (count, code, label) =>
-        toKeywordBucket("Language", count, code, label)
+    ) map { case (count, code, label) =>
+      toKeywordBucket(count, code, label)
     }: _*
   )
 
   private val aggregatedWorks =
     (0 to 9).map(i => s"works.examples.filtered-aggregations-tests.$i")
 
+  private val top20AggregatableContributors = ('a' to 'z').map(n =>
+    createAggregatableField(s"Beverley Crusher ($n)")
+  )
+  private val top21AggregatableContributors =
+    top20AggregatableContributors ++ Seq(createAggregatableField("Mark Sloan"))
+  private val top20FilterableContributors = top20AggregatableContributors.map(_.hcursor.downField("label").as[Json].toOption.get).asJson
+  private val top21FilterableContributors = top21AggregatableContributors.map(_.hcursor.downField("label").as[Json].toOption.get).asJson
+
+
   private val top21Contributors = Seq(
     createWorkDocument(
-      s"abadcafe",
+      "abadcafe",
       "top 20 only",
-      Map(
-        "contributors.agent.label" -> ('a' to 'z')
-          .map(n => s"Beverley Crusher ($n)")
-      )
+      Map("contributors.agent" -> top20AggregatableContributors),
+      Map("contributors.agent.label" -> top20FilterableContributors)
     ),
     createWorkDocument(
       "goodcafe",
       "top 20 and hapax",
-      Map(
-        "contributors.agent.label" -> (('a' to 'z')
-          .map(n => s"Beverley Crusher ($n)") :+ "Mark Sloan")
-      )
+      Map("contributors.agent" -> top21AggregatableContributors),
+      Map("contributors.agent.label" -> top21FilterableContributors)
     )
   )
 
-  private val multipleUncommonContributors = top21Contributors :+ createWorkDocument(
-    "baadf00d",
-    "top 1 and hapax legomenon",
-    Map(
-      "contributors.agent.label" -> Seq(
-        "Yuri Zhivago",
-        "Beverley Crusher (a)"
-      )
+  private val multipleUncommonContributors =
+    top21Contributors :+ createWorkDocument(
+      "baadf00d",
+      "top 1 and hapax legomenon",
+      Map("contributors.agent" -> Seq(createAggregatableField("Yuri Zhivago"),createAggregatableField("Beverley Crusher (a)"))),
+      Map("contributors.agent.label" -> Seq("Yuri Zhivago", "Beverley Crusher (a)").asJson)
     )
-  )
 
   private val givens = Map[String, Seq[TestDocument]](
     "a dataset with some common aggregable values and a less common one" -> top21Contributors,
@@ -130,13 +126,12 @@ class WorksFacetingTest
   private def withFacetedAPI[R](
     docs: Option[Seq[TestDocument]]
   )(testWith: TestWith[JsonServer, R]): R =
-    withWorksApi[R] {
-      case (worksIndex, route) =>
-        docs match {
-          case Some(docs) => indexLoadedTestDocuments(worksIndex, docs)
-          case None       => indexTestDocuments(worksIndex, aggregatedWorks: _*)
-        }
-        testWith(new WorksJsonServer(route))
+    withWorksApi[R] { case (worksIndex, route) =>
+      docs match {
+        case Some(docs) => indexLoadedTestDocuments(worksIndex, docs)
+        case None       => indexTestDocuments(worksIndex, aggregatedWorks: _*)
+      }
+      testWith(new WorksJsonServer(route))
     }
 
   protected val oneAggregation: ScenarioData = ScenarioData(
@@ -199,14 +194,13 @@ class WorksFacetingTest
     filters = Seq(("workType", "k"), ("languages", "mar")),
     expectedAggregationBuckets = Map(
       "workType" -> (marathiWorkTypeBuckets :+ toKeywordBucket(
-        "Format",
         0,
         "k",
         "Pictures"
       )),
       "languages" -> Seq(
-        toKeywordBucket("Language", 1, "que", "Quechua"),
-        toKeywordBucket("Language", 0, "mar", "Marathi")
+        toKeywordBucket(1, "que", "Quechua"),
+        toKeywordBucket(0, "mar", "Marathi")
       )
     )
   )
@@ -226,8 +220,8 @@ class WorksFacetingTest
     // Quechua alone would be Pictures(1), Journals(2)
     expectedAggregationBuckets = Map(
       "workType" -> Seq(
-        toKeywordBucket("Format", 1, "d", "Journals"),
-        toKeywordBucket("Format", 1, "k", "Pictures")
+        toKeywordBucket(1, "d", "Journals"),
+        toKeywordBucket(1, "k", "Pictures")
       )
     )
   )
@@ -236,9 +230,9 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     filters = Seq(("contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
-      "contributors.agent.label" -> (('a' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
-      ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
+      "contributors.agent.label" -> (('a' to 't').map(n =>
+        toKeywordBucket(2, s"Beverley Crusher ($n)")
+      ) :+ toKeywordBucket(1, "Mark Sloan"))
     )
   )
 
@@ -252,13 +246,13 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> (Seq(
-        toUnidentifiedBucket(3, "Beverley Crusher (a)")
-      ) ++ ('b' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+        toKeywordBucket(3, "Beverley Crusher (a)")
+      ) ++ ('b' to 't').map(n =>
+        toKeywordBucket(2, s"Beverley Crusher ($n)")
       ) ++ Seq(
-        toUnidentifiedBucket(2, "Beverley Crusher (z)"),
-        toUnidentifiedBucket(1, "Mark Sloan"),
-        toUnidentifiedBucket(1, "Yuri Zhivago")
+        toKeywordBucket(2, "Beverley Crusher (z)"),
+        toKeywordBucket(1, "Mark Sloan"),
+        toKeywordBucket(1, "Yuri Zhivago")
       ))
     )
   )
@@ -269,9 +263,9 @@ class WorksFacetingTest
     aggregationFields = Seq("contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "contributors.agent.label" -> Seq(
-        toUnidentifiedBucket(1, "Beverley Crusher (a)"),
-        toUnidentifiedBucket(1, "Yuri Zhivago"),
-        toUnidentifiedBucket(0, "Mark Sloan")
+        toKeywordBucket(1, "Beverley Crusher (a)"),
+        toKeywordBucket(1, "Yuri Zhivago"),
+        toKeywordBucket(0, "Mark Sloan")
       )
     )
   )

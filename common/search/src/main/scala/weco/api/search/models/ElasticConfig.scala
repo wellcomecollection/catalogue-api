@@ -11,7 +11,7 @@ case class ElasticConfig(
 object ElasticConfig {
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
-  val pipelineDate = "2024-08-15"
+  val pipelineDate = "2024-11-18"
 }
 
 object PipelineClusterElasticConfig extends Logging {

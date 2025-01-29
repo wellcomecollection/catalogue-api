@@ -29,21 +29,32 @@ case class LanguagesFilter(languageIds: Seq[String])
     extends WorkFilter
     with Pairable
 
-case class GenreFilter(genreQuery: Seq[String])
+case class GenreLabelFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter
     with Pairable
 
-case class GenreConceptFilter(conceptIds: Seq[String])
+case class GenreIdFilter(conceptIds: Seq[String])
     extends WorkFilter
     with ImageFilter
+    with Pairable
 
 case class SubjectLabelFilter(labels: Seq[String])
     extends WorkFilter
     with ImageFilter
     with Pairable
 
-case class ContributorsFilter(contributorQueries: Seq[String])
+case class SubjectIdFilter(conceptIds: Seq[String])
+    extends WorkFilter
+    with ImageFilter
+    with Pairable
+
+case class ContributorsLabelFilter(contributorQueries: Seq[String])
+    extends WorkFilter
+    with ImageFilter
+    with Pairable
+
+case class ContributorsIdFilter(conceptIds: Seq[String])
     extends WorkFilter
     with ImageFilter
     with Pairable

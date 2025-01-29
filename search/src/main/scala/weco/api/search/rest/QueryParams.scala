@@ -14,10 +14,12 @@ import weco.api.search.rest.MultipleWorksParams.{
   stringListFilter
 }
 import weco.api.search.models.{
-  ContributorsFilter,
-  GenreConceptFilter,
-  GenreFilter,
+  ContributorsIdFilter,
+  ContributorsLabelFilter,
+  GenreIdFilter,
+  GenreLabelFilter,
   LicenseFilter,
+  SubjectIdFilter,
   SubjectLabelFilter
 }
 
@@ -27,17 +29,24 @@ object CommonDecoders {
   implicit val licenseFilter: Decoder[LicenseFilter] =
     decodeCommaSeparated.emap(strs => Right(LicenseFilter(strs)))
 
-  implicit val contributorsFilter: Decoder[ContributorsFilter] =
-    stringListFilter(ContributorsFilter)
+  implicit val contributorsFilter: Decoder[ContributorsLabelFilter] =
+    stringListFilter(ContributorsLabelFilter)
 
-  implicit val genreFilter: Decoder[GenreFilter] =
-    stringListFilter(GenreFilter)
+  implicit val genreFilter: Decoder[GenreLabelFilter] =
+    stringListFilter(GenreLabelFilter)
 
-  implicit val genreConceptFilter: Decoder[GenreConceptFilter] =
-    stringListFilter(GenreConceptFilter)
+  implicit val genreIdFilter: Decoder[GenreIdFilter] =
+    stringListFilter(GenreIdFilter)
 
   implicit val subjectsFilter: Decoder[SubjectLabelFilter] =
     stringListFilter(SubjectLabelFilter)
+
+  implicit val subjectsIdFilter: Decoder[SubjectIdFilter] =
+    stringListFilter(SubjectIdFilter)
+
+  implicit val contributorsConceptFilter: Decoder[ContributorsIdFilter] =
+    stringListFilter(ContributorsIdFilter)
+
 }
 
 trait QueryParamsUtils extends Directives {
