@@ -37,7 +37,8 @@ class ItemUpdateService(
       // Construct a lookup from SourceIdentifier -> index
       val updatedItemsWithIndex = itemsWithIndex
         .map {
-          case (item, index) => getSrcId(item) -> index
+          case (item, index) =>
+            getSrcId(item) -> index
         }
         .flatMap {
           // Add the correct index for an item by SourceIdentifier
@@ -71,7 +72,8 @@ class ItemUpdateService(
     val items = work.items
 
     val groupedItems = items.zipWithIndex.groupBy {
-      case (item, _) => getSrcId(item).map(_.identifierType.id)
+      case (item, _) =>
+        getSrcId(item).map(_.identifierType.id)
     }
 
     Future.sequence {
@@ -84,8 +86,7 @@ class ItemUpdateService(
                 preservedOrderItemsUpdate(
                   itemsWithIndex = itemsWithIndex,
                   updateFunction = updater.updateItems
-              )
-            )
+              ))
             .getOrElse(Future(itemsWithIndex))
 
         case (None, itemsWithIndex) =>
@@ -93,9 +94,11 @@ class ItemUpdateService(
       }
       // unzipWithIndex
     } map (_.flatten.toList.sortBy {
-      case (_, index) => index
+      case (_, index) =>
+        index
     } map {
-      case (item, _) => item
+      case (item, _) =>
+        item
     })
   }
 }

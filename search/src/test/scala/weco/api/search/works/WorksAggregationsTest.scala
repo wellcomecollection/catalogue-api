@@ -24,8 +24,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "a",
-                        "label" : "Books",
-                        "type" : "Format"
+                        "label" : "Books"
                       },
                       "count" : ${worksFormatBooks.length},
                       "type" : "AggregationBucket"
@@ -33,8 +32,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "d",
-                        "label" : "Journals",
-                        "type" : "Format"
+                        "label" : "Journals"
                       },
                       "count" : ${worksFormatJournals.length},
                       "type" : "AggregationBucket"
@@ -42,8 +40,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "i",
-                        "label" : "Audio",
-                        "type" : "Format"
+                        "label" : "Audio"
                       },
                       "count" : ${worksFormatAudio.length},
                       "type" : "AggregationBucket"
@@ -51,8 +48,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "k",
-                        "label" : "Pictures",
-                        "type" : "Format"
+                        "label" : "Pictures"
                       },
                       "count" : ${worksFormatPictures.length},
                       "type" : "AggregationBucket"
@@ -89,9 +85,8 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                   "buckets": [
                     {
                       "data" : {
-                        "label" : "Electronic books",
-                        "concepts": [],
-                        "type" : "Genre"
+                        "id" : "Electronic books",
+                        "label" : "Electronic books"
                       },
                       "count" : 1,
                       "type" : "AggregationBucket"
@@ -134,24 +129,24 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                   "buckets": [
                     {
                       "data" : {
-                        "label": "1098",
-                        "type": "Period"
+                        "id": "1098",
+                        "label": "1098"
                       },
                       "count" : 1,
                       "type" : "AggregationBucket"
                     },
                     {
                       "data" : {
-                        "label": "1904",
-                        "type": "Period"
+                        "id": "1904",
+                        "label": "1904"
                       },
                       "count" : 1,
                       "type" : "AggregationBucket"
                     },
                     {
                       "data" : {
-                        "label": "2020",
-                        "type": "Period"
+                        "id": "2020",
+                        "label": "2020"
                       },
                       "count" : 1,
                       "type" : "AggregationBucket"
@@ -199,8 +194,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "eng",
-                        "label" : "English",
-                        "type" : "Language"
+                        "label" : "English"
                       },
                       "count" : 5,
                       "type" : "AggregationBucket"
@@ -208,8 +202,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "swe",
-                        "label" : "Swedish",
-                        "type" : "Language"
+                        "label" : "Swedish"
                       },
                       "count" : 3,
                       "type" : "AggregationBucket"
@@ -217,8 +210,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "data" : {
                         "id" : "tur",
-                        "label" : "Turkish",
-                        "type" : "Language"
+                        "label" : "Turkish"
                       },
                       "count" : 2,
                       "type" : "AggregationBucket"
@@ -257,18 +249,16 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                   "buckets": [
                     {
                       "data" : {
-                        "concepts" : [],
-                        "label" : "realAnalysis",
-                        "type" : "Subject"
+                        "id" : "realAnalysis",
+                        "label" : "realAnalysis"
                       },
                       "count" : 3,
                       "type" : "AggregationBucket"
                     },
                     {
                       "data" : {
-                        "concepts" : [],
-                        "label" : "paleoNeuroBiology",
-                        "type" : "Subject"
+                        "id" : "paleoNeuroBiology",
+                        "label" : "paleoNeuroBiology"
                       },
                       "count" : 2,
                       "type" : "AggregationBucket"
@@ -308,32 +298,32 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     {
                       "count" : 2,
                       "data" : {
-                        "label" : "47",
-                        "type" : "Agent"
+                        "id" : "47",
+                        "label" : "47"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 2,
                       "data" : {
-                        "label" : "MI5",
-                        "type" : "Organisation"
+                        "id" : "MI5",
+                        "label" : "MI5"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
                       "data" : {
-                        "label" : "007",
-                        "type" : "Agent"
+                        "id" : "007",
+                        "label" : "007"
                       },
                       "type" : "AggregationBucket"
                     },
                     {
                       "count" : 1,
                       "data" : {
-                        "label" : "GCHQ",
-                        "type" : "Organisation"
+                        "id" : "GCHQ",
+                        "label" : "GCHQ"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -373,9 +363,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count" : 3,
                       "data" : {
                         "id" : "cc-by",
-                        "label" : "Attribution 4.0 International (CC BY 4.0)",
-                        "type" : "License",
-                        "url" : "http://creativecommons.org/licenses/by/4.0/"
+                        "label" : "Attribution 4.0 International (CC BY 4.0)"
                       },
                       "type" : "AggregationBucket"
                     },
@@ -383,9 +371,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count" : 2,
                       "data" : {
                         "id" : "cc-by-nc",
-                        "label" : "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)",
-                        "type" : "License",
-                        "url" : "https://creativecommons.org/licenses/by-nc/4.0/"
+                        "label" : "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
                       },
                       "type" : "AggregationBucket"
                     }
@@ -429,8 +415,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count": 2,
                       "data": {
                         "label": "Closed stores",
-                        "id": "closed-stores",
-                        "type" : "Availability"
+                        "id": "closed-stores"
                       },
                       "type": "AggregationBucket"
                     },
@@ -438,8 +423,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                     "count" : 2,
                     "data" : {
                       "id" : "online",
-                      "label" : "Online",
-                      "type" : "Availability"
+                      "label" : "Online"
                     },
                     "type" : "AggregationBucket"
                   },
@@ -447,8 +431,7 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
                       "count": 2,
                       "data": {
                         "label": "Open shelves",
-                        "id": "open-shelves",
-                        "type" : "Availability"
+                        "id": "open-shelves"
                       },
                       "type": "AggregationBucket"
                     }
