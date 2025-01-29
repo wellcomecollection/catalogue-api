@@ -4,7 +4,6 @@ import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
   Aggregations => Elastic4sAggregations
 }
 import grizzled.slf4j.Logging
-import io.circe.{Decoder, Json}
 
 import scala.util.Failure
 
@@ -15,28 +14,13 @@ trait ElasticAggregations extends Logging {
   }
 
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
-    def decodeAgg[T: Decoder](name: String): Option[Aggregation[T]] =
+    def decodeAgg(name: String): Option[Aggregation] =
       aggregations
         .getAgg(name)
         .flatMap(
-          _.safeTo[Aggregation[T]](
-            (json: String) => AggregationMapping.aggregationParser[T](json)
-          ).recoverWith {
-            case err =>
-              warn("Failed to parse aggregation from ES", err)
-              Failure(err)
-          }.toOption
-        )
-
-    // Note: eventually this method will replace the decodeAgg method above, but we have
-    // them both while images/works aggregations are handled differently.
-    def decodeJsonAgg(name: String): Option[Aggregation[Json]] =
-      aggregations
-        .getAgg(name)
-        .flatMap(
-          _.safeTo[Aggregation[Json]](
+          _.safeTo[Aggregation](
             (json: String) => {
-              AggregationMapping.jsonAggregationParse(json)
+              AggregationMapping.aggregationParser(json)
             }
           ).recoverWith {
             case err =>

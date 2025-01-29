@@ -30,8 +30,7 @@ class SierraItemUpdater(
   sierraSource: SierraSource,
   venuesOpeningTimesLookup: VenuesOpeningTimesLookup,
   venueClock: Clock
-)(implicit
-  executionContext: ExecutionContext)
+)(implicit executionContext: ExecutionContext)
     extends ItemUpdater
     with Logging
     with DisplayItemOps {
@@ -175,7 +174,7 @@ class SierraItemUpdater(
       "deepstore"
     ).drop(10).head
     // the item is then available on subsequent library opening days
-    val subsequentLibraryAvailabilitySlots = venuesOpeningTimes(
+    venuesOpeningTimes(
       "library"
     ).filter(
       openingTime =>
@@ -183,7 +182,6 @@ class SierraItemUpdater(
           .isAfter(
             parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
         ))
-    firstDeepstoreAvailabilitySlot :: subsequentLibraryAvailabilitySlots
   }
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
