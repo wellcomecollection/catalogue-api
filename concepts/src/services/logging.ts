@@ -7,8 +7,7 @@ const formatter = format.combine(
   format.printf(({ level, message, timestamp, stack }) => {
     let log = `${timestamp} ${level.toUpperCase()} - ${message}`;
     if (stack) {
-      // Carriage returns so logs don't get split up by fluentbit
-      log += "\r" + stack.replaceAll("\n", "\r");
+      log += "\r" + stack;
     }
     return log;
   })
