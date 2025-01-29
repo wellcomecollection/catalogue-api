@@ -4,9 +4,9 @@
 #
 #    pip-compile
 #
-boto3==1.26.64
+boto3==1.28.16
     # via -r requirements.in
-botocore==1.29.64
+botocore==1.31.16
     # via
     #   boto3
     #   s3transfer
@@ -14,13 +14,13 @@ certifi==2020.6.20
     # via
     #   elasticsearch
     #   httpx
-elasticsearch==7.9.1
+elasticsearch==8.10.0
     # via -r requirements.in
-h11==0.11.0
+h11==0.14
     # via httpcore
-httpcore==0.12.0
+httpcore==1.0.6
     # via httpx
-httpx==0.16.0
+httpx==0.27.2
     # via -r requirements.in
 humanize==3.0.1
     # via -r requirements.in
@@ -30,7 +30,7 @@ jmespath==1.0.1
     # via
     #   boto3
     #   botocore
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via
     #   -r requirements.in
     #   botocore
@@ -46,7 +46,7 @@ sniffio==1.1.0
     # via
     #   httpcore
     #   httpx
-urllib3==1.25.10
+urllib3==1.26.2
     # via
     #   botocore
     #   elasticsearch

@@ -23,7 +23,8 @@ object SingleWorkParams extends QueryParamsUtils {
     parameters(
       "include".as[WorksIncludes].?
     ).tmap {
-      case Tuple1(include) => SingleWorkParams(include)
+      case Tuple1(include) =>
+        SingleWorkParams(include)
     }
 
   implicit val decodePaths: Decoder[List[String]] =
@@ -74,10 +75,12 @@ case class WorkFilterParams(
   `production.dates.from`: Option[LocalDate],
   `production.dates.to`: Option[LocalDate],
   languages: Option[LanguagesFilter],
-  `genres.label`: Option[GenreFilter],
-  `genres.concepts`: Option[GenreConceptFilter],
+  `genres.label`: Option[GenreLabelFilter],
+  `genres`: Option[GenreIdFilter],
   `subjects.label`: Option[SubjectLabelFilter],
-  `contributors.agent.label`: Option[ContributorsFilter],
+  `subjects`: Option[SubjectIdFilter],
+  `contributors.agent.label`: Option[ContributorsLabelFilter],
+  `contributors.agent`: Option[ContributorsIdFilter],
   identifiers: Option[IdentifiersFilter],
   partOf: Option[PartOfFilter],
   `partOf.title`: Option[PartOfTitleFilter],
@@ -91,7 +94,7 @@ case class MultipleWorksParams(
   filterParams: WorkFilterParams,
   include: Option[WorksIncludes],
   aggregations: Option[List[WorkAggregationRequest]],
-  query: Option[String],
+  query: Option[String]
 ) extends QueryParams
     with Paginated {
 
@@ -117,9 +120,11 @@ case class MultipleWorksParams(
       dateFilter,
       filterParams.languages,
       filterParams.`genres.label`,
-      filterParams.`genres.concepts`,
+      filterParams.`genres`,
       filterParams.`subjects.label`,
+      filterParams.`subjects`,
       filterParams.`contributors.agent.label`,
+      filterParams.`contributors.agent`,
       filterParams.identifiers,
       itemsParams.`items`,
       itemsParams.`items.identifiers`,
@@ -133,7 +138,10 @@ case class MultipleWorksParams(
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
-    (filterParams.`production.dates.from`, filterParams.`production.dates.to`) match {
+    (
+      filterParams.`production.dates.from`,
+      filterParams.`production.dates.to`
+    ) match {
       case (None, None)       => None
       case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
     }
@@ -195,10 +203,12 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.from".as[LocalDate].?,
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
-          "genres.label".as[GenreFilter].?,
-          "genres.concepts".as[GenreConceptFilter].?,
+          "genres.label".as[GenreLabelFilter].?,
+          "genres".as[GenreIdFilter].?,
           "subjects.label".as[SubjectLabelFilter].?,
-          "contributors.agent.label".as[ContributorsFilter].?,
+          "subjects".as[SubjectIdFilter].?,
+          "contributors.agent.label".as[ContributorsLabelFilter].?,
+          "contributors.agent".as[ContributorsIdFilter].?,
           "identifiers".as[IdentifiersFilter].?,
           "partOf".as[PartOfFilter].?,
           "partOf.title".as[PartOfTitleFilter].?,
@@ -213,7 +223,9 @@ object MultipleWorksParams extends QueryParamsUtils {
               genres,
               genreConcepts,
               subjectLabels,
+              subjectConcepts,
               contributors,
+              contributorsConcepts,
               identifiers,
               partOf,
               partOfTitle,
@@ -228,7 +240,9 @@ object MultipleWorksParams extends QueryParamsUtils {
               genres,
               genreConcepts,
               subjectLabels,
+              subjectConcepts,
               contributors,
+              contributorsConcepts,
               identifiers,
               partOf,
               partOfTitle,
@@ -242,7 +256,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               filterParams = filterParams,
               include = includes,
               aggregations = aggregations,
-              query = query,
+              query = query
             )
             validated(params.paginationErrors, params)
         }
@@ -288,11 +302,14 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
     decodeOneOfCommaSeparated(
       "workType" -> WorkAggregationRequest.Format,
-      "genres.label" -> WorkAggregationRequest.Genre,
+      "genres.label" -> WorkAggregationRequest.GenreLabel,
+      "genres" -> WorkAggregationRequest.GenreId,
       "production.dates" -> WorkAggregationRequest.ProductionDate,
-      "subjects.label" -> WorkAggregationRequest.Subject,
+      "subjects.label" -> WorkAggregationRequest.SubjectLabel,
+      "subjects" -> WorkAggregationRequest.SubjectId,
       "languages" -> WorkAggregationRequest.Languages,
-      "contributors.agent.label" -> WorkAggregationRequest.Contributor,
+      "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
+      "contributors.agent" -> WorkAggregationRequest.ContributorId,
       "items.locations.license" -> WorkAggregationRequest.License,
       "availabilities" -> WorkAggregationRequest.Availabilities
     )

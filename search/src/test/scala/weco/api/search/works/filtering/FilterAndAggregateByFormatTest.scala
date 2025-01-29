@@ -33,8 +33,7 @@ class FilterAndAggregateByFormatTest
           (count, s"""
                |{
                |            "id" : "$identifier",
-               |            "label" : "$label",
-               |            "type" : "Format"
+               |            "label" : "$label"
                |          }
                |""".stripMargin)
       }
@@ -44,8 +43,7 @@ class FilterAndAggregateByFormatTest
     "workType=k&genres.label=ThisIsNotAGenre&aggregations=workType"
   val redundantFilterBucket: String = """{
                                        |            "id" : "k",
-                                       |            "label" : "Pictures",
-                                       |            "type" : "Format"
+                                       |            "label" : "Pictures"
                                        |          }""".stripMargin
   val unattestedValueParams: String =
     "workType=z&genres.label=ThisIsNotAGenre&aggregations=workType"

@@ -1,12 +1,11 @@
 package weco.api.search.images
 
+import io.circe.Json
+import io.circe.syntax.EncoderOps
 import org.scalatest.GivenWhenThen
 import weco.api.search.FacetingFeatures
 import weco.api.search.fixtures.{JsonServer, LocalJsonServerFixture}
-import weco.api.search.generators.{
-  AggregationDocumentGenerators,
-  BucketGenerators
-}
+import weco.api.search.generators.{AggregationDocumentGenerators, BucketGenerators}
 import weco.fixtures.TestWith
 
 class ImagesFacetingTest
@@ -37,8 +36,8 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.genres.label"),
     expectedAggregationBuckets = Map(
       "source.genres.label" -> Seq(
-        toUnidentifiedBucket(2, "Daguerreotype"),
-        toUnidentifiedBucket(1, "Oil Painting")
+        toKeywordBucket(2, "Daguerreotype"),
+        toKeywordBucket(1, "Oil Painting")
       )
     )
   )
@@ -47,13 +46,13 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.genres.label", "source.subjects.label"),
     expectedAggregationBuckets = Map(
       "source.genres.label" -> Seq(
-        toUnidentifiedBucket(2, "Daguerreotype"),
-        toUnidentifiedBucket(1, "Oil Painting")
+        toKeywordBucket(2, "Daguerreotype"),
+        toKeywordBucket(1, "Oil Painting")
       ),
       "source.subjects.label" -> Seq(
-        toUnidentifiedBucket(2, "Fruit"),
-        toUnidentifiedBucket(2, "Surgery"),
-        toUnidentifiedBucket(1, "Nursing")
+        toKeywordBucket(2, "Fruit"),
+        toKeywordBucket(2, "Surgery"),
+        toKeywordBucket(1, "Nursing")
       )
     )
   )
@@ -64,13 +63,13 @@ class ImagesFacetingTest
       Seq("source.subjects.label", "source.contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "source.subjects.label" -> Seq(
-        toUnidentifiedBucket(2, "Fruit"),
-        toUnidentifiedBucket(1, "Nursing"),
-        toUnidentifiedBucket(1, "Surgery")
+        toKeywordBucket(2, "Fruit"),
+        toKeywordBucket(1, "Nursing"),
+        toKeywordBucket(1, "Surgery")
       ),
       "source.contributors.agent.label" -> Seq(
-        toUnidentifiedBucket(1, "BJ Hunnicut"),
-        toUnidentifiedBucket(1, "Margaret Houlihan")
+        toKeywordBucket(1, "BJ Hunnicut"),
+        toKeywordBucket(1, "Margaret Houlihan")
       )
     )
   )
@@ -79,7 +78,7 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.genres.label"),
     filters = Seq(("source.subjects.label", "Fruit")),
     expectedAggregationBuckets = Map(
-      "source.genres.label" -> Seq(toUnidentifiedBucket(2, "Daguerreotype"))
+      "source.genres.label" -> Seq(toKeywordBucket(2, "Daguerreotype"))
     )
   )
 
@@ -88,8 +87,8 @@ class ImagesFacetingTest
     filters = Seq(("source.genres.label", "Oil%20Painting")),
     expectedAggregationBuckets = Map(
       "source.genres.label" -> Seq(
-        toUnidentifiedBucket(2, "Daguerreotype"),
-        toUnidentifiedBucket(1, "Oil Painting")
+        toKeywordBucket(2, "Daguerreotype"),
+        toKeywordBucket(1, "Oil Painting")
       )
     )
   )
@@ -102,9 +101,9 @@ class ImagesFacetingTest
     ),
     expectedAggregationBuckets = Map(
       "source.subjects.label" -> Seq(
-        toUnidentifiedBucket(2, "Fruit"),
-        toUnidentifiedBucket(2, "Surgery"),
-        toUnidentifiedBucket(1, "Nursing")
+        toKeywordBucket(2, "Fruit"),
+        toKeywordBucket(2, "Surgery"),
+        toKeywordBucket(1, "Nursing")
       )
     )
   )
@@ -117,13 +116,13 @@ class ImagesFacetingTest
     ),
     expectedAggregationBuckets = Map(
       "source.subjects.label" -> Seq(
-        toUnidentifiedBucket(2, "Fruit"),
-        toUnidentifiedBucket(1, "Nursing"),
-        toUnidentifiedBucket(1, "Surgery") // Only one Surgery is a Daguerreotype
+        toKeywordBucket(2, "Fruit"),
+        toKeywordBucket(1, "Nursing"),
+        toKeywordBucket(1, "Surgery") // Only one Surgery is a Daguerreotype
       ),
       "source.genres.label" -> Seq(
-        toUnidentifiedBucket(1, "Daguerreotype"), // Only one Daguerreotype is Surgery
-        toUnidentifiedBucket(1, "Oil Painting")
+        toKeywordBucket(1, "Daguerreotype"), // Only one Daguerreotype is Surgery
+        toKeywordBucket(1, "Oil Painting")
       )
     )
   )
@@ -137,13 +136,13 @@ class ImagesFacetingTest
     ),
     expectedAggregationBuckets = Map(
       "source.subjects.label" -> Seq(
-        toUnidentifiedBucket(1, "Surgery"),
-        toUnidentifiedBucket(0, "Fruit")
+        toKeywordBucket(1, "Surgery"),
+        toKeywordBucket(0, "Fruit")
       ),
       "source.contributors.agent.label" -> Seq(
-        toUnidentifiedBucket(1, "BJ Hunnicut"),
-        toUnidentifiedBucket(1, "Margaret Houlihan"),
-        toUnidentifiedBucket(0, "Linden Cullen")
+        toKeywordBucket(1, "BJ Hunnicut"),
+        toKeywordBucket(1, "Margaret Houlihan"),
+        toKeywordBucket(0, "Linden Cullen")
       )
     )
   )
@@ -165,7 +164,7 @@ class ImagesFacetingTest
     expectedAggregationBuckets = Map(
       "source.genres.label" -> Seq(
         // Only Hunnicut is Surgery+mash
-        toUnidentifiedBucket(1, "Daguerreotype")
+        toKeywordBucket(1, "Daguerreotype")
       )
     )
   )
@@ -175,8 +174,8 @@ class ImagesFacetingTest
     filters = Seq(("source.contributors.agent.label", "Mark%20Sloan")),
     expectedAggregationBuckets = Map(
       "source.contributors.agent.label" -> (('a' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
-      ) :+ toUnidentifiedBucket(1, "Mark Sloan"))
+        n => toKeywordBucket(2, s"Beverley Crusher ($n)")
+      ) :+ toKeywordBucket(1, "Mark Sloan"))
     )
   )
 
@@ -190,13 +189,13 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "source.contributors.agent.label" -> (Seq(
-        toUnidentifiedBucket(3, "Beverley Crusher (a)")
+        toKeywordBucket(3, "Beverley Crusher (a)")
       ) ++ ('b' to 't').map(
-        n => toUnidentifiedBucket(2, s"Beverley Crusher ($n)")
+        n => toKeywordBucket(2, s"Beverley Crusher ($n)")
       ) ++ Seq(
-        toUnidentifiedBucket(2, "Beverley Crusher (z)"),
-        toUnidentifiedBucket(1, "Mark Sloan"),
-        toUnidentifiedBucket(1, "Yuri Zhivago")
+        toKeywordBucket(2, "Beverley Crusher (z)"),
+        toKeywordBucket(1, "Mark Sloan"),
+        toKeywordBucket(1, "Yuri Zhivago")
       ))
     )
   )
@@ -207,9 +206,9 @@ class ImagesFacetingTest
     aggregationFields = Seq("source.contributors.agent.label"),
     expectedAggregationBuckets = Map(
       "source.contributors.agent.label" -> Seq(
-        toUnidentifiedBucket(1, "Beverley Crusher (a)"),
-        toUnidentifiedBucket(1, "Yuri Zhivago"),
-        toUnidentifiedBucket(0, "Mark Sloan")
+        toKeywordBucket(1, "Beverley Crusher (a)"),
+        toKeywordBucket(1, "Yuri Zhivago"),
+        toKeywordBucket(0, "Mark Sloan")
       )
     )
   )
@@ -218,27 +217,42 @@ class ImagesFacetingTest
     s"hunn1234",
     "mash tv",
     Map(
-      "source.contributors.agent.label" -> Seq("BJ Hunnicut"),
-      "source.genres.label" -> Seq("Daguerreotype"),
-      "source.subjects.label" -> Seq("Fruit", "Surgery")
-    )
+      "source.contributors.agent" -> Seq(createAggregatableField("BJ Hunnicut")),
+      "source.genres" -> Seq(createAggregatableField("Daguerreotype")),
+      "source.subjects" -> Seq(createAggregatableField("Fruit"), createAggregatableField("Surgery"))
+    ),
+    Map(
+      "source.contributors.agent.label" -> Seq("BJ Hunnicut").asJson,
+      "source.genres.label" -> Seq("Daguerreotype").asJson,
+      "source.subjects.label" -> Seq("Fruit", "Surgery").asJson
+    ),
   )
   private val houlihanDaguerrotype = createImageDocument(
     s"houl1234",
     "mash tv film",
     Map(
-      "source.contributors.agent.label" -> Seq("Margaret Houlihan"),
-      "source.genres.label" -> Seq("Daguerreotype"),
-      "source.subjects.label" -> Seq("Fruit", "Nursing")
-    )
+      "source.contributors.agent" -> Seq(createAggregatableField("Margaret Houlihan")),
+      "source.genres" -> Seq(createAggregatableField("Daguerreotype")),
+      "source.subjects" -> Seq(createAggregatableField("Fruit"), createAggregatableField("Nursing"))
+    ),
+    Map(
+      "source.contributors.agent.label" -> Seq("Margaret Houlihan").asJson,
+      "source.genres.label" -> Seq("Daguerreotype").asJson,
+      "source.subjects.label" -> Seq("Fruit", "Nursing").asJson
+    ),
   )
   private val cullenOilPainting = createImageDocument(
     s"cull1234",
     "holby tv",
     Map(
-      "source.contributors.agent.label" -> Seq("Linden Cullen"),
-      "source.genres.label" -> Seq("Oil Painting"),
-      "source.subjects.label" -> Seq("Surgery")
+      "source.contributors.agent" -> Seq(createAggregatableField("Linden Cullen")),
+      "source.genres" -> Seq(createAggregatableField("Oil Painting")),
+      "source.subjects" -> Seq(createAggregatableField("Surgery"))
+    ),
+    Map(
+      "source.contributors.agent.label" -> Seq("Linden Cullen").asJson,
+      "source.genres.label" -> Seq("Oil Painting").asJson,
+      "source.subjects.label" -> Seq("Surgery").asJson
     )
   )
 
@@ -246,8 +260,12 @@ class ImagesFacetingTest
     s"jone1234",
     "who tv",
     Map(
-      "source.contributors.agent.label" -> Seq("Martha Jones"),
-      "source.subjects.label" -> Seq("Xenobiology")
+      "source.contributors.agent" -> Seq(createAggregatableField("Martha Jones")),
+      "source.subjects" -> Seq(createAggregatableField("Xenobiology"))
+    ),
+    Map(
+      "source.contributors.agent.label" -> Seq("Martha Jones").asJson,
+      "source.subjects.label" -> Seq("Xenobiology").asJson
     )
   )
 
@@ -261,34 +279,34 @@ class ImagesFacetingTest
     jonesNoGenre
   )
 
+  private val top20AggregatableContributors = ('a' to 'z').map(n =>
+    createAggregatableField(s"Beverley Crusher ($n)")
+  )
+  private val top21AggregatableContributors =
+    top20AggregatableContributors ++ Seq(createAggregatableField("Mark Sloan"))
+  private val top20FilterableContributors = top20AggregatableContributors.map(_.hcursor.downField("label").as[Json].toOption.get).asJson
+  private val top21FilterableContributors = top21AggregatableContributors.map(_.hcursor.downField("label").as[Json].toOption.get).asJson
+
   private val top21Contributors = Seq(
     createImageDocument(
       s"abadcafe",
       "top 20 only",
-      Map(
-        "source.contributors.agent.label" -> ('a' to 'z')
-          .map(n => s"Beverley Crusher ($n)")
-      )
+      Map("source.contributors.agent" -> top20AggregatableContributors),
+      Map("source.contributors.agent.label" -> top20FilterableContributors)
     ),
     createImageDocument(
       "goodcafe",
       "top 20 and hapax",
-      Map(
-        "source.contributors.agent.label" -> (('a' to 'z')
-          .map(n => s"Beverley Crusher ($n)") :+ "Mark Sloan")
-      )
+      Map("source.contributors.agent" -> top21AggregatableContributors),
+      Map("source.contributors.agent.label" -> top21FilterableContributors)
     )
   )
 
   private val multipleUncommonContributors = top21Contributors :+ createImageDocument(
     "baadf00d",
     "top 1 and hapax legomenon",
-    Map(
-      "source.contributors.agent.label" -> Seq(
-        "Yuri Zhivago",
-        "Beverley Crusher (a)"
-      )
-    )
+    Map("source.contributors.agent" -> Seq(createAggregatableField("Yuri Zhivago"),createAggregatableField("Beverley Crusher (a)"))),
+    Map("source.contributors.agent.label" -> Seq("Yuri Zhivago", "Beverley Crusher (a)").asJson)
   )
 
   private val givens: Map[String, Seq[TestDocument]] = Map(
