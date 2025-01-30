@@ -5,8 +5,6 @@ import com.sksamuel.elastic4s.requests.searches.aggs.responses.{
 }
 import grizzled.slf4j.Logging
 
-import scala.util.Failure
-
 trait ElasticAggregations extends Logging {
   implicit class ThrowableEitherOps[T](either: Either[Throwable, T]) {
     def getMessage: Either[String, T] =
@@ -15,18 +13,16 @@ trait ElasticAggregations extends Logging {
 
   implicit class EnhancedEsAggregations(aggregations: Elastic4sAggregations) {
     def decodeAgg(name: String): Option[Aggregation] =
-      aggregations
-        .getAgg(name)
-        .flatMap(
-          _.safeTo[Aggregation](
-            (json: String) => {
-              AggregationMapping.aggregationParser(json)
+      for {
+        filteredAggregation <- aggregations.getAgg(name)
+        globalAggregation <- aggregations.getAgg(name + "Global")
+        parsedAggregation <- filteredAggregation
+          .safeTo[Aggregation] { filteredJson =>
+            globalAggregation.safeTo[Aggregation] { globalJson =>
+              AggregationMapping.aggregationParser(filteredJson, globalJson)
             }
-          ).recoverWith {
-            case err =>
-              warn("Failed to parse aggregation from ES", err)
-              Failure(err)
-          }.toOption
-        )
+          }
+          .toOption
+      } yield parsedAggregation
   }
 }

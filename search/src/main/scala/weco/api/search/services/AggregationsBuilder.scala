@@ -4,6 +4,7 @@ import com.sksamuel.elastic4s.ElasticApi.{boolQuery, matchAllQuery, termsAgg}
 import com.sksamuel.elastic4s.requests.searches.aggs.{
   Aggregation,
   FilterAggregation,
+  GlobalAggregation,
   NestedAggregation,
   TermsAggregation,
   TermsOrder
@@ -32,7 +33,10 @@ case class AggregationParams(
   *    - 'filtered': A filter aggregation which applies all filters, *except for* filters paired to the aggregated field itself (see rule 5 in RFC 37).
   *        - 'nested': A nested aggregation which contains a 'labelled ID' sub-aggregation, or a 'label-only' sub-aggregation (see below for more info).
   *        - 'nestedSelf': Only included if a paired filter exists. Same as 'nested', but with a `includeExactValues` property set to the filtered values defined in the paired filter. This ensures that aggregation buckets corresponding to filtered values are always returned, even if they are not in the top N buckets returned by 'nested' (see rule 6 in RFC 37).
-  *    - 'nestedSelf': Same as the other (filtered) 'nestedSelf' but with no filters applied. Only included to cover the special case of a 'labelled ID' aggregation bucket returning an item count of 0 , in which case the 'nestedSelf' aggregation is not able to determine the label matching the corresponding ID (see rule 6 in RFC 37).
+  *
+  * To handle edge cases where a search with an applied filter returns 0 results, each aggregation also has an accompanying global aggregation:
+  *  - '[some.field.path]Global': A global aggregation which ignores the query and all filters
+  *    - 'nestedSelf': Same as the other (filtered) 'nestedSelf' but with no query/filters applied. Only included to cover the special case of a 'labelled ID' aggregation bucket returning an item count of 0, in which case the 'nestedSelf' aggregation is not able to determine the label matching the corresponding ID (see rule 6 in RFC 37).
   */
 trait AggregationsBuilder[AggregationRequest, Filter] {
   def pairedAggregationRequests(
@@ -53,8 +57,8 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
   def getAggregations(
     filters: List[Filter with Pairable],
     aggregationRequests: List[AggregationRequest]
-  ): Seq[FilterAggregation] =
-    aggregationRequests.map { aggregationRequest =>
+  ): Seq[Aggregation] =
+    aggregationRequests.flatMap { aggregationRequest =>
       val aggregationParams = getAggregationParams(aggregationRequest)
 
       val (queries, pairedQuery) =
@@ -74,7 +78,7 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
     params: AggregationParams,
     query: List[Query],
     pairedQuery: Option[Query]
-  ): FilterAggregation = {
+  ): List[Aggregation] = {
     val toAggregation
       : (AggregationParams, String, List[String]) => Aggregation =
       params.aggregationType match {
@@ -97,10 +101,16 @@ trait AggregationsBuilder[AggregationRequest, Filter] {
         selfAggregation).flatten
     )
 
-    FilterAggregation(
-      name = params.name,
-      query = matchAllQuery(),
-      subaggs = Seq(Some(filterAggregation), selfAggregation).flatten
+    List(
+      FilterAggregation(
+        name = params.name,
+        query = matchAllQuery(),
+        subaggs = Seq(Some(filterAggregation)).flatten
+      ),
+      GlobalAggregation(
+        name = params.name + "Global",
+        subaggs = Seq(selfAggregation).flatten
+      )
     )
   }
 
