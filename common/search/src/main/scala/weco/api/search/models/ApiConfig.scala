@@ -12,9 +12,9 @@ case class ApiConfig(
 ) {
   // Used to determine whether we're running in a dev environment
   def environment: ApiEnvironment = publicHost match {
-    case "localhost"                       => ApiEnvironment.Dev
-    case _ if publicHost.contains("stage") => ApiEnvironment.Stage
-    case _                                 => ApiEnvironment.Prod
+    case _ if publicHost.contains("api-dev")   => ApiEnvironment.Dev
+    case _ if publicHost.contains("api-stage") => ApiEnvironment.Stage
+    case _                                     => ApiEnvironment.Prod
   }
 }
 
