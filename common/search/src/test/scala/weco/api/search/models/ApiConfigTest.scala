@@ -39,7 +39,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
   }
 
   it("correctly identifies a dev environment") {
-    val publicRoot = "https://localhost:8080/catalogue/v2"
+    val publicRoot = "https://api-dev.wellcomecollection.org/catalogue/v2"
     inside(
       ApiConfig(
         publicRootUri = Uri(publicRoot),
@@ -48,7 +48,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
     ) {
       case apiConfig@ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
         publicScheme shouldBe "https"
-        publicHost shouldBe "localhost"
+        publicHost shouldBe "api-dev.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
         apiConfig.environment shouldBe ApiEnvironment.Dev
     }
