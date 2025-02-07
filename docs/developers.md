@@ -21,6 +21,23 @@ The CI flow looks as follows:
 - Docker
 - Make
 
+### Installing dependencies
+
+We suggest using [SDKMAN](https://sdkman.io/) to manage Java versions. It can be installed with:
+
+```bash
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+```
+
+Then install Java 11 with:
+
+```bash
+sdk install java 11.0.24-amzn
+```
+
+At the root of the project you should be able to use `sbt` to run the project as described below.
+
 ## Running locally
 
 Currently only the search & items API can be run locally. It will use the configured pipeline index in
@@ -32,10 +49,13 @@ To run with reloading of code changes using [`sbt-revolver`](https://github.com/
 
 ```bash
 sbt "project search" "~reStart"
-sbt "project items" "~reStart"
+AWS_PROFILE=catalogue-developer sbt "project items" "~reStart"
 ```
 
-You should then be able to access the API at `http://localhost:8080/works`.
+You should then be able to access the APIs at:
+
+- `http://localhost:8080/works`: Seach
+- `http://localhost:8081/items`: Items
 
 To specify a different pipeline index, you can set the `pipelineDate` environment variable for the search API:
 
