@@ -22,3 +22,15 @@ Contains:
 The snapshot_generator is deployed alongside the catalogue API using Buildkite.
 
 New Lambda deployment packages are published to S3 by Buildkite; you need to run a `terraform apply` to use the new versions.
+
+## Running locally
+
+To run the snapshot generator locally:
+
+SNAPSHOT_QUERY='{"term": {"type": "Visible"}}'
+SNAPSHOT_BUCKET_NAME="wellcomecollection-data-public-delta"
+SNAPSHOT_BUCKET_KEY="catalogue_dev/v2/works.json.gz"
+SNAPSHOT_INDEX="works-indexed-\*"
+PIPELINE_DATE="2025-03-06"
+AWS_PROFILE=catalogue-developer
+AWS_REGION=eu-west-1
