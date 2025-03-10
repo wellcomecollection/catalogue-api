@@ -116,8 +116,8 @@ class SierraItemUpdater(
           _.isRequestable
         ) && sierraItemLocation.isDefined) {
       val locationName = sierraItemLocation.get.code match {
-        case "harop" => "deepstore"
-        case _       => "library"
+        case "harop" | "hgboo" => "deepstore"
+        case _                 => "library"
       }
       for {
         openingTimes <- getVenuesOpeningTimes(locationName)
