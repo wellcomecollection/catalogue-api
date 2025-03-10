@@ -25,12 +25,18 @@ New Lambda deployment packages are published to S3 by Buildkite; you need to run
 
 ## Running locally
 
-To run the snapshot generator locally:
+To create a snapshot of a non-production index and save it to a separate S3 location, it is possible to run the
+snapshot generator locally.
 
-SNAPSHOT_QUERY='{"term": {"type": "Visible"}}'
+For example, to create a works snapshot and save it to `s3://wellcomecollection-data-public-delta/catalogue_dev/v2/works.json.gz`,
+run the snapshot generator with the following environment variables:
+
+```
 SNAPSHOT_BUCKET_NAME="wellcomecollection-data-public-delta"
 SNAPSHOT_BUCKET_KEY="catalogue_dev/v2/works.json.gz"
-SNAPSHOT_INDEX="works-indexed-\*"
-PIPELINE_DATE="2025-03-06"
+SNAPSHOT_INDEX="works-indexed-<SOME_PIPELINE_DATE>"
+PIPELINE_DATE=<SOME_PIPELINE_DATE>
+SNAPSHOT_QUERY='{"term": {"type": "Visible"}}'
 AWS_PROFILE=catalogue-developer
 AWS_REGION=eu-west-1
+```

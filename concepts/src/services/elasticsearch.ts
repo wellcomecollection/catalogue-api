@@ -10,16 +10,20 @@ const isProduction = process.env.NODE_ENV === "production";
 const getElasticClientConfig = async ({
   pipelineDate,
 }: ClientParameters): Promise<ClientOptions> => {
-  const secretPrefix = `elasticsearch/concepts-${pipelineDate}`;
-  const [host, password] = await Promise.all([
+  const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}`;
+  const [host, apiKey] = await Promise.all([
     getSecret(`${secretPrefix}/${isProduction ? "private" : "public"}_host`),
-    getSecret(`${secretPrefix}/api/password`),
+    getSecret(`${secretPrefix}/concepts_api/api_key`),
   ]);
+
+  if (apiKey == null || host == null) {
+    throw Error("Could not retrieve values from Secrets Manager.");
+  }
+
   return {
     node: `https://${host}:9243`,
     auth: {
-      username: "api",
-      password: password!,
+      apiKey: apiKey,
     },
   };
 };
