@@ -10,8 +10,8 @@ const environmentSchema = z.object({
 const environment = environmentSchema.parse(process.env);
 
 const config = {
-  pipelineDate: "2024-10-28",
-  conceptsIndex: "concepts-store",
+  pipelineDate: "2025-03-06",
+  conceptsIndex: "concepts-indexed-2025-03-06",
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 };
 
