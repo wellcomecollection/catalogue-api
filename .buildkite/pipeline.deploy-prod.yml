@@ -125,12 +125,3 @@ steps:
           propagate-environment: true
           propagate-aws-auth-tokens: true
           shell: false
-
-  - wait
-
-  - label: "Bump the concepts-pipeline (if necessary)"
-    command: |
-      pip3 install boto3 httpx
-      python3 .buildkite/scripts/open_concepts_pipeline_pr.py
-    agents:
-      queue: nano
