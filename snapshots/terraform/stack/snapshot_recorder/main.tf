@@ -1,5 +1,5 @@
 locals {
-  secret_id = "catalogue/snapshots/write_user"
+  secret_id                       = "catalogue/snapshots/write_user"
   collection_data_distribution_id = "E26LQLWZB3P1Q0"
 }
 
@@ -16,7 +16,7 @@ module "snapshot_recorder" {
   timeout         = 60
 
   env_vars = {
-    SECRET_ID = local.secret_id
+    SECRET_ID                                  = local.secret_id
     COLLECTION_DATA_CLOUDFRONT_DISTRIBUTION_ID = local.collection_data_distribution_id
   }
 
