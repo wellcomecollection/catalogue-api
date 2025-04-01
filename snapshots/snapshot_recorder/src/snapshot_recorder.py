@@ -8,6 +8,7 @@ Elasticsearch.
 
 import json
 import os
+import time
 
 import boto3
 from elasticsearch import Elasticsearch
@@ -18,12 +19,7 @@ def get_sns_messages(event):
     """
     Extracts messages from an SNS event sent to a Lambda function.
     """
-    try:
-        event_records = event["Records"]
-    except KeyError:
-        pass
-
-    for record in event_records:
+    for record in event["Records"]:
         print(f"Working on record: {record!r}")
         assert record["EventSource"] == "aws:sns", record
 
@@ -63,6 +59,26 @@ def prepare_message_for_indexing(completed_snapshot):
     }
 
 
+def invalidate_old_snapshot(completed_snapshot):
+    """
+    Removes any cached versions of the snapshot from the CloudFront distribution, ensuring
+    that the next time someone accesses the snapshot URL, they receive the latest version.
+    """
+    url = completed_snapshot["snapshotResult"]["s3Location"]["key"]
+    distribution_id = os.environ["COLLECTION_DATA_CLOUDFRONT_DISTRIBUTION_ID"]
+
+    boto3.client("cloudfront").create_invalidation(
+        DistributionId=distribution_id,
+        InvalidationBatch={
+            "Paths": {
+                "Quantity": 1,
+                "Items": [url],
+            },
+            "CallerReference": str(int(time.time())),
+        },
+    )
+
+
 def main(event, _):
     index = "snapshots"
 
@@ -72,5 +88,6 @@ def main(event, _):
 
     for completed_snapshot in get_sns_messages(event):
         prepare_message_for_indexing(completed_snapshot)
-
         es_client.index(index=index, body=completed_snapshot)
+
+        invalidate_old_snapshot(completed_snapshot)
