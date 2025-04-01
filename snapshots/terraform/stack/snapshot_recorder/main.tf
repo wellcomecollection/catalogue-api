@@ -1,5 +1,6 @@
 locals {
   secret_id = "catalogue/snapshots/write_user"
+  collection_data_distribution_id = "E26LQLWZB3P1Q0"
 }
 
 module "snapshot_recorder" {
@@ -16,6 +17,7 @@ module "snapshot_recorder" {
 
   env_vars = {
     SECRET_ID = local.secret_id
+    COLLECTION_DATA_CLOUDFRONT_DISTRIBUTION_ID = local.collection_data_distribution_id
   }
 
   handler = "snapshot_recorder"
@@ -51,7 +53,30 @@ data "aws_iam_policy_document" "read_es_secrets" {
   }
 }
 
+data "aws_cloudfront_distribution" "collection_data_distribution" {
+  id = local.collection_data_distribution_id
+}
+
+data "aws_iam_policy_document" "cloudfront_invalidate" {
+  statement {
+    actions = [
+      "cloudfront:CreateInvalidation"
+    ]
+
+    resources = [
+      data.aws_cloudfront_distribution.collection_data_distribution.arn
+    ]
+
+    effect = "Allow"
+  }
+}
+
 resource "aws_iam_role_policy" "allow_recorder_to_read_es_secrets" {
   role   = module.snapshot_recorder.role_name
   policy = data.aws_iam_policy_document.read_es_secrets.json
+}
+
+resource "aws_iam_role_policy" "allow_recorder_to_invalidate_cache" {
+  role   = module.snapshot_recorder.role_name
+  policy = data.aws_iam_policy_document.cloudfront_invalidate.json
 }
