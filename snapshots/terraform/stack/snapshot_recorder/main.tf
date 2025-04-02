@@ -1,5 +1,5 @@
 locals {
-  secret_id                       = "catalogue/snapshots/write_user"
+  secret_id = "catalogue/snapshots/write_user"
 }
 
 module "snapshot_recorder" {
