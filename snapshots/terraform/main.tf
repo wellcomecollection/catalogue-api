@@ -38,6 +38,8 @@ module "stack" {
 
   elastic_cloud_vpce_sg_id = local.elastic_cloud_vpce_sg_id
 
+  collection_data_cloudfront_distribution_id = data.terraform_remote_state.data_api.outputs.cloudfront_distribution_id
+
   vpc_id  = local.vpc_id
   subnets = local.subnets
 

@@ -13,3 +13,7 @@ variable "lambda_upload_bucket" {
 variable "deployment_service_env" {
   type = string
 }
+
+variable "collection_data_cloudfront_distribution_id" {
+  type = string
+}

@@ -44,3 +44,7 @@ variable "es_bulk_size" {
 variable "elastic_cloud_vpce_sg_id" {
   type = string
 }
+
+variable "collection_data_cloudfront_distribution_id" {
+  type = string
+}
