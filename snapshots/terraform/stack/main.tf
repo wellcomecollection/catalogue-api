@@ -42,8 +42,9 @@ module "snapshot_recorder" {
 
   deployment_service_env = var.deployment_service_env
 
-  lambda_upload_bucket   = var.lambda_upload_bucket
-  lambda_error_alarm_arn = var.lambda_error_alarm_arn
+  lambda_upload_bucket                       = var.lambda_upload_bucket
+  lambda_error_alarm_arn                     = var.lambda_error_alarm_arn
+  collection_data_cloudfront_distribution_id = var.collection_data_cloudfront_distribution_id
 }
 
 module "snapshot_reporter" {

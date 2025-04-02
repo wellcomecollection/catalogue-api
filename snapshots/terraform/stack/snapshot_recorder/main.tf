@@ -15,7 +15,8 @@ module "snapshot_recorder" {
   timeout         = 60
 
   env_vars = {
-    SECRET_ID = local.secret_id
+    SECRET_ID                                  = local.secret_id
+    COLLECTION_DATA_CLOUDFRONT_DISTRIBUTION_ID = var.collection_data_cloudfront_distribution_id
   }
 
   handler = "snapshot_recorder"
@@ -51,7 +52,30 @@ data "aws_iam_policy_document" "read_es_secrets" {
   }
 }
 
+data "aws_cloudfront_distribution" "collection_data_distribution" {
+  id = var.collection_data_cloudfront_distribution_id
+}
+
+data "aws_iam_policy_document" "cloudfront_invalidate" {
+  statement {
+    actions = [
+      "cloudfront:CreateInvalidation"
+    ]
+
+    resources = [
+      data.aws_cloudfront_distribution.collection_data_distribution.arn
+    ]
+
+    effect = "Allow"
+  }
+}
+
 resource "aws_iam_role_policy" "allow_recorder_to_read_es_secrets" {
   role   = module.snapshot_recorder.role_name
   policy = data.aws_iam_policy_document.read_es_secrets.json
+}
+
+resource "aws_iam_role_policy" "allow_recorder_to_invalidate_cache" {
+  role   = module.snapshot_recorder.role_name
+  policy = data.aws_iam_policy_document.cloudfront_invalidate.json
 }

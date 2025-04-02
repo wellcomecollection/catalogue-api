@@ -9,3 +9,7 @@ output "cluster_arn" {
 output "cluster_name" {
   value = aws_ecs_cluster.data_api.name
 }
+
+output "cloudfront_distribution_id" {
+  value = aws_cloudfront_distribution.data_api.id
+}
