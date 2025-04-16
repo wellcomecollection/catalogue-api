@@ -18,8 +18,8 @@ config:
     maxErrorRate: 0
   processor: "./processorFunctions.js"
   plugins:
-    expect: { }
-    metrics-by-endpoint: { }
+    expect: {}
+    metrics-by-endpoint: {}
 scenarios:
   - name: "/works"
     flow:
@@ -46,5 +46,11 @@ scenarios:
           headers:
             x-api-key:
           beforeRequest: addApiKey
+          expect:
+            statusCode: 200
+  - name: "/concepts/eva7r2dw"
+    flow:
+      - get:
+          url: "/concepts/eva7r2dw"
           expect:
             statusCode: 200
