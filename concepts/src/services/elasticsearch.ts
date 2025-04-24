@@ -10,10 +10,12 @@ const isProduction = process.env.NODE_ENV === "production";
 const getElasticClientConfig = async ({
   pipelineDate,
 }: ClientParameters): Promise<ClientOptions> => {
+  // TODO: The 'concepts_api_new' key is temporary. Switch back to 'concepts_api' once it has been updated with the
+  // necessary permissions.
   const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}`;
   const [host, apiKey] = await Promise.all([
     getSecret(`${secretPrefix}/${isProduction ? "private" : "public"}_host`),
-    getSecret(`${secretPrefix}/concepts_api/api_key`),
+    getSecret(`${secretPrefix}/concepts_api_new/api_key`),
   ]);
 
   if (apiKey == null || host == null) {
