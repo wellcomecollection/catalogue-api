@@ -11,7 +11,7 @@ const getElasticClientConfig = async ({
   pipelineDate,
 }: ClientParameters): Promise<ClientOptions> => {
   // TODO: The 'concepts_api_new' key is temporary. Switch back to 'concepts_api' once it has been updated with the
-  // necessary permissions.
+  // necessary permissions!
   const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}`;
   const [host, apiKey] = await Promise.all([
     getSecret(`${secretPrefix}/${isProduction ? "private" : "public"}_host`),
