@@ -42,7 +42,7 @@ lazy val search_common = setupProject(
 lazy val stacks = setupProject(
   project,
   "common/stacks",
-  localDependencies = Seq(display),
+  localDependencies = Seq(display, search_common),
   externalDependencies = CatalogueDependencies.stacksDependencies
 )
 

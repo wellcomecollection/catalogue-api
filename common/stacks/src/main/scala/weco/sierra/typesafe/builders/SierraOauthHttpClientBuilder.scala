@@ -1,4 +1,4 @@
-package weco.api.items.config.builders
+package weco.sierra.typesafe.builders
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.model.Uri
@@ -20,6 +20,13 @@ import scala.concurrent.ExecutionContext
 // remove this from scala-libs, after removing any other usages (
 // currently the requests service).
 object SierraOauthHttpClientBuilder {
+  def build(config: Config)(
+    implicit
+    as: ActorSystem,
+    ec: ExecutionContext
+  ): SierraOauthHttpClient =
+    build(config, ApiEnvironment.Prod)
+
   def build(config: Config, environment: ApiEnvironment = ApiEnvironment.Prod)(
     implicit
     as: ActorSystem,
@@ -41,13 +48,28 @@ object SierraOauthHttpClientBuilder {
 
     implicit val secretsClient: SecretsManagerClient = secretsClientForEnv
 
-    val username = getSecretString(
-      s"stacks/prod/sierra_api_key"
-    )
+    // Note: At present, we only use the secrets manager to get the items
+    // service key and secret, the requests service uses a different key
+    // and secret, which is in the identity account and stored in JSON
+    // format, in a single secret.
+    //
+    // We should probably refactor this so they both use the same approach!
 
-    val password = getSecretString(
-      s"stacks/prod/sierra_api_secret"
-    )
+    val username = config.getStringOption("sierra.api.key") match {
+      case Some(key) => key
+      case None =>
+        getSecretString(
+          s"stacks/prod/sierra_api_key"
+        )
+    }
+
+    val password = config.getStringOption("sierra.api.secret") match {
+      case Some(secret) => secret
+      case None =>
+        getSecretString(
+          s"stacks/prod/sierra_api_secret"
+        )
+    }
 
     val client = new PekkoHttpClient() with HttpGet with HttpPost {
       override val baseUri: Uri = Uri(

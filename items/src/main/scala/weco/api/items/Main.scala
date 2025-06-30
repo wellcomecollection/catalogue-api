@@ -4,7 +4,7 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.model.Uri
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.items.config.builders.SierraOauthHttpClientBuilder
+import weco.sierra.typesafe.builders.SierraOauthHttpClientBuilder
 import weco.api.items.services.{
   ItemUpdateService,
   SierraItemUpdater,

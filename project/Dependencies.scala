@@ -155,7 +155,8 @@ object CatalogueDependencies {
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
-      WellcomeDependencies.sierraLibrary
+      WellcomeDependencies.sierraLibrary ++
+      ExternalDependencies.secretsDependencies
 
   val snapshotGeneratorDependencies: Seq[ModuleID] =
     WellcomeDependencies.messagingTypesafeLibrary ++

@@ -15,7 +15,7 @@ import weco.http.client.{HttpGet, PekkoHttpClient}
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
-import weco.sierra.typesafe.SierraOauthHttpClientBuilder
+import weco.sierra.typesafe.builders.SierraOauthHttpClientBuilder
 import weco.typesafe.WellcomeTypesafeApp
 import weco.typesafe.config.builders.EnrichConfig._
 
@@ -39,6 +39,7 @@ object Main extends WellcomeTypesafeApp {
 
     val holdLimit = config.requireInt("sierra.holdLimit")
     val client = SierraOauthHttpClientBuilder.build(config)
+
     val sierraService = SierraRequestsService(client, holdLimit = holdLimit)
     val itemLookup = new ItemLookup(httpClient)
 
