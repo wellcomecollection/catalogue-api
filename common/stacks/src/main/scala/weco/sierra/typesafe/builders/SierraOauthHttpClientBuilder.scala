@@ -24,9 +24,8 @@ object SierraOauthHttpClientBuilder {
     implicit
     as: ActorSystem,
     ec: ExecutionContext
-  ): SierraOauthHttpClient = {
+  ): SierraOauthHttpClient =
     build(config, ApiEnvironment.Prod)
-  }
 
   def build(config: Config, environment: ApiEnvironment = ApiEnvironment.Prod)(
     implicit
@@ -52,22 +51,24 @@ object SierraOauthHttpClientBuilder {
     // Note: At present, we only use the secrets manager to get the items
     // service key and secret, the requests service uses a different key
     // and secret, which is in the identity account and stored in JSON
-    // format, in a single secret. 
+    // format, in a single secret.
     //
     // We should probably refactor this so they both use the same approach!
 
     val username = config.getStringOption("sierra.api.key") match {
       case Some(key) => key
-      case None => getSecretString(
-        s"stacks/prod/sierra_api_key"
-      )
+      case None =>
+        getSecretString(
+          s"stacks/prod/sierra_api_key"
+        )
     }
 
     val password = config.getStringOption("sierra.api.secret") match {
       case Some(secret) => secret
-      case None => getSecretString(
-        s"stacks/prod/sierra_api_secret"
-      )
+      case None =>
+        getSecretString(
+          s"stacks/prod/sierra_api_secret"
+        )
     }
 
     val client = new PekkoHttpClient() with HttpGet with HttpPost {
