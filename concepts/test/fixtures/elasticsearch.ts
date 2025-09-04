@@ -74,6 +74,29 @@ export const mockedElasticsearchClient = <T extends Identifiable>({
     })
   );
 
+  // _mget support for batch id retrieval
+  mock.add(
+    {
+      method: ["GET", "POST"],
+      path: `/${index}/_mget`,
+    },
+    ({ body }) => {
+      const ids: string[] = (body as any)?.ids || [];
+      return {
+        docs: ids.map((id) =>
+          docsMap.has(id)
+            ? {
+                _index: index,
+                _id: id,
+                found: true,
+                _source: { display: docsMap.get(id) },
+              }
+            : { _index: index, _id: id, found: false }
+        ),
+      };
+    }
+  );
+
   return new Client({
     node: "http://test:9200",
     Connection: mock.getConnection(),
