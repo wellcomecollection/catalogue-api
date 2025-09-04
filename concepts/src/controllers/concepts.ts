@@ -11,6 +11,7 @@ import { Config } from "../../config";
 type QueryParams = {
   query?: string;
   "identifiers.identifierType"?: string;
+  id?: string; // comma separated list of concept IDs
 } & PaginationQueryParameters;
 
 type ConceptHandler = RequestHandler<
@@ -29,6 +30,55 @@ const conceptsController = (
   const getPaginationResponse = paginationResponseGetter(config.publicRootUrl);
 
   return asyncHandler(async (req, res) => {
+    // If an explicit list of IDs is provided, short-circuit and fetch them via a single _mget request.
+    if (req.query.id) {
+      const rawIds = req.query.id
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      // Deduplicate to minimise ES work but keep original order (including duplicates) for response.
+      const uniqueIds = Array.from(new Set(rawIds));
+      if (uniqueIds.length === 0) {
+        res.status(200).json({
+          type: "ResultList",
+          results: [],
+          pageSize: 0,
+          totalPages: 0,
+          totalResults: 0,
+        });
+        return;
+      }
+
+      const mgetResponse = await elasticClient.mget<Displayable<Concept>>({
+        index,
+        body: { ids: uniqueIds },
+        _source: ["display"],
+      } as any); // typing gap in elastic client generics for mget
+
+      // Map id -> concept for quick lookup
+      const docsMap = new Map<string, Concept>();
+      // @ts-ignore - elastic client types for mget docs
+      for (const doc of mgetResponse.body?.docs || mgetResponse.docs || []) {
+        if (doc.found && doc._id && doc._source?.display) {
+          docsMap.set(doc._id, doc._source.display as Concept);
+        }
+      }
+
+      // Reconstruct results preserving original order and duplicates, omitting missing ids silently
+      const orderedResults: Concept[] = rawIds.flatMap((id) =>
+        docsMap.has(id) ? [docsMap.get(id)!] : []
+      );
+
+      res.status(200).json({
+        type: "ResultList",
+        results: orderedResults,
+        pageSize: orderedResults.length,
+        totalPages: 1,
+        totalResults: orderedResults.length,
+      });
+      return; // ensure no further processing
+    }
+
     const queryString = req.query.query;
     const identifierTypeFilter = req.query["identifiers.identifierType"];
     const searchResponse = await elasticClient.search<Displayable<Concept>>({
