@@ -11,7 +11,7 @@ const environment = environmentSchema.parse(process.env);
 
 const config = {
   pipelineDate: "2025-08-14",
-  conceptsIndex: "concepts-indexed-2025-10-10",
+  conceptsIndex: "concepts-indexed-2025-10-14",
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 };
 
