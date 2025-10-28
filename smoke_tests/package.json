@@ -1,9 +1,8 @@
 {
   "dependencies": {
-    "artillery": "2.0.21",
-    "artillery-plugin-expect": "^2.15.0",
-    "artillery-plugin-metrics-by-endpoint": "^1.15.0",
-    "aws-sdk": "^2.1691.0",
+    "artillery": "2.0.26",
+    "artillery-plugin-metrics-by-endpoint": "^1.20.0",
+    "@aws-sdk/client-secrets-manager": "^3.918.0",
     "client-oauth2": "^4.3.3"
   },
   "scripts": {
