@@ -20,7 +20,8 @@ object PipelineClusterElasticConfig extends Logging {
     val indexDateWorks = overrideDate.getOrElse(ElasticConfig.indexDateWorks)
     val indexDateImages = overrideDate.getOrElse(ElasticConfig.indexDateImages)
 
-    info(s"Using works index date $indexDateWorks and images index date $indexDateImages.")
+    info(
+      s"Using works index date $indexDateWorks and images index date $indexDateImages.")
 
     ElasticConfig(
       worksIndex = Index(s"works-indexed-$indexDateWorks"),
