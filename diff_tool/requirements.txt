@@ -6,33 +6,33 @@
 #
 anyio==3.5.0
     # via httpx
-certifi==2021.10.8
+certifi==2024.7.4
     # via
     #   httpcore
     #   httpx
 click==8.1.2
-    # via -r ./requirements.in
+    # via -r requirements.in
 h11==0.16.0
     # via httpcore
 httpcore==1.0.9
     # via
-    #   -r ./requirements.in
+    #   -r requirements.in
     #   httpx
 httpx==0.28.1
-    # via -r ./requirements.in
+    # via -r requirements.in
 humanize==4.0.0
-    # via -r ./requirements.in
+    # via -r requirements.in
 idna==3.3
     # via
     #   anyio
     #   httpx
 jinja2==3.1.1
-    # via -r ./requirements.in
+    # via -r requirements.in
 markupsafe==2.1.1
     # via jinja2
 sniffio==1.2.0
     # via anyio
 tabulate==0.8.9
-    # via -r ./requirements.in
+    # via -r requirements.in
 tqdm==4.64.0
-    # via -r ./requirements.in
+    # via -r requirements.in
