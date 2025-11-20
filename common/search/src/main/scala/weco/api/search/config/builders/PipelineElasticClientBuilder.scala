@@ -4,8 +4,11 @@ import com.sksamuel.elastic4s.ElasticClient
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
+import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.{ApiEnvironment, ElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
+
+import scala.concurrent.ExecutionContext
 
 object PipelineElasticClientBuilder {
 
@@ -21,6 +24,16 @@ object PipelineElasticClientBuilder {
     serviceName: String,
     pipelineDate: String = ElasticConfig.pipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod
+  )(implicit ec: ExecutionContext): ResilientElasticClient =
+    new ResilientElasticClient(
+      clientFactory = () =>
+        buildElasticClient(serviceName, pipelineDate, environment)
+    )
+
+  private def buildElasticClient(
+    serviceName: String,
+    pipelineDate: String,
+    environment: ApiEnvironment
   ): ElasticClient = {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()

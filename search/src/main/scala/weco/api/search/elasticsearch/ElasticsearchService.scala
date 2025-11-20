@@ -8,7 +8,7 @@ import com.sksamuel.elastic4s.requests.searches.{
   SearchRequest,
   SearchResponse
 }
-import com.sksamuel.elastic4s.{ElasticClient, Hit, Index, Response}
+import com.sksamuel.elastic4s.{Hit, Index, Response}
 import grizzled.slf4j.Logging
 import io.circe.Decoder
 import weco.Tracing
@@ -20,7 +20,7 @@ import weco.api.search.elasticsearch.templateSearch.{
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class ElasticsearchService(elasticClient: ElasticClient)(implicit
+class ElasticsearchService(elasticClient: ResilientElasticClient)(implicit
                                                          ec: ExecutionContext)
     extends Logging
     with Tracing
