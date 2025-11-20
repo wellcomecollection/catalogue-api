@@ -12,7 +12,10 @@ import org.apache.pekko.http.scaladsl.server.{
   Route,
   ValidationRejection
 }
-import weco.api.search.elasticsearch.{ElasticsearchService, ResilientElasticClient}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  ResilientElasticClient
+}
 import weco.api.search.models._
 import weco.api.search.rest._
 import weco.api.search.services.{
