@@ -1,6 +1,6 @@
 package weco.api.snapshot_generator.iterators
 
-import com.sksamuel.elastic4s.{Index, Response}
+import com.sksamuel.elastic4s.Index
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.circe._
 import grizzled.slf4j.Logging
