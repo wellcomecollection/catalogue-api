@@ -1,7 +1,7 @@
 package weco.api.snapshot_generator.models
 
-import com.sksamuel.elastic4s.ElasticClient
+import weco.api.search.elasticsearch.ResilientElasticClient
 
 trait PipelineElasticClient {
-  def forDate(pipelineDate: String): ElasticClient
+  def forDate(pipelineDate: String): ResilientElasticClient
 }

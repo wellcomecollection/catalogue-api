@@ -6,7 +6,8 @@ import org.scalatest.{Assertion, EitherValues}
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,
-  IndexNotFoundError
+  IndexNotFoundError,
+  ResilientElasticClient
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
@@ -26,7 +27,7 @@ class WorksServiceTest
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
   )
 
   val defaultWorksSearchOptions: WorkSearchOptions = createWorksSearchOptions

@@ -9,6 +9,7 @@ import io.circe.parser.parse
 import io.circe.Json
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
+import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.fixtures.TestWith
 import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
 
@@ -32,7 +33,7 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
     val router = new SearchApi(
-      elasticClient,
+      new ResilientElasticClient(() => elasticClient),
       elasticConfig,
       apiConfig = apiConfig
     )

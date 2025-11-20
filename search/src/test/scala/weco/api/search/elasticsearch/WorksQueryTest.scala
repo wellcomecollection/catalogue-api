@@ -313,6 +313,6 @@ class WorksQueryTest
   }
 
   private val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
   )
 }

@@ -7,7 +7,8 @@ import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,
-  IndexNotFoundError
+  IndexNotFoundError,
+  ResilientElasticClient
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
@@ -21,7 +22,7 @@ class ImagesServiceTest
     with EitherValues
     with TestDocumentFixtures {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
+  val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
 
   val imagesService = new ImagesService(elasticsearchService)
 

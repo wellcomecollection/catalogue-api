@@ -3,7 +3,7 @@ package weco.api.search.services
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{ElasticsearchService, ResilientElasticClient}
 import weco.api.search.fixtures.{
   IndexFixtures,
   JsonHelpers,
@@ -25,7 +25,7 @@ class AggregationsTest
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
   )
 
   it("returns more than 10 format aggregations") {
