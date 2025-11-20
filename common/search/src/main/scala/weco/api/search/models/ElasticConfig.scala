@@ -11,17 +11,19 @@ case class ElasticConfig(
 object ElasticConfig {
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
-  val indexDateWorks = "2025-10-09"
+  val pipelineDate = "2025-10-02"
+  val indexDateWorks = "2025-11-20"
   val indexDateImages = "2025-10-02"
 }
 
 object PipelineClusterElasticConfig extends Logging {
-  def apply(overrideDate: Option[String] = None): ElasticConfig = {
-    val indexDateWorks = overrideDate.getOrElse(ElasticConfig.indexDateWorks)
-    val indexDateImages = overrideDate.getOrElse(ElasticConfig.indexDateImages)
+  def apply(overridePipelineDate: Option[String] = None,overrideWorksIndexDate: Option[String] = None,overrideImagesIndexDate: Option[String] = None): ElasticConfig = {
+    val pipelineDate = overridePipelineDate.getOrElse(ElasticConfig.pipelineDate)
+    val indexDateWorks = overrideWorksIndexDate.getOrElse(ElasticConfig.indexDateWorks)
+    val indexDateImages = overrideImagesIndexDate.getOrElse(ElasticConfig.indexDateImages)
 
     info(
-      s"Using works index date $indexDateWorks and images index date $indexDateImages.")
+      s"Using pipeline date $pipelineDate, works index date $indexDateWorks, and images index date $indexDateImages.")
 
     ElasticConfig(
       worksIndex = Index(s"works-indexed-$indexDateWorks"),
