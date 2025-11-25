@@ -12,17 +12,27 @@ object ElasticConfig {
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
   val pipelineDate = "2025-10-02"
+  val indexDateWorks = "2025-10-09"
+  val indexDateImages = "2025-10-02"
 }
 
 object PipelineClusterElasticConfig extends Logging {
-  def apply(overrideDate: Option[String] = None): ElasticConfig = {
-    val date = overrideDate.getOrElse(ElasticConfig.pipelineDate)
+  def apply(overridePipelineDate: Option[String] = None,
+            overrideWorksIndexDate: Option[String] = None,
+            overrideImagesIndexDate: Option[String] = None): ElasticConfig = {
+    val pipelineDate =
+      overridePipelineDate.getOrElse(ElasticConfig.pipelineDate)
+    val indexDateWorks =
+      overrideWorksIndexDate.getOrElse(ElasticConfig.indexDateWorks)
+    val indexDateImages =
+      overrideImagesIndexDate.getOrElse(ElasticConfig.indexDateImages)
 
-    info(s"Using pipeline date: $date")
+    info(
+      s"Using pipeline date $pipelineDate, works index date $indexDateWorks, and images index date $indexDateImages.")
 
     ElasticConfig(
-      worksIndex = Index(s"works-indexed-$date"),
-      imagesIndex = Index(s"images-indexed-$date")
+      worksIndex = Index(s"works-indexed-$indexDateWorks"),
+      imagesIndex = Index(s"images-indexed-$indexDateImages")
     )
   }
 }
