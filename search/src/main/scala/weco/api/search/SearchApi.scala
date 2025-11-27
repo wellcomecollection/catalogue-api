@@ -163,7 +163,7 @@ class SearchApi(
         Map(
           "worksIndex" -> elasticConfig.worksIndex.name,
           "imagesIndex" -> elasticConfig.imagesIndex.name,
-          "pipelineDate" -> elasticConfig.pipelineDate
+          "pipelineDate" -> elasticConfig.pipelineDate.name
         )
       )
     }
