@@ -219,14 +219,15 @@ def post_to_slack(session, *, slack_secret_id, payload):
 
 
 def get_recent_update_stats(session, *, hours):
-    indices = httpx.get(
+    elasticConfig = httpx.get(
         "https://api.wellcomecollection.org/catalogue/v2/_elasticConfig"
     ).json()
-    works_index_name = indices["worksIndex"]
-    images_index_name = indices["imagesIndex"]
+    works_index_name = elasticConfig["worksIndex"]
+    images_index_name = elasticConfig["imagesIndex"]
+    pipeline_date = elasticConfig["pipelineDate"]
 
     index_date = works_index_name.replace("works-indexed-", "")
-    secret_prefix = f"elasticsearch/pipeline_storage_{index_date}"
+    secret_prefix = f"elasticsearch/pipeline_storage_{pipeline_date}"
 
     api_key_encoded = get_secret(
         session, secret_id=f"{secret_prefix}/snapshot_generator/api_key"
