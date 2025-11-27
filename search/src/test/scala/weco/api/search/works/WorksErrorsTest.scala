@@ -3,7 +3,7 @@ package weco.api.search.works
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.ElasticConfig
+import weco.api.search.models.{ElasticConfig, EsCluster}
 import weco.elasticsearch.IndexConfig
 
 class WorksErrorsTest

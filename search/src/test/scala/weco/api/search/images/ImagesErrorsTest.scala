@@ -2,7 +2,7 @@ package weco.api.search.images
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.ElasticConfig
+import weco.api.search.models.{ElasticConfig, EsCluster}
 
 class ImagesErrorsTest
     extends AnyFunSpec
