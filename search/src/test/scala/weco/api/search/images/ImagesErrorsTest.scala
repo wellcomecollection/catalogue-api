@@ -58,7 +58,7 @@ class ImagesErrorsTest
     val elasticConfig = ElasticConfig(
       worksIndex = createIndex,
       imagesIndex = createIndex,
-      pipelineDate = "pipeline-date"
+      pipelineDate = EsCluster("pipeline-date")
     )
 
     val testPaths = Table(

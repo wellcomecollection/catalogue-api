@@ -10,7 +10,7 @@ import io.circe.Json
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.api.search.models.{ApiConfig, ElasticConfig}
+import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
 
 trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   this: Suite =>

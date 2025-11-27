@@ -345,7 +345,7 @@ class WorksErrorsTest
       val elasticConfig = ElasticConfig(
         worksIndex = worksIndex,
         imagesIndex = Index("imagesIndex-notused"),
-        pipelineDate = "pipeline-date"
+        pipelineDate = EsCluster("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>
