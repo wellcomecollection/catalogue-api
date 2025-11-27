@@ -138,14 +138,14 @@ class SearchApi(
   def getSearchTemplates: Route = get {
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
-      elasticConfig.pipelineDate.name,
+      elasticConfig.pipelineDate.date,
       elasticConfig.worksIndex.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
-      elasticConfig.pipelineDate.name,
+      elasticConfig.pipelineDate.date,
       elasticConfig.imagesIndex.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
@@ -163,7 +163,7 @@ class SearchApi(
         Map(
           "worksIndex" -> elasticConfig.worksIndex.name,
           "imagesIndex" -> elasticConfig.imagesIndex.name,
-          "pipelineDate" -> elasticConfig.pipelineDate.name
+          "pipelineDate" -> elasticConfig.pipelineDate.date
         )
       )
     }

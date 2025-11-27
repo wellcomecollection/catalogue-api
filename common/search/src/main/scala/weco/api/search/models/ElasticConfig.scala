@@ -3,7 +3,7 @@ package weco.api.search.models
 import com.sksamuel.elastic4s.Index
 import grizzled.slf4j.Logging
 
-case class EsCluster(name: String)
+case class EsCluster(date: String)
 
 case class ElasticConfig(
   worksIndex: Index,
@@ -36,7 +36,7 @@ object PipelineClusterElasticConfig extends Logging {
     ElasticConfig(
       worksIndex = Index(s"works-indexed-$indexDateWorks"),
       imagesIndex = Index(s"images-indexed-$indexDateImages"),
-      pipelineDate = EsCluster(s"pipeline-$pipelineDate")
+      pipelineDate = EsCluster(pipelineDate)
     )
   }
 }
