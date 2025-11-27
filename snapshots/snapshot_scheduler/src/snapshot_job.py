@@ -47,24 +47,17 @@ def snapshot_job(*, doc_type, index, pipeline_date, query):
     )
 
 
-def get_pipeline_date(*, current_index):
-    ends_in_date_with_optional_suffix = re.compile(r"\d{4}-\d{2}-\d{2}.?$")
-    match = ends_in_date_with_optional_suffix.search(current_index)
-    return match[0]
-
-
-def get_snapshot_jobs(indices):
-    pipeline_date = get_pipeline_date(current_index=indices["works"])
+def get_snapshot_jobs(elastic_config):
     works_job = snapshot_job(
-        index=indices["works"],
+        index=elastic_config["works"],
         doc_type="works",
-        pipeline_date=pipeline_date,
+        pipeline_date=elastic_config["pipelineDate"],
         query=json.dumps({"term": {"type": "Visible"}}),
     )
     images_job = snapshot_job(
-        index=indices["images"],
+        index=elastic_config["images"],
         doc_type="images",
-        pipeline_date=pipeline_date,
+        pipeline_date=elastic_config["pipelineDate"],
         query=None,
     )
     return [works_job, images_job]

@@ -226,7 +226,6 @@ def get_recent_update_stats(session, *, hours):
     images_index_name = elasticConfig["imagesIndex"]
     pipeline_date = elasticConfig["pipelineDate"]
 
-    index_date = works_index_name.replace("works-indexed-", "")
     secret_prefix = f"elasticsearch/pipeline_storage_{pipeline_date}"
 
     api_key_encoded = get_secret(
