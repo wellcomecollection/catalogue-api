@@ -43,7 +43,7 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   def withApi[R](testWith: TestWith[Route, R]): R = {
     val elasticConfig = ElasticConfig(
       worksIndex = Index("worksIndex-notused"),
-      imagesIndex = Index("imagesIndex-notused")
+      imagesIndex = Index("imagesIndex-notused"),
       pipelineDate = "pipeline-date"
     )
 
