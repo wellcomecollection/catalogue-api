@@ -12,12 +12,11 @@ class ImagesErrorsTest
     it("looking up an image that doesn't exist") {
       val id = "blahblah"
 
-      withImagesApi {
-        case (_, route) =>
-          assertNotFound(route)(
-            path = s"$rootPath/images/$id",
-            description = s"Image not found for identifier $id"
-          )
+      withImagesApi { case (_, route) =>
+        assertNotFound(route)(
+          path = s"$rootPath/images/$id",
+          description = s"Image not found for identifier $id"
+        )
       }
     }
 
@@ -58,7 +57,8 @@ class ImagesErrorsTest
   it("returns a 500 error if the default index doesn't exist") {
     val elasticConfig = ElasticConfig(
       worksIndex = createIndex,
-      imagesIndex = createIndex
+      imagesIndex = createIndex,
+      pipelineDate = "pipeline-date"
     )
 
     val testPaths = Table(
@@ -91,12 +91,11 @@ class ImagesErrorsTest
       "https://developers.wellcomecollection.org/docs/datasets"
 
     it("a very large page") {
-      withImagesApi {
-        case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/images?page=10000",
-            description = description
-          )
+      withImagesApi { case (_, route) =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?page=10000",
+          description = description
+        )
       }
     }
 
@@ -105,22 +104,20 @@ class ImagesErrorsTest
     // We saw real requests like this, which we traced to an overflow in the
     // page offset we were requesting in Elasticsearch.
     it("so many pages that a naive (page * pageSize) would overflow") {
-      withImagesApi {
-        case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/images?page=2000000000&pageSize=100",
-            description = description
-          )
+      withImagesApi { case (_, route) =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?page=2000000000&pageSize=100",
+          description = description
+        )
       }
     }
 
     it("the 101th page with 100 results per page") {
-      withImagesApi {
-        case (_, route) =>
-          assertBadRequest(route)(
-            path = s"$rootPath/images?page=101&pageSize=100",
-            description = description
-          )
+      withImagesApi { case (_, route) =>
+        assertBadRequest(route)(
+          path = s"$rootPath/images?page=101&pageSize=100",
+          description = description
+        )
       }
     }
   }

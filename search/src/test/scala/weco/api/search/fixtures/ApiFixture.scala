@@ -44,6 +44,7 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     val elasticConfig = ElasticConfig(
       worksIndex = Index("worksIndex-notused"),
       imagesIndex = Index("imagesIndex-notused")
+      pipelineDate = "pipeline-date"
     )
 
     withRouter(elasticConfig) { route =>
@@ -55,7 +56,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     withLocalWorksIndex { worksIndex =>
       val elasticConfig = ElasticConfig(
         worksIndex = worksIndex,
-        imagesIndex = Index("imagesIndex-notused")
+        imagesIndex = Index("imagesIndex-notused"),
+        pipelineDate = "pipeline-date"
       )
 
       withRouter(elasticConfig) { route =>
@@ -67,7 +69,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     withLocalImagesIndex { imagesIndex =>
       val elasticConfig = ElasticConfig(
         worksIndex = Index("worksIndex-notused"),
-        imagesIndex = imagesIndex
+        imagesIndex = imagesIndex,
+        pipelineDate = "pipeline-date"
       )
 
       withRouter(elasticConfig) { route =>
