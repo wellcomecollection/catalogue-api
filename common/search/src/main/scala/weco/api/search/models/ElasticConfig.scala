@@ -5,7 +5,8 @@ import grizzled.slf4j.Logging
 
 case class ElasticConfig(
   worksIndex: Index,
-  imagesIndex: Index
+  imagesIndex: Index,
+  pipelineDate: String
 )
 
 object ElasticConfig {
@@ -32,7 +33,8 @@ object PipelineClusterElasticConfig extends Logging {
 
     ElasticConfig(
       worksIndex = Index(s"works-indexed-$indexDateWorks"),
-      imagesIndex = Index(s"images-indexed-$indexDateImages")
+      imagesIndex = Index(s"images-indexed-$indexDateImages"),
+      pipelineDate = s"pipeline-$pipelineDate"
     )
   }
 }
