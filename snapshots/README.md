@@ -34,7 +34,7 @@ run the snapshot generator with the following environment variables:
 ```
 SNAPSHOT_BUCKET_NAME="wellcomecollection-data-public-delta"
 SNAPSHOT_BUCKET_KEY="catalogue_dev/v2/works.json.gz"
-SNAPSHOT_INDEX="works-indexed-<SOME_PIPELINE_DATE>"
+SNAPSHOT_INDEX="works-indexed-<SOME_INDEX_DATE>"
 PIPELINE_DATE=<SOME_PIPELINE_DATE>
 SNAPSHOT_QUERY='{"term": {"type": "Visible"}}'
 AWS_PROFILE=catalogue-developer

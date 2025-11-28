@@ -3,10 +3,13 @@ package weco.api.search.works
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.ElasticConfig
+import weco.api.search.models.{ElasticConfig, EsCluster}
 import weco.elasticsearch.IndexConfig
 
-class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenPropertyChecks {
+class WorksErrorsTest
+    extends AnyFunSpec
+    with ApiWorksTestBase
+    with TableDrivenPropertyChecks {
 
   val includesString =
     "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
@@ -206,17 +209,17 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
     }
 
     describe("trying to get more works than ES allows") {
-      val description = "Only the first 10000 works are available in the API. " +
-        "If you want more works, you can download a snapshot of the complete catalogue: " +
-        "https://developers.wellcomecollection.org/docs/datasets"
+      val description =
+        "Only the first 10000 works are available in the API. " +
+          "If you want more works, you can download a snapshot of the complete catalogue: " +
+          "https://developers.wellcomecollection.org/docs/datasets"
 
       it("a very large page") {
-        withWorksApi {
-          case (_, route) =>
-            assertBadRequest(route)(
-              path = s"$rootPath/works?page=10000",
-              description = description
-            )
+        withWorksApi { case (_, route) =>
+          assertBadRequest(route)(
+            path = s"$rootPath/works?page=10000",
+            description = description
+          )
         }
       }
 
@@ -225,22 +228,20 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
       // We saw real requests like this, which we traced to an overflow in the
       // page offset we were requesting in Elasticsearch.
       it("so many pages that a naive (page * pageSize) would overflow") {
-        withWorksApi {
-          case (_, route) =>
-            assertBadRequest(route)(
-              path = s"$rootPath/works?page=2000000000&pageSize=100",
-              description = description
-            )
+        withWorksApi { case (_, route) =>
+          assertBadRequest(route)(
+            path = s"$rootPath/works?page=2000000000&pageSize=100",
+            description = description
+          )
         }
       }
 
       it("the 101th page with 100 results per page") {
-        withWorksApi {
-          case (_, route) =>
-            assertBadRequest(route)(
-              path = s"$rootPath/works?page=101&pageSize=100",
-              description = description
-            )
+        withWorksApi { case (_, route) =>
+          assertBadRequest(route)(
+            path = s"$rootPath/works?page=101&pageSize=100",
+            description = description
+          )
         }
       }
     }
@@ -276,13 +277,11 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
     // could arise which we aren't covering.
     //
     it("if the date is too large") {
-      withWorksApi {
-        case (_, route) =>
-          assertBadRequest(route)(
-            path =
-              s"$rootPath/works?production.dates.from=%2B011860-01-01",
-            description = "production.dates.from: year must be less than 9999"
-          )
+      withWorksApi { case (_, route) =>
+        assertBadRequest(route)(
+          path = s"$rootPath/works?production.dates.from=%2B011860-01-01",
+          description = "production.dates.from: year must be less than 9999"
+        )
       }
     }
   }
@@ -290,23 +289,21 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
   describe("returns a 404 Not Found for missing resources") {
     it("looking up a work that doesn't exist") {
       val badId = "doesnotexist"
-      withWorksApi {
-        case (_, route) =>
-          assertNotFound(route)(
-            path = s"$rootPath/works/$badId",
-            description = s"Work not found for identifier $badId"
-          )
+      withWorksApi { case (_, route) =>
+        assertNotFound(route)(
+          path = s"$rootPath/works/$badId",
+          description = s"Work not found for identifier $badId"
+        )
       }
     }
 
     it("looking up a work with a malformed identifier") {
       val badId = "zd224ncv]"
-      withWorksApi {
-        case (_, route) =>
-          assertNotFound(route)(
-            path = s"$rootPath/works/$badId",
-            description = s"Work not found for identifier $badId"
-          )
+      withWorksApi { case (_, route) =>
+        assertNotFound(route)(
+          path = s"$rootPath/works/$badId",
+          description = s"Work not found for identifier $badId"
+        )
       }
     }
   }
@@ -336,7 +333,9 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
     }
   }
 
-  it("returns an Internal Server error if you try to search a malformed index") {
+  it(
+    "returns an Internal Server error if you try to search a malformed index"
+  ) {
     // We need to do something that reliably triggers an internal exception
     // in the Elasticsearch handler.
     //
@@ -345,7 +344,8 @@ class WorksErrorsTest extends AnyFunSpec with ApiWorksTestBase with TableDrivenP
     withLocalElasticsearchIndex(config = IndexConfig.empty) { worksIndex =>
       val elasticConfig = ElasticConfig(
         worksIndex = worksIndex,
-        imagesIndex = Index("imagesIndex-notused")
+        imagesIndex = Index("imagesIndex-notused"),
+        pipelineDate = EsCluster("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>

@@ -10,7 +10,7 @@ import io.circe.Json
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.api.search.models.{ApiConfig, ElasticConfig}
+import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
 
 trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   this: Suite =>
@@ -43,7 +43,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   def withApi[R](testWith: TestWith[Route, R]): R = {
     val elasticConfig = ElasticConfig(
       worksIndex = Index("worksIndex-notused"),
-      imagesIndex = Index("imagesIndex-notused")
+      imagesIndex = Index("imagesIndex-notused"),
+      pipelineDate = EsCluster("pipeline-date")
     )
 
     withRouter(elasticConfig) { route =>
@@ -55,7 +56,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     withLocalWorksIndex { worksIndex =>
       val elasticConfig = ElasticConfig(
         worksIndex = worksIndex,
-        imagesIndex = Index("imagesIndex-notused")
+        imagesIndex = Index("imagesIndex-notused"),
+        pipelineDate = EsCluster("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>
@@ -67,7 +69,8 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     withLocalImagesIndex { imagesIndex =>
       val elasticConfig = ElasticConfig(
         worksIndex = Index("worksIndex-notused"),
-        imagesIndex = imagesIndex
+        imagesIndex = imagesIndex,
+        pipelineDate = EsCluster("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>

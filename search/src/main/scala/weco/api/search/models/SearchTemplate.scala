@@ -7,12 +7,23 @@ import io.circe.generic.extras.semiauto.deriveConfiguredEncoder
 import io.circe.Encoder
 import weco.http.json.DisplayJsonUtil._
 
-case class SearchTemplate(id: String, index: String, query: String)
+case class SearchTemplate(
+  id: String,
+  pipeline: String,
+  index: String,
+  query: String
+)
 
 object SearchTemplate {
-  def apply(id: String, index: String, query: Query): SearchTemplate =
+  def apply(
+    id: String,
+    pipeline: String,
+    index: String,
+    query: Query
+  ): SearchTemplate =
     SearchTemplate(
       id,
+      pipeline,
       index,
       JacksonBuilder.writeAsString(QueryBuilderFn(query).value)
     )
