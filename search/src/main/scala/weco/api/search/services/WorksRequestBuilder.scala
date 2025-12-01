@@ -5,7 +5,7 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
 import weco.api.search.models._
-import weco.api.search.models.request.{ProductionDateSortRequest, SortingOrder}
+import weco.api.search.models.request.{DigitalLocationCreatedDateSortRequest, ProductionDateSortRequest, SortingOrder}
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
@@ -62,6 +62,8 @@ object WorksRequestBuilder
     searchOptions: WorkSearchOptions): Option[SortingOrder] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
+        searchOptions.sortOrder
+      case DigitalLocationCreatedDateSortRequest =>
         searchOptions.sortOrder
     }
 
