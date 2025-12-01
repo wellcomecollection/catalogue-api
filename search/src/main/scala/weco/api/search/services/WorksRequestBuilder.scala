@@ -40,7 +40,8 @@ object WorksRequestBuilder
           query = searchOptions.searchQuery.map(_.query),
           from = PaginationQuery.safeGetFrom(searchOptions),
           size = searchOptions.pageSize,
-          sortByDate = dateOrder,
+          sortByDate = sortConfig.map(_._2),
+          sortField = sortConfig.map(_._1),
           sortByScore = searchOptions.searchQuery.isDefined,
           includes = Seq("display", "type"),
           aggs = WorksAggregationsBuilder
@@ -57,14 +58,14 @@ object WorksRequestBuilder
     )
   }
 
-  private def dateOrder(
+  private def sortConfig(
     implicit
-    searchOptions: WorkSearchOptions): Option[SortingOrder] =
+    searchOptions: WorkSearchOptions): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
-        searchOptions.sortOrder
+        ("filterableValues.production.dates.range.from", searchOptions.sortOrder)
       case DigitalLocationCreatedDateSortRequest =>
-        searchOptions.sortOrder
+        ("filterableValues.items.locations.createdDate", searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {

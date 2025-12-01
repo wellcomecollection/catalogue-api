@@ -32,8 +32,6 @@ trait TemplateSearchBuilder extends Encoders {
   // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
 
-  protected val dateField: String
-
   // KNN based searches rank by similarity, meaning that the complexity
   // of a full query is not required, and could be misleading to read.
   // A query may have boosts for finding things like exact matches
@@ -102,8 +100,9 @@ trait TemplateSearchBuilder extends Encoders {
        |  "sort": [
        |    {{#sortByDate}}
        |    {
-       |      "$dateField": {
-       |        "order": "{{sortByDate}}"
+       |      "{{sortField}}": {
+       |        "order": "{{sortByDate}}",
+       |        "missing": "_last"
        |      }
        |    },
        |    {{/sortByDate}}

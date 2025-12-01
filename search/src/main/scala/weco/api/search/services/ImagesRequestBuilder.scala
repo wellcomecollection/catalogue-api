@@ -40,7 +40,8 @@ object ImagesRequestBuilder
           query = searchOptions.searchQuery.map(_.query),
           from = PaginationQuery.safeGetFrom(searchOptions),
           size = searchOptions.pageSize,
-          sortByDate = dateOrder,
+          sortByDate = sortConfig.map(_._2),
+          sortField = sortConfig.map(_._1),
           sortByScore =
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
           includes = Seq("display", "vectorValues.features"),
@@ -58,12 +59,12 @@ object ImagesRequestBuilder
     )
   }
 
-  private def dateOrder(
+  private def sortConfig(
     implicit
-    searchOptions: ImageSearchOptions): Option[SortingOrder] =
+    searchOptions: ImageSearchOptions): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
-        searchOptions.sortOrder
+        ("filterableValues.source.production.dates.range.from", searchOptions.sortOrder)
     }
 
   val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {
