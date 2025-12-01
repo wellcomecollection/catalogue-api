@@ -5,7 +5,11 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
 import weco.api.search.models._
-import weco.api.search.models.request.{DigitalLocationCreatedDateSortRequest, ProductionDateSortRequest, SortingOrder}
+import weco.api.search.models.request.{
+  DigitalLocationCreatedDateSortRequest,
+  ProductionDateSortRequest,
+  SortingOrder
+}
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 
@@ -63,9 +67,13 @@ object WorksRequestBuilder
     searchOptions: WorkSearchOptions): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
-        ("filterableValues.production.dates.range.from", searchOptions.sortOrder)
+        (
+          "filterableValues.production.dates.range.from",
+          searchOptions.sortOrder)
       case DigitalLocationCreatedDateSortRequest =>
-        ("filterableValues.items.locations.createdDate", searchOptions.sortOrder)
+        (
+          "filterableValues.items.locations.createdDate",
+          searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {

@@ -64,7 +64,9 @@ object ImagesRequestBuilder
     searchOptions: ImageSearchOptions): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
-        ("filterableValues.source.production.dates.range.from", searchOptions.sortOrder)
+        (
+          "filterableValues.source.production.dates.range.from",
+          searchOptions.sortOrder)
     }
 
   val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {
