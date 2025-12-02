@@ -15,7 +15,7 @@ object ElasticConfig {
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
   val pipelineDate = "2025-10-02"
-  val indexDateWorks = "2025-10-09"
+  val indexDateWorks = "2025-11-20"
   val indexDateImages = "2025-10-02"
 }
 
