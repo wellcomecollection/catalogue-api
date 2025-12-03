@@ -78,7 +78,6 @@ steps:
             - "--content-type={{matrix}}"
             - "--cluster=pipeline-stage"
             - "--query=https://api-stage.wellcomecollection.org/catalogue/v2"
-            - "--pipeline-date=2025-10-02"
           mount-checkout: false
           always-pull: true
           propagate-environment: true

@@ -9,6 +9,7 @@ case class SearchTemplateParams(
   from: Int,
   size: Int,
   sortByDate: Option[SortingOrder],
+  sortField: Option[String],
   sortByScore: Boolean,
   includes: Seq[String],
   aggs: Seq[AbstractAggregation],

@@ -1,0 +1,159 @@
+{
+  "description": "a work with a digital location but no createdDate",
+  "createdAt": "2024-11-25T15:15:12.128853Z",
+  "id": "dlnodate",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "dlnodate",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
+          },
+          "ontologyType": "Work",
+          "value": "dlnodatetest"
+        },
+        "version": 1,
+        "modifiedTime": "2023-06-01T10:00:00Z"
+      },
+      "mergedTime": "2023-06-01T10:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [],
+      "mergeCandidates": []
+    },
+    "display": {
+      "id": "dlnodate",
+      "title": "Digital location without created date",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
+          },
+          "value": "dlnodatetest",
+          "type": "Identifier"
+        }
+      ],
+      "subjects": [],
+      "genres": [],
+      "items": [
+        {
+          "id": "itemnodate",
+          "identifiers": [],
+          "locations": [
+            {
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "url": "https://iiif.wellcomecollection.org/image/nodate.jpg/info.json",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "url": "http://creativecommons.org/licenses/by/4.0/",
+                "type": "License"
+              },
+              "accessConditions": [],
+              "type": "DigitalLocation"
+            }
+          ],
+          "type": "Item"
+        }
+      ],
+      "holdings": [],
+      "availabilities": [
+        {
+          "id": "online",
+          "label": "Online",
+          "type": "Availability"
+        }
+      ],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
+    },
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "dlnodate",
+      "sourceIdentifier.value": "dlnodatetest",
+      "identifiers.value": ["dlnodatetest"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": ["itemnodate"],
+      "items.identifiers.value": [],
+      "items.shelfmark.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "Digital location without created date"
+    },
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "production.dates": [],
+      "subjects": [],
+      "languages": [],
+      "contributors.agent": [],
+      "items.locations.license": [
+        {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)"
+        }
+      ],
+      "availabilities": [
+        {
+          "id": "online",
+          "label": "Online"
+        }
+      ]
+    },
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["dlnodatetest"],
+      "items.locations.license.id": ["cc-by"],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": ["itemnodate"],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": ["iiif-image"],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": ["online"]
+    },
+    "type": "Visible"
+  }
+}

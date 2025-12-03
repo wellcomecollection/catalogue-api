@@ -246,6 +246,9 @@
                         "type": "keyword"
                       }
                     }
+                  },
+                  "createdDate": {
+                    "type": "date"
                   }
                 }
               }
@@ -1028,9 +1031,7 @@
               "german_normalization",
               "german_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "spanish": {
@@ -1040,9 +1041,7 @@
               "lowercase",
               "spanish_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "swappable_characters": {
@@ -1057,21 +1056,13 @@
               "pattern_replace_j_i",
               "pattern_replace_g_j"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
           "lowercase": {
-            "filter": [
-              "asciifolding",
-              "word_delimiter",
-              "lowercase"
-            ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "filter": ["asciifolding", "word_delimiter", "lowercase"],
+            "char_filter": ["slash_remover"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
@@ -1082,9 +1073,7 @@
               "long_query_token_limiter",
               "lowercase"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
@@ -1096,31 +1085,21 @@
               "lowercase",
               "italian_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "lowercase_whitespace_tokens": {
-            "filter": [
-              "lowercase"
-            ],
+            "filter": ["lowercase"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
           "path_analyzer": {
-            "filter": [
-              "asciifolding",
-              "lowercase"
-            ],
+            "filter": ["asciifolding", "lowercase"],
             "type": "custom",
             "tokenizer": "path_hierarchy"
           },
           "dot_path_analyzer": {
-            "filter": [
-              "asciifolding",
-              "lowercase"
-            ],
+            "filter": ["asciifolding", "lowercase"],
             "type": "custom",
             "tokenizer": "dot_hierarchy"
           },
@@ -1133,10 +1112,7 @@
               "arabic_normalization",
               "persian_normalization"
             ],
-            "char_filter": [
-              "zero_width_spaces",
-              "slash_remover"
-            ],
+            "char_filter": ["zero_width_spaces", "slash_remover"],
             "tokenizer": "whitespace"
           },
           "cased": {
@@ -1145,9 +1121,7 @@
               "word_delimiter",
               "long_query_token_limiter"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
@@ -1160,9 +1134,7 @@
               "arabic_normalization",
               "arabic_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "bengali": {
@@ -1175,9 +1147,7 @@
               "bengali_normalization",
               "bengali_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "english": {
@@ -1188,9 +1158,7 @@
               "lowercase",
               "english_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "english_token_limited": {
@@ -1202,9 +1170,7 @@
               "lowercase",
               "english_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "hindi": {
@@ -1217,9 +1183,7 @@
               "hindi_normalization",
               "hindi_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "french": {
@@ -1230,30 +1194,18 @@
               "lowercase",
               "french_stemmer"
             ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "char_filter": ["slash_remover"],
             "tokenizer": "whitespace"
           },
           "base": {
-            "filter": [
-              "word_delimiter",
-              "long_query_token_limiter"
-            ],
-            "char_filter": [
-              "slash_remover"
-            ],
+            "filter": ["word_delimiter", "long_query_token_limiter"],
+            "char_filter": ["slash_remover"],
             "type": "custom",
             "tokenizer": "whitespace"
           },
           "normalized_whole_phrase": {
-            "filter": [
-              "asciifolding",
-              "lowercase"
-            ],
-            "char_filter": [
-              "remove_punctuation"
-            ],
+            "filter": ["asciifolding", "lowercase"],
+            "char_filter": ["remove_punctuation"],
             "tokenizer": "keyword"
           }
         },
@@ -1271,9 +1223,7 @@
           },
           "zero_width_spaces": {
             "type": "mapping",
-            "mappings": [
-              "\\u200C=>\\u0020"
-            ]
+            "mappings": ["\\u200C=>\\u0020"]
           }
         }
       }

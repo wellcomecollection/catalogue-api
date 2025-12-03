@@ -21,7 +21,15 @@ Contains:
 
 The snapshot_generator is deployed alongside the catalogue API using Buildkite.
 
-New Lambda deployment packages are published to S3 by Buildkite; you need to run a `terraform apply` to use the new versions.
+To upload a new Lambda deployment package:
+
+```console
+pip3 install --target ./src -r requirements.txt
+cd src/
+zip -r ../snapshot_<lambda_name>.zip .
+cd ..
+AWS_PROFILE=catalogue-dev aws s3 cp snapshot_<lambda_name>.zip s3://wellcomecollection-catalogue-infra-delta/lambdas/snapshots/snapshot_<lambda_name>.zip
+```
 
 ## Running locally
 
