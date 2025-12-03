@@ -232,6 +232,84 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  it("sorts by digital location created date") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-digital-location.2020",
+          "work-digital-location.2022",
+          "work-digital-location.2021"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=items.locations.createdDate"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-digital-location.2020",
+              "work-digital-location.2021",
+              "work-digital-location.2022"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("sorts by digital location created date in descending order") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-digital-location.2020",
+          "work-digital-location.2022",
+          "work-digital-location.2021"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=items.locations.createdDate&sortOrder=desc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-digital-location.2022",
+              "work-digital-location.2021",
+              "work-digital-location.2020"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("returns documents whose digital location has no createdDate last") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-digital-location.2020",
+          "work-digital-location.no-date",
+          "work-digital-location.2021"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=items.locations.createdDate"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-digital-location.2020",
+              "work-digital-location.2021",
+              "work-digital-location.no-date"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>

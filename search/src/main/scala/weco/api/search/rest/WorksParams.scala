@@ -316,7 +316,8 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val sortDecoder: Decoder[List[SortRequest]] =
     decodeOneOfCommaSeparated(
-      "production.dates" -> ProductionDateSortRequest
+      "production.dates" -> ProductionDateSortRequest,
+      "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest
     )
 
   implicit val sortOrderDecoder: Decoder[SortingOrder] =

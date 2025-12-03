@@ -1,0 +1,160 @@
+{
+  "description": "a work with a digital location created in 2021",
+  "createdAt": "2024-11-25T15:15:12.128853Z",
+  "id": "dl2021xyz",
+  "document": {
+    "debug": {
+      "source": {
+        "id": "dl2021xyz",
+        "identifier": {
+          "identifierType": {
+            "id": "miro-image-number"
+          },
+          "ontologyType": "Work",
+          "value": "dl2021test"
+        },
+        "version": 1,
+        "modifiedTime": "2021-06-20T14:30:00Z"
+      },
+      "mergedTime": "2021-06-20T14:30:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "redirectSources": [],
+      "mergeCandidates": []
+    },
+    "display": {
+      "id": "dl2021xyz",
+      "title": "Digital location created in 2021",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "miro-image-number",
+            "label": "Miro image number",
+            "type": "IdentifierType"
+          },
+          "value": "dl2021test",
+          "type": "Identifier"
+        }
+      ],
+      "subjects": [],
+      "genres": [],
+      "items": [
+        {
+          "id": "item2021",
+          "identifiers": [],
+          "locations": [
+            {
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "url": "https://iiif.wellcomecollection.org/image/2021.jpg/info.json",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "url": "http://creativecommons.org/licenses/by/4.0/",
+                "type": "License"
+              },
+              "accessConditions": [],
+              "type": "DigitalLocation"
+            }
+          ],
+          "type": "Item"
+        }
+      ],
+      "holdings": [],
+      "availabilities": [
+        {
+          "id": "online",
+          "label": "Online",
+          "type": "Availability"
+        }
+      ],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "precededBy": [],
+      "succeededBy": [],
+      "type": "Work"
+    },
+    "query": {
+      "collectionPath.label": null,
+      "collectionPath.path": null,
+      "alternativeTitles": [],
+      "contributors.agent.label": [],
+      "description": null,
+      "edition": null,
+      "genres.concepts.label": [],
+      "id": "dl2021xyz",
+      "sourceIdentifier.value": "dl2021test",
+      "identifiers.value": ["dl2021test"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.id": ["item2021"],
+      "items.identifiers.value": [],
+      "items.shelfmark.value": [],
+      "languages.label": [],
+      "lettering": null,
+      "notes.contents": [],
+      "partOf.title": [],
+      "physicalDescription": null,
+      "production.label": [],
+      "referenceNumber": null,
+      "subjects.concepts.label": [],
+      "title": "Digital location created in 2021"
+    },
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "production.dates": [],
+      "subjects": [],
+      "languages": [],
+      "contributors.agent": [],
+      "items.locations.license": [
+        {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)"
+        }
+      ],
+      "availabilities": [
+        {
+          "id": "online",
+          "label": "Online"
+        }
+      ]
+    },
+    "filterableValues": {
+      "format.id": null,
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["dl2021test"],
+      "items.locations.license.id": ["cc-by"],
+      "items.locations.accessConditions.status.id": [],
+      "items.locations.createdDate": ["2021-06-20T14:30:00Z"],
+      "items.id": ["item2021"],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": ["iiif-image"],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": ["online"]
+    },
+    "type": "Visible"
+  }
+}

@@ -98,7 +98,7 @@ class WorksErrorsTest
       assertBadRequest(route)(
         path = s"$rootPath/works?sort=foo,bar",
         description =
-          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
+          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
       )
     }
   }
@@ -109,7 +109,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo",
           description =
-            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates']"
+            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates', 'items.locations.createdDate']"
         )
       }
     }
@@ -119,7 +119,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
         )
       }
     }
@@ -129,7 +129,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,production.dates,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
         )
       }
     }
