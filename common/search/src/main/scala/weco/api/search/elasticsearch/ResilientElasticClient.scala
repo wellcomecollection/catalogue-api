@@ -7,27 +7,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ResilientElasticClient(
   clientFactory: () => ElasticClient
-)(implicit ec: ExecutionContext) extends Logging {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   @volatile private var client: ElasticClient = clientFactory()
 
-  def execute[T, U](t: T)(implicit handler: Handler[T, U], manifest: Manifest[U]): Future[Response[U]] = {
+  def execute[T, U](t: T)(implicit handler: Handler[T, U],
+                          manifest: Manifest[U]): Future[Response[U]] =
     client.execute(t).flatMap { response =>
       response.status match {
         case 401 | 403 =>
-          warn(s"Received ${response.status} from Elasticsearch, refreshing client and retrying...")
+          warn(
+            s"Received ${response.status} from Elasticsearch, refreshing client and retrying...")
           refreshClient()
           client.execute(t)
         case _ => Future.successful(response)
       }
     }
-  }
 
-  def close(): Unit = {
+  def close(): Unit =
     client.close()
-  }
 
-  private def refreshClient(): Unit = {
+  private def refreshClient(): Unit =
     synchronized {
       val oldClient = client
       try {
@@ -41,5 +42,4 @@ class ResilientElasticClient(
           throw e
       }
     }
-  }
 }

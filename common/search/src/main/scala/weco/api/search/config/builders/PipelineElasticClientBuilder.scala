@@ -26,8 +26,8 @@ object PipelineElasticClientBuilder {
     environment: ApiEnvironment = ApiEnvironment.Prod
   )(implicit ec: ExecutionContext): ResilientElasticClient =
     new ResilientElasticClient(
-      clientFactory = () =>
-        buildElasticClient(serviceName, pipelineDate, environment)
+      clientFactory =
+        () => buildElasticClient(serviceName, pipelineDate, environment)
     )
 
   private def buildElasticClient(
