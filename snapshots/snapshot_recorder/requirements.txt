@@ -10,7 +10,7 @@ elasticsearch==7.9.1
     # via -r requirements.in
 humanize==3.0.1
     # via -r requirements.in
-urllib3==2.3.0
+urllib3==2.6.0
     # via elasticsearch
 
 # The following packages are considered to be unsafe in a requirements file:
