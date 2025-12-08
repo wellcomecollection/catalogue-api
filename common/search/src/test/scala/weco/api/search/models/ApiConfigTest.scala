@@ -14,7 +14,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         defaultPageSize = 10
       )
     ) {
-      case apiConfig @ ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
+      case apiConfig@ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
         publicScheme shouldBe "https"
         publicHost shouldBe "api.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
@@ -30,7 +30,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         defaultPageSize = 10
       )
     ) {
-      case apiConfig @ ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
+      case apiConfig@ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
         publicScheme shouldBe "https"
         publicHost shouldBe "api-stage.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
@@ -46,7 +46,7 @@ class ApiConfigTest extends AnyFunSpec with Matchers with Inside {
         defaultPageSize = 10
       )
     ) {
-      case apiConfig @ ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
+      case apiConfig@ApiConfig(publicScheme, publicHost, publicRootPath, _) =>
         publicScheme shouldBe "https"
         publicHost shouldBe "api-dev.wellcomecollection.org"
         publicRootPath shouldBe "/catalogue/v2"
