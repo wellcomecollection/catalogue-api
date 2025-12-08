@@ -13,7 +13,6 @@ import weco.api.search.models.SearchQuery
 import weco.api.search.services.WorksService
 import weco.fixtures.TestWith
 
-import java.time.Clock
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class WorksQueryTest
@@ -23,8 +22,6 @@ class WorksQueryTest
     with IndexFixtures
     with SearchOptionsGenerators
     with TestDocumentFixtures {
-
-  implicit val clock: Clock = Clock.systemUTC()
 
   describe("Free text query functionality") {
     it("searches the canonicalId") {
@@ -316,6 +313,6 @@ class WorksQueryTest
   }
 
   private val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 }

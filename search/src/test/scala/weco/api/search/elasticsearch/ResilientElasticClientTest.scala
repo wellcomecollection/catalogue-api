@@ -1,6 +1,12 @@
 package weco.api.search.elasticsearch
 
-import com.sksamuel.elastic4s.{ElasticClient, ElasticRequest, Handler, HttpClient, HttpResponse}
+import com.sksamuel.elastic4s.{
+  ElasticClient,
+  ElasticRequest,
+  Handler,
+  HttpClient,
+  HttpResponse
+}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
@@ -8,28 +14,38 @@ import java.time.Clock
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutures {
+class ResilientElasticClientTest
+    extends AnyFunSpec
+    with Matchers
+    with ScalaFutures {
 
-  class MockHttpClient(responseFunction: ElasticRequest => Future[HttpResponse]) extends HttpClient {
-    override def send(request: ElasticRequest, callback: Either[Throwable, HttpResponse] => Unit): Unit = {
+  class MockHttpClient(responseFunction: ElasticRequest => Future[HttpResponse])
+      extends HttpClient {
+    override def send(request: ElasticRequest,
+                      callback: Either[Throwable, HttpResponse] => Unit): Unit =
       responseFunction(request).onComplete {
-        case scala.util.Success(response) => callback(Right(response))
+        case scala.util.Success(response)  => callback(Right(response))
         case scala.util.Failure(exception) => callback(Left(exception))
       }
-    }
 
     override def close(): Unit = {}
   }
 
-  def createResponse(statusCode: Int, body: String = ""): HttpResponse = {
-    HttpResponse(statusCode, Some(com.sksamuel.elastic4s.HttpEntity.StringEntity(body, None)), Map.empty)
-  }
+  def createResponse(statusCode: Int, body: String = ""): HttpResponse =
+    HttpResponse(
+      statusCode,
+      Some(com.sksamuel.elastic4s.HttpEntity.StringEntity(body, None)),
+      Map.empty)
 
   // Dummy handler for string requests
   implicit val handler: Handler[String, String] = new Handler[String, String] {
-    override def responseHandler: com.sksamuel.elastic4s.ResponseHandler[String] = new com.sksamuel.elastic4s.ResponseHandler[String] {
-      override def handle(response: HttpResponse): Either[com.sksamuel.elastic4s.ElasticError, String] = Right("success")
-    }
+    override def responseHandler
+      : com.sksamuel.elastic4s.ResponseHandler[String] =
+      new com.sksamuel.elastic4s.ResponseHandler[String] {
+        override def handle(response: HttpResponse)
+          : Either[com.sksamuel.elastic4s.ElasticError, String] =
+          Right("success")
+      }
     override def build(t: String): ElasticRequest = ElasticRequest("GET", "/")
   }
 
@@ -52,9 +68,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
-      
+
       val future = resilientClient.execute("test request")
-      
+
       whenReady(future) { response =>
         response.status shouldBe 200
         callCount shouldBe 2
@@ -80,9 +96,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
-      
+
       val future = resilientClient.execute("test request")
-      
+
       whenReady(future) { response =>
         response.status shouldBe 200
         callCount shouldBe 2
@@ -104,9 +120,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
-      
+
       val future = resilientClient.execute("test request")
-      
+
       whenReady(future) { response =>
         response.status shouldBe 404
         callCount shouldBe 1
@@ -128,9 +144,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
-      
+
       val future = resilientClient.execute("test request")
-      
+
       whenReady(future) { response =>
         response.status shouldBe 500
         callCount shouldBe 1
@@ -152,9 +168,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
-      
+
       val future = resilientClient.execute("test request")
-      
+
       whenReady(future) { response =>
         response.status shouldBe 401
         callCount shouldBe 2
@@ -178,7 +194,8 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       // Use a very short cooldown to test throttling without actual delays
-      val resilientClient = new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 100)
+      val resilientClient =
+        new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 100)
 
       // First request - should refresh
       var future = resilientClient.execute("test request 1")
@@ -221,7 +238,8 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
 
       implicit val clock = Clock.systemUTC()
       // Use a very short cooldown of 50ms
-      val resilientClient = new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 50)
+      val resilientClient =
+        new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 50)
 
       // First request - should refresh
       var future = resilientClient.execute("test request 1")
@@ -256,8 +274,9 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
       val resilientClient = new ResilientElasticClient(clientFactory)
 
       // Simulate concurrent requests that all get 401
-      val futures = (1 to 3).map(_ => resilientClient.execute("concurrent request"))
-      
+      val futures =
+        (1 to 3).map(_ => resilientClient.execute("concurrent request"))
+
       futures.foreach { future =>
         whenReady(future) { response =>
           response.status shouldBe 401

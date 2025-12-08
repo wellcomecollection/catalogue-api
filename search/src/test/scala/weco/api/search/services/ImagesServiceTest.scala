@@ -7,13 +7,11 @@ import org.scalatest.funspec.AnyFunSpec
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,
-  IndexNotFoundError,
-  ResilientElasticClient
+  IndexNotFoundError
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
 
-import java.time.Clock
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ImagesServiceTest
@@ -23,9 +21,7 @@ class ImagesServiceTest
     with EitherValues
     with TestDocumentFixtures {
 
-  implicit val clock: Clock = Clock.systemUTC()
-
-  val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+  val elasticsearchService = new ElasticsearchService(elasticClient)
 
   val imagesService = new ImagesService(elasticsearchService)
 

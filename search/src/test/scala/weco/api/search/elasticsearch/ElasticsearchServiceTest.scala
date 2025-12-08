@@ -16,7 +16,7 @@ import com.sksamuel.elastic4s.requests.searches.{
   MultiSearchRequest,
   SearchRequest
 }
-import com.sksamuel.elastic4s.Index
+import com.sksamuel.elastic4s.{ElasticClient, Index}
 import io.circe.generic.auto._
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.PatienceConfiguration.Timeout
@@ -30,7 +30,6 @@ import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.fixtures.{RandomGenerators, TestWith}
 import weco.json.JsonUtil.toJson
 
-import java.time.Clock
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ElasticsearchServiceTest
@@ -45,17 +44,12 @@ class ElasticsearchServiceTest
   case class ExampleThing(id: String, name: String)
   case class DifferentExampleThing(id: String, age: Int)
 
-  implicit val clock: Clock = Clock.systemUTC()
-
-  val badElasticClient: ResilientElasticClient = new ResilientElasticClient(
-    () =>
-      ElasticClientBuilder.create(
-        hostname = "noresolve",
-        port = 9200,
-        protocol = "http",
-        username = "elastic",
-        password = "changeme"
-      )
+  val badElasticClient: ElasticClient = ElasticClientBuilder.create(
+    hostname = "noresolve",
+    port = 9200,
+    protocol = "http",
+    username = "elastic",
+    password = "changeme"
   )
 
   def randomThing: ExampleThing = ExampleThing(
@@ -106,7 +100,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
         val findByIdFuture =
@@ -122,7 +116,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
         val findByIdFuture =
@@ -140,7 +134,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val badId = createCanonicalId
 
         val findByIdFuture =
@@ -153,7 +147,7 @@ class ElasticsearchServiceTest
     }
 
     it("should return an appropriate error if the index does not exist") {
-      val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+      val elasticsearchService = new ElasticsearchService(elasticClient)
       val badIndex = createIndex
 
       val findByIdFuture = elasticsearchService.findById[ExampleThing](
@@ -184,7 +178,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
         val searchRequest = searchRequestForThingByName(
@@ -205,7 +199,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
         val searchRequest = searchRequestForThingByName(
@@ -225,7 +219,7 @@ class ElasticsearchServiceTest
     }
 
     it("returns an appropriate error when the specified index does not exist") {
-      val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+      val elasticsearchService = new ElasticsearchService(elasticClient)
       val badIndex = createIndex
 
       val searchRequest = searchRequestForThingByName(
@@ -263,7 +257,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
 
         val searchRequests = thingsToQueryFor.map { thing =>
@@ -293,7 +287,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
 
         val searchRequests = thingsToQueryFor.map { thing =>
@@ -318,7 +312,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
         val badIndex = createIndex
 
@@ -374,7 +368,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
 
         val searchRequests = thingsToQueryFor.map { thing =>
@@ -404,7 +398,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingsToQueryFor = thingsToIndex.slice(0, 3)
         val badIndex = createIndex
 
@@ -458,7 +452,7 @@ class ElasticsearchServiceTest
       val thingsToIndex = collectionOf(min = 5, max = 10) { randomThing } toList
 
       withExampleIndex(thingsToIndex) { index =>
-        val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+        val elasticsearchService = new ElasticsearchService(elasticClient)
         val thingToQueryFor = thingsToIndex.head
 
         val searchRequest = searchRequestForThingByName(
@@ -476,7 +470,7 @@ class ElasticsearchServiceTest
     }
 
     it("returns an appropriate error when the specified index does not exist") {
-      val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+      val elasticsearchService = new ElasticsearchService(elasticClient)
       val badIndex = createIndex
 
       val searchRequest = searchRequestForThingByName(

@@ -17,17 +17,15 @@ import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
-import scala.concurrent.ExecutionContext
+import weco.api.search.elasticsearch.ResilientElasticClient
 
 object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
-    implicit val actorSystem: ActorSystem =
-      ActorSystem("main-actor-system")
-    implicit val executionContext: ExecutionContext =
-      actorSystem.dispatcher
-
     implicit val apiConfig: ApiConfig = ApiConfig.build(config)
+    implicit val clock: java.time.Clock = java.time.Clock.systemUTC()
+    implicit val actorSystem: ActorSystem = ActorSystem("search-api")
+    implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
 
     val (elasticClient, elasticConfig) = apiConfig.environment match {
       case ApiEnvironment.Dev =>
@@ -37,13 +35,14 @@ object Main extends WellcomeTypesafeApp {
           pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
         if (pipelineDateOverride.isDefined)
           warn(s"Overridden pipeline date: $pipelineDate")
-
         (
-          PipelineElasticClientBuilder(
-            serviceName = "catalogue_api",
-            pipelineDate = pipelineDate,
-            environment = apiConfig.environment
-          ),
+          new ResilientElasticClient(
+            clientFactory = () =>
+              PipelineElasticClientBuilder(
+                serviceName = "catalogue_api",
+                pipelineDate = pipelineDate,
+                environment = apiConfig.environment
+            )),
           PipelineClusterElasticConfig(
             config.getStringOption("dev.pipelineDate")
           )
@@ -53,10 +52,12 @@ object Main extends WellcomeTypesafeApp {
         // Only initialise tracing in deployed environments
         Tracing.init(config)
         (
-          PipelineElasticClientBuilder(
-            serviceName = "catalogue_api",
-            environment = apiConfig.environment
-          ),
+          new ResilientElasticClient(
+            clientFactory = () =>
+              PipelineElasticClientBuilder(
+                serviceName = "catalogue_api",
+                environment = apiConfig.environment
+            )),
           PipelineClusterElasticConfig()
         )
     }

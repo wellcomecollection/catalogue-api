@@ -3,7 +3,7 @@ package weco.api.search.services
 import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.elasticsearch.{ElasticsearchService, ResilientElasticClient}
+import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.fixtures.{
   IndexFixtures,
   JsonHelpers,
@@ -13,7 +13,7 @@ import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 
-import java.time.{Clock, LocalDate}
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AggregationsTest
@@ -24,10 +24,8 @@ class AggregationsTest
     with JsonHelpers
     with TestDocumentFixtures {
 
-  implicit val clock: Clock = Clock.systemUTC()
-
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
   it("returns more than 10 format aggregations") {

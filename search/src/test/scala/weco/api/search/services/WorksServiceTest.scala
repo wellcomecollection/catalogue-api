@@ -6,15 +6,14 @@ import org.scalatest.{Assertion, EitherValues}
 import weco.api.search.elasticsearch.{
   DocumentNotFoundError,
   ElasticsearchService,
-  IndexNotFoundError,
-  ResilientElasticClient
+  IndexNotFoundError
 }
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 
-import java.time.{Clock, LocalDate}
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -26,10 +25,8 @@ class WorksServiceTest
     with SearchOptionsGenerators
     with TestDocumentFixtures {
 
-  implicit val clock: Clock = Clock.systemUTC()
-
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
+    elasticsearchService = new ElasticsearchService(elasticClient)
   )
 
   val defaultWorksSearchOptions: WorkSearchOptions = createWorksSearchOptions
