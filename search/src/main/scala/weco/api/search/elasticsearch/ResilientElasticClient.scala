@@ -30,9 +30,6 @@ class ResilientElasticClient(
     }
   }
 
-  def close(): Unit =
-    client.close()
-
   private def refreshClient(failedClient: ElasticClient): Unit =
     synchronized {
       if (client == failedClient) {
