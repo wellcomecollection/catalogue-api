@@ -6,7 +6,7 @@ import io.circe.syntax.EncoderOps
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.EitherValues
-import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
+import weco.api.search.fixtures.{ResilientElasticClientFixture, TestDocumentFixtures}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models.index.IndexedWork
 import weco.api.search.models.SearchQuery
@@ -19,7 +19,7 @@ class WorksQueryTest
     extends AnyFunSpec
     with Matchers
     with EitherValues
-    with IndexFixtures
+    with ResilientElasticClientFixture
     with SearchOptionsGenerators
     with TestDocumentFixtures {
 
@@ -313,6 +313,6 @@ class WorksQueryTest
   }
 
   private val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(resilientElasticClient)
   )
 }

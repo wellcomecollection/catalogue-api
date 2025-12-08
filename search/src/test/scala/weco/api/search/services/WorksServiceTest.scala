@@ -8,7 +8,10 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
-import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
+import weco.api.search.fixtures.{
+  ResilientElasticClientFixture,
+  TestDocumentFixtures
+}
 import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
@@ -19,14 +22,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class WorksServiceTest
     extends AnyFunSpec
-    with IndexFixtures
+    with ResilientElasticClientFixture
     with Matchers
     with EitherValues
     with SearchOptionsGenerators
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(resilientElasticClient)
   )
 
   val defaultWorksSearchOptions: WorkSearchOptions = createWorksSearchOptions

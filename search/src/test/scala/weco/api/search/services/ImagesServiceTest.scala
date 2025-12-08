@@ -9,7 +9,10 @@ import weco.api.search.elasticsearch.{
   ElasticsearchService,
   IndexNotFoundError
 }
-import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
+import weco.api.search.fixtures.{
+  ResilientElasticClientFixture,
+  TestDocumentFixtures
+}
 import weco.api.search.models.index.IndexedImage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,11 +20,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ImagesServiceTest
     extends AnyFunSpec
     with ScalaFutures
-    with IndexFixtures
+    with ResilientElasticClientFixture
     with EitherValues
     with TestDocumentFixtures {
 
-  val elasticsearchService = new ElasticsearchService(elasticClient)
+  val elasticsearchService = new ElasticsearchService(resilientElasticClient)
 
   val imagesService = new ImagesService(elasticsearchService)
 
