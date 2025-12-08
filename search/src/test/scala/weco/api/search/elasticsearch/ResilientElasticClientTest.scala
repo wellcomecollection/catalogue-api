@@ -260,11 +260,21 @@ class ResilientElasticClientTest
     it("only one thread refreshes during concurrent 401 errors") {
       var callCount = 0
       var factoryCallCount = 0
+      var concurrentCallsAtPeak = 0
+      val concurrentCallsLock = new Object()
 
       val clientFactory = () => {
         factoryCallCount += 1
         val httpClient = new MockHttpClient(_ => {
-          callCount += 1
+          concurrentCallsLock.synchronized {
+            callCount += 1
+            concurrentCallsAtPeak = Math.max(concurrentCallsAtPeak, callCount)
+          }
+          // Small delay to allow concurrent execution
+          Thread.sleep(10)
+          concurrentCallsLock.synchronized {
+            callCount -= 1
+          }
           Future.successful(createResponse(401))
         })
         ElasticClient(httpClient)
@@ -273,15 +283,20 @@ class ResilientElasticClientTest
       implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
 
-      // Simulate concurrent requests that all get 401
-      val futures =
+      // Create concurrent requests that all get 401
+      // Using Future.sequence ensures they execute concurrently
+      val futures = Future.sequence(
         (1 to 3).map(_ => resilientClient.execute("concurrent request"))
+      )
 
-      futures.foreach { future =>
-        whenReady(future) { response =>
+      whenReady(futures) { responses =>
+        responses.foreach { response =>
           response.status shouldBe 401
         }
       }
+
+      // Verify concurrent execution happened (at least 2 concurrent calls)
+      concurrentCallsAtPeak should be >= 2
 
       // Even though we had multiple concurrent 401s, factory should only be called:
       // 1 initial + 1 first refresh = 2
