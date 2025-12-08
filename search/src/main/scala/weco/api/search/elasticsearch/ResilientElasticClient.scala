@@ -13,7 +13,7 @@ class ResilientElasticClient(
     extends Logging {
 
   @volatile private var client: ElasticClient = clientFactory()
-  private var lastRefreshTime: Long = 0
+  @volatile private var lastRefreshTime: Long = 0
 
   def execute[T, U](t: T)(implicit handler: Handler[T, U],
                           manifest: Manifest[U]): Future[Response[U]] = {
