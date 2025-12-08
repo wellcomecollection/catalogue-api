@@ -1,24 +1,22 @@
 package weco.api.snapshot_generator.iterators
 
+import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
 import io.circe.Json
 import io.circe.generic.extras.JsonKey
 import io.circe.syntax._
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.fixtures.IndexFixtures
 import weco.api.snapshot_generator.fixtures.SnapshotServiceFixture
 import weco.json.JsonUtil._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class ElasticsearchIteratorTest
     extends AnyFunSpec
     with Matchers
     with IndexFixtures {
 
-  implicit val resilientClient: ResilientElasticClient = new ResilientElasticClient(() => elasticClient)
+  implicit val client: ElasticClient = elasticClient
   val iterator = new ElasticsearchIterator()
 
   case class HasDisplay(display: Json, @JsonKey("type") ontologyType: String)

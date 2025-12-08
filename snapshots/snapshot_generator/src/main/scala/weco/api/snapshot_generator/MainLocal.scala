@@ -9,7 +9,6 @@ import weco.storage.providers.s3.S3ObjectLocation
 import com.typesafe.config.{Config, ConfigFactory}
 
 import java.time.Instant
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object MainLocal {
   def main(): Unit = {
