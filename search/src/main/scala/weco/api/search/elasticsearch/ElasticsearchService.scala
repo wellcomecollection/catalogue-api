@@ -20,8 +20,9 @@ import weco.api.search.elasticsearch.templateSearch.{
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class ElasticsearchService(elasticClient: ResilientElasticClient)(implicit
-                                                         ec: ExecutionContext)
+class ElasticsearchService(elasticClient: ResilientElasticClient)(
+  implicit
+  ec: ExecutionContext)
     extends Logging
     with Tracing
     with TemplateSearchHandlers {

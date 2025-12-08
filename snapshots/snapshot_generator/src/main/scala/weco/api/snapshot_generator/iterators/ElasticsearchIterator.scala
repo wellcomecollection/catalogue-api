@@ -37,14 +37,13 @@ class ElasticsearchIterator(implicit
       private var hits = initialResponse.result.hits.hits
       private var currentIdx = 0
 
-      override def hasNext: Boolean = {
+      override def hasNext: Boolean =
         if (currentIdx < hits.length) true
         else if (scrollId.isEmpty) false
         else {
           fetchNextBatch()
           currentIdx < hits.length
         }
-      }
 
       override def next(): String = {
         if (!hasNext) throw new NoSuchElementException("next on empty iterator")
@@ -54,7 +53,7 @@ class ElasticsearchIterator(implicit
         hit.safeTo[HasDisplay].map(_.display.noSpaces).get
       }
 
-      private def fetchNextBatch(): Unit = {
+      private def fetchNextBatch(): Unit =
         scrollId.foreach { id =>
           val scrollReq = searchScroll(id).keepAlive(keepAlive)
           val response = Await.result(client.execute(scrollReq), Duration.Inf)
@@ -69,7 +68,6 @@ class ElasticsearchIterator(implicit
             scrollId = None
           }
         }
-      }
     }
   }
 

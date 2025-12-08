@@ -9,18 +9,20 @@ import scala.concurrent.{ExecutionContext, Future}
 class ResilientElasticClient(
   clientFactory: () => ElasticClient,
   minRefreshIntervalMs: Long = 2000
-)(implicit clock: Clock, ec: ExecutionContext) extends Logging {
+)(implicit clock: Clock, ec: ExecutionContext)
+    extends Logging {
 
   @volatile private var client: ElasticClient = clientFactory()
   private var lastRefreshTime: Long = 0
 
-
-  def execute[T, U](t: T)(implicit handler: Handler[T, U], manifest: Manifest[U]): Future[Response[U]] = {
+  def execute[T, U](t: T)(implicit handler: Handler[T, U],
+                          manifest: Manifest[U]): Future[Response[U]] = {
     val currentClient = client
     currentClient.execute(t).flatMap { response =>
       response.status match {
         case 401 | 403 =>
-          warn(s"Received ${response.status} from Elasticsearch, refreshing client and retrying...")
+          warn(
+            s"Received ${response.status} from Elasticsearch, refreshing client and retrying...")
           refreshClient(currentClient)
           client.execute(t)
         case _ => Future.successful(response)
@@ -28,11 +30,10 @@ class ResilientElasticClient(
     }
   }
 
-  def close(): Unit = {
+  def close(): Unit =
     client.close()
-  }
 
-  private def refreshClient(failedClient: ElasticClient): Unit = {
+  private def refreshClient(failedClient: ElasticClient): Unit =
     synchronized {
       if (client == failedClient) {
         val now = clock.millis()
@@ -52,12 +53,11 @@ class ResilientElasticClient(
         } else {
           warn(
             s"Refresh requested too soon (last refresh ${now - lastRefreshTime}ms ago). " +
-            s"Skipping, waiting on cooldown: ${minRefreshIntervalMs}ms"
+              s"Skipping, waiting on cooldown: ${minRefreshIntervalMs}ms"
           )
         }
       } else {
         info("Elasticsearch client already refreshed by another thread.")
       }
     }
-  }
 }

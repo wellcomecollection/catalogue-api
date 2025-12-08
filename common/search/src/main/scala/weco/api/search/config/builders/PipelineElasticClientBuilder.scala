@@ -25,10 +25,11 @@ object PipelineElasticClientBuilder {
     serviceName: String,
     pipelineDate: String = ElasticConfig.pipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod
-  )(implicit ec: ExecutionContext, clock: Clock = Clock.systemUTC()): ResilientElasticClient =
+  )(implicit ec: ExecutionContext,
+    clock: Clock = Clock.systemUTC()): ResilientElasticClient =
     new ResilientElasticClient(
-      clientFactory = () =>
-        buildElasticClient(serviceName, pipelineDate, environment)
+      clientFactory =
+        () => buildElasticClient(serviceName, pipelineDate, environment)
     )
 
   private def buildElasticClient(
