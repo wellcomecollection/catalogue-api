@@ -8,6 +8,7 @@ import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.{ApiEnvironment, ElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
 
+import java.time.Clock
 import scala.concurrent.ExecutionContext
 
 object PipelineElasticClientBuilder {
@@ -24,7 +25,7 @@ object PipelineElasticClientBuilder {
     serviceName: String,
     pipelineDate: String = ElasticConfig.pipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod
-  )(implicit ec: ExecutionContext): ResilientElasticClient =
+  )(implicit ec: ExecutionContext, clock: Clock = Clock.systemUTC()): ResilientElasticClient =
     new ResilientElasticClient(
       clientFactory = () =>
         buildElasticClient(serviceName, pipelineDate, environment)

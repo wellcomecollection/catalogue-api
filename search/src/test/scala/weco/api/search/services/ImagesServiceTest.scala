@@ -13,6 +13,7 @@ import weco.api.search.elasticsearch.{
 import weco.api.search.fixtures.{IndexFixtures, TestDocumentFixtures}
 import weco.api.search.models.index.IndexedImage
 
+import java.time.Clock
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ImagesServiceTest
@@ -21,6 +22,8 @@ class ImagesServiceTest
     with IndexFixtures
     with EitherValues
     with TestDocumentFixtures {
+
+  implicit val clock: Clock = Clock.systemUTC()
 
   val elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))
 

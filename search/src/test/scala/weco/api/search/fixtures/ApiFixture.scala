@@ -13,11 +13,15 @@ import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.fixtures.TestWith
 import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
 
+import java.time.Clock
+
 trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
   this: Suite =>
   val Status = org.apache.pekko.http.scaladsl.model.StatusCodes
 
   val publicRootUri: String
+
+  implicit val clock: Clock = Clock.systemUTC()
 
   implicit def defaultHostInfo: DefaultHostInfo = DefaultHostInfo(
     host = Host(apiConfig.publicHost),

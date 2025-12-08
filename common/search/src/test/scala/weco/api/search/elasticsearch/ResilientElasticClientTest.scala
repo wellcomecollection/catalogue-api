@@ -4,6 +4,7 @@ import com.sksamuel.elastic4s.{ElasticClient, ElasticRequest, Handler, HttpClien
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.concurrent.ScalaFutures
+import java.time.Clock
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -49,6 +50,7 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         ElasticClient(httpClient)
       }
 
+      implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
       
       val future = resilientClient.execute("test request")
@@ -76,6 +78,7 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         ElasticClient(httpClient)
       }
 
+      implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
       
       val future = resilientClient.execute("test request")
@@ -99,6 +102,7 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         ElasticClient(httpClient)
       }
 
+      implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
       
       val future = resilientClient.execute("test request")
@@ -122,6 +126,7 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         ElasticClient(httpClient)
       }
 
+      implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
       
       val future = resilientClient.execute("test request")
@@ -145,6 +150,7 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         ElasticClient(httpClient)
       }
 
+      implicit val clock = Clock.systemUTC()
       val resilientClient = new ResilientElasticClient(clientFactory)
       
       val future = resilientClient.execute("test request")
@@ -154,6 +160,114 @@ class ResilientElasticClientTest extends AnyFunSpec with Matchers with ScalaFutu
         callCount shouldBe 2
         factoryCallCount shouldBe 2
       }
+    }
+
+    it("throttles refresh requests within cooldown period") {
+      var callCount = 0
+      var factoryCallCount = 0
+
+      val clientFactory = () => {
+        factoryCallCount += 1
+        val httpClient = new MockHttpClient(_ => {
+          callCount += 1
+          // Always return 401 to trigger refresh
+          Future.successful(createResponse(401))
+        })
+        ElasticClient(httpClient)
+      }
+
+      implicit val clock = Clock.systemUTC()
+      // Use a very short cooldown to test throttling without actual delays
+      val resilientClient = new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 100)
+
+      // First request - should refresh
+      var future = resilientClient.execute("test request 1")
+      whenReady(future) { response =>
+        response.status shouldBe 401
+        factoryCallCount shouldBe 2 // Initial + first refresh
+      }
+
+      // Second request immediately after (within cooldown) - should NOT refresh
+      future = resilientClient.execute("test request 2")
+      whenReady(future) { response =>
+        response.status shouldBe 401
+        factoryCallCount shouldBe 2 // No new refresh
+      }
+
+      // Wait for cooldown to expire
+      Thread.sleep(150)
+
+      // Third request after cooldown - should refresh
+      val oldFactoryCallCount = factoryCallCount
+      future = resilientClient.execute("test request 3")
+      whenReady(future) { response =>
+        response.status shouldBe 401
+        factoryCallCount shouldBe oldFactoryCallCount + 1 // New refresh
+      }
+    }
+
+    it("allows configurable cooldown period") {
+      var callCount = 0
+      var factoryCallCount = 0
+
+      val clientFactory = () => {
+        factoryCallCount += 1
+        val httpClient = new MockHttpClient(_ => {
+          callCount += 1
+          Future.successful(createResponse(401))
+        })
+        ElasticClient(httpClient)
+      }
+
+      implicit val clock = Clock.systemUTC()
+      // Use a very short cooldown of 50ms
+      val resilientClient = new ResilientElasticClient(clientFactory, minRefreshIntervalMs = 50)
+
+      // First request - should refresh
+      var future = resilientClient.execute("test request 1")
+      whenReady(future) { response =>
+        factoryCallCount shouldBe 2
+      }
+
+      // Wait for cooldown to expire
+      Thread.sleep(100)
+
+      // Second request after cooldown - should refresh
+      future = resilientClient.execute("test request 2")
+      whenReady(future) { response =>
+        factoryCallCount shouldBe 3 // Another refresh
+      }
+    }
+
+    it("only one thread refreshes during concurrent 401 errors") {
+      var callCount = 0
+      var factoryCallCount = 0
+
+      val clientFactory = () => {
+        factoryCallCount += 1
+        val httpClient = new MockHttpClient(_ => {
+          callCount += 1
+          Future.successful(createResponse(401))
+        })
+        ElasticClient(httpClient)
+      }
+
+      implicit val clock = Clock.systemUTC()
+      val resilientClient = new ResilientElasticClient(clientFactory)
+
+      // Simulate concurrent requests that all get 401
+      val futures = (1 to 3).map(_ => resilientClient.execute("concurrent request"))
+      
+      futures.foreach { future =>
+        whenReady(future) { response =>
+          response.status shouldBe 401
+        }
+      }
+
+      // Even though we had multiple concurrent 401s, factory should only be called:
+      // 1 initial + 1 first refresh = 2
+      // The other threads should see the client already refreshed
+      factoryCallCount shouldBe 2
     }
   }
 }

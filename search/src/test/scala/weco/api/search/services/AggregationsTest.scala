@@ -13,7 +13,7 @@ import weco.api.search.generators.SearchOptionsGenerators
 import weco.api.search.models._
 import weco.api.search.models.request.WorkAggregationRequest
 
-import java.time.LocalDate
+import java.time.{Clock, LocalDate}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AggregationsTest
@@ -23,6 +23,8 @@ class AggregationsTest
     with SearchOptionsGenerators
     with JsonHelpers
     with TestDocumentFixtures {
+
+  implicit val clock: Clock = Clock.systemUTC()
 
   val worksService = new WorksService(
     elasticsearchService = new ElasticsearchService(new ResilientElasticClient(() => elasticClient))

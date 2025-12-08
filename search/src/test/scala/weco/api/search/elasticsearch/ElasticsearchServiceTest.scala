@@ -30,6 +30,7 @@ import weco.elasticsearch.{ElasticClientBuilder, IndexConfig}
 import weco.fixtures.{RandomGenerators, TestWith}
 import weco.json.JsonUtil.toJson
 
+import java.time.Clock
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ElasticsearchServiceTest
@@ -43,6 +44,8 @@ class ElasticsearchServiceTest
 
   case class ExampleThing(id: String, name: String)
   case class DifferentExampleThing(id: String, age: Int)
+
+  implicit val clock: Clock = Clock.systemUTC()
 
   val badElasticClient: ResilientElasticClient = new ResilientElasticClient(
     () =>
