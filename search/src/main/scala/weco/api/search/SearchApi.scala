@@ -12,8 +12,10 @@ import org.apache.pekko.http.scaladsl.server.{
   Route,
   ValidationRejection
 }
-import com.sksamuel.elastic4s.ElasticClient
-import weco.api.search.elasticsearch.ElasticsearchService
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  ResilientElasticClient
+}
 import weco.api.search.models._
 import weco.api.search.rest._
 import weco.api.search.services.{
@@ -26,7 +28,7 @@ import weco.http.models.DisplayError
 import scala.concurrent.ExecutionContext
 
 class SearchApi(
-  elasticClient: ElasticClient,
+  elasticClient: ResilientElasticClient,
   elasticConfig: ElasticConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)

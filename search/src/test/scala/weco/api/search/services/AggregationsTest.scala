@@ -5,8 +5,8 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.elasticsearch.ElasticsearchService
 import weco.api.search.fixtures.{
-  IndexFixtures,
   JsonHelpers,
+  ResilientElasticClientFixture,
   TestDocumentFixtures
 }
 import weco.api.search.generators.SearchOptionsGenerators
@@ -19,13 +19,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class AggregationsTest
     extends AnyFunSpec
     with Matchers
-    with IndexFixtures
+    with ResilientElasticClientFixture
     with SearchOptionsGenerators
     with JsonHelpers
     with TestDocumentFixtures {
 
   val worksService = new WorksService(
-    elasticsearchService = new ElasticsearchService(elasticClient)
+    elasticsearchService = new ElasticsearchService(resilientElasticClient)
   )
 
   it("returns more than 10 format aggregations") {

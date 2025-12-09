@@ -12,7 +12,9 @@ import weco.api.search.SearchApi
 import weco.fixtures.TestWith
 import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
 
-trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
+trait ApiFixture
+    extends ScalatestRouteTest
+    with ResilientElasticClientFixture {
   this: Suite =>
   val Status = org.apache.pekko.http.scaladsl.model.StatusCodes
 
@@ -32,7 +34,7 @@ trait ApiFixture extends ScalatestRouteTest with IndexFixtures {
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
     val router = new SearchApi(
-      elasticClient,
+      resilientElasticClient,
       elasticConfig,
       apiConfig = apiConfig
     )
