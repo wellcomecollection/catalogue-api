@@ -1,0 +1,47 @@
+{
+  "name": "@weco/search-api",
+  "version": "0.1.0",
+  "description": "A search API for works and images in the Wellcome Collection catalogue",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production ts-node-transpile-only ./server.ts",
+    "dev": "AWS_PROFILE=platform-developer PORT=3333 NODE_ENV=development nodemon ./server.ts",
+    "test": "jest --testPathIgnorePatterns=integration",
+    "test:integration": "jest --testPathPattern=integration",
+    "test:integration:docker": "docker compose up -d && until curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'; do sleep 2; done && npm run test:integration; docker compose down",
+    "test:all": "jest",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.204.0",
+    "@elastic/elasticsearch": "8.5.0",
+    "@types/express": "^4.17.14",
+    "elastic-apm-node": "^4.11.0",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "morgan": "^1.10.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.7.0",
+    "winston": "^3.8.2",
+    "zod": "^3.19.1"
+  },
+  "devDependencies": {
+    "@elastic/elasticsearch-mock": "^2.0.0",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/jest": "^29.2.2",
+    "@types/morgan": "^1.9.3",
+    "@types/node": "^22.0.0",
+    "@types/supertest": "^2.0.12",
+    "husky": "^8.0.2",
+    "jest": "^29.3.1",
+    "lint-staged": "^13.0.3",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1",
+    "supertest": "^6.3.1",
+    "ts-jest": "^29.0.3"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "bool": {
+    "should": [
+      {
+        "multi_match": {
+          "_name": "text_strict",
+          "query": "{{query}}",
+          "fields": [
+            "query.title.*^5",
+            "query.title.cased^10",
+            "query.contributors.agent.label^10",
+            "query.subjects.concepts.label^10",
+            "query.genres.concepts.label^10",
+            "query.production.label.*^10",
+            "query.partOf.title.*^10",
+            "query.alternativeTitles.*",
+            "query.description.*",
+            "query.edition",
+            "query.languages.label",
+            "query.lettering.*",
+            "query.notes.contents.*",
+            "query.physicalDescription.*"
+          ],
+          "type": "cross_fields",
+          "tie_breaker": 0.4,
+          "minimum_should_match": "3<-20%",
+          "operator": "Or"
+        }
+      },
+      {
+        "match_phrase_prefix": {
+          "query.title.normalized_whole_phrase": {
+            "_name": "title_prefix",
+            "query": "{{query}}",
+            "boost": 50
+          }
+        }
+      },
+      {
+        "multi_match": {
+          "_name": "ids_lax",
+          "query": "{{query}}",
+          "analyzer": "lowercase_whitespace_tokens",
+          "fields": [
+            "query.id^5",
+            "query.sourceIdentifier.value^5",
+            "query.identifiers.value",
+            "query.items.id",
+            "query.items.identifiers.value",
+            "query.images.id",
+            "query.images.identifiers.value",
+            "query.referenceNumber*"
+          ],
+          "type": "cross_fields",
+          "boost": 100,
+          "operator": "OR",
+          "minimum_should_match": 1
+        }
+      },
+      {
+        "multi_match": {
+          "_name": "ids_with_path_lax",
+          "query": "{{query}}",
+          "analyzer": "lowercase_whitespace_tokens",
+          "fields": ["query.items.shelfmark*", "query.collectionPath*"],
+          "type": "cross_fields",
+          "boost": 50,
+          "operator": "OR",
+          "minimum_should_match": 1
+        }
+      },
+      {
+        "bool": {
+          "must": [
+            {
+              "multi_match": {
+                "_name": "text_lax",
+                "query": "{{query}}",
+                "fields": [
+                  "query.title.*^5",
+                  "query.title.cased^10",
+                  "query.contributors.agent.label^10",
+                  "query.subjects.concepts.label^10",
+                  "query.genres.concepts.label^10",
+                  "query.production.label.*^10",
+                  "query.partOf.title.*^10",
+                  "query.alternativeTitles.*",
+                  "query.description.*",
+                  "query.edition",
+                  "query.languages.label",
+                  "query.lettering.*",
+                  "query.notes.contents.*",
+                  "query.physicalDescription.*"
+                ],
+                "type": "cross_fields",
+                "tie_breaker": 0.4,
+                "minimum_should_match": 1,
+                "operator": "OR"
+              }
+            }
+          ],
+          "filter": [
+            {
+              "multi_match": {
+                "query": "{{query}}",
+                "analyzer": "lowercase_whitespace_tokens",
+                "fields": [
+                  "query.id^5",
+                  "query.sourceIdentifier.value^5",
+                  "query.referenceNumber*^5",
+                  "query.identifiers.value",
+                  "query.items.id",
+                  "query.items.identifiers.value",
+                  "query.items.shelfmark*",
+                  "query.images.id",
+                  "query.images.identifiers.value",
+                  "query.collectionPath*"
+                ],
+                "type": "cross_fields",
+                "operator": "OR",
+                "minimum_should_match": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

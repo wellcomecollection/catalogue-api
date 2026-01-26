@@ -1,0 +1,23 @@
+services:
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:8.11.4"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "http.host=0.0.0.0"
+      - "transport.host=0.0.0.0"
+      - "cluster.name=wellcome"
+      - "logger.level=DEBUG"
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'curl -s http://localhost:9200/_cluster/health | grep -vq ''"status":"red"''',
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
