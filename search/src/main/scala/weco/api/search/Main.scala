@@ -27,6 +27,8 @@ object Main extends WellcomeTypesafeApp {
     implicit val actorSystem: ActorSystem = ActorSystem("search-api")
     implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
 
+    val semanticWorksIndex = Option("works-openai-full")
+
     val (elasticClient, elasticConfig) = apiConfig.environment match {
       case ApiEnvironment.Dev =>
         info(s"Running in dev mode.")
@@ -41,10 +43,12 @@ object Main extends WellcomeTypesafeApp {
               PipelineElasticClientBuilder(
                 serviceName = "catalogue_api",
                 pipelineDate = pipelineDate,
-                environment = apiConfig.environment
-            )),
+                environment = apiConfig.environment,
+                useExperimentalSemanticSearchCluster = semanticWorksIndex.isDefined
+              )),
           PipelineClusterElasticConfig(
-            config.getStringOption("dev.pipelineDate")
+            config.getStringOption("dev.pipelineDate"),
+            semanticSearchIndexOverride = semanticWorksIndex
           )
         )
       case _ =>
@@ -56,9 +60,12 @@ object Main extends WellcomeTypesafeApp {
             clientFactory = () =>
               PipelineElasticClientBuilder(
                 serviceName = "catalogue_api",
-                environment = apiConfig.environment
-            )),
-          PipelineClusterElasticConfig()
+                environment = apiConfig.environment,
+                useExperimentalSemanticSearchCluster = semanticWorksIndex.isDefined
+              )),
+          PipelineClusterElasticConfig(
+            semanticSearchIndexOverride = semanticWorksIndex
+          )
         )
     }
 

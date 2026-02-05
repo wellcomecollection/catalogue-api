@@ -15,7 +15,8 @@ case class SearchTemplateParams(
   aggs: Seq[AbstractAggregation],
   preFilter: Seq[Query],
   postFilter: Option[Query],
-  knn: Option[SearchTemplateKNNParams] = None
+  knn: Option[SearchTemplateKNNParams] = None,
+  includeSemantic: Boolean = false
 )
 
 case class SearchTemplateKNNParams(

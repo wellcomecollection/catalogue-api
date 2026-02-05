@@ -56,7 +56,8 @@ object WorksRequestBuilder
             must(
               pairables.collect(buildWorkFilterQuery)
             )
-          )
+          ),
+          includeSemantic = searchOptions.searchQuery.isDefined
         )
       )
     )

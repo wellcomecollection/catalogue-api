@@ -20,7 +20,8 @@ object PipelineElasticClientBuilder {
   def apply(
     serviceName: String,
     pipelineDate: String = ElasticConfig.pipelineDate,
-    environment: ApiEnvironment = ApiEnvironment.Prod
+    environment: ApiEnvironment = ApiEnvironment.Prod,
+    useExperimentalSemanticSearchCluster: Boolean = false
   ): ElasticClient = {
 
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
@@ -41,19 +42,23 @@ object PipelineElasticClientBuilder {
 
     implicit val secretsClient: SecretsManagerClient = secretsClientForEnv
 
-    val hostname = getSecretString(
+    var hostname = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/$hostType"
     )
-
+    var apiKey = getSecretString(
+      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/api_key"
+    )
     val port = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/port"
     ).toInt
     val protocol = getSecretString(
       s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
     )
-    val apiKey = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/api_key"
-    )
+
+    if(useExperimentalSemanticSearchCluster) {
+      hostname = "semantic-playground-b28f61.es.eu-west-1.aws.elastic.cloud"
+      apiKey = getSecretString("agnes/elasticsearch/semantic-playground")
+    }
 
     ElasticClientBuilder.create(
       hostname = hostname,
