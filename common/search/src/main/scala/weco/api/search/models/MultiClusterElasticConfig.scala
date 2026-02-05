@@ -24,20 +24,21 @@ case class MultiClusterElasticConfig(
   // Additional clusters mapped by name
   additionalClusters: Map[String, ClusterConfig] = Map.empty
 ) {
-  
+
   /** Get cluster config by name, falling back to default */
-  def getCluster(name: String): ClusterConfig = 
+  def getCluster(name: String): ClusterConfig =
     additionalClusters.getOrElse(name, defaultCluster)
-  
+
   /** Get all cluster names including default */
-  def allClusterNames: Set[String] = 
+  def allClusterNames: Set[String] =
     additionalClusters.keySet + defaultCluster.name
 }
 
 object MultiClusterElasticConfig {
-  
+
   /** Create a simple single-cluster config from existing ElasticConfig */
-  def fromElasticConfig(elasticConfig: ElasticConfig): MultiClusterElasticConfig = {
+  def fromElasticConfig(
+    elasticConfig: ElasticConfig): MultiClusterElasticConfig =
     MultiClusterElasticConfig(
       defaultCluster = ClusterConfig(
         name = "default",
@@ -46,5 +47,4 @@ object MultiClusterElasticConfig {
         pipelineDate = Some(elasticConfig.pipelineDate.date)
       )
     )
-  }
 }

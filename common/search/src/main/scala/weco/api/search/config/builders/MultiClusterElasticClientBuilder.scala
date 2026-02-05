@@ -16,8 +16,7 @@ object MultiClusterElasticClientBuilder extends Logging {
     clusterConfig: ClusterConfig,
     serviceName: String,
     environment: ApiEnvironment = ApiEnvironment.Prod
-  ): ElasticClient = {
-    
+  ): ElasticClient =
     // If custom configuration is provided, use it directly (for serverless, etc.)
     if (clusterConfig.customHost.isDefined) {
       buildCustomClient(clusterConfig, serviceName, environment)
@@ -33,14 +32,14 @@ object MultiClusterElasticClientBuilder extends Logging {
         s"ClusterConfig '${clusterConfig.name}' must have either pipelineDate or custom connection details"
       )
     }
-  }
 
   private def buildCustomClient(
     clusterConfig: ClusterConfig,
     serviceName: String,
     environment: ApiEnvironment
   ): ElasticClient = {
-    val secretsManagerClientBuilder = SecretsManagerClient.builder()
+    val secretsManagerClientBuilder = SecretsManagerClient
+      .builder()
       .region(Region.EU_WEST_1)
 
     val secretsClient = environment match {
@@ -55,12 +54,13 @@ object MultiClusterElasticClientBuilder extends Logging {
     }
 
     val hostname = clusterConfig.customHost.getOrElse(
-      throw new IllegalArgumentException("customHost is required for custom cluster")
+      throw new IllegalArgumentException(
+        "customHost is required for custom cluster")
     )
-    
+
     val port = clusterConfig.customPort.getOrElse(9243)
     val protocol = clusterConfig.customProtocol.getOrElse("https")
-    
+
     // Get API key from secrets manager
     val apiKey = clusterConfig.customApiKeySecretPath match {
       case Some(secretPath) =>
@@ -77,7 +77,8 @@ object MultiClusterElasticClientBuilder extends Logging {
 
     secretsClient.close()
 
-    info(s"Building custom Elasticsearch client for cluster '${clusterConfig.name}' at $protocol://$hostname:$port")
+    info(
+      s"Building custom Elasticsearch client for cluster '${clusterConfig.name}' at $protocol://$hostname:$port")
 
     ElasticClientBuilder.create(
       hostname = hostname,
