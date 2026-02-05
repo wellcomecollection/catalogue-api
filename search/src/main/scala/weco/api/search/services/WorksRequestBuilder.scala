@@ -59,7 +59,8 @@ object WorksRequestBuilder
           ),
           includeSemantic = searchOptions.semanticConfig.isDefined && searchOptions.searchQuery.isDefined,
           semanticModelId = searchOptions.semanticConfig.map(_.modelId),
-          isSparse = searchOptions.semanticConfig.exists(_.vectorType == VectorType.Sparse)
+          isSparse = searchOptions.semanticConfig.exists(
+            _.vectorType == VectorType.Sparse)
         )
       )
     )
