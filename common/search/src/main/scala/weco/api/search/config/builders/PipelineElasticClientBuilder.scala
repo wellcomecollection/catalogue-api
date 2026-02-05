@@ -55,7 +55,7 @@ object PipelineElasticClientBuilder {
       s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
     )
 
-    if(useExperimentalSemanticSearchCluster) {
+    if (useExperimentalSemanticSearchCluster) {
       hostname = "semantic-playground-b28f61.es.eu-west-1.aws.elastic.cloud"
       apiKey = getSecretString("agnes/elasticsearch/semantic-playground")
     }

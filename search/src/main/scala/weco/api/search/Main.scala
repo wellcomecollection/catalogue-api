@@ -44,8 +44,9 @@ object Main extends WellcomeTypesafeApp {
                 serviceName = "catalogue_api",
                 pipelineDate = pipelineDate,
                 environment = apiConfig.environment,
-                useExperimentalSemanticSearchCluster = semanticWorksIndex.isDefined
-              )),
+                useExperimentalSemanticSearchCluster =
+                  semanticWorksIndex.isDefined
+            )),
           PipelineClusterElasticConfig(
             config.getStringOption("dev.pipelineDate"),
             semanticSearchIndexOverride = semanticWorksIndex
@@ -61,8 +62,9 @@ object Main extends WellcomeTypesafeApp {
               PipelineElasticClientBuilder(
                 serviceName = "catalogue_api",
                 environment = apiConfig.environment,
-                useExperimentalSemanticSearchCluster = semanticWorksIndex.isDefined
-              )),
+                useExperimentalSemanticSearchCluster =
+                  semanticWorksIndex.isDefined
+            )),
           PipelineClusterElasticConfig(
             semanticSearchIndexOverride = semanticWorksIndex
           )
