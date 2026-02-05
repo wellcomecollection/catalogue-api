@@ -40,13 +40,13 @@ object ApiConfig {
         .getIntOption("api.pageSize")
         .getOrElse(10),
       semanticConfig = for {
-          modelId <- config.getStringOption("es.semantic.modelId")
-          vectorType <- config.getStringOption("es.semantic.vectorType").flatMap {
-            case "dense"  => Some(VectorType.Dense)
-            case "sparse" => Some(VectorType.Sparse)
-            case _        => None
-          }
-        } yield SemanticConfig(modelId, vectorType)
+        modelId <- config.getStringOption("es.semantic.modelId")
+        vectorType <- config.getStringOption("es.semantic.vectorType").flatMap {
+          case "dense"  => Some(VectorType.Dense)
+          case "sparse" => Some(VectorType.Sparse)
+          case _        => None
+        }
+      } yield SemanticConfig(modelId, vectorType)
     )
 
   def apply(

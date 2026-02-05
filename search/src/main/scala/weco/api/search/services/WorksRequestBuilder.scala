@@ -37,7 +37,6 @@ object WorksRequestBuilder
       .getOrElse(Pairable, Nil)
       .asInstanceOf[List[WorkFilter with Pairable]]
 
-
     Right(
       searchRequest(
         indexes = Seq(index.name),
