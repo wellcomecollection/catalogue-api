@@ -65,7 +65,11 @@ object AggregationMapping {
   // If any of the filtered terms are present in the main aggregation, then they will be duplicated
   // in the self buckets, hence the need for distinct.
   private def getAllFilteredBuckets(json: Json): Seq[RawAggregationBucket] =
-    (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json)) distinct
+    (globalAggBuckets.getAll(json) ++ selfAggBuckets.getAll(json))
+      .map(b => b.key -> b)
+      .toMap
+      .values
+      .toSeq
 
   private case class LabelBucket(
     key: String,
