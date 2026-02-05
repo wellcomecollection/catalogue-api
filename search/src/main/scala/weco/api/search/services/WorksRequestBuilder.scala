@@ -37,7 +37,6 @@ object WorksRequestBuilder
       .getOrElse(Pairable, Nil)
       .asInstanceOf[List[WorkFilter with Pairable]]
 
-
     Right(
       searchRequest(
         indexes = Seq(index.name),
@@ -59,7 +58,8 @@ object WorksRequestBuilder
             )
           ),
           includeSemantic = searchOptions.semanticConfig.isDefined && searchOptions.searchQuery.isDefined,
-          semanticModelId = searchOptions.semanticConfig.map(_.modelId)
+          semanticModelId = searchOptions.semanticConfig.map(_.modelId),
+          isSparse = searchOptions.semanticConfig.exists(_.vectorType == VectorType.Sparse)
         )
       )
     )

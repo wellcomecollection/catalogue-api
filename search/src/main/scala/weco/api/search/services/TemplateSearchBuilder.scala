@@ -59,14 +59,24 @@ trait TemplateSearchBuilder extends Encoders {
        |  "knn": {
        |    "field": "$field",
        |    "k": 50,
-       |    "similarity": 1,
        |    "num_candidates": 500,
        |    "query_vector_builder": {
        |      "text_embedding": {
-       |        "model_id": "openai-text_embedding-muvikv9j5f",
+       |        "model_id": "{{semanticModelId}}",
        |        "model_text": "{{query}}"
        |      }
        |    }
+       |  }
+       |}
+       |""".stripMargin
+
+  private def semanticSparse(field: String): String =
+    s"""
+       |{
+       |  "sparse_vector": {
+       |    "field": "$field",
+       |    "query": "{{query}}",
+       |    "inference_id": "{{semanticModelId}}"
        |  }
        |}
        |""".stripMargin
@@ -76,8 +86,14 @@ trait TemplateSearchBuilder extends Encoders {
        |{
        |  "bool": {
        |    "should": [
+       |      {{^isSparse}}
        |      ${semanticKnn("query.titleSemantic")},
        |      ${semanticKnn("query.descriptionSemantic")}
+       |      {{/isSparse}}
+       |      {{#isSparse}}
+       |      ${semanticSparse("query.titleSemantic")},
+       |      ${semanticSparse("query.descriptionSemantic")}
+       |      {{/isSparse}}
        |    ]
        |  }
        |}
@@ -119,7 +135,7 @@ trait TemplateSearchBuilder extends Encoders {
        |            }
        |          }
        |        ],
-       |        "rank_window_size": 25,
+       |        "rank_window_size": 10000,
        |        "rank_constant": 20
        |      }
        |    },

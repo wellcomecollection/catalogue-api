@@ -17,7 +17,8 @@ case class SearchTemplateParams(
   postFilter: Option[Query],
   knn: Option[SearchTemplateKNNParams] = None,
   includeSemantic: Boolean = false,
-  semanticModelId: Option[String] = None
+  semanticModelId: Option[String] = None,
+  isSparse: Boolean = false
 )
 
 case class SearchTemplateKNNParams(
