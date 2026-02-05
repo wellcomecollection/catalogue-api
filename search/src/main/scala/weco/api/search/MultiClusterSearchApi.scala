@@ -48,7 +48,12 @@ class MultiClusterSearchApi(
       new WorksController(
         elasticsearchService = new ElasticsearchService(client),
         apiConfig = apiConfig,
-        worksIndex = worksIndex
+        worksIndex = worksIndex,
+        semanticConfig = SemanticConfig(clusterConfig.semanticModelId, clusterConfig.semanticVectorType.flatMap {
+          case "dense"  => Some(VectorType.Dense)
+          case "sparse" => Some(VectorType.Sparse)
+          case _        => None
+        })
       )
     }
   }

@@ -8,13 +8,15 @@ import weco.api.search.json.CatalogueJsonUtil
 import weco.api.search.models.ApiConfig
 import weco.api.search.models.request.WorksIncludes
 import weco.api.search.services.WorksService
+import weco.api.search.models.SemanticConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorksController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
-  worksIndex: Index
+  worksIndex: Index,
+  semanticConfig: Option[SemanticConfig] = None
 )(implicit val ec: ExecutionContext)
     extends Tracing
     with CatalogueJsonUtil
@@ -24,7 +26,7 @@ class WorksController(
     get {
       withFuture {
         transactFuture("GET /works") {
-          val searchOptions = params.searchOptions(apiConfig)
+          val searchOptions = params.searchOptions(apiConfig, semanticConfig)
 
           worksService
             .listOrSearch(worksIndex, searchOptions)

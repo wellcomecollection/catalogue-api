@@ -12,7 +12,9 @@ case class ClusterConfig(
   customHost: Option[String] = None,
   customPort: Option[Int] = None,
   customProtocol: Option[String] = None,
-  customApiKeySecretPath: Option[String] = None
+  customApiKeySecretPath: Option[String] = None,
+  semanticModelId: Option[String] = None,
+  semanticVectorType: Option[String] = None
 )
 
 /** Multi-cluster configuration supporting both pipeline and custom clusters */
