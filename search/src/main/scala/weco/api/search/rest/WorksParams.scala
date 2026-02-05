@@ -111,7 +111,8 @@ case class MultipleWorksParams(
       pageNumber = page.getOrElse(1),
       aggregations = aggregations.getOrElse(Nil),
       sortBy = paginationParams.sort.getOrElse(Nil),
-      sortOrder = paginationParams.sortOrder.getOrElse(SortingOrder.Ascending)
+      sortOrder = paginationParams.sortOrder.getOrElse(SortingOrder.Ascending),
+      semanticConfig = apiConfig.semanticConfig
     )
 
   private def filters: List[WorkFilter] =

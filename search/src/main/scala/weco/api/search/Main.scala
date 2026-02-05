@@ -27,7 +27,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val actorSystem: ActorSystem = ActorSystem("search-api")
     implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
 
-    val semanticWorksIndex = Option("works-openai-full")
+    val semanticWorksIndex = config.getStringOption("es.semantic.indexName")
 
     val (elasticClient, elasticConfig) = apiConfig.environment match {
       case ApiEnvironment.Dev =>

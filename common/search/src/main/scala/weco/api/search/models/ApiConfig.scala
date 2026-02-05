@@ -9,6 +9,7 @@ case class ApiConfig(
   publicHost: String,
   publicRootPath: String,
   defaultPageSize: Int,
+  semanticConfig: Option[SemanticConfig] = None
 ) {
   // Used to determine whether we're running in a dev environment
   def environment: ApiEnvironment = publicHost match {
@@ -38,16 +39,36 @@ object ApiConfig {
       defaultPageSize = config
         .getIntOption("api.pageSize")
         .getOrElse(10),
+      semanticConfig = for {
+          modelId <- config.getStringOption("es.semantic.modelId")
+          vectorType <- config.getStringOption("es.semantic.vectorType").flatMap {
+            case "dense"  => Some(VectorType.Dense)
+            case "sparse" => Some(VectorType.Sparse)
+            case _        => None
+          }
+        } yield SemanticConfig(modelId, vectorType)
     )
 
   def apply(
     publicRootUri: Uri,
     defaultPageSize: Int,
+    semanticConfig: Option[SemanticConfig]
   ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,
       publicRootPath = publicRootUri.path.toString,
       defaultPageSize = defaultPageSize,
+      semanticConfig = semanticConfig
+    )
+
+  def apply(
+    publicRootUri: Uri,
+    defaultPageSize: Int
+  ): ApiConfig =
+    ApiConfig(
+      publicRootUri = publicRootUri,
+      defaultPageSize = defaultPageSize,
+      semanticConfig = None
     )
 }

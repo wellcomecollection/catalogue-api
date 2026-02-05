@@ -37,6 +37,7 @@ object WorksRequestBuilder
       .getOrElse(Pairable, Nil)
       .asInstanceOf[List[WorkFilter with Pairable]]
 
+
     Right(
       searchRequest(
         indexes = Seq(index.name),
@@ -57,7 +58,8 @@ object WorksRequestBuilder
               pairables.collect(buildWorkFilterQuery)
             )
           ),
-          includeSemantic = searchOptions.searchQuery.isDefined
+          includeSemantic = searchOptions.semanticConfig.isDefined && searchOptions.searchQuery.isDefined,
+          semanticModelId = searchOptions.semanticConfig.map(_.modelId)
         )
       )
     )
