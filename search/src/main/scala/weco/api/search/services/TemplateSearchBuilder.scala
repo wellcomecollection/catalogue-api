@@ -53,40 +53,119 @@ trait TemplateSearchBuilder extends Encoders {
     |}
     |""".stripMargin
 
-  // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
-  lazy protected val source: String =
+  private def semanticKnn(field: String): String =
     s"""
        |{
-       |  {{#knn}}
-       |    "knn": {
-       |      {{#query}}
-       |        "filter": $knnFilter,
-       |      {{/query}}
-       |      {{#similarityThreshold}}
-       |        "similarity": {{similarityThreshold}},
-       |      {{/similarityThreshold}}
-       |      "field": "{{field}}",
-       |      "k": {{k}},
-       |      "num_candidates": {{numCandidates}},
-       |      "query_vector": {{#toJson}}queryVector{{/toJson}}
-       |  },
-       |  {{/knn}}
-       |  {{^knn}}
-       |    "query": {
+       |  "knn": {
+       |    "field": "$field",
+       |    "k": 50,
+       |    "num_candidates": 500,
+       |    "query_vector_builder": {
+       |      "text_embedding": {
+       |        "model_id": "{{semanticModelId}}",
+       |        "model_text": "{{query}}"
+       |      }
+       |    }
+       |  }
+       |}
+       |""".stripMargin
+
+  private def semanticSparse(field: String): String =
+    s"""
+       |{
+       |  "sparse_vector": {
+       |    "field": "$field",
+       |    "query": "{{query}}",
+       |    "inference_id": "{{semanticModelId}}"
+       |  }
+       |}
+       |""".stripMargin
+
+  protected val semanticQueryTemplate: String =
+    s"""
+       |{
+       |  "bool": {
+       |    "should": [
+       |      {{^isSparse}}
+       |      ${semanticKnn("query.titleSemantic")},
+       |      ${semanticKnn("query.descriptionSemantic")}
+       |      {{/isSparse}}
+       |      {{#isSparse}}
+       |      ${semanticSparse("query.titleSemantic")},
+       |      ${semanticSparse("query.descriptionSemantic")}
+       |      {{/isSparse}}
+       |    ]
+       |  }
+       |}
+       |""".stripMargin
+
+  lazy protected val lexicalQuery: String =
+    s"""
        |      "bool": {
        |          {{#query}}
        |          "must": $queryTemplate,
        |          {{/query}}
        |          "filter": {{#toJson}}preFilter{{/toJson}}
        |       }
+       |""".stripMargin
+
+  // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
+  lazy protected val source: String =
+    s"""
+       |{
+       |  {{#includeSemantic}}
+       |    "retriever": {
+       |      "rrf": {
+       |        "retrievers": [
+       |          {
+       |            "standard": {
+       |              "query": {
+       |                $lexicalQuery
+       |              }
+       |            }
+       |          },
+       |          {
+       |            "standard": {
+       |              "query": {
+       |                "bool": {
+       |                  "must": $semanticQueryTemplate,
+       |                  "filter": {{#toJson}}preFilter{{/toJson}}
+       |                }
+       |              }
+       |            }
+       |          }
+       |        ],
+       |        "rank_window_size": 10000,
+       |        "rank_constant": 20
+       |      }
        |    },
-       |  {{/knn}}
+       |  {{/includeSemantic}}
+       |  {{^includeSemantic}}
+       |    {{#knn}}
+       |      "knn": {
+       |        {{#query}}
+       |          "filter": $knnFilter,
+       |        {{/query}}
+       |        {{#similarityThreshold}}
+       |          "similarity": {{similarityThreshold}},
+       |        {{/similarityThreshold}}
+       |        "field": "{{field}}",
+       |        "k": {{k}},
+       |        "num_candidates": {{numCandidates}},
+       |        "query_vector": {{#toJson}}queryVector{{/toJson}}
+       |    },
+       |    {{/knn}}
+       |    {{^knn}}
+       |      "query": {
+       |        $lexicalQuery
+       |      },
+       |    {{/knn}}
+       |  {{/includeSemantic}}
        |
        |  {{#postFilter}}
        |  "post_filter": {{#toJson}}postFilter{{/toJson}},
        |  {{/postFilter}}
        |
-       |  "track_total_hits": true,
        |  "from": "{{from}}",
        |  "size": "{{size}}",
        |  "_source": {
@@ -97,6 +176,7 @@ trait TemplateSearchBuilder extends Encoders {
        |  "aggs": {{#toJson}}aggs{{/toJson}},
        |  {{/aggs}}
        |
+       |  {{^includeSemantic}}
        |  "sort": [
        |    {{#sortByDate}}
        |    {
@@ -118,7 +198,10 @@ trait TemplateSearchBuilder extends Encoders {
        |        "order": "asc"
        |      }
        |    }
-       |  ]
+       |  ],
+       |  {{/includeSemantic}}
+       |
+       |  "track_total_hits": true
        |}
        |""".stripMargin
     // Normalise all whitespace - it only exists to make the code more
