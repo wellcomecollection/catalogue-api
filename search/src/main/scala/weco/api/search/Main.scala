@@ -49,7 +49,7 @@ object Main extends WellcomeTypesafeApp {
           )
         )
       case _ =>
-        info(s"Running in deployed mode (environment=$apiConfig.environment)")
+        info(s"Running in deployed mode (environment=${apiConfig.environment})")
         // Only initialise tracing in deployed environments
         Tracing.init(config)
         (
@@ -62,6 +62,12 @@ object Main extends WellcomeTypesafeApp {
           PipelineClusterElasticConfig()
         )
     }
+
+    val defaultRouter = new SearchApi(
+      elasticClient = elasticClient,
+      elasticConfig = elasticConfig,
+      apiConfig = apiConfig
+    )
 
     // Parse multi-cluster configuration
     val additionalClusterConfigs =
@@ -85,22 +91,16 @@ object Main extends WellcomeTypesafeApp {
     info(
       s"Using multi-cluster router with ${additionalClients.size} additional cluster(s)")
 
-    val defaultRouter = new SearchApi(
-      elasticClient = elasticClient,
-      elasticConfig = elasticConfig,
-      apiConfig = apiConfig
-    )
     val additionalRouter = new MultiClusterSearchApi(
       additionalClients = additionalClients,
       apiConfig = apiConfig,
       additionalClusterConfigs = additionalClusterConfigs
     )
-    val allRoutes = Seq(additionalRouter.routes, defaultRouter.routes)
 
     val appName = "SearchApi"
 
     new WellcomeHttpApp(
-      routes = concat(allRoutes: _*),
+      routes = concat(Seq(additionalRouter.routes, defaultRouter.routes): _*),
       httpMetrics = new HttpMetrics(
         name = appName,
         metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
