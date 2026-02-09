@@ -26,7 +26,6 @@ class MultiClusterSearchApi(
   defaultElasticConfig: ElasticConfig,
   // Additional cluster clients mapped by name
   additionalClients: Map[String, ResilientElasticClient],
-  multiClusterConfig: MultiClusterElasticConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends ApiRouter
@@ -42,21 +41,23 @@ class MultiClusterSearchApi(
   ): Option[WorksController] =
     for {
       client <- additionalClients.get(clusterName)
-      clusterConfig = multiClusterConfig.getCluster(clusterName)
-      worksIndex <- clusterConfig.worksIndex
+      clusterConfig = additionalClients(clusterName)
     } yield {
+      val semanticConfig = for {
+        modelId <- clusterConfig.semanticModelId
+        vectorTypeStr <- clusterConfig.semanticVectorType
+        vectorType <- vectorTypeStr match {
+          case "dense"  => Some(VectorType.Dense)
+          case "sparse" => Some(VectorType.Sparse)
+          case _        => None
+        }
+      } yield SemanticConfig(modelId, vectorType)
+
       new WorksController(
         elasticsearchService = new ElasticsearchService(client),
         apiConfig = apiConfig,
-        worksIndex = worksIndex,
-        semanticConfig = SemanticConfig(
-          clusterConfig.semanticModelId,
-          clusterConfig.semanticVectorType.flatMap {
-            case "dense"  => Some(VectorType.Dense)
-            case "sparse" => Some(VectorType.Sparse)
-            case _        => None
-          }
-        )
+        worksIndex = clusterConfig.worksIndex,
+        semanticConfig = semanticConfig
       )
     }
 

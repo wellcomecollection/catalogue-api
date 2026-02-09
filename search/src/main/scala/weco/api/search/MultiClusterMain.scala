@@ -2,24 +2,14 @@ package weco.api.search
 
 import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
-import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
-import weco.api.search.config.builders.{
-  MultiClusterElasticClientBuilder,
-  PipelineElasticClientBuilder
-}
-import weco.api.search.models.{
-  ApiConfig,
-  ApiEnvironment,
-  ElasticConfig,
-  PipelineClusterElasticConfig
-}
+import weco.api.search.config.builders.CustomElasticClientBuilder
+import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
-import weco.typesafe.config.builders.EnrichConfig.RichConfig
 import weco.api.search.elasticsearch.ResilientElasticClient
 
 /**
@@ -39,58 +29,24 @@ object MultiClusterMain extends WellcomeTypesafeApp {
     implicit val actorSystem: ActorSystem = ActorSystem("search-api")
     implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
 
-    // Set up default cluster (existing behavior)
     val (defaultElasticClient, defaultElasticConfig) =
-      apiConfig.environment match {
-        case ApiEnvironment.Dev =>
-          info(s"Running in dev mode.")
-          val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
-          val pipelineDate =
-            pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
-          if (pipelineDateOverride.isDefined)
-            warn(s"Overridden pipeline date: $pipelineDate")
-          (
-            new ResilientElasticClient(
-              clientFactory = () =>
-                PipelineElasticClientBuilder(
-                  serviceName = "catalogue_api",
-                  pipelineDate = pipelineDate,
-                  environment = apiConfig.environment
-              )),
-            PipelineClusterElasticConfig(
-              config.getStringOption("dev.pipelineDate")
-            )
-          )
-        case _ =>
-          info(
-            s"Running in deployed mode (environment=${apiConfig.environment})")
-          Tracing.init(config)
-          (
-            new ResilientElasticClient(
-              clientFactory = () =>
-                PipelineElasticClientBuilder(
-                  serviceName = "catalogue_api",
-                  environment = apiConfig.environment
-              )),
-            PipelineClusterElasticConfig()
-          )
-      }
+      ElasticClientSetup.buildDefaultElasticClientAndConfig(
+        config = config,
+        serviceName = "catalogue_api"
+      )
 
     // Parse multi-cluster configuration
-    val multiClusterConfig = MultiClusterConfigParser.parseMultiClusterConfig(
-      config,
-      defaultElasticConfig
-    )
+    val additionalClusterConfigs =
+      MultiClusterConfigParser.parseMultiClusterConfig(config)
 
     // Create clients for additional clusters
-    val additionalClients = multiClusterConfig.additionalClusters.map {
+    val additionalClients = additionalClusterConfigs.map {
       case (clusterName, clusterConfig) =>
         info(s"Initializing client for cluster: $clusterName")
         val client = new ResilientElasticClient(
           clientFactory = () =>
-            MultiClusterElasticClientBuilder.buildClient(
+            CustomElasticClientBuilder(
               clusterConfig = clusterConfig,
-              serviceName = "catalogue_api",
               environment = apiConfig.environment
           )
         )
@@ -105,7 +61,6 @@ object MultiClusterMain extends WellcomeTypesafeApp {
         defaultElasticClient = defaultElasticClient,
         defaultElasticConfig = defaultElasticConfig,
         additionalClients = additionalClients,
-        multiClusterConfig = multiClusterConfig,
         apiConfig = apiConfig
       )
     } else {
