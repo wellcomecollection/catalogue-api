@@ -2,6 +2,38 @@
 
 This document describes how to configure the Search API to read from multiple Elasticsearch clusters.
 
+# ============================================================================
+
+# Routes will be available at:
+
+# ============================================================================
+
+# Default cluster (existing):
+
+# GET /works
+
+# GET /works/:id
+
+# GET /images
+
+# GET /images/:id
+
+#
+
+# Experimental cluster A:
+
+# GET /works/xp-a
+
+# GET /works/xp-a/:id
+
+#
+
+# Experimental cluster B:
+
+# GET /works/xp-b
+
+# GET /works/xp-b/:id
+
 ## Overview
 
 The multi-cluster support allows you to:

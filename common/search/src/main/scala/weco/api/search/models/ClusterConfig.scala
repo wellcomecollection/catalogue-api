@@ -6,9 +6,9 @@ case class ClusterConfig(
   name: String,
   worksIndex: Index,
   customHost: String,
-  semanticModelId: Option[String] = None,
+  customApiKeySecretPath: String,
   customPort: Option[Int] = None,
   customProtocol: Option[String] = None,
-  customApiKeySecretPath: String,
+  semanticModelId: Option[String] = None,
   semanticVectorType: Option[String] = None
 )

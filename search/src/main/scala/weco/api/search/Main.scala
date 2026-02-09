@@ -2,6 +2,9 @@ package weco.api.search
 
 import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
+import weco.api.search.config.MultiClusterConfigParser
+import weco.api.search.config.builders.CustomElasticClientBuilder
+import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
@@ -23,11 +26,44 @@ object Main extends WellcomeTypesafeApp {
         serviceName = "catalogue_api"
       )
 
-    val router = new SearchApi(
-      elasticClient = elasticClient,
-      elasticConfig = elasticConfig,
-      apiConfig = apiConfig
-    )
+    // Parse multi-cluster configuration
+    val additionalClusterConfigs =
+      MultiClusterConfigParser.parseMultiClusterConfig(config)
+
+    // Create clients for additional clusters
+    val additionalClients = additionalClusterConfigs.map {
+      case (clusterName, clusterConfig) =>
+        info(s"Initializing client for cluster: $clusterName")
+        val client = new ResilientElasticClient(
+          clientFactory = () =>
+            CustomElasticClientBuilder(
+              clusterConfig = clusterConfig,
+              environment = apiConfig.environment
+            )
+        )
+        clusterName -> client
+    }
+
+    // Choose router based on whether we have additional clusters configured
+    val router: ApiRouter = if (additionalClients.nonEmpty) {
+      info(
+        s"Using multi-cluster router with ${additionalClients.size} additional cluster(s)")
+      new MultiClusterSearchApi(
+        defaultElasticClient = elasticClient,
+        defaultElasticConfig = elasticConfig,
+        additionalClients = additionalClients,
+        apiConfig = apiConfig,
+        additionalClusterConfigs = additionalClusterConfigs
+      )
+    } else {
+      info(
+        "No additional clusters configured, using standard single-cluster router")
+      new SearchApi(
+        elasticClient = elasticClient,
+        elasticConfig = elasticConfig,
+        apiConfig = apiConfig
+      )
+    }
 
     val appName = "SearchApi"
 

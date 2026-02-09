@@ -26,6 +26,7 @@ class MultiClusterSearchApi(
   defaultElasticConfig: ElasticConfig,
   // Additional cluster clients mapped by name
   additionalClients: Map[String, ResilientElasticClient],
+  additionalClusterConfigs: Map[String, ClusterConfig],
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends ApiRouter
@@ -41,7 +42,7 @@ class MultiClusterSearchApi(
   ): Option[WorksController] =
     for {
       client <- additionalClients.get(clusterName)
-      clusterConfig = additionalClients(clusterName)
+      clusterConfig = additionalClusterConfigs(clusterName)
     } yield {
       val semanticConfig = for {
         modelId <- clusterConfig.semanticModelId
@@ -85,12 +86,13 @@ class MultiClusterSearchApi(
       }
     }
 
-  def routes: Route = concat(
-    // ELSER semantic search cluster
-    buildClusterRoutes("elser", "elser"),
-    // OpenAI embedding search cluster
-    buildClusterRoutes("openai", "openai"),
-    // Default routes (includes /works, /works/{id}, /images, /images/{id}, etc.)
-    defaultClusterRoutes
-  )
+  def routes: Route = {
+    val additionalRoutes = additionalClusterConfigs.keys.toSeq.sorted.map {
+      clusterName => buildClusterRoutes(clusterName, clusterName)
+    }
+
+    concat(
+      (additionalRoutes :+ defaultClusterRoutes): _*
+    )
+  }
 }
