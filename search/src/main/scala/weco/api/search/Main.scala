@@ -7,7 +7,12 @@ import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{ApiConfig, ApiEnvironment, ElasticConfig, PipelineClusterElasticConfig}
+import weco.api.search.models.{
+  ApiConfig,
+  ApiEnvironment,
+  ElasticConfig,
+  PipelineClusterElasticConfig
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -38,7 +43,7 @@ object Main extends WellcomeTypesafeApp {
                 serviceName = "catalogue_api",
                 pipelineDate = pipelineDate,
                 environment = apiConfig.environment
-              )),
+            )),
           PipelineClusterElasticConfig(
             config.getStringOption("dev.pipelineDate")
           )
@@ -53,7 +58,7 @@ object Main extends WellcomeTypesafeApp {
               PipelineElasticClientBuilder(
                 serviceName = "catalogue_api",
                 environment = apiConfig.environment
-              )),
+            )),
           PipelineClusterElasticConfig()
         )
     }
