@@ -39,7 +39,7 @@ object Main extends WellcomeTypesafeApp {
             CustomElasticClientBuilder(
               clusterConfig = clusterConfig,
               environment = apiConfig.environment
-            )
+          )
         )
         clusterName -> client
     }

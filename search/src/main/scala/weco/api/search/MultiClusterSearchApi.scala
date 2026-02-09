@@ -88,7 +88,8 @@ class MultiClusterSearchApi(
 
   def routes: Route = {
     val additionalRoutes = additionalClusterConfigs.keys.toSeq.sorted.map {
-      clusterName => buildClusterRoutes(clusterName, clusterName)
+      clusterName =>
+        buildClusterRoutes(clusterName, clusterName)
     }
 
     concat(
