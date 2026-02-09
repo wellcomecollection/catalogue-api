@@ -23,7 +23,7 @@ object PipelineElasticClientBuilder extends Logging {
     pipelineDate: String = ElasticConfig.pipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod,
     clusterConfig: ClusterConfig = ClusterConfig()
-           ): ElasticClient = {
+  ): ElasticClient = {
     implicit val secretsClientForEnv: SecretsManagerClient = getSecretsClient(
       environment)
 
@@ -33,11 +33,16 @@ object PipelineElasticClientBuilder extends Logging {
       case ApiEnvironment.Dev => "public_host"
       case _                  => "private_host"
     }
-    val hostname = getSecretString(clusterConfig.hostSecretPath.getOrElse(s"$pipelinePrefix/$hostType"))
+    val hostname = getSecretString(
+      clusterConfig.hostSecretPath.getOrElse(s"$pipelinePrefix/$hostType"))
 
-    val port = getSecretString(clusterConfig.portSecretPath.getOrElse(s"$pipelinePrefix/port")).toInt
-    val protocol = getSecretString(clusterConfig.protocolSecretPath.getOrElse(s"$pipelinePrefix/protocol"))
-    val apiKey = getSecretString(clusterConfig.apiKeySecretPath.getOrElse(s"$pipelinePrefix/$serviceName/api_key"))
+    val port = getSecretString(
+      clusterConfig.portSecretPath.getOrElse(s"$pipelinePrefix/port")).toInt
+    val protocol = getSecretString(
+      clusterConfig.protocolSecretPath.getOrElse(s"$pipelinePrefix/protocol"))
+    val apiKey = getSecretString(
+      clusterConfig.apiKeySecretPath.getOrElse(
+        s"$pipelinePrefix/$serviceName/api_key"))
 
     info(
       s"Building custom Elasticsearch client for cluster '${clusterConfig.name}' at $protocol://$hostname:$port")

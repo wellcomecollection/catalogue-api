@@ -6,7 +6,11 @@ import grizzled.slf4j.Logging
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{ApiEnvironment, ElasticConfig, PipelineClusterElasticConfig}
+import weco.api.search.models.{
+  ApiEnvironment,
+  ElasticConfig,
+  PipelineClusterElasticConfig
+}
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
 object ElasticClientSetup extends Logging {
@@ -41,7 +45,7 @@ object ElasticClientSetup extends Logging {
           )
         )
       case _ =>
-        info(s"Running in deployed mode (environment=${environment})")
+        info(s"Running in deployed mode (environment=$environment)")
         // Only initialise tracing in deployed environments
         Tracing.init(config)
         (

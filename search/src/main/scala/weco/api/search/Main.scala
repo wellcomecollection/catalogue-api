@@ -56,10 +56,10 @@ object Main extends WellcomeTypesafeApp {
       apiConfig = apiConfig
     )
     val additionalRouter = new MultiClusterSearchApi(
-        additionalClients = additionalClients,
-        apiConfig = apiConfig,
-        additionalClusterConfigs = additionalClusterConfigs
-      )
+      additionalClients = additionalClients,
+      apiConfig = apiConfig,
+      additionalClusterConfigs = additionalClusterConfigs
+    )
     val allRoutes = Seq(additionalRouter.routes, defaultRouter.routes)
 
     val appName = "SearchApi"
