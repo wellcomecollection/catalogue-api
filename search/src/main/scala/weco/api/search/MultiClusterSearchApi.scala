@@ -52,7 +52,7 @@ class MultiClusterSearchApi(
       new WorksController(
         elasticsearchService = new ElasticsearchService(client),
         apiConfig = apiConfig,
-        worksIndex = clusterConfig.worksIndex,
+        worksIndex = clusterConfig.worksIndex.get,
         semanticConfig = semanticConfig
       )
     }

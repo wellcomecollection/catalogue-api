@@ -36,13 +36,11 @@ object MultiClusterConfigParser extends Logging {
       val config = multiClusterConfig.getConfig(clusterName)
       val clusterConfig = ClusterConfig(
         name = clusterName,
-        worksIndex = Index(config.getString("worksIndex")),
-        customHost = config.getString("customHost"),
-        customPort = config.getIntOption("customPort"),
-        customProtocol = config.getStringOption("customProtocol"),
+        worksIndex = Some(Index(config.getString("worksIndex"))),
+        hostSecretPath = Some(config.getString("hostSecretPath")),
+        apiKeySecretPath = Some(config.getString("apiKeySecretPath")),
         semanticModelId = config.getStringOption("semanticModelId"),
         semanticVectorType = config.getStringOption("semanticVectorType"),
-        customApiKeySecretPath = config.getString("customApiKeySecretPath")
       )
       clusterName -> clusterConfig
     }.toMap

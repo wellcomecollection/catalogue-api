@@ -1,13 +1,14 @@
 package weco.api.search.config.builders
 
 import com.sksamuel.elastic4s.ElasticClient
+import grizzled.slf4j.Logging
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.api.search.models.{ApiEnvironment, ElasticConfig}
+import weco.api.search.models.{ApiEnvironment, ClusterConfig, ElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
 
-object PipelineElasticClientBuilder {
+object PipelineElasticClientBuilder extends Logging {
 
   // We create a new pipeline cluster for every pipeline, and we want the
   // services to read from that cluster.
@@ -20,28 +21,26 @@ object PipelineElasticClientBuilder {
   def apply(
     serviceName: String,
     pipelineDate: String = ElasticConfig.pipelineDate,
-    environment: ApiEnvironment = ApiEnvironment.Prod
-  ): ElasticClient = {
+    environment: ApiEnvironment = ApiEnvironment.Prod,
+    clusterConfig: ClusterConfig = ClusterConfig()
+           ): ElasticClient = {
     implicit val secretsClientForEnv: SecretsManagerClient = getSecretsClient(
       environment)
+
+    val pipelinePrefix = s"elasticsearch/pipeline_storage_$pipelineDate";
+
     val hostType = environment match {
       case ApiEnvironment.Dev => "public_host"
       case _                  => "private_host"
     }
+    val hostname = getSecretString(clusterConfig.hostSecretPath.getOrElse(s"$pipelinePrefix/$hostType"))
 
-    val hostname = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/$hostType"
-    )
+    val port = getSecretString(clusterConfig.portSecretPath.getOrElse(s"$pipelinePrefix/port")).toInt
+    val protocol = getSecretString(clusterConfig.protocolSecretPath.getOrElse(s"$pipelinePrefix/protocol"))
+    val apiKey = getSecretString(clusterConfig.apiKeySecretPath.getOrElse(s"$pipelinePrefix/$serviceName/api_key"))
 
-    val port = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/port"
-    ).toInt
-    val protocol = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/protocol"
-    )
-    val apiKey = getSecretString(
-      s"elasticsearch/pipeline_storage_$pipelineDate/$serviceName/api_key"
-    )
+    info(
+      s"Building custom Elasticsearch client for cluster '${clusterConfig.name}' at $protocol://$hostname:$port")
 
     ElasticClientBuilder.create(
       hostname = hostname,

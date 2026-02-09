@@ -6,26 +6,21 @@ import grizzled.slf4j.Logging
 import weco.Tracing
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{
-  ApiConfig,
-  ApiEnvironment,
-  ElasticConfig,
-  PipelineClusterElasticConfig
-}
+import weco.api.search.models.{ApiEnvironment, ElasticConfig, PipelineClusterElasticConfig}
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
 object ElasticClientSetup extends Logging {
 
   def buildDefaultElasticClientAndConfig(
     config: Config,
-    serviceName: String
+    serviceName: String,
+    environment: ApiEnvironment
   )(implicit
-    apiConfig: ApiConfig,
     actorSystem: ActorSystem,
     clock: java.time.Clock,
     ec: scala.concurrent.ExecutionContext)
     : (ResilientElasticClient, ElasticConfig) =
-    apiConfig.environment match {
+    environment match {
       case ApiEnvironment.Dev =>
         info(s"Running in dev mode.")
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
@@ -39,14 +34,14 @@ object ElasticClientSetup extends Logging {
               PipelineElasticClientBuilder(
                 serviceName = serviceName,
                 pipelineDate = pipelineDate,
-                environment = apiConfig.environment
+                environment = environment
             )),
           PipelineClusterElasticConfig(
             config.getStringOption("dev.pipelineDate")
           )
         )
       case _ =>
-        info(s"Running in deployed mode (environment=${apiConfig.environment})")
+        info(s"Running in deployed mode (environment=${environment})")
         // Only initialise tracing in deployed environments
         Tracing.init(config)
         (
@@ -54,7 +49,7 @@ object ElasticClientSetup extends Logging {
             clientFactory = () =>
               PipelineElasticClientBuilder(
                 serviceName = serviceName,
-                environment = apiConfig.environment
+                environment = environment
             )),
           PipelineClusterElasticConfig()
         )

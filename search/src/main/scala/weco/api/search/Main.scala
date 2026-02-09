@@ -4,7 +4,7 @@ import org.apache.pekko.http.scaladsl.server.Directives.concat
 import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.api.search.config.MultiClusterConfigParser
-import weco.api.search.config.builders.CustomElasticClientBuilder
+import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.ApiConfig
 import weco.typesafe.WellcomeTypesafeApp
@@ -24,7 +24,8 @@ object Main extends WellcomeTypesafeApp {
     val (elasticClient, elasticConfig) =
       ElasticClientSetup.buildDefaultElasticClientAndConfig(
         config = config,
-        serviceName = "catalogue_api"
+        serviceName = "catalogue_api",
+        environment = apiConfig.environment
       )
 
     // Parse multi-cluster configuration
@@ -37,8 +38,9 @@ object Main extends WellcomeTypesafeApp {
         info(s"Initializing client for cluster: $clusterName")
         val client = new ResilientElasticClient(
           clientFactory = () =>
-            CustomElasticClientBuilder(
+            PipelineElasticClientBuilder(
               clusterConfig = clusterConfig,
+              serviceName = "catalogue_api",
               environment = apiConfig.environment
           )
         )
