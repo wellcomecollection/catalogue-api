@@ -42,24 +42,7 @@ Direct connection with custom credentials:
 - Port: Configurable (default 9243)
 - Protocol: Configurable (default https)
 
-## Configuration
-
-### Option 1: Environment Variables
-
-```bash
-# Serverless cluster example
-export multiCluster__xp_a__customHost="my-serverless.es.aws.elastic.cloud"
-export multiCluster__xp_a__customApiKeySecretPath="elasticsearch/xp-a/api_key"
-export multiCluster__xp_a__worksIndex="works-experimental-v1"
-
-# Another pipeline cluster
-export multiCluster__xp_b__pipelineDate="2025-12-01"
-export multiCluster__xp_b__worksIndex="works-indexed-2025-12-01"
-```
-
-Note: Use double underscores for nested properties and replace hyphens with underscores in names.
-
-### Option 2: application.conf
+## Configuration via application.conf
 
 ```hocon
 multiCluster {
@@ -96,20 +79,6 @@ multiCluster {
 - `GET /works/xp-b` - List/search works from xp-b cluster
 - `GET /works/xp-b/{id}` - Get single work from xp-b cluster
 
-### 5. Configure Application
-
-```hocon
-multiCluster {
-  xp-a {
-    customHost = "catalogue-xp-a-abc123.us-east-1.es.aws.amazon.com"
-    customPort = 443
-    customProtocol = "https"
-    customApiKeySecretPath = "elasticsearch/xp-a/api_key"
-    worksIndex = "works-xp-a"
-  }
-}
-```
-
 ## Adding More Experimental Routes
 
 To add routes for additional cluster types (e.g., `/works/xp-b/`, `/images/xp-a/`), edit the `MultiClusterSearchApi.scala`:
@@ -144,26 +113,10 @@ def routes: Route = {
 }
 ```
 
-## Backward Compatibility
+### Limitations
 
-The system is fully backward compatible:
-
-- If no `multiCluster` configuration is present, only the default cluster is used
-- Existing routes continue to work unchanged
-- You can use `MultiClusterMain` even without multi-cluster config
-- You can continue using the original `Main` class if you don't need multi-cluster support
-
-## Monitoring and Debugging
-
-### Health Checks
-
-The existing health check endpoint reflects the default cluster:
+The following existing endpoints only reflect the default cluster:
 
 - `GET /management/healthcheck`
 - `GET /management/clusterhealth`
-
-### Config Endpoint
-
-The `_elasticConfig` endpoint shows default cluster info:
-
 - `GET /_elasticConfig`
