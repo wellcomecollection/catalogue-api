@@ -32,8 +32,7 @@ class SearchApi(
   elasticConfig: ElasticConfig,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
-    extends ApiRouter
-    with CustomDirectives
+    extends CustomDirectives
     with IdentifierDirectives {
 
   def routes: Route = handleRejections(rejectionHandler) {

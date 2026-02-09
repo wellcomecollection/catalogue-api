@@ -2,38 +2,6 @@
 
 This document describes how to configure the Search API to read from multiple Elasticsearch clusters.
 
-# ============================================================================
-
-# Routes will be available at:
-
-# ============================================================================
-
-# Default cluster (existing):
-
-# GET /works
-
-# GET /works/:id
-
-# GET /images
-
-# GET /images/:id
-
-#
-
-# Experimental cluster A:
-
-# GET /works/xp-a
-
-# GET /works/xp-a/:id
-
-#
-
-# Experimental cluster B:
-
-# GET /works/xp-b
-
-# GET /works/xp-b/:id
-
 ## Overview
 
 The multi-cluster support allows you to:
@@ -114,59 +82,6 @@ multiCluster {
 }
 ```
 
-## Setup Instructions
-
-### Step 1: Store API Keys in AWS Secrets Manager
-
-For custom clusters, you need to store the API key in Secrets Manager:
-
-```bash
-# Create the secret for your serverless cluster
-aws secretsmanager create-secret \
-  --name elasticsearch/xp-a/api_key \
-  --description "API key for experimental serverless ES cluster" \
-  --secret-string "your-base64-encoded-api-key"
-```
-
-For serverless Elasticsearch:
-
-1. Go to your Elasticsearch Serverless project
-2. Create an API key with appropriate permissions
-3. Copy the base64-encoded key
-4. Store it in AWS Secrets Manager
-
-### Step 2: Configure the Cluster
-
-Add configuration to your `application.conf` or environment variables as shown above.
-
-### Step 3: Update Deployment
-
-To enable multi-cluster support, update your deployment configuration to use the multi-cluster main class.
-
-#### For SBT
-
-In your `build.sbt` or run command:
-
-```scala
-mainClass in Compile := Some("weco.api.search.MultiClusterMain")
-```
-
-#### For Docker
-
-Update your Dockerfile or docker-compose.yml:
-
-```dockerfile
-CMD ["java", "-cp", "...", "weco.api.search.MultiClusterMain"]
-```
-
-#### For Terraform
-
-Update the task definition to use the new main class.
-
-### Step 4: Deploy and Test
-
-After deployment, your API will have new routes available:
-
 #### Default Cluster Routes (unchanged)
 
 - `GET /works` - List/search works
@@ -181,37 +96,6 @@ After deployment, your API will have new routes available:
 - `GET /works/xp-b` - List/search works from xp-b cluster
 - `GET /works/xp-b/{id}` - Get single work from xp-b cluster
 
-## Example: Setting Up a Serverless Cluster
-
-### 1. Create Elasticsearch Serverless Project
-
-In AWS Console or via API, create a new Elasticsearch Serverless project:
-
-- Project name: `catalogue-xp-a`
-- Region: `us-east-1`
-
-### 2. Get Connection Details
-
-From the project overview:
-
-- Endpoint: `https://catalogue-xp-a-abc123.us-east-1.es.aws.amazon.com`
-- Note the hostname: `catalogue-xp-a-abc123.us-east-1.es.aws.amazon.com`
-
-### 3. Create API Key
-
-In the project security settings:
-
-1. Create API key with read access to your indices
-2. Copy the base64-encoded key
-
-### 4. Store in Secrets Manager
-
-```bash
-aws secretsmanager create-secret \
-  --name elasticsearch/xp-a/api_key \
-  --secret-string "your-api-key-here"
-```
-
 ### 5. Configure Application
 
 ```hocon
@@ -224,16 +108,6 @@ multiCluster {
     worksIndex = "works-xp-a"
   }
 }
-```
-
-### 6. Deploy and Test
-
-```bash
-# List works from experimental cluster
-curl https://api.wellcomecollection.org/catalogue/v2/works/xp-a
-
-# Get specific work
-curl https://api.wellcomecollection.org/catalogue/v2/works/xp-a/abc123
 ```
 
 ## Adding More Experimental Routes

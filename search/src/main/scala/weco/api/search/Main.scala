@@ -48,12 +48,12 @@ object Main extends WellcomeTypesafeApp {
     info(
       s"Using multi-cluster router with ${additionalClients.size} additional cluster(s)")
 
-    val defaultRouter: ApiRouter = new SearchApi(
+    val defaultRouter = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
       apiConfig = apiConfig
     )
-    val additionalRouter: ApiRouter = new MultiClusterSearchApi(
+    val additionalRouter = new MultiClusterSearchApi(
         additionalClients = additionalClients,
         apiConfig = apiConfig,
         additionalClusterConfigs = additionalClusterConfigs

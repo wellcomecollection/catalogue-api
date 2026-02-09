@@ -25,8 +25,7 @@ class MultiClusterSearchApi(
   additionalClusterConfigs: Map[String, ClusterConfig],
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
-    extends ApiRouter
-    with CustomDirectives
+    extends CustomDirectives
     with IdentifierDirectives {
 
   /**
