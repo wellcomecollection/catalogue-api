@@ -281,18 +281,6 @@ The system is fully backward compatible:
 
 ## Monitoring and Debugging
 
-### Logs
-
-The system logs cluster initialization:
-
-```
-[INFO] Found multi-cluster configuration for clusters: xp-a, xp-b
-[INFO] Parsed cluster config 'xp-a': pipelineDate=None, worksIndex=Some(works-xp-a), customHost=Some(...)
-[INFO] Initializing client for cluster: xp-a
-[INFO] Building custom Elasticsearch client for cluster 'xp-a' at https://...
-[INFO] Using multi-cluster router with 2 additional cluster(s)
-```
-
 ### Health Checks
 
 The existing health check endpoint reflects the default cluster:
@@ -305,43 +293,3 @@ The existing health check endpoint reflects the default cluster:
 The `_elasticConfig` endpoint shows default cluster info:
 
 - `GET /_elasticConfig`
-
-## Security Considerations
-
-1. **API Keys**: Store all API keys in AWS Secrets Manager, never in code
-2. **IAM Permissions**: Ensure the API has permission to read secrets
-3. **Network**: Ensure the API can reach all configured clusters
-4. **Access Control**: Experimental endpoints are public - consider adding authentication if needed
-
-## Performance Considerations
-
-1. **Connection Pooling**: Each cluster gets its own connection pool
-2. **Resilient Clients**: All clients use `ResilientElasticClient` for automatic retry on auth errors
-3. **Resource Usage**: Multiple clients increase memory usage slightly
-4. **Network Latency**: Different clusters may have different latencies
-
-## Troubleshooting
-
-### "Cluster 'xp-a' is not configured"
-
-- Check that configuration is present in application.conf or environment variables
-- Verify the cluster name matches exactly (case-sensitive)
-- Check logs for parsing errors
-
-### "ClusterConfig 'xp-a' must have either pipelineDate or custom connection details"
-
-- Ensure you've set either `pipelineDate` OR the custom connection fields
-- Don't mix pipeline and custom configurations for the same cluster
-
-### Connection errors
-
-- Verify hostname is correct and reachable
-- Check API key is valid in Secrets Manager
-- Ensure IAM role has permission to read the secret
-- Verify network connectivity to the cluster
-
-### Index not found
-
-- Confirm the index exists in the cluster
-- Check index name spelling in configuration
-- Verify API key has permission to access the index

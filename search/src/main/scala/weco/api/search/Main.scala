@@ -1,5 +1,6 @@
 package weco.api.search
 
+import org.apache.pekko.http.scaladsl.server.Directives.concat
 import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.api.search.config.MultiClusterConfigParser
@@ -44,31 +45,25 @@ object Main extends WellcomeTypesafeApp {
         clusterName -> client
     }
 
-    // Choose router based on whether we have additional clusters configured
-    val router: ApiRouter = if (additionalClients.nonEmpty) {
-      info(
-        s"Using multi-cluster router with ${additionalClients.size} additional cluster(s)")
-      new MultiClusterSearchApi(
-        defaultElasticClient = elasticClient,
-        defaultElasticConfig = elasticConfig,
+    info(
+      s"Using multi-cluster router with ${additionalClients.size} additional cluster(s)")
+
+    val defaultRouter: ApiRouter = new SearchApi(
+      elasticClient = elasticClient,
+      elasticConfig = elasticConfig,
+      apiConfig = apiConfig
+    )
+    val additionalRouter: ApiRouter = new MultiClusterSearchApi(
         additionalClients = additionalClients,
         apiConfig = apiConfig,
         additionalClusterConfigs = additionalClusterConfigs
       )
-    } else {
-      info(
-        "No additional clusters configured, using standard single-cluster router")
-      new SearchApi(
-        elasticClient = elasticClient,
-        elasticConfig = elasticConfig,
-        apiConfig = apiConfig
-      )
-    }
+    val allRoutes = Seq(additionalRouter.routes, defaultRouter.routes)
 
     val appName = "SearchApi"
 
     new WellcomeHttpApp(
-      routes = router.routes,
+      routes = concat(allRoutes: _*),
       httpMetrics = new HttpMetrics(
         name = appName,
         metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)

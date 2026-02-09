@@ -21,10 +21,6 @@ import scala.concurrent.ExecutionContext
   * - A/B testing different cluster configurations
   */
 class MultiClusterSearchApi(
-  // Default cluster client (for existing routes)
-  defaultElasticClient: ResilientElasticClient,
-  defaultElasticConfig: ElasticConfig,
-  // Additional cluster clients mapped by name
   additionalClients: Map[String, ResilientElasticClient],
   additionalClusterConfigs: Map[String, ClusterConfig],
   implicit val apiConfig: ApiConfig
@@ -62,16 +58,6 @@ class MultiClusterSearchApi(
       )
     }
 
-  // Build the default cluster routes inline
-  private def defaultClusterRoutes: Route = {
-    val defaultApi = new SearchApi(
-      elasticClient = defaultElasticClient,
-      elasticConfig = defaultElasticConfig,
-      apiConfig = apiConfig
-    )
-    defaultApi.routes
-  }
-
   /** Helper to build list/search routes for a specific cluster */
   private def buildClusterRoutes(clusterName: String,
                                  pathSegment: String): Route =
@@ -92,8 +78,6 @@ class MultiClusterSearchApi(
         buildClusterRoutes(clusterName, clusterName)
     }
 
-    concat(
-      (additionalRoutes :+ defaultClusterRoutes): _*
-    )
+    concat(additionalRoutes: _*)
   }
 }
