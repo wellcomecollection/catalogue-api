@@ -85,6 +85,56 @@ trait ApiFixture
       }
     }
 
+  /** 
+   * Create a multi-cluster API for testing with multiple Elasticsearch indices.
+   * Each cluster gets its own index, and the elasticCluster param can route between them.
+   */
+  def withMultiClusterApi[R](
+    defaultCluster: ClusterConfig,
+    additionalClusters: Map[String, ClusterConfig]
+  )(testWith: TestWith[(Map[String, Index], Route), R]): R = {
+    withLocalWorksIndex { defaultIndex =>
+      // Create indices for additional clusters recursively
+      createAdditionalIndices(additionalClusters.keys.toList) { additionalIndicesList =>
+        val additionalIndices = additionalClusters.keys.zip(additionalIndicesList).toMap
+        val allIndices = Map("default" -> defaultIndex) ++ additionalIndices
+        
+        // Update cluster configs with actual index names
+        val defaultClusterWithIndex = defaultCluster.copy(
+          worksIndex = Some(defaultIndex.name)
+        )
+        val additionalClustersWithIndices = additionalClusters.map {
+          case (name, config) =>
+            name -> config.copy(worksIndex = Some(additionalIndices(name).name))
+        }
+        
+        // Build the multi-cluster API (using same resilient client for all in tests)
+        val router = new SearchApi(
+          elasticClient = resilientElasticClient,
+          clusterConfig = defaultClusterWithIndex,
+          additionalElasticClients = additionalClustersWithIndices.keys.map(_ -> resilientElasticClient).toMap,
+          additionalClusterConfigs = additionalClustersWithIndices,
+          apiConfig = apiConfig
+        )
+        
+        testWith((allIndices, router.routes))
+      }
+    }
+  }
+  
+  private def createAdditionalIndices[R](clusterNames: List[String])(testWith: TestWith[List[Index], R]): R = {
+    def createRecursive(remaining: List[String], accumulated: List[Index]): R = {
+      remaining match {
+        case Nil => testWith(accumulated)
+        case _ :: tail =>
+          withLocalWorksIndex { index =>
+            createRecursive(tail, accumulated :+ index)
+          }
+      }
+    }
+    createRecursive(clusterNames, List.empty)
+  }
+
   def assertJsonResponse(
     routes: Route,
     path: String,
