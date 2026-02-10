@@ -10,7 +10,7 @@ Each additional cluster has a `ClusterConfig` object populated from `application
 corresponding `ResilientElasticClient` and `WorksController` objects which are used when routing requests to the
 cluster.
 
-To route a request to a specific cluster, include a `elasticCluster` path parameter in the request containing the label
+To route a request to a specific cluster, include a `elasticCluster` query parameter in the request containing the label
 of the cluster:
 
 ```
