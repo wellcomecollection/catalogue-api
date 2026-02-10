@@ -20,22 +20,19 @@ object ElasticConfig {
 }
 
 object PipelineClusterElasticConfig extends Logging {
-  def apply(overridePipelineDate: Option[String] = None,
-            overrideWorksIndexDate: Option[String] = None,
-            overrideImagesIndexDate: Option[String] = None): ElasticConfig = {
-    val pipelineDate =
-      overridePipelineDate.getOrElse(ElasticConfig.pipelineDate)
-    val indexDateWorks =
-      overrideWorksIndexDate.getOrElse(ElasticConfig.indexDateWorks)
-    val indexDateImages =
-      overrideImagesIndexDate.getOrElse(ElasticConfig.indexDateImages)
+  def apply(clusterConfig: ClusterConfig = ClusterConfig()): ElasticConfig = {
+    val pipelineDate = clusterConfig.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
+    val worksIndex =
+      clusterConfig.worksIndex.getOrElse(s"works-indexed-${ElasticConfig.indexDateWorks}")
+    val imagesIndex =
+      clusterConfig.imagesIndex.getOrElse(s"images-indexed-${ElasticConfig.indexDateImages}")
 
     info(
-      s"Using pipeline date $pipelineDate, works index date $indexDateWorks, and images index date $indexDateImages.")
+      s"Using pipeline date $pipelineDate, works index $worksIndex, and images index $imagesIndex.")
 
     ElasticConfig(
-      worksIndex = Index(s"works-indexed-$indexDateWorks"),
-      imagesIndex = Index(s"images-indexed-$indexDateImages"),
+      worksIndex = Index(worksIndex),
+      imagesIndex = Index(imagesIndex),
       pipelineDate = EsCluster(pipelineDate)
     )
   }

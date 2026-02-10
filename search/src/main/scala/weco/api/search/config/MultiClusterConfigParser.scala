@@ -1,23 +1,19 @@
 package weco.api.search.config
 
 import com.typesafe.config.Config
-import weco.api.search.models.ClusterConfig
+import weco.api.search.models.{ClusterConfig, SemanticConfig, VectorType}
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
-import com.sksamuel.elastic4s.Index
 import scala.collection.JavaConverters._
 import grizzled.slf4j.Logging
 
 object MultiClusterConfigParser extends Logging {
 
   /**
-    * Parse multi-cluster configuration from Typesafe Config.
+    * Parse multi-cluster Elasticsearch configuration from Typesafe Config.
     *
     * Looks for configuration keys like:
-    *   multiCluster.xp-a.pipelineDate="2025-11-20"
-    *   multiCluster.xp-a.worksIndex="works-indexed-2025-11-20"
-    *   multiCluster.xp-a.customHost="serverless.es.aws.elastic.cloud"
-    *   multiCluster.xp-a.customApiKeySecretPath="elasticsearch/xp-a/api_key"
+    *   multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
     */
   def parseMultiClusterConfig(config: Config): Map[String, ClusterConfig] = {
     // Check if multiCluster configuration exists
@@ -36,13 +32,25 @@ object MultiClusterConfigParser extends Logging {
       val config = multiClusterConfig.getConfig(clusterName)
       val clusterConfig = ClusterConfig(
         name = clusterName,
-        worksIndex = Some(Index(config.getString("worksIndex"))),
+        worksIndex = config.getStringOption("worksIndex"),
+        imagesIndex = config.getStringOption("imagesIndex"),
         hostSecretPath = Some(config.getString("hostSecretPath")),
         apiKeySecretPath = Some(config.getString("apiKeySecretPath")),
-        semanticModelId = config.getStringOption("semanticModelId"),
-        semanticVectorType = config.getStringOption("semanticVectorType"),
+        semanticConfig = parseSemanticConfig(config)
       )
       clusterName -> clusterConfig
     }.toMap
+  }
+
+  private def parseSemanticConfig(config: Config) = {
+    for {
+      modelId <- config.getStringOption("semanticModelId")
+      vectorTypeStr <- config.getStringOption("semanticVectorType")
+      vectorType <- vectorTypeStr match {
+        case "dense"  => Some(VectorType.Dense)
+        case "sparse" => Some(VectorType.Sparse)
+        case _        => None
+      }
+    } yield SemanticConfig(modelId, vectorType)
   }
 }

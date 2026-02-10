@@ -1,27 +1,12 @@
 package weco.api.search
 
-import org.apache.pekko.http.scaladsl.model.{
-  ContentTypes,
-  HttpEntity,
-  HttpResponse,
-  StatusCodes
-}
-import org.apache.pekko.http.scaladsl.server.{
-  MalformedQueryParamRejection,
-  RejectionHandler,
-  Route,
-  ValidationRejection
-}
-import weco.api.search.elasticsearch.{
-  ElasticsearchService,
-  ResilientElasticClient
-}
+import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
+import org.apache.pekko.http.scaladsl.server.{MalformedQueryParamRejection, RejectionHandler, Route, ValidationRejection}
+import weco.api.search.config.builders.PipelineElasticClientBuilder
+import weco.api.search.elasticsearch.{ElasticsearchService, ResilientElasticClient}
 import weco.api.search.models._
 import weco.api.search.rest._
-import weco.api.search.services.{
-  ImagesTemplateSearchBuilder,
-  WorksTemplateSearchBuilder
-}
+import weco.api.search.services.{ImagesTemplateSearchBuilder, WorksTemplateSearchBuilder}
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.models.DisplayError
 
@@ -30,84 +15,126 @@ import scala.concurrent.ExecutionContext
 class SearchApi(
   elasticClient: ResilientElasticClient,
   elasticConfig: ElasticConfig,
+  clusterConfig: ClusterConfig = ClusterConfig(),
+  additionalClusterConfigs: Map[String, ClusterConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, clock: java.time.Clock)
     extends CustomDirectives
     with IdentifierDirectives {
 
-  def routes: Route = handleRejections(rejectionHandler) {
-    withRequestTimeoutResponse(request => timeoutResponse) {
-      ignoreTrailingSlash {
+  private val worksControllers = additionalClusterConfigs.map {
+    case (name, clusterConfig) =>
+      val worksIndex = PipelineClusterElasticConfig(clusterConfig).worksIndex
+      val client = new ResilientElasticClient(
+                  clientFactory = () =>
+                    PipelineElasticClientBuilder(
+                      clusterConfig = clusterConfig,
+                      serviceName = "catalogue_api",
+                      environment = apiConfig.environment
+                    )
+                )
+      name -> new WorksController(
+        new ElasticsearchService(client),
+        apiConfig,
+        worksIndex = worksIndex,
+        semanticConfig = clusterConfig.semanticConfig
+      )
+  }
+
+  private val allWorksControllers =
+    Map("default" -> worksController) ++ worksControllers
+
+  def routes: Route = {
+    val baseRoutes: Route = handleRejections(rejectionHandler) {
+      withRequestTimeoutResponse(request => timeoutResponse) {
+        ignoreTrailingSlash {
+          parameter("cluster".?) { controllerKey =>
+            val key = controllerKey.getOrElse("default")
+
+            allWorksControllers.get(key) match {
+              case Some(controller) =>
+                buildRoutes(controller)
+              case None =>
+                notFound(s"Cluster '$key' is not configured")
+            }
+          }
+        }
+      }
+    }
+    baseRoutes
+  }
+
+  private def buildRoutes(
+    worksController: WorksController
+  ): Route = {
+    concat(
+      path("works") {
+        MultipleWorksParams.parse {
+          worksController.multipleWorks
+        }
+      },
+      path("works" / Segment) {
+        case id if looksLikeCanonicalId(id) =>
+          SingleWorkParams.parse {
+            worksController.singleWork(id, _)
+          }
+
+        case id =>
+          notFound(s"Work not found for identifier $id")
+      },
+      path("images") {
+        MultipleImagesParams.parse {
+          imagesController.multipleImages
+        }
+      },
+      path("images" / Segment) {
+        case id if looksLikeCanonicalId(id) =>
+          SingleImageParams.parse {
+            imagesController.singleImage(id, _)
+          }
+
+        case id => notFound(s"Image not found for identifier $id")
+      },
+      path("search-templates.json") {
+        getSearchTemplates
+      },
+      path("_elasticConfig") {
+        getElasticConfig
+      },
+      pathPrefix("management") {
         concat(
-          path("works") {
-            MultipleWorksParams.parse {
-              worksController.multipleWorks
+          path("healthcheck") {
+            get {
+              complete("message" -> "ok")
             }
           },
-          path("works" / Segment) {
-            case id if looksLikeCanonicalId(id) =>
-              SingleWorkParams.parse {
-                worksController.singleWork(id, _)
-              }
-
-            case id =>
-              notFound(s"Work not found for identifier $id")
+          path("clusterhealth") {
+            getClusterHealth
           },
-          path("images") {
-            MultipleImagesParams.parse {
-              imagesController.multipleImages
-            }
-          },
-          path("images" / Segment) {
-            case id if looksLikeCanonicalId(id) =>
-              SingleImageParams.parse {
-                imagesController.singleImage(id, _)
-              }
-
-            case id => notFound(s"Image not found for identifier $id")
-          },
-          path("search-templates.json") {
-            getSearchTemplates
-          },
-          path("_elasticConfig") {
-            getElasticConfig
-          },
-          pathPrefix("management") {
-            concat(
-              path("healthcheck") {
-                get {
-                  complete("message" -> "ok")
-                }
-              },
-              path("clusterhealth") {
-                getClusterHealth
-              },
-              // This endpoint is meant for the diff tool; it gives a breakdown of the
-              // different work types (e.g. Visible, Redirected, Deleted) in the index
-              // the API is using.
-              //
-              // It allows the diff tool to get stats about the API without knowing
-              // which ES cluster the API is connecting to or which index it's using.
-              path("_workTypes") {
-                get {
-                  withFuture {
-                    worksController
-                      .countWorkTypes(elasticConfig.worksIndex)
-                      .map {
-                        case Right(tally) => complete(tally)
-                        case Left(err) =>
-                          internalError(
-                            new Throwable(s"Error counting work types: $err")
-                          )
-                      }
+          // This endpoint is meant for the diff tool; it gives a breakdown of the
+          // different work types (e.g. Visible, Redirected, Deleted) in the index
+          // the API is using.
+          //
+          // It allows the diff tool to get stats about the API without knowing
+          // which ES cluster the API is connecting to or which index it's using.
+          path("_workTypes") {
+            get {
+              withFuture {
+                worksController
+                  .countWorkTypes(worksController.worksIndex)
+                  .map {
+                    case Right(tally) => complete(tally)
+                    case Left(err) =>
+                      internalError(
+                        new Throwable(s"Error counting work types: $err")
+                      )
                   }
-                }
               }
-            )
+            }
           }
         )
       }
-    }
+    )
   }
 
   lazy val elasticsearchService = new ElasticsearchService(elasticClient)
@@ -116,7 +143,8 @@ class SearchApi(
     new WorksController(
       elasticsearchService,
       apiConfig,
-      worksIndex = elasticConfig.worksIndex
+      worksIndex = elasticConfig.worksIndex,
+      semanticConfig = clusterConfig.semanticConfig
     )
 
   lazy val imagesController =

@@ -15,7 +15,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class WorksController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
-  worksIndex: Index,
+  val worksIndex: Index,
   semanticConfig: Option[SemanticConfig] = None
 )(implicit val ec: ExecutionContext)
     extends Tracing
