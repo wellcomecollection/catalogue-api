@@ -1,113 +1,44 @@
-# Multi-Cluster Elasticsearch Support
+# Elasticsearch multi-cluster support
 
-This document describes how to configure the Search API to read from multiple Elasticsearch clusters.
-
-## Overview
-
-The multi-cluster support allows you to:
+By default, the Search API connects to a single production Elasticsearch cluster (created automatically as part of our
+Terraform stack and defined by its `pipelineDate`). The API also supports configuring additional clusters, allowing
+you to:
 
 - Connect to multiple Elasticsearch clusters simultaneously
-- Route different API endpoints to different clusters
-- Support both standard pipeline clusters and custom/serverless clusters
+- Route requests to different clusters
 - Run experiments (A/B testing) with different indices
-- Gradually migrate to new cluster architectures
 
 ## Architecture
 
-### Cluster Types
+Each additional cluster has a `ClusterConfig` object populated from `application.conf`. This object is used to create
+corresponding `ResilientElasticClient` and `WorksController` objects which are used when routing requests to the
+cluster.
 
-#### 1. Pipeline Cluster (Standard)
+To route a request to a specific cluster, include a `elasticCluster` parameter in the request containing the label
+of the cluster:
 
-Uses the existing pipeline storage pattern with AWS Secrets Manager:
+```
+/works?elasticCluster=someCluster Label
+```
 
-- Hostname: `elasticsearch/pipeline_storage_<date>/private_host`
-- API Key: `elasticsearch/pipeline_storage_<date>/catalogue_api/api_key`
-- Port: `elasticsearch/pipeline_storage_<date>/port`
+If the `elasticCluster` parameter is missing, the request is routed to the default cluster.
 
-#### 2. Custom Cluster (Serverless, etc.)
+## Configuring an additional cluster
 
-Direct connection with custom credentials:
-
-- Hostname: Configured directly (e.g., `my-project.es.us-east-1.aws.elastic.cloud`)
-- API Key: From custom Secrets Manager path
-- Port: Configurable (default 9243)
-- Protocol: Configurable (default https)
-
-## Configuration via application.conf
+To configure an additional cluster, add a `multiCluster` configuration block into the `application.conf` file. The
+example configuration below adds a cluster labelled `someCluster`:
 
 ```hocon
 multiCluster {
-  xp-a {
-    # For serverless ES
-    customHost = "my-serverless-project.es.us-east-1.aws.elastic.cloud"
-    customPort = 443
-    customProtocol = "https"
-    customApiKeySecretPath = "elasticsearch/xp-a/catalogue_api/api_key"
+  someCluster {
+    hostSecretPath = "some/secretsmanager/path"
+    apiKeySecretPath = "some/secretsmanager/path"
     worksIndex = "works-experimental-v1"
     imagesIndex = "images-experimental-v1"
-  }
-
-  xp-b {
-    # For another pipeline cluster
-    pipelineDate = "2025-12-01"
-    worksIndex = "works-indexed-2025-12-01"
-    imagesIndex = "images-indexed-2025-12-01"
+    portSecretPath = "some/secretsmanager/path"
+    protocolSecretPath = "some/secretsmanager/path"
+    semanticModelId = ".elser-2-elasticsearch"
+    semanticVectorType = "sparse|dense"
   }
 }
 ```
-
-#### Default Cluster Routes (unchanged)
-
-- `GET /works` - List/search works
-- `GET /works/{id}` - Get single work
-- `GET /images` - List/search images
-- `GET /images/{id}` - Get single image
-
-#### Experimental Cluster Routes
-
-- `GET /works/xp-a` - List/search works from xp-a cluster
-- `GET /works/xp-a/{id}` - Get single work from xp-a cluster
-- `GET /works/xp-b` - List/search works from xp-b cluster
-- `GET /works/xp-b/{id}` - Get single work from xp-b cluster
-
-## Adding More Experimental Routes
-
-To add routes for additional cluster types (e.g., `/works/xp-b/`, `/images/xp-a/`), edit the `MultiClusterSearchApi.scala`:
-
-```scala
-def routes: Route = {
-  concat(
-    // Cluster A works
-    pathPrefix("works" / "xp-a") {
-      // ... existing code ...
-    },
-
-    // Cluster B works
-    pathPrefix("works" / "xp-b") {
-      getWorksControllerForCluster("xp-b") match {
-        case Some(controller) => // ... route implementation
-        case None => notFound("Cluster 'xp-b' is not configured")
-      }
-    },
-
-    // Cluster A images
-    pathPrefix("images" / "xp-a") {
-      getImagesControllerForCluster("xp-a") match {
-        case Some(controller) => // ... route implementation
-        case None => notFound("Cluster 'xp-a' is not configured")
-      }
-    },
-
-    // Default routes
-    defaultSearchApi.routes
-  )
-}
-```
-
-### Limitations
-
-The following existing endpoints only reflect the default cluster:
-
-- `GET /management/healthcheck`
-- `GET /management/clusterhealth`
-- `GET /_elasticConfig`
