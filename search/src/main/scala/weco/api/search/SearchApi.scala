@@ -39,18 +39,20 @@ class SearchApi(
     extends CustomDirectives
     with IdentifierDirectives {
 
-  private val pipelineDate = PipelineClusterElasticConfig(clusterConfig).pipelineDate.date
-  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
-
+  private val elasticConfigs = clusterConfigs.map {
+    case (name, clusterConfig) =>
+      name -> PipelineClusterElasticConfig(clusterConfig)
+  }
+  private val pipelineDate = elasticConfigs("default").pipelineDate.date
+  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val worksControllers = clusterConfigs.map {
     case (currName, currConfig) =>
       val name = currConfig.worksIndex.map(_ => currName).getOrElse("default")
       currName -> new WorksController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        worksIndex =
-          PipelineClusterElasticConfig(clusterConfigs(name)).worksIndex,
+        worksIndex = elasticConfigs(name).worksIndex,
         semanticConfig = clusterConfigs(name).semanticConfig
       )
   }
@@ -60,8 +62,7 @@ class SearchApi(
       currName -> new ImagesController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        imagesIndex =
-          PipelineClusterElasticConfig(clusterConfigs(name)).imagesIndex
+        imagesIndex = elasticConfigs(name).imagesIndex
       )
   }
 
