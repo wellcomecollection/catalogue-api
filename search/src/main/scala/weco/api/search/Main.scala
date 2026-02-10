@@ -4,12 +4,9 @@ import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
-import weco.api.search.models.{
-  ApiConfig,
-  ApiEnvironment,
-  ClusterConfig,
-  ElasticConfig
-}
+import weco.api.search.config.builders.PipelineElasticClientBuilder
+import weco.api.search.elasticsearch.ResilientElasticClient
+import weco.api.search.models.{ApiConfig, ApiEnvironment, ClusterConfig, ElasticConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -45,16 +42,39 @@ object Main extends WellcomeTypesafeApp {
     }
 
     val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
+    val elasticClient = new ResilientElasticClient(
+      clientFactory = () =>
+        PipelineElasticClientBuilder(
+          clusterConfig = clusterConfig,
+          serviceName = "catalogue_api",
+          environment = apiConfig.environment
+        )
+    )
+
     val additionalClusterConfigs =
       MultiClusterConfigParser.parseMultiClusterConfig(config)
+    val additionalElasticClients = additionalClusterConfigs.map {
+      case (name, clusterConfig) =>
+        val client = new ResilientElasticClient(
+          clientFactory = () =>
+            PipelineElasticClientBuilder(
+              clusterConfig = clusterConfig,
+              serviceName = "catalogue_api",
+              environment = apiConfig.environment
+            )
+        )
+        name -> client
+    }
 
     info(
       s"Using default Elasticsearch cluster with ${additionalClusterConfigs.size} additional cluster(s)")
 
     val router = new SearchApi(
-      apiConfig = apiConfig,
+      elasticClient = elasticClient,
       clusterConfig = clusterConfig,
-      additionalClusterConfigs = additionalClusterConfigs
+      additionalElasticClients = additionalElasticClients,
+      additionalClusterConfigs = additionalClusterConfigs,
+      apiConfig = apiConfig
     )
 
     val appName = "SearchApi"

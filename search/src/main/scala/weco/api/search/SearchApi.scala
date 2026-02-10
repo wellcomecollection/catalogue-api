@@ -14,7 +14,6 @@ import org.apache.pekko.http.scaladsl.server.{
   Route,
   ValidationRejection
 }
-import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.{
   ElasticsearchService,
   ResilientElasticClient
@@ -31,29 +30,20 @@ import weco.http.models.DisplayError
 import scala.concurrent.ExecutionContext
 
 class SearchApi(
+  elasticClient: ResilientElasticClient,
   clusterConfig: ClusterConfig,
+  additionalElasticClients: Map[String, ResilientElasticClient],
   additionalClusterConfigs: Map[String, ClusterConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
-)(implicit ec: ExecutionContext, clock: java.time.Clock)
+)(implicit ec: ExecutionContext)
     extends CustomDirectives
     with IdentifierDirectives {
 
+  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
   private val elasticConfigs = clusterConfigs.map {
     case (name, clusterConfig) =>
       name -> PipelineClusterElasticConfig(clusterConfig)
-  }
-  private val elasticClients = clusterConfigs.map {
-    case (name, clusterConfig) =>
-      val client = new ResilientElasticClient(
-        clientFactory = () =>
-          PipelineElasticClientBuilder(
-            clusterConfig = clusterConfig,
-            serviceName = "catalogue_api",
-            environment = apiConfig.environment
-        )
-      )
-      name -> client
   }
 
   private val worksControllers = clusterConfigs.map {
