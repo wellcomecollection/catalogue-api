@@ -36,6 +36,8 @@ object MultiClusterConfigParser extends Logging {
         imagesIndex = config.getStringOption("imagesIndex"),
         hostSecretPath = Some(config.getString("hostSecretPath")),
         apiKeySecretPath = Some(config.getString("apiKeySecretPath")),
+        portSecretPath = config.getStringOption("portSecretPath"),
+        protocolSecretPath = config.getStringOption("protocolSecretPath"),
         semanticConfig = parseSemanticConfig(config)
       )
       clusterName -> clusterConfig
