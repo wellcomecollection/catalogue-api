@@ -33,7 +33,7 @@ object Main extends WellcomeTypesafeApp {
         // Only initialise tracing in deployed environments
         Tracing.init(config)
     }
-    
+
     val pipelineDate = apiConfig.environment match {
       case ApiEnvironment.Dev =>
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
@@ -43,7 +43,7 @@ object Main extends WellcomeTypesafeApp {
       case _ =>
         ElasticConfig.pipelineDate
     }
-    val clusterConfig = ClusterConfig(pipelineDate=Some(pipelineDate))
+    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
 
     // Parse multi-cluster configuration
     val additionalClusterConfigs =
@@ -53,7 +53,7 @@ object Main extends WellcomeTypesafeApp {
       s"Using default Elasticsearch cluster with ${additionalClusterConfigs.size} additional cluster(s)")
 
     val router = new SearchApi(
-      clusterConfig=clusterConfig,
+      clusterConfig = clusterConfig,
       apiConfig = apiConfig,
       additionalClusterConfigs = additionalClusterConfigs
     )

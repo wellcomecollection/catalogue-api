@@ -51,7 +51,7 @@ class SearchApi(
             clusterConfig = clusterConfig,
             serviceName = "catalogue_api",
             environment = apiConfig.environment
-          )
+        )
       )
       name -> client
   }
@@ -139,8 +139,9 @@ class SearchApi(
           path("clusterhealth") {
             get {
               withFuture {
-                elasticClients(clusterName).execute(clusterHealth()).map { health =>
-                  complete(health.status)
+                elasticClients(clusterName).execute(clusterHealth()).map {
+                  health =>
+                    complete(health.status)
                 }
               }
             }
@@ -170,7 +171,8 @@ class SearchApi(
       }
     )
 
-  def getSearchTemplates(worksController: WorksController, imagesController: ImagesController): Route = get {
+  def getSearchTemplates(worksController: WorksController,
+                         imagesController: ImagesController): Route = get {
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       elasticConfigs("default").pipelineDate.date,
@@ -192,7 +194,8 @@ class SearchApi(
     )
   }
 
-  private def getElasticConfig(worksController: WorksController, imagesController: ImagesController): Route =
+  private def getElasticConfig(worksController: WorksController,
+                               imagesController: ImagesController): Route =
     get {
       complete(
         Map(
