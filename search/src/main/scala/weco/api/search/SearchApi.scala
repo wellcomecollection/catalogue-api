@@ -58,7 +58,7 @@ class SearchApi(
   }
   private val imagesControllers = clusterConfigs.map {
     case (currName, currConfig) =>
-      val name = currConfig.worksIndex.map(_ => currName).getOrElse("default")
+      val name = currConfig.imagesIndex.map(_ => currName).getOrElse("default")
       currName -> new ImagesController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,

@@ -46,29 +46,23 @@ object Main extends WellcomeTypesafeApp {
         ElasticConfig.pipelineDate
     }
 
-    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
-    val elasticClient = new ResilientElasticClient(
-      clientFactory = () =>
-        PipelineElasticClientBuilder(
-          clusterConfig = clusterConfig,
-          serviceName = "catalogue_api",
-          environment = apiConfig.environment
+    def buildElasticClient(config: ClusterConfig): ResilientElasticClient =
+      new ResilientElasticClient(
+        clientFactory = () =>
+          PipelineElasticClientBuilder(
+            clusterConfig = config,
+            serviceName = "catalogue_api",
+            environment = apiConfig.environment
+        )
       )
-    )
 
+    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
+    val elasticClient = buildElasticClient(clusterConfig)
     val additionalClusterConfigs =
       MultiClusterConfigParser.parseMultiClusterConfig(config)
     val additionalElasticClients = additionalClusterConfigs.map {
       case (name, clusterConfig) =>
-        val client = new ResilientElasticClient(
-          clientFactory = () =>
-            PipelineElasticClientBuilder(
-              clusterConfig = clusterConfig,
-              serviceName = "catalogue_api",
-              environment = apiConfig.environment
-          )
-        )
-        name -> client
+        name -> buildElasticClient(clusterConfig)
     }
 
     info(
