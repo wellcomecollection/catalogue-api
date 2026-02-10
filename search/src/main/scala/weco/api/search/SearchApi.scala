@@ -61,22 +61,21 @@ class SearchApi(
     Map("default" -> worksController) ++ worksControllers
 
   def routes: Route = handleRejections(rejectionHandler) {
-      withRequestTimeoutResponse(request => timeoutResponse) {
-        ignoreTrailingSlash {
-          parameter("cluster".?) { controllerKey =>
-            val key = controllerKey.getOrElse("default")
+    withRequestTimeoutResponse(request => timeoutResponse) {
+      ignoreTrailingSlash {
+        parameter("cluster".?) { controllerKey =>
+          val key = controllerKey.getOrElse("default")
 
-            allWorksControllers.get(key) match {
-              case Some(controller) =>
-                buildRoutes(controller)
-              case None =>
-                notFound(s"Cluster '$key' is not configured")
-            }
+          allWorksControllers.get(key) match {
+            case Some(controller) =>
+              buildRoutes(controller)
+            case None =>
+              notFound(s"Cluster '$key' is not configured")
           }
         }
       }
     }
-
+  }
 
   private def buildRoutes(
     worksController: WorksController
