@@ -66,7 +66,7 @@ class SearchApi(
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
-        parameter("cluster".?) { controllerKey =>
+        parameter("elasticCluster".?) { controllerKey =>
           val key = controllerKey.getOrElse("default")
 
           worksControllers.get(key) match {
