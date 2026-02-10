@@ -10,7 +10,7 @@ import io.circe.Json
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.api.search.models.{ApiConfig, ElasticConfig, EsCluster}
+import weco.api.search.models.{ApiConfig, ClusterConfig, ElasticConfig, EsCluster}
 
 trait ApiFixture
     extends ScalatestRouteTest
@@ -33,9 +33,14 @@ trait ApiFixture
   def withRouter[R](
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
+    val clusterConfig = ClusterConfig(
+      pipelineDate = Some(elasticConfig.pipelineDate.date),
+      worksIndex = Some(elasticConfig.worksIndex.name),
+      imagesIndex = Some(elasticConfig.imagesIndex.name)
+    )
     val router = new SearchApi(
       resilientElasticClient,
-      elasticConfig,
+      clusterConfig,
       apiConfig = apiConfig
     )
 

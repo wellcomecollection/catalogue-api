@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class SearchApi(
   elasticClient: ResilientElasticClient,
   clusterConfig: ClusterConfig,
-  additionalElasticClients: Map[String, ResilientElasticClient],
+  additionalElasticClients: Map[String, ResilientElasticClient] = Map.empty,
   additionalClusterConfigs: Map[String, ClusterConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
