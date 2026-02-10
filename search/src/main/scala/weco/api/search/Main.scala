@@ -28,7 +28,7 @@ object Main extends WellcomeTypesafeApp {
     implicit val actorSystem: ActorSystem = ActorSystem("search-api")
     implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
 
-    val (elasticClient, elasticConfig) = apiConfig.environment match {
+    val elasticConfig = apiConfig.environment match {
       case ApiEnvironment.Dev =>
         info(s"Running in dev mode.")
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
@@ -36,33 +36,26 @@ object Main extends WellcomeTypesafeApp {
           pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
         if (pipelineDateOverride.isDefined)
           warn(s"Overridden pipeline date: $pipelineDate")
-        (
-          new ResilientElasticClient(
-            clientFactory = () =>
-              PipelineElasticClientBuilder(
-                serviceName = "catalogue_api",
-                pipelineDate = pipelineDate,
-                environment = apiConfig.environment
-            )),
+
           PipelineClusterElasticConfig(
             ClusterConfig(
               pipelineDate = config.getStringOption("dev.pipelineDate"))
-          )
+
         )
       case _ =>
         info(s"Running in deployed mode (environment=${apiConfig.environment})")
         // Only initialise tracing in deployed environments
         Tracing.init(config)
-        (
-          new ResilientElasticClient(
-            clientFactory = () =>
-              PipelineElasticClientBuilder(
-                serviceName = "catalogue_api",
-                environment = apiConfig.environment
-            )),
-          PipelineClusterElasticConfig()
-        )
+        PipelineClusterElasticConfig()
     }
+
+    val elasticClient =           new ResilientElasticClient(
+      clientFactory = () =>
+        PipelineElasticClientBuilder(
+          serviceName = "catalogue_api",
+          pipelineDate = elasticConfig.pipelineDate.date,
+          environment = apiConfig.environment
+        ))
 
     // Parse multi-cluster configuration
     val additionalClusterConfigs =
