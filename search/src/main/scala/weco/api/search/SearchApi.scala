@@ -70,7 +70,7 @@ class SearchApi(
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
         parameter("elasticCluster".?) { controllerKey =>
-          // Use default ElasticSearch cluster if `elasticCluster` parameter missing
+          // Use default Elasticsearch cluster if `elasticCluster` parameter missing
           val key = controllerKey.getOrElse("default")
 
           worksControllers.get(key) match {
