@@ -71,7 +71,7 @@ object PipelineElasticClientBuilder extends Logging {
 
   private def getSecretString(
     id: String
-  )(implicit secretsClient: SecretsManagerClient)= {
+  )(implicit secretsClient: SecretsManagerClient) = {
     val request =
       GetSecretValueRequest
         .builder()

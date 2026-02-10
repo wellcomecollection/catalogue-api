@@ -42,7 +42,7 @@ object MultiClusterConfigParser extends Logging {
     }.toMap
   }
 
-  private def parseSemanticConfig(config: Config) = {
+  private def parseSemanticConfig(config: Config) =
     for {
       modelId <- config.getStringOption("semanticModelId")
       vectorTypeStr <- config.getStringOption("semanticVectorType")
@@ -52,5 +52,4 @@ object MultiClusterConfigParser extends Logging {
         case _        => None
       }
     } yield SemanticConfig(modelId, vectorType)
-  }
 }

@@ -1,12 +1,28 @@
 package weco.api.search
 
-import org.apache.pekko.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
-import org.apache.pekko.http.scaladsl.server.{MalformedQueryParamRejection, RejectionHandler, Route, ValidationRejection}
+import org.apache.pekko.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  HttpResponse,
+  StatusCodes
+}
+import org.apache.pekko.http.scaladsl.server.{
+  MalformedQueryParamRejection,
+  RejectionHandler,
+  Route,
+  ValidationRejection
+}
 import weco.api.search.config.builders.PipelineElasticClientBuilder
-import weco.api.search.elasticsearch.{ElasticsearchService, ResilientElasticClient}
+import weco.api.search.elasticsearch.{
+  ElasticsearchService,
+  ResilientElasticClient
+}
 import weco.api.search.models._
 import weco.api.search.rest._
-import weco.api.search.services.{ImagesTemplateSearchBuilder, WorksTemplateSearchBuilder}
+import weco.api.search.services.{
+  ImagesTemplateSearchBuilder,
+  WorksTemplateSearchBuilder
+}
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.models.DisplayError
 
@@ -26,13 +42,13 @@ class SearchApi(
     case (name, clusterConfig) =>
       val worksIndex = PipelineClusterElasticConfig(clusterConfig).worksIndex
       val client = new ResilientElasticClient(
-                  clientFactory = () =>
-                    PipelineElasticClientBuilder(
-                      clusterConfig = clusterConfig,
-                      serviceName = "catalogue_api",
-                      environment = apiConfig.environment
-                    )
-                )
+        clientFactory = () =>
+          PipelineElasticClientBuilder(
+            clusterConfig = clusterConfig,
+            serviceName = "catalogue_api",
+            environment = apiConfig.environment
+        )
+      )
       name -> new WorksController(
         new ElasticsearchService(client),
         apiConfig,
@@ -66,7 +82,7 @@ class SearchApi(
 
   private def buildRoutes(
     worksController: WorksController
-  ): Route = {
+  ): Route =
     concat(
       path("works") {
         MultipleWorksParams.parse {
@@ -135,7 +151,6 @@ class SearchApi(
         )
       }
     )
-  }
 
   lazy val elasticsearchService = new ElasticsearchService(elasticClient)
 
