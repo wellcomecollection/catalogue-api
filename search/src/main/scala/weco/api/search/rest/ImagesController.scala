@@ -18,7 +18,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ImagesController(
   elasticsearchService: ElasticsearchService,
   implicit val apiConfig: ApiConfig,
-  imagesIndex: Index
+  val imagesIndex: Index
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
     with CatalogueJsonUtil

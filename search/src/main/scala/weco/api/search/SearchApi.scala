@@ -6,6 +6,8 @@ import org.apache.pekko.http.scaladsl.model.{
   HttpResponse,
   StatusCodes
 }
+import com.sksamuel.elastic4s.ElasticDsl._
+
 import org.apache.pekko.http.scaladsl.server.{
   MalformedQueryParamRejection,
   RejectionHandler,
@@ -29,36 +31,47 @@ import weco.http.models.DisplayError
 import scala.concurrent.ExecutionContext
 
 class SearchApi(
-  elasticClient: ResilientElasticClient,
-  elasticConfig: ElasticConfig,
-  clusterConfig: ClusterConfig = ClusterConfig(),
+  clusterConfig: ClusterConfig,
   additionalClusterConfigs: Map[String, ClusterConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext, clock: java.time.Clock)
     extends CustomDirectives
     with IdentifierDirectives {
 
-  private val worksControllers = additionalClusterConfigs.map {
+  private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
+  private val elasticConfigs = clusterConfigs.map {
     case (name, clusterConfig) =>
-      val worksIndex = PipelineClusterElasticConfig(clusterConfig).worksIndex
+      name -> PipelineClusterElasticConfig(clusterConfig)
+  }
+  private val elasticClients = clusterConfigs.map {
+    case (name, clusterConfig) =>
       val client = new ResilientElasticClient(
         clientFactory = () =>
           PipelineElasticClientBuilder(
             clusterConfig = clusterConfig,
             serviceName = "catalogue_api",
             environment = apiConfig.environment
-        )
+          )
       )
+      name -> client
+  }
+
+  private val worksControllers = clusterConfigs.map {
+    case (name, clusterConfig) =>
+      val client = elasticClients(name)
       name -> new WorksController(
         new ElasticsearchService(client),
         apiConfig,
-        worksIndex = worksIndex,
+        worksIndex = elasticConfigs(name).worksIndex,
         semanticConfig = clusterConfig.semanticConfig
       )
   }
-
-  private val allWorksControllers =
-    Map("default" -> worksController) ++ worksControllers
+  lazy val imagesController =
+    new ImagesController(
+      new ElasticsearchService(elasticClients("default")),
+      apiConfig,
+      imagesIndex = elasticConfigs("default").imagesIndex
+    )
 
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
@@ -66,9 +79,9 @@ class SearchApi(
         parameter("cluster".?) { controllerKey =>
           val key = controllerKey.getOrElse("default")
 
-          allWorksControllers.get(key) match {
-            case Some(controller) =>
-              buildRoutes(controller)
+          worksControllers.get(key) match {
+            case Some(worksController) =>
+              buildRoutes(key, worksController, imagesController)
             case None =>
               notFound(s"Cluster '$key' is not configured")
           }
@@ -78,7 +91,9 @@ class SearchApi(
   }
 
   private def buildRoutes(
-    worksController: WorksController
+    clusterName: String,
+    worksController: WorksController,
+    imagesController: ImagesController
   ): Route =
     concat(
       path("works") {
@@ -109,10 +124,10 @@ class SearchApi(
         case id => notFound(s"Image not found for identifier $id")
       },
       path("search-templates.json") {
-        getSearchTemplates
+        getSearchTemplates(worksController, imagesController)
       },
       path("_elasticConfig") {
-        getElasticConfig
+        getElasticConfig(worksController, imagesController)
       },
       pathPrefix("management") {
         concat(
@@ -122,7 +137,13 @@ class SearchApi(
             }
           },
           path("clusterhealth") {
-            getClusterHealth
+            get {
+              withFuture {
+                elasticClients(clusterName).execute(clusterHealth()).map { health =>
+                  complete(health.status)
+                }
+              }
+            }
           },
           // This endpoint is meant for the diff tool; it gives a breakdown of the
           // different work types (e.g. Visible, Redirected, Deleted) in the index
@@ -149,46 +170,18 @@ class SearchApi(
       }
     )
 
-  lazy val elasticsearchService = new ElasticsearchService(elasticClient)
-
-  lazy val worksController =
-    new WorksController(
-      elasticsearchService,
-      apiConfig,
-      worksIndex = elasticConfig.worksIndex,
-      semanticConfig = clusterConfig.semanticConfig
-    )
-
-  lazy val imagesController =
-    new ImagesController(
-      elasticsearchService,
-      apiConfig,
-      imagesIndex = elasticConfig.imagesIndex
-    )
-
-  def getClusterHealth: Route =
-    get {
-      withFuture {
-        import com.sksamuel.elastic4s.ElasticDsl._
-
-        elasticClient.execute(clusterHealth()).map { health =>
-          complete(health.status)
-        }
-      }
-    }
-
-  def getSearchTemplates: Route = get {
+  def getSearchTemplates(worksController: WorksController, imagesController: ImagesController): Route = get {
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
-      elasticConfig.pipelineDate.date,
-      elasticConfig.worksIndex.name,
+      elasticConfigs("default").pipelineDate.date,
+      worksController.worksIndex.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
-      elasticConfig.pipelineDate.date,
-      elasticConfig.imagesIndex.name,
+      elasticConfigs("default").pipelineDate.date,
+      imagesController.imagesIndex.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
 
@@ -199,13 +192,13 @@ class SearchApi(
     )
   }
 
-  private def getElasticConfig: Route =
+  private def getElasticConfig(worksController: WorksController, imagesController: ImagesController): Route =
     get {
       complete(
         Map(
-          "worksIndex" -> elasticConfig.worksIndex.name,
-          "imagesIndex" -> elasticConfig.imagesIndex.name,
-          "pipelineDate" -> elasticConfig.pipelineDate.date
+          "worksIndex" -> worksController.worksIndex.name,
+          "imagesIndex" -> imagesController.imagesIndex.name,
+          "pipelineDate" -> elasticConfigs("default").pipelineDate.date
         )
       )
     }
