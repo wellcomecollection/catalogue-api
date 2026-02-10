@@ -14,15 +14,6 @@ The multi-cluster support allows you to:
 
 ## Architecture
 
-### Components
-
-1. **MultiClusterElasticConfig** - Configuration model supporting multiple named clusters
-2. **ClusterConfig** - Configuration for a single cluster (pipeline or custom)
-3. **MultiClusterElasticClientBuilder** - Builds ES clients for different cluster types
-4. **MultiClusterSearchApi** - Router that directs requests to appropriate clusters
-5. **MultiClusterConfigParser** - Parses configuration from application.conf
-6. **MultiClusterMain** - Alternative main class with multi-cluster support
-
 ### Cluster Types
 
 #### 1. Pipeline Cluster (Standard)
