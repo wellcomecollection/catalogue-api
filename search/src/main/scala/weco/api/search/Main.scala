@@ -53,7 +53,8 @@ object Main extends WellcomeTypesafeApp {
             clusterConfig = config,
             serviceName = "catalogue_api",
             environment = apiConfig.environment,
-            pipelineDate = config.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
+            pipelineDate =
+              config.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
         )
       )
 
