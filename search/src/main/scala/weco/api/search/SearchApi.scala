@@ -60,8 +60,7 @@ class SearchApi(
   private val allWorksControllers =
     Map("default" -> worksController) ++ worksControllers
 
-  def routes: Route = {
-    val baseRoutes: Route = handleRejections(rejectionHandler) {
+  def routes: Route = handleRejections(rejectionHandler) {
       withRequestTimeoutResponse(request => timeoutResponse) {
         ignoreTrailingSlash {
           parameter("cluster".?) { controllerKey =>
@@ -77,8 +76,7 @@ class SearchApi(
         }
       }
     }
-    baseRoutes
-  }
+
 
   private def buildRoutes(
     worksController: WorksController
