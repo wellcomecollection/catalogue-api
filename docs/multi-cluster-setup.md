@@ -1,12 +1,8 @@
 # Elasticsearch multi-cluster support
 
 By default, the Search API connects to a single production Elasticsearch cluster (created automatically as part of our
-Terraform stack and defined by its `pipelineDate`). The API also supports configuring additional clusters, allowing
-you to:
-
-- Connect to multiple Elasticsearch clusters simultaneously
-- Route requests to different clusters
-- Run experiments (A/B testing) with different indices
+Terraform stack and defined by its `pipelineDate`). The API also supports configuring additional clusters and routing
+requests to them for experimental purposes.
 
 ## Architecture
 
@@ -25,8 +21,15 @@ If the `elasticCluster` parameter is missing, the request is routed to the defau
 
 ## Configuring an additional cluster
 
-To configure an additional cluster, add a `multiCluster` configuration block into the `application.conf` file. The
-example configuration below adds a cluster labelled `someCluster`:
+To configure an additional cluster, add a `multiCluster` configuration block into the `application.conf` file.
+
+Only `hostSecretPath` and `apiKeySecretPath` are required. All other fields are optional:
+
+- If `portSecretPath` and/or `protocolSecretPath` are omitted, the default cluster’s port/protocol are used.
+- If `worksIndex` and/or `imagesIndex` are omitted, requests use the default cluster’s corresponding indexes.
+- `semanticVectorType` (if provided) must be either `sparse` or `dense`.
+
+The example configuration below adds a cluster labelled `someCluster`:
 
 ```hocon
 multiCluster {
@@ -38,7 +41,7 @@ multiCluster {
     portSecretPath = "some/secretsmanager/path"
     protocolSecretPath = "some/secretsmanager/path"
     semanticModelId = ".elser-2-elasticsearch"
-    semanticVectorType = "sparse|dense"
+    semanticVectorType = "sparse"
   }
 }
 ```
