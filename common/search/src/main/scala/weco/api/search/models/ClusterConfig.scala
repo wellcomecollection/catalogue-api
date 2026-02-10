@@ -10,7 +10,7 @@ case class ClusterConfig(
   apiKeySecretPath: Option[String] = None,
   portSecretPath: Option[String] = None,
   protocolSecretPath: Option[String] = None,
-  semanticConfig: Option[SemanticConfig] = None,
+  semanticConfig: Option[SemanticConfig] = None
 )
 
 sealed trait VectorType
