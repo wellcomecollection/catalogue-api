@@ -86,14 +86,14 @@ trait TemplateSearchBuilder extends Encoders {
        |{
        |  "bool": {
        |    "should": [
-       |      {{^isSparse}}
+       |      {{^semanticIsSparse}}
        |      ${semanticKnn("query.titleSemantic")},
        |      ${semanticKnn("query.descriptionSemantic")}
-       |      {{/isSparse}}
-       |      {{#isSparse}}
+       |      {{/semanticIsSparse}}
+       |      {{#semanticIsSparse}}
        |      ${semanticSparse("query.titleSemantic")},
        |      ${semanticSparse("query.descriptionSemantic")}
-       |      {{/isSparse}}
+       |      {{/semanticIsSparse}}
        |    ]
        |  }
        |}

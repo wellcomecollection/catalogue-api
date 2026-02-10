@@ -18,7 +18,7 @@ case class SearchTemplateParams(
   knn: Option[SearchTemplateKNNParams] = None,
   includeSemantic: Boolean = false,
   semanticModelId: Option[String] = None,
-  isSparse: Boolean = false
+  semanticIsSparse: Boolean = false
 )
 
 case class SearchTemplateKNNParams(
