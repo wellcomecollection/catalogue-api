@@ -49,7 +49,8 @@ class SearchApi(
       currName -> new WorksController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        worksIndex = PipelineClusterElasticConfig(clusterConfigs(name)).worksIndex,
+        worksIndex =
+          PipelineClusterElasticConfig(clusterConfigs(name)).worksIndex,
         semanticConfig = clusterConfigs(name).semanticConfig
       )
   }
@@ -59,7 +60,8 @@ class SearchApi(
       currName -> new ImagesController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        imagesIndex = PipelineClusterElasticConfig(clusterConfigs(name)).imagesIndex
+        imagesIndex =
+          PipelineClusterElasticConfig(clusterConfigs(name)).imagesIndex
       )
   }
 
