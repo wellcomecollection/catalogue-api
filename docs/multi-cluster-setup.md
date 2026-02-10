@@ -18,7 +18,7 @@ To route a request to a specific cluster, include a `elasticCluster` parameter i
 of the cluster:
 
 ```
-/works?elasticCluster=someCluster Label
+/works?elasticCluster=someClusterLabel
 ```
 
 If the `elasticCluster` parameter is missing, the request is routed to the default cluster.
