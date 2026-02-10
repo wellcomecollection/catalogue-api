@@ -52,7 +52,8 @@ object Main extends WellcomeTypesafeApp {
           PipelineElasticClientBuilder(
             clusterConfig = config,
             serviceName = "catalogue_api",
-            environment = apiConfig.environment
+            environment = apiConfig.environment,
+            pipelineDate = config.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
         )
       )
 
