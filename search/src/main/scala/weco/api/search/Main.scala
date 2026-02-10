@@ -6,7 +6,12 @@ import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{ApiConfig, ApiEnvironment, ClusterConfig, ElasticConfig}
+import weco.api.search.models.{
+  ApiConfig,
+  ApiEnvironment,
+  ClusterConfig,
+  ElasticConfig
+}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -48,7 +53,7 @@ object Main extends WellcomeTypesafeApp {
           clusterConfig = clusterConfig,
           serviceName = "catalogue_api",
           environment = apiConfig.environment
-        )
+      )
     )
 
     val additionalClusterConfigs =
@@ -61,7 +66,7 @@ object Main extends WellcomeTypesafeApp {
               clusterConfig = clusterConfig,
               serviceName = "catalogue_api",
               environment = apiConfig.environment
-            )
+          )
         )
         name -> client
     }
