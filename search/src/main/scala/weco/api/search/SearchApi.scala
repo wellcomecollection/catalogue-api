@@ -75,7 +75,12 @@ class SearchApi(
 
           worksControllers.get(key) match {
             case Some(worksController) =>
-              buildRoutes(key, worksController, imagesControllers(key))
+              imagesControllers.get(key) match {
+                case Some(imagesController) =>
+                  buildRoutes(key, worksController, imagesController)
+                case None =>
+                  notFound(s"Cluster '$key' is not configured")
+              }
             case None =>
               notFound(s"Cluster '$key' is not configured")
           }
