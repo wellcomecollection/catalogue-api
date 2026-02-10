@@ -37,10 +37,9 @@ object Main extends WellcomeTypesafeApp {
         if (pipelineDateOverride.isDefined)
           warn(s"Overridden pipeline date: $pipelineDate")
 
-          PipelineClusterElasticConfig(
-            ClusterConfig(
-              pipelineDate = config.getStringOption("dev.pipelineDate"))
-
+        PipelineClusterElasticConfig(
+          ClusterConfig(
+            pipelineDate = config.getStringOption("dev.pipelineDate"))
         )
       case _ =>
         info(s"Running in deployed mode (environment=${apiConfig.environment})")
@@ -49,13 +48,13 @@ object Main extends WellcomeTypesafeApp {
         PipelineClusterElasticConfig()
     }
 
-    val elasticClient =           new ResilientElasticClient(
+    val elasticClient = new ResilientElasticClient(
       clientFactory = () =>
         PipelineElasticClientBuilder(
           serviceName = "catalogue_api",
           pipelineDate = elasticConfig.pipelineDate.date,
           environment = apiConfig.environment
-        ))
+      ))
 
     // Parse multi-cluster configuration
     val additionalClusterConfigs =
