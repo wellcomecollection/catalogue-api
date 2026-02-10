@@ -39,39 +39,43 @@ class SearchApi(
     extends CustomDirectives
     with IdentifierDirectives {
 
-  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
   private val elasticConfigs = clusterConfigs.map {
     case (name, clusterConfig) =>
       name -> PipelineClusterElasticConfig(clusterConfig)
   }
-
+  private val pipelineDate = elasticConfigs("default").pipelineDate.date
+  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val worksControllers = clusterConfigs.map {
-    case (name, clusterConfig) =>
-      val client = elasticClients(name)
-      name -> new WorksController(
-        new ElasticsearchService(client),
+    case (currName, currConfig) =>
+      val name = currConfig.worksIndex.map(_ => currName).getOrElse("default")
+      currName -> new WorksController(
+        new ElasticsearchService(elasticClients(name)),
         apiConfig,
         worksIndex = elasticConfigs(name).worksIndex,
-        semanticConfig = clusterConfig.semanticConfig
+        semanticConfig = clusterConfigs(name).semanticConfig
       )
   }
-  lazy val imagesController =
-    new ImagesController(
-      new ElasticsearchService(elasticClients("default")),
-      apiConfig,
-      imagesIndex = elasticConfigs("default").imagesIndex
-    )
+  private val imagesControllers = clusterConfigs.map {
+    case (currName, currConfig) =>
+      val name = currConfig.imagesIndex.map(_ => currName).getOrElse("default")
+      currName -> new ImagesController(
+        new ElasticsearchService(elasticClients(name)),
+        apiConfig,
+        imagesIndex = elasticConfigs(name).imagesIndex
+      )
+  }
 
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
         parameter("elasticCluster".?) { controllerKey =>
+          // Use default ElasticSearch cluster if `elasticCluster` parameter missing
           val key = controllerKey.getOrElse("default")
 
           worksControllers.get(key) match {
             case Some(worksController) =>
-              buildRoutes(key, worksController, imagesController)
+              buildRoutes(key, worksController, imagesControllers(key))
             case None =>
               notFound(s"Cluster '$key' is not configured")
           }
@@ -114,10 +118,10 @@ class SearchApi(
         case id => notFound(s"Image not found for identifier $id")
       },
       path("search-templates.json") {
-        getSearchTemplates(worksController, imagesController)
+        getSearchTemplates(clusterName)
       },
       path("_elasticConfig") {
-        getElasticConfig(worksController, imagesController)
+        getElasticConfig(clusterName)
       },
       pathPrefix("management") {
         concat(
@@ -161,19 +165,18 @@ class SearchApi(
       }
     )
 
-  def getSearchTemplates(worksController: WorksController,
-                         imagesController: ImagesController): Route = get {
+  def getSearchTemplates(clusterName: String): Route = get {
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
-      elasticConfigs("default").pipelineDate.date,
-      worksController.worksIndex.name,
+      pipelineDate,
+      worksControllers(clusterName).worksIndex.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
-      elasticConfigs("default").pipelineDate.date,
-      imagesController.imagesIndex.name,
+      pipelineDate,
+      imagesControllers(clusterName).imagesIndex.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
 
@@ -184,14 +187,14 @@ class SearchApi(
     )
   }
 
-  private def getElasticConfig(worksController: WorksController,
-                               imagesController: ImagesController): Route =
+  private def getElasticConfig(clusterName: String): Route =
     get {
       complete(
         Map(
-          "worksIndex" -> worksController.worksIndex.name,
-          "imagesIndex" -> imagesController.imagesIndex.name,
-          "pipelineDate" -> elasticConfigs("default").pipelineDate.date
+          "worksIndex" -> worksControllers(clusterName).worksIndex.name,
+          "imagesIndex" -> imagesControllers(clusterName).imagesIndex.name,
+          "pipelineDate" -> pipelineDate,
+          "clusterName" -> clusterName
         )
       )
     }

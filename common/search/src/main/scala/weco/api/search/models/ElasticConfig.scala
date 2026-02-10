@@ -31,7 +31,8 @@ object PipelineClusterElasticConfig extends Logging {
         s"images-indexed-${ElasticConfig.indexDateImages}")
 
     info(
-      s"Using pipeline date $pipelineDate, works index $worksIndex, and images index $imagesIndex.")
+      s"Cluster name: ${clusterConfig.name}; pipelineDate: $pipelineDate; worksIndex: $worksIndex; imagesIndex: $imagesIndex"
+    )
 
     ElasticConfig(
       worksIndex = Index(worksIndex),
