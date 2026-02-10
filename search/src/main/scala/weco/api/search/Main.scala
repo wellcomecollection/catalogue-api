@@ -43,9 +43,8 @@ object Main extends WellcomeTypesafeApp {
       case _ =>
         ElasticConfig.pipelineDate
     }
-    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
 
-    // Parse multi-cluster configuration
+    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
     val additionalClusterConfigs =
       MultiClusterConfigParser.parseMultiClusterConfig(config)
 
@@ -53,8 +52,8 @@ object Main extends WellcomeTypesafeApp {
       s"Using default Elasticsearch cluster with ${additionalClusterConfigs.size} additional cluster(s)")
 
     val router = new SearchApi(
-      clusterConfig = clusterConfig,
       apiConfig = apiConfig,
+      clusterConfig = clusterConfig,
       additionalClusterConfigs = additionalClusterConfigs
     )
 
