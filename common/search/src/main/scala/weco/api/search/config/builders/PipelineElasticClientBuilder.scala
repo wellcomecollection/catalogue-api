@@ -55,7 +55,7 @@ object PipelineElasticClientBuilder extends Logging {
     )
   }
 
-  def getSecretsClient(environment: ApiEnvironment): SecretsManagerClient = {
+  private def getSecretsClient(environment: ApiEnvironment) = {
     val secretsManagerClientBuilder = SecretsManagerClient.builder()
     environment match {
       case ApiEnvironment.Dev =>
@@ -69,9 +69,9 @@ object PipelineElasticClientBuilder extends Logging {
     }
   }
 
-  def getSecretString(
+  private def getSecretString(
     id: String
-  )(implicit secretsClient: SecretsManagerClient): String = {
+  )(implicit secretsClient: SecretsManagerClient)= {
     val request =
       GetSecretValueRequest
         .builder()
