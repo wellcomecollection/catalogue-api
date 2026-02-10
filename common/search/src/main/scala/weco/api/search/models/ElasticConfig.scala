@@ -21,11 +21,14 @@ object ElasticConfig {
 
 object PipelineClusterElasticConfig extends Logging {
   def apply(clusterConfig: ClusterConfig = ClusterConfig()): ElasticConfig = {
-    val pipelineDate = clusterConfig.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
+    val pipelineDate =
+      clusterConfig.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
     val worksIndex =
-      clusterConfig.worksIndex.getOrElse(s"works-indexed-${ElasticConfig.indexDateWorks}")
+      clusterConfig.worksIndex.getOrElse(
+        s"works-indexed-${ElasticConfig.indexDateWorks}")
     val imagesIndex =
-      clusterConfig.imagesIndex.getOrElse(s"images-indexed-${ElasticConfig.indexDateImages}")
+      clusterConfig.imagesIndex.getOrElse(
+        s"images-indexed-${ElasticConfig.indexDateImages}")
 
     info(
       s"Using pipeline date $pipelineDate, works index $worksIndex, and images index $imagesIndex.")

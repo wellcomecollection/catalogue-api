@@ -20,6 +20,6 @@ object VectorType {
 }
 
 case class SemanticConfig(
-                           modelId: String,
-                           vectorType: VectorType
-                         )
+  modelId: String,
+  vectorType: VectorType
+)
