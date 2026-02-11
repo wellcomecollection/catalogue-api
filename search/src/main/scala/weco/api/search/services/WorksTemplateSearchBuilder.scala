@@ -7,8 +7,10 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
   val queryTemplate: String =
     Source.fromResource("WorksQuery.json").mkString
 
-  val semanticTemplateSparse: String = Source.fromResource("WorksSemanticQuerySparse.mustache").mkString
-  val semanticTemplateDense: String = Source.fromResource("WorksSemanticQueryDense.mustache").mkString
+  val semanticTemplateSparse: String =
+    Source.fromResource("WorksSemanticQuerySparse.mustache").mkString
+  val semanticTemplateDense: String =
+    Source.fromResource("WorksSemanticQueryDense.mustache").mkString
   lazy protected val semanticQueryTemplate: String =
     s"""
        |  {{#semanticIsSparse}}
@@ -84,7 +86,7 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |  $commonQueryFields
        |}
        |""".stripMargin
-     )
+    )
 
 }
 

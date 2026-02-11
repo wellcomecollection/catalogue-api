@@ -59,7 +59,8 @@ object MultiClusterConfigParser extends Logging {
         modelId = semanticConfig.getString("modelId"),
         vectorType = vt,
         k = semanticConfig.getIntOption("k").getOrElse(50),
-        numCandidates = semanticConfig.getIntOption("numCandidates").getOrElse(500)
+        numCandidates =
+          semanticConfig.getIntOption("numCandidates").getOrElse(500)
       )
     }
   }

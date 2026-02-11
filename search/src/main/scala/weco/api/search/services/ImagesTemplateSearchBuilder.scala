@@ -58,7 +58,7 @@ trait ImagesTemplateSearchBuilder extends TemplateSearchBuilder {
        |  $commonQueryFields
        |}
        |""".stripMargin
-     )
+    )
 
 }
 
