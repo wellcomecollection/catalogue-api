@@ -48,6 +48,7 @@ class SearchApi(
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
   private val worksControllers = clusterConfigs.map {
     case (currName, currConfig) =>
+      // If a given clusterConfig doesn't define a 'worksIndex', fallback to the default controller
       val name = currConfig.worksIndex.map(_ => currName).getOrElse("default")
       currName -> new WorksController(
         new ElasticsearchService(elasticClients(name)),
@@ -58,6 +59,7 @@ class SearchApi(
   }
   private val imagesControllers = clusterConfigs.map {
     case (currName, currConfig) =>
+      // If a given clusterConfig doesn't define an 'imagesIndex', fallback to the default controller
       val name = currConfig.imagesIndex.map(_ => currName).getOrElse("default")
       currName -> new ImagesController(
         new ElasticsearchService(elasticClients(name)),
@@ -70,19 +72,17 @@ class SearchApi(
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
         parameter("elasticCluster".?) { controllerKey =>
-          // Use default Elasticsearch cluster if `elasticCluster` parameter missing
-          val key = controllerKey.getOrElse("default")
+          def routesFor(key: String): Route =
+            buildRoutes(key, worksControllers(key), imagesControllers(key))
 
-          worksControllers.get(key) match {
-            case Some(worksController) =>
-              imagesControllers.get(key) match {
-                case Some(imagesController) =>
-                  buildRoutes(key, worksController, imagesController)
-                case None =>
-                  notFound(s"Cluster '$key' is not configured")
-              }
-            case None =>
+          controllerKey match {
+            case Some(key) if clusterConfigs.contains(key) =>
+              routesFor(key)
+            case Some(key) =>
               notFound(s"Cluster '$key' is not configured")
+            // Use default Elasticsearch cluster if `elasticCluster` parameter missing
+            case None =>
+              routesFor("default")
           }
         }
       }
