@@ -19,6 +19,8 @@ import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
+import scala.util.Try
+
 object Main extends WellcomeTypesafeApp {
 
   runWithConfig { config: Config =>
@@ -60,12 +62,26 @@ object Main extends WellcomeTypesafeApp {
 
     val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
     val elasticClient = buildElasticClient(clusterConfig)
-    val additionalClusterConfigs =
+
+    val parsedAdditionalClusterConfigs =
       MultiClusterConfigParser.parseMultiClusterConfig(config)
-    val additionalElasticClients = additionalClusterConfigs.map {
-      case (name, clusterConfig) =>
-        name -> buildElasticClient(clusterConfig)
-    }
+
+    val (additionalElasticClients, additionalClusterConfigs) =
+      parsedAdditionalClusterConfigs.foldLeft(
+        (Map.empty[String, ResilientElasticClient],
+          Map.empty[String, ClusterConfig])
+      ) {
+        case ((clients, configs), (name, currConfig)) =>
+          Try(buildElasticClient(currConfig))
+            .map { client =>
+              info(s"Configured additional Elasticsearch cluster '$name'")
+              (clients + (name -> client), configs + (name -> currConfig))
+            }
+            .getOrElse {
+              error(s"Failed to build additional Elasticsearch cluster '$name'")
+              (clients, configs)
+            }
+      }
 
     info(
       s"Using default Elasticsearch cluster with ${additionalClusterConfigs.size} additional cluster(s)")
