@@ -68,7 +68,8 @@ object Main extends WellcomeTypesafeApp {
 
     val (additionalElasticClients, additionalClusterConfigs) =
       parsedAdditionalClusterConfigs.foldLeft(
-        (Map.empty[String, ResilientElasticClient],
+        (
+          Map.empty[String, ResilientElasticClient],
           Map.empty[String, ClusterConfig])
       ) {
         case ((clients, configs), (name, currConfig)) =>
