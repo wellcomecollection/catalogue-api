@@ -18,6 +18,8 @@ case class SearchTemplateParams(
   knn: Option[SearchTemplateKNNParams] = None,
   includeSemantic: Boolean = false,
   semanticModelId: Option[String] = None,
+  semanticK: Option[Int] = None,
+  semanticNumCandidates: Option[Int] = None,
   semanticIsSparse: Boolean = false
 )
 
