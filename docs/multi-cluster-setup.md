@@ -26,8 +26,8 @@ To configure an additional cluster, add a `multiCluster` configuration block int
 Only `hostSecretPath` and `apiKeySecretPath` are required. All other fields are optional:
 
 - If `portSecretPath` and/or `protocolSecretPath` are omitted, the default cluster’s port/protocol are used.
-- If `worksIndex` and/or `imagesIndex` are omitted, requests use the default cluster’s corresponding indexes.
-- `semanticVectorType` (if provided) must be either `sparse` or `dense`.
+- If `worksIndex` and/or `imagesIndex` are omitted, requests routed to those indexes return status 404.
+- `semantic.vectorType` (if provided) must be either `sparse` or `dense`.
 
 The example configuration below adds a cluster labelled `someCluster`:
 
@@ -40,8 +40,10 @@ multiCluster {
     imagesIndex = "images-experimental-v1"
     portSecretPath = "some/secretsmanager/path"
     protocolSecretPath = "some/secretsmanager/path"
-    semanticModelId = ".elser-2-elasticsearch"
-    semanticVectorType = "sparse"
+    semantic {
+      modelId = ".elser-2-elasticsearch"
+      vectorType = "sparse"
+    }
   }
 }
 ```
