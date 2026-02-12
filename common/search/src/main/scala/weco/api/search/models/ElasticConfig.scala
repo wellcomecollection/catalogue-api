@@ -28,7 +28,6 @@ case class ElasticConfig(
         s"images-indexed-${ElasticConfig.defaultImagesIndexDate}"))
 }
 
-
 object ElasticConfig {
   // Default values shared across the API
   // We use this to share config across Scala API applications
