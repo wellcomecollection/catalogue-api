@@ -3,7 +3,11 @@ package weco.api.search
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.models.{ClusterConfig, SemanticConfig, VectorType}
+import weco.api.search.models.ClusterConfig
+
+
+// NOTE: we don not pass a SemanticConfig for the additionalClusters because running RFF queries requires a license 
+// this test only checks that we're routed to the correct index, so we don't need to test RFF functionality here
 
 class ElasticClusterParamTest
     extends AnyFunSpec
@@ -94,7 +98,7 @@ class ElasticClusterParamTest
       }
     }
 
-    it("supports multiple clusters with different semantic configs") {
+    it("supports multiple clusters") {
       withMultiClusterApi(
         defaultCluster = ClusterConfig(name = "default"),
         additionalClusters = Map(
@@ -102,25 +106,13 @@ class ElasticClusterParamTest
             name = "elser",
             hostSecretPath = Some("elser/host"),
             apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser"),
-            semanticConfig = Some(
-              SemanticConfig(
-                modelId = ".elser-2-elasticsearch",
-                vectorType = VectorType.Sparse
-              )
-            )
+            worksIndex = Some("works-elser")
           ),
           "openai" -> ClusterConfig(
             name = "openai",
             hostSecretPath = Some("openai/host"),
             apiKeySecretPath = Some("openai/key"),
-            worksIndex = Some("works-openai"),
-            semanticConfig = Some(
-              SemanticConfig(
-                modelId = "openai-text_embedding",
-                vectorType = VectorType.Dense
-              )
-            )
+            worksIndex = Some("works-openai")
           )
         )
       ) {
