@@ -23,8 +23,8 @@ object ElasticConfig {
 
   def forDefaultCluster(
     pipelineDate: String = defaultPipelineDate,
-    worksIndexDate: String = defaultWorksIndexDate,
-    imagesIndexDate: String = defaultImagesIndexDate,
+    worksIndexName: Option[String] = None,
+    imagesIndexName: Option[String] = None,
     serviceName: String,
     environment: ApiEnvironment = ApiEnvironment.Prod,
     semanticConfig: Option[SemanticConfig] = None
@@ -35,9 +35,12 @@ object ElasticConfig {
       case _                  => "private_host"
     }
 
+    val worksIndex = Index(worksIndexName.getOrElse(s"works-indexed-$defaultWorksIndexDate"))
+    val imagesIndex = Index(imagesIndexName.getOrElse(s"images-indexed-$defaultImagesIndexDate"))
+
     new ElasticConfig(
-      worksIndex = Some(Index(s"works-indexed-$worksIndexDate")),
-      imagesIndex = Some(Index(s"images-indexed-$imagesIndexDate")),
+      worksIndex = Some(worksIndex),
+      imagesIndex = Some(imagesIndex),
       hostSecretPath = s"$pipelinePrefix/$hostType",
       apiKeySecretPath = s"$pipelinePrefix/$serviceName/api_key",
       portSecretPath = s"$pipelinePrefix/port",
