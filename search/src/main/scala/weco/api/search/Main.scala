@@ -57,9 +57,7 @@ object Main extends WellcomeTypesafeApp {
     val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
     val elasticClient = buildElasticClient(clusterConfig)
 
-    val parsedAdditionalClusterConfigs =
-      MultiClusterConfigParser.parseMultiClusterConfig(config)
-
+    val parsedAdditionalClusterConfigs = MultiClusterConfigParser.parse(config)
     val (additionalElasticClients, additionalClusterConfigs) =
       parsedAdditionalClusterConfigs.foldLeft(
         (
