@@ -35,8 +35,10 @@ object ElasticConfig {
       case _                  => "private_host"
     }
 
-    val worksIndex = Index(worksIndexName.getOrElse(s"works-indexed-$defaultWorksIndexDate"))
-    val imagesIndex = Index(imagesIndexName.getOrElse(s"images-indexed-$defaultImagesIndexDate"))
+    val worksIndex = Index(
+      worksIndexName.getOrElse(s"works-indexed-$defaultWorksIndexDate"))
+    val imagesIndex = Index(
+      imagesIndexName.getOrElse(s"images-indexed-$defaultImagesIndexDate"))
 
     new ElasticConfig(
       worksIndex = Some(worksIndex),
