@@ -60,7 +60,7 @@ object Main extends WellcomeTypesafeApp {
     // Create additional non-essential Elasticsearch clients (if configured) for routing experimental queries.
     // Catch all errors so that misconfigured experimental clusters do not cause the production API to crash.
     val parsedAdditionalElasticConfigs = MultiElasticConfigParser.parse(config)
-    val additionalElasticClients =
+    val additionalClusters =
       parsedAdditionalElasticConfigs.toList.flatMap {
         case (name, config) =>
           Try(buildElasticClient(config)) match {
@@ -74,15 +74,15 @@ object Main extends WellcomeTypesafeApp {
       }.toMap
 
     info(
-      s"Using default Elasticsearch cluster with ${additionalElasticClients.size} additional cluster(s)")
+      s"Using default Elasticsearch cluster with ${additionalClusters.size} additional cluster(s)")
 
     val router = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
-      additionalElasticClients = additionalElasticClients.map {
+      additionalElasticClients = additionalClusters.map {
         case (name, (client, _)) => name -> client
       },
-      additionalElasticConfigs = additionalElasticClients.map {
+      additionalElasticConfigs = additionalClusters.map {
         case (name, (_, cfg)) => name -> cfg
       },
       apiConfig = apiConfig
