@@ -62,8 +62,10 @@ object MultiClusterConfigParser extends Logging {
 
       defaultConfig.copy(
         k = intOrDefault("k", defaultConfig.k),
-        numCandidates = intOrDefault("numCandidates", defaultConfig.numCandidates),
-        rankWindowSize = intOrDefault("rankWindowSize", defaultConfig.rankWindowSize),
+        numCandidates =
+          intOrDefault("numCandidates", defaultConfig.numCandidates),
+        rankWindowSize =
+          intOrDefault("rankWindowSize", defaultConfig.rankWindowSize),
         rankConstant = intOrDefault("rankConstant", defaultConfig.rankConstant)
       )
     }

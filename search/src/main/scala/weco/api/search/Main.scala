@@ -6,11 +6,7 @@ import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{
-  ApiConfig,
-  ApiEnvironment,
-  ClusterConfig
-}
+import weco.api.search.models.{ApiConfig, ApiEnvironment, ClusterConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics

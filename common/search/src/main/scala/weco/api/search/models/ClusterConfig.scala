@@ -13,17 +13,19 @@ case class ClusterConfig(
   protocolSecretPath: Option[String] = None,
   semanticConfig: Option[SemanticConfig] = None
 ) {
-  
+
   def getPipelineDate: String =
     pipelineDate.getOrElse(ClusterConfig.defaultPipelineDate)
 
   def getWorksIndex: Index =
-    Index(worksIndex.getOrElse(
-      s"works-indexed-${ClusterConfig.defaultWorksIndexDate}"))
+    Index(
+      worksIndex.getOrElse(
+        s"works-indexed-${ClusterConfig.defaultWorksIndexDate}"))
 
   def getImagesIndex: Index =
-    Index(imagesIndex.getOrElse(
-      s"images-indexed-${ClusterConfig.defaultImagesIndexDate}"))
+    Index(
+      imagesIndex.getOrElse(
+        s"images-indexed-${ClusterConfig.defaultImagesIndexDate}"))
 }
 
 object ClusterConfig {
