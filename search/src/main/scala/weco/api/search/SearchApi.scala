@@ -44,7 +44,7 @@ class SearchApi(
 
   private def getControllers[T](
     shouldCreate: ClusterConfig => Boolean
-  )(getController: (String, ClusterConfig) => T): Map[String, T] = {
+  )(getController: (String, ClusterConfig) => T): Map[String, T] =
     clusterConfigs.flatMap {
       case ("default", config) =>
         Some("default" -> getController("default", config))
@@ -52,23 +52,24 @@ class SearchApi(
         Some(name -> getController(name, config))
       case _ => None
     }
+
+  private val worksControllers = getControllers(_.worksIndex.isDefined) {
+    (name, config) =>
+      new WorksController(
+        new ElasticsearchService(elasticClients(name)),
+        apiConfig,
+        worksIndex = config.getWorksIndex,
+        semanticConfig = config.semanticConfig
+      )
   }
 
-  private val worksControllers = getControllers(_.worksIndex.isDefined) { (name, config) =>
-    new WorksController(
-      new ElasticsearchService(elasticClients(name)),
-      apiConfig,
-      worksIndex = config.getWorksIndex,
-      semanticConfig = config.semanticConfig
-    )
-  }
-
-  private val imagesControllers = getControllers(_.imagesIndex.isDefined) { (name, config) =>
-    new ImagesController(
-      new ElasticsearchService(elasticClients(name)),
-      apiConfig,
-      imagesIndex = config.getImagesIndex
-    )
+  private val imagesControllers = getControllers(_.imagesIndex.isDefined) {
+    (name, config) =>
+      new ImagesController(
+        new ElasticsearchService(elasticClients(name)),
+        apiConfig,
+        imagesIndex = config.getImagesIndex
+      )
   }
 
   def routes: Route = handleRejections(rejectionHandler) {
@@ -102,7 +103,8 @@ class SearchApi(
   )(handler: T => Route): Route =
     controller match {
       case Some(c) => handler(c)
-      case None => notFound(s"Endpoint not available for cluster '$clusterName'")
+      case None =>
+        notFound(s"Endpoint not available for cluster '$clusterName'")
     }
 
   private def buildRoutes(
