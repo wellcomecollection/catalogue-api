@@ -18,8 +18,8 @@ class ElasticClusterParamTest
   describe("elasticCluster query parameter") {
     it("uses default controller when no elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultCluster = ElasticConfig(name = "default"),
-        additionalClusters = Map(
+        defaultElastic = ElasticConfig(name = "default"),
+        additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
@@ -46,8 +46,8 @@ class ElasticClusterParamTest
 
     it("routes to correct controller when elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultCluster = ElasticConfig(name = "default"),
-        additionalClusters = Map(
+        defaultElastic = ElasticConfig(name = "default"),
+        additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
@@ -84,8 +84,8 @@ class ElasticClusterParamTest
 
     it("returns 404 when elasticCluster param references unknown cluster") {
       withMultiClusterApi(
-        defaultCluster = ElasticConfig(name = "default"),
-        additionalClusters = Map.empty
+        defaultElastic = ElasticConfig(name = "default"),
+        additionalElastics = Map.empty
       ) {
         case (indices, routes) =>
           indexTestDocuments(indices("default"), works.take(3): _*)
@@ -100,8 +100,8 @@ class ElasticClusterParamTest
 
     it("supports multiple clusters") {
       withMultiClusterApi(
-        defaultCluster = ElasticConfig(name = "default"),
-        additionalClusters = Map(
+        defaultElastic = ElasticConfig(name = "default"),
+        additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
