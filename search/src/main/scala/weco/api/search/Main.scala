@@ -66,7 +66,7 @@ object Main extends WellcomeTypesafeApp {
           Try(buildElasticClient(config)) match {
             case Success(client) =>
               info(s"Configured additional Elasticsearch cluster '$name'")
-              Some(name -> (client, config))
+              Some((name, (client, config)))
             case Failure(_) =>
               error(s"Failed to build additional Elasticsearch cluster '$name'")
               None
