@@ -43,6 +43,7 @@ class SearchApi(
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
 
   private def getControllers[T](
+    // we only create the controller if the relevant index is part of the ClusterConfig
     shouldCreate: ClusterConfig => Boolean
   )(getController: (String, ClusterConfig) => T): Map[String, T] = {
     clusterConfigs.flatMap {
