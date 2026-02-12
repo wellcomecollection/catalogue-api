@@ -22,6 +22,8 @@ object VectorType {
 case class SemanticConfig(
   modelId: String,
   vectorType: VectorType,
-  k: Int,
-  numCandidates: Int
+  k: Int = 50,
+  numCandidates: Int = 500,
+  rankWindowSize: Int = 10000,
+  rankConstant: Int = 20,
 )

@@ -13,12 +13,14 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
     Source.fromResource("WorksSemanticQueryDense.mustache").mkString
   lazy protected val semanticQueryTemplate: String =
     s"""
-       |  {{#semanticIsSparse}}
+       |  {{#vectorType}}
+       |  {{#Sparse}}
        |  $semanticTemplateSparse
-       |  {{/semanticIsSparse}}
-       |  {{^semanticIsSparse}}
+       |  {{/Sparse}}
+       |  {{#Dense}}
        |  $semanticTemplateDense
-       |  {{/semanticIsSparse}}
+       |  {{/Dense}}
+       |  {{/vectorType}}
        |""".stripMargin
 
   lazy protected val hybridQuery: String =
@@ -27,17 +29,23 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |    "bool": {
        |      "should": [
        |        $lexicalQuery,
-       |        {
-       |          "bool": {
-       |            "must": $semanticQueryTemplate,
-       |            "filter": {{#toJson}}preFilter{{/toJson}}
-       |          }
-       |        }
+       |        $semanticQuery
        |      ],
        |      "minimum_should_match": 1
        |    }
        |  }
        |""".stripMargin
+
+  lazy protected val semanticQuery: String =
+    s"""
+       |{
+       |  "bool": {
+       |     {{#query}}
+       |     "must": $semanticQueryTemplate,
+       |     {{/query}}
+       |     "filter": {{#toJson}}preFilter{{/toJson}}
+       |  }
+       | }""".stripMargin
 
   lazy protected val retrieverQuery: String =
     s"""
@@ -51,17 +59,12 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |        },
        |        {
        |          "standard": {
-       |            "query": {
-       |              "bool": {
-       |                "must": $semanticQueryTemplate,
-       |                "filter": {{#toJson}}preFilter{{/toJson}}
-       |              }
-       |            }
+       |            "query": $semanticQuery
        |          }
        |        }
        |      ],
-       |      "rank_window_size": 10000,
-       |      "rank_constant": 20
+       |      "rank_window_size": {{rankWindowSize}},
+       |      "rank_constant": {{rankConstant}}
        |    }
        |  }
        |""".stripMargin
@@ -70,7 +73,7 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
     normaliseSource(
       s"""
        |{
-       |  {{#includeSemantic}}
+       |  {{#semanticConfig}}
        |    {{#sortByDate}}
        |    "query": $hybridQuery,
        |    "sort": $sort,
@@ -78,16 +81,15 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |    {{^sortByDate}}
        |    "retriever": $retrieverQuery,
        |    {{/sortByDate}}
-       |  {{/includeSemantic}}
-       |  {{^includeSemantic}}
+       |  {{/semanticConfig}}
+       |  {{^semanticConfig}}
        |  "query": $lexicalQuery,
        |  "sort": $sort,
-       |  {{/includeSemantic}}
+       |  {{/semanticConfig}}
        |  $commonQueryFields
        |}
        |""".stripMargin
     )
-
 }
 
 object WorksTemplateSearchBuilder extends WorksTemplateSearchBuilder

@@ -44,23 +44,23 @@ object MultiClusterConfigParser extends Logging {
     }.toMap
   }
 
-  private def parseSemanticConfig(config: Config): Option[SemanticConfig] = {
-    if (!config.hasPath("semantic")) return None
-    val semanticConfig = config.getConfig("semantic")
+  private def parseSemanticConfig(parentConfig: Config): Option[SemanticConfig] = {
+    if (!parentConfig.hasPath("semantic")) return None
+    val config = parentConfig.getConfig("semantic")
 
-    val vectorType = semanticConfig.getString("vectorType") match {
+    val vectorType = config.getString("vectorType") match {
       case "dense"  => Some(VectorType.Dense)
       case "sparse" => Some(VectorType.Sparse)
       case _        => None
     }
 
     vectorType.map { vt =>
-      SemanticConfig(
-        modelId = semanticConfig.getString("modelId"),
-        vectorType = vt,
-        k = semanticConfig.getIntOption("k").getOrElse(50),
-        numCandidates =
-          semanticConfig.getIntOption("numCandidates").getOrElse(500)
+      val defaultConfig = SemanticConfig(config.getString("modelId"), vt)
+      defaultConfig.copy(
+        k = config.getIntOption("k").getOrElse(defaultConfig.k),
+        numCandidates = config.getIntOption("numCandidates").getOrElse(defaultConfig.numCandidates),
+        rankWindowSize = config.getIntOption("rankWindowSize").getOrElse(defaultConfig.rankWindowSize),
+        rankConstant = config.getIntOption("rankConstant").getOrElse(defaultConfig.rankConstant)
       )
     }
   }
