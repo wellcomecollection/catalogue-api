@@ -234,7 +234,6 @@ class SearchApi(
     )
   }
 
-
   private def getElasticConfig(clusterName: String): Route =
     get {
       val config = elasticConfigs(clusterName)

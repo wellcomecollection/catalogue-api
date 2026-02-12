@@ -21,14 +21,16 @@ object PipelineElasticClientBuilder extends Logging {
   def apply(
     elasticConfig: ElasticConfig,
     environment: ApiEnvironment = ApiEnvironment.Prod
-    ): ElasticClient = {
-    implicit val secretsClient: SecretsManagerClient = getSecretsClient(environment)
+  ): ElasticClient = {
+    implicit val secretsClient: SecretsManagerClient = getSecretsClient(
+      environment)
     val hostname = getSecretString(elasticConfig.hostSecretPath)
     val port = getSecretString(elasticConfig.portSecretPath).toInt
     val protocol = getSecretString(elasticConfig.protocolSecretPath)
     val apiKey = getSecretString(elasticConfig.apiKeySecretPath)
 
-    info(s"Building Elasticsearch client for cluster '${elasticConfig.name}' at $protocol://$hostname:$port")
+    info(
+      s"Building Elasticsearch client for cluster '${elasticConfig.name}' at $protocol://$hostname:$port")
 
     ElasticClientBuilder.create(
       hostname = hostname,

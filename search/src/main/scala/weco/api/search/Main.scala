@@ -69,7 +69,8 @@ object Main extends WellcomeTypesafeApp {
               info(s"Configured additional Elasticsearch cluster '$name'")
               Some((name, (client, config)))
             case Failure(e) =>
-              error(s"Failed to build additional Elasticsearch cluster '$name': ${e.getMessage}")
+              error(
+                s"Failed to build additional Elasticsearch cluster '$name': ${e.getMessage}")
               None
           }
       }.toMap
