@@ -83,15 +83,10 @@ class SearchApi(
       ignoreTrailingSlash {
         parameter("elasticCluster".?) { controllerKey =>
           def routesFor(key: String): Route = {
-            // Determine which cluster name to use based on controller availability
-            val effectiveWorksCluster = if (worksControllers.contains(key)) key else "default"
-            val effectiveImagesCluster = if (imagesControllers.contains(key)) key else "default"
+            val worksController = worksControllers.get(key)
+            val imagesController = imagesControllers.get(key)
             
-            val worksController = worksControllers(effectiveWorksCluster)
-            val imagesController = imagesControllers(effectiveImagesCluster)
-            
-            // Pass the effective works cluster name to buildRoutes
-            buildRoutes(effectiveWorksCluster, worksController, imagesController)
+            buildRoutes(key, worksController, imagesController)
           }
 
           controllerKey match {
@@ -110,42 +105,72 @@ class SearchApi(
 
   private def buildRoutes(
     clusterName: String,
-    worksController: WorksController,
-    imagesController: ImagesController
+    worksController: Option[WorksController],
+    imagesController: Option[ImagesController]
   ): Route =
     concat(
       path("works") {
-        MultipleWorksParams.parse {
-          worksController.multipleWorks
+        worksController match {
+          case Some(controller) =>
+            MultipleWorksParams.parse {
+              controller.multipleWorks
+            }
+          case None =>
+            notFound(s"Endpoint not available for cluster '$clusterName'")
         }
       },
       path("works" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          SingleWorkParams.parse {
-            worksController.singleWork(id, _)
+          worksController match {
+            case Some(controller) =>
+              SingleWorkParams.parse {
+                controller.singleWork(id, _)
+              }
+            case None =>
+              notFound(s"Endpoint not available for cluster '$clusterName'")
           }
 
         case id =>
           notFound(s"Work not found for identifier $id")
       },
       path("images") {
-        MultipleImagesParams.parse {
-          imagesController.multipleImages
+        imagesController match {
+          case Some(controller) =>
+            MultipleImagesParams.parse {
+              controller.multipleImages
+            }
+          case None =>
+            notFound(s"Endpoint not available for cluster '$clusterName'")
         }
       },
       path("images" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          SingleImageParams.parse {
-            imagesController.singleImage(id, _)
+          imagesController match {
+            case Some(controller) =>
+              SingleImageParams.parse {
+                controller.singleImage(id, _)
+              }
+            case None =>
+              notFound(s"Endpoint not available for cluster '$clusterName'")
           }
 
         case id => notFound(s"Image not found for identifier $id")
       },
       path("search-templates.json") {
-        getSearchTemplates(clusterName)
+        (worksController, imagesController) match {
+          case (Some(_), Some(_)) =>
+            getSearchTemplates(clusterName)
+          case _ =>
+            notFound(s"Endpoint not available for cluster '$clusterName'")
+        }
       },
       path("_elasticConfig") {
-        getElasticConfig(clusterName)
+        (worksController, imagesController) match {
+          case (Some(_), Some(_)) =>
+            getElasticConfig(clusterName)
+          case _ =>
+            notFound(s"Endpoint not available for cluster '$clusterName'")
+        }
       },
       pathPrefix("management") {
         concat(
@@ -172,16 +197,21 @@ class SearchApi(
           // which ES cluster the API is connecting to or which index it's using.
           path("_workTypes") {
             get {
-              withFuture {
-                worksController
-                  .countWorkTypes(worksController.worksIndex)
-                  .map {
-                    case Right(tally) => complete(tally)
-                    case Left(err) =>
-                      internalError(
-                        new Throwable(s"Error counting work types: $err")
-                      )
+              worksController match {
+                case Some(controller) =>
+                  withFuture {
+                    controller
+                      .countWorkTypes(controller.worksIndex)
+                      .map {
+                        case Right(tally) => complete(tally)
+                        case Left(err) =>
+                          internalError(
+                            new Throwable(s"Error counting work types: $err")
+                          )
+                      }
                   }
+                case None =>
+                  notFound(s"Endpoint not available for cluster '$clusterName'")
               }
             }
           }
