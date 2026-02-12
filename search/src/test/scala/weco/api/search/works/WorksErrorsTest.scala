@@ -1,9 +1,8 @@
 package weco.api.search.works
 
-import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.{ElasticConfig, EsCluster}
+import weco.api.search.models.ElasticConfig
 import weco.elasticsearch.IndexConfig
 
 class WorksErrorsTest
@@ -343,9 +342,9 @@ class WorksErrorsTest
     // to sort on.  Trying to query this index will trigger one such exception!
     withLocalElasticsearchIndex(config = IndexConfig.empty) { worksIndex =>
       val elasticConfig = ElasticConfig(
-        worksIndex = worksIndex,
-        imagesIndex = Index("imagesIndex-notused"),
-        pipelineDate = EsCluster("pipeline-date")
+        worksIndex = Some(worksIndex.name),
+        imagesIndex = Some("imagesIndex-notused"),
+        pipelineDate = Some("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>

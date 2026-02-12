@@ -31,9 +31,9 @@ import scala.concurrent.ExecutionContext
 
 class SearchApi(
   elasticClient: ResilientElasticClient,
-  clusterConfig: ClusterConfig,
+  clusterConfig: ElasticConfig,
   additionalElasticClients: Map[String, ResilientElasticClient] = Map.empty,
-  additionalClusterConfigs: Map[String, ClusterConfig] = Map.empty,
+  additionalClusterConfigs: Map[String, ElasticConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
@@ -43,9 +43,9 @@ class SearchApi(
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
 
   private def getControllers[T](
-    // we only create the controller if the relevant index is part of the ClusterConfig
-    shouldCreate: ClusterConfig => Boolean
-  )(getController: (String, ClusterConfig) => T): Map[String, T] =
+    // we only create the controller if the relevant index is part of the ElasticConfig
+    shouldCreate: ElasticConfig => Boolean
+  )(getController: (String, ElasticConfig) => T): Map[String, T] =
     clusterConfigs.flatMap {
       case ("default", config) =>
         Some("default" -> getController("default", config))

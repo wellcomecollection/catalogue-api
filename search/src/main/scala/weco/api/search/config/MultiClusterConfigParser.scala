@@ -1,7 +1,7 @@
 package weco.api.search.config
 
 import com.typesafe.config.{Config, ConfigException}
-import weco.api.search.models.{ClusterConfig, SemanticConfig, VectorType}
+import weco.api.search.models.{ElasticConfig, SemanticConfig, VectorType}
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
 import scala.collection.JavaConverters._
@@ -16,11 +16,11 @@ object MultiClusterConfigParser extends Logging {
     * Looks for configuration keys like:
     *   multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
     */
-  def parse(config: Config): Map[String, ClusterConfig] = {
+  def parse(config: Config): Map[String, ElasticConfig] = {
     // Check if multiCluster configuration exists
     if (!config.hasPath("multiCluster")) {
       info("No multi-cluster configuration found, using default cluster only")
-      return Map.empty[String, ClusterConfig]
+      return Map.empty[String, ElasticConfig]
     }
 
     val multiClusterConfig = config.getConfig("multiCluster")
@@ -46,13 +46,13 @@ object MultiClusterConfigParser extends Logging {
   }
 
   private def parseClusterConfig(clusterName: String,
-                                 config: Config): ClusterConfig = {
+                                 config: Config): ElasticConfig = {
     val semanticConfig =
       if (config.hasPath("semantic"))
         Some(parseSemanticConfig(config.getConfig("semantic")))
       else None
 
-    ClusterConfig(
+    ElasticConfig(
       name = clusterName,
       worksIndex = config.getStringOption("worksIndex"),
       imagesIndex = config.getStringOption("imagesIndex"),

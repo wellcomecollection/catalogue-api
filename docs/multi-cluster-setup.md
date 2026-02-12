@@ -6,7 +6,7 @@ requests to them for experimental purposes.
 
 ## Architecture
 
-Each additional cluster has a `ClusterConfig` object populated from `application.conf`. This object is used to create
+Each additional cluster has an `ElasticConfig` object populated from `application.conf`. This object is used to create
 corresponding `ResilientElasticClient` and `WorksController` objects which are used when routing requests to the
 cluster.
 

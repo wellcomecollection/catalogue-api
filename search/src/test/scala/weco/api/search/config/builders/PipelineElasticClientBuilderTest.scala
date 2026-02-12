@@ -2,7 +2,7 @@ package weco.api.search.config.builders
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.models.{ClusterConfig, SemanticConfig, VectorType}
+import weco.api.search.models.{ElasticConfig, SemanticConfig, VectorType}
 
 
 class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
@@ -12,9 +12,9 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
 
   describe("Default cluster config") {
     it("uses default pipeline secrets when all paths are None") {
-      val config = ClusterConfig(pipelineDate = Some(pipelineDate))
+      val config = ElasticConfig(pipelineDate = Some(pipelineDate))
       
-      // When ClusterConfig has None for all secret paths,
+      // When ElasticConfig has None for all secret paths,
       // PipelineElasticClientBuilder should use:
       // - hostSecretPath.getOrElse(s"$pipelinePrefix/$hostType")
       // - portSecretPath.getOrElse(s"$pipelinePrefix/port")
@@ -42,7 +42,7 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
 
   describe("Additional cluster configs (with custom secret paths)") {
     it("uses custom secret paths when all paths are provided") {
-      val config = ClusterConfig(
+      val config = ElasticConfig(
         name = "elser",
         hostSecretPath = Some("elasticsearch/elser/host"),
         portSecretPath = Some("elasticsearch/elser/port"),
@@ -50,7 +50,7 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
         apiKeySecretPath = Some("elasticsearch/elser/api_key")
       )
       
-      // When ClusterConfig has Some(path) for all secret paths,
+      // When ElasticConfig has Some(path) for all secret paths,
       // PipelineElasticClientBuilder should use those custom paths
       
       config.hostSecretPath shouldBe defined
@@ -67,7 +67,7 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
 
     it("mixes custom and default secret paths") {
       // Common case: custom host/apikey but default port/protocol
-      val config = ClusterConfig(
+      val config = ElasticConfig(
         name = "openai",
         hostSecretPath = Some("elasticsearch/openai/host"),
         apiKeySecretPath = Some("elasticsearch/openai/api_key"),
@@ -88,7 +88,7 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
     }
 
     it("uses custom apiKeySecretPath while defaulting other fields") {
-      val config = ClusterConfig(
+      val config = ElasticConfig(
         name = "custom-key",
         apiKeySecretPath = Some("elasticsearch/custom/special_api_key")
         // All other paths use defaults
@@ -110,12 +110,12 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
 
   describe("Multi-cluster scenarios") {
     it("default cluster uses pipeline secrets, ELSER cluster uses custom secrets") {
-      val defaultConfig = ClusterConfig(
+      val defaultConfig = ElasticConfig(
         name = "default",
         pipelineDate = Some(pipelineDate)
       )
       
-      val elserConfig = ClusterConfig(
+      val elserConfig = ElasticConfig(
         name = "elser",
         pipelineDate = Some(pipelineDate),
         hostSecretPath = Some("elasticsearch/elser/host"),
@@ -142,13 +142,13 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
     }
 
     it("multiple additional clusters each use their own custom secrets") {
-      val elserConfig = ClusterConfig(
+      val elserConfig = ElasticConfig(
         name = "elser",
         hostSecretPath = Some("elasticsearch/elser/host"),
         apiKeySecretPath = Some("elasticsearch/elser/api_key")
       )
       
-      val openaiConfig = ClusterConfig(
+      val openaiConfig = ElasticConfig(
         name = "openai",
         hostSecretPath = Some("elasticsearch/openai/host"),
         apiKeySecretPath = Some("elasticsearch/openai/api_key")

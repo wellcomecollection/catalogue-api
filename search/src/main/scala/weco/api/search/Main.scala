@@ -6,7 +6,7 @@ import weco.Tracing
 import weco.api.search.config.MultiClusterConfigParser
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
-import weco.api.search.models.{ApiConfig, ApiEnvironment, ClusterConfig}
+import weco.api.search.models.{ApiConfig, ApiEnvironment, ElasticConfig}
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.monitoring.HttpMetrics
@@ -38,12 +38,12 @@ object Main extends WellcomeTypesafeApp {
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
         if (pipelineDateOverride.isDefined)
           warn(s"Overridden pipeline date: $pipelineDateOverride")
-        pipelineDateOverride.getOrElse(ClusterConfig.defaultPipelineDate)
+        pipelineDateOverride.getOrElse(ElasticConfig.defaultPipelineDate)
       case _ =>
-        ClusterConfig.defaultPipelineDate
+        ElasticConfig.defaultPipelineDate
     }
 
-    def buildElasticClient(config: ClusterConfig): ResilientElasticClient =
+    def buildElasticClient(config: ElasticConfig): ResilientElasticClient =
       new ResilientElasticClient(
         clientFactory = () =>
           PipelineElasticClientBuilder(
@@ -54,7 +54,7 @@ object Main extends WellcomeTypesafeApp {
         )
       )
 
-    val clusterConfig = ClusterConfig(pipelineDate = Some(pipelineDate))
+    val clusterConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
     val elasticClient = buildElasticClient(clusterConfig)
 
     val parsedAdditionalClusterConfigs = MultiClusterConfigParser.parse(config)
@@ -62,7 +62,7 @@ object Main extends WellcomeTypesafeApp {
       parsedAdditionalClusterConfigs.foldLeft(
         (
           Map.empty[String, ResilientElasticClient],
-          Map.empty[String, ClusterConfig])
+          Map.empty[String, ElasticConfig])
       ) {
         case ((clients, configs), (name, currConfig)) =>
           Try(buildElasticClient(currConfig))

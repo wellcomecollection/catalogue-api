@@ -10,7 +10,7 @@ import io.circe.Json
 import org.scalatest.{Assertion, Suite}
 import weco.api.search.SearchApi
 import weco.fixtures.TestWith
-import weco.api.search.models.{ApiConfig, ClusterConfig, ElasticConfig, EsCluster}
+import weco.api.search.models.{ApiConfig, ElasticConfig}
 
 trait ApiFixture
     extends ScalatestRouteTest
@@ -33,10 +33,10 @@ trait ApiFixture
   def withRouter[R](
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
-    val clusterConfig = ClusterConfig(
-      pipelineDate = Some(elasticConfig.pipelineDate.date),
-      worksIndex = Some(elasticConfig.worksIndex.name),
-      imagesIndex = Some(elasticConfig.imagesIndex.name)
+    val clusterConfig = ElasticConfig(
+      pipelineDate = Some(elasticConfig.getPipelineDate),
+      worksIndex = Some(elasticConfig.getWorksIndex.name),
+      imagesIndex = Some(elasticConfig.getImagesIndex.name)
     )
     val router = new SearchApi(
       resilientElasticClient,
@@ -49,9 +49,9 @@ trait ApiFixture
 
   def withApi[R](testWith: TestWith[Route, R]): R = {
     val elasticConfig = ElasticConfig(
-      worksIndex = Index("worksIndex-notused"),
-      imagesIndex = Index("imagesIndex-notused"),
-      pipelineDate = EsCluster("pipeline-date")
+      worksIndex = Some("worksIndex-notused"),
+      imagesIndex = Some("imagesIndex-notused"),
+      pipelineDate = Some("pipeline-date")
     )
 
     withRouter(elasticConfig) { route =>
@@ -62,9 +62,9 @@ trait ApiFixture
   def withWorksApi[R](testWith: TestWith[(Index, Route), R]): R =
     withLocalWorksIndex { worksIndex =>
       val elasticConfig = ElasticConfig(
-        worksIndex = worksIndex,
-        imagesIndex = Index("imagesIndex-notused"),
-        pipelineDate = EsCluster("pipeline-date")
+        worksIndex = Some(worksIndex.name),
+        imagesIndex = Some("imagesIndex-notused"),
+        pipelineDate = Some("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>
@@ -75,9 +75,9 @@ trait ApiFixture
   def withImagesApi[R](testWith: TestWith[(Index, Route), R]): R =
     withLocalImagesIndex { imagesIndex =>
       val elasticConfig = ElasticConfig(
-        worksIndex = Index("worksIndex-notused"),
-        imagesIndex = imagesIndex,
-        pipelineDate = EsCluster("pipeline-date")
+        worksIndex = Some("worksIndex-notused"),
+        imagesIndex = Some(imagesIndex.name),
+        pipelineDate = Some("pipeline-date")
       )
 
       withRouter(elasticConfig) { route =>
@@ -90,8 +90,8 @@ trait ApiFixture
    * Each cluster gets its own index, and the elasticCluster param can route between them.
    */
   def withMultiClusterApi[R](
-    defaultCluster: ClusterConfig,
-    additionalClusters: Map[String, ClusterConfig]
+    defaultCluster: ElasticConfig,
+    additionalClusters: Map[String, ElasticConfig]
   )(testWith: TestWith[(Map[String, Index], Route), R]): R = {
     withLocalWorksIndex { defaultIndex =>
       // Create indices for additional clusters recursively

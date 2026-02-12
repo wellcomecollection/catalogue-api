@@ -5,7 +5,7 @@ import grizzled.slf4j.Logging
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import weco.api.search.models.{ApiEnvironment, ClusterConfig}
+import weco.api.search.models.{ApiEnvironment, ElasticConfig}
 import weco.elasticsearch.ElasticClientBuilder
 
 object PipelineElasticClientBuilder extends Logging {
@@ -14,15 +14,15 @@ object PipelineElasticClientBuilder extends Logging {
   // services to read from that cluster.
   //
   // We don't want to require a Terraform plan/apply to pick up the change --
-  // ClusterConfig is the single source of truth for the API index -- so instead
+  // ElasticConfig is the single source of truth for the API index -- so instead
   // we let the services decide which set of secrets to read, which in turn sets
   // which cluster they read from.
 
   def apply(
     serviceName: String,
-    pipelineDate: String = ClusterConfig.defaultPipelineDate,
+    pipelineDate: String = ElasticConfig.defaultPipelineDate,
     environment: ApiEnvironment = ApiEnvironment.Prod,
-    clusterConfig: ClusterConfig = ClusterConfig()
+    clusterConfig: ElasticConfig = ElasticConfig()
   ): ElasticClient = {
     implicit val secretsClientForEnv: SecretsManagerClient = getSecretsClient(
       environment)

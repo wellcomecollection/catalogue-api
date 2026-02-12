@@ -3,7 +3,7 @@ package weco.api.search
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.fixtures.TestDocumentFixtures
-import weco.api.search.models.ClusterConfig
+import weco.api.search.models.ElasticConfig
 
 
 // NOTE: we don not pass a SemanticConfig for the additionalClusters because running RFF queries requires a license 
@@ -18,9 +18,9 @@ class ElasticClusterParamTest
   describe("elasticCluster query parameter") {
     it("uses default controller when no elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultCluster = ClusterConfig(name = "default"),
+        defaultCluster = ElasticConfig(name = "default"),
         additionalClusters = Map(
-          "elser" -> ClusterConfig(
+          "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
             apiKeySecretPath = Some("elser/key"),
@@ -46,15 +46,15 @@ class ElasticClusterParamTest
 
     it("routes to correct controller when elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultCluster = ClusterConfig(name = "default"),
+        defaultCluster = ElasticConfig(name = "default"),
         additionalClusters = Map(
-          "elser" -> ClusterConfig(
+          "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
             apiKeySecretPath = Some("elser/key"),
             worksIndex = Some("works-elser")
           ),
-          "openai" -> ClusterConfig(
+          "openai" -> ElasticConfig(
             name = "openai",
             hostSecretPath = Some("openai/host"),
             apiKeySecretPath = Some("openai/key"),
@@ -84,7 +84,7 @@ class ElasticClusterParamTest
 
     it("returns 404 when elasticCluster param references unknown cluster") {
       withMultiClusterApi(
-        defaultCluster = ClusterConfig(name = "default"),
+        defaultCluster = ElasticConfig(name = "default"),
         additionalClusters = Map.empty
       ) {
         case (indices, routes) =>
@@ -100,15 +100,15 @@ class ElasticClusterParamTest
 
     it("supports multiple clusters") {
       withMultiClusterApi(
-        defaultCluster = ClusterConfig(name = "default"),
+        defaultCluster = ElasticConfig(name = "default"),
         additionalClusters = Map(
-          "elser" -> ClusterConfig(
+          "elser" -> ElasticConfig(
             name = "elser",
             hostSecretPath = Some("elser/host"),
             apiKeySecretPath = Some("elser/key"),
             worksIndex = Some("works-elser")
           ),
-          "openai" -> ClusterConfig(
+          "openai" -> ElasticConfig(
             name = "openai",
             hostSecretPath = Some("openai/host"),
             apiKeySecretPath = Some("openai/key"),
