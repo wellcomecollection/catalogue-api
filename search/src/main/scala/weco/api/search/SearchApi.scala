@@ -40,40 +40,59 @@ class SearchApi(
     with IdentifierDirectives {
 
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
-  private val elasticConfigs = clusterConfigs.map {
-    case (name, clusterConfig) =>
-      name -> PipelineClusterElasticConfig(clusterConfig)
-  }
-  private val pipelineDate = elasticConfigs("default").pipelineDate.date
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
-  private val worksControllers = clusterConfigs.map {
-    case (currName, currConfig) =>
-      // If a given clusterConfig doesn't define a 'worksIndex', fallback to the default controller
-      val name = currConfig.worksIndex.map(_ => currName).getOrElse("default")
-      currName -> new WorksController(
+  
+  // Always create default works controller; only create additional cluster controllers if worksIndex is defined
+  private val worksControllers = clusterConfigs.flatMap {
+    case ("default", config) =>
+      Some("default" -> new WorksController(
+        new ElasticsearchService(elasticClients("default")),
+        apiConfig,
+        worksIndex = config.getWorksIndex,
+        semanticConfig = config.semanticConfig
+      ))
+    case (name, config) if config.worksIndex.isDefined =>
+      Some(name -> new WorksController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        worksIndex = elasticConfigs(name).worksIndex,
-        semanticConfig = clusterConfigs(name).semanticConfig
-      )
+        worksIndex = config.getWorksIndex,
+        semanticConfig = config.semanticConfig
+      ))
+    case _ => None
   }
-  private val imagesControllers = clusterConfigs.map {
-    case (currName, currConfig) =>
-      // If a given clusterConfig doesn't define an 'imagesIndex', fallback to the default controller
-      val name = currConfig.imagesIndex.map(_ => currName).getOrElse("default")
-      currName -> new ImagesController(
+  
+  // Always create default images controller; only create additional cluster controllers if imagesIndex is defined
+  private val imagesControllers = clusterConfigs.flatMap {
+    case ("default", config) =>
+      Some("default" -> new ImagesController(
+        new ElasticsearchService(elasticClients("default")),
+        apiConfig,
+        imagesIndex = config.getImagesIndex
+      ))
+    case (name, config) if config.imagesIndex.isDefined =>
+      Some(name -> new ImagesController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        imagesIndex = elasticConfigs(name).imagesIndex
-      )
+        imagesIndex = config.getImagesIndex
+      ))
+    case _ => None
   }
 
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
         parameter("elasticCluster".?) { controllerKey =>
-          def routesFor(key: String): Route =
-            buildRoutes(key, worksControllers(key), imagesControllers(key))
+          def routesFor(key: String): Route = {
+            // Determine which cluster name to use based on controller availability
+            val effectiveWorksCluster = if (worksControllers.contains(key)) key else "default"
+            val effectiveImagesCluster = if (imagesControllers.contains(key)) key else "default"
+            
+            val worksController = worksControllers(effectiveWorksCluster)
+            val imagesController = imagesControllers(effectiveImagesCluster)
+            
+            // Pass the effective works cluster name to buildRoutes
+            buildRoutes(effectiveWorksCluster, worksController, imagesController)
+          }
 
           controllerKey match {
             case Some(key) if clusterConfigs.contains(key) =>
@@ -171,16 +190,17 @@ class SearchApi(
     )
 
   def getSearchTemplates(clusterName: String): Route = get {
+    val config = clusterConfigs(clusterName)
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
-      pipelineDate,
+      config.getPipelineDate,
       worksControllers(clusterName).worksIndex.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
-      pipelineDate,
+      config.getPipelineDate,
       imagesControllers(clusterName).imagesIndex.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
@@ -194,11 +214,12 @@ class SearchApi(
 
   private def getElasticConfig(clusterName: String): Route =
     get {
+      val config = clusterConfigs(clusterName)
       complete(
         Map(
           "worksIndex" -> worksControllers(clusterName).worksIndex.name,
           "imagesIndex" -> imagesControllers(clusterName).imagesIndex.name,
-          "pipelineDate" -> pipelineDate,
+          "pipelineDate" -> config.getPipelineDate,
           "clusterName" -> clusterName
         )
       )
