@@ -12,7 +12,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |someOtherConfig = "value"
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result shouldBe empty
     }
@@ -26,7 +26,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result should have size 1
       result should contain key "elser"
@@ -53,7 +53,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result should have size 2
       result should contain key "elser"
@@ -74,7 +74,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").semanticConfig shouldBe None
     }
@@ -89,7 +89,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").semanticConfig shouldBe None
     }
@@ -104,7 +104,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").worksIndex shouldBe Some("works-test")
       result("test").imagesIndex shouldBe Some("images-test")
@@ -118,7 +118,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       val minimalConfig = result("minimal")
       minimalConfig.worksIndex shouldBe None
