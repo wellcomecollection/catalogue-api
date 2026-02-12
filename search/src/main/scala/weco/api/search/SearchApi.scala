@@ -41,40 +41,44 @@ class SearchApi(
 
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
-  
+
   // Always create default works controller; only create additional cluster controllers if worksIndex is defined
   private val worksControllers = clusterConfigs.flatMap {
     case ("default", config) =>
-      Some("default" -> new WorksController(
-        new ElasticsearchService(elasticClients("default")),
-        apiConfig,
-        worksIndex = config.getWorksIndex,
-        semanticConfig = config.semanticConfig
-      ))
+      Some(
+        "default" -> new WorksController(
+          new ElasticsearchService(elasticClients("default")),
+          apiConfig,
+          worksIndex = config.getWorksIndex,
+          semanticConfig = config.semanticConfig
+        ))
     case (name, config) if config.worksIndex.isDefined =>
-      Some(name -> new WorksController(
-        new ElasticsearchService(elasticClients(name)),
-        apiConfig,
-        worksIndex = config.getWorksIndex,
-        semanticConfig = config.semanticConfig
-      ))
+      Some(
+        name -> new WorksController(
+          new ElasticsearchService(elasticClients(name)),
+          apiConfig,
+          worksIndex = config.getWorksIndex,
+          semanticConfig = config.semanticConfig
+        ))
     case _ => None
   }
-  
+
   // Always create default images controller; only create additional cluster controllers if imagesIndex is defined
   private val imagesControllers = clusterConfigs.flatMap {
     case ("default", config) =>
-      Some("default" -> new ImagesController(
-        new ElasticsearchService(elasticClients("default")),
-        apiConfig,
-        imagesIndex = config.getImagesIndex
-      ))
+      Some(
+        "default" -> new ImagesController(
+          new ElasticsearchService(elasticClients("default")),
+          apiConfig,
+          imagesIndex = config.getImagesIndex
+        ))
     case (name, config) if config.imagesIndex.isDefined =>
-      Some(name -> new ImagesController(
-        new ElasticsearchService(elasticClients(name)),
-        apiConfig,
-        imagesIndex = config.getImagesIndex
-      ))
+      Some(
+        name -> new ImagesController(
+          new ElasticsearchService(elasticClients(name)),
+          apiConfig,
+          imagesIndex = config.getImagesIndex
+        ))
     case _ => None
   }
 
@@ -85,7 +89,7 @@ class SearchApi(
           def routesFor(key: String): Route = {
             val worksController = worksControllers.get(key)
             val imagesController = imagesControllers.get(key)
-            
+
             buildRoutes(key, worksController, imagesController)
           }
 
