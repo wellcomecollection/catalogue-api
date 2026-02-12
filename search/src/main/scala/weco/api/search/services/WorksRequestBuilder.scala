@@ -57,10 +57,7 @@ object WorksRequestBuilder
               pairables.collect(buildWorkFilterQuery)
             )
           ),
-          includeSemantic = searchOptions.semanticConfig.isDefined && searchOptions.searchQuery.isDefined,
-          semanticModelId = searchOptions.semanticConfig.map(_.modelId),
-          semanticIsSparse = searchOptions.semanticConfig.exists(
-            _.vectorType == VectorType.Sparse)
+          semanticConfig = searchOptions.semanticConfig
         )
       )
     )
