@@ -44,7 +44,8 @@ object MultiClusterConfigParser extends Logging {
     }.toMap
   }
 
-  private def parseSemanticConfig(parentConfig: Config): Option[SemanticConfig] = {
+  private def parseSemanticConfig(
+    parentConfig: Config): Option[SemanticConfig] = {
     if (!parentConfig.hasPath("semantic")) return None
     val config = parentConfig.getConfig("semantic")
 
@@ -58,9 +59,15 @@ object MultiClusterConfigParser extends Logging {
       val defaultConfig = SemanticConfig(config.getString("modelId"), vt)
       defaultConfig.copy(
         k = config.getIntOption("k").getOrElse(defaultConfig.k),
-        numCandidates = config.getIntOption("numCandidates").getOrElse(defaultConfig.numCandidates),
-        rankWindowSize = config.getIntOption("rankWindowSize").getOrElse(defaultConfig.rankWindowSize),
-        rankConstant = config.getIntOption("rankConstant").getOrElse(defaultConfig.rankConstant)
+        numCandidates = config
+          .getIntOption("numCandidates")
+          .getOrElse(defaultConfig.numCandidates),
+        rankWindowSize = config
+          .getIntOption("rankWindowSize")
+          .getOrElse(defaultConfig.rankWindowSize),
+        rankConstant = config
+          .getIntOption("rankConstant")
+          .getOrElse(defaultConfig.rankConstant)
       )
     }
   }
