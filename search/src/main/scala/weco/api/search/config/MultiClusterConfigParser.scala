@@ -9,6 +9,7 @@ import scala.util.{Failure, Success, Try}
 import grizzled.slf4j.Logging
 
 object MultiClusterConfigParser extends Logging {
+
   /**
     * Parse multi-cluster Elasticsearch configuration from Typesafe Config.
     *
@@ -44,9 +45,11 @@ object MultiClusterConfigParser extends Logging {
     }.toMap
   }
 
-  private def parseClusterConfig(clusterName: String, config: Config): ClusterConfig = {
+  private def parseClusterConfig(clusterName: String,
+                                 config: Config): ClusterConfig = {
     val semanticConfig =
-      if (config.hasPath("semantic")) Some(parseSemanticConfig(config.getConfig("semantic")))
+      if (config.hasPath("semantic"))
+        Some(parseSemanticConfig(config.getConfig("semantic")))
       else None
 
     ClusterConfig(
@@ -62,25 +65,27 @@ object MultiClusterConfigParser extends Logging {
   }
 
   private def parseSemanticConfig(config: Config): SemanticConfig = {
-      val vectorType = config.getString("vectorType") match {
-        case "dense"  => VectorType.Dense
-        case "sparse" => VectorType.Sparse
-        case other =>
-          throw new ConfigException.BadValue(
-            "semantic.vectorType",
-            s"Invalid vectorType '$other'. Expected 'dense' or 'sparse'."
-          )
-      }
-      val default = SemanticConfig(modelId=config.getString("modelId"), vectorType=vectorType)
-      def intOrDefault(key: String, current: Int) =
-        config.getIntOption(key).getOrElse(current)
+    val vectorType = config.getString("vectorType") match {
+      case "dense"  => VectorType.Dense
+      case "sparse" => VectorType.Sparse
+      case other =>
+        throw new ConfigException.BadValue(
+          "semantic.vectorType",
+          s"Invalid vectorType '$other'. Expected 'dense' or 'sparse'."
+        )
+    }
+    val default = SemanticConfig(
+      modelId = config.getString("modelId"),
+      vectorType = vectorType)
+    def intOrDefault(key: String, current: Int) =
+      config.getIntOption(key).getOrElse(current)
 
-      // Semantic search parameters are optional. Use defaults if not provided.
-      default.copy(
-        k = intOrDefault("k", default.k),
-        numCandidates = intOrDefault("numCandidates", default.numCandidates),
-        rankWindowSize = intOrDefault("rankWindowSize", default.rankWindowSize),
-        rankConstant = intOrDefault("rankConstant", default.rankConstant)
-      )
+    // Semantic search parameters are optional. Use defaults if not provided.
+    default.copy(
+      k = intOrDefault("k", default.k),
+      numCandidates = intOrDefault("numCandidates", default.numCandidates),
+      rankWindowSize = intOrDefault("rankWindowSize", default.rankWindowSize),
+      rankConstant = intOrDefault("rankConstant", default.rankConstant)
+    )
   }
 }
