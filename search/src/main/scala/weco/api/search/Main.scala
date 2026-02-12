@@ -79,10 +79,12 @@ object Main extends WellcomeTypesafeApp {
     val router = new SearchApi(
       elasticClient = elasticClient,
       clusterConfig = clusterConfig,
-      additionalElasticClients =
-        additionalClusters.map { case (name, (client, _)) => name -> client },
-      additionalClusterConfigs =
-        additionalClusters.map { case (name, (_, cfg)) => name -> cfg },
+      additionalElasticClients = additionalClusters.map {
+        case (name, (client, _)) => name -> client
+      },
+      additionalClusterConfigs = additionalClusters.map {
+        case (name, (_, cfg)) => name -> cfg
+      },
       apiConfig = apiConfig
     )
 
