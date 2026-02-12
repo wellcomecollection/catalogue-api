@@ -42,62 +42,51 @@ class SearchApi(
   private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
 
-  // Always create default works controller; only create additional cluster controllers if worksIndex is defined
-  private val worksControllers = clusterConfigs.flatMap {
-    case ("default", config) =>
-      Some(
-        "default" -> new WorksController(
-          new ElasticsearchService(elasticClients("default")),
-          apiConfig,
-          worksIndex = config.getWorksIndex,
-          semanticConfig = config.semanticConfig
-        ))
-    case (name, config) if config.worksIndex.isDefined =>
-      Some(
-        name -> new WorksController(
-          new ElasticsearchService(elasticClients(name)),
-          apiConfig,
-          worksIndex = config.getWorksIndex,
-          semanticConfig = config.semanticConfig
-        ))
-    case _ => None
+  private def getControllers[T](
+    shouldCreate: ClusterConfig => Boolean
+  )(getController: (String, ClusterConfig) => T): Map[String, T] = {
+    clusterConfigs.flatMap {
+      case ("default", config) =>
+        Some("default" -> getController("default", config))
+      case (name, config) if shouldCreate(config) =>
+        Some(name -> getController(name, config))
+      case _ => None
+    }
   }
 
-  // Always create default images controller; only create additional cluster controllers if imagesIndex is defined
-  private val imagesControllers = clusterConfigs.flatMap {
-    case ("default", config) =>
-      Some(
-        "default" -> new ImagesController(
-          new ElasticsearchService(elasticClients("default")),
-          apiConfig,
-          imagesIndex = config.getImagesIndex
-        ))
-    case (name, config) if config.imagesIndex.isDefined =>
-      Some(
-        name -> new ImagesController(
-          new ElasticsearchService(elasticClients(name)),
-          apiConfig,
-          imagesIndex = config.getImagesIndex
-        ))
-    case _ => None
+  private val worksControllers = getControllers(_.worksIndex.isDefined) { (name, config) =>
+    new WorksController(
+      new ElasticsearchService(elasticClients(name)),
+      apiConfig,
+      worksIndex = config.getWorksIndex,
+      semanticConfig = config.semanticConfig
+    )
+  }
+
+  private val imagesControllers = getControllers(_.imagesIndex.isDefined) { (name, config) =>
+    new ImagesController(
+      new ElasticsearchService(elasticClients(name)),
+      apiConfig,
+      imagesIndex = config.getImagesIndex
+    )
   }
 
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
-        parameter("elasticCluster".?) { controllerKey =>
-          def routesFor(key: String): Route = {
-            val worksController = worksControllers.get(key)
-            val imagesController = imagesControllers.get(key)
+        parameter("elasticCluster".?) { elasticClusterParam =>
+          def routesFor(cluster: String): Route = {
+            val worksController = worksControllers.get(cluster)
+            val imagesController = imagesControllers.get(cluster)
 
-            buildRoutes(key, worksController, imagesController)
+            buildRoutes(cluster, worksController, imagesController)
           }
 
-          controllerKey match {
-            case Some(key) if clusterConfigs.contains(key) =>
-              routesFor(key)
-            case Some(key) =>
-              notFound(s"Cluster '$key' is not configured")
+          elasticClusterParam match {
+            case Some(cluster) if clusterConfigs.contains(cluster) =>
+              routesFor(cluster)
+            case Some(cluster) =>
+              notFound(s"Cluster '$cluster' is not configured")
             // Use default Elasticsearch cluster if `elasticCluster` parameter missing
             case None =>
               routesFor("default")
@@ -107,6 +96,15 @@ class SearchApi(
     }
   }
 
+  private def requireController[T](
+    controller: Option[T],
+    clusterName: String
+  )(handler: T => Route): Route =
+    controller match {
+      case Some(c) => handler(c)
+      case None => notFound(s"Endpoint not available for cluster '$clusterName'")
+    }
+
   private def buildRoutes(
     clusterName: String,
     worksController: Option[WorksController],
@@ -114,48 +112,36 @@ class SearchApi(
   ): Route =
     concat(
       path("works") {
-        worksController match {
-          case Some(controller) =>
-            MultipleWorksParams.parse {
-              controller.multipleWorks
-            }
-          case None =>
-            notFound(s"Endpoint not available for cluster '$clusterName'")
+        requireController(worksController, clusterName) { controller =>
+          MultipleWorksParams.parse {
+            controller.multipleWorks
+          }
         }
       },
       path("works" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          worksController match {
-            case Some(controller) =>
-              SingleWorkParams.parse {
-                controller.singleWork(id, _)
-              }
-            case None =>
-              notFound(s"Endpoint not available for cluster '$clusterName'")
+          requireController(worksController, clusterName) { controller =>
+            SingleWorkParams.parse {
+              controller.singleWork(id, _)
+            }
           }
 
         case id =>
           notFound(s"Work not found for identifier $id")
       },
       path("images") {
-        imagesController match {
-          case Some(controller) =>
-            MultipleImagesParams.parse {
-              controller.multipleImages
-            }
-          case None =>
-            notFound(s"Endpoint not available for cluster '$clusterName'")
+        requireController(imagesController, clusterName) { controller =>
+          MultipleImagesParams.parse {
+            controller.multipleImages
+          }
         }
       },
       path("images" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          imagesController match {
-            case Some(controller) =>
-              SingleImageParams.parse {
-                controller.singleImage(id, _)
-              }
-            case None =>
-              notFound(s"Endpoint not available for cluster '$clusterName'")
+          requireController(imagesController, clusterName) { controller =>
+            SingleImageParams.parse {
+              controller.singleImage(id, _)
+            }
           }
 
         case id => notFound(s"Image not found for identifier $id")
@@ -201,22 +187,19 @@ class SearchApi(
           // which ES cluster the API is connecting to or which index it's using.
           path("_workTypes") {
             get {
-              worksController match {
-                case Some(controller) =>
-                  withFuture {
-                    val config = clusterConfigs(clusterName)
-                    controller
-                      .countWorkTypes(config.getWorksIndex.name)
-                      .map {
-                        case Right(tally) => complete(tally)
-                        case Left(err) =>
-                          internalError(
-                            new Throwable(s"Error counting work types: $err")
-                          )
-                      }
-                  }
-                case None =>
-                  notFound(s"Endpoint not available for cluster '$clusterName'")
+              requireController(worksController, clusterName) { controller =>
+                withFuture {
+                  val config = clusterConfigs(clusterName)
+                  controller
+                    .countWorkTypes(config.getWorksIndex.name)
+                    .map {
+                      case Right(tally) => complete(tally)
+                      case Left(err) =>
+                        internalError(
+                          new Throwable(s"Error counting work types: $err")
+                        )
+                    }
+                }
               }
             }
           }
