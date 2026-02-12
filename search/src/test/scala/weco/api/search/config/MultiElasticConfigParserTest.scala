@@ -1,5 +1,6 @@
 package weco.api.search.config
 
+import com.sksamuel.elastic4s.Index
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -36,7 +37,7 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       elserConfig.name shouldBe "elser"
       elserConfig.hostSecretPath shouldBe Some("custom/host")
       elserConfig.apiKeySecretPath shouldBe Some("custom/apikey")
-      elserConfig.worksIndex shouldBe Some("works-elser-full")
+      elserConfig.worksIndex shouldBe Some(Index("works-elser-full"))
       elserConfig.semanticConfig shouldBe None
     }
 
@@ -60,8 +61,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       result should contain key "elser"
       result should contain key "openai"
       
-      result("elser").worksIndex shouldBe Some("works-elser-full")
-      result("openai").worksIndex shouldBe Some("works-openai-full")
+      result("elser").worksIndex shouldBe Some(Index("works-elser-full"))
+      result("openai").worksIndex shouldBe Some(Index("works-openai-full"))
     }
 
     it("excludes config when semantic vectorType is invalid") {
@@ -110,8 +111,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
       val result = MultiElasticConfigParser.parse(config)
 
-      result("test").worksIndex shouldBe Some("works-test")
-      result("test").imagesIndex shouldBe Some("images-test")
+      result("test").worksIndex shouldBe Some(Index("works-test"))
+      result("test").imagesIndex shouldBe Some(Index("images-test"))
     }
 
     it("parses semantic config tuning parameters") {

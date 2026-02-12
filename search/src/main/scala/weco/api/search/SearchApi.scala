@@ -32,6 +32,7 @@ import scala.concurrent.ExecutionContext
 class SearchApi(
   elasticClient: ResilientElasticClient,
   elasticConfig: ElasticConfig,
+  pipelineDate: String,
   additionalElasticClients: Map[String, ResilientElasticClient] = Map.empty,
   additionalElasticConfigs: Map[String, ElasticConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
@@ -59,7 +60,7 @@ class SearchApi(
       new WorksController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        worksIndex = config.getWorksIndex,
+        worksIndex = config.worksIndex.get,
         semanticConfig = config.semanticConfig
       )
   }
@@ -69,7 +70,7 @@ class SearchApi(
       new ImagesController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        imagesIndex = config.getImagesIndex
+        imagesIndex = config.imagesIndex.get
       )
   }
 
@@ -194,7 +195,7 @@ class SearchApi(
                 withFuture {
                   val config = elasticConfigs(clusterName)
                   controller
-                    .countWorkTypes(config.getWorksIndex.name)
+                    .countWorkTypes(config.worksIndex.get.name)
                     .map {
                       case Right(tally) => complete(tally)
                       case Left(err) =>
@@ -214,15 +215,15 @@ class SearchApi(
     val config = elasticConfigs(clusterName)
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
-      config.getPipelineDate,
-      config.getWorksIndex.name,
+      pipelineDate,
+      config.worksIndex.get.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
-      config.getPipelineDate,
-      config.getImagesIndex.name,
+      pipelineDate,
+      config.imagesIndex.get.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
 
@@ -233,14 +234,15 @@ class SearchApi(
     )
   }
 
+
   private def getElasticConfig(clusterName: String): Route =
     get {
       val config = elasticConfigs(clusterName)
       complete(
         Map(
-          "worksIndex" -> config.getWorksIndex.name,
-          "imagesIndex" -> config.getImagesIndex.name,
-          "pipelineDate" -> config.getPipelineDate,
+          "worksIndex" -> config.worksIndex.get.name,
+          "imagesIndex" -> config.imagesIndex.get.name,
+          "pipelineDate" -> pipelineDate,
           "clusterName" -> clusterName
         )
       )
