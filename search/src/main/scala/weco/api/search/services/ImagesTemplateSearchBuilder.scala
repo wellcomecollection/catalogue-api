@@ -59,7 +59,6 @@ trait ImagesTemplateSearchBuilder extends TemplateSearchBuilder {
        |}
        |""".stripMargin
     )
-
 }
 
 object ImagesTemplateSearchBuilder extends ImagesTemplateSearchBuilder

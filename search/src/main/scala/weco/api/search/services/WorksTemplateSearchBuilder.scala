@@ -11,6 +11,8 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
     Source.fromResource("WorksSemanticQuerySparse.mustache").mkString
   val semanticTemplateDense: String =
     Source.fromResource("WorksSemanticQueryDense.mustache").mkString
+
+  // Choose the right semantic query template based on whether the config specifies sparse or dense vectors
   lazy protected val semanticQueryTemplate: String =
     s"""
        |  {{#vectorType}}
@@ -22,6 +24,17 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |  {{/Dense}}
        |  {{/vectorType}}
        |""".stripMargin
+
+  lazy protected val semanticQuery: String =
+    s"""
+       |{
+       |  "bool": {
+       |     {{#query}}
+       |     "must": $semanticQueryTemplate,
+       |     {{/query}}
+       |     "filter": {{#toJson}}preFilter{{/toJson}}
+       |  }
+       | }""".stripMargin
 
   lazy protected val hybridQuery: String =
     s"""
@@ -36,18 +49,7 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |  }
        |""".stripMargin
 
-  lazy protected val semanticQuery: String =
-    s"""
-       |{
-       |  "bool": {
-       |     {{#query}}
-       |     "must": $semanticQueryTemplate,
-       |     {{/query}}
-       |     "filter": {{#toJson}}preFilter{{/toJson}}
-       |  }
-       | }""".stripMargin
-
-  lazy protected val retrieverQuery: String =
+  lazy protected val hybridRetrieverQuery: String =
     s"""
        |  {
        |    "rrf": {
@@ -69,6 +71,9 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |  }
        |""".stripMargin
 
+  // If semantic config is specified, run a hybrid query consisting of a lexical and a semantic component:
+  //   * When sorting by score (default), use a reciprocal rank fusion (RRF) retriever to combine the two components.
+  //   * When sorting by date, do not use RRF (sorting and RRF retrieval are incompatible).
   override protected lazy val source: String =
     normaliseSource(
       s"""
@@ -79,7 +84,7 @@ trait WorksTemplateSearchBuilder extends TemplateSearchBuilder {
        |    "sort": $sort,
        |    {{/sortByDate}}
        |    {{^sortByDate}}
-       |    "retriever": $retrieverQuery,
+       |    "retriever": $hybridRetrieverQuery,
        |    {{/sortByDate}}
        |  {{/semanticConfig}}
        |  {{^semanticConfig}}
