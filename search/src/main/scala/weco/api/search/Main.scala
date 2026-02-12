@@ -9,8 +9,7 @@ import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.{
   ApiConfig,
   ApiEnvironment,
-  ClusterConfig,
-  ElasticConfig
+  ClusterConfig
 }
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
@@ -43,9 +42,9 @@ object Main extends WellcomeTypesafeApp {
         val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
         if (pipelineDateOverride.isDefined)
           warn(s"Overridden pipeline date: $pipelineDateOverride")
-        pipelineDateOverride.getOrElse(ElasticConfig.pipelineDate)
+        pipelineDateOverride.getOrElse(ClusterConfig.defaultPipelineDate)
       case _ =>
-        ElasticConfig.pipelineDate
+        ClusterConfig.defaultPipelineDate
     }
 
     def buildElasticClient(config: ClusterConfig): ResilientElasticClient =
@@ -55,8 +54,7 @@ object Main extends WellcomeTypesafeApp {
             clusterConfig = config,
             serviceName = "catalogue_api",
             environment = apiConfig.environment,
-            pipelineDate =
-              config.pipelineDate.getOrElse(ElasticConfig.pipelineDate)
+            pipelineDate = config.getPipelineDate
         )
       )
 
