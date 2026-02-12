@@ -5,15 +5,15 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.models.VectorType
 
-class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
+class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
-  describe("parseMultiClusterConfig") {
+  describe("parseMultiElasticConfig") {
     it("returns empty map when no multiCluster config exists") {
       val config = ConfigFactory.parseString("""
         |someOtherConfig = "value"
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result shouldBe empty
     }
@@ -27,7 +27,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result should have size 1
       result should contain key "elser"
@@ -54,7 +54,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result should have size 2
       result should contain key "elser"
@@ -77,7 +77,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
       result shouldBe empty
     }
 
@@ -93,7 +93,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result shouldBe empty
     }
@@ -108,7 +108,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result("test").worksIndex shouldBe Some("works-test")
       result("test").imagesIndex shouldBe Some("images-test")
@@ -131,7 +131,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       val semanticConfig = result("test").semanticConfig
       semanticConfig.isDefined shouldBe true
@@ -152,7 +152,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       val minimalConfig = result("minimal")
       minimalConfig.worksIndex shouldBe None
@@ -168,7 +168,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parse(config)
+      val result = MultiElasticConfigParser.parse(config)
 
       result shouldBe empty
     }

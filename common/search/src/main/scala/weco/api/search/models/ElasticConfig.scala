@@ -28,7 +28,6 @@ case class ElasticConfig(
         s"images-indexed-${ElasticConfig.defaultImagesIndexDate}"))
 }
 
-// case class EsCluster(date: String)
 
 object ElasticConfig {
   // Default values shared across the API

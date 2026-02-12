@@ -8,7 +8,7 @@ import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 import grizzled.slf4j.Logging
 
-object MultiClusterConfigParser extends Logging {
+object MultiElasticConfigParser extends Logging {
 
   /**
     * Parse multi-cluster Elasticsearch configuration from Typesafe Config.
@@ -23,20 +23,20 @@ object MultiClusterConfigParser extends Logging {
       return Map.empty[String, ElasticConfig]
     }
 
-    val multiClusterConfig = config.getConfig("multiCluster")
-    val clusterNames = multiClusterConfig.root().keySet().asScala.toSet
+    val multiElasticConfig = config.getConfig("multiCluster")
+    val clusterNames = multiElasticConfig.root().keySet().asScala.toSet
 
     info(
       s"Found multi-cluster configuration for clusters: ${clusterNames.mkString(", ")}")
 
     clusterNames.flatMap { clusterName =>
-      val config = multiClusterConfig.getConfig(clusterName)
+      val config = multiElasticConfig.getConfig(clusterName)
 
       // Additional clusters are not essential. If a cluster config fails to parse for any reason,
       // fail gracefully and exclude it from the returned map.
-      Try(parseClusterConfig(clusterName, config)) match {
-        case Success(clusterConfig) =>
-          Some(clusterName -> clusterConfig)
+      Try(parseElasticConfig(clusterName, config)) match {
+        case Success(elasticConfig) =>
+          Some(clusterName -> elasticConfig)
         case Failure(e) =>
           error(
             s"Could not parse cluster config for '$clusterName': ${e.getMessage}")
@@ -45,7 +45,7 @@ object MultiClusterConfigParser extends Logging {
     }.toMap
   }
 
-  private def parseClusterConfig(clusterName: String,
+  private def parseElasticConfig(clusterName: String,
                                  config: Config): ElasticConfig = {
     val semanticConfig =
       if (config.hasPath("semantic"))

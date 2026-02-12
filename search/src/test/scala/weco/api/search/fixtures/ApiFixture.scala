@@ -33,14 +33,9 @@ trait ApiFixture
   def withRouter[R](
     elasticConfig: ElasticConfig
   )(testWith: TestWith[Route, R]): R = {
-    val clusterConfig = ElasticConfig(
-      pipelineDate = Some(elasticConfig.getPipelineDate),
-      worksIndex = Some(elasticConfig.getWorksIndex.name),
-      imagesIndex = Some(elasticConfig.getImagesIndex.name)
-    )
     val router = new SearchApi(
       resilientElasticClient,
-      clusterConfig,
+      elasticConfig,
       apiConfig = apiConfig
     )
 
@@ -90,20 +85,20 @@ trait ApiFixture
    * Each cluster gets its own index, and the elasticCluster param can route between them.
    */
   def withMultiClusterApi[R](
-    defaultCluster: ElasticConfig,
-    additionalClusters: Map[String, ElasticConfig]
+    defaultElastic: ElasticConfig,
+    additionalElastics: Map[String, ElasticConfig]
   )(testWith: TestWith[(Map[String, Index], Route), R]): R = {
     withLocalWorksIndex { defaultIndex =>
       // Create indices for additional clusters recursively
-      createAdditionalIndices(additionalClusters.keys.toList) { additionalIndicesList =>
-        val additionalIndices = additionalClusters.keys.zip(additionalIndicesList).toMap
+      createAdditionalIndices(additionalElastics.keys.toList) { additionalIndicesList =>
+        val additionalIndices = additionalElastics.keys.zip(additionalIndicesList).toMap
         val allIndices = Map("default" -> defaultIndex) ++ additionalIndices
         
         // Update cluster configs with actual index names
-        val defaultClusterWithIndex = defaultCluster.copy(
+        val defaultElasticWithIndex = defaultElastic.copy(
           worksIndex = Some(defaultIndex.name)
         )
-        val additionalClustersWithIndices = additionalClusters.map {
+        val additionalElasticsWithIndices = additionalElastics.map {
           case (name, config) =>
             name -> config.copy(worksIndex = Some(additionalIndices(name).name))
         }
@@ -111,9 +106,9 @@ trait ApiFixture
         // Build the multi-cluster API (using same resilient client for all in tests)
         val router = new SearchApi(
           elasticClient = resilientElasticClient,
-          clusterConfig = defaultClusterWithIndex,
-          additionalElasticClients = additionalClustersWithIndices.keys.map(_ -> resilientElasticClient).toMap,
-          additionalClusterConfigs = additionalClustersWithIndices,
+          elasticConfig = defaultElasticWithIndex,
+          additionalElasticClients = additionalElasticsWithIndices.keys.map(_ -> resilientElasticClient).toMap,
+          additionalElasticConfigs = additionalElasticsWithIndices,
           apiConfig = apiConfig
         )
         

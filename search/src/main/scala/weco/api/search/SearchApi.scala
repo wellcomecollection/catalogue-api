@@ -31,22 +31,22 @@ import scala.concurrent.ExecutionContext
 
 class SearchApi(
   elasticClient: ResilientElasticClient,
-  clusterConfig: ElasticConfig,
+  elasticConfig: ElasticConfig,
   additionalElasticClients: Map[String, ResilientElasticClient] = Map.empty,
-  additionalClusterConfigs: Map[String, ElasticConfig] = Map.empty,
+  additionalElasticConfigs: Map[String, ElasticConfig] = Map.empty,
   implicit val apiConfig: ApiConfig
 )(implicit ec: ExecutionContext)
     extends CustomDirectives
     with IdentifierDirectives {
 
-  private val clusterConfigs = Map("default" -> clusterConfig) ++ additionalClusterConfigs
+  private val elasticConfigs = Map("default" -> elasticConfig) ++ additionalElasticConfigs
   private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
 
   private def getControllers[T](
     // we only create the controller if the relevant index is part of the ElasticConfig
     shouldCreate: ElasticConfig => Boolean
   )(getController: (String, ElasticConfig) => T): Map[String, T] =
-    clusterConfigs.flatMap {
+    elasticConfigs.flatMap {
       case ("default", config) =>
         Some("default" -> getController("default", config))
       case (name, config) if shouldCreate(config) =>
@@ -85,7 +85,7 @@ class SearchApi(
           }
 
           elasticClusterParam match {
-            case Some(cluster) if clusterConfigs.contains(cluster) =>
+            case Some(cluster) if elasticConfigs.contains(cluster) =>
               routesFor(cluster)
             case Some(cluster) =>
               notFound(s"Cluster '$cluster' is not configured")
@@ -192,7 +192,7 @@ class SearchApi(
             get {
               requireController(worksController, clusterName) { controller =>
                 withFuture {
-                  val config = clusterConfigs(clusterName)
+                  val config = elasticConfigs(clusterName)
                   controller
                     .countWorkTypes(config.getWorksIndex.name)
                     .map {
@@ -211,7 +211,7 @@ class SearchApi(
     )
 
   def getSearchTemplates(clusterName: String): Route = get {
-    val config = clusterConfigs(clusterName)
+    val config = elasticConfigs(clusterName)
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       config.getPipelineDate,
@@ -235,7 +235,7 @@ class SearchApi(
 
   private def getElasticConfig(clusterName: String): Route =
     get {
-      val config = clusterConfigs(clusterName)
+      val config = elasticConfigs(clusterName)
       complete(
         Map(
           "worksIndex" -> config.getWorksIndex.name,

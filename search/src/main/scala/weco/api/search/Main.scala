@@ -3,7 +3,7 @@ package weco.api.search
 import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import weco.Tracing
-import weco.api.search.config.MultiClusterConfigParser
+import weco.api.search.config.MultiElasticConfigParser
 import weco.api.search.config.builders.PipelineElasticClientBuilder
 import weco.api.search.elasticsearch.ResilientElasticClient
 import weco.api.search.models.{ApiConfig, ApiEnvironment, ElasticConfig}
@@ -47,21 +47,21 @@ object Main extends WellcomeTypesafeApp {
       new ResilientElasticClient(
         clientFactory = () =>
           PipelineElasticClientBuilder(
-            clusterConfig = config,
+            elasticConfig = config,
             serviceName = "catalogue_api",
             environment = apiConfig.environment,
             pipelineDate = config.getPipelineDate
         )
       )
 
-    val clusterConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
-    val elasticClient = buildElasticClient(clusterConfig)
+    val elasticConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
+    val elasticClient = buildElasticClient(elasticConfig)
 
     // Create additional non-essential Elasticsearch clients (if configured) for routing experimental queries.
     // Catch all errors so that misconfigured experimental clusters do not cause the production API to crash.
-    val parsedAdditionalClusterConfigs = MultiClusterConfigParser.parse(config)
-    val additionalClusters =
-      parsedAdditionalClusterConfigs.toList.flatMap {
+    val parsedAdditionalElasticConfigs = MultiElasticConfigParser.parse(config)
+    val additionalElasticClients =
+      parsedAdditionalElasticConfigs.toList.flatMap {
         case (name, config) =>
           Try(buildElasticClient(config)) match {
             case Success(client) =>
@@ -74,15 +74,15 @@ object Main extends WellcomeTypesafeApp {
       }.toMap
 
     info(
-      s"Using default Elasticsearch cluster with ${additionalClusters.size} additional cluster(s)")
+      s"Using default Elasticsearch cluster with ${additionalElasticClients.size} additional cluster(s)")
 
     val router = new SearchApi(
       elasticClient = elasticClient,
-      clusterConfig = clusterConfig,
-      additionalElasticClients = additionalClusters.map {
+      elasticConfig = elasticConfig,
+      additionalElasticClients = additionalElasticClients.map {
         case (name, (client, _)) => name -> client
       },
-      additionalClusterConfigs = additionalClusters.map {
+      additionalElasticConfigs = additionalElasticClients.map {
         case (name, (_, cfg)) => name -> cfg
       },
       apiConfig = apiConfig
