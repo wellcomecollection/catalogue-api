@@ -54,7 +54,8 @@ object Main extends WellcomeTypesafeApp {
 
     val elasticConfig = ElasticConfig.forDefaultCluster(
       serviceName = "catalogue_api",
-      pipelineDate = pipelineDate
+      pipelineDate = pipelineDate,
+      environment = apiConfig.environment
     )
     val elasticClient = buildElasticClient(elasticConfig)
 
