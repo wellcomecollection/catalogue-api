@@ -57,17 +57,14 @@ object MultiClusterConfigParser extends Logging {
 
     vectorType.map { vt =>
       val defaultConfig = SemanticConfig(config.getString("modelId"), vt)
+      def intOrDefault(key: String, current: Int) =
+        config.getIntOption(key).getOrElse(current)
+
       defaultConfig.copy(
-        k = config.getIntOption("k").getOrElse(defaultConfig.k),
-        numCandidates = config
-          .getIntOption("numCandidates")
-          .getOrElse(defaultConfig.numCandidates),
-        rankWindowSize = config
-          .getIntOption("rankWindowSize")
-          .getOrElse(defaultConfig.rankWindowSize),
-        rankConstant = config
-          .getIntOption("rankConstant")
-          .getOrElse(defaultConfig.rankConstant)
+        k = intOrDefault("k", defaultConfig.k),
+        numCandidates = intOrDefault("numCandidates", defaultConfig.numCandidates),
+        rankWindowSize = intOrDefault("rankWindowSize", defaultConfig.rankWindowSize),
+        rankConstant = intOrDefault("rankConstant", defaultConfig.rankConstant)
       )
     }
   }
