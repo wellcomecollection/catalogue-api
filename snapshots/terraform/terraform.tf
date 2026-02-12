@@ -1,6 +1,8 @@
 terraform {
   backend "s3" {
-    role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    assume_role = {
+      role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    }
 
     bucket         = "wellcomecollection-catalogue-infra-delta"
     key            = "terraform/catalogue/snapshots.tfstate"
@@ -15,8 +17,9 @@ data "terraform_remote_state" "catalogue_account" {
   config = {
     bucket = "wellcomecollection-platform-infra"
     key    = "terraform/aws-account-infrastructure/catalogue.tfstate"
-
-    role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    assume_role = {
+      role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    }
     region   = "eu-west-1"
   }
 }
@@ -25,7 +28,9 @@ data "terraform_remote_state" "monitoring" {
   backend = "s3"
 
   config = {
-    role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    assume_role = {
+      role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    }
 
     bucket = "wellcomecollection-platform-infra"
     key    = "terraform/monitoring.tfstate"
@@ -37,7 +42,9 @@ data "terraform_remote_state" "shared" {
   backend = "s3"
 
   config = {
-    role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    assume_role = {
+      role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
+    }
 
     bucket = "wellcomecollection-platform-infra"
     key    = "terraform/platform-infrastructure/shared.tfstate"
@@ -49,7 +56,9 @@ data "terraform_remote_state" "data_api" {
   backend = "s3"
 
   config = {
-    role_arn = "arn:aws:iam::756629837203:role/catalogue-read_only"
+    assume_role = {
+      role_arn = "arn:aws:iam::756629837203:role/catalogue-read_only"
+    }
 
     bucket = "wellcomecollection-catalogue-infra-delta"
     key    = "terraform/catalogue/api/data_api.tfstate"
@@ -61,7 +70,9 @@ data "terraform_remote_state" "api_shared" {
   backend = "s3"
 
   config = {
-    role_arn = "arn:aws:iam::756629837203:role/catalogue-read_only"
+    assume_role = {
+      role_arn = "arn:aws:iam::756629837203:role/catalogue-read_only"
+    }
 
     bucket = "wellcomecollection-catalogue-infra-delta"
     key    = "terraform/catalogue/api/shared.tfstate"

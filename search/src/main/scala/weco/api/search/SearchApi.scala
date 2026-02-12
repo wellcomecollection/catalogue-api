@@ -204,8 +204,9 @@ class SearchApi(
               worksController match {
                 case Some(controller) =>
                   withFuture {
+                    val config = clusterConfigs(clusterName)
                     controller
-                      .countWorkTypes(controller.worksIndex)
+                      .countWorkTypes(config.getWorksIndex.name)
                       .map {
                         case Right(tally) => complete(tally)
                         case Left(err) =>
@@ -228,14 +229,14 @@ class SearchApi(
     val worksSearchTemplate = SearchTemplate(
       "multi_matcher_search_query",
       config.getPipelineDate,
-      worksControllers(clusterName).worksIndex.name,
+      config.getWorksIndex.name,
       WorksTemplateSearchBuilder.queryTemplate
     )
 
     val imageSearchTemplate = SearchTemplate(
       "image_search_query",
       config.getPipelineDate,
-      imagesControllers(clusterName).imagesIndex.name,
+      config.getImagesIndex.name,
       ImagesTemplateSearchBuilder.queryTemplate
     )
 
@@ -251,8 +252,8 @@ class SearchApi(
       val config = clusterConfigs(clusterName)
       complete(
         Map(
-          "worksIndex" -> worksControllers(clusterName).worksIndex.name,
-          "imagesIndex" -> imagesControllers(clusterName).imagesIndex.name,
+          "worksIndex" -> config.getWorksIndex.name,
+          "imagesIndex" -> config.getImagesIndex.name,
           "pipelineDate" -> config.getPipelineDate,
           "clusterName" -> clusterName
         )
