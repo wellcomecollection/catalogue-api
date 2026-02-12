@@ -64,7 +64,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
       result("openai").worksIndex shouldBe Some("works-openai-full")
     }
 
-    it("returns None for semanticConfig when vectorType is invalid") {
+    it("excludes config when semantic vectorType is invalid") {
       val config = ConfigFactory.parseString("""
         |multiCluster.test {
         |  hostSecretPath = "test/host"
@@ -78,11 +78,10 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |""".stripMargin)
 
       val result = MultiClusterConfigParser.parse(config)
-
-      result("test").semanticConfig shouldBe None
+      result shouldBe empty
     }
 
-    it("returns None for semanticConfig when modelId is missing") {
+    it("excludes config when semantic modelId is missing") {
       val config = ConfigFactory.parseString("""
         |multiCluster.test {
         |  hostSecretPath = "test/host"
@@ -96,7 +95,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
 
       val result = MultiClusterConfigParser.parse(config)
 
-      result("test").semanticConfig shouldBe None
+      result shouldBe empty
     }
 
     it("parses optional images index") {

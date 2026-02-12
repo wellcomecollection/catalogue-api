@@ -35,7 +35,6 @@ object PipelineElasticClientBuilder extends Logging {
     }
     val hostname = getSecretString(
       clusterConfig.hostSecretPath.getOrElse(s"$pipelinePrefix/$hostType"))
-
     val port = getSecretString(
       clusterConfig.portSecretPath.getOrElse(s"$pipelinePrefix/port")).toInt
     val protocol = getSecretString(
