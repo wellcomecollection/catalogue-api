@@ -3,6 +3,7 @@ package weco.api.search.config
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+import weco.api.search.models.VectorType
 
 class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
 
@@ -12,7 +13,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |someOtherConfig = "value"
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result shouldBe empty
     }
@@ -26,7 +27,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result should have size 1
       result should contain key "elser"
@@ -53,7 +54,7 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result should have size 2
       result should contain key "elser"
@@ -69,12 +70,14 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
         |  worksIndex = "works-test"
-        |  semanticModelId = "some-model"
-        |  semanticVectorType = "invalid"
+        |  semantic {
+        |    modelId = "some-model"
+        |    vectorType = "invalid"
+        |  }
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").semanticConfig shouldBe None
     }
@@ -85,11 +88,13 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
         |  worksIndex = "works-test"
-        |  semanticVectorType = "dense"
+        |  semantic {
+        |    vectorType = "dense"
+        |  }
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").semanticConfig shouldBe None
     }
@@ -104,10 +109,40 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       result("test").worksIndex shouldBe Some("works-test")
       result("test").imagesIndex shouldBe Some("images-test")
+    }
+
+    it("parses semantic config tuning parameters") {
+      val config = ConfigFactory.parseString("""
+        |multiCluster.test {
+        |  hostSecretPath = "test/host"
+        |  apiKeySecretPath = "test/apikey"
+        |  worksIndex = "works-test"
+        |  semantic {
+        |    modelId = "some-model"
+        |    vectorType = "dense"
+        |    k = 10
+        |    numCandidates = 200
+        |    rankWindowSize = 5000
+        |    rankConstant = 30
+        |  }
+        |}
+        |""".stripMargin)
+
+      val result = MultiClusterConfigParser.parse(config)
+
+      val semanticConfig = result("test").semanticConfig
+      semanticConfig.isDefined shouldBe true
+      val semantic = semanticConfig.get
+      semantic.modelId shouldBe "some-model"
+      semantic.vectorType shouldBe VectorType.Dense
+      semantic.k shouldBe 10
+      semantic.numCandidates shouldBe 200
+      semantic.rankWindowSize shouldBe 5000
+      semantic.rankConstant shouldBe 30
     }
 
     it("handles missing optional fields") {
@@ -118,12 +153,25 @@ class MultiClusterConfigParserTest extends AnyFunSpec with Matchers {
         |}
         |""".stripMargin)
 
-      val result = MultiClusterConfigParser.parseMultiClusterConfig(config)
+      val result = MultiClusterConfigParser.parse(config)
 
       val minimalConfig = result("minimal")
       minimalConfig.worksIndex shouldBe None
       minimalConfig.imagesIndex shouldBe None
       minimalConfig.semanticConfig shouldBe None
+    }
+
+    it("excludes config when mandatory fields are missing") {
+      val config = ConfigFactory.parseString("""
+        |multiCluster.invalid {
+        |  hostSecretPath = "invalid/host"
+        |  worksIndex = "works-invalid"
+        |}
+        |""".stripMargin)
+
+      val result = MultiClusterConfigParser.parse(config)
+
+      result shouldBe empty
     }
   }
 }

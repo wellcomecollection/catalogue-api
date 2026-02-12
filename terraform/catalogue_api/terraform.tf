@@ -43,7 +43,7 @@ data "terraform_remote_state" "catalogue_api_shared" {
   backend = "s3"
 
   config = {
-    assume_role = { 
+    assume_role = {
       role_arn = "arn:aws:iam::756629837203:role/catalogue-read_only"
     }
 

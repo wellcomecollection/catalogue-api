@@ -20,7 +20,7 @@ data "terraform_remote_state" "catalogue_account" {
     assume_role = {
       role_arn = "arn:aws:iam::760097843905:role/platform-read_only"
     }
-    region   = "eu-west-1"
+    region = "eu-west-1"
   }
 }
 
