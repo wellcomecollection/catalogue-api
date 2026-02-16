@@ -91,6 +91,14 @@ object WorksRequestBuilder
         lte = lte,
         gte = gte
       )
+    case ItemsLocationsCreatedDateFilter(fromDate, toDate) =>
+      val (gte, lte) =
+        (fromDate map ElasticDate.apply, toDate map ElasticDate.apply)
+      RangeQuery(
+        "filterableValues.items.locations.createdDate",
+        lte = lte,
+        gte = gte
+      )
     case LanguagesFilter(languageIds) =>
       termsQuery(
         "filterableValues.languages.id",

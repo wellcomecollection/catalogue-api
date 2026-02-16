@@ -60,7 +60,9 @@ case class ItemsParams(
   `items.identifiers`: Option[ItemsIdentifiersFilter],
   `items.locations.license`: Option[LicenseFilter],
   `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
-  `items.locations.accessConditions.status`: Option[AccessStatusFilter]
+  `items.locations.accessConditions.status`: Option[AccessStatusFilter],
+  `items.locations.createdDate.from`: Option[LocalDate],
+  `items.locations.createdDate.to`: Option[LocalDate]
 )
 
 case class PaginationParams(
@@ -118,6 +120,7 @@ case class MultipleWorksParams(
     List(
       filterParams.workType,
       dateFilter,
+      createdDateFilter,
       filterParams.languages,
       filterParams.`genres.label`,
       filterParams.`genres`,
@@ -145,6 +148,15 @@ case class MultipleWorksParams(
       case (None, None)       => None
       case (dateFrom, dateTo) => Some(DateRangeFilter(dateFrom, dateTo))
     }
+
+  private def createdDateFilter: Option[ItemsLocationsCreatedDateFilter] =
+    (
+      itemsParams.`items.locations.createdDate.from`,
+      itemsParams.`items.locations.createdDate.to`
+    ) match {
+      case (None, None)       => None
+      case (dateFrom, dateTo) => Some(ItemsLocationsCreatedDateFilter(dateFrom, dateTo))
+    }
 }
 
 object MultipleWorksParams extends QueryParamsUtils {
@@ -166,6 +178,8 @@ object MultipleWorksParams extends QueryParamsUtils {
       "items.identifiers".as[ItemsIdentifiersFilter].?,
       "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
+      "items.locations.createdDate.from".as[LocalDate].?,
+      "items.locations.createdDate.to".as[LocalDate].?,
       "page".as[Int].?,
       "pageSize".as[Int].?,
       "sort".as[List[SortRequest]].?,
@@ -180,6 +194,8 @@ object MultipleWorksParams extends QueryParamsUtils {
           identifiers,
           locationType,
           accessStatus,
+          createdDateFrom,
+          createdDateTo,
           page,
           pageSize,
           sort,
@@ -193,7 +209,9 @@ object MultipleWorksParams extends QueryParamsUtils {
           identifiers,
           license,
           locationType,
-          accessStatus
+          accessStatus,
+          createdDateFrom,
+          createdDateTo
         )
 
         val paginationParams = PaginationParams(page, pageSize, sort, sortOrder)
