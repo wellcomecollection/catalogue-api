@@ -154,8 +154,9 @@ case class MultipleWorksParams(
       itemsParams.`items.locations.createdDate.from`,
       itemsParams.`items.locations.createdDate.to`
     ) match {
-      case (None, None)       => None
-      case (dateFrom, dateTo) => Some(ItemsLocationsCreatedDateFilter(dateFrom, dateTo))
+      case (None, None) => None
+      case (dateFrom, dateTo) =>
+        Some(ItemsLocationsCreatedDateFilter(dateFrom, dateTo))
     }
 }
 
