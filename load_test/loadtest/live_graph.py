@@ -11,6 +11,7 @@ import time
 import os
 from datetime import datetime, timezone
 
+
 def read_new_results(filepath, file_pos):
     results = []
     try:
@@ -125,9 +126,19 @@ def run_plotext(sem_file, default_file, dur_secs):
         graph = plt.build()
 
         sem_avg = sum(sem_latencies) / len(sem_latencies) if sem_latencies else 0
-        default_avg = sum(default_latencies) / len(default_latencies) if default_latencies else 0
-        sem_p99 = sorted(sem_latencies)[int(len(sem_latencies) * 0.99)] if sem_latencies else 0
-        default_p99 = sorted(default_latencies)[int(len(default_latencies) * 0.99)] if default_latencies else 0
+        default_avg = (
+            sum(default_latencies) / len(default_latencies) if default_latencies else 0
+        )
+        sem_p99 = (
+            sorted(sem_latencies)[int(len(sem_latencies) * 0.99)]
+            if sem_latencies
+            else 0
+        )
+        default_p99 = (
+            sorted(default_latencies)[int(len(default_latencies) * 0.99)]
+            if default_latencies
+            else 0
+        )
 
         stats = (
             f"  Semantic:     avg={sem_avg:>8.1f}ms  p99={sem_p99:>8.1f}ms  errors={sem_errors}\n"
@@ -279,6 +290,7 @@ def main():
 
     try:
         import plotext
+
         run_plotext(sem_file, default_file, dur_secs)
     except ImportError:
         run_fallback(sem_file, default_file, dur_secs)

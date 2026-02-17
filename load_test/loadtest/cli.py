@@ -15,7 +15,13 @@ import tempfile
 import urllib.parse
 from datetime import datetime
 
-from loadtest.live_graph import parse_duration, run_fallback, run_plotext, run_single_plotext, run_single_fallback
+from loadtest.live_graph import (
+    parse_duration,
+    run_fallback,
+    run_plotext,
+    run_single_plotext,
+    run_single_fallback,
+)
 
 OUTPUT_DIR = "results"
 
@@ -54,7 +60,9 @@ def read_queries(queries_file: str) -> list[str]:
     return queries
 
 
-def build_targets(queries: list[str], base_url: str, semantic: bool, cluster: str = "elser") -> str:
+def build_targets(
+    queries: list[str], base_url: str, semantic: bool, cluster: str = "elser"
+) -> str:
     """Write vegeta target lines to a temp file. Returns the file path."""
     fd, path = tempfile.mkstemp(suffix=".txt", prefix="vegeta-targets-")
     with os.fdopen(fd, "w") as f:
@@ -74,7 +82,8 @@ def compute_duration(num_targets: int, rate: int) -> str:
 def run_attack(targets_file: str, rate: int, duration: str, output_bin: str):
     """Run vegeta attack, writing binary output to output_bin."""
     cmd = [
-        "vegeta", "attack",
+        "vegeta",
+        "attack",
         f"-targets={targets_file}",
         f"-rate={rate}/s",
         f"-duration={duration}",
@@ -97,7 +106,13 @@ def run_parallel_attacks(
     # semantic: vegeta attack | tee sem.bin | vegeta encode --to json > sem.jsonl
     sem_jsonl_f = open(sem_jsonl, "w")
     sem_attack = subprocess.Popen(
-        ["vegeta", "attack", f"-targets={sem_targets}", f"-rate={rate}/s", f"-duration={duration}"],
+        [
+            "vegeta",
+            "attack",
+            f"-targets={sem_targets}",
+            f"-rate={rate}/s",
+            f"-duration={duration}",
+        ],
         stdout=subprocess.PIPE,
     )
     sem_tee = subprocess.Popen(
@@ -116,7 +131,13 @@ def run_parallel_attacks(
     # default: vegeta attack | tee default.bin | vegeta encode --to json > default.jsonl
     default_jsonl_f = open(default_jsonl, "w")
     default_attack = subprocess.Popen(
-        ["vegeta", "attack", f"-targets={default_targets}", f"-rate={rate}/s", f"-duration={duration}"],
+        [
+            "vegeta",
+            "attack",
+            f"-targets={default_targets}",
+            f"-rate={rate}/s",
+            f"-duration={duration}",
+        ],
         stdout=subprocess.PIPE,
     )
     default_tee = subprocess.Popen(
@@ -132,7 +153,12 @@ def run_parallel_attacks(
     )
     default_tee.stdout.close()
 
-    return (sem_attack, sem_tee, sem_encode, sem_jsonl_f), (default_attack, default_tee, default_encode, default_jsonl_f)
+    return (sem_attack, sem_tee, sem_encode, sem_jsonl_f), (
+        default_attack,
+        default_tee,
+        default_encode,
+        default_jsonl_f,
+    )
 
 
 def wait_pipelines(sem_pipeline, default_pipeline):
@@ -151,7 +177,9 @@ def generate_report(bin_path: str, label: str):
 
 def generate_histogram(bin_path: str, label: str):
     print(f"\n{label}:")
-    subprocess.run(["vegeta", "report", "-type=hist[0,200ms,500ms,1s,2s,5s,10s]", bin_path])
+    subprocess.run(
+        ["vegeta", "report", "-type=hist[0,200ms,500ms,1s,2s,5s,10s]", bin_path]
+    )
 
 
 def generate_plot(bin_path: str, html_path: str):
@@ -235,7 +263,13 @@ def run_single_attack_pipeline(targets_file, rate, duration, bin_path, jsonl_pat
     """Run vegeta attack | tee bin | vegeta encode --to json > jsonl, returning pipeline procs."""
     jsonl_f = open(jsonl_path, "w")
     attack = subprocess.Popen(
-        ["vegeta", "attack", f"-targets={targets_file}", f"-rate={rate}/s", f"-duration={duration}"],
+        [
+            "vegeta",
+            "attack",
+            f"-targets={targets_file}",
+            f"-rate={rate}/s",
+            f"-duration={duration}",
+        ],
         stdout=subprocess.PIPE,
     )
     tee = subprocess.Popen(
@@ -264,7 +298,9 @@ def cmd_search(args):
     base_url = env_to_base_url(args.env)
     queries = read_queries(args.queries)
     semantic = args.cluster is not None
-    targets = build_targets(queries, base_url, semantic=semantic, cluster=args.cluster or "elser")
+    targets = build_targets(
+        queries, base_url, semantic=semantic, cluster=args.cluster or "elser"
+    )
 
     duration = args.duration
     if duration == "0":
@@ -288,7 +324,9 @@ def cmd_search(args):
 
     if args.live:
         jsonl_path = os.path.join(OUTPUT_DIR, f"results_{mode_tag}_{timestamp}.jsonl")
-        pipeline = run_single_attack_pipeline(targets, args.rate, duration, results_bin, jsonl_path)
+        pipeline = run_single_attack_pipeline(
+            targets, args.rate, duration, results_bin, jsonl_path
+        )
 
         dur_secs = parse_duration(duration)
         print()
@@ -297,6 +335,7 @@ def cmd_search(args):
 
         try:
             import plotext  # noqa: F401
+
             run_single_plotext(jsonl_path, dur_secs, label=mode_label)
         except ImportError:
             run_single_fallback(jsonl_path, dur_secs, label=mode_label)
@@ -313,7 +352,9 @@ def cmd_search(args):
     subprocess.run(["vegeta", "report", results_bin])
 
     print("\n=== Latency Histogram ===")
-    subprocess.run(["vegeta", "report", "-type=hist[0,200ms,500ms,1s,2s,5s,10s]", results_bin])
+    subprocess.run(
+        ["vegeta", "report", "-type=hist[0,200ms,500ms,1s,2s,5s,10s]", results_bin]
+    )
 
     html_path = os.path.join(OUTPUT_DIR, f"plot_{mode_tag}_{timestamp}.html")
     generate_plot(results_bin, html_path)
@@ -347,8 +388,14 @@ def cmd_compare(args):
     print("Starting default search attack...")
 
     sem_pipeline, default_pipeline = run_parallel_attacks(
-        sem_targets, default_targets, args.rate, args.duration,
-        sem_bin, default_bin, sem_jsonl, default_jsonl,
+        sem_targets,
+        default_targets,
+        args.rate,
+        args.duration,
+        sem_bin,
+        default_bin,
+        sem_jsonl,
+        default_jsonl,
     )
 
     dur_secs = parse_duration(args.duration)
@@ -360,6 +407,7 @@ def cmd_compare(args):
 
         try:
             import plotext  # noqa: F401
+
             run_plotext(sem_jsonl, default_jsonl, dur_secs)
         except ImportError:
             run_fallback(sem_jsonl, default_jsonl, dur_secs)
@@ -396,10 +444,26 @@ def cmd_compare(args):
 
 
 def add_common_args(parser, default_duration="30s"):
-    parser.add_argument("queries", nargs="?", default="queries.txt", help="queries file (default: queries.txt)")
-    parser.add_argument("--rate", type=int, default=5, help="requests per second (default: 5)")
-    parser.add_argument("--duration", default=default_duration, help=f"test duration e.g. 30s, 1m (default: {default_duration})")
-    parser.add_argument("--env", default="dev", choices=["dev", "stage", "prod"], help="API environment (default: dev)")
+    parser.add_argument(
+        "queries",
+        nargs="?",
+        default="queries.txt",
+        help="queries file (default: queries.txt)",
+    )
+    parser.add_argument(
+        "--rate", type=int, default=5, help="requests per second (default: 5)"
+    )
+    parser.add_argument(
+        "--duration",
+        default=default_duration,
+        help=f"test duration e.g. 30s, 1m (default: {default_duration})",
+    )
+    parser.add_argument(
+        "--env",
+        default="dev",
+        choices=["dev", "stage", "prod"],
+        help="API environment (default: dev)",
+    )
 
 
 def main():
@@ -410,17 +474,35 @@ def main():
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # compare
-    p_compare = subparsers.add_parser("compare", help="Run semantic + default in parallel")
+    p_compare = subparsers.add_parser(
+        "compare", help="Run semantic + default in parallel"
+    )
     add_common_args(p_compare)
-    p_compare.add_argument("--cluster", required=True, choices=["elser", "openai"], help="semantic cluster to compare against default search")
-    p_compare.add_argument("--live", action="store_true", help="show live terminal graph during test")
+    p_compare.add_argument(
+        "--cluster",
+        required=True,
+        choices=["elser", "openai"],
+        help="semantic cluster to compare against default search",
+    )
+    p_compare.add_argument(
+        "--live", action="store_true", help="show live terminal graph during test"
+    )
     p_compare.set_defaults(func=cmd_compare)
 
     # search
-    p_search = subparsers.add_parser("search", help="Search load test (default search, use --cluster for semantic)")
+    p_search = subparsers.add_parser(
+        "search", help="Search load test (default search, use --cluster for semantic)"
+    )
     add_common_args(p_search, default_duration="0")
-    p_search.add_argument("--cluster", default=None, choices=["elser", "openai"], help="semantic cluster (omit for default search)")
-    p_search.add_argument("--live", action="store_true", help="show live terminal graph during test")
+    p_search.add_argument(
+        "--cluster",
+        default=None,
+        choices=["elser", "openai"],
+        help="semantic cluster (omit for default search)",
+    )
+    p_search.add_argument(
+        "--live", action="store_true", help="show live terminal graph during test"
+    )
     p_search.set_defaults(func=cmd_search)
 
     args = parser.parse_args()
