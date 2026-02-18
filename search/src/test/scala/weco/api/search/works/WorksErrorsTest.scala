@@ -341,10 +341,10 @@ class WorksErrorsTest
     // By creating an index without a mapping, we don't have a canonicalId field
     // to sort on.  Trying to query this index will trigger one such exception!
     withLocalElasticsearchIndex(config = IndexConfig.empty) { worksIndex =>
-      val elasticConfig = ElasticConfig(
-        worksIndex = Some(worksIndex.name),
-        imagesIndex = Some("imagesIndex-notused"),
-        pipelineDate = Some("pipeline-date")
+      val elasticConfig = ElasticConfig.forDefaultCluster(
+        worksIndexName = Some(worksIndex.name),
+        imagesIndexName = Some("imagesIndex-notused"),
+        serviceName = "catalogue_api"
       )
 
       withRouter(elasticConfig) { route =>

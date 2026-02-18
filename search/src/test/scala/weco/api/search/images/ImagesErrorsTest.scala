@@ -55,10 +55,10 @@ class ImagesErrorsTest
   }
 
   it("returns a 500 error if the default index doesn't exist") {
-    val elasticConfig = ElasticConfig(
-      worksIndex = Some(createIndex.name),
-      imagesIndex = Some(createIndex.name),
-      pipelineDate = Some("pipeline-date")
+    val elasticConfig = ElasticConfig.forDefaultCluster(
+      worksIndexName = Some(createIndex.name),
+      imagesIndexName = Some(createIndex.name),
+      serviceName = "catalogue_api"
     )
 
     val testPaths = Table(

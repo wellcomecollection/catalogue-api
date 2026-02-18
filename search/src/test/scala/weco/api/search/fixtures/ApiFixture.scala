@@ -36,17 +36,18 @@ trait ApiFixture
     val router = new SearchApi(
       resilientElasticClient,
       elasticConfig,
-      apiConfig = apiConfig
+      apiConfig = apiConfig,
+      pipelineDate = "pipeline-date"
     )
 
     testWith(router.routes)
   }
 
   def withApi[R](testWith: TestWith[Route, R]): R = {
-    val elasticConfig = ElasticConfig(
-      worksIndex = Some("worksIndex-notused"),
-      imagesIndex = Some("imagesIndex-notused"),
-      pipelineDate = Some("pipeline-date")
+    val elasticConfig = ElasticConfig.forDefaultCluster(
+      worksIndexName = Some("worksIndex-notused"),
+      imagesIndexName = Some("imagesIndex-notused"),
+      serviceName = "catalogue_api"
     )
 
     withRouter(elasticConfig) { route =>
@@ -56,10 +57,10 @@ trait ApiFixture
 
   def withWorksApi[R](testWith: TestWith[(Index, Route), R]): R =
     withLocalWorksIndex { worksIndex =>
-      val elasticConfig = ElasticConfig(
-        worksIndex = Some(worksIndex.name),
-        imagesIndex = Some("imagesIndex-notused"),
-        pipelineDate = Some("pipeline-date")
+      val elasticConfig = ElasticConfig.forDefaultCluster(
+        worksIndexName = Some(worksIndex.name),
+        imagesIndexName = Some("imagesIndex-notused"),
+        serviceName = "catalogue_api"
       )
 
       withRouter(elasticConfig) { route =>
@@ -69,10 +70,10 @@ trait ApiFixture
 
   def withImagesApi[R](testWith: TestWith[(Index, Route), R]): R =
     withLocalImagesIndex { imagesIndex =>
-      val elasticConfig = ElasticConfig(
-        worksIndex = Some("worksIndex-notused"),
-        imagesIndex = Some(imagesIndex.name),
-        pipelineDate = Some("pipeline-date")
+      val elasticConfig = ElasticConfig.forDefaultCluster(
+        worksIndexName = Some("worksIndex-notused"),
+        imagesIndexName = Some(imagesIndex.name),
+        serviceName = "catalogue_api"
       )
 
       withRouter(elasticConfig) { route =>
@@ -109,7 +110,8 @@ trait ApiFixture
           elasticConfig = defaultElasticWithIndex,
           additionalElasticClients = additionalElasticsWithIndices.keys.map(_ -> resilientElasticClient).toMap,
           additionalElasticConfigs = additionalElasticsWithIndices,
-          apiConfig = apiConfig
+          apiConfig = apiConfig,
+          pipelineDate = "pipeline-date"
         )
         
         testWith((allIndices, router.routes))

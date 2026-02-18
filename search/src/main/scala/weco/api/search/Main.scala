@@ -48,13 +48,15 @@ object Main extends WellcomeTypesafeApp {
         clientFactory = () =>
           PipelineElasticClientBuilder(
             elasticConfig = config,
-            serviceName = "catalogue_api",
-            environment = apiConfig.environment,
-            pipelineDate = config.getPipelineDate
+            environment = apiConfig.environment
         )
       )
 
-    val elasticConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
+    val elasticConfig = ElasticConfig.forDefaultCluster(
+      serviceName = "catalogue_api",
+      pipelineDate = pipelineDate,
+      environment = apiConfig.environment
+    )
     val elasticClient = buildElasticClient(elasticConfig)
 
     // Create additional non-essential Elasticsearch clients (if configured) for routing experimental queries.
@@ -67,8 +69,9 @@ object Main extends WellcomeTypesafeApp {
             case Success(client) =>
               info(s"Configured additional Elasticsearch cluster '$name'")
               Some((name, (client, config)))
-            case Failure(_) =>
-              error(s"Failed to build additional Elasticsearch cluster '$name'")
+            case Failure(e) =>
+              error(
+                s"Failed to build additional Elasticsearch cluster '$name': ${e.getMessage}")
               None
           }
       }.toMap
@@ -79,6 +82,7 @@ object Main extends WellcomeTypesafeApp {
     val router = new SearchApi(
       elasticClient = elasticClient,
       elasticConfig = elasticConfig,
+      pipelineDate = pipelineDate,
       additionalElasticClients = additionalClusters.map {
         case (name, (client, _)) => name -> client
       },

@@ -1,5 +1,6 @@
 package weco.api.search.config
 
+import com.sksamuel.elastic4s.Index
 import com.typesafe.config.{Config, ConfigException}
 import weco.api.search.models.{ElasticConfig, SemanticConfig, VectorType}
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
@@ -54,12 +55,12 @@ object MultiElasticConfigParser extends Logging {
 
     ElasticConfig(
       name = clusterName,
-      worksIndex = config.getStringOption("worksIndex"),
-      imagesIndex = config.getStringOption("imagesIndex"),
-      hostSecretPath = Some(config.getString("hostSecretPath")),
-      apiKeySecretPath = Some(config.getString("apiKeySecretPath")),
-      portSecretPath = config.getStringOption("portSecretPath"),
-      protocolSecretPath = config.getStringOption("protocolSecretPath"),
+      worksIndex = config.getStringOption("worksIndex").map(Index(_)),
+      imagesIndex = config.getStringOption("imagesIndex").map(Index(_)),
+      hostSecretPath = config.getString("hostSecretPath"),
+      apiKeySecretPath = config.getString("apiKeySecretPath"),
+      portSecretPath = config.getString("portSecretPath"),
+      protocolSecretPath = config.getString("protocolSecretPath"),
       semanticConfig = semanticConfig
     )
   }

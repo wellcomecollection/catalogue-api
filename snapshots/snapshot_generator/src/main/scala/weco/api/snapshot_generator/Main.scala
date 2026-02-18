@@ -4,6 +4,8 @@ import org.apache.pekko.actor.ActorSystem
 import com.typesafe.config.Config
 import software.amazon.awssdk.services.s3.S3Client
 import weco.api.search.config.builders.PipelineElasticClientBuilder
+import weco.api.search.models.ElasticConfig
+import weco.api.snapshot_generator.models.PipelineElasticClient
 import weco.api.snapshot_generator.services.{
   SnapshotGeneratorWorkerService,
   SnapshotService
@@ -23,9 +25,18 @@ object Main extends WellcomeTypesafeApp {
 
     val s3Client: S3Client = S3Client.builder().build()
 
+    val pipelineElasticClient: PipelineElasticClient =
+      (pipelineDate: String) =>
+        PipelineElasticClientBuilder(
+          ElasticConfig.forDefaultCluster(
+            serviceName = "snapshot_generator",
+            pipelineDate = pipelineDate
+          )
+      )
+
     val snapshotService =
       new SnapshotService(
-        PipelineElasticClientBuilder("snapshot_generator", _),
+        pipelineElasticClient,
         s3Client
       )
 

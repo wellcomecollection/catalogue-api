@@ -1,5 +1,6 @@
 package weco.api.search
 
+import com.sksamuel.elastic4s.Index
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.fixtures.TestDocumentFixtures
@@ -18,13 +19,15 @@ class ElasticClusterParamTest
   describe("elasticCluster query parameter") {
     it("uses default controller when no elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultElastic = ElasticConfig(name = "default"),
+        defaultElastic = ElasticConfig.forDefaultCluster(serviceName="catalogue_api"),
         additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+            hostSecretPath = "elser/host",
+            apiKeySecretPath = "elser/key",
+            portSecretPath = "elser/port",
+            protocolSecretPath = "elser/protocol",
+            worksIndex = Some(Index("works-elser"))
           )
         )
       ) {
@@ -46,19 +49,23 @@ class ElasticClusterParamTest
 
     it("routes to correct controller when elasticCluster param is provided") {
       withMultiClusterApi(
-        defaultElastic = ElasticConfig(name = "default"),
+        defaultElastic = ElasticConfig.forDefaultCluster(serviceName="catalogue_api"),
         additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+            hostSecretPath = "elser/host",
+            apiKeySecretPath = "elser/key",
+            portSecretPath = "elser/port",
+            protocolSecretPath = "elser/protocol",
+            worksIndex = Some(Index("works-elser"))
           ),
           "openai" -> ElasticConfig(
             name = "openai",
-            hostSecretPath = Some("openai/host"),
-            apiKeySecretPath = Some("openai/key"),
-            worksIndex = Some("works-openai")
+            hostSecretPath = "openai/host",
+            apiKeySecretPath = "openai/key",
+            portSecretPath = "openai/port",
+            protocolSecretPath = "openai/protocol",
+            worksIndex = Some(Index("works-openai"))
           )
         )
       ) {
@@ -84,7 +91,7 @@ class ElasticClusterParamTest
 
     it("returns 404 when elasticCluster param references unknown cluster") {
       withMultiClusterApi(
-        defaultElastic = ElasticConfig(name = "default"),
+        defaultElastic = ElasticConfig.forDefaultCluster(serviceName="catalogue_api"),
         additionalElastics = Map.empty
       ) {
         case (indices, routes) =>
@@ -100,19 +107,23 @@ class ElasticClusterParamTest
 
     it("supports multiple clusters") {
       withMultiClusterApi(
-        defaultElastic = ElasticConfig(name = "default"),
+        defaultElastic = ElasticConfig.forDefaultCluster(serviceName="catalogue_api"),
         additionalElastics = Map(
           "elser" -> ElasticConfig(
             name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+            hostSecretPath = "elser/host",
+            apiKeySecretPath = "elser/key",
+            portSecretPath = "elser/port",
+            protocolSecretPath = "elser/protocol",
+            worksIndex = Some(Index("works-elser"))
           ),
           "openai" -> ElasticConfig(
             name = "openai",
-            hostSecretPath = Some("openai/host"),
-            apiKeySecretPath = Some("openai/key"),
-            worksIndex = Some("works-openai")
+            hostSecretPath = "openai/host",
+            apiKeySecretPath = "openai/key",
+            portSecretPath = "openai/port",
+            protocolSecretPath = "openai/protocol",
+            worksIndex = Some(Index("works-openai"))
           )
         )
       ) {

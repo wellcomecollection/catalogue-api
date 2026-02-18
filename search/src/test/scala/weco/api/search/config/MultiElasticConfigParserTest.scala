@@ -1,5 +1,6 @@
 package weco.api.search.config
 
+import com.sksamuel.elastic4s.Index
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -23,6 +24,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.elser {
         |  hostSecretPath = "custom/host"
         |  apiKeySecretPath = "custom/apikey"
+        |  portSecretPath = "custom/port"
+        |  protocolSecretPath = "custom/protocol"
         |  worksIndex = "works-elser-full"
         |}
         |""".stripMargin)
@@ -34,9 +37,9 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       
       val elserConfig = result("elser")
       elserConfig.name shouldBe "elser"
-      elserConfig.hostSecretPath shouldBe Some("custom/host")
-      elserConfig.apiKeySecretPath shouldBe Some("custom/apikey")
-      elserConfig.worksIndex shouldBe Some("works-elser-full")
+      elserConfig.hostSecretPath shouldBe "custom/host"
+      elserConfig.apiKeySecretPath shouldBe "custom/apikey"
+      elserConfig.worksIndex shouldBe Some(Index("works-elser-full"))
       elserConfig.semanticConfig shouldBe None
     }
 
@@ -46,11 +49,15 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |  hostSecretPath = "elser/host"
         |  apiKeySecretPath = "elser/apikey"
         |  worksIndex = "works-elser-full"
+        |  portSecretPath = "elser/port"
+        |  protocolSecretPath = "elser/protocol"
         |}
         |multiCluster.openai {
         |  hostSecretPath = "openai/host"
         |  apiKeySecretPath = "openai/apikey"
         |  worksIndex = "works-openai-full"
+        |  portSecretPath = "openai/port"
+        |  protocolSecretPath = "openai/protocol"
         |}
         |""".stripMargin)
 
@@ -60,8 +67,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       result should contain key "elser"
       result should contain key "openai"
       
-      result("elser").worksIndex shouldBe Some("works-elser-full")
-      result("openai").worksIndex shouldBe Some("works-openai-full")
+      result("elser").worksIndex shouldBe Some(Index("works-elser-full"))
+      result("openai").worksIndex shouldBe Some(Index("works-openai-full"))
     }
 
     it("excludes config when semantic vectorType is invalid") {
@@ -69,6 +76,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.test {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
+        |  portSecretPath = "test/port"
+        |  protocolSecretPath = "test/protocol"
         |  worksIndex = "works-test"
         |  semantic {
         |    modelId = "some-model"
@@ -86,6 +95,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.test {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
+        |  portSecretPath = "test/port"
+        |  protocolSecretPath = "test/protocol"
         |  worksIndex = "works-test"
         |  semantic {
         |    vectorType = "dense"
@@ -103,6 +114,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.test {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
+        |  portSecretPath = "test/port"
+        |  protocolSecretPath = "test/protocol"
         |  worksIndex = "works-test"
         |  imagesIndex = "images-test"
         |}
@@ -110,8 +123,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
       val result = MultiElasticConfigParser.parse(config)
 
-      result("test").worksIndex shouldBe Some("works-test")
-      result("test").imagesIndex shouldBe Some("images-test")
+      result("test").worksIndex shouldBe Some(Index("works-test"))
+      result("test").imagesIndex shouldBe Some(Index("images-test"))
     }
 
     it("parses semantic config tuning parameters") {
@@ -119,6 +132,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.test {
         |  hostSecretPath = "test/host"
         |  apiKeySecretPath = "test/apikey"
+        |  portSecretPath = "test/port"
+        |  protocolSecretPath = "test/protocol"
         |  worksIndex = "works-test"
         |  semantic {
         |    modelId = "some-model"
@@ -149,6 +164,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
         |multiCluster.minimal {
         |  hostSecretPath = "minimal/host"
         |  apiKeySecretPath = "minimal/apikey"
+        |  portSecretPath = "minimal/port"
+        |  protocolSecretPath = "minimal/protocol"
         |}
         |""".stripMargin)
 
