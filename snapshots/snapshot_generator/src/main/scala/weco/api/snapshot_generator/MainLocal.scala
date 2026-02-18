@@ -15,13 +15,14 @@ object MainLocal {
     val config: Config = ConfigFactory.load()
 
     val pipelineElasticClient: PipelineElasticClient =
-      (pipelineDate: String) => PipelineElasticClientBuilder(
-        elasticConfig = ElasticConfig.forDefaultCluster(
-          serviceName = "snapshot_generator",
-          pipelineDate = pipelineDate,
-          environment = ApiEnvironment.Dev
-        ),
-        ApiEnvironment.Dev
+      (pipelineDate: String) =>
+        PipelineElasticClientBuilder(
+          elasticConfig = ElasticConfig.forDefaultCluster(
+            serviceName = "snapshot_generator",
+            pipelineDate = pipelineDate,
+            environment = ApiEnvironment.Dev
+          ),
+          ApiEnvironment.Dev
       )
 
     val snapshotService =
