@@ -1,0 +1,19 @@
+[project]
+name = "loadtest"
+version = "0.1.0"
+description = "Load testing toolkit for comparing Elasticsearch cluster backends on the Wellcome Collection catalogue API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "plotext>=5.3.2",
+]
+
+[project.scripts]
+loadtest = "loadtest.cli:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["loadtest"]

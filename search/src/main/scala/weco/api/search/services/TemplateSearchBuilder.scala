@@ -32,101 +32,70 @@ trait TemplateSearchBuilder extends Encoders {
   // This preserves the existing behaviour of /search-templates.json
   val queryTemplate: String
 
-  // KNN based searches rank by similarity, meaning that the complexity
-  // of a full query is not required, and could be misleading to read.
-  // A query may have boosts for finding things like exact matches
-  // or values in certain fields, and, if copied into the knn filter
-  // would be executed in filter context and be discarded.
-  // When running a KNN search, the query term becomes a simple filter
-  // on whether the document contains the term in any searchable field.
-  // If there are fields that should be ignored, then this default will
-  // be inappropriate, and can be overridden.
-  protected val knnFilter: String = """
-    |{
-    |  "multi_match": {
-    |    "query": "{{query}}",
-    |    "operator": "and",
-    |    "type": "best_fields",
-    |    "tie_breaker": 0.4,
-    |    "fields": "query.*"
-    |  }
-    |}
-    |""".stripMargin
-
-  // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
-  lazy protected val source: String =
+  lazy protected val lexicalQuery: String =
     s"""
-       |{
-       |  {{#knn}}
-       |    "knn": {
+       |  {
+       |    "bool": {
        |      {{#query}}
-       |        "filter": $knnFilter,
+       |      "must": $queryTemplate,
        |      {{/query}}
-       |      {{#similarityThreshold}}
-       |        "similarity": {{similarityThreshold}},
-       |      {{/similarityThreshold}}
-       |      "field": "{{field}}",
-       |      "k": {{k}},
-       |      "num_candidates": {{numCandidates}},
-       |      "query_vector": {{#toJson}}queryVector{{/toJson}}
+       |      "filter": {{#toJson}}preFilter{{/toJson}}
+       |    }
+       |  }
+       |""".stripMargin
+
+  lazy protected val sort: String =
+    s"""
+       |[
+       |  {{#sortByDate}}
+       |  {
+       |    "{{sortField}}": {
+       |      "order": "{{sortByDate}}",
+       |      "missing": "_last"
+       |    }
        |  },
-       |  {{/knn}}
-       |  {{^knn}}
-       |    "query": {
-       |      "bool": {
-       |          {{#query}}
-       |          "must": $queryTemplate,
-       |          {{/query}}
-       |          "filter": {{#toJson}}preFilter{{/toJson}}
-       |       }
-       |    },
-       |  {{/knn}}
-       |
+       |  {{/sortByDate}}
+       |  {{#sortByScore}}
+       |  {
+       |    "_score": {
+       |      "order": "desc"
+       |    }
+       |  },
+       |  {{/sortByScore}}
+       |  {
+       |    "query.id": {
+       |      "order": "asc"
+       |    }
+       |  }
+       |]
+       |""".stripMargin
+
+  lazy protected val commonQueryFields: String =
+    s"""
        |  {{#postFilter}}
        |  "post_filter": {{#toJson}}postFilter{{/toJson}},
        |  {{/postFilter}}
-       |
-       |  "track_total_hits": true,
        |  "from": "{{from}}",
        |  "size": "{{size}}",
        |  "_source": {
        |    "includes": {{#toJson}}includes{{/toJson}}
        |  },
-       |
        |  {{#aggs}}
        |  "aggs": {{#toJson}}aggs{{/toJson}},
        |  {{/aggs}}
-       |
-       |  "sort": [
-       |    {{#sortByDate}}
-       |    {
-       |      "{{sortField}}": {
-       |        "order": "{{sortByDate}}",
-       |        "missing": "_last"
-       |      }
-       |    },
-       |    {{/sortByDate}}
-       |    {{#sortByScore}}
-       |    {
-       |      "_score": {
-       |        "order": "desc"
-       |      }
-       |    },
-       |    {{/sortByScore}}
-       |    {
-       |      "query.id": {
-       |        "order": "asc"
-       |      }
-       |    }
-       |  ]
-       |}
+       |  "track_total_hits": true
        |""".stripMargin
-    // Normalise all whitespace - it only exists to make the code more
-    // readable here, but because this eventually gets converted into
-    // a string containing loads of escape characters, all the '\n'
-    // sequences and wide gaps actually make it harder to read.
-    // (it also saves a handful of bytes per request)
-      .replaceAll("\\s+", " ")
+
+  // Importantly, this is *not* JSON, due to the `{{#` sequences, so must be created and sent as a string.
+  protected def source: String
+
+  // Normalise all whitespace - it only exists to make the code more
+  // readable here, but because this eventually gets converted into
+  // a string containing loads of escape characters, all the '\n'
+  // sequences and wide gaps actually make it harder to read.
+  // (it also saves a handful of bytes per request)
+  protected final def normaliseSource(value: String): String =
+    value.replaceAll("\\s+", " ")
 
   def searchRequest(
     indexes: Seq[String],
