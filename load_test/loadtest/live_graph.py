@@ -8,8 +8,7 @@ Usage: python3 live_graph.py <semantic.jsonl> <default.jsonl> <duration>
 import sys
 import json
 import time
-import os
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 def read_new_results(filepath, file_pos):
@@ -289,8 +288,6 @@ def main():
     dur_secs = parse_duration(sys.argv[3])
 
     try:
-        import plotext
-
         run_plotext(sem_file, default_file, dur_secs)
     except ImportError:
         run_fallback(sem_file, default_file, dur_secs)
