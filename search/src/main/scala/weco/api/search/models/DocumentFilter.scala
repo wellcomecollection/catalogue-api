@@ -23,6 +23,11 @@ case class DateRangeFilter(
 ) extends WorkFilter
     with ImageFilter
 
+case class ItemsLocationsCreatedDateFilter(
+  fromDate: Option[LocalDate],
+  toDate: Option[LocalDate]
+) extends WorkFilter
+
 case object VisibleWorkFilter extends WorkFilter
 
 case class LanguagesFilter(languageIds: Seq[String])
