@@ -135,6 +135,83 @@ class WorksFiltersTest
     }
   }
 
+  describe("filtering works by items.locations.createdDate") {
+    val digitalLocationWorks = Seq(
+      "work-digital-location.2020",
+      "work-digital-location.2021",
+      "work-digital-location.2022"
+    )
+
+    it("filters by date range") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, digitalLocationWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path =
+              s"$rootPath/works?items.locations.createdDate.from=2020-01-01&items.locations.createdDate.to=2021-12-31"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq("work-digital-location.2020", "work-digital-location.2021")
+            )
+          }
+      }
+    }
+
+    it("filters by from date") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, digitalLocationWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?items.locations.createdDate.from=2021-01-01"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq(
+                "work-digital-location.2021",
+                "work-digital-location.2022"
+              )
+            )
+          }
+      }
+    }
+
+    it("filters by to date") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, digitalLocationWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?items.locations.createdDate.to=2021-12-31"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq(
+                "work-digital-location.2020",
+                "work-digital-location.2021"
+              )
+            )
+          }
+      }
+    }
+
+    it("errors on invalid date") {
+      withApi { routes =>
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?items.locations.createdDate.from=INVALID"
+        ) {
+          Status.BadRequest ->
+            badRequest(
+              "items.locations.createdDate.from: Invalid date encoding. Expected YYYY-MM-DD"
+            )
+        }
+      }
+    }
+  }
+
   describe("filtering by genre concept ids") {
 
     // This work has a single compound Genre.
