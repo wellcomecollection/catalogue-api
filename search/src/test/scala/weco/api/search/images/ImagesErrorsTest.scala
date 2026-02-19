@@ -2,7 +2,7 @@ package weco.api.search.images
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.prop.TableDrivenPropertyChecks
-import weco.api.search.models.{ElasticConfig, EsCluster}
+import weco.api.search.models.ElasticConfig
 
 class ImagesErrorsTest
     extends AnyFunSpec
@@ -56,9 +56,9 @@ class ImagesErrorsTest
 
   it("returns a 500 error if the default index doesn't exist") {
     val elasticConfig = ElasticConfig(
-      worksIndex = createIndex,
-      imagesIndex = createIndex,
-      pipelineDate = EsCluster("pipeline-date")
+      worksIndex = Some(createIndex.name),
+      imagesIndex = Some(createIndex.name),
+      pipelineDate = Some("pipeline-date")
     )
 
     val testPaths = Table(

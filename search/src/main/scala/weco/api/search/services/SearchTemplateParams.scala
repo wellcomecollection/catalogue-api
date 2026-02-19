@@ -2,6 +2,7 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.aggs.AbstractAggregation
 import com.sksamuel.elastic4s.requests.searches.queries.Query
+import weco.api.search.models.SemanticConfig
 import weco.api.search.models.request.SortingOrder
 
 case class SearchTemplateParams(
@@ -15,7 +16,8 @@ case class SearchTemplateParams(
   aggs: Seq[AbstractAggregation],
   preFilter: Seq[Query],
   postFilter: Option[Query],
-  knn: Option[SearchTemplateKNNParams] = None
+  knn: Option[SearchTemplateKNNParams] = None,
+  semanticConfig: Option[SemanticConfig] = None
 )
 
 case class SearchTemplateKNNParams(

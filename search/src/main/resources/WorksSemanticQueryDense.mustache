@@ -1,0 +1,32 @@
+{
+  "bool": {
+    "should": [
+      {
+        "knn": {
+          "field": "query.titleSemantic",
+          "k": {{k}},
+          "num_candidates": {{numCandidates}},
+          "query_vector_builder": {
+            "text_embedding": {
+              "model_id": "{{modelId}}",
+              "model_text": "{{query}}"
+            }
+          }
+        }
+      },
+      {
+        "knn": {
+          "field": "query.descriptionSemantic",
+          "k": {{k}},
+          "num_candidates": {{numCandidates}},
+          "query_vector_builder": {
+            "text_embedding": {
+              "model_id": "{{modelId}}",
+              "model_text": "{{query}}"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

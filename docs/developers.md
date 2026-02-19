@@ -41,7 +41,7 @@ At the root of the project you should be able to use `sbt` to run the project as
 ## Running locally
 
 Currently only the search & items API can be run locally. It will use the configured pipeline index in
-[`ElastiConfig.scala`](../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala).
+[`ElasticConfig.scala`](../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala).
 
 You will need to have signed in to the AWS on the CLI to allow the application to assume the required role.
 

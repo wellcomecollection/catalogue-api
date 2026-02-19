@@ -103,7 +103,8 @@ case class MultipleWorksParams(
   lazy val page = paginationParams.page
   lazy val pageSize = paginationParams.pageSize
 
-  def searchOptions(apiConfig: ApiConfig): WorkSearchOptions =
+  def searchOptions(apiConfig: ApiConfig,
+                    semanticConfig: Option[SemanticConfig]): WorkSearchOptions =
     WorkSearchOptions(
       searchQuery = query map { query =>
         SearchQuery(query)
@@ -113,7 +114,8 @@ case class MultipleWorksParams(
       pageNumber = page.getOrElse(1),
       aggregations = aggregations.getOrElse(Nil),
       sortBy = paginationParams.sort.getOrElse(Nil),
-      sortOrder = paginationParams.sortOrder.getOrElse(SortingOrder.Ascending)
+      sortOrder = paginationParams.sortOrder.getOrElse(SortingOrder.Ascending),
+      semanticConfig = semanticConfig
     )
 
   private def filters: List[WorkFilter] =
