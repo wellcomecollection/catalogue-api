@@ -1,4 +1,4 @@
-import { errors } from "@elastic/elasticsearch";
+import { Client, errors } from "@elastic/elasticsearch";
 import { ResilientElasticClient } from "../src/services/elasticsearch";
 
 // Mock Client constructor so neither initial nor refreshed clients are real
@@ -15,10 +15,16 @@ jest.mock("../src/services/aws", () => ({
   getSecret: jest.fn().mockResolvedValue("mocked-value"),
 }));
 
+const MockedClient = Client as jest.Mock;
+
 const getResilient = () =>
   ResilientElasticClient.create({ pipelineDate: "2025-01-01" });
 
 describe("ResilientElasticClient", () => {
+  beforeEach(() => {
+    MockedClient.mockClear();
+  });
+
   it("returns the result of a successful operation", async () => {
     const resilient = await getResilient();
     const operation = jest.fn().mockResolvedValue("ok");
@@ -26,6 +32,7 @@ describe("ResilientElasticClient", () => {
     const result = await resilient.execute(operation);
     expect(result).toBe("ok");
     expect(operation).toHaveBeenCalledTimes(1);
+    expect(MockedClient).toHaveBeenCalledTimes(1);
   });
 
   it("throws non-auth errors immediately without retrying", async () => {
@@ -36,6 +43,7 @@ describe("ResilientElasticClient", () => {
       "network failure"
     );
     expect(operation).toHaveBeenCalledTimes(1);
+    expect(MockedClient).toHaveBeenCalledTimes(1);
   });
 
   it.each([401, 403])(
@@ -58,6 +66,7 @@ describe("ResilientElasticClient", () => {
       const result = await resilient.execute(operation);
       expect(result).toBe("success");
       expect(operation).toHaveBeenCalledTimes(2);
+      expect(MockedClient).toHaveBeenCalledTimes(2);
     }
   );
 
@@ -78,6 +87,7 @@ describe("ResilientElasticClient", () => {
     );
     // 3 attempts total (initial + 2 retries)
     expect(operation).toHaveBeenCalledTimes(3);
+    expect(MockedClient).toHaveBeenCalledTimes(3);
   });
 
   it("recovers on the last possible attempt", async () => {
@@ -99,5 +109,6 @@ describe("ResilientElasticClient", () => {
     const result = await resilient.execute(operation);
     expect(result).toBe("recovered");
     expect(operation).toHaveBeenCalledTimes(3);
+    expect(MockedClient).toHaveBeenCalledTimes(3);
   });
 });
