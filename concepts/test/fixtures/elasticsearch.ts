@@ -102,5 +102,5 @@ export const mockedElasticsearchClient = <T extends Identifiable>({
     node: "http://test:9200",
     Connection: mock.getConnection(),
   });
-  return new ResilientElasticClient(client, { pipelineDate: "" });
+  return new ResilientElasticClient(client, { pipelineDate: "2020-01-01" });
 };
