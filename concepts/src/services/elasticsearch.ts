@@ -44,6 +44,7 @@ export class ResilientElasticClient {
   private client: Client;
   private readonly params: ClientParameters;
   private readonly MAX_RETRIES = 3;
+  private pendingRefresh: Promise<void> | null = null;
 
   public constructor(client: Client, params: ClientParameters) {
     this.client = client;
@@ -59,9 +60,23 @@ export class ResilientElasticClient {
   }
 
   private async refreshClient(): Promise<void> {
-    log.info("Refreshing Elasticsearch client due to auth error");
-    const config = await getElasticClientConfig(this.params);
-    this.client = new Client(config);
+    if (this.pendingRefresh) {
+      return this.pendingRefresh;
+    }
+
+    const createNewClient = async () => {
+      log.info("Refreshing Elasticsearch client due to auth error");
+      const config = await getElasticClientConfig(this.params);
+      this.client = new Client(config);
+    };
+
+    this.pendingRefresh = createNewClient();
+
+    try {
+      await this.pendingRefresh;
+    } finally {
+      this.pendingRefresh = null;
+    }
   }
 
   async execute<T>(operation: (client: Client) => Promise<T>): Promise<T> {
