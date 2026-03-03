@@ -26,7 +26,7 @@ const conceptsController = (
   config: Config
 ): ConceptHandler => {
   const index = config.conceptsIndex;
-  const elasticClient = clients.elastic;
+  const elastic = clients.elastic;
   const getPaginationResponse = paginationResponseGetter(config.publicRootUrl);
 
   return asyncHandler(async (req, res) => {
@@ -49,11 +49,13 @@ const conceptsController = (
         return;
       }
 
-      const mgetResponse = await elasticClient.mget<Displayable<Concept>>({
-        index,
-        body: { ids: uniqueIds },
-        _source: ["display"],
-      } as any); // typing gap in elastic client generics for mget
+      const mgetResponse = await elastic.execute((client) =>
+        client.mget<Displayable<Concept>>({
+          index,
+          body: { ids: uniqueIds },
+          _source: ["display"],
+        } as any)
+      ); // typing gap in elastic client generics for mget
 
       // Map id -> concept for quick lookup
       const docsMap = new Map<string, Concept>();
@@ -81,49 +83,52 @@ const conceptsController = (
 
     const queryString = req.query.query;
     const identifierTypeFilter = req.query["identifiers.identifierType"];
-    const searchResponse = await elasticClient.search<Displayable<Concept>>({
-      index,
-      body: {
-        ...paginationElasticBody(req.query),
-        _source: ["display"],
-        track_total_hits: true,
-        query: {
-          bool: {
-            should: queryString
-              ? [
-                  {
-                    match: {
-                      "query.identifiers.value": {
-                        query: queryString,
-                        analyzer: "whitespace",
-                        operator: "OR",
-                        boost: 1000,
+    const searchResponse = await elastic.execute((client) =>
+      client.search<Displayable<Concept>>({
+        index,
+        body: {
+          ...paginationElasticBody(req.query),
+          _source: ["display"],
+          track_total_hits: true,
+          query: {
+            bool: {
+              should: queryString
+                ? [
+                    {
+                      match: {
+                        "query.identifiers.value": {
+                          query: queryString,
+                          analyzer: "whitespace",
+                          operator: "OR",
+                          boost: 1000,
+                        },
                       },
                     },
-                  },
-                  {
-                    multi_match: {
-                      query: queryString,
-                      fields: ["query.label", "query.alternativeLabels"],
-                      type: "cross_fields",
+                    {
+                      multi_match: {
+                        query: queryString,
+                        fields: ["query.label", "query.alternativeLabels"],
+                        type: "cross_fields",
+                      },
                     },
-                  },
-                ]
-              : [],
-            filter: identifierTypeFilter
-              ? [
-                  {
-                    term: {
-                      "query.identifiers.identifierType": identifierTypeFilter,
+                  ]
+                : [],
+              filter: identifierTypeFilter
+                ? [
+                    {
+                      term: {
+                        "query.identifiers.identifierType":
+                          identifierTypeFilter,
+                      },
                     },
-                  },
-                ]
-              : [],
+                  ]
+                : [],
+            },
           },
+          sort: queryString ? ["_score"] : ["query.id"],
         },
-        sort: queryString ? ["_score"] : ["query.id"],
-      },
-    });
+      })
+    );
 
     const results = searchResponse.hits.hits.flatMap((hit) =>
       hit._source ? [hit._source.display] : []
