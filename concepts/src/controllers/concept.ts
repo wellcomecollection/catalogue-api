@@ -14,16 +14,18 @@ const conceptController = (
   config: Config
 ): ConceptHandler => {
   const index = config.conceptsIndex;
-  const elasticClient = clients.elastic;
+  const elastic = clients.elastic;
 
   return asyncHandler(async (req, res) => {
     const id = req.params.id;
     try {
-      const getResponse = await elasticClient.get<Displayable<Concept>>({
-        index,
-        id,
-        _source: ["display"],
-      });
+      const getResponse = await elastic.execute((client) =>
+        client.get<Displayable<Concept>>({
+          index,
+          id,
+          _source: ["display"],
+        })
+      );
 
       res.status(200).json(getResponse._source!.display);
     } catch (error) {

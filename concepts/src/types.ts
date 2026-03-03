@@ -1,8 +1,8 @@
 import { PaginationResponse } from "./controllers/pagination";
-import { Client as ElasticClient } from "@elastic/elasticsearch";
+import { ResilientElasticClient } from "./services/elasticsearch";
 
 export type Clients = {
-  elastic: ElasticClient;
+  elastic: ResilientElasticClient;
 };
 
 export type Displayable<T = any> = {
