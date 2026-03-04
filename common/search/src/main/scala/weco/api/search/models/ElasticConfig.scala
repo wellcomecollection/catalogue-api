@@ -33,7 +33,7 @@ object ElasticConfig {
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
   val defaultPipelineDate = "2025-10-02"
-  val defaultWorksIndexDate = "2025-11-20"
+  val defaultWorksIndexDate = "2026-03-03"
   val defaultImagesIndexDate = "2025-10-02"
 }
 
