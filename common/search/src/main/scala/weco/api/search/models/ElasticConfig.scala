@@ -34,7 +34,7 @@ object ElasticConfig {
   // i.e. The API and the snapshot generator.
   val defaultPipelineDate = "2025-10-02"
   val defaultWorksIndexDate = "2026-03-03"
-  val defaultImagesIndexDate = "2025-10-02"
+  val defaultImagesIndexDate = "2026-04-29"
 }
 
 sealed trait VectorType
