@@ -18,8 +18,7 @@ except IndexError:
     sys.exit(f"Usage: {__file__} <PATH_TO_PIPELINE_REPO>")
 
 prefixes = [
-    "common/internal_model/src/test/resources",
-    "pipeline/ingestor/test_documents",
+    "catalogue_graph/document_generators/test_documents",
 ]
 
 for prefix in prefixes:
@@ -31,12 +30,3 @@ for prefix in prefixes:
                 os.path.basename(path),
             ),
         )
-
-os.rename(
-    "./common/search/src/test/resources/test_documents/WorksIndexConfig.json",
-    "./common/search/src/test/resources/WorksIndexConfig.json",
-)
-os.rename(
-    "./common/search/src/test/resources/test_documents/ImagesIndexConfig.json",
-    "./common/search/src/test/resources/ImagesIndexConfig.json",
-)
