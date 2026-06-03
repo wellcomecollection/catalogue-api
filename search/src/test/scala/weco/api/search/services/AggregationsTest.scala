@@ -137,7 +137,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("fIbfVPkqaf"))
+            SubjectLabelFilter(Seq("agg-subject-2"))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
@@ -165,7 +165,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("6rJpSUKd2d"))
+            SubjectLabelFilter(Seq("agg-subject-0"))
           )
         )
         val results =
@@ -187,7 +187,7 @@ class AggregationsTest
           .flatMap(_.asArray)
           .map(_.flatMap(s => getKey(s, "label")))
           .map(subjects => subjects.flatMap(_.asString).toSet)
-          .foreach(subjects => subjects should contain("6rJpSUKd2d"))
+          .foreach(subjects => subjects should contain("agg-subject-0"))
       }
     }
 
@@ -201,7 +201,7 @@ class AggregationsTest
             List(WorkAggregationRequest.Format, WorkAggregationRequest.SubjectLabel),
           filters = List(
             FormatFilter(List("a")),
-            SubjectLabelFilter(Seq("fIbfVPkqaf"))
+            SubjectLabelFilter(Seq("agg-subject-2"))
           )
         )
         whenReady(aggregationQuery(index, searchOptions)) { aggs =>
