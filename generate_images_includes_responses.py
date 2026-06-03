@@ -111,15 +111,11 @@ def main():
     for include in includes:
         # List endpoint
         list_response = make_list_response(display, include)
-        write_json(
-            OUTPUT_DIR / f"include-list-{include}.json", list_response
-        )
+        write_json(OUTPUT_DIR / f"include-list-{include}.json", list_response)
 
         # Single image endpoint
         single_response = make_single_response(display, include)
-        write_json(
-            OUTPUT_DIR / f"include-image-{include}.json", single_response
-        )
+        write_json(OUTPUT_DIR / f"include-image-{include}.json", single_response)
 
     print(f"\nDone! Generated {len(includes) * 2} files.")
     print(f"Image ID for tests: {display['id']}")
