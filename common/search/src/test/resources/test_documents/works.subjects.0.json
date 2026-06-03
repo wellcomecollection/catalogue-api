@@ -1,208 +1,174 @@
 {
-  "description" : "works with different subjects",
-  "createdAt" : "2024-11-25T15:15:12.346502Z",
-  "id" : "njj1gugw",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "njj1gugw",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "works with different subjects",
+  "id": "9mc8m382",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "9mc8m382",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "JeGRUgE73g"
+          "ontologyType": "Work",
+          "value": "abZMkvl4zo"
         },
-        "version" : 58,
-        "modifiedTime" : "2009-03-20T11:29:10Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2009-03-20T11:29:10Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "njj1gugw",
-      "title" : "title-kaqjnWIqBs",
-      "alternativeTitles" : [
+    "query": {
+      "id": "9mc8m382",
+      "title": "kFm3KNLeAs0SRcq",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "abZMkvl4zo",
+      "identifiers.value": ["9mc8m382", "abZMkvl4zo"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [
+        "astdacNcj3M3kEP",
+        "fhET3CGU4kIgi2x",
+        "SKIz6tpKSfjMz2X"
       ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "9mc8m382",
+      "title": "kFm3KNLeAs0SRcq",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
-          },
-          "value" : "JeGRUgE73g",
-          "type" : "Identifier"
+          "value": "abZMkvl4zo",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
+      "subjects": [
         {
-          "label" : "paleoNeuroBiology",
-          "concepts" : [
+          "label": "paleoNeuroBiology",
+          "type": "Subject",
+          "concepts": [
             {
-              "label" : "OVfDtEVhuTjLML0",
-              "type" : "Concept"
+              "id": "edso3t9n",
+              "label": "astdacNcj3M3kEP",
+              "identifiers": [
+                {
+                  "value": "y4eBccY7fx",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "MOH1Bj9evx0cAh7",
-              "type" : "Concept"
+              "id": "fib9igee",
+              "label": "fhET3CGU4kIgi2x",
+              "identifiers": [
+                {
+                  "value": "MXQhm0g7FB",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "0mKj49k3BjjuTuf",
-              "type" : "Concept"
+              "id": "16if6c9p",
+              "label": "SKIz6tpKSfjMz2X",
+              "identifiers": [
+                {
+                  "value": "gUYy5xH6uJ",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             }
-          ],
-          "type" : "Subject"
+          ]
         }
       ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "njj1gugw",
-      "sourceIdentifier.value" : "JeGRUgE73g",
-      "identifiers.value" : [
-        "JeGRUgE73g"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-        "OVfDtEVhuTjLML0",
-        "MOH1Bj9evx0cAh7",
-        "0mKj49k3BjjuTuf"
-      ],
-      "title" : "title-kaqjnWIqBs"
-    },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "subjects": [
         {
-          "id" : "paleoNeuroBiology",
-          "label" : "paleoNeuroBiology"
+          "id": "paleoNeuroBiology",
+          "label": "paleoNeuroBiology"
         }
       ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-        "paleoNeuroBiology"
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "JeGRUgE73g"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": ["paleoNeuroBiology"],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["9mc8m382", "abZMkvl4zo"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-02T15:48:04.881192+00:00"
 }

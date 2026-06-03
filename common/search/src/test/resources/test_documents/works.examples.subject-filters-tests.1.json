@@ -1,208 +1,174 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2024-11-25T15:15:12.455620Z",
-  "id" : "85vigluy",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "85vigluy",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "examples for the subject filter tests",
+  "id": "ckgxwsk3",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "ckgxwsk3",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "0xrR5Stsp3"
+          "ontologyType": "Work",
+          "value": "yhGudedstT"
         },
-        "version" : 24,
-        "modifiedTime" : "1940-04-20T21:57:32Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "1940-04-20T21:57:32Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "85vigluy",
-      "title" : "title-YlnwWOedI3",
-      "alternativeTitles" : [
+    "query": {
+      "id": "ckgxwsk3",
+      "title": "pjnvAH6AfxLfuPY",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "yhGudedstT",
+      "identifiers.value": ["ckgxwsk3", "yhGudedstT"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [
+        "N2hiYtIpPGvXRA7",
+        "vRGo39WpLc2GQmI",
+        "YAN2UrufgXjP1oF"
       ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "ckgxwsk3",
+      "title": "pjnvAH6AfxLfuPY",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
-          },
-          "value" : "0xrR5Stsp3",
-          "type" : "Identifier"
+          "value": "yhGudedstT",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
+      "subjects": [
         {
-          "label" : "London (England)",
-          "concepts" : [
+          "label": "London (England)",
+          "type": "Subject",
+          "concepts": [
             {
-              "label" : "lxZzGryOg3KGy7M",
-              "type" : "Concept"
+              "id": "vnpk2yu2",
+              "label": "N2hiYtIpPGvXRA7",
+              "identifiers": [
+                {
+                  "value": "IVj0KgVXsC",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "z5GNUj1it3ic4OR",
-              "type" : "Concept"
+              "id": "vex5ahji",
+              "label": "vRGo39WpLc2GQmI",
+              "identifiers": [
+                {
+                  "value": "Qqr4iZ6pkw",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "9LzJV7M3Kvqw9fG",
-              "type" : "Concept"
+              "id": "5xlz45n2",
+              "label": "YAN2UrufgXjP1oF",
+              "identifiers": [
+                {
+                  "value": "IySt8ohHUD",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             }
-          ],
-          "type" : "Subject"
+          ]
         }
       ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "85vigluy",
-      "sourceIdentifier.value" : "0xrR5Stsp3",
-      "identifiers.value" : [
-        "0xrR5Stsp3"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-        "lxZzGryOg3KGy7M",
-        "z5GNUj1it3ic4OR",
-        "9LzJV7M3Kvqw9fG"
-      ],
-      "title" : "title-YlnwWOedI3"
-    },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "subjects": [
         {
-          "id" : "London (England)",
-          "label" : "London (England)"
+          "id": "London (England)",
+          "label": "London (England)"
         }
       ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-        "London (England)"
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "0xrR5Stsp3"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": ["London (England)"],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["ckgxwsk3", "yhGudedstT"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-02T15:48:05.381913+00:00"
 }

@@ -1,220 +1,174 @@
 {
-  "description" : "a work with different concepts in the genre",
-  "createdAt" : "2024-11-25T15:15:12.343141Z",
-  "id" : "jlp05mgl",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "jlp05mgl",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "a work with different concepts in the genre",
+  "id": "sttzcrv3",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "sttzcrv3",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "iIjgaHUI5C"
+          "ontologyType": "Work",
+          "value": "kEk55gQhE0"
         },
-        "version" : 91,
-        "modifiedTime" : "1978-12-03T12:21:42Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "1978-12-03T12:21:42Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "jlp05mgl",
-      "title" : "A work with different concepts in the genre",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
-        {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
-          },
-          "value" : "iIjgaHUI5C",
-          "type" : "Identifier"
-        }
-      ],
-      "subjects" : [
-      ],
-      "genres" : [
-        {
-          "label" : "Electronic books",
-          "concepts" : [
-            {
-              "label" : "Conceptual Conversations",
-              "type" : "Concept"
-            },
-            {
-              "label" : "Pleasant Paris",
-              "type" : "Place"
-            },
-            {
-              "id" : "buvphmut",
-              "identifiers" : [
-                {
-                  "identifierType" : {
-                    "id" : "miro-image-number",
-                    "label" : "Miro image number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "nJ8zsEX9al",
-                  "type" : "Identifier"
-                }
-              ],
-              "label" : "Past Prehistory",
-              "type" : "Period"
-            }
-          ],
-          "type" : "Genre"
-        }
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
-    },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
+    "query": {
+      "id": "sttzcrv3",
+      "title": "A work with different concepts in the genre",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "kEk55gQhE0",
+      "identifiers.value": ["sttzcrv3", "kEk55gQhE0"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": [
         "Conceptual Conversations",
         "Pleasant Paris",
         "Past Prehistory"
-      ],
-      "id" : "jlp05mgl",
-      "sourceIdentifier.value" : "iIjgaHUI5C",
-      "identifiers.value" : [
-        "iIjgaHUI5C"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "A work with different concepts in the genre"
+      ]
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
+    "display": {
+      "id": "sttzcrv3",
+      "title": "A work with different concepts in the genre",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "id" : "Electronic books",
-          "label" : "Electronic books"
+          "value": "kEk55gQhE0",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "production.dates" : [
+      "subjects": [],
+      "genres": [
+        {
+          "label": "Electronic books",
+          "concepts": [
+            {
+              "id": "concept0a",
+              "label": "Conceptual Conversations",
+              "identifiers": [
+                {
+                  "value": "06LPXkwcBC",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Genre"
+            },
+            {
+              "id": "concept1a",
+              "label": "Pleasant Paris",
+              "identifiers": [
+                {
+                  "value": "9CteRovoyb",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Place"
+            },
+            {
+              "id": "vjl5eglc",
+              "label": "Past Prehistory",
+              "identifiers": [
+                {
+                  "value": "RBlszCt9Ic",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
+            }
+          ],
+          "type": "Genre"
+        }
       ],
-      "subjects" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [
+        {
+          "id": "concept0a",
+          "label": "Conceptual Conversations"
+        }
       ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-        "Electronic books"
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "iIjgaHUI5C"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
+      "subjects": [],
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": ["Conceptual Conversations"],
+      "genres.concepts.id": ["concept0a"],
+      "genres.concepts.sourceIdentifier": ["06LPXkwcBC"],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["sttzcrv3", "kEk55gQhE0"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-02T15:48:04.874797+00:00"
 }
