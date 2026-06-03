@@ -1,0 +1,72 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "holdings": [
+    {
+      "enumeration": ["0aL0dKj8wx", "OsuFYzM"],
+      "location": {
+        "accessConditions": [],
+        "label": "locationLabel",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "type": "License",
+          "url": "http://creativecommons.org/licenses/by/4.0/"
+        },
+        "locationType": {
+          "id": "open-shelves",
+          "label": "Open shelves",
+          "type": "LocationType"
+        },
+        "type": "PhysicalLocation"
+      },
+      "type": "Holdings"
+    },
+    {
+      "enumeration": ["J7Br8"],
+      "location": {
+        "accessConditions": [],
+        "label": "locationLabel",
+        "license": {
+          "id": "cc-by",
+          "label": "Attribution 4.0 International (CC BY 4.0)",
+          "type": "License",
+          "url": "http://creativecommons.org/licenses/by/4.0/"
+        },
+        "locationType": {
+          "id": "closed-stores",
+          "label": "Closed stores",
+          "type": "LocationType"
+        },
+        "shelfmark": "Shelfmark: QOkLh",
+        "type": "PhysicalLocation"
+      },
+      "note": "Holdings note: 7a8UE68",
+      "type": "Holdings"
+    },
+    {
+      "enumeration": ["HJuvmTYBY", "2aWGjY"],
+      "location": {
+        "accessConditions": [],
+        "label": "locationLabel",
+        "license": {
+          "id": "ogl",
+          "label": "Open Government Licence",
+          "type": "License",
+          "url": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        },
+        "locationType": {
+          "id": "open-shelves",
+          "label": "Open shelves",
+          "type": "LocationType"
+        },
+        "type": "PhysicalLocation"
+      },
+      "note": "Holdings note: rtsaBX0T",
+      "type": "Holdings"
+    }
+  ],
+  "id": "i4c7c9yl",
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

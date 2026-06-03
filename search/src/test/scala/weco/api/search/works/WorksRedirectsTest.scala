@@ -3,8 +3,8 @@ package weco.api.search.works
 import org.scalatest.funspec.AnyFunSpec
 
 class WorksRedirectsTest extends AnyFunSpec with ApiWorksTestBase {
-  val redirectSource = "4nwkprdt"
-  val redirectTarget = "mv6kix0n"
+  val redirectSource = "vkpo2y0c"
+  val redirectTarget = "c8rip4ws"
 
   it("returns a TemporaryRedirect if looking up a redirected work") {
     withWorksApi {

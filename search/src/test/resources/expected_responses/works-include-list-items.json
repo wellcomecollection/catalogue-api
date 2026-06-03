@@ -1,0 +1,238 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "items": [
+        {
+          "id": "e2p26gmk",
+          "locations": [
+            {
+              "accessConditions": [],
+              "credit": "Credit line: VpK5prl8W7",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/5bx.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "c3wirubz",
+          "locations": [
+            {
+              "accessConditions": [],
+              "credit": "Credit line: WzyBXO",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "linkText": "Link text: NuftbFa",
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/B4W.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "locations": [
+            {
+              "accessConditions": [],
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/aem.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jz38nxcb",
+      "items": [
+        {
+          "id": "vcvk3ym0",
+          "locations": [
+            {
+              "accessConditions": [],
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/sxP.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "2cp5u9ma",
+          "locations": [
+            {
+              "accessConditions": [],
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "linkText": "Link text: 1HmUulH7IT",
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/v4W.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "locations": [
+            {
+              "accessConditions": [],
+              "credit": "Credit line: xJ1wTC",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/Rg3.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "rnfi0lmb",
+      "items": [
+        {
+          "id": "bcmmk93f",
+          "locations": [
+            {
+              "accessConditions": [],
+              "credit": "Credit line: yrGmw2A",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/nSl.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "id": "xofff6b6",
+          "locations": [
+            {
+              "accessConditions": [],
+              "credit": "Credit line: UJCtJ5A26",
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "linkText": "Link text: yd36h5dvkW",
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/V7S.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        },
+        {
+          "locations": [
+            {
+              "accessConditions": [],
+              "license": {
+                "id": "cc-by",
+                "label": "Attribution 4.0 International (CC BY 4.0)",
+                "type": "License",
+                "url": "http://creativecommons.org/licenses/by/4.0/"
+              },
+              "locationType": {
+                "id": "iiif-image",
+                "label": "IIIF Image API",
+                "type": "LocationType"
+              },
+              "type": "DigitalLocation",
+              "url": "https://iiif.wellcomecollection.org/image/cYg.jpg/info.json"
+            }
+          ],
+          "type": "Item"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

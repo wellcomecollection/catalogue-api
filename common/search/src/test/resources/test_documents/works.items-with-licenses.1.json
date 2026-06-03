@@ -1,17 +1,17 @@
 {
   "description": "a work with licensed digital items",
-  "id": "dphk2kk3",
+  "id": "fvv2mpx3",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "dphk2kk3",
+        "id": "fvv2mpx3",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "GXt4fgINsV"
+          "value": "rHhJQRvaja"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "dphk2kk3",
-      "title": "Ik8CzagagvUntIh",
+      "id": "fvv2mpx3",
+      "title": "PEpzOUgAdR1sMkt",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "GXt4fgINsV",
-      "identifiers.value": ["dphk2kk3", "GXt4fgINsV"],
+      "sourceIdentifier.value": "rHhJQRvaja",
+      "identifiers.value": ["fvv2mpx3", "rHhJQRvaja"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "dphk2kk3",
-      "title": "Ik8CzagagvUntIh",
+      "id": "fvv2mpx3",
+      "title": "PEpzOUgAdR1sMkt",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "GXt4fgINsV",
+          "value": "rHhJQRvaja",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -75,9 +75,8 @@
                 "url": "http://creativecommons.org/licenses/by/4.0/"
               },
               "accessConditions": [],
-              "url": "https://iiif.wellcomecollection.org/image/rHh.jpg/info.json",
-              "credit": "Credit line: 2mpx4QKD",
-              "linkText": "Link text: QRvajafvW",
+              "url": "https://iiif.wellcomecollection.org/image/lR1.jpg/info.json",
+              "credit": "Credit line: ZCiga8ZH2",
               "type": "DigitalLocation"
             }
           ],
@@ -124,7 +123,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["dphk2kk3", "GXt4fgINsV"],
+      "identifiers.value": ["fvv2mpx3", "rHhJQRvaja"],
       "items.locations.license.id": ["cc-by"],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -136,5 +135,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-02T15:48:04.849234+00:00"
+  "createdAt": "2026-06-03T11:19:05.980449+00:00"
 }

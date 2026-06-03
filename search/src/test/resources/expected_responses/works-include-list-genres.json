@@ -1,0 +1,161 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "genres": [
+        {
+          "concepts": [
+            {
+              "id": "bw4za7ef",
+              "label": "genre-VFd4Nn",
+              "type": "Genre"
+            },
+            {
+              "id": "arsojsmg",
+              "label": "RBjC7TjHuin6lCw",
+              "type": "Concept"
+            },
+            {
+              "id": "y15yom2n",
+              "label": "lxdVORloNtNfT3G",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-VFd4Nn",
+          "type": "Genre"
+        },
+        {
+          "concepts": [
+            {
+              "id": "79135q4n",
+              "label": "genre-X44wADd",
+              "type": "Genre"
+            },
+            {
+              "id": "aie1oz9o",
+              "label": "uID5uqbHcmxfn3H",
+              "type": "Concept"
+            },
+            {
+              "id": "wmmqtt7y",
+              "label": "eaDFUCd6ZAFDChf",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-X44wADd",
+          "type": "Genre"
+        }
+      ],
+      "id": "i4c7c9yl",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "genres": [
+        {
+          "concepts": [
+            {
+              "id": "6acdhjjy",
+              "label": "genre-TZljbb0u",
+              "type": "Genre"
+            },
+            {
+              "id": "ix6n8zei",
+              "label": "Eyo6zpPEz6Le1qr",
+              "type": "Concept"
+            },
+            {
+              "id": "7x8b4prc",
+              "label": "2djTzbXAU3zB7gT",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-TZljbb0u",
+          "type": "Genre"
+        },
+        {
+          "concepts": [
+            {
+              "id": "s6hxwjw4",
+              "label": "genre-MDkkvEAk",
+              "type": "Genre"
+            },
+            {
+              "id": "usycs91c",
+              "label": "NwkbBKzDePTTReX",
+              "type": "Concept"
+            },
+            {
+              "id": "189ikjnk",
+              "label": "VsTYvRhZ9621AX3",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-MDkkvEAk",
+          "type": "Genre"
+        }
+      ],
+      "id": "jz38nxcb",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "genres": [
+        {
+          "concepts": [
+            {
+              "id": "sdp7iqdy",
+              "label": "genre-e3QuuJP",
+              "type": "Genre"
+            },
+            {
+              "id": "52h1xk7d",
+              "label": "0l5i9Ca5WxHAhHp",
+              "type": "Concept"
+            },
+            {
+              "id": "5srz14dk",
+              "label": "tYjlJqIblo30UA7",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-e3QuuJP",
+          "type": "Genre"
+        },
+        {
+          "concepts": [
+            {
+              "id": "kp7tb3md",
+              "label": "genre-8kpWJi41LR",
+              "type": "Genre"
+            },
+            {
+              "id": "gif8afap",
+              "label": "Ue5WkLpVn2cW2dG",
+              "type": "Concept"
+            },
+            {
+              "id": "e2p2i6sa",
+              "label": "PSqibEZU712mMzv",
+              "type": "Concept"
+            }
+          ],
+          "label": "genre-8kpWJi41LR",
+          "type": "Genre"
+        }
+      ],
+      "id": "rnfi0lmb",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

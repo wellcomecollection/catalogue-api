@@ -1,0 +1,161 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "subjects": [
+        {
+          "concepts": [
+            {
+              "id": "kyjiou6p",
+              "label": "MbzeSeiAtJAV7jL",
+              "type": "Concept"
+            },
+            {
+              "id": "1twfp2x7",
+              "label": "nxs8Ef8lYgrhJMS",
+              "type": "Concept"
+            },
+            {
+              "id": "j2zl01lp",
+              "label": "fEWnsa1SCNDanth",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-lLfgILt",
+          "type": "Subject"
+        },
+        {
+          "concepts": [
+            {
+              "id": "5o8zrbhr",
+              "label": "zCgVqws3WR6mMfc",
+              "type": "Concept"
+            },
+            {
+              "id": "eqt8vh7p",
+              "label": "iKHOnIgA9OIzVX5",
+              "type": "Concept"
+            },
+            {
+              "id": "rs2xikhh",
+              "label": "EVAnEFSGuFP9dCt",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-tIMjBTWEfR",
+          "type": "Subject"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jz38nxcb",
+      "subjects": [
+        {
+          "concepts": [
+            {
+              "id": "q73j29jc",
+              "label": "8emPYDNpZDHkTv6",
+              "type": "Concept"
+            },
+            {
+              "id": "i49d8f7v",
+              "label": "v1yGx13Ohiu7blU",
+              "type": "Concept"
+            },
+            {
+              "id": "ibvmc0dt",
+              "label": "617eAdCwM5NWqRt",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-ZquSTq",
+          "type": "Subject"
+        },
+        {
+          "concepts": [
+            {
+              "id": "myewghbw",
+              "label": "YJV3SFEf2dI3zYY",
+              "type": "Concept"
+            },
+            {
+              "id": "qb7gfvwg",
+              "label": "cayvk8JSjklX6kO",
+              "type": "Concept"
+            },
+            {
+              "id": "pvb4zcop",
+              "label": "ADx4KiyKXak7LaR",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-2ZDAlbDZq",
+          "type": "Subject"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "rnfi0lmb",
+      "subjects": [
+        {
+          "concepts": [
+            {
+              "id": "5ty88ef5",
+              "label": "bXZpN93bL39GxjD",
+              "type": "Concept"
+            },
+            {
+              "id": "qh2royy6",
+              "label": "uOLKFe9HEBuyU3b",
+              "type": "Concept"
+            },
+            {
+              "id": "h1ijbh1p",
+              "label": "ZOmV0IIdvGJak6F",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-nOa9QiHP6",
+          "type": "Subject"
+        },
+        {
+          "concepts": [
+            {
+              "id": "wg90eqg7",
+              "label": "wgJ1TnlSQ9ozmMS",
+              "type": "Concept"
+            },
+            {
+              "id": "2wkrw9mn",
+              "label": "fQ0ut3TY8ucfNas",
+              "type": "Concept"
+            },
+            {
+              "id": "hkrm69w2",
+              "label": "ulspOBRSscb1aO2",
+              "type": "Concept"
+            }
+          ],
+          "label": "subject-O3qvi",
+          "type": "Subject"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

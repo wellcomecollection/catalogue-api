@@ -1,0 +1,53 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "id": "i4c7c9yl",
+  "production": [
+    {
+      "agents": [
+        {
+          "label": "LkiZaJGuxLObZi4",
+          "type": "Agent"
+        }
+      ],
+      "dates": [
+        {
+          "label": "1901",
+          "type": "Period"
+        }
+      ],
+      "label": "JW41zc9lpFoi13r7wuBgJ5sNI",
+      "places": [
+        {
+          "label": "pns4VQaVIGB2dhy",
+          "type": "Place"
+        }
+      ],
+      "type": "ProductionEvent"
+    },
+    {
+      "agents": [
+        {
+          "label": "QktbwKIdUOjwbFO",
+          "type": "Agent"
+        }
+      ],
+      "dates": [
+        {
+          "label": "1815",
+          "type": "Period"
+        }
+      ],
+      "label": "jlGeiWnY6XFKXSnpUi0oWywML",
+      "places": [
+        {
+          "label": "Z9VEIuT2fqiMzTm",
+          "type": "Place"
+        }
+      ],
+      "type": "ProductionEvent"
+    }
+  ],
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

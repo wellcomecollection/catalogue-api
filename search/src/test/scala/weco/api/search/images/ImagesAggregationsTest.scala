@@ -141,6 +141,14 @@ with ApiImagesTestBase {
                     },
                     {
                       "data": {
+                        "id" : "Dodo divination",
+                        "label" : "Dodo divination"
+                      },
+                      "count": 1,
+                      "type": "AggregationBucket"
+                    },
+                    {
+                      "data": {
                         "id" : "Emu entrepreneurship",
                         "label" : "Emu entrepreneurship"
                       },

@@ -1,0 +1,89 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "Mjz3tGdki5"
+        },
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "vE9ss749JO"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jz38nxcb",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "CQu2DejoWh"
+        },
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "wZL0ffJl0q"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "rnfi0lmb",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "i4oqFYtjVN"
+        },
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "znf2ALK3YA"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}
