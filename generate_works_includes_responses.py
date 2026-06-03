@@ -38,11 +38,6 @@ def load_docs():
     return docs
 
 
-def get_display(doc):
-    """Get the display section of a document."""
-    return doc["document"]["display"]
-
-
 def minimal_work(display):
     """Return the minimal work fields (always present in responses)."""
     return {
@@ -94,7 +89,7 @@ def make_list_response(docs, include_field):
     """Create a list endpoint response with the given include."""
     results = []
     for doc in docs:
-        display = get_display(doc)
+        display = doc["document"]["display"]
         results.append(work_with_include(display, include_field))
     return {
         "pageSize": 10,
@@ -107,7 +102,7 @@ def make_list_response(docs, include_field):
 
 def make_single_response(doc, include_field):
     """Create a single work endpoint response with the given include."""
-    display = get_display(doc)
+    display = doc["document"]["display"]
     return work_with_include(display, include_field)
 
 

@@ -1,7 +1,7 @@
 {
-  "aspectRatio": 0.8113995058520937,
-  "averageColor": "#673B75",
-  "id": "0armg04z",
+  "aspectRatio": 0.5979020280573024,
+  "averageColor": "#5A4DD1",
+  "id": "bwlh4xon",
   "locations": [
     {
       "accessConditions": [],
@@ -11,13 +11,14 @@
         "type": "License",
         "url": "http://creativecommons.org/licenses/by/4.0/"
       },
+      "linkText": "Link text: eOyhs0",
       "locationType": {
         "id": "iiif-image",
         "label": "IIIF Image API",
         "type": "LocationType"
       },
       "type": "DigitalLocation",
-      "url": "https://iiif.wellcomecollection.org/image/x4f.jpg/info.json"
+      "url": "https://iiif.wellcomecollection.org/image/rv4.jpg/info.json"
     }
   ],
   "source": {
@@ -25,7 +26,7 @@
       {
         "concepts": [
           {
-            "id": "gf3k257c",
+            "id": "kpdapet1",
             "identifiers": [
               {
                 "identifierType": {
@@ -34,14 +35,14 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "uhQkYA0lRc"
+                "value": "UTUu9AikBW"
               }
             ],
             "label": "Crumbly cabbages",
             "type": "Genre"
           },
           {
-            "id": "1vx597uq",
+            "id": "jw1lphhz",
             "identifiers": [
               {
                 "identifierType": {
@@ -50,14 +51,14 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "TiTzm6jkV8"
+                "value": "xL7tjwcN9h"
               }
             ],
-            "label": "X1zJ5bgO0MrhCEI",
+            "label": "m46dJkpUQjOODGw",
             "type": "Concept"
           },
           {
-            "id": "es2fvkkg",
+            "id": "yj18yo3f",
             "identifiers": [
               {
                 "identifierType": {
@@ -66,10 +67,10 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "SGhNK3mD91"
+                "value": "MPyn1Er71T"
               }
             ],
-            "label": "GpGkGbtKbS7cVHo",
+            "label": "odRylZfH1ZcG6cn",
             "type": "Concept"
           }
         ],
@@ -79,7 +80,7 @@
       {
         "concepts": [
           {
-            "id": "koc3l8za",
+            "id": "i92c772f",
             "identifiers": [
               {
                 "identifierType": {
@@ -88,14 +89,14 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "2vgcWNib3q"
+                "value": "Tug99gzXwI"
               }
             ],
             "label": "Deadly durians",
             "type": "Genre"
           },
           {
-            "id": "r3kcfrgj",
+            "id": "xvm4p23t",
             "identifiers": [
               {
                 "identifierType": {
@@ -104,14 +105,14 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "nqQkMdAwgp"
+                "value": "Fa2TxdWfDn"
               }
             ],
-            "label": "WeJBPwMHvbLWrbM",
+            "label": "edvGKmRntr5gpLg",
             "type": "Concept"
           },
           {
-            "id": "vf985mm7",
+            "id": "wpetu9iy",
             "identifiers": [
               {
                 "identifierType": {
@@ -120,10 +121,10 @@
                   "type": "IdentifierType"
                 },
                 "type": "Identifier",
-                "value": "9ItYQfB0YL"
+                "value": "mT7C2aAd7q"
               }
             ],
-            "label": "cV5Y4c81k78lC7O",
+            "label": "gYkPqw2KkhfVY4b",
             "type": "Concept"
           }
         ],
@@ -131,7 +132,7 @@
         "type": "Genre"
       }
     ],
-    "id": "op96m2b7",
+    "id": "ce2zi690",
     "title": "Apple agitator",
     "type": "Work"
   },
@@ -143,13 +144,14 @@
       "type": "License",
       "url": "http://creativecommons.org/licenses/by/4.0/"
     },
+    "linkText": "Link text: eOyhs0",
     "locationType": {
       "id": "iiif-image",
       "label": "IIIF Image API",
       "type": "LocationType"
     },
     "type": "DigitalLocation",
-    "url": "https://iiif.wellcomecollection.org/image/x4f.jpg/info.json"
+    "url": "https://iiif.wellcomecollection.org/image/rv4.jpg/info.json"
   },
   "type": "Image"
 }
