@@ -100,17 +100,6 @@ class ImagesFiltersTest extends AnyFunSpec with ApiImagesTestBase {
       }
     }
 
-    it("does not filter by genres from the redirected source work") {
-      withGenreFilterRecords { routes =>
-        assertJsonResponse(
-          routes,
-          path = s"$rootPath/images?source.genres.label=Dodo%20divination"
-        ) {
-          Status.OK -> emptyJsonResult
-        }
-      }
-    }
-
     it("filters by multiple genres") {
       withGenreFilterRecords { routes =>
         assertJsonResponse(

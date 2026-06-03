@@ -1,0 +1,100 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "id": "i4c7c9yl",
+  "items": [
+    {
+      "id": "e2p26gmk",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "C7e7BOz8rq"
+        }
+      ],
+      "locations": [
+        {
+          "accessConditions": [],
+          "credit": "Credit line: VpK5prl8W7",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "type": "License",
+            "url": "http://creativecommons.org/licenses/by/4.0/"
+          },
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
+          },
+          "type": "DigitalLocation",
+          "url": "https://iiif.wellcomecollection.org/image/5bx.jpg/info.json"
+        }
+      ],
+      "type": "Item"
+    },
+    {
+      "id": "c3wirubz",
+      "identifiers": [
+        {
+          "identifierType": {
+            "id": "sierra-system-number",
+            "label": "Sierra system number",
+            "type": "IdentifierType"
+          },
+          "type": "Identifier",
+          "value": "E6HicfK3wx"
+        }
+      ],
+      "locations": [
+        {
+          "accessConditions": [],
+          "credit": "Credit line: WzyBXO",
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "type": "License",
+            "url": "http://creativecommons.org/licenses/by/4.0/"
+          },
+          "linkText": "Link text: NuftbFa",
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
+          },
+          "type": "DigitalLocation",
+          "url": "https://iiif.wellcomecollection.org/image/B4W.jpg/info.json"
+        }
+      ],
+      "type": "Item"
+    },
+    {
+      "identifiers": [],
+      "locations": [
+        {
+          "accessConditions": [],
+          "license": {
+            "id": "cc-by",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "type": "License",
+            "url": "http://creativecommons.org/licenses/by/4.0/"
+          },
+          "locationType": {
+            "id": "iiif-image",
+            "label": "IIIF Image API",
+            "type": "LocationType"
+          },
+          "type": "DigitalLocation",
+          "url": "https://iiif.wellcomecollection.org/image/aem.jpg/info.json"
+        }
+      ],
+      "type": "Item"
+    }
+  ],
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

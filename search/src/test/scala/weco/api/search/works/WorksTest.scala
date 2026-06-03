@@ -20,11 +20,11 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.visible.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/2twopft1") {
+        assertJsonResponse(routes, path = s"$rootPath/works/afza5vpu") {
           Status.OK -> s"""
             {
-              "id" : "2twopft1",
-              "title" : "title-vaMzxd8prf",
+              "id" : "afza5vpu",
+              "title" : "52RvEJgwBuNO6n9",
               "alternativeTitles": [],
               "availabilities": [],
               "type": "Work"
@@ -39,12 +39,12 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "work-with-edition-and-duration")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/gsruvqwf") {
+        assertJsonResponse(routes, path = s"$rootPath/works/mwheb72m") {
           Status.OK ->
             """
               |{
-              |  "id" : "gsruvqwf",
-              |  "title" : "title-4pIj0kgXrt",
+              |  "id" : "mwheb72m",
+              |  "title" : "dyagzJHsC6FYLTR",
               |  "alternativeTitles" : [],
               |  "availabilities" : [],
               |  "edition" : "Special edition",
@@ -149,11 +149,11 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "work-thumbnail")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/sahqcluh") {
+        assertJsonResponse(routes, path = s"$rootPath/works/oavuuc7j") {
           Status.OK -> """
             {
-              "id" : "sahqcluh",
-              "title" : "title-LSfnjHB2TS",
+              "id" : "oavuuc7j",
+              "title" : "gMFjKzORB4HFR64",
               "alternativeTitles" : [],
               "thumbnail" : {
                 "locationType" : {
@@ -161,7 +161,7 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
                   "label" : "IIIF Presentation API",
                   "type" : "LocationType"
                 },
-                "url" : "https://iiif.wellcomecollection.org/image/547.jpg/info.json",
+                "url" : "https://iiif.wellcomecollection.org/image/hFz.jpg/info.json",
                 "license" : {
                   "id" : "cc-by",
                   "label" : "Attribution 4.0 International (CC BY 4.0)",

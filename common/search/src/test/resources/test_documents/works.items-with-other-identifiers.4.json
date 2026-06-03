@@ -1,17 +1,17 @@
 {
   "description": "works with items with other identifiers",
-  "id": "kj9v3eyr",
+  "id": "j9v3eyr3",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "kj9v3eyr",
+        "id": "j9v3eyr3",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "kfJr8DaYZN"
+          "value": "Jr8DaYZNOk"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,16 +22,16 @@
       "redirectSources": []
     },
     "query": {
-      "id": "kj9v3eyr",
-      "title": "LhveEMFtpy3Tdwv",
+      "id": "j9v3eyr3",
+      "title": "veEMFtpy3Tdwvkf",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "kfJr8DaYZN",
-      "identifiers.value": ["kj9v3eyr", "kfJr8DaYZN"],
+      "sourceIdentifier.value": "Jr8DaYZNOk",
+      "identifiers.value": ["j9v3eyr3", "Jr8DaYZNOk"],
       "images.id": [],
       "images.identifiers.value": [],
-      "items.identifiers.value": ["dmvB4pZv7B", "K5HnMoWMKC"],
-      "items.id": ["k2v8gfza"],
+      "items.identifiers.value": ["vB4pZv7BLh", "gyFivK5HnM"],
+      "items.id": ["v8gfzadm"],
       "items.shelfmark.value": [],
       "notes.contents": [],
       "partOf.title": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "kj9v3eyr",
-      "title": "LhveEMFtpy3Tdwv",
+      "id": "j9v3eyr3",
+      "title": "veEMFtpy3Tdwvkf",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "kfJr8DaYZN",
+          "value": "Jr8DaYZNOk",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -60,10 +60,10 @@
       "genres": [],
       "items": [
         {
-          "id": "k2v8gfza",
+          "id": "v8gfzadm",
           "identifiers": [
             {
-              "value": "dmvB4pZv7B",
+              "value": "vB4pZv7BLh",
               "type": "Identifier",
               "identifierType": {
                 "id": "sierra-system-number",
@@ -72,7 +72,7 @@
               }
             },
             {
-              "value": "K5HnMoWMKC",
+              "value": "gyFivK5HnM",
               "type": "Identifier",
               "identifierType": {
                 "id": "calm-record-id",
@@ -95,8 +95,8 @@
                 "url": "http://creativecommons.org/licenses/by/4.0/"
               },
               "accessConditions": [],
-              "url": "https://iiif.wellcomecollection.org/image/Msg.jpg/info.json",
-              "credit": "Credit line: 7SrrYR",
+              "url": "https://iiif.wellcomecollection.org/image/oWM.jpg/info.json",
+              "credit": "Credit line: il7SrrYRuk",
               "type": "DigitalLocation"
             }
           ],
@@ -143,11 +143,11 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["kj9v3eyr", "kfJr8DaYZN"],
+      "identifiers.value": ["j9v3eyr3", "Jr8DaYZNOk"],
       "items.locations.license.id": ["cc-by"],
       "items.locations.accessConditions.status.id": [],
-      "items.id": ["k2v8gfza"],
-      "items.identifiers.value": ["dmvB4pZv7B", "K5HnMoWMKC"],
+      "items.id": ["v8gfzadm"],
+      "items.identifiers.value": ["vB4pZv7BLh", "gyFivK5HnM"],
       "items.locations.locationType.id": ["iiif-image"],
       "items.locations.createdDate": [],
       "partOf.id": [],
@@ -155,5 +155,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T09:29:42.845122+00:00"
+  "createdAt": "2026-06-03T11:19:06.095036+00:00"
 }

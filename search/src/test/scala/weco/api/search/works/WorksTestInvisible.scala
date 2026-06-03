@@ -8,7 +8,7 @@ class WorksTestInvisible extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.invisible.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/rczekocx") {
+        assertJsonResponse(routes, path = s"$rootPath/works/mhzfxhcb") {
           Status.Gone -> deleted
         }
     }

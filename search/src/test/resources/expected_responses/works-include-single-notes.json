@@ -1,0 +1,27 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "id": "i4c7c9yl",
+  "notes": [
+    {
+      "contents": ["TDWcK6hA9y", "Sjfvp110lp"],
+      "noteType": {
+        "id": "location-of-duplicates-note",
+        "label": "Location of duplicates",
+        "type": "NoteType"
+      },
+      "type": "Note"
+    },
+    {
+      "contents": ["GiN3Q", "VY1RJk"],
+      "noteType": {
+        "id": "general-note",
+        "label": "Notes",
+        "type": "NoteType"
+      },
+      "type": "Note"
+    }
+  ],
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

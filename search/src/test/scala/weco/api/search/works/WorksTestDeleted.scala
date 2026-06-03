@@ -8,7 +8,7 @@ class WorksTestDeleted extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(worksIndex, "works.deleted.0")
 
-        assertJsonResponse(routes, path = s"$rootPath/works/pnwuzuig") {
+        assertJsonResponse(routes, path = s"$rootPath/works/qi7whjrb") {
           Status.Gone -> deleted
         }
     }

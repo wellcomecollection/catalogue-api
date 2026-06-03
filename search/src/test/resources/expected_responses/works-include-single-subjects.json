@@ -1,0 +1,117 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "id": "i4c7c9yl",
+  "subjects": [
+    {
+      "concepts": [
+        {
+          "id": "kyjiou6p",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "pWlsxAQc3i"
+            }
+          ],
+          "label": "MbzeSeiAtJAV7jL",
+          "type": "Concept"
+        },
+        {
+          "id": "1twfp2x7",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "dyAaA9U5uC"
+            }
+          ],
+          "label": "nxs8Ef8lYgrhJMS",
+          "type": "Concept"
+        },
+        {
+          "id": "j2zl01lp",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "9Dv7HjwDOO"
+            }
+          ],
+          "label": "fEWnsa1SCNDanth",
+          "type": "Concept"
+        }
+      ],
+      "label": "subject-lLfgILt",
+      "type": "Subject"
+    },
+    {
+      "concepts": [
+        {
+          "id": "5o8zrbhr",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "4QcaqzH4LT"
+            }
+          ],
+          "label": "zCgVqws3WR6mMfc",
+          "type": "Concept"
+        },
+        {
+          "id": "eqt8vh7p",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "56WkeA3ssH"
+            }
+          ],
+          "label": "iKHOnIgA9OIzVX5",
+          "type": "Concept"
+        },
+        {
+          "id": "rs2xikhh",
+          "identifiers": [
+            {
+              "identifierType": {
+                "id": "sierra-system-number",
+                "label": "Sierra system number",
+                "type": "IdentifierType"
+              },
+              "type": "Identifier",
+              "value": "yzLDiJQtwO"
+            }
+          ],
+          "label": "EVAnEFSGuFP9dCt",
+          "type": "Concept"
+        }
+      ],
+      "label": "subject-tIMjBTWEfR",
+      "type": "Subject"
+    }
+  ],
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

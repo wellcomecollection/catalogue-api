@@ -1,17 +1,17 @@
 {
   "description": "examples for the works filtered aggregations tests",
-  "id": "izsnkcuv",
+  "id": "xne0mjo4",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "izsnkcuv",
+        "id": "xne0mjo4",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "p73pTmAQO6"
+          "value": "fHgoST59ky"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "izsnkcuv",
+      "id": "xne0mjo4",
       "title": "capybara",
       "alternativeTitles": [],
       "languages.label": ["Marathi"],
-      "sourceIdentifier.value": "p73pTmAQO6",
-      "identifiers.value": ["izsnkcuv", "p73pTmAQO6"],
+      "sourceIdentifier.value": "fHgoST59ky",
+      "identifiers.value": ["xne0mjo4", "fHgoST59ky"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,7 +41,7 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "izsnkcuv",
+      "id": "xne0mjo4",
       "title": "capybara",
       "alternativeTitles": [],
       "workType": {
@@ -52,7 +52,7 @@
       "contributors": [],
       "identifiers": [
         {
-          "value": "p73pTmAQO6",
+          "value": "fHgoST59ky",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -116,7 +116,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["izsnkcuv", "p73pTmAQO6"],
+      "identifiers.value": ["xne0mjo4", "fHgoST59ky"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -128,5 +128,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-02T15:48:05.502440+00:00"
+  "createdAt": "2026-06-03T14:13:00.572379+00:00"
 }
