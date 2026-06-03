@@ -16,6 +16,7 @@ from pathlib import Path
 DOCS_DIR = Path("common/search/src/test/resources/test_documents")
 OUTPUT_DIR = Path("search/src/test/resources/expected_responses")
 
+
 # The API serialises JSON keys in alphabetical order
 def sort_json(obj):
     """Recursively sort JSON object keys alphabetically."""
@@ -146,15 +147,11 @@ def main():
     for include in includes:
         # List endpoint
         list_response = make_list_response(docs, include)
-        write_json(
-            OUTPUT_DIR / f"works-include-list-{include}.json", list_response
-        )
+        write_json(OUTPUT_DIR / f"works-include-list-{include}.json", list_response)
 
         # Single work endpoint
         single_response = make_single_response(single_doc, include)
-        write_json(
-            OUTPUT_DIR / f"works-include-single-{include}.json", single_response
-        )
+        write_json(OUTPUT_DIR / f"works-include-single-{include}.json", single_response)
 
     print(f"\nDone! Generated {len(includes) * 2} files.")
     print(f"Single work ID for tests: {single_id}")
