@@ -1,202 +1,132 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2024-11-25T15:15:12.495221Z",
-  "id" : "rfckqwuh",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "rfckqwuh",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the works filtered aggregations tests",
+  "id": "zw8yuv1z",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "zw8yuv1z",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "e1HWk1Ah2x"
+          "ontologyType": "Work",
+          "value": "kuTHVnNqwp"
         },
-        "version" : 48,
-        "modifiedTime" : "1997-05-16T00:21:21Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "1997-05-16T00:21:21Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "rfckqwuh",
-      "title" : "capybara",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "a",
-        "label" : "Books",
-        "type" : "Format"
+    "query": {
+      "id": "zw8yuv1z",
+      "title": "capybara",
+      "alternativeTitles": [],
+      "languages.label": ["Marathi"],
+      "sourceIdentifier.value": "kuTHVnNqwp",
+      "identifiers.value": ["zw8yuv1z", "kuTHVnNqwp"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "zw8yuv1z",
+      "title": "capybara",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "a",
+        "type": "Format",
+        "label": "Books"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
-          },
-          "value" : "e1HWk1Ah2x",
-          "type" : "Identifier"
+          "value": "kuTHVnNqwp",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "mar",
-          "label" : "Marathi",
-          "type" : "Language"
+          "id": "mar",
+          "type": "Language",
+          "label": "Marathi"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "rfckqwuh",
-      "sourceIdentifier.value" : "e1HWk1Ah2x",
-      "identifiers.value" : [
-        "e1HWk1Ah2x"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-        "Marathi"
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "capybara"
-    },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
         {
-          "id" : "a",
-          "label" : "Books"
+          "id": "a",
+          "label": "Books"
         }
       ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
+      "genres": [],
+      "subjects": [],
+      "languages": [
         {
-          "id" : "mar",
-          "label" : "Marathi"
+          "id": "mar",
+          "label": "Marathi"
         }
       ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : "a",
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-        "mar"
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "e1HWk1Ah2x"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "format.id": "a",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["mar"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["zw8yuv1z", "kuTHVnNqwp"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.571391+00:00"
 }

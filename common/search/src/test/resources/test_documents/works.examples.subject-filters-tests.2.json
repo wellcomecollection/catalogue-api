@@ -1,208 +1,174 @@
 {
-  "description" : "examples for the subject filter tests",
-  "createdAt" : "2024-11-25T15:15:12.455980Z",
-  "id" : "eadt8hhm",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "eadt8hhm",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "examples for the subject filter tests",
+  "id": "13t2o80g",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "13t2o80g",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "SSg7erLcgx"
+          "ontologyType": "Work",
+          "value": "F5Z7or4RMJ"
         },
-        "version" : 18,
-        "modifiedTime" : "2010-09-19T13:34:03Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2010-09-19T13:34:03Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "eadt8hhm",
-      "title" : "title-zSHRFusVBN",
-      "alternativeTitles" : [
+    "query": {
+      "id": "13t2o80g",
+      "title": "khJjEjaMctnhqqC",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "F5Z7or4RMJ",
+      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [
+        "3M3G93Wl8jQdVp7",
+        "fuPYyhGudedstTc",
+        "L9HD4ISH6lWaT58"
       ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "13t2o80g",
+      "title": "khJjEjaMctnhqqC",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "calm-record-id",
-            "label" : "Calm RecordIdentifier",
-            "type" : "IdentifierType"
-          },
-          "value" : "SSg7erLcgx",
-          "type" : "Identifier"
+          "value": "F5Z7or4RMJ",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
+      "subjects": [
         {
-          "label" : "Psychology, Pathological",
-          "concepts" : [
+          "label": "Psychology, Pathological",
+          "type": "Subject",
+          "concepts": [
             {
-              "label" : "ol7E1K1L8XUhcLZ",
-              "type" : "Concept"
+              "id": "9u9ocbrz",
+              "label": "3M3G93Wl8jQdVp7",
+              "identifiers": [
+                {
+                  "value": "SjooPZ52NA",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "hc35m9C4DAgxJAj",
-              "type" : "Concept"
+              "id": "gaphecmp",
+              "label": "fuPYyhGudedstTc",
+              "identifiers": [
+                {
+                  "value": "jnvAH6AfxL",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             },
             {
-              "label" : "Eybh6q7wkoWRiNO",
-              "type" : "Concept"
+              "id": "kgxwsk31",
+              "label": "L9HD4ISH6lWaT58",
+              "identifiers": [
+                {
+                  "value": "WmPVpfhAkF",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
+                }
+              ],
+              "type": "Concept"
             }
-          ],
-          "type" : "Subject"
+          ]
         }
       ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "eadt8hhm",
-      "sourceIdentifier.value" : "SSg7erLcgx",
-      "identifiers.value" : [
-        "SSg7erLcgx"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-        "ol7E1K1L8XUhcLZ",
-        "hc35m9C4DAgxJAj",
-        "Eybh6q7wkoWRiNO"
-      ],
-      "title" : "title-zSHRFusVBN"
-    },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "subjects": [
         {
-          "id" : "Psychology, Pathological",
-          "label" : "Psychology, Pathological"
+          "id": "Psychology, Pathological",
+          "label": "Psychology, Pathological"
         }
       ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-        "Psychology, Pathological"
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "SSg7erLcgx"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": ["Psychology, Pathological"],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.416015+00:00"
 }

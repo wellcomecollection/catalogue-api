@@ -1,0 +1,59 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "images": [
+        {
+          "id": "f1g3jcqv",
+          "type": "Image"
+        },
+        {
+          "id": "c89qc3zh",
+          "type": "Image"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jbh1pcrq",
+      "images": [
+        {
+          "id": "crbwxv3i",
+          "type": "Image"
+        },
+        {
+          "id": "39vi0qyf",
+          "type": "Image"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jct270n3",
+      "images": [
+        {
+          "id": "kys4nb3l",
+          "type": "Image"
+        },
+        {
+          "id": "jupjq9l8",
+          "type": "Image"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

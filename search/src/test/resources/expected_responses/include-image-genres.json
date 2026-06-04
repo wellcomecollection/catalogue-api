@@ -1,91 +1,157 @@
 {
-  "aspectRatio" : 0.38759995,
-  "averageColor" : "#42424B",
-  "id" : "b25is1mw",
-  "locations" : [
+  "aspectRatio": 0.5979020280573024,
+  "averageColor": "#5A4DD1",
+  "id": "bwlh4xon",
+  "locations": [
     {
-      "accessConditions" : [
-      ],
-      "license" : {
-        "id" : "cc-by",
-        "label" : "Attribution 4.0 International (CC BY 4.0)",
-        "type" : "License",
-        "url" : "http://creativecommons.org/licenses/by/4.0/"
+      "accessConditions": [],
+      "license": {
+        "id": "cc-by",
+        "label": "Attribution 4.0 International (CC BY 4.0)",
+        "type": "License",
+        "url": "http://creativecommons.org/licenses/by/4.0/"
       },
-      "locationType" : {
-        "id" : "iiif-image",
-        "label" : "IIIF Image API",
-        "type" : "LocationType"
+      "linkText": "Link text: eOyhs0",
+      "locationType": {
+        "id": "iiif-image",
+        "label": "IIIF Image API",
+        "type": "LocationType"
       },
-      "type" : "DigitalLocation",
-      "url" : "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json"
+      "type": "DigitalLocation",
+      "url": "https://iiif.wellcomecollection.org/image/rv4.jpg/info.json"
     }
   ],
-  "source" : {
-    "genres" : [
+  "source": {
+    "genres": [
       {
-        "concepts" : [
+        "concepts": [
           {
-            "id" : "lejca71h",
-            "label" : "ugoW7DPjY7eEyUr",
-            "type" : "Genre"
+            "id": "kpdapet1",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "UTUu9AikBW"
+              }
+            ],
+            "label": "Crumbly cabbages",
+            "type": "Genre"
           },
           {
-            "id" : "wmf04cfl",
-            "label" : "9VrODZy7KkifsFe",
-            "type" : "Concept"
+            "id": "jw1lphhz",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "xL7tjwcN9h"
+              }
+            ],
+            "label": "m46dJkpUQjOODGw",
+            "type": "Concept"
           },
           {
-            "id" : "aepyhklp",
-            "label" : "rYYrQmMYtpbz1Al",
-            "type" : "Concept"
+            "id": "yj18yo3f",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "MPyn1Er71T"
+              }
+            ],
+            "label": "odRylZfH1ZcG6cn",
+            "type": "Concept"
           }
         ],
-        "label" : "Crumbly cabbages",
-        "type" : "Genre"
+        "label": "Crumbly cabbages",
+        "type": "Genre"
       },
       {
-        "concepts" : [
+        "concepts": [
           {
-            "id" : "lksf0yuj",
-            "label" : "706t7mv7kanMOW5",
-            "type" : "Genre"
+            "id": "i92c772f",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "Tug99gzXwI"
+              }
+            ],
+            "label": "Deadly durians",
+            "type": "Genre"
           },
           {
-            "id" : "ywn40rop",
-            "label" : "VMoAMmioWNbDYqh",
-            "type" : "Concept"
+            "id": "xvm4p23t",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "Fa2TxdWfDn"
+              }
+            ],
+            "label": "edvGKmRntr5gpLg",
+            "type": "Concept"
           },
           {
-            "id" : "gxjzwfd7",
-            "label" : "1lbnmi1f4IMuqCy",
-            "type" : "Concept"
+            "id": "wpetu9iy",
+            "identifiers": [
+              {
+                "identifierType": {
+                  "id": "sierra-system-number",
+                  "label": "Sierra system number",
+                  "type": "IdentifierType"
+                },
+                "type": "Identifier",
+                "value": "mT7C2aAd7q"
+              }
+            ],
+            "label": "gYkPqw2KkhfVY4b",
+            "type": "Concept"
           }
         ],
-        "label" : "Deadly durians",
-        "type" : "Genre"
+        "label": "Deadly durians",
+        "type": "Genre"
       }
     ],
-    "id" : "dqxovw56",
-    "title" : "Apple agitator",
-    "type" : "Work"
+    "id": "ce2zi690",
+    "title": "Apple agitator",
+    "type": "Work"
   },
-  "thumbnail" : {
-    "accessConditions" : [
-    ],
-    "license" : {
-      "id" : "cc-by",
-      "label" : "Attribution 4.0 International (CC BY 4.0)",
-      "type" : "License",
-      "url" : "http://creativecommons.org/licenses/by/4.0/"
+  "thumbnail": {
+    "accessConditions": [],
+    "license": {
+      "id": "cc-by",
+      "label": "Attribution 4.0 International (CC BY 4.0)",
+      "type": "License",
+      "url": "http://creativecommons.org/licenses/by/4.0/"
     },
-    "locationType" : {
-      "id" : "iiif-image",
-      "label" : "IIIF Image API",
-      "type" : "LocationType"
+    "linkText": "Link text: eOyhs0",
+    "locationType": {
+      "id": "iiif-image",
+      "label": "IIIF Image API",
+      "type": "LocationType"
     },
-    "type" : "DigitalLocation",
-    "url" : "https://iiif.wellcomecollection.org/image/2mU.jpg/info.json"
+    "type": "DigitalLocation",
+    "url": "https://iiif.wellcomecollection.org/image/rv4.jpg/info.json"
   },
-  "type" : "Image"
+  "type": "Image"
 }

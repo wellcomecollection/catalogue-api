@@ -1,28 +1,31 @@
 {
-  "description" : "an invisible work with 'mouse' in the title",
-  "createdAt" : "2024-02-16T15:36:44.232704Z",
-  "id" : "ehd2s7ek",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "ehd2s7ek",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "calm-record-id"
+  "description": "an invisible work with 'mouse' in the title",
+  "id": "h4wqibnx",
+  "document": {
+    "type": "Invisible",
+    "debug": {
+      "source": {
+        "id": "h4wqibnx",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "QAH5ZlILHM"
+          "ontologyType": "Work",
+          "value": "xSb7Mo2jlD"
         },
-        "version" : 47,
-        "modifiedTime" : "2006-12-05T07:13:26Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2006-12-05T07:13:26Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "invisibilityReasons" : [
-      ],
-      "mergeCandidates" : [
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "invisibilityReasons": [
+        {
+          "type": "SourceFieldMissing",
+          "info": "test"
+        }
       ]
-    },
-    "type" : "Invisible"
-  }
+    }
+  },
+  "createdAt": "2026-06-02T13:48:26.014487+00:00"
 }

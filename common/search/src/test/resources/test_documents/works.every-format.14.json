@@ -1,191 +1,121 @@
 {
-  "description" : "works with every format",
-  "createdAt" : "2024-11-25T15:15:12.382490Z",
-  "id" : "vwzsza7o",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "vwzsza7o",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "works with every format",
+  "id": "7u7nit9s",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "7u7nit9s",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "DHZ5kGsC2N"
+          "ontologyType": "Work",
+          "value": "NBDPCzaVNW"
         },
-        "version" : 76,
-        "modifiedTime" : "2057-06-21T22:52:30Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2057-06-21T22:52:30Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "vwzsza7o",
-      "title" : "title-Aa31SpT9St",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "n",
-        "label" : "Film",
-        "type" : "Format"
+    "query": {
+      "id": "7u7nit9s",
+      "title": "Vn9ogigcMJfL1UZ",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "NBDPCzaVNW",
+      "identifiers.value": ["7u7nit9s", "NBDPCzaVNW"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "7u7nit9s",
+      "title": "Vn9ogigcMJfL1UZ",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "n",
+        "type": "Format",
+        "label": "Film"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
-          },
-          "value" : "DHZ5kGsC2N",
-          "type" : "Identifier"
+          "value": "NBDPCzaVNW",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "vwzsza7o",
-      "sourceIdentifier.value" : "DHZ5kGsC2N",
-      "identifiers.value" : [
-        "DHZ5kGsC2N"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "title-Aa31SpT9St"
-    },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
         {
-          "id" : "n",
-          "label" : "Film"
+          "id": "n",
+          "label": "Film"
         }
       ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "genres": [],
+      "subjects": [],
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : "n",
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "DHZ5kGsC2N"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "format.id": "n",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["7u7nit9s", "NBDPCzaVNW"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.103239+00:00"
 }

@@ -1,183 +1,112 @@
 {
-  "description" : "a work with 'mouse' in the title",
-  "createdAt" : "2024-11-25T15:15:12.118663Z",
-  "id" : "lnn17cwk",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "lnn17cwk",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "a work with 'mouse' in the title",
+  "id": "j3x6y76c",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "j3x6y76c",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "EhPpSB8mq7"
+          "ontologyType": "Work",
+          "value": "ctaW2Cv3kZ"
         },
-        "version" : 64,
-        "modifiedTime" : "2003-09-07T11:20:18Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2003-09-07T11:20:18Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "lnn17cwk",
-      "title" : "A mezzotint of a mouse",
-      "alternativeTitles" : [
-      ],
-      "lettering" : "A print of proportional penmanship",
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "query": {
+      "id": "j3x6y76c",
+      "title": "A mezzotint of a mouse",
+      "lettering": "A print of proportional penmanship",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "ctaW2Cv3kZ",
+      "identifiers.value": ["j3x6y76c", "ctaW2Cv3kZ"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "j3x6y76c",
+      "title": "A mezzotint of a mouse",
+      "alternativeTitles": [],
+      "lettering": "A print of proportional penmanship",
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
-          },
-          "value" : "EhPpSB8mq7",
-          "type" : "Identifier"
+          "value": "ctaW2Cv3kZ",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "lnn17cwk",
-      "sourceIdentifier.value" : "EhPpSB8mq7",
-      "identifiers.value" : [
-        "EhPpSB8mq7"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : "A print of proportional penmanship",
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "A mezzotint of a mouse"
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "subjects": [],
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
-    },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "EhPpSB8mq7"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["j3x6y76c", "ctaW2Cv3kZ"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-02T13:48:25.974689+00:00"
 }

@@ -1,0 +1,167 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "production": [
+        {
+          "agents": [
+            {
+              "label": "LkiZaJGuxLObZi4",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1901",
+              "type": "Period"
+            }
+          ],
+          "label": "JW41zc9lpFoi13r7wuBgJ5sNI",
+          "places": [
+            {
+              "label": "pns4VQaVIGB2dhy",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        },
+        {
+          "agents": [
+            {
+              "label": "QktbwKIdUOjwbFO",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1815",
+              "type": "Period"
+            }
+          ],
+          "label": "jlGeiWnY6XFKXSnpUi0oWywML",
+          "places": [
+            {
+              "label": "Z9VEIuT2fqiMzTm",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jbh1pcrq",
+      "production": [
+        {
+          "agents": [
+            {
+              "label": "MFTSg7EJw3Xv3gR",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1801",
+              "type": "Period"
+            }
+          ],
+          "label": "bLi6yk4CKd6y7ZfPLzvoG3DcE",
+          "places": [
+            {
+              "label": "jDe9eEzK8AJfqEo",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        },
+        {
+          "agents": [
+            {
+              "label": "yDGD7K1NoRzGtFo",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1880",
+              "type": "Period"
+            }
+          ],
+          "label": "poF1troaFw89G7vfetKBoVx9y",
+          "places": [
+            {
+              "label": "oPTxO6wBrwzXXTs",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jct270n3",
+      "production": [
+        {
+          "agents": [
+            {
+              "label": "PnL9k1fKEsrqnzR",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1802",
+              "type": "Period"
+            }
+          ],
+          "label": "hLXh1lV9EsRUgRWBqrYhOwG0I",
+          "places": [
+            {
+              "label": "zPLVodnA665bdMY",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        },
+        {
+          "agents": [
+            {
+              "label": "8Q3UEzL0uVQ5NDG",
+              "type": "Agent"
+            }
+          ],
+          "dates": [
+            {
+              "label": "1888",
+              "type": "Period"
+            }
+          ],
+          "label": "3O3dHXXe4aOsjXj1WGi8h9vaV",
+          "places": [
+            {
+              "label": "CyXzIEJBHe6ojPz",
+              "type": "Place"
+            }
+          ],
+          "type": "ProductionEvent"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

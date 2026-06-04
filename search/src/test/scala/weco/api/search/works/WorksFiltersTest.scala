@@ -19,7 +19,7 @@ class WorksFiltersTest
         assertJsonResponse(
           routes,
           path =
-            s"$rootPath/works?genres.label=Uw1LvlTE5c&subjects.label=RGOo9Fg6ic"
+            s"$rootPath/works?genres.label=genre-VFd4Nn&subjects.label=subject-lLfgILt"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq("work.visible.everything.0")
@@ -349,7 +349,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS"
+            path = s"$rootPath/works?identifiers=Mjz3tGdki5"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -365,7 +365,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,LMVvWxgXRS"
+            path = s"$rootPath/works?identifiers=Mjz3tGdki5,U3bhBMQ79i"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -382,7 +382,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Hq3k05Fqag"
+            path = s"$rootPath/works?identifiers=2mnD1uirJQ"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.2")
@@ -398,7 +398,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=UfcQYSxE7g,Hq3k05Fqag"
+            path = s"$rootPath/works?identifiers=vE9ss749JO,2mnD1uirJQ"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -415,7 +415,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?identifiers=Aic5qOhRoS,Hq3k05Fqag"
+            path = s"$rootPath/works?identifiers=Mjz3tGdki5,2mnD1uirJQ"
           ) {
             Status.OK -> worksListResponse(
               ids =
@@ -546,7 +546,7 @@ class WorksFiltersTest
         case (worksIndex, routes) =>
           indexTestDocuments(worksIndex, worksEverything: _*)
 
-          assertJsonResponse(routes, path = s"$rootPath/works?partOf=nrvdy0jg") {
+          assertJsonResponse(routes, path = s"$rootPath/works?partOf=7vafg1w2") {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
             )
@@ -561,7 +561,7 @@ class WorksFiltersTest
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?partOf.title=title-MS5Hy6x38N"
+            path = s"$rootPath/works?partOf.title=wZL0ffJl0qmZquS"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq("work.visible.everything.0")
@@ -574,12 +574,12 @@ class WorksFiltersTest
   describe("item filters") {
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=a7xxlndb",
+        path = s"$rootPath/works?items=e2p26gmk",
         expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items=sr0le4q0",
+        path = s"$rootPath/works?items=pb6xj3qh",
         expectedIds = Seq("work.visible.everything.1")
       )
     }
@@ -589,15 +589,15 @@ class WorksFiltersTest
         Table(
           ("ids", "works"),
           (
-            "a7xxlndb,sr0le4q0",
+            "e2p26gmk,bznf008n",
             Seq("work.visible.everything.0", "work.visible.everything.1")
           ),
           (
-            "sr0le4q0,9indplmm",
+            "bznf008n,oajna0ij",
             Seq("work.visible.everything.1", "work.visible.everything.2")
           ),
           (
-            "b7xfovxp,a7xxlndb",
+            "ns9zelyh,e2p26gmk",
             Seq("work.visible.everything.2", "work.visible.everything.0")
           )
         )
@@ -611,19 +611,19 @@ class WorksFiltersTest
 
     it("looks up source identifiers") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=dG0mvvCJtU",
+        path = s"$rootPath/works?items.identifiers=E6HicfK3wx",
         expectedIds = Seq("work.visible.everything.0")
       )
 
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=fYVwu7Y7Y7",
+        path = s"$rootPath/works?items.identifiers=Oa9QiHP6Ft",
         expectedIds = Seq("work.visible.everything.1")
       )
     }
 
     it("looks up multiple source identifiers") {
       assertItemsFilterWorks(
-        path = s"$rootPath/works?items.identifiers=GWWFxlGgZX,HYZ1N6BwQR",
+        path = s"$rootPath/works?items.identifiers=C7e7BOz8rq,LCr41oyyVG",
         expectedIds =
           Seq("work.visible.everything.0", "work.visible.everything.1")
       )

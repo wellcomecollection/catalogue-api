@@ -1,246 +1,174 @@
 {
-  "description" : "examples for the genre tests",
-  "createdAt" : "2024-11-25T15:15:12.448753Z",
-  "id" : "vr490vab",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "vr490vab",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "examples for the genre tests",
+  "id": "2yu28jgs",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "2yu28jgs",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "AzAiZFAZvT"
+          "ontologyType": "Work",
+          "value": "WnS61Ypk3M"
         },
-        "version" : 34,
-        "modifiedTime" : "1956-06-20T09:37:32Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "1956-06-20T09:37:32Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
+    },
+    "query": {
+      "id": "2yu28jgs",
+      "title": "0crv9bTt2zgyAVv",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "WnS61Ypk3M",
+      "identifiers.value": ["2yu28jgs", "WnS61Ypk3M"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": [
+        "Darwin \"Jones\", Charles",
+        "hR9vqMiUTtc9mHs",
+        "43lxZvotm3OGW5d"
       ]
     },
-    "display" : {
-      "id" : "vr490vab",
-      "title" : "title-q4zh18D0cb",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "display": {
+      "id": "2yu28jgs",
+      "title": "0crv9bTt2zgyAVv",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
-          },
-          "value" : "AzAiZFAZvT",
-          "type" : "Identifier"
+          "value": "WnS61Ypk3M",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
+      "subjects": [],
+      "genres": [
         {
-          "label" : "Darwin \"Jones\", Charles",
-          "concepts" : [
+          "label": "Darwin \"Jones\", Charles",
+          "concepts": [
             {
-              "id" : "lmpakqz5",
-              "identifiers" : [
+              "id": "4x4i8od2",
+              "label": "Darwin \"Jones\", Charles",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "sierra-system-number",
-                    "label" : "Sierra system number",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "DpKgb0Wdy2",
-                  "type" : "Identifier"
+                  "value": "Kp9p9LoRcs",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
                 }
               ],
-              "label" : "5SIuLPMgIG177tc",
-              "type" : "Genre"
+              "type": "Genre"
             },
             {
-              "id" : "nmumczq1",
-              "identifiers" : [
+              "id": "hyv0wjy3",
+              "label": "hR9vqMiUTtc9mHs",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "calm-record-id",
-                    "label" : "Calm RecordIdentifier",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "Q4CK8DrDsk",
-                  "type" : "Identifier"
+                  "value": "iAkocxD1QD",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
                 }
               ],
-              "label" : "JcxukacPWKUROxB",
-              "type" : "Concept"
+              "type": "Concept"
             },
             {
-              "id" : "2kcagurh",
-              "identifiers" : [
+              "id": "qpf3h85u",
+              "label": "43lxZvotm3OGW5d",
+              "identifiers": [
                 {
-                  "identifierType" : {
-                    "id" : "calm-record-id",
-                    "label" : "Calm RecordIdentifier",
-                    "type" : "IdentifierType"
-                  },
-                  "value" : "p5zfssscK3",
-                  "type" : "Identifier"
+                  "value": "3ltGganoxI",
+                  "type": "Identifier",
+                  "identifierType": {
+                    "id": "sierra-system-number",
+                    "type": "IdentifierType",
+                    "label": "Sierra system number"
+                  }
                 }
               ],
-              "label" : "x40zJbSlLwDNn2E",
-              "type" : "Concept"
+              "type": "Concept"
             }
           ],
-          "type" : "Genre"
+          "type": "Genre"
         }
       ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
-      ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [],
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-        "5SIuLPMgIG177tc",
-        "JcxukacPWKUROxB",
-        "x40zJbSlLwDNn2E"
-      ],
-      "id" : "vr490vab",
-      "sourceIdentifier.value" : "AzAiZFAZvT",
-      "identifiers.value" : [
-        "AzAiZFAZvT"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "title-q4zh18D0cb"
-    },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [
         {
-          "id" : "lmpakqz5",
-          "label" : "Darwin \"Jones\", Charles"
+          "id": "4x4i8od2",
+          "label": "Darwin \"Jones\", Charles"
         }
       ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
-      ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "subjects": [],
+      "languages": [],
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-      ],
-      "genres.label" : [
-        "Darwin \"Jones\", Charles"
-      ],
-      "genres.concepts.id" : [
-        "lmpakqz5"
-      ],
-      "genres.concepts.sourceIdentifier" : [
-        "DpKgb0Wdy2"
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "AzAiZFAZvT"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": [],
+      "genres.label": ["Darwin \"Jones\", Charles"],
+      "genres.concepts.id": ["4x4i8od2"],
+      "genres.concepts.sourceIdentifier": ["Kp9p9LoRcs"],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["2yu28jgs", "WnS61Ypk3M"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.377549+00:00"
 }

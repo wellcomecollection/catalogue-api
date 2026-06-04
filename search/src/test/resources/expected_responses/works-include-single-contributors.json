@@ -1,0 +1,27 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "contributors": [
+    {
+      "agent": {
+        "label": "person-pg0Wj",
+        "type": "Person"
+      },
+      "primary": true,
+      "roles": [],
+      "type": "Contributor"
+    },
+    {
+      "agent": {
+        "label": "person-46nCNe0B",
+        "type": "Person"
+      },
+      "primary": true,
+      "roles": [],
+      "type": "Contributor"
+    }
+  ],
+  "id": "i4c7c9yl",
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

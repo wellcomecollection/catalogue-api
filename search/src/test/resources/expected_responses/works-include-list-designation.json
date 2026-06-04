@@ -1,0 +1,32 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "designation": ["Designation #1", "Designation #2", "Designation #3"],
+      "id": "i4c7c9yl",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "designation": ["Designation #1", "Designation #2", "Designation #3"],
+      "id": "jbh1pcrq",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "designation": ["Designation #1", "Designation #2", "Designation #3"],
+      "id": "jct270n3",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

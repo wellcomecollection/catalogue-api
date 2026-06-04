@@ -1,28 +1,31 @@
 {
-  "description" : "an arbitrary list of invisible works",
-  "createdAt" : "2024-05-15T08:17:25.214981Z",
-  "id" : "0uk2wzxd",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "0uk2wzxd",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "an arbitrary list of invisible works",
+  "id": "h2la406t",
+  "document": {
+    "type": "Invisible",
+    "debug": {
+      "source": {
+        "id": "h2la406t",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "x2TEreIkut"
+          "ontologyType": "Work",
+          "value": "XdYRk2kvHq"
         },
-        "version" : 58,
-        "modifiedTime" : "2056-08-06T12:14:07Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2056-08-06T12:14:07Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "invisibilityReasons" : [
-      ],
-      "mergeCandidates" : [
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "invisibilityReasons": [
+        {
+          "type": "SourceFieldMissing",
+          "info": "test"
+        }
       ]
-    },
-    "type" : "Invisible"
-  }
+    }
+  },
+  "createdAt": "2026-06-02T13:48:25.912838+00:00"
 }

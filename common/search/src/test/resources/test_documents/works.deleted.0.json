@@ -1,30 +1,29 @@
 {
-  "description" : "an arbitrary list of deleted works",
-  "createdAt" : "2024-05-15T08:17:25.230175Z",
-  "id" : "pnwuzuig",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "pnwuzuig",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "an arbitrary list of deleted works",
+  "id": "qi7whjrb",
+  "document": {
+    "type": "Deleted",
+    "debug": {
+      "source": {
+        "id": "qi7whjrb",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "h0Og1ZYVOG"
+          "ontologyType": "Work",
+          "value": "Ofbr6CZYh3"
         },
-        "version" : 15,
-        "modifiedTime" : "1980-07-10T02:15:52Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "1980-07-10T02:15:52Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "deletedReason" : {
-        "info" : "tests",
-        "type" : "DeletedFromSource"
-      },
-      "mergeCandidates" : [
-      ]
-    },
-    "type" : "Deleted"
-  }
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "deletedReason": {
+        "type": "DeletedFromSource",
+        "info": "test"
+      }
+    }
+  },
+  "createdAt": "2026-06-02T13:48:25.930961+00:00"
 }

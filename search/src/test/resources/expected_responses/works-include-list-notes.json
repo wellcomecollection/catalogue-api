@@ -1,0 +1,80 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "notes": [
+        {
+          "contents": ["TDWcK6hA9y", "Sjfvp110lp"],
+          "noteType": {
+            "id": "location-of-duplicates-note",
+            "label": "Location of duplicates",
+            "type": "NoteType"
+          },
+          "type": "Note"
+        },
+        {
+          "contents": ["GiN3Q", "VY1RJk"],
+          "noteType": {
+            "id": "general-note",
+            "label": "Notes",
+            "type": "NoteType"
+          },
+          "type": "Note"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jbh1pcrq",
+      "notes": [
+        {
+          "contents": ["ayIai", "M76mfVDm2", "5N2AeIl7o", "yEZaBnyW"],
+          "noteType": {
+            "id": "general-note",
+            "label": "Notes",
+            "type": "NoteType"
+          },
+          "type": "Note"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jct270n3",
+      "notes": [
+        {
+          "contents": ["vrFEW6", "ZPXpP"],
+          "noteType": {
+            "id": "funding-information",
+            "label": "Funding information",
+            "type": "NoteType"
+          },
+          "type": "Note"
+        },
+        {
+          "contents": ["VU4wRZ20", "7cWVEH"],
+          "noteType": {
+            "id": "location-of-duplicates-note",
+            "label": "Location of duplicates",
+            "type": "NoteType"
+          },
+          "type": "Note"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

@@ -1,0 +1,80 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "languages": [
+        {
+          "id": "bpc",
+          "label": "o8Pue",
+          "type": "Language"
+        },
+        {
+          "id": "0dw",
+          "label": "Bi57nCBjwt",
+          "type": "Language"
+        },
+        {
+          "id": "lPv",
+          "label": "YVAyaA5qII",
+          "type": "Language"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jbh1pcrq",
+      "languages": [
+        {
+          "id": "HRa",
+          "label": "Euz58",
+          "type": "Language"
+        },
+        {
+          "id": "o09",
+          "label": "dKXcAfqm",
+          "type": "Language"
+        },
+        {
+          "id": "Uul",
+          "label": "lZSxb",
+          "type": "Language"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "id": "jct270n3",
+      "languages": [
+        {
+          "id": "oXG",
+          "label": "UyYxv",
+          "type": "Language"
+        },
+        {
+          "id": "YGa",
+          "label": "KeEhxB",
+          "type": "Language"
+        },
+        {
+          "id": "XNp",
+          "label": "bHGhcKwc8",
+          "type": "Language"
+        }
+      ],
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

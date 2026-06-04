@@ -1,38 +1,37 @@
 {
-  "description" : "an arbitrary list of redirected works",
-  "createdAt" : "2024-05-15T08:17:25.220873Z",
-  "id" : "6yu7udsf",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "6yu7udsf",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "an arbitrary list of redirected works",
+  "id": "0uanaa7g",
+  "document": {
+    "type": "Redirected",
+    "debug": {
+      "source": {
+        "id": "0uanaa7g",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "WDU051A4vR"
+          "ontologyType": "Work",
+          "value": "J9Of1Uiaz8"
         },
-        "version" : 11,
-        "modifiedTime" : "2018-10-24T16:12:55Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2018-10-24T16:12:55Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": []
     },
-    "redirectTarget" : {
-      "canonicalId" : "7wax09hv",
-      "sourceIdentifier" : {
-        "identifierType" : {
-          "id" : "sierra-system-number"
+    "redirectTarget": {
+      "sourceIdentifier": {
+        "identifierType": {
+          "id": "sierra-system-number"
         },
-        "ontologyType" : "Work",
-        "value" : "qK07HsFHaW"
+        "ontologyType": "Work",
+        "value": "t1DdZ04ZAm"
       },
-      "otherIdentifiers" : [
-      ]
-    },
-    "type" : "Redirected"
-  }
+      "otherIdentifiers": [],
+      "canonicalId": "2759ac5u",
+      "type": "Identified"
+    }
+  },
+  "createdAt": "2026-06-02T13:48:25.924802+00:00"
 }

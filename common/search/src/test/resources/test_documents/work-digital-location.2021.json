@@ -1,63 +1,94 @@
 {
   "description": "a work with a digital location created in 2021",
-  "createdAt": "2024-11-25T15:15:12.128853Z",
-  "id": "dl2021xyz",
+  "id": "rjwpa18v",
   "document": {
+    "type": "Visible",
     "debug": {
       "source": {
-        "id": "dl2021xyz",
+        "id": "rjwpa18v",
         "identifier": {
           "identifierType": {
-            "id": "miro-image-number"
+            "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "dl2021test"
+          "value": "Ye953Jv4eY"
         },
         "version": 1,
-        "modifiedTime": "2021-06-20T14:30:00Z"
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime": "2021-06-20T14:30:00Z",
+      "mergedTime": "2025-01-01T00:00:00Z",
       "indexedTime": "2001-01-01T01:01:01Z",
-      "redirectSources": [],
-      "mergeCandidates": []
+      "mergeCandidates": [],
+      "redirectSources": []
+    },
+    "query": {
+      "id": "rjwpa18v",
+      "title": "Digital location created in 2021",
+      "alternativeTitles": [],
+      "languages.label": [],
+      "sourceIdentifier.value": "Ye953Jv4eY",
+      "identifiers.value": ["rjwpa18v", "Ye953Jv4eY"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": ["GX44L1rbid"],
+      "items.id": ["adp6vxwf"],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
     },
     "display": {
-      "id": "dl2021xyz",
+      "id": "rjwpa18v",
       "title": "Digital location created in 2021",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
+          "value": "Ye953Jv4eY",
+          "type": "Identifier",
           "identifierType": {
-            "id": "miro-image-number",
-            "label": "Miro image number",
-            "type": "IdentifierType"
-          },
-          "value": "dl2021test",
-          "type": "Identifier"
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
       "subjects": [],
       "genres": [],
       "items": [
         {
-          "id": "item2021",
-          "identifiers": [],
+          "id": "adp6vxwf",
+          "identifiers": [
+            {
+              "value": "GX44L1rbid",
+              "type": "Identifier",
+              "identifierType": {
+                "id": "sierra-system-number",
+                "type": "IdentifierType",
+                "label": "Sierra system number"
+              }
+            }
+          ],
           "locations": [
             {
               "locationType": {
                 "id": "iiif-image",
-                "label": "IIIF Image API",
-                "type": "LocationType"
+                "type": "LocationType",
+                "label": "IIIF Image API"
               },
-              "url": "https://iiif.wellcomecollection.org/image/2021.jpg/info.json",
               "license": {
                 "id": "cc-by",
+                "type": "License",
                 "label": "Attribution 4.0 International (CC BY 4.0)",
-                "url": "http://creativecommons.org/licenses/by/4.0/",
-                "type": "License"
+                "url": "http://creativecommons.org/licenses/by/4.0/"
               },
               "accessConditions": [],
+              "url": "https://iiif.wellcomecollection.org/image/4fP.jpg/info.json",
+              "credit": "Credit line: Q9aZ6",
+              "linkText": "Link text: tymb8SHXCo",
               "type": "DigitalLocation"
             }
           ],
@@ -68,8 +99,8 @@
       "availabilities": [
         {
           "id": "online",
-          "label": "Online",
-          "type": "Availability"
+          "type": "Availability",
+          "label": "Online"
         }
       ],
       "production": [],
@@ -80,42 +111,14 @@
       "images": [],
       "parts": [],
       "partOf": [],
-      "precededBy": [],
-      "succeededBy": [],
       "type": "Work"
-    },
-    "query": {
-      "collectionPath.label": null,
-      "collectionPath.path": null,
-      "alternativeTitles": [],
-      "contributors.agent.label": [],
-      "description": null,
-      "edition": null,
-      "genres.concepts.label": [],
-      "id": "dl2021xyz",
-      "sourceIdentifier.value": "dl2021test",
-      "identifiers.value": ["dl2021test"],
-      "images.id": [],
-      "images.identifiers.value": [],
-      "items.id": ["item2021"],
-      "items.identifiers.value": [],
-      "items.shelfmark.value": [],
-      "languages.label": [],
-      "lettering": null,
-      "notes.contents": [],
-      "partOf.title": [],
-      "physicalDescription": null,
-      "production.label": [],
-      "referenceNumber": null,
-      "subjects.concepts.label": [],
-      "title": "Digital location created in 2021"
     },
     "aggregatableValues": {
       "workType": [],
       "genres": [],
-      "production.dates": [],
       "subjects": [],
       "languages": [],
+      "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [
         {
@@ -131,7 +134,6 @@
       ]
     },
     "filterableValues": {
-      "format.id": null,
       "workType": "Standard",
       "production.dates.range.from": [],
       "languages.id": [],
@@ -144,17 +146,17 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["dl2021test"],
+      "identifiers.value": ["rjwpa18v", "Ye953Jv4eY"],
       "items.locations.license.id": ["cc-by"],
       "items.locations.accessConditions.status.id": [],
-      "items.locations.createdDate": ["2021-06-20T14:30:00Z"],
-      "items.id": ["item2021"],
-      "items.identifiers.value": [],
+      "items.id": ["adp6vxwf"],
+      "items.identifiers.value": ["GX44L1rbid"],
       "items.locations.locationType.id": ["iiif-image"],
+      "items.locations.createdDate": ["2021-01-15T10:00:00Z"],
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": ["online"]
-    },
-    "type": "Visible"
-  }
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.619657+00:00"
 }

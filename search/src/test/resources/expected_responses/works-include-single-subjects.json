@@ -1,0 +1,51 @@
+{
+  "alternativeTitles": [],
+  "availabilities": [],
+  "id": "i4c7c9yl",
+  "subjects": [
+    {
+      "concepts": [
+        {
+          "id": "kyjiou6p",
+          "label": "MbzeSeiAtJAV7jL",
+          "type": "Concept"
+        },
+        {
+          "id": "1twfp2x7",
+          "label": "nxs8Ef8lYgrhJMS",
+          "type": "Concept"
+        },
+        {
+          "id": "j2zl01lp",
+          "label": "fEWnsa1SCNDanth",
+          "type": "Concept"
+        }
+      ],
+      "label": "subject-lLfgILt",
+      "type": "Subject"
+    },
+    {
+      "concepts": [
+        {
+          "id": "5o8zrbhr",
+          "label": "zCgVqws3WR6mMfc",
+          "type": "Concept"
+        },
+        {
+          "id": "eqt8vh7p",
+          "label": "iKHOnIgA9OIzVX5",
+          "type": "Concept"
+        },
+        {
+          "id": "rs2xikhh",
+          "label": "EVAnEFSGuFP9dCt",
+          "type": "Concept"
+        }
+      ],
+      "label": "subject-tIMjBTWEfR",
+      "type": "Subject"
+    }
+  ],
+  "title": "A work with all the include-able fields",
+  "type": "Work"
+}

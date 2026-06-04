@@ -1,215 +1,139 @@
 {
-  "description" : "one of a list of works with a variety of languages",
-  "createdAt" : "2024-11-25T15:15:12.327480Z",
-  "id" : "oagougti",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "oagougti",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "miro-image-number"
+  "description": "one of a list of works with a variety of languages",
+  "id": "3q8k2zag",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "3q8k2zag",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "c67fbITZO5"
+          "ontologyType": "Work",
+          "value": "afvWvC2mpx"
         },
-        "version" : 76,
-        "modifiedTime" : "2039-12-01T11:37:40Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2039-12-01T11:37:40Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "oagougti",
-      "title" : "A work with languages English, Swedish, Turkish",
-      "alternativeTitles" : [
-      ],
-      "contributors" : [
-      ],
-      "identifiers" : [
+    "query": {
+      "id": "3q8k2zag",
+      "title": "A work with languages English, Swedish, Turkish",
+      "alternativeTitles": [],
+      "languages.label": ["English", "Swedish", "Turkish"],
+      "sourceIdentifier.value": "afvWvC2mpx",
+      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "3q8k2zag",
+      "title": "A work with languages English, Swedish, Turkish",
+      "alternativeTitles": [],
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "miro-image-number",
-            "label" : "Miro image number",
-            "type" : "IdentifierType"
-          },
-          "value" : "c67fbITZO5",
-          "type" : "Identifier"
+          "value": "afvWvC2mpx",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "eng",
-          "label" : "English",
-          "type" : "Language"
+          "id": "eng",
+          "type": "Language",
+          "label": "English"
         },
         {
-          "id" : "swe",
-          "label" : "Swedish",
-          "type" : "Language"
+          "id": "swe",
+          "type": "Language",
+          "label": "Swedish"
         },
         {
-          "id" : "tur",
-          "label" : "Turkish",
-          "type" : "Language"
+          "id": "tur",
+          "type": "Language",
+          "label": "Turkish"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "oagougti",
-      "sourceIdentifier.value" : "c67fbITZO5",
-      "identifiers.value" : [
-        "c67fbITZO5"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-        "English",
-        "Swedish",
-        "Turkish"
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "A work with languages English, Swedish, Turkish"
-    },
-    "aggregatableValues" : {
-      "workType" : [
-      ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
+    "aggregatableValues": {
+      "workType": [],
+      "genres": [],
+      "subjects": [],
+      "languages": [
         {
-          "id" : "eng",
-          "label" : "English"
+          "id": "eng",
+          "label": "English"
         },
         {
-          "id" : "swe",
-          "label" : "Swedish"
+          "id": "swe",
+          "label": "Swedish"
         },
         {
-          "id" : "tur",
-          "label" : "Turkish"
+          "id": "tur",
+          "label": "Turkish"
         }
       ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : null,
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-        "eng",
-        "swe",
-        "tur"
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "c67fbITZO5"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["eng", "swe", "tur"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:01.822197+00:00"
 }

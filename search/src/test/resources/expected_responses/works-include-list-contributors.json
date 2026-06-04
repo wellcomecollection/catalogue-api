@@ -1,0 +1,89 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "contributors": [
+        {
+          "agent": {
+            "label": "person-pg0Wj",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        },
+        {
+          "agent": {
+            "label": "person-46nCNe0B",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        }
+      ],
+      "id": "i4c7c9yl",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "contributors": [
+        {
+          "agent": {
+            "label": "person-b0P2k4",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        },
+        {
+          "agent": {
+            "label": "person-AMQnCTRzq",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        }
+      ],
+      "id": "jbh1pcrq",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "contributors": [
+        {
+          "agent": {
+            "label": "person-TzMCAQkM7",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        },
+        {
+          "agent": {
+            "label": "person-XiRQ08XY",
+            "type": "Person"
+          },
+          "primary": true,
+          "roles": [],
+          "type": "Contributor"
+        }
+      ],
+      "id": "jct270n3",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

@@ -1,202 +1,132 @@
 {
-  "description" : "examples for the works filtered aggregations tests",
-  "createdAt" : "2024-11-25T15:15:12.494622Z",
-  "id" : "crmdnx7u",
-  "document" : {
-    "debug" : {
-      "source" : {
-        "id" : "crmdnx7u",
-        "identifier" : {
-          "identifierType" : {
-            "id" : "sierra-system-number"
+  "description": "examples for the works filtered aggregations tests",
+  "id": "j9rlztqb",
+  "document": {
+    "type": "Visible",
+    "debug": {
+      "source": {
+        "id": "j9rlztqb",
+        "identifier": {
+          "identifierType": {
+            "id": "sierra-system-number"
           },
-          "ontologyType" : "Work",
-          "value" : "7z5sgyOBC4"
+          "ontologyType": "Work",
+          "value": "49t6yp286b"
         },
-        "version" : 86,
-        "modifiedTime" : "2054-08-12T01:30:45Z"
+        "version": 1,
+        "modifiedTime": "2025-01-01T00:00:00Z"
       },
-      "mergedTime" : "2054-08-12T01:30:45Z",
-      "indexedTime" : "2001-01-01T01:01:01Z",
-      "redirectSources" : [
-      ],
-      "mergeCandidates" : [
-      ]
+      "mergedTime": "2025-01-01T00:00:00Z",
+      "indexedTime": "2001-01-01T01:01:01Z",
+      "mergeCandidates": [],
+      "redirectSources": []
     },
-    "display" : {
-      "id" : "crmdnx7u",
-      "title" : "tapirs",
-      "alternativeTitles" : [
-      ],
-      "workType" : {
-        "id" : "a",
-        "label" : "Books",
-        "type" : "Format"
+    "query": {
+      "id": "j9rlztqb",
+      "title": "tapirs",
+      "alternativeTitles": [],
+      "languages.label": ["Bashkir"],
+      "sourceIdentifier.value": "49t6yp286b",
+      "identifiers.value": ["j9rlztqb", "49t6yp286b"],
+      "images.id": [],
+      "images.identifiers.value": [],
+      "items.identifiers.value": [],
+      "items.id": [],
+      "items.shelfmark.value": [],
+      "notes.contents": [],
+      "partOf.title": [],
+      "production.label": [],
+      "subjects.concepts.label": [],
+      "contributors.agent.label": [],
+      "genres.concepts.label": []
+    },
+    "display": {
+      "id": "j9rlztqb",
+      "title": "tapirs",
+      "alternativeTitles": [],
+      "workType": {
+        "id": "a",
+        "type": "Format",
+        "label": "Books"
       },
-      "contributors" : [
-      ],
-      "identifiers" : [
+      "contributors": [],
+      "identifiers": [
         {
-          "identifierType" : {
-            "id" : "sierra-system-number",
-            "label" : "Sierra system number",
-            "type" : "IdentifierType"
-          },
-          "value" : "7z5sgyOBC4",
-          "type" : "Identifier"
+          "value": "49t6yp286b",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "sierra-system-number",
+            "type": "IdentifierType",
+            "label": "Sierra system number"
+          }
         }
       ],
-      "subjects" : [
-      ],
-      "genres" : [
-      ],
-      "items" : [
-      ],
-      "holdings" : [
-      ],
-      "availabilities" : [
-      ],
-      "production" : [
-      ],
-      "languages" : [
+      "subjects": [],
+      "genres": [],
+      "items": [],
+      "holdings": [],
+      "availabilities": [],
+      "production": [],
+      "languages": [
         {
-          "id" : "bak",
-          "label" : "Bashkir",
-          "type" : "Language"
+          "id": "bak",
+          "type": "Language",
+          "label": "Bashkir"
         }
       ],
-      "notes" : [
-      ],
-      "formerFrequency" : [
-      ],
-      "designation" : [
-      ],
-      "images" : [
-      ],
-      "parts" : [
-      ],
-      "partOf" : [
-      ],
-      "precededBy" : [
-      ],
-      "succeededBy" : [
-      ],
-      "type" : "Work"
+      "notes": [],
+      "formerFrequency": [],
+      "designation": [],
+      "images": [],
+      "parts": [],
+      "partOf": [],
+      "type": "Work"
     },
-    "query" : {
-      "collectionPath.label" : null,
-      "collectionPath.path" : null,
-      "alternativeTitles" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "description" : null,
-      "edition" : null,
-      "genres.concepts.label" : [
-      ],
-      "id" : "crmdnx7u",
-      "sourceIdentifier.value" : "7z5sgyOBC4",
-      "identifiers.value" : [
-        "7z5sgyOBC4"
-      ],
-      "images.id" : [
-      ],
-      "images.identifiers.value" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.shelfmark.value" : [
-      ],
-      "languages.label" : [
-        "Bashkir"
-      ],
-      "lettering" : null,
-      "notes.contents" : [
-      ],
-      "partOf.title" : [
-      ],
-      "physicalDescription" : null,
-      "production.label" : [
-      ],
-      "referenceNumber" : null,
-      "subjects.concepts.label" : [
-      ],
-      "title" : "tapirs"
-    },
-    "aggregatableValues" : {
-      "workType" : [
+    "aggregatableValues": {
+      "workType": [
         {
-          "id" : "a",
-          "label" : "Books"
+          "id": "a",
+          "label": "Books"
         }
       ],
-      "genres" : [
-      ],
-      "production.dates" : [
-      ],
-      "subjects" : [
-      ],
-      "languages" : [
+      "genres": [],
+      "subjects": [],
+      "languages": [
         {
-          "id" : "bak",
-          "label" : "Bashkir"
+          "id": "bak",
+          "label": "Bashkir"
         }
       ],
-      "contributors.agent" : [
-      ],
-      "items.locations.license" : [
-      ],
-      "availabilities" : [
-      ]
+      "production.dates": [],
+      "contributors.agent": [],
+      "items.locations.license": [],
+      "availabilities": []
     },
-    "filterableValues" : {
-      "format.id" : "a",
-      "workType" : "Standard",
-      "production.dates.range.from" : [
-      ],
-      "languages.id" : [
-        "bak"
-      ],
-      "genres.label" : [
-      ],
-      "genres.concepts.id" : [
-      ],
-      "genres.concepts.sourceIdentifier" : [
-      ],
-      "subjects.label" : [
-      ],
-      "subjects.concepts.id" : [
-      ],
-      "subjects.concepts.sourceIdentifier" : [
-      ],
-      "contributors.agent.label" : [
-      ],
-      "contributors.agent.id" : [
-      ],
-      "contributors.agent.sourceIdentifier" : [
-      ],
-      "identifiers.value" : [
-        "7z5sgyOBC4"
-      ],
-      "items.locations.license.id" : [
-      ],
-      "items.locations.accessConditions.status.id" : [
-      ],
-      "items.id" : [
-      ],
-      "items.identifiers.value" : [
-      ],
-      "items.locations.locationType.id" : [
-      ],
-      "partOf.id" : [
-      ],
-      "partOf.title" : [
-      ],
-      "availabilities.id" : [
-      ]
-    },
-    "type" : "Visible"
-  }
+    "filterableValues": {
+      "format.id": "a",
+      "workType": "Standard",
+      "production.dates.range.from": [],
+      "languages.id": ["bak"],
+      "genres.label": [],
+      "genres.concepts.id": [],
+      "genres.concepts.sourceIdentifier": [],
+      "subjects.label": [],
+      "subjects.concepts.id": [],
+      "subjects.concepts.sourceIdentifier": [],
+      "contributors.agent.label": [],
+      "contributors.agent.id": [],
+      "contributors.agent.sourceIdentifier": [],
+      "identifiers.value": ["j9rlztqb", "49t6yp286b"],
+      "items.locations.license.id": [],
+      "items.locations.accessConditions.status.id": [],
+      "items.id": [],
+      "items.identifiers.value": [],
+      "items.locations.locationType.id": [],
+      "items.locations.createdDate": [],
+      "partOf.id": [],
+      "partOf.title": [],
+      "availabilities.id": []
+    }
+  },
+  "createdAt": "2026-06-03T16:56:02.570468+00:00"
 }
