@@ -128,8 +128,6 @@ def main():
         "images",
         "parts",
         "partOf",
-        "precededBy",
-        "succeededBy",
         "holdings",
     ]
 
