@@ -78,7 +78,7 @@
       "availabilities": [],
       "holdings": [
         {
-          "enumeration": [],
+          "enumeration": ["7HORh8d"],
           "location": {
             "accessConditions": [],
             "label": "locationLabel",
@@ -93,28 +93,13 @@
               "label": "Closed stores",
               "type": "LocationType"
             },
-            "type": "PhysicalLocation"
-          },
-          "note": "Holdings note: x0vRDPiMHf",
-          "type": "Holdings"
-        },
-        {
-          "enumeration": [],
-          "location": {
-            "accessConditions": [],
-            "label": "locationLabel",
-            "locationType": {
-              "id": "open-shelves",
-              "label": "Open shelves",
-              "type": "LocationType"
-            },
-            "shelfmark": "Shelfmark: 5CElDJviA",
+            "shelfmark": "Shelfmark: v3NZk",
             "type": "PhysicalLocation"
           },
           "type": "Holdings"
         },
         {
-          "enumeration": ["EX7AbCU"],
+          "enumeration": ["ulH7IT2MLB"],
           "location": {
             "accessConditions": [],
             "label": "locationLabel",
@@ -129,23 +114,14 @@
               "label": "Closed stores",
               "type": "LocationType"
             },
-            "shelfmark": "Shelfmark: oBpqEEjo",
+            "shelfmark": "Shelfmark: K7nMCcpF5M",
             "type": "PhysicalLocation"
           },
-          "note": "Holdings note: fKGv003o",
+          "note": "Holdings note: RmAFmkzd",
           "type": "Holdings"
-        }
-      ],
-      "id": "jz38nxcb",
-      "title": "A work with all the include-able fields",
-      "type": "Work"
-    },
-    {
-      "alternativeTitles": [],
-      "availabilities": [],
-      "holdings": [
+        },
         {
-          "enumeration": ["apKeEhxBX", "pIbHGhcKw"],
+          "enumeration": [],
           "location": {
             "accessConditions": [],
             "label": "locationLabel",
@@ -156,18 +132,62 @@
               "url": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
             },
             "locationType": {
+              "id": "open-shelves",
+              "label": "Open shelves",
+              "type": "LocationType"
+            },
+            "shelfmark": "Shelfmark: vFRmkxJ1wT",
+            "type": "PhysicalLocation"
+          },
+          "type": "Holdings"
+        }
+      ],
+      "id": "jbh1pcrq",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "availabilities": [],
+      "holdings": [
+        {
+          "enumeration": ["qGsSF", "0u2RV7S3", "yd36h5dvkW"],
+          "location": {
+            "accessConditions": [],
+            "label": "locationLabel",
+            "license": {
+              "id": "pdm",
+              "label": "Public Domain Mark",
+              "type": "License",
+              "url": "https://creativecommons.org/share-your-work/public-domain/pdm/"
+            },
+            "locationType": {
+              "id": "open-shelves",
+              "label": "Open shelves",
+              "type": "LocationType"
+            },
+            "type": "PhysicalLocation"
+          },
+          "type": "Holdings"
+        },
+        {
+          "enumeration": [],
+          "location": {
+            "accessConditions": [],
+            "label": "locationLabel",
+            "locationType": {
               "id": "closed-stores",
               "label": "Closed stores",
               "type": "LocationType"
             },
-            "shelfmark": "Shelfmark: vrFEW6",
+            "shelfmark": "Shelfmark: Yg07U",
             "type": "PhysicalLocation"
           },
-          "note": "Holdings note: XGcUyY",
+          "note": "Holdings note: fUfYOfGb2Q",
           "type": "Holdings"
         },
         {
-          "enumeration": ["Z20YUk7cWV", "HQ7k1ySs"],
+          "enumeration": ["sk6lL8o"],
           "location": {
             "accessConditions": [],
             "label": "locationLabel",
@@ -178,38 +198,17 @@
               "url": "http://creativecommons.org/licenses/by/4.0/"
             },
             "locationType": {
-              "id": "open-shelves",
-              "label": "Open shelves",
-              "type": "LocationType"
-            },
-            "type": "PhysicalLocation"
-          },
-          "note": "Holdings note: ZPXpP",
-          "type": "Holdings"
-        },
-        {
-          "enumeration": ["pxyspnq9", "IL374x", "pMvNOjup"],
-          "location": {
-            "accessConditions": [],
-            "label": "locationLabel",
-            "license": {
-              "id": "ogl",
-              "label": "Open Government Licence",
-              "type": "License",
-              "url": "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            },
-            "locationType": {
               "id": "closed-stores",
               "label": "Closed stores",
               "type": "LocationType"
             },
-            "shelfmark": "Shelfmark: lITTMh57C",
+            "shelfmark": "Shelfmark: qFYtjV",
             "type": "PhysicalLocation"
           },
           "type": "Holdings"
         }
       ],
-      "id": "rnfi0lmb",
+      "id": "jct270n3",
       "title": "A work with all the include-able fields",
       "type": "Work"
     }

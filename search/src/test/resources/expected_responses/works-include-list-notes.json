@@ -31,31 +31,13 @@
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "jz38nxcb",
+      "id": "jbh1pcrq",
       "notes": [
         {
-          "contents": ["zXXTs3g", "hCjw7pV"],
-          "noteType": {
-            "id": "funding-information",
-            "label": "Funding information",
-            "type": "NoteType"
-          },
-          "type": "Note"
-        },
-        {
-          "contents": ["FohRyyD"],
+          "contents": ["ayIai", "M76mfVDm2", "5N2AeIl7o", "yEZaBnyW"],
           "noteType": {
             "id": "general-note",
             "label": "Notes",
-            "type": "NoteType"
-          },
-          "type": "Note"
-        },
-        {
-          "contents": ["7K1NoRzG"],
-          "noteType": {
-            "id": "location-of-duplicates-note",
-            "label": "Location of duplicates",
             "type": "NoteType"
           },
           "type": "Note"
@@ -67,10 +49,10 @@
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "rnfi0lmb",
+      "id": "jct270n3",
       "notes": [
         {
-          "contents": ["JUTtAz"],
+          "contents": ["vrFEW6", "ZPXpP"],
           "noteType": {
             "id": "funding-information",
             "label": "Funding information",
@@ -79,19 +61,10 @@
           "type": "Note"
         },
         {
-          "contents": ["V1C4I"],
+          "contents": ["VU4wRZ20", "7cWVEH"],
           "noteType": {
             "id": "location-of-duplicates-note",
             "label": "Location of duplicates",
-            "type": "NoteType"
-          },
-          "type": "Note"
-        },
-        {
-          "contents": ["85iPnL9k1", "EsrqnzRa3"],
-          "noteType": {
-            "id": "general-note",
-            "label": "Notes",
             "type": "NoteType"
           },
           "type": "Note"

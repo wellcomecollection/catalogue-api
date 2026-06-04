@@ -2,7 +2,20 @@
   "alternativeTitles": [],
   "availabilities": [],
   "id": "i4c7c9yl",
-  "partOf": [],
+  "partOf": [
+    {
+      "id": "29jcl6cu",
+      "title": "wZL0ffJl0qmZquS",
+      "totalParts": 5,
+      "type": "Work"
+    },
+    {
+      "id": "7vafg1w2",
+      "title": "08emPYDNpZDHkTv",
+      "totalParts": 1,
+      "type": "Work"
+    }
+  ],
   "title": "A work with all the include-able fields",
   "type": "Work"
 }

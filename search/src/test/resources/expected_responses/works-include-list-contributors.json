@@ -34,7 +34,7 @@
       "contributors": [
         {
           "agent": {
-            "label": "person-5kvOG9v",
+            "label": "person-b0P2k4",
             "type": "Person"
           },
           "primary": true,
@@ -43,7 +43,7 @@
         },
         {
           "agent": {
-            "label": "person-Sj6yVVJtp",
+            "label": "person-AMQnCTRzq",
             "type": "Person"
           },
           "primary": true,
@@ -51,7 +51,7 @@
           "type": "Contributor"
         }
       ],
-      "id": "jz38nxcb",
+      "id": "jbh1pcrq",
       "title": "A work with all the include-able fields",
       "type": "Work"
     },
@@ -61,7 +61,7 @@
       "contributors": [
         {
           "agent": {
-            "label": "person-tCiE0s8Z",
+            "label": "person-TzMCAQkM7",
             "type": "Person"
           },
           "primary": true,
@@ -70,7 +70,7 @@
         },
         {
           "agent": {
-            "label": "person-6vw2OMyzLz",
+            "label": "person-XiRQ08XY",
             "type": "Person"
           },
           "primary": true,
@@ -78,7 +78,7 @@
           "type": "Contributor"
         }
       ],
-      "id": "rnfi0lmb",
+      "id": "jct270n3",
       "title": "A work with all the include-able fields",
       "type": "Work"
     }

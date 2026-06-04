@@ -1,17 +1,17 @@
 {
   "description": "a work with licensed digital items",
-  "id": "s026secf",
+  "id": "b9igeehm",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "s026secf",
+        "id": "b9igeehm",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "IETVvV6amN"
+          "value": "j3M3kEPfLi"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "s026secf",
-      "title": "QfUHSQ8JzNrnfBb",
+      "id": "b9igeehm",
+      "title": "BccY7fxastdacNc",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "IETVvV6amN",
-      "identifiers.value": ["s026secf", "IETVvV6amN"],
+      "sourceIdentifier.value": "j3M3kEPfLi",
+      "identifiers.value": ["b9igeehm", "j3M3kEPfLi"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "s026secf",
-      "title": "QfUHSQ8JzNrnfBb",
+      "id": "b9igeehm",
+      "title": "BccY7fxastdacNc",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "IETVvV6amN",
+          "value": "j3M3kEPfLi",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -94,7 +94,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["s026secf", "IETVvV6amN"],
+      "identifiers.value": ["b9igeehm", "j3M3kEPfLi"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -106,5 +106,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T11:19:05.999973+00:00"
+  "createdAt": "2026-06-03T16:56:01.864154+00:00"
 }

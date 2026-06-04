@@ -1,17 +1,17 @@
 {
   "description": "one of a list of works with a variety of languages",
-  "id": "8ymtg2rp",
+  "id": "tfg8sdph",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "8ymtg2rp",
+        "id": "tfg8sdph",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "WqALHJiTvT"
+          "value": "agvUntIhGX"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "8ymtg2rp",
+      "id": "tfg8sdph",
       "title": "A work with languages Swedish",
       "alternativeTitles": [],
       "languages.label": ["Swedish"],
-      "sourceIdentifier.value": "WqALHJiTvT",
-      "identifiers.value": ["8ymtg2rp", "WqALHJiTvT"],
+      "sourceIdentifier.value": "agvUntIhGX",
+      "identifiers.value": ["tfg8sdph", "agvUntIhGX"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "8ymtg2rp",
+      "id": "tfg8sdph",
       "title": "A work with languages Swedish",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "WqALHJiTvT",
+          "value": "agvUntIhGX",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -105,7 +105,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["8ymtg2rp", "WqALHJiTvT"],
+      "identifiers.value": ["tfg8sdph", "agvUntIhGX"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -117,5 +117,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T11:19:05.960682+00:00"
+  "createdAt": "2026-06-03T16:56:01.828027+00:00"
 }

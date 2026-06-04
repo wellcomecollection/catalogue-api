@@ -5,23 +5,62 @@
       "alternativeTitles": [],
       "availabilities": [],
       "id": "i4c7c9yl",
-      "partOf": [],
+      "partOf": [
+        {
+          "id": "29jcl6cu",
+          "title": "wZL0ffJl0qmZquS",
+          "totalParts": 5,
+          "type": "Work"
+        },
+        {
+          "id": "7vafg1w2",
+          "title": "08emPYDNpZDHkTv",
+          "totalParts": 1,
+          "type": "Work"
+        }
+      ],
       "title": "A work with all the include-able fields",
       "type": "Work"
     },
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "jz38nxcb",
-      "partOf": [],
+      "id": "jbh1pcrq",
+      "partOf": [
+        {
+          "id": "qviwg90e",
+          "title": "yhwsxNZOmV0IIdv",
+          "totalParts": 5,
+          "type": "Work"
+        },
+        {
+          "id": "zm2wkrw9",
+          "title": "qKgHe3LiFcH1Yow",
+          "totalParts": 1,
+          "type": "Work"
+        }
+      ],
       "title": "A work with all the include-able fields",
       "type": "Work"
     },
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "rnfi0lmb",
-      "partOf": [],
+      "id": "jct270n3",
+      "partOf": [
+        {
+          "id": "n7mn5fmg",
+          "title": "nzfgIzhGRDVPkcm",
+          "totalParts": 5,
+          "type": "Work"
+        },
+        {
+          "id": "wncm2n7n",
+          "title": "GiMmJKHONBMz3P6",
+          "totalParts": 1,
+          "type": "Work"
+        }
+      ],
       "title": "A work with all the include-able fields",
       "type": "Work"
     }
