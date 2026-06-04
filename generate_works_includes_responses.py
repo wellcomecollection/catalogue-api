@@ -17,16 +17,6 @@ DOCS_DIR = Path("common/search/src/test/resources/test_documents")
 OUTPUT_DIR = Path("search/src/test/resources/expected_responses")
 
 
-# The API serialises JSON keys in alphabetical order
-def sort_json(obj):
-    """Recursively sort JSON object keys alphabetically."""
-    if isinstance(obj, dict):
-        return {k: sort_json(v) for k, v in sorted(obj.items())}
-    elif isinstance(obj, list):
-        return [sort_json(item) for item in obj]
-    return obj
-
-
 def load_docs():
     """Load all 3 work.visible.everything documents, sorted by ID."""
     docs = []
@@ -109,10 +99,9 @@ def make_single_response(doc, include_field):
 
 def write_json(path, obj):
     """Write sorted JSON with 2-space indentation."""
-    sorted_obj = sort_json(obj)
     os.makedirs(path.parent, exist_ok=True)
     with open(path, "w") as f:
-        json.dump(sorted_obj, f, indent=2)
+        json.dump(obj, f, indent=2, sort_keys=True)
         f.write("\n")
     print(f"  Written: {path}")
 

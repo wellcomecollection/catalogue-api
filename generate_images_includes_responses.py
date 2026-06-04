@@ -17,25 +17,11 @@ DOCS_DIR = Path("common/search/src/test/resources/test_documents")
 OUTPUT_DIR = Path("search/src/test/resources/expected_responses")
 
 
-def sort_json(obj):
-    """Recursively sort JSON object keys alphabetically."""
-    if isinstance(obj, dict):
-        return {k: sort_json(v) for k, v in sorted(obj.items())}
-    elif isinstance(obj, list):
-        return [sort_json(item) for item in obj]
-    return obj
-
-
 def load_doc():
     """Load the images.everything document."""
     path = DOCS_DIR / "images.everything.json"
     with open(path) as f:
         return json.load(f)
-
-
-def get_display(doc):
-    """Get the display section of a document."""
-    return doc["document"]["display"]
 
 
 def minimal_image(display):
@@ -86,17 +72,16 @@ def make_single_response(display, include_field):
 
 def write_json(path, obj):
     """Write sorted JSON with 2-space indentation."""
-    sorted_obj = sort_json(obj)
     os.makedirs(path.parent, exist_ok=True)
     with open(path, "w") as f:
-        json.dump(sorted_obj, f, indent=2)
+        json.dump(obj, f, indent=2, sort_keys=True)
         f.write("\n")
     print(f"  Written: {path}")
 
 
 def main():
     doc = load_doc()
-    display = get_display(doc)
+    display = doc["document"]["display"]
 
     print(f"Image ID: {display['id']}")
     print(f"Source work ID: {display['source']['id']}")
