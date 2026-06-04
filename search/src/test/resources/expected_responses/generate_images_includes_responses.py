@@ -15,11 +15,20 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
+ROOT = Path(
+    subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
+)
 DOCS_DIR = ROOT / "common/search/src/test/resources/test_documents"
 OUTPUT_DIR = ROOT / "search/src/test/resources/expected_responses"
 
-MINIMAL_IMAGE_FIELDS = ["id", "locations", "aspectRatio", "averageColor", "thumbnail", "type"]
+MINIMAL_IMAGE_FIELDS = [
+    "id",
+    "locations",
+    "aspectRatio",
+    "averageColor",
+    "thumbnail",
+    "type",
+]
 MINIMAL_SOURCE_WORK_FIELDS = ["id", "title", "type"]
 
 

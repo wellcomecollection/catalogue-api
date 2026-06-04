@@ -15,7 +15,9 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
+ROOT = Path(
+    subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip()
+)
 DOCS_DIR = ROOT / "common/search/src/test/resources/test_documents"
 OUTPUT_DIR = ROOT / "search/src/test/resources/expected_responses"
 
@@ -52,7 +54,9 @@ def strip_identifiers_from_items(items: list[dict[str, Any]]) -> list[dict[str, 
     return result
 
 
-def strip_identifiers_from_concepts(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def strip_identifiers_from_concepts(
+    entries: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Strip identifiers from concepts within subjects/genres."""
     result = []
     for entry in entries:
@@ -79,7 +83,9 @@ def work_with_include(display: dict[str, Any], include_field: str) -> dict[str, 
     return work
 
 
-def make_list_response(docs: list[dict[str, Any]], include_field: str) -> dict[str, Any]:
+def make_list_response(
+    docs: list[dict[str, Any]], include_field: str
+) -> dict[str, Any]:
     """Create a list endpoint response with the given include."""
     results = []
     for doc in docs:
