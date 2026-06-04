@@ -11,15 +11,18 @@ in the Scala test.
 
 import json
 import os
+import subprocess
 from pathlib import Path
+from typing import Any
 
-DOCS_DIR = Path("common/search/src/test/resources/test_documents")
-OUTPUT_DIR = Path("search/src/test/resources/expected_responses")
+ROOT = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
+DOCS_DIR = ROOT / "common/search/src/test/resources/test_documents"
+OUTPUT_DIR = ROOT / "search/src/test/resources/expected_responses"
 
 
-def load_docs():
+def load_docs() -> list[dict[str, Any]]:
     """Load all 3 work.visible.everything documents, sorted by ID."""
-    docs = []
+    docs: list[dict[str, Any]] = []
     for i in range(3):
         path = DOCS_DIR / f"work.visible.everything.{i}.json"
         with open(path) as f:
@@ -29,7 +32,7 @@ def load_docs():
     return docs
 
 
-def minimal_work(display):
+def minimal_work(display: dict[str, Any]) -> dict[str, Any]:
     """Return the minimal work fields (always present in responses)."""
     return {
         "id": display["id"],
@@ -40,7 +43,7 @@ def minimal_work(display):
     }
 
 
-def strip_identifiers_from_items(items):
+def strip_identifiers_from_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Strip identifiers from items (API doesn't include them without ?include=identifiers)."""
     result = []
     for item in items:
@@ -49,7 +52,7 @@ def strip_identifiers_from_items(items):
     return result
 
 
-def strip_identifiers_from_concepts(entries):
+def strip_identifiers_from_concepts(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Strip identifiers from concepts within subjects/genres."""
     result = []
     for entry in entries:
@@ -63,7 +66,7 @@ def strip_identifiers_from_concepts(entries):
     return result
 
 
-def work_with_include(display, include_field):
+def work_with_include(display: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Return a work with minimal fields plus the specified include field."""
     work = minimal_work(display)
     value = display.get(include_field, [])
@@ -76,7 +79,7 @@ def work_with_include(display, include_field):
     return work
 
 
-def make_list_response(docs, include_field):
+def make_list_response(docs: list[dict[str, Any]], include_field: str) -> dict[str, Any]:
     """Create a list endpoint response with the given include."""
     results = []
     for doc in docs:
@@ -91,13 +94,13 @@ def make_list_response(docs, include_field):
     }
 
 
-def make_single_response(doc, include_field):
+def make_single_response(doc: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Create a single work endpoint response with the given include."""
     display = doc["document"]["display"]
     return work_with_include(display, include_field)
 
 
-def write_json(path, obj):
+def write_json(path: Path, obj: dict[str, Any]) -> None:
     """Write sorted JSON with 2-space indentation."""
     os.makedirs(path.parent, exist_ok=True)
     with open(path, "w") as f:
@@ -106,7 +109,7 @@ def write_json(path, obj):
     print(f"  Written: {path}")
 
 
-def main():
+def main() -> None:
     docs = load_docs()
     # Use the first doc (by sorted ID) as the "single work" target
     single_doc = docs[0]

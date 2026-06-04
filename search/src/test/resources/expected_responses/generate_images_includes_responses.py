@@ -11,41 +11,36 @@ in the Scala test.
 
 import json
 import os
+import subprocess
 from pathlib import Path
+from typing import Any
 
-DOCS_DIR = Path("common/search/src/test/resources/test_documents")
-OUTPUT_DIR = Path("search/src/test/resources/expected_responses")
+ROOT = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"], text=True).strip())
+DOCS_DIR = ROOT / "common/search/src/test/resources/test_documents"
+OUTPUT_DIR = ROOT / "search/src/test/resources/expected_responses"
+
+MINIMAL_IMAGE_FIELDS = ["id", "locations", "aspectRatio", "averageColor", "thumbnail", "type"]
+MINIMAL_SOURCE_WORK_FIELDS = ["id", "title", "type"]
 
 
-def load_doc():
+def load_doc() -> dict[str, Any]:
     """Load the images.everything document."""
     path = DOCS_DIR / "images.everything.json"
     with open(path) as f:
         return json.load(f)
 
 
-def minimal_image(display):
+def minimal_image(display: dict[str, Any]) -> dict[str, Any]:
     """Return the image fields always present in responses."""
-    return {
-        "id": display["id"],
-        "locations": display["locations"],
-        "aspectRatio": display["aspectRatio"],
-        "averageColor": display["averageColor"],
-        "thumbnail": display["thumbnail"],
-        "type": display["type"],
-    }
+    return {field: display[field] for field in MINIMAL_IMAGE_FIELDS}
 
 
-def minimal_source(source):
+def minimal_source(source: dict[str, Any]) -> dict[str, Any]:
     """Return the minimal source fields (always present)."""
-    return {
-        "id": source["id"],
-        "title": source["title"],
-        "type": source["type"],
-    }
+    return {field: source[field] for field in MINIMAL_SOURCE_WORK_FIELDS}
 
 
-def image_with_include(display, include_field):
+def image_with_include(display: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Return an image with the specified source include field."""
     image = minimal_image(display)
     source = minimal_source(display["source"])
@@ -54,7 +49,7 @@ def image_with_include(display, include_field):
     return image
 
 
-def make_list_response(display, include_field):
+def make_list_response(display: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Create a list endpoint response with the given include."""
     return {
         "pageSize": 10,
@@ -65,12 +60,12 @@ def make_list_response(display, include_field):
     }
 
 
-def make_single_response(display, include_field):
+def make_single_response(display: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Create a single image endpoint response with the given include."""
     return image_with_include(display, include_field)
 
 
-def write_json(path, obj):
+def write_json(path: Path, obj: dict[str, Any]) -> None:
     """Write sorted JSON with 2-space indentation."""
     os.makedirs(path.parent, exist_ok=True)
     with open(path, "w") as f:
@@ -79,7 +74,7 @@ def write_json(path, obj):
     print(f"  Written: {path}")
 
 
-def main():
+def main() -> None:
     doc = load_doc()
     display = doc["document"]["display"]
 
