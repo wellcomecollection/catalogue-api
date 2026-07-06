@@ -3,6 +3,7 @@ module "catalogue_api_prod" {
 
   environment_name  = "prod"
   external_hostname = "api.wellcomecollection.org"
+  enable_api_alarms = true
 
   container_images = {
     search   = "${local.search_repository}:env.prod"

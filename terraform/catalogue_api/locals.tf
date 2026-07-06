@@ -10,15 +10,8 @@ locals {
   items_repository    = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
   concepts_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_concepts_repository_url"]
 
-  // The monitoring stack has had a Slack alert lambda listening on this
-  // topic since it was created, but nothing ever published to it: no
-  // CloudWatch alarm existed for the catalogue API, which is why the
-  // July 2026 search outage (5xx rate above 90%) alerted nobody.
   api_gateway_alerts_topic_arn = data.terraform_remote_state.monitoring.outputs["catalogue_api_gateway_alerts_topic_arn"]
 
-  // Raw CloudWatch alarm notifications rendered in Slack by AWS Chatbot,
-  // used for alarms (eg latency) that the 5xx Slack lambda would describe
-  // misleadingly as "errors in the API".
   chatbot_topic_arn = data.terraform_remote_state.monitoring.outputs["chatbot_topic_arn"]
 
   apm_secret_config = {
