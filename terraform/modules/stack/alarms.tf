@@ -8,8 +8,10 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_5xx" {
   namespace           = "AWS/ApiGateway"
   period              = 60
   statistic           = "Sum"
-  threshold           = 0
-  treat_missing_data  = "notBreaching"
+  # Normal operation produces short bursts of up to ~50 5xxs a minute;
+  # only alert well above that background.
+  threshold          = 100
+  treat_missing_data = "notBreaching"
 
   dimensions = {
     ApiName = aws_api_gateway_rest_api.catalogue.name
