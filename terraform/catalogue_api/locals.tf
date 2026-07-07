@@ -10,6 +10,10 @@ locals {
   items_repository    = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_items_repository_url"]
   concepts_repository = data.terraform_remote_state.catalogue_api_shared.outputs["ecr_concepts_repository_url"]
 
+  api_gateway_alerts_topic_arn = data.terraform_remote_state.monitoring.outputs["catalogue_api_gateway_alerts_topic_arn"]
+
+  chatbot_topic_arn = data.terraform_remote_state.monitoring.outputs["chatbot_topic_arn"]
+
   apm_secret_config = {
     apm_server_url = "catalogue/api/apm_server_url"
     apm_secret     = "catalogue/api/apm_secret"

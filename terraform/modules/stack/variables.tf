@@ -51,3 +51,19 @@ variable "sierra_secret_config" {
     sierra_api_secret = string
   })
 }
+
+variable "api_gateway_alerts_topic_arn" {
+  type        = string
+  description = "SNS topic that routes API Gateway 5xx alarms to Slack via the monitoring stack"
+}
+
+variable "chatbot_topic_arn" {
+  type        = string
+  description = "SNS topic rendered in Slack by AWS Chatbot, for alarms without a bespoke Slack lambda"
+}
+
+variable "enable_api_alarms" {
+  type        = bool
+  default     = false
+  description = "Off for stage, whose backend is stopped overnight and 5xxs steadily out of hours"
+}

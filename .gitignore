@@ -3,7 +3,7 @@
 .idea
 *.iml
 .lambda_hashes.json
-terraform.plan
+*.plan
 .terraform
 **/.terraform
 shared_infra/.releases

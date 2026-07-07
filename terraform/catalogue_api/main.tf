@@ -3,6 +3,7 @@ module "catalogue_api_prod" {
 
   environment_name  = "prod"
   external_hostname = "api.wellcomecollection.org"
+  enable_api_alarms = true
 
   container_images = {
     search   = "${local.search_repository}:env.prod"
@@ -23,6 +24,9 @@ module "catalogue_api_prod" {
 
   apm_secret_config    = local.apm_secret_config
   sierra_secret_config = local.sierra_secret_config
+
+  api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
+  chatbot_topic_arn            = local.chatbot_topic_arn
 
   providers = {
     aws.dns        = aws.dns
@@ -55,6 +59,9 @@ module "catalogue_api_stage" {
 
   apm_secret_config    = local.apm_secret_config
   sierra_secret_config = local.sierra_secret_config
+
+  api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
+  chatbot_topic_arn            = local.chatbot_topic_arn
 
   providers = {
     aws.dns        = aws.dns
