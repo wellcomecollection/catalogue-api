@@ -58,7 +58,7 @@ because a secret doesn't exist), the cluster is logged and dropped, and requests
 
 Note for local development: the entry uses the cluster's `private_host` secret, which is only reachable from
 inside the VPC. When running the API outside the VPC (e.g. locally), swap `hostSecretPath` to the corresponding
-`public_host` secret (`elasticsearch/es_cluster_2026-07-03/public_host`).
+`public_host` secret (`elasticsearch/es-cluster-2026-07-03/public_host`).
 
 ### Eventually flipping the default
 
