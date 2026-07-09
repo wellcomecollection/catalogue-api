@@ -770,6 +770,7 @@ components:
           enum:
             - Agent
             - Concept
+            - Genre
             - Meeting
             - Organisation
             - Period
