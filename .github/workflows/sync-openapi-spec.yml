@@ -19,7 +19,9 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ vars.SYNC_APP_CLIENT_ID }}
+          # Both are stored as repo secrets on catalogue-api. content-api keeps the
+          # client id in Variables instead, so don't copy that reference over.
+          client-id: ${{ secrets.SYNC_APP_CLIENT_ID }}
           private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
           repositories: developers.wellcomecollection.org
 
