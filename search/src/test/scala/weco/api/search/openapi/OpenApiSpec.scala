@@ -8,10 +8,10 @@ import scala.io.Source
 /** Loads reference/catalogue.yaml, the source of truth for the API reference docs.
   */
 object OpenApiSpec {
-  private val relativePath = "reference/catalogue.yaml"
+  private val specPath = "reference/catalogue.yaml"
 
   lazy val parsed: Json = {
-    val file = specFile()
+    val file = repoFile(specPath)
     val source = Source.fromFile(file)
 
     try io.circe.yaml.parser
@@ -27,9 +27,9 @@ object OpenApiSpec {
   }
 
   /** sbt does not guarantee which directory the JVM starts in, so walk up until we
-    * find the spec rather than assuming a relative path.
+    * find the file rather than assuming a relative path.
     */
-  private def specFile(): File =
+  def repoFile(relativePath: String): File =
     Iterator
       .iterate(new File(".").getAbsoluteFile)(_.getParentFile)
       .takeWhile(_ != null)

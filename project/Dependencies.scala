@@ -87,6 +87,7 @@ object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
     val circeYaml = "0.14.2"
+    val jsonSchemaValidator = "1.0.87"
     val scalatest = "3.2.19"
     val scalatestplus = "3.1.4.0"
     val scalacheckShapeless = "1.1.8"
@@ -104,9 +105,17 @@ object ExternalDependencies {
     "io.circe" %% "circe-optics" % versions.circeOptics
   )
 
-  // Used by the openapi tests to read reference/catalogue.yaml.
-  val circeYamlDependencies = Seq(
-    "io.circe" %% "circe-yaml" % versions.circeYaml % "test"
+  // Used by the openapi tests to read reference/catalogue.yaml, and to validate
+  // the pipeline's test documents against the spec's response schemas.
+  val openApiTestDependencies = Seq(
+    "io.circe" %% "circe-yaml" % versions.circeYaml % "test",
+    // Two transitive deps of json-schema-validator break other libraries here, and
+    // we need neither. Its snakeyaml 2.x has no no-arg SafeConstructor, which
+    // circe-yaml 0.14 calls, and we only ever hand the validator JSON. Its jackson
+    // is newer than the 2.14 that elastic4s's jackson-module-scala pins itself to.
+    ("com.networknt" % "json-schema-validator" % versions.jsonSchemaValidator % "test")
+      .exclude("org.yaml", "snakeyaml")
+      .exclude("com.fasterxml.jackson.core", "jackson-databind")
   )
 
   val scalacheckDependencies = Seq(
@@ -158,7 +167,7 @@ object CatalogueDependencies {
 
   val searchDependencies: Seq[ModuleID] =
     ExternalDependencies.circeOpticsDependencies ++
-      ExternalDependencies.circeYamlDependencies
+      ExternalDependencies.openApiTestDependencies
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
