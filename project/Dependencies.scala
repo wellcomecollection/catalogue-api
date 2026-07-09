@@ -104,7 +104,7 @@ object ExternalDependencies {
     "io.circe" %% "circe-optics" % versions.circeOptics
   )
 
-  // Used by OpenApiSpecEnumTest to read reference/catalogue.yaml.
+  // Used by the openapi tests to read reference/catalogue.yaml.
   val circeYamlDependencies = Seq(
     "io.circe" %% "circe-yaml" % versions.circeYaml % "test"
   )

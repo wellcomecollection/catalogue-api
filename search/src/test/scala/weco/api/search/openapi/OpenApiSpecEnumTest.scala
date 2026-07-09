@@ -12,17 +12,15 @@ import weco.api.search.rest.{
 }
 import weco.catalogue.display_model.locations.CatalogueAccessStatus
 
-/** Checks that the enums in reference/catalogue.yaml still describe what the API
-  * actually accepts.
+/** Checks that the enums in reference/catalogue.yaml describe what the API accepts.
   *
-  * The published spec drifted from the code for years — it documented an `include`
-  * value that 400s, and an image colour filter under a name the API ignores — because
-  * nothing tied the two together. This test is that tie.
+  * Nothing used to connect the spec to these decoders, and it drifted. It documented
+  * an `include` value that returns a 400, and an image colour filter under a name the
+  * API ignores.
   *
-  * Scoped to works and images. The concepts service is TypeScript, so its values are
-  * unreachable from here; on the request side it has no closed enums anyway (`query`,
-  * `identifiers.identifierType` and `id` are all free-form strings), so there is
-  * nothing there for this test to pin.
+  * This covers works and images only. The concepts service is TypeScript, so its
+  * values are unreachable from here. On the request side it has no closed enums
+  * anyway: `query`, `identifiers.identifierType` and `id` are all free-form strings.
   */
 class OpenApiSpecEnumTest extends AnyFunSpec with Matchers {
 

@@ -16,7 +16,7 @@ servers:
   - url: "https://api.wellcomecollection.org/catalogue/v2"
 tags:
   - name: Works
-    description: "Individual works — books, archives, pictures, and groupings of them."
+    description: "Individual works: books, archives, pictures, and groupings of them."
   - name: Images
     description: Images derived from the works in our collections.
   - name: Concepts

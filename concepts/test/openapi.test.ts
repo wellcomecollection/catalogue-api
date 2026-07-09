@@ -5,11 +5,11 @@ import createApp from "../src/app";
 import { defaultPageSize, limits } from "../src/controllers/pagination";
 
 /**
- * Checks that reference/catalogue.yaml still describes what this service serves.
+ * Checks that reference/catalogue.yaml describes what this service serves.
  *
  * Express can enumerate its own routes, so unlike the search API's equivalent test
- * (search/src/test/scala/weco/api/search/openapi/) this can check both directions:
- * a documented endpoint that doesn't exist, *and* an endpoint added here that nobody
+ * (search/src/test/scala/weco/api/search/openapi/) this compares both directions: a
+ * documented endpoint that doesn't exist, and an endpoint added here that nobody
  * wrote down.
  */
 
@@ -82,9 +82,8 @@ describe("the endpoints this service keeps out of the spec", () => {
 });
 
 describe("the pagination parameters", () => {
-  // These are shared spec parameters, used by both this service and the search API.
-  // If the two services ever disagree about their limits, one of them is now lying
-  // to its own documentation.
+  // These are shared spec parameters, used by both this service and the search API,
+  // so if the two ever disagree about their limits, one of them fails here.
   const pageSizeSchema = spec.components.parameters.PageSize.schema;
   const pageSchema = spec.components.parameters.Page.schema;
 

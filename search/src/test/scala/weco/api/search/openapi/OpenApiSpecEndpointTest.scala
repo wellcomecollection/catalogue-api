@@ -5,19 +5,19 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.api.search.ApiTestBase
 
-/** Checks that every endpoint the spec documents for this service actually exists,
-  * and that the endpoints we deliberately keep out of the spec stay out of it.
+/** Checks that every endpoint the spec documents for this service exists, and that the
+  * endpoints we keep out of the spec stay out of it.
   *
   * A route in Pekko is an opaque function, so we cannot enumerate what the API serves
-  * and diff it against the spec. What we can do is ask the router: an unmatched path
-  * is the only thing that answers "Page not found for URL ..." (SearchApi's rejection
-  * handler), so any other response proves the route exists. That catches a spec which
-  * documents an endpoint this service does not serve.
+  * and compare that against the spec. We can ask the router instead. An unmatched path
+  * is the only thing that answers "Page not found for URL ..." (see SearchApi's
+  * rejection handler), so any other response means the route exists. That catches a
+  * spec documenting an endpoint this service does not serve.
   *
-  * The reverse — a new endpoint added to SearchApi and never written down — is caught
-  * for the internal paths listed below, but a brand new public path would slip through.
-  * The concepts service, being express, can enumerate its own routes, so its equivalent
-  * test (concepts/test/openapi.test.ts) checks both directions properly.
+  * It does not catch the reverse. A new public path added to SearchApi and never
+  * written down would pass, though the internal paths listed below are checked. The
+  * concepts service uses express, which can enumerate its own routes, so the
+  * equivalent test there (concepts/test/openapi.test.ts) compares both directions.
   */
 class OpenApiSpecEndpointTest
     extends AnyFunSpec
@@ -62,8 +62,8 @@ class OpenApiSpecEndpointTest
     specPath.replace("{id}", "b2ppvvzr")
 
   /** SearchApi answers "Page not found for URL ..." only when nothing matched the
-    * path. Every other response — including a 404 for a document that doesn't exist —
-    * means the route is there.
+    * path. Every other response means the route is there, including a 404 for a
+    * document that doesn't exist.
     */
   private def isRouted(requestPath: String): Boolean =
     withApi { routes =>
