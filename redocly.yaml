@@ -1,0 +1,10 @@
+apis:
+  catalogue:
+    root: reference/catalogue.yaml
+
+rules:
+  # The catalogue API is public and unauthenticated, so there is no security
+  # scheme to declare.
+  security-defined: off
+  # The spec describes an API, not a licensed artefact.
+  info-license: off

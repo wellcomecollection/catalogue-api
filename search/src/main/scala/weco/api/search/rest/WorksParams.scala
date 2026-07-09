@@ -30,25 +30,30 @@ object SingleWorkParams extends QueryParamsUtils {
   implicit val decodePaths: Decoder[List[String]] =
     decodeCommaSeparated
 
+  // Exposed so that OpenApiSpecEnumTest can assert the spec's `include` enum
+  // still matches what this decoder accepts.
+  val includeValues: Seq[(String, WorkInclude)] = Seq(
+    "identifiers" -> WorkInclude.Identifiers,
+    "items" -> WorkInclude.Items,
+    "holdings" -> WorkInclude.Holdings,
+    "subjects" -> WorkInclude.Subjects,
+    "genres" -> WorkInclude.Genres,
+    "contributors" -> WorkInclude.Contributors,
+    "production" -> WorkInclude.Production,
+    "languages" -> WorkInclude.Languages,
+    "notes" -> WorkInclude.Notes,
+    "formerFrequency" -> WorkInclude.FormerFrequency,
+    "designation" -> WorkInclude.Designation,
+    "images" -> WorkInclude.Images,
+    "parts" -> WorkInclude.Parts,
+    "partOf" -> WorkInclude.PartOf,
+    "precededBy" -> WorkInclude.PrecededBy,
+    "succeededBy" -> WorkInclude.SucceededBy
+  )
+
   implicit val includesDecoder: Decoder[WorksIncludes] =
-    decodeOneOfCommaSeparated(
-      "identifiers" -> WorkInclude.Identifiers,
-      "items" -> WorkInclude.Items,
-      "holdings" -> WorkInclude.Holdings,
-      "subjects" -> WorkInclude.Subjects,
-      "genres" -> WorkInclude.Genres,
-      "contributors" -> WorkInclude.Contributors,
-      "production" -> WorkInclude.Production,
-      "languages" -> WorkInclude.Languages,
-      "notes" -> WorkInclude.Notes,
-      "formerFrequency" -> WorkInclude.FormerFrequency,
-      "designation" -> WorkInclude.Designation,
-      "images" -> WorkInclude.Images,
-      "parts" -> WorkInclude.Parts,
-      "partOf" -> WorkInclude.PartOf,
-      "precededBy" -> WorkInclude.PrecededBy,
-      "succeededBy" -> WorkInclude.SucceededBy
-    ).emap(values => Right(WorksIncludes(values: _*)))
+    decodeOneOfCommaSeparated(includeValues: _*)
+      .emap(values => Right(WorksIncludes(values: _*)))
 }
 
 // We break up MultipleWorksParams into sub case-classes to avoid it getting too large --
@@ -320,30 +325,38 @@ object MultipleWorksParams extends QueryParamsUtils {
           Right(AccessStatusFilter(includes, excludes))
       }
 
+  // These three are exposed so that OpenApiSpecEnumTest can assert the spec's
+  // enums still match what these decoders accept.
+  val aggregationValues: Seq[(String, WorkAggregationRequest)] = Seq(
+    "workType" -> WorkAggregationRequest.Format,
+    "genres.label" -> WorkAggregationRequest.GenreLabel,
+    "genres" -> WorkAggregationRequest.GenreId,
+    "production.dates" -> WorkAggregationRequest.ProductionDate,
+    "subjects.label" -> WorkAggregationRequest.SubjectLabel,
+    "subjects" -> WorkAggregationRequest.SubjectId,
+    "languages" -> WorkAggregationRequest.Languages,
+    "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
+    "contributors.agent" -> WorkAggregationRequest.ContributorId,
+    "items.locations.license" -> WorkAggregationRequest.License,
+    "availabilities" -> WorkAggregationRequest.Availabilities
+  )
+
+  val sortValues: Seq[(String, SortRequest)] = Seq(
+    "production.dates" -> ProductionDateSortRequest,
+    "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest
+  )
+
+  val sortOrderValues: Seq[(String, SortingOrder)] = Seq(
+    "asc" -> SortingOrder.Ascending,
+    "desc" -> SortingOrder.Descending
+  )
+
   implicit val aggregationsDecoder: Decoder[List[WorkAggregationRequest]] =
-    decodeOneOfCommaSeparated(
-      "workType" -> WorkAggregationRequest.Format,
-      "genres.label" -> WorkAggregationRequest.GenreLabel,
-      "genres" -> WorkAggregationRequest.GenreId,
-      "production.dates" -> WorkAggregationRequest.ProductionDate,
-      "subjects.label" -> WorkAggregationRequest.SubjectLabel,
-      "subjects" -> WorkAggregationRequest.SubjectId,
-      "languages" -> WorkAggregationRequest.Languages,
-      "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
-      "contributors.agent" -> WorkAggregationRequest.ContributorId,
-      "items.locations.license" -> WorkAggregationRequest.License,
-      "availabilities" -> WorkAggregationRequest.Availabilities
-    )
+    decodeOneOfCommaSeparated(aggregationValues: _*)
 
   implicit val sortDecoder: Decoder[List[SortRequest]] =
-    decodeOneOfCommaSeparated(
-      "production.dates" -> ProductionDateSortRequest,
-      "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest
-    )
+    decodeOneOfCommaSeparated(sortValues: _*)
 
   implicit val sortOrderDecoder: Decoder[SortingOrder] =
-    decodeOneOf(
-      "asc" -> SortingOrder.Ascending,
-      "desc" -> SortingOrder.Descending
-    )
+    decodeOneOf(sortOrderValues: _*)
 }

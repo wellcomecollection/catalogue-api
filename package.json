@@ -10,9 +10,11 @@
     "concepts"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint:openapi": "redocly lint"
   },
   "devDependencies": {
+    "@redocly/cli": "^1.25.15",
     "husky": "^8.0.1",
     "lint-staged": "^12.4.2",
     "prettier": "^2.6.2"

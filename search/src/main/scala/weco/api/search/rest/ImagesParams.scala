@@ -28,14 +28,20 @@ object SingleImageParams extends QueryParamsUtils {
         SingleImageParams(include)
     }
 
+  // Exposed so that OpenApiSpecEnumTest can assert the spec's `include` enum
+  // still matches what this decoder accepts. Note that `withSimilarFeatures`
+  // is only available here, not on the multiple-images endpoint.
+  val includeValues: Seq[(String, ImageInclude)] = Seq(
+    "withSimilarFeatures" -> ImageInclude.WithSimilarFeatures,
+    "source.contributors" -> ImageInclude.SourceContributors,
+    "source.languages" -> ImageInclude.SourceLanguages,
+    "source.genres" -> ImageInclude.SourceGenres,
+    "source.subjects" -> ImageInclude.SourceSubjects
+  )
+
   implicit val includesDecoder: Decoder[SingleImageIncludes] =
-    decodeOneOfCommaSeparated(
-      "withSimilarFeatures" -> ImageInclude.WithSimilarFeatures,
-      "source.contributors" -> ImageInclude.SourceContributors,
-      "source.languages" -> ImageInclude.SourceLanguages,
-      "source.genres" -> ImageInclude.SourceGenres,
-      "source.subjects" -> ImageInclude.SourceSubjects
-    ).emap(values => Right(SingleImageIncludes(values: _*)))
+    decodeOneOfCommaSeparated(includeValues: _*)
+      .emap(values => Right(SingleImageIncludes(values: _*)))
 }
 
 case class MultipleImagesParams(
@@ -127,33 +133,44 @@ object MultipleImagesParams extends QueryParamsUtils {
           )
     })
 
+  // These four are exposed so that OpenApiSpecEnumTest can assert the spec's
+  // enums still match what these decoders accept.
+  val includeValues: Seq[(String, ImageInclude)] = Seq(
+    "source.contributors" -> ImageInclude.SourceContributors,
+    "source.languages" -> ImageInclude.SourceLanguages,
+    "source.genres" -> ImageInclude.SourceGenres,
+    "source.subjects" -> ImageInclude.SourceSubjects
+  )
+
+  val aggregationValues: Seq[(String, ImageAggregationRequest)] = Seq(
+    "locations.license" -> ImageAggregationRequest.License,
+    "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgentsLabel,
+    "source.contributors.agent" -> ImageAggregationRequest.SourceContributorAgentsId,
+    "source.genres.label" -> ImageAggregationRequest.SourceGenresLabel,
+    "source.genres" -> ImageAggregationRequest.SourceGenresId,
+    "source.subjects.label" -> ImageAggregationRequest.SourceSubjectsLabel,
+    "source.subjects" -> ImageAggregationRequest.SourceSubjectsId
+  )
+
+  val sortValues: Seq[(String, SortRequest)] = Seq(
+    "source.production.dates" -> ProductionDateSortRequest
+  )
+
+  val sortOrderValues: Seq[(String, SortingOrder)] = Seq(
+    "asc" -> SortingOrder.Ascending,
+    "desc" -> SortingOrder.Descending
+  )
+
   implicit val includesDecoder: Decoder[MultipleImagesIncludes] =
-    decodeOneOfCommaSeparated(
-      "source.contributors" -> ImageInclude.SourceContributors,
-      "source.languages" -> ImageInclude.SourceLanguages,
-      "source.genres" -> ImageInclude.SourceGenres,
-      "source.subjects" -> ImageInclude.SourceSubjects
-    ).emap(values => Right(MultipleImagesIncludes(values: _*)))
+    decodeOneOfCommaSeparated(includeValues: _*)
+      .emap(values => Right(MultipleImagesIncludes(values: _*)))
 
   implicit val aggregationsDecoder: Decoder[List[ImageAggregationRequest]] =
-    decodeOneOfCommaSeparated(
-      "locations.license" -> ImageAggregationRequest.License,
-      "source.contributors.agent.label" -> ImageAggregationRequest.SourceContributorAgentsLabel,
-      "source.contributors.agent" -> ImageAggregationRequest.SourceContributorAgentsId,
-      "source.genres.label" -> ImageAggregationRequest.SourceGenresLabel,
-      "source.genres" -> ImageAggregationRequest.SourceGenresId,
-      "source.subjects.label" -> ImageAggregationRequest.SourceSubjectsLabel,
-      "source.subjects" -> ImageAggregationRequest.SourceSubjectsId
-    )
+    decodeOneOfCommaSeparated(aggregationValues: _*)
 
   implicit val sortDecoder: Decoder[List[SortRequest]] =
-    decodeOneOfCommaSeparated(
-      "source.production.dates" -> ProductionDateSortRequest
-    )
+    decodeOneOfCommaSeparated(sortValues: _*)
 
   implicit val sortOrderDecoder: Decoder[SortingOrder] =
-    decodeOneOf(
-      "asc" -> SortingOrder.Ascending,
-      "desc" -> SortingOrder.Descending
-    )
+    decodeOneOf(sortOrderValues: _*)
 }

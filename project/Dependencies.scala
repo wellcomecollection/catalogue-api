@@ -86,6 +86,7 @@ object WellcomeDependencies {
 object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
+    val circeYaml = "0.14.2"
     val scalatest = "3.2.19"
     val scalatestplus = "3.1.4.0"
     val scalacheckShapeless = "1.1.8"
@@ -101,6 +102,11 @@ object ExternalDependencies {
 
   val circeOpticsDependencies = Seq(
     "io.circe" %% "circe-optics" % versions.circeOptics
+  )
+
+  // Used by OpenApiSpecEnumTest to read reference/catalogue.yaml.
+  val circeYamlDependencies = Seq(
+    "io.circe" %% "circe-yaml" % versions.circeYaml % "test"
   )
 
   val scalacheckDependencies = Seq(
@@ -151,7 +157,8 @@ object CatalogueDependencies {
       ExternalDependencies.otherAwsDependencies
 
   val searchDependencies: Seq[ModuleID] =
-    ExternalDependencies.circeOpticsDependencies
+    ExternalDependencies.circeOpticsDependencies ++
+      ExternalDependencies.circeYamlDependencies
 
   val stacksDependencies: Seq[ModuleID] =
     ExternalDependencies.scalatestDependencies ++
