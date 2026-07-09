@@ -2,12 +2,14 @@ import { URL, URLSearchParams } from "url";
 import path from "path";
 import { HttpError } from "./error";
 
-const limits = {
+// Exported so that openapi.test.ts can assert reference/catalogue.yaml still
+// documents the limits this service enforces.
+export const limits = {
   minSize: 1,
   maxSize: 100,
 };
 
-const defaultPageSize = 10;
+export const defaultPageSize = 10;
 
 export type PaginationQueryParameters = {
   page?: number;

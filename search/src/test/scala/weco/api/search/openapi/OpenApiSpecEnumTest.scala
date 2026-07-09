@@ -12,9 +12,6 @@ import weco.api.search.rest.{
 }
 import weco.catalogue.display_model.locations.CatalogueAccessStatus
 
-import java.io.File
-import scala.io.Source
-
 /** Checks that the enums in reference/catalogue.yaml still describe what the API
   * actually accepts.
   *
@@ -29,33 +26,7 @@ import scala.io.Source
   */
 class OpenApiSpecEnumTest extends AnyFunSpec with Matchers {
 
-  private val spec: Json = {
-    val file = specFile()
-    val source = Source.fromFile(file)
-    try io.circe.yaml.parser
-      .parse(source.mkString)
-      .fold(
-        err => fail(s"Could not parse ${file.getPath}: ${err.message}"),
-        identity)
-    finally source.close()
-  }
-
-  /** sbt does not guarantee which directory the JVM starts in, so walk up until we
-    * find the spec rather than assuming a relative path.
-    */
-  private def specFile(): File = {
-    val relativePath = "reference/catalogue.yaml"
-    Iterator
-      .iterate(new File(".").getAbsoluteFile)(_.getParentFile)
-      .takeWhile(_ != null)
-      .map(new File(_, relativePath))
-      .find(_.exists())
-      .getOrElse(
-        fail(
-          s"Could not find $relativePath in any parent of ${new File(".").getAbsolutePath}"
-        )
-      )
-  }
+  private val spec: Json = OpenApiSpec.parsed
 
   /** Reads the enum from a named entry in `components/parameters`.
     *

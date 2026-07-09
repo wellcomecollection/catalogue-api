@@ -31,17 +31,29 @@ request parameters, though, are defined in code, and that is what drifted in the
 the spec once documented an image colour filter named `colors`, which the API silently
 ignored.
 
-So `OpenApiSpecEnumTest` (in the `search` project) asserts that every closed enum in
-this file — `include`, `aggregations`, `sort`, `sortOrder`, and the access status
-filter — matches the decoders in `search/src/main/scala/weco/api/search/rest/`. Change
-one without the other and the build fails.
+Three contract tests tie this file to the code. Change one without the other and the
+build fails.
+
+| Test                                             | Asserts                                                                                                                                                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search/…/openapi/OpenApiSpecEnumTest.scala`     | Every closed enum here — `include`, `aggregations`, `sort`, `sortOrder`, the access status filter — matches the decoders in `search/…/rest/`, and the pagination bounds match `PaginationLimits`. |
+| `search/…/openapi/OpenApiSpecEndpointTest.scala` | Every works/images endpoint documented here is actually routable, and the internal endpoints stay undocumented.                                                                                   |
+| `concepts/test/openapi.test.ts`                  | The concepts endpoints served match those documented here **exactly**, and the pagination limits agree with the search API's.                                                                     |
+
+The asymmetry is worth knowing. A Pekko route is an opaque function, so the search test
+can only ask "does this documented path exist?" — a brand new public route added to
+`SearchApi` and never written down would slip past it. Express can enumerate its own
+routes, so the concepts test checks both directions.
 
 Nothing enforces the response schemas. If you change them, validate against the
-fixtures in `search/src/test/resources/expected_responses/` before you push.
+fixtures in `search/src/test/resources/expected_responses/` before you push. Be aware
+those fixtures are a biased sample: `Genre`-typed concepts were missing from the schema
+for a while because no fixture happened to contain one.
 
 ## Checking your changes
 
 ```
-yarn lint:openapi                                            # validate the spec
-sbt "search/testOnly weco.api.search.openapi.OpenApiSpecEnumTest"   # check the enums
+yarn lint:openapi                                   # validate the spec
+sbt "search/testOnly weco.api.search.openapi.*"     # enums + endpoints
+yarn --cwd concepts test openapi                    # concepts endpoints + pagination
 ```
