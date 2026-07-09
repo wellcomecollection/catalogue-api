@@ -93,9 +93,9 @@ jobs:
               "body": "This PR updates `reference/catalogue.yaml` from the spec in `wellcomecollection/catalogue-api`, which is its source of truth.\n\n**Triggered by commit:** ${{ github.sha }}\n\nPlease review and merge if the changes look correct."
             }' | jq -r '.number')
 
-          # Request review from digital-experience team
+          # Request review from digital-platform team
           curl -s -X POST \
             -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/wellcomecollection/developers.wellcomecollection.org/pulls/$PR_NUMBER/requested_reviewers \
-            -d '{"team_reviewers": ["digital-experience"]}'
+            -d '{"team_reviewers": ["digital-platform"]}'
