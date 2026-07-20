@@ -1,0 +1,101 @@
+name: Sync OpenAPI spec for developers.wellcomecollection.org
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "reference/catalogue.yaml"
+  workflow_dispatch:
+
+jobs:
+  sync-openapi-spec:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          # Both are stored as repo secrets on catalogue-api. content-api keeps the
+          # client id in Variables instead, so don't copy that reference over.
+          client-id: ${{ secrets.SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SYNC_APP_PRIVATE_KEY }}
+          repositories: developers.wellcomecollection.org
+
+      - name: Checkout catalogue-api
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      # A malformed spec must never reach the docs site.
+      - name: Validate OpenAPI spec
+        run: yarn lint:openapi
+
+      - name: Checkout developers.wellcomecollection.org
+        uses: actions/checkout@v6
+        with:
+          repository: wellcomecollection/developers.wellcomecollection.org
+          token: ${{ steps.app-token.outputs.token }}
+          path: developers.wellcomecollection.org
+
+      - name: Copy spec
+        run: cp reference/catalogue.yaml developers.wellcomecollection.org/reference/catalogue.yaml
+
+      - name: Check for changes
+        id: changes
+        run: |
+          cd developers.wellcomecollection.org
+          if git diff --quiet; then
+            echo "changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          cd developers.wellcomecollection.org
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Create branch
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          BRANCH_NAME="auto-sync/openapi-spec-$TIMESTAMP"
+          git checkout -b $BRANCH_NAME
+
+          # Commit and push
+          git add reference/catalogue.yaml
+          git commit -m "Update OpenAPI spec from catalogue-api"
+          git push origin $BRANCH_NAME
+
+          # Open PR
+          PR_NUMBER=$(curl -s -X POST \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/wellcomecollection/developers.wellcomecollection.org/pulls \
+            -d '{
+              "title": "🤖 Auto-sync: Update OpenAPI spec",
+              "head": "'"$BRANCH_NAME"'",
+              "base": "main",
+              "body": "This PR updates `reference/catalogue.yaml` from the spec in `wellcomecollection/catalogue-api`, which is its source of truth.\n\n**Triggered by commit:** ${{ github.sha }}\n\nPlease review and merge if the changes look correct."
+            }' | jq -r '.number')
+
+          # Request review from digital-platform team
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/wellcomecollection/developers.wellcomecollection.org/pulls/$PR_NUMBER/requested_reviewers \
+            -d '{"team_reviewers": ["digital-platform"]}'

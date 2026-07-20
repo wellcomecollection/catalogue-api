@@ -6,6 +6,9 @@ WORKDIR /app
 COPY ./yarn.lock ./package.json ./
 COPY ./concepts ./concepts
 
+# openapi.test.ts reads this to check the spec still matches the routes we serve.
+COPY ./reference ./reference
+
 WORKDIR concepts
 RUN yarn install --frozen-lockfile && yarn cache clean
 

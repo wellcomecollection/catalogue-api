@@ -5,9 +5,7 @@
 ### Checklist
 
 - [ ] Does this patch need a change to the documentation?
-- [ ] Do you need to update the [Catalogue API Swagger][swagger]?
-
-[swagger]: https://github.com/wellcomecollection/developers.wellcomecollection.org/blob/main/reference/catalogue.yaml
+- [ ] Does this change the API surface? If so, update the OpenAPI spec (`reference/catalogue.yaml`). The contract tests in the `search` project catch request-surface drift, but response-schema changes need a manual spec update.
 
 ## How to test
 
