@@ -149,5 +149,76 @@ class ElasticClusterParamTest
           }
       }
     }
+
+    it("routes works and images requests to a cluster configured with both indexes") {
+      withLocalWorksIndex { defaultWorksIndex =>
+        withLocalImagesIndex { defaultImagesIndex =>
+          withLocalWorksIndex { axiellTestingWorksIndex =>
+            withLocalImagesIndex { axiellTestingImagesIndex =>
+              val router = new SearchApi(
+                elasticClient = resilientElasticClient,
+                elasticConfig = ElasticConfig(
+                  name = "default",
+                  worksIndex = Some(defaultWorksIndex.name),
+                  imagesIndex = Some(defaultImagesIndex.name)
+                ),
+                additionalElasticClients = Map("axiell-collections-testing" -> resilientElasticClient),
+                additionalElasticConfigs = Map(
+                  "axiell-collections-testing" -> ElasticConfig(
+                    name = "axiell-collections-testing",
+                    hostSecretPath = Some("axiell-collections-testing/host"),
+                    apiKeySecretPath = Some("axiell-collections-testing/key"),
+                    worksIndex = Some(axiellTestingWorksIndex.name),
+                    imagesIndex = Some(axiellTestingImagesIndex.name)
+                  )
+                ),
+                apiConfig = apiConfig
+              )
+              val routes = router.routes
+
+              val defaultWorkId = getKey(getVisibleWork(visibleWorks(0)).display, "id").get.asString.get
+              val axiellTestingWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
+              val defaultImageId = getTestImageId("images.different-licenses.0")
+              val axiellTestingImageId = getTestImageId("images.different-licenses.1")
+
+              indexTestDocuments(defaultWorksIndex, visibleWorks(0))
+              indexTestDocuments(axiellTestingWorksIndex, visibleWorks(3))
+              indexTestDocuments(defaultImagesIndex, "images.different-licenses.0")
+              indexTestDocuments(axiellTestingImagesIndex, "images.different-licenses.1")
+
+              // Works search
+              assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=axiell-collections-testing") { json =>
+                val jsonStr = json.toString()
+                jsonStr should include(axiellTestingWorkId)
+                jsonStr should not include defaultWorkId
+              }
+
+              // Single work
+              assertJsonResponseLike(routes, s"$rootPath/works/$axiellTestingWorkId?elasticCluster=axiell-collections-testing") { json =>
+                getKey(json, "id").get.asString.get shouldBe axiellTestingWorkId
+              }
+              Get(s"$rootPath/works/$axiellTestingWorkId") ~> routes ~> check {
+                status shouldEqual Status.NotFound
+              }
+
+              // Images search
+              assertJsonResponseLike(routes, s"$rootPath/images?elasticCluster=axiell-collections-testing") { json =>
+                val jsonStr = json.toString()
+                jsonStr should include(axiellTestingImageId)
+                jsonStr should not include defaultImageId
+              }
+
+              // Single image
+              assertJsonResponseLike(routes, s"$rootPath/images/$axiellTestingImageId?elasticCluster=axiell-collections-testing") { json =>
+                getKey(json, "id").get.asString.get shouldBe axiellTestingImageId
+              }
+              Get(s"$rootPath/images/$axiellTestingImageId") ~> routes ~> check {
+                status shouldEqual Status.NotFound
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
