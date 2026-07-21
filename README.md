@@ -14,30 +14,31 @@ It combines our different source catalogues and presents them through a single s
 We have two services for searching the museum and library collections.
 These APIs are freely available, and allow anybody to use our data.
 
--	The **search API** is for running ad hoc searches, and it powers the collections search at [wellcomecollection.org/collections][search].
-	We have [documentation][search_docs] for external developers who want to use this API.
+- The **search API** is for running ad hoc searches, and it powers the collections search at [wellcomecollection.org/collections][search].
+  We have [documentation][search_docs] for external developers who want to use this API.
 
-	To help us develop the search API, we have a tool called **rank**.
-	This helps us measure the quality of our search ranking, by checking that certain queries return known-relevant results.
+  To help us develop the search API, we have a tool called [**rank**][rank], which lives in its own repository.
+  This helps us measure the quality of our search ranking, by checking that certain queries return known-relevant results.
 
--	The **catalogue datasets** provide a daily snapshot of all the works in the search API.
-	It's useful for batch queries or analysis that doesn't work with the search API.
-	These snapshots are [freely available to download][snapshots].
+- The **catalogue datasets** provide a daily snapshot of all the works in the search API.
+  It's useful for batch queries or analysis that doesn't work with the search API.
+  These snapshots are [freely available to download][snapshots].
 
 Both of these services read the data populated by the [catalogue pipeline][pipeline].
 
 We also have two services for dealing with items in the library stores.
 These APIs are used on the Wellcome Collection website, but they require authentication and aren't publicly available:
 
--	The **items API** gets the status of an item: for example, whether it's on hold, or available for requesting, or temporarily unavailable.
-	It queries source systems directly, so it always has the most up-to-date information.
+- The **items API** gets the status of an item: for example, whether it's on hold, or available for requesting, or temporarily unavailable.
+  It queries source systems directly, so it always has the most up-to-date information.
 
--	Library members can [request items from the library stores][requests].
-	The **requests API** allows them to manage their requests on the Wellcome Collection website: either placing requests, or checking the status of their outstanding requests.
-	It forward requests to our library management systems, so that library staff know which items to retrieve from the stores.
+- Library members can [request items from the library stores][requests].
+  The **requests API** allows them to manage their requests on the Wellcome Collection website: either placing requests, or checking the status of their outstanding requests.
+  It forward requests to our library management systems, so that library staff know which items to retrieve from the stores.
 
 See [notes on the requesting flow](docs/requesting_flow.md) for more information.
 
+[rank]: https://github.com/wellcomecollection/rank
 [search]: https://wellcomecollection.org/collections
 [search_docs]: https://developers.wellcomecollection.org/api/catalogue
 [pipeline]: https://github.com/wellcomecollection/catalogue-pipeline
