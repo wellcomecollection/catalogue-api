@@ -46,16 +46,12 @@ Currently only the search & items API can be run locally. It will use the config
 By default the apps run in dev mode (the default `api.public-root` in
 [`application.conf`](../search/src/main/resources/application.conf) points at `api-dev.wellcomecollection.org`),
 where they read Elasticsearch secrets using the `catalogue-developer` AWS profile.
-You will need valid credentials for that profile. If `catalogue-developer` is a
-role-assumption profile (`role_arn` with a `source_profile`), log in to SSO on its
-source profile, e.g.:
+The `catalogue-developer` profile assumes the role via a `source_profile`, so log in
+to SSO on the source profile first:
 
 ```bash
 aws sso login
 ```
-
-If instead you have `catalogue-developer` configured as an SSO profile itself, use
-`aws sso login --profile catalogue-developer`.
 
 To run the search API from the root of the repository:
 
