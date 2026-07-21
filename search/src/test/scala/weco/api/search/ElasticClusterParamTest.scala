@@ -153,8 +153,8 @@ class ElasticClusterParamTest
     it("routes works and images requests to a cluster configured with both indexes") {
       withLocalWorksIndex { defaultWorksIndex =>
         withLocalImagesIndex { defaultImagesIndex =>
-          withLocalWorksIndex { newPipelineWorksIndex =>
-            withLocalImagesIndex { newPipelineImagesIndex =>
+          withLocalWorksIndex { axiellTestingWorksIndex =>
+            withLocalImagesIndex { axiellTestingImagesIndex =>
               val router = new SearchApi(
                 elasticClient = resilientElasticClient,
                 elasticConfig = ElasticConfig(
@@ -162,14 +162,14 @@ class ElasticClusterParamTest
                   worksIndex = Some(defaultWorksIndex.name),
                   imagesIndex = Some(defaultImagesIndex.name)
                 ),
-                additionalElasticClients = Map("new-pipeline" -> resilientElasticClient),
+                additionalElasticClients = Map("axiell-collections-testing" -> resilientElasticClient),
                 additionalElasticConfigs = Map(
-                  "new-pipeline" -> ElasticConfig(
-                    name = "new-pipeline",
-                    hostSecretPath = Some("new-pipeline/host"),
-                    apiKeySecretPath = Some("new-pipeline/key"),
-                    worksIndex = Some(newPipelineWorksIndex.name),
-                    imagesIndex = Some(newPipelineImagesIndex.name)
+                  "axiell-collections-testing" -> ElasticConfig(
+                    name = "axiell-collections-testing",
+                    hostSecretPath = Some("axiell-collections-testing/host"),
+                    apiKeySecretPath = Some("axiell-collections-testing/key"),
+                    worksIndex = Some(axiellTestingWorksIndex.name),
+                    imagesIndex = Some(axiellTestingImagesIndex.name)
                   )
                 ),
                 apiConfig = apiConfig
@@ -177,42 +177,42 @@ class ElasticClusterParamTest
               val routes = router.routes
 
               val defaultWorkId = getKey(getVisibleWork(visibleWorks(0)).display, "id").get.asString.get
-              val newPipelineWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
+              val axiellTestingWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
               val defaultImageId = getTestImageId("images.different-licenses.0")
-              val newPipelineImageId = getTestImageId("images.different-licenses.1")
+              val axiellTestingImageId = getTestImageId("images.different-licenses.1")
 
               indexTestDocuments(defaultWorksIndex, visibleWorks(0))
-              indexTestDocuments(newPipelineWorksIndex, visibleWorks(3))
+              indexTestDocuments(axiellTestingWorksIndex, visibleWorks(3))
               indexTestDocuments(defaultImagesIndex, "images.different-licenses.0")
-              indexTestDocuments(newPipelineImagesIndex, "images.different-licenses.1")
+              indexTestDocuments(axiellTestingImagesIndex, "images.different-licenses.1")
 
               // Works search
-              assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=new-pipeline") { json =>
+              assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=axiell-collections-testing") { json =>
                 val jsonStr = json.toString()
-                jsonStr should include(newPipelineWorkId)
+                jsonStr should include(axiellTestingWorkId)
                 jsonStr should not include defaultWorkId
               }
 
               // Single work
-              assertJsonResponseLike(routes, s"$rootPath/works/$newPipelineWorkId?elasticCluster=new-pipeline") { json =>
-                getKey(json, "id").get.asString.get shouldBe newPipelineWorkId
+              assertJsonResponseLike(routes, s"$rootPath/works/$axiellTestingWorkId?elasticCluster=axiell-collections-testing") { json =>
+                getKey(json, "id").get.asString.get shouldBe axiellTestingWorkId
               }
-              Get(s"$rootPath/works/$newPipelineWorkId") ~> routes ~> check {
+              Get(s"$rootPath/works/$axiellTestingWorkId") ~> routes ~> check {
                 status shouldEqual Status.NotFound
               }
 
               // Images search
-              assertJsonResponseLike(routes, s"$rootPath/images?elasticCluster=new-pipeline") { json =>
+              assertJsonResponseLike(routes, s"$rootPath/images?elasticCluster=axiell-collections-testing") { json =>
                 val jsonStr = json.toString()
-                jsonStr should include(newPipelineImageId)
+                jsonStr should include(axiellTestingImageId)
                 jsonStr should not include defaultImageId
               }
 
               // Single image
-              assertJsonResponseLike(routes, s"$rootPath/images/$newPipelineImageId?elasticCluster=new-pipeline") { json =>
-                getKey(json, "id").get.asString.get shouldBe newPipelineImageId
+              assertJsonResponseLike(routes, s"$rootPath/images/$axiellTestingImageId?elasticCluster=axiell-collections-testing") { json =>
+                getKey(json, "id").get.asString.get shouldBe axiellTestingImageId
               }
-              Get(s"$rootPath/images/$newPipelineImageId") ~> routes ~> check {
+              Get(s"$rootPath/images/$axiellTestingImageId") ~> routes ~> check {
                 status shouldEqual Status.NotFound
               }
             }

@@ -48,17 +48,19 @@ multiCluster {
 }
 ```
 
-## The `new-pipeline` cluster
+## The `axiell-collections-testing` cluster
 
-The `new-pipeline` entry points at the output of the new (Axiell/FOLIO) pipeline, so that its works and images
-indexes can be previewed with `?elasticCluster=new-pipeline` before the default cluster is flipped over.
+The `axiell-collections-testing` entry points at the output of the new (Axiell/FOLIO) pipeline, so that its works
+and images indexes can be previewed with `?elasticCluster=axiell-collections-testing` before the default cluster is
+flipped over. Its connection secrets live under the pipeline's `elasticsearch/pipeline_storage_2026-07-03/` prefix,
+as created by the `pipeline_new` stack in the catalogue-pipeline repo.
 
 Like any other additional cluster, if its config fails to parse or its client fails to build at startup (e.g.
 because a secret doesn't exist), the cluster is logged and dropped, and requests selecting it return 404.
 
 Note for local development: the entry uses the cluster's `private_host` secret, which is only reachable from
 inside the VPC. When running the API outside the VPC (e.g. locally), swap `hostSecretPath` to the corresponding
-`public_host` secret (`elasticsearch/es-cluster-2026-07-03/public_host`).
+`public_host` secret (`elasticsearch/pipeline_storage_2026-07-03/public_host`).
 
 ### Eventually flipping the default
 
@@ -68,5 +70,5 @@ The environment default stays on the old pipeline until we're ready to cut over.
    `common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala`.
 2. Deploy to stage, verify, then deploy to prod.
 
-To roll back, revert the `ElasticConfig` change and redeploy. To remove the `new-pipeline` cluster entirely,
+To roll back, revert the `ElasticConfig` change and redeploy. To remove the `axiell-collections-testing` cluster entirely,
 delete its `multiCluster` entry from `application.conf` and redeploy; requests selecting it will then return 404.
