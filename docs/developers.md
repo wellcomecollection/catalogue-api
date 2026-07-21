@@ -14,7 +14,7 @@ The CI flow looks as follows:
 
 ## Dependencies
 
-- Java 1.8
+- Java 11
 - Scala 2.12
 - SBT
 - Terraform
@@ -43,9 +43,23 @@ At the root of the project you should be able to use `sbt` to run the project as
 Currently only the search & items API can be run locally. It will use the configured pipeline index in
 [`ElasticConfig.scala`](../common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala).
 
-You will need to have signed in to the AWS on the CLI to allow the application to assume the required role.
+By default the apps run in dev mode (the default `api.public-root` in
+[`application.conf`](../search/src/main/resources/application.conf) points at `api-dev.wellcomecollection.org`),
+where they read Elasticsearch secrets using the `catalogue-developer` AWS profile.
+The `catalogue-developer` profile assumes the role via a `source_profile`, so log in
+to SSO on the source profile first:
 
-To run with reloading of code changes using [`sbt-revolver`](https://github.com/spray/sbt-revolver) from the root of the repository:
+```bash
+aws sso login
+```
+
+To run the search API from the root of the repository:
+
+```bash
+sbt "project search" run
+```
+
+Or, to run with reloading of code changes using [`sbt-revolver`](https://github.com/spray/sbt-revolver):
 
 ```bash
 sbt "project search" "~reStart"
@@ -54,11 +68,28 @@ AWS_PROFILE=catalogue-developer sbt "project items" "~reStart"
 
 You should then be able to access the APIs at:
 
-- `http://localhost:8080/works`: Seach
+- `http://localhost:8080/works`: Search
 - `http://localhost:8081/items`: Items
+
+In dev mode the search API logs every request with its full query string, which is
+useful for checking exactly what the front-end sends.
+
+**Note:** `sbt` fails to load inside a git worktree (sbt-git/jgit throws
+"Bare Repository has neither a working tree, nor an index"), so run it from a normal checkout.
 
 To specify a different pipeline index, you can set the `pipelineDate` environment variable for the search API:
 
 ```bash
 pipelineDate=2021-01-01 sbt "project search" "~reStart"
+```
+
+### Running tests locally
+
+The search project's tests need an Elasticsearch instance on `localhost:9200`.
+You can start one with the [`docker-compose.yml`](../search/docker-compose.yml) in the `search` directory
+(this is the same Elasticsearch that CI starts via [`run_sbt_tests.sh`](../builds/run_sbt_tests.sh)):
+
+```bash
+(cd search && docker compose up -d)
+sbt "project search" test
 ```
