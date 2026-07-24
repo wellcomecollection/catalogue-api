@@ -1,5 +1,10 @@
 ### Project Specific ###
 
+# Claude Code local state: worktree checkouts and personal settings.
+# .claude itself stays trackable in case shared settings are added later.
+.claude/worktrees/
+.claude/settings.local.json
+
 .idea
 *.iml
 .lambda_hashes.json
