@@ -2,6 +2,7 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.{
+  ArchiveTypeFilter,
   AvailabilitiesFilter,
   ContributorsIdFilter,
   ContributorsLabelFilter,
@@ -96,6 +97,14 @@ object WorksAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
+      case WorkAggregationRequest.ArchiveType =>
+        AggregationParams(
+          "archiveType",
+          "aggregatableValues.archiveType",
+          20,
+          AggregationType.LabeledIdAggregation
+        )
+
       // Note: we want these aggregations to return every possible value, so we
       // want this to be as many licenses as we support in the catalogue pipeline.
       //
@@ -129,6 +138,7 @@ object WorksAggregationsBuilder
     filter match {
       case _: FormatFilter       => List(WorkAggregationRequest.Format)
       case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
+      case _: ArchiveTypeFilter  => List(WorkAggregationRequest.ArchiveType)
       case _: GenreLabelFilter   => List(WorkAggregationRequest.GenreLabel)
       case _: GenreIdFilter      => List(WorkAggregationRequest.GenreId)
       case _: SubjectLabelFilter => List(WorkAggregationRequest.SubjectLabel)

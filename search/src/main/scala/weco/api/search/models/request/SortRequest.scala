@@ -5,3 +5,5 @@ sealed trait SortRequest
 case object ProductionDateSortRequest extends SortRequest
 
 case object DigitalLocationCreatedDateSortRequest extends SortRequest
+
+case object ReferenceNumberSortRequest extends SortRequest

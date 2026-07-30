@@ -8,6 +8,7 @@ import weco.api.search.models._
 import weco.api.search.models.request.{
   DigitalLocationCreatedDateSortRequest,
   ProductionDateSortRequest,
+  ReferenceNumberSortRequest,
   SortingOrder
 }
 import weco.api.search.rest.PaginationQuery
@@ -75,6 +76,10 @@ object WorksRequestBuilder
         (
           "filterableValues.items.locations.createdDate",
           searchOptions.sortOrder)
+      case ReferenceNumberSortRequest =>
+        (
+          "query.collectionPath.sort",
+          searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
@@ -105,6 +110,18 @@ object WorksRequestBuilder
         "filterableValues.languages.id",
         languageIds
       )
+    case ArchiveTypeFilter(archiveTypeIds) =>
+      termsQuery(
+        "filterableValues.archiveType.id",
+        archiveTypeIds
+      )
+    case IsArchiveRootFilter(true) =>
+      termQuery("filterableValues.isArchiveRoot", true)
+    case IsArchiveRootFilter(false) =>
+      boolQuery().should(
+        termQuery("filterableValues.isArchiveRoot", false),
+        not(existsQuery("filterableValues.isArchiveRoot"))
+      ).minimumShouldMatch(1)
     case GenreLabelFilter(genreQueries) =>
       termsQuery(
         "filterableValues.genres.label",

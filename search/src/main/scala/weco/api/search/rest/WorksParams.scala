@@ -9,8 +9,8 @@ import weco.catalogue.display_model.locations.CatalogueAccessStatus
 import java.time.LocalDate
 
 case class SingleWorkParams(
-  include: Option[WorksIncludes]
-) extends QueryParams
+                             include: Option[WorksIncludes]
+                           ) extends QueryParams
 
 object SingleWorkParams extends QueryParamsUtils {
 
@@ -61,49 +61,51 @@ object SingleWorkParams extends QueryParamsUtils {
 // 23 parameters weird stuff starts happening, e.g. values passed to the apply() method
 // don't get reflected in the new case class.
 case class ItemsParams(
-  `items`: Option[ItemsFilter],
-  `items.identifiers`: Option[ItemsIdentifiersFilter],
-  `items.locations.license`: Option[LicenseFilter],
-  `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
-  `items.locations.accessConditions.status`: Option[AccessStatusFilter],
-  `items.locations.createdDate.from`: Option[LocalDate],
-  `items.locations.createdDate.to`: Option[LocalDate]
-)
+                        `items`: Option[ItemsFilter],
+                        `items.identifiers`: Option[ItemsIdentifiersFilter],
+                        `items.locations.license`: Option[LicenseFilter],
+                        `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
+                        `items.locations.accessConditions.status`: Option[AccessStatusFilter],
+                        `items.locations.createdDate.from`: Option[LocalDate],
+                        `items.locations.createdDate.to`: Option[LocalDate]
+                      )
 
 case class PaginationParams(
-  page: Option[Int],
-  pageSize: Option[Int],
-  sort: Option[List[SortRequest]],
-  sortOrder: Option[SortingOrder]
-)
+                             page: Option[Int],
+                             pageSize: Option[Int],
+                             sort: Option[List[SortRequest]],
+                             sortOrder: Option[SortingOrder]
+                           )
 
 case class WorkFilterParams(
-  workType: Option[FormatFilter],
-  `production.dates.from`: Option[LocalDate],
-  `production.dates.to`: Option[LocalDate],
-  languages: Option[LanguagesFilter],
-  `genres.label`: Option[GenreLabelFilter],
-  `genres`: Option[GenreIdFilter],
-  `subjects.label`: Option[SubjectLabelFilter],
-  `subjects`: Option[SubjectIdFilter],
-  `contributors.agent.label`: Option[ContributorsLabelFilter],
-  `contributors.agent`: Option[ContributorsIdFilter],
-  identifiers: Option[IdentifiersFilter],
-  partOf: Option[PartOfFilter],
-  `partOf.title`: Option[PartOfTitleFilter],
-  availabilities: Option[AvailabilitiesFilter],
-  `type`: Option[WorkTypeFilter]
-)
+                             workType: Option[FormatFilter],
+                             `production.dates.from`: Option[LocalDate],
+                             `production.dates.to`: Option[LocalDate],
+                             languages: Option[LanguagesFilter],
+                             archiveType: Option[ArchiveTypeFilter],
+                             `genres.label`: Option[GenreLabelFilter],
+                             `genres`: Option[GenreIdFilter],
+                             `subjects.label`: Option[SubjectLabelFilter],
+                             `subjects`: Option[SubjectIdFilter],
+                             `contributors.agent.label`: Option[ContributorsLabelFilter],
+                             `contributors.agent`: Option[ContributorsIdFilter],
+                             identifiers: Option[IdentifiersFilter],
+                             partOf: Option[PartOfFilter],
+                             `partOf.title`: Option[PartOfTitleFilter],
+                             availabilities: Option[AvailabilitiesFilter],
+                             `type`: Option[WorkTypeFilter],
+                             isArchiveRoot: Option[IsArchiveRootFilter]
+                           )
 
 case class MultipleWorksParams(
-  paginationParams: PaginationParams,
-  itemsParams: ItemsParams,
-  filterParams: WorkFilterParams,
-  include: Option[WorksIncludes],
-  aggregations: Option[List[WorkAggregationRequest]],
-  query: Option[String]
-) extends QueryParams
-    with Paginated {
+                                paginationParams: PaginationParams,
+                                itemsParams: ItemsParams,
+                                filterParams: WorkFilterParams,
+                                include: Option[WorksIncludes],
+                                aggregations: Option[List[WorkAggregationRequest]],
+                                query: Option[String]
+                              ) extends QueryParams
+  with Paginated {
 
   lazy val page = paginationParams.page
   lazy val pageSize = paginationParams.pageSize
@@ -129,6 +131,7 @@ case class MultipleWorksParams(
       dateFilter,
       createdDateFilter,
       filterParams.languages,
+      filterParams.archiveType,
       filterParams.`genres.label`,
       filterParams.`genres`,
       filterParams.`subjects.label`,
@@ -144,7 +147,8 @@ case class MultipleWorksParams(
       filterParams.`type`,
       filterParams.partOf,
       filterParams.`partOf.title`,
-      filterParams.availabilities
+      filterParams.availabilities,
+      filterParams.isArchiveRoot
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
@@ -197,21 +201,21 @@ object MultipleWorksParams extends QueryParamsUtils {
       "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
       case (
-          items,
-          license,
-          identifiers,
-          locationType,
-          accessStatus,
-          createdDateFrom,
-          createdDateTo,
-          page,
-          pageSize,
-          sort,
-          sortOrder,
-          query,
-          includes,
-          aggregations
-          ) =>
+        items,
+        license,
+        identifiers,
+        locationType,
+        accessStatus,
+        createdDateFrom,
+        createdDateTo,
+        page,
+        pageSize,
+        sort,
+        sortOrder,
+        query,
+        includes,
+        aggregations
+        ) =>
         val itemsParams = ItemsParams(
           items,
           identifiers,
@@ -229,6 +233,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.from".as[LocalDate].?,
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
+          "archiveType".as[ArchiveTypeFilter].?,
           "genres.label".as[GenreLabelFilter].?,
           "genres".as[GenreIdFilter].?,
           "subjects.label".as[SubjectLabelFilter].?,
@@ -239,30 +244,34 @@ object MultipleWorksParams extends QueryParamsUtils {
           "partOf".as[PartOfFilter].?,
           "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
-          "type".as[WorkTypeFilter].?
+          "type".as[WorkTypeFilter].?,
+          "isArchiveRoot".as[IsArchiveRootFilter].?
         ).tflatMap {
           case (
-              format,
-              dateFrom,
-              dateTo,
-              languages,
-              genres,
-              genreConcepts,
-              subjectLabels,
-              subjectConcepts,
-              contributors,
-              contributorsConcepts,
-              identifiers,
-              partOf,
-              partOfTitle,
-              availabilities,
-              workType
-              ) =>
+            format,
+            dateFrom,
+            dateTo,
+            languages,
+            archiveType,
+            genres,
+            genreConcepts,
+            subjectLabels,
+            subjectConcepts,
+            contributors,
+            contributorsConcepts,
+            identifiers,
+            partOf,
+            partOfTitle,
+            availabilities,
+            workType,
+            isArchiveRoot
+            ) =>
             val filterParams = WorkFilterParams(
               format,
               dateFrom,
               dateTo,
               languages,
+              archiveType,
               genres,
               genreConcepts,
               subjectLabels,
@@ -273,7 +282,8 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOf,
               partOfTitle,
               availabilities,
-              workType
+              workType,
+              isArchiveRoot
             )
 
             val params = MultipleWorksParams(
@@ -299,6 +309,16 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val languagesFilter: Decoder[LanguagesFilter] =
     stringListFilter(LanguagesFilter)
+
+  implicit val archiveTypeFilter: Decoder[ArchiveTypeFilter] =
+    stringListFilter(ArchiveTypeFilter)
+
+  implicit val isArchiveRootFilter: Decoder[IsArchiveRootFilter] =
+    Decoder.decodeString.emap {
+      case "true"  => Right(IsArchiveRootFilter(true))
+      case "false" => Right(IsArchiveRootFilter(false))
+      case other   => Left(s"Got value '$other' with wrong type, expecting 'true' or 'false'")
+    }
 
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
@@ -335,6 +355,7 @@ object MultipleWorksParams extends QueryParamsUtils {
     "subjects.label" -> WorkAggregationRequest.SubjectLabel,
     "subjects" -> WorkAggregationRequest.SubjectId,
     "languages" -> WorkAggregationRequest.Languages,
+    "archiveType" -> WorkAggregationRequest.ArchiveType,
     "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
     "contributors.agent" -> WorkAggregationRequest.ContributorId,
     "items.locations.license" -> WorkAggregationRequest.License,
@@ -343,7 +364,8 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   val sortValues: Seq[(String, SortRequest)] = Seq(
     "production.dates" -> ProductionDateSortRequest,
-    "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest
+    "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest,
+    "referenceNumber" -> ReferenceNumberSortRequest
   )
 
   val sortOrderValues: Seq[(String, SortingOrder)] = Seq(
