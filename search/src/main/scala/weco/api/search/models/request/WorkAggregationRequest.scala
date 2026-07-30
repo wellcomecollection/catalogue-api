@@ -23,6 +23,8 @@ object WorkAggregationRequest {
 
   case object ArchiveType extends WorkAggregationRequest
 
+  case object ArchiveRoot extends WorkAggregationRequest
+
   case object License extends WorkAggregationRequest
 
   case object Availabilities extends WorkAggregationRequest

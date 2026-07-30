@@ -113,6 +113,11 @@ object WorksRequestBuilder
         "filterableValues.archiveType.id",
         archiveTypeIds
       )
+    case ArchiveRootFilter(archiveRootIds) =>
+      termsQuery(
+        "filterableValues.archiveRoot.id",
+        archiveRootIds
+      )
     case IsArchiveRootFilter(true) =>
       termQuery("filterableValues.isArchiveRoot", true)
     case IsArchiveRootFilter(false) =>

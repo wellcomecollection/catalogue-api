@@ -40,6 +40,10 @@ case class ArchiveTypeFilter(archiveTypeIds: Seq[String])
 
 case class IsArchiveRootFilter(value: Boolean) extends WorkFilter
 
+case class ArchiveRootFilter(archiveRootIds: Seq[String])
+    extends WorkFilter
+    with Pairable
+
 case class GenreLabelFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter

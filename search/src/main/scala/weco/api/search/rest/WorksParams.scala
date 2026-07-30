@@ -78,24 +78,25 @@ case class PaginationParams(
 )
 
 case class WorkFilterParams(
-  workType: Option[FormatFilter],
-  `production.dates.from`: Option[LocalDate],
-  `production.dates.to`: Option[LocalDate],
-  languages: Option[LanguagesFilter],
-  archiveType: Option[ArchiveTypeFilter],
-  `genres.label`: Option[GenreLabelFilter],
-  `genres`: Option[GenreIdFilter],
-  `subjects.label`: Option[SubjectLabelFilter],
-  `subjects`: Option[SubjectIdFilter],
-  `contributors.agent.label`: Option[ContributorsLabelFilter],
-  `contributors.agent`: Option[ContributorsIdFilter],
-  identifiers: Option[IdentifiersFilter],
-  partOf: Option[PartOfFilter],
-  `partOf.title`: Option[PartOfTitleFilter],
-  availabilities: Option[AvailabilitiesFilter],
-  `type`: Option[WorkTypeFilter],
-  isArchiveRoot: Option[IsArchiveRootFilter]
-)
+                             workType: Option[FormatFilter],
+                             `production.dates.from`: Option[LocalDate],
+                             `production.dates.to`: Option[LocalDate],
+                             languages: Option[LanguagesFilter],
+                             archiveType: Option[ArchiveTypeFilter],
+                             `genres.label`: Option[GenreLabelFilter],
+                             `genres`: Option[GenreIdFilter],
+                             `subjects.label`: Option[SubjectLabelFilter],
+                             `subjects`: Option[SubjectIdFilter],
+                             `contributors.agent.label`: Option[ContributorsLabelFilter],
+                             `contributors.agent`: Option[ContributorsIdFilter],
+                             identifiers: Option[IdentifiersFilter],
+                             partOf: Option[PartOfFilter],
+                             `partOf.title`: Option[PartOfTitleFilter],
+                             availabilities: Option[AvailabilitiesFilter],
+                             `type`: Option[WorkTypeFilter],
+                             isArchiveRoot: Option[IsArchiveRootFilter],
+                             archiveRoot: Option[ArchiveRootFilter]
+                           )
 
 case class MultipleWorksParams(
   paginationParams: PaginationParams,
@@ -148,7 +149,8 @@ case class MultipleWorksParams(
       filterParams.partOf,
       filterParams.`partOf.title`,
       filterParams.availabilities,
-      filterParams.isArchiveRoot
+      filterParams.isArchiveRoot,
+      filterParams.archiveRoot
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
@@ -245,27 +247,29 @@ object MultipleWorksParams extends QueryParamsUtils {
           "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
           "type".as[WorkTypeFilter].?,
-          "isArchiveRoot".as[IsArchiveRootFilter].?
+          "isArchiveRoot".as[IsArchiveRootFilter].?,
+          "archiveRoot".as[ArchiveRootFilter].?
         ).tflatMap {
           case (
-              format,
-              dateFrom,
-              dateTo,
-              languages,
-              archiveType,
-              genres,
-              genreConcepts,
-              subjectLabels,
-              subjectConcepts,
-              contributors,
-              contributorsConcepts,
-              identifiers,
-              partOf,
-              partOfTitle,
-              availabilities,
-              workType,
-              isArchiveRoot
-              ) =>
+            format,
+            dateFrom,
+            dateTo,
+            languages,
+            archiveType,
+            genres,
+            genreConcepts,
+            subjectLabels,
+            subjectConcepts,
+            contributors,
+            contributorsConcepts,
+            identifiers,
+            partOf,
+            partOfTitle,
+            availabilities,
+            workType,
+            isArchiveRoot,
+            archiveRoot
+            ) =>
             val filterParams = WorkFilterParams(
               format,
               dateFrom,
@@ -283,7 +287,8 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOfTitle,
               availabilities,
               workType,
-              isArchiveRoot
+              isArchiveRoot,
+              archiveRoot
             )
 
             val params = MultipleWorksParams(
@@ -312,6 +317,9 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val archiveTypeFilter: Decoder[ArchiveTypeFilter] =
     stringListFilter(ArchiveTypeFilter)
+
+  implicit val archiveRootFilter: Decoder[ArchiveRootFilter] =
+    stringListFilter(ArchiveRootFilter)
 
   implicit val isArchiveRootFilter: Decoder[IsArchiveRootFilter] =
     Decoder.decodeString.emap {
@@ -357,6 +365,7 @@ object MultipleWorksParams extends QueryParamsUtils {
     "subjects" -> WorkAggregationRequest.SubjectId,
     "languages" -> WorkAggregationRequest.Languages,
     "archiveType" -> WorkAggregationRequest.ArchiveType,
+    "archiveRoot" -> WorkAggregationRequest.ArchiveRoot,
     "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
     "contributors.agent" -> WorkAggregationRequest.ContributorId,
     "items.locations.license" -> WorkAggregationRequest.License,
