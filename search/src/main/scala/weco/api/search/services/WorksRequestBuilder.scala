@@ -77,9 +77,7 @@ object WorksRequestBuilder
           "filterableValues.items.locations.createdDate",
           searchOptions.sortOrder)
       case ReferenceNumberSortRequest =>
-        (
-          "query.collectionPath.sort",
-          searchOptions.sortOrder)
+        ("query.collectionPath.sort", searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
@@ -118,10 +116,12 @@ object WorksRequestBuilder
     case IsArchiveRootFilter(true) =>
       termQuery("filterableValues.isArchiveRoot", true)
     case IsArchiveRootFilter(false) =>
-      boolQuery().should(
-        termQuery("filterableValues.isArchiveRoot", false),
-        not(existsQuery("filterableValues.isArchiveRoot"))
-      ).minimumShouldMatch(1)
+      boolQuery()
+        .should(
+          termQuery("filterableValues.isArchiveRoot", false),
+          not(existsQuery("filterableValues.isArchiveRoot"))
+        )
+        .minimumShouldMatch(1)
     case GenreLabelFilter(genreQueries) =>
       termsQuery(
         "filterableValues.genres.label",
