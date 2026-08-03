@@ -56,7 +56,7 @@ class WorksErrorsTest
   }
 
   val aggregationsString =
-    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
+    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archiveType', 'archiveRoot', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
 
   describe(
     "returns a 400 Bad Request for errors in the ?aggregations parameter"
@@ -97,7 +97,7 @@ class WorksErrorsTest
       assertBadRequest(route)(
         path = s"$rootPath/works?sort=foo,bar",
         description =
-          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'referenceNumber']"
       )
     }
   }
@@ -108,7 +108,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo",
           description =
-            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates', 'items.locations.createdDate', 'referenceNumber']"
         )
       }
     }
@@ -118,7 +118,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'referenceNumber']"
         )
       }
     }
@@ -128,7 +128,19 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,production.dates,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'referenceNumber']"
+        )
+      }
+    }
+  }
+
+  describe("returns a 400 Bad Request for errors in the ?isArchiveRoot parameter") {
+    it("an invalid isArchiveRoot value") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/works?isArchiveRoot=notabool",
+          description =
+            "isArchiveRoot: Got value 'notabool' with wrong type, expecting 'true' or 'false'"
         )
       }
     }

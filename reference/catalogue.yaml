@@ -463,6 +463,8 @@ components:
             - subjects.label
             - subjects
             - languages
+            - archiveType
+            - archiveRoot
             - contributors.agent.label
             - contributors.agent
             - items.locations.license
@@ -480,6 +482,7 @@ components:
           enum:
             - production.dates
             - items.locations.createdDate
+            - referenceNumber
     WorksAccessStatusFilter:
       name: items.locations.accessConditions.status
       in: query

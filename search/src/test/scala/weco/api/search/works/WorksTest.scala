@@ -310,6 +310,84 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  it("sorts by reference number") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-reference-number.1",
+          "work-reference-number.2",
+          "work-reference-number.10"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=referenceNumber"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-reference-number.1",
+              "work-reference-number.2",
+              "work-reference-number.10"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("sorts by reference number in descending order") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-reference-number.1",
+          "work-reference-number.2",
+          "work-reference-number.10"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=referenceNumber&sortOrder=desc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-reference-number.10",
+              "work-reference-number.2",
+              "work-reference-number.1"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("returns documents with no reference number last") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "work-reference-number.1",
+          "work-reference-number.no-value",
+          "work-reference-number.2"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=referenceNumber"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "work-reference-number.1",
+              "work-reference-number.2",
+              "work-reference-number.no-value"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>

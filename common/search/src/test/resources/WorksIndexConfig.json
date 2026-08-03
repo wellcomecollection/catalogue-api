@@ -81,6 +81,32 @@
               }
             }
           },
+          "archiveType": {
+            "type": "nested",
+            "properties": {
+              "id": {
+                "type": "keyword",
+                "eager_global_ordinals": true
+              },
+              "label": {
+                "type": "keyword",
+                "eager_global_ordinals": true
+              }
+            }
+          },
+          "archiveRoot": {
+            "type": "nested",
+            "properties": {
+              "id": {
+                "type": "keyword",
+                "eager_global_ordinals": true
+              },
+              "label": {
+                "type": "keyword",
+                "eager_global_ordinals": true
+              }
+            }
+          },
           "production": {
             "properties": {
               "dates": {
@@ -261,6 +287,26 @@
               }
             }
           },
+          "archiveType": {
+            "properties": {
+              "id": {
+                "type": "keyword"
+              }
+            }
+          },
+          "archiveRoot": {
+            "properties": {
+              "id": {
+                "type": "keyword"
+              },
+              "title": {
+                "type": "keyword"
+              }
+            }
+          },
+          "isArchiveRoot": {
+            "type": "boolean"
+          },
           "partOf": {
             "properties": {
               "id": {
@@ -390,6 +436,9 @@
                     "search_analyzer": "lowercase_whitespace_tokens"
                   }
                 }
+              },
+              "sort": {
+                "type": "keyword"
               }
             }
           },

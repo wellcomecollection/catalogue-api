@@ -571,6 +571,49 @@ class WorksFiltersTest
     }
   }
 
+  describe("isArchiveRoot filter") {
+    val isArchiveRootWorks = Seq(
+      "works.is-archive-root.0.true",
+      "works.is-archive-root.1.false",
+      "works.is-archive-root.2.no-value"
+    )
+
+    it("filters by isArchiveRoot=true") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, isArchiveRootWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?isArchiveRoot=true"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq("works.is-archive-root.0.true")
+            )
+          }
+      }
+    }
+
+    it("filters by isArchiveRoot=false, including works with no value") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, isArchiveRootWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?isArchiveRoot=false"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq(
+                "works.is-archive-root.1.false",
+                "works.is-archive-root.2.no-value"
+              )
+            )
+          }
+      }
+    }
+  }
+
   describe("item filters") {
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(
