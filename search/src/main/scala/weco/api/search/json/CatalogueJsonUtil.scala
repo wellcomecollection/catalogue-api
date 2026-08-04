@@ -32,7 +32,7 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.production, "production")
         .removeKeyIf(!includes.languages, "languages")
         .removeKeyIf(!includes.archiveType, "archiveType")
-        .removeKeyIf(!includes.isArchiveRoot, "isArchiveRoot")
+        .removeKeyIf(!includes.isCollectionRoot, "isCollectionRoot")
         .removeKeyIf(!includes.notes, "notes")
         .removeKeyIf(!includes.formerFrequency, "formerFrequency")
         .removeKeyIf(!includes.designation, "designation")

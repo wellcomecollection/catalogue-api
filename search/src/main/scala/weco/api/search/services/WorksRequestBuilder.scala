@@ -64,18 +64,20 @@ object WorksRequestBuilder
     )
   }
 
-  private def sortConfig(
-    implicit
-    searchOptions: WorkSearchOptions): Option[(String, SortingOrder)] =
+  private def sortConfig(implicit
+    searchOptions: WorkSearchOptions
+  ): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         (
           "filterableValues.production.dates.range.from",
-          searchOptions.sortOrder)
+          searchOptions.sortOrder
+        )
       case DigitalLocationCreatedDateSortRequest =>
         (
           "filterableValues.items.locations.createdDate",
-          searchOptions.sortOrder)
+          searchOptions.sortOrder
+        )
       case CollectionPathSortRequest =>
         ("query.collectionPath.sort", searchOptions.sortOrder)
     }
@@ -113,18 +115,18 @@ object WorksRequestBuilder
         "filterableValues.archiveType.id",
         archiveTypeIds
       )
-    case ArchiveRootFilter(archiveRootIds) =>
+    case CollectionRootFilter(collectionRootIds) =>
       termsQuery(
-        "filterableValues.archiveRoot.id",
-        archiveRootIds
+        "filterableValues.collectionRoot.id",
+        collectionRootIds
       )
-    case IsArchiveRootFilter(true) =>
-      termQuery("filterableValues.isArchiveRoot", true)
-    case IsArchiveRootFilter(false) =>
+    case IsCollectionRootFilter(true) =>
+      termQuery("filterableValues.isCollectionRoot", true)
+    case IsCollectionRootFilter(false) =>
       boolQuery()
         .should(
-          termQuery("filterableValues.isArchiveRoot", false),
-          not(existsQuery("filterableValues.isArchiveRoot"))
+          termQuery("filterableValues.isCollectionRoot", false),
+          not(existsQuery("filterableValues.isCollectionRoot"))
         )
         .minimumShouldMatch(1)
     case GenreLabelFilter(genreQueries) =>

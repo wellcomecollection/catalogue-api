@@ -2,9 +2,9 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.{
-  ArchiveRootFilter,
   ArchiveTypeFilter,
   AvailabilitiesFilter,
+  CollectionRootFilter,
   ContributorsIdFilter,
   ContributorsLabelFilter,
   FormatFilter,
@@ -106,10 +106,10 @@ object WorksAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
-      case WorkAggregationRequest.ArchiveRoot =>
+      case WorkAggregationRequest.CollectionRoot =>
         AggregationParams(
-          "archiveRoot",
-          "aggregatableValues.archiveRoot",
+          "collectionRoot",
+          "aggregatableValues.collectionRoot",
           20,
           AggregationType.LabeledIdAggregation
         )
@@ -145,10 +145,11 @@ object WorksAggregationsBuilder
     filter: WorkFilter with Pairable
   ): List[WorkAggregationRequest] =
     filter match {
-      case _: FormatFilter       => List(WorkAggregationRequest.Format)
-      case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
-      case _: ArchiveTypeFilter  => List(WorkAggregationRequest.ArchiveType)
-      case _: ArchiveRootFilter  => List(WorkAggregationRequest.ArchiveRoot)
+      case _: FormatFilter      => List(WorkAggregationRequest.Format)
+      case _: LanguagesFilter   => List(WorkAggregationRequest.Languages)
+      case _: ArchiveTypeFilter => List(WorkAggregationRequest.ArchiveType)
+      case _: CollectionRootFilter =>
+        List(WorkAggregationRequest.CollectionRoot)
       case _: GenreLabelFilter   => List(WorkAggregationRequest.GenreLabel)
       case _: GenreIdFilter      => List(WorkAggregationRequest.GenreId)
       case _: SubjectLabelFilter => List(WorkAggregationRequest.SubjectLabel)

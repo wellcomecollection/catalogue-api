@@ -1,17 +1,17 @@
 {
-  "description": "a work for the isArchiveRoot filter test",
-  "id": "isar0000",
+  "description": "a work for the isCollectionRoot filter test",
+  "id": "isar0001",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "isar0000",
+        "id": "isar0001",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "isarSrc00"
+          "value": "isarSrc01"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "isar0000",
-      "title": "A work which is an archive root",
+      "id": "isar0001",
+      "title": "A work which is not an collection root",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "isarSrc00",
-      "identifiers.value": ["isar0000", "isarSrc00"],
+      "sourceIdentifier.value": "isarSrc01",
+      "identifiers.value": ["isar0001", "isarSrc01"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "isar0000",
-      "title": "A work which is an archive root",
+      "id": "isar0001",
+      "title": "A work which is not an collection root",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "isarSrc00",
+          "value": "isarSrc01",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -94,7 +94,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["isar0000", "isarSrc00"],
+      "identifiers.value": ["isar0001", "isarSrc01"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -104,7 +104,7 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "isArchiveRoot": true
+      "isCollectionRoot": false
     }
   },
   "createdAt": "2026-06-03T16:56:01.798317+00:00"

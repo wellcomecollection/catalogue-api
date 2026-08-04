@@ -273,9 +273,9 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
-  describe("isArchiveRoot includes") {
+  describe("isCollectionRoot includes") {
     it(
-      "includes isArchiveRoot on a list endpoint if we pass ?include=isArchiveRoot"
+      "includes isCollectionRoot on a list endpoint if we pass ?include=isCollectionRoot"
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
@@ -283,17 +283,17 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?include=isArchiveRoot"
+            path = s"$rootPath/works?include=isCollectionRoot"
           ) {
             Status.OK -> readResource(
-              "expected_responses/works-include-list-isArchiveRoot.json"
+              "expected_responses/works-include-list-isCollectionRoot.json"
             )
           }
       }
     }
 
     it(
-      "includes isArchiveRoot on a single work endpoint if we pass ?include=isArchiveRoot"
+      "includes isCollectionRoot on a single work endpoint if we pass ?include=isCollectionRoot"
     ) {
       withWorksApi {
         case (worksIndex, routes) =>
@@ -301,10 +301,10 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works/i4c7c9yl?include=isArchiveRoot"
+            path = s"$rootPath/works/i4c7c9yl?include=isCollectionRoot"
           ) {
             Status.OK -> readResource(
-              "expected_responses/works-include-single-isArchiveRoot.json"
+              "expected_responses/works-include-single-isCollectionRoot.json"
             )
           }
       }

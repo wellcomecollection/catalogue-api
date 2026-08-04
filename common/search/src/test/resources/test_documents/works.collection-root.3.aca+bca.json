@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveRoot filter/aggregation tests",
-  "id": "aroo0005",
+  "description": "a work for collectionRoot filter/aggregation tests",
+  "id": "aroo0003",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "aroo0005",
+        "id": "aroo0003",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "arooSrc05"
+          "value": "arooSrc03"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "aroo0005",
-      "title": "A work with archive root Business",
+      "id": "aroo0003",
+      "title": "A work with collection root Wellcome, Business",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "arooSrc05",
-      "identifiers.value": ["aroo0005", "arooSrc05"],
+      "sourceIdentifier.value": "arooSrc03",
+      "identifiers.value": ["aroo0003", "arooSrc03"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "aroo0005",
-      "title": "A work with archive root Business",
+      "id": "aroo0003",
+      "title": "A work with collection root Wellcome, Business",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "arooSrc05",
+          "value": "arooSrc03",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,7 +80,11 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveRoot": [
+      "collectionRoot": [
+        {
+          "id": "aca",
+          "label": "Wellcome Archive"
+        },
         {
           "id": "bca",
           "label": "Business Archive"
@@ -100,7 +104,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["aroo0005", "arooSrc05"],
+      "identifiers.value": ["aroo0003", "arooSrc03"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,8 +114,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveRoot.id": ["bca"],
-      "archiveRoot.title": ["Business Archive"]
+      "collectionRoot.id": ["aca", "bca"],
+      "collectionRoot.title": ["Wellcome Archive", "Business Archive"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

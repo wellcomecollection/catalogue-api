@@ -11,7 +11,7 @@ class WorksErrorsTest
     with TableDrivenPropertyChecks {
 
   val includesString =
-    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'archiveType', 'isArchiveRoot', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
+    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'archiveType', 'isCollectionRoot', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
 
   describe("returns a 400 Bad Request for errors in the ?include parameter") {
     it("a single invalid include") {
@@ -56,7 +56,7 @@ class WorksErrorsTest
   }
 
   val aggregationsString =
-    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archiveType', 'archiveRoot', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
+    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archiveType', 'collectionRoot', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
 
   describe(
     "returns a 400 Bad Request for errors in the ?aggregations parameter"
@@ -134,13 +134,13 @@ class WorksErrorsTest
     }
   }
 
-  describe("returns a 400 Bad Request for errors in the ?isArchiveRoot parameter") {
-    it("an invalid isArchiveRoot value") {
+  describe("returns a 400 Bad Request for errors in the ?isCollectionRoot parameter") {
+    it("an invalid isCollectionRoot value") {
       withApi { route =>
         assertBadRequest(route)(
-          path = s"$rootPath/works?isArchiveRoot=notabool",
+          path = s"$rootPath/works?isCollectionRoot=notabool",
           description =
-            "isArchiveRoot: Got value 'notabool' with wrong type, expecting 'true' or 'false'"
+            "isCollectionRoot: Got value 'notabool' with wrong type, expecting 'true' or 'false'"
         )
       }
     }

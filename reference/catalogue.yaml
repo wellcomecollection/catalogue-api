@@ -432,7 +432,7 @@ components:
             - production
             - languages
             - archiveType
-            - isArchiveRoot
+            - isCollectionRoot
             - notes
             - formerFrequency
             - designation
@@ -466,7 +466,7 @@ components:
             - subjects
             - languages
             - archiveType
-            - archiveRoot
+            - collectionRoot
             - contributors.agent.label
             - contributors.agent
             - items.locations.license
@@ -1473,9 +1473,9 @@ components:
             $ref: "#/components/schemas/Language"
         archiveType:
           $ref: "#/components/schemas/ArchiveType"
-        isArchiveRoot:
+        isCollectionRoot:
           type: boolean
-          description: Whether this work is the root of an archive.
+          description: Whether this work is the root of a collection.
         edition:
           type: string
           description: Information relating to the edition of a work.
@@ -1544,7 +1544,7 @@ components:
           $ref: "#/components/schemas/Aggregation"
         archiveType:
           $ref: "#/components/schemas/Aggregation"
-        archiveRoot:
+        collectionRoot:
           $ref: "#/components/schemas/Aggregation"
         items.locations.license:
           $ref: "#/components/schemas/Aggregation"

@@ -38,9 +38,9 @@ case class ArchiveTypeFilter(archiveTypeIds: Seq[String])
     extends WorkFilter
     with Pairable
 
-case class IsArchiveRootFilter(value: Boolean) extends WorkFilter
+case class IsCollectionRootFilter(value: Boolean) extends WorkFilter
 
-case class ArchiveRootFilter(archiveRootIds: Seq[String])
+case class CollectionRootFilter(collectionRootIds: Seq[String])
     extends WorkFilter
     with Pairable
 

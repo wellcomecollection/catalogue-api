@@ -94,7 +94,7 @@
               }
             }
           },
-          "archiveRoot": {
+          "collectionRoot": {
             "type": "nested",
             "properties": {
               "id": {
@@ -294,7 +294,7 @@
               }
             }
           },
-          "archiveRoot": {
+          "collectionRoot": {
             "properties": {
               "id": {
                 "type": "keyword"
@@ -304,7 +304,7 @@
               }
             }
           },
-          "isArchiveRoot": {
+          "isCollectionRoot": {
             "type": "boolean"
           },
           "partOf": {

@@ -95,7 +95,7 @@ class CatalogueJsonUtilTest
     ("production", WorkInclude.Production),
     ("languages", WorkInclude.Languages),
     ("archiveType", WorkInclude.ArchiveType),
-    ("isArchiveRoot", WorkInclude.IsArchiveRoot),
+    ("isCollectionRoot", WorkInclude.IsCollectionRoot),
     ("notes", WorkInclude.Notes),
     ("images", WorkInclude.Images),
     ("parts", WorkInclude.Parts),

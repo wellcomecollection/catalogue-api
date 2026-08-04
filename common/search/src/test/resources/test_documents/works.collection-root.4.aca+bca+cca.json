@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveRoot filter/aggregation tests",
-  "id": "aroo0000",
+  "description": "a work for collectionRoot filter/aggregation tests",
+  "id": "aroo0004",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "aroo0000",
+        "id": "aroo0004",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "arooSrc00"
+          "value": "arooSrc04"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "aroo0000",
-      "title": "A work with archive root Wellcome",
+      "id": "aroo0004",
+      "title": "A work with collection root Wellcome, Business, Charity",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "arooSrc00",
-      "identifiers.value": ["aroo0000", "arooSrc00"],
+      "sourceIdentifier.value": "arooSrc04",
+      "identifiers.value": ["aroo0004", "arooSrc04"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "aroo0000",
-      "title": "A work with archive root Wellcome",
+      "id": "aroo0004",
+      "title": "A work with collection root Wellcome, Business, Charity",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "arooSrc00",
+          "value": "arooSrc04",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,10 +80,18 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveRoot": [
+      "collectionRoot": [
         {
           "id": "aca",
           "label": "Wellcome Archive"
+        },
+        {
+          "id": "bca",
+          "label": "Business Archive"
+        },
+        {
+          "id": "cca",
+          "label": "Charity Archive"
         }
       ]
     },
@@ -100,7 +108,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["aroo0000", "arooSrc00"],
+      "identifiers.value": ["aroo0004", "arooSrc04"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,8 +118,12 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveRoot.id": ["aca"],
-      "archiveRoot.title": ["Wellcome Archive"]
+      "collectionRoot.id": ["aca", "bca", "cca"],
+      "collectionRoot.title": [
+        "Wellcome Archive",
+        "Business Archive",
+        "Charity Archive"
+      ]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

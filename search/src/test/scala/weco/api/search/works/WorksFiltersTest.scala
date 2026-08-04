@@ -571,42 +571,42 @@ class WorksFiltersTest
     }
   }
 
-  describe("isArchiveRoot filter") {
-    val isArchiveRootWorks = Seq(
-      "works.is-archive-root.0.true",
-      "works.is-archive-root.1.false",
-      "works.is-archive-root.2.no-value"
+  describe("isCollectionRoot filter") {
+    val isCollectionRootWorks = Seq(
+      "works.is-collection-root.0.true",
+      "works.is-collection-root.1.false",
+      "works.is-collection-root.2.no-value"
     )
 
-    it("filters by isArchiveRoot=true") {
+    it("filters by isCollectionRoot=true") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, isArchiveRootWorks: _*)
+          indexTestDocuments(worksIndex, isCollectionRootWorks: _*)
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?isArchiveRoot=true"
+            path = s"$rootPath/works?isCollectionRoot=true"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq("works.is-archive-root.0.true")
+              ids = Seq("works.is-collection-root.0.true")
             )
           }
       }
     }
 
-    it("filters by isArchiveRoot=false, including works with no value") {
+    it("filters by isCollectionRoot=false, including works with no value") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, isArchiveRootWorks: _*)
+          indexTestDocuments(worksIndex, isCollectionRootWorks: _*)
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?isArchiveRoot=false"
+            path = s"$rootPath/works?isCollectionRoot=false"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq(
-                "works.is-archive-root.1.false",
-                "works.is-archive-root.2.no-value"
+                "works.is-collection-root.1.false",
+                "works.is-collection-root.2.no-value"
               )
             )
           }

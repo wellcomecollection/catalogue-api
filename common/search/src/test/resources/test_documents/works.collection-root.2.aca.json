@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveRoot filter/aggregation tests",
-  "id": "aroo0001",
+  "description": "a work for collectionRoot filter/aggregation tests",
+  "id": "aroo0002",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "aroo0001",
+        "id": "aroo0002",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "arooSrc01"
+          "value": "arooSrc02"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "aroo0001",
-      "title": "A work with archive root Wellcome",
+      "id": "aroo0002",
+      "title": "A work with collection root Wellcome",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "arooSrc01",
-      "identifiers.value": ["aroo0001", "arooSrc01"],
+      "sourceIdentifier.value": "arooSrc02",
+      "identifiers.value": ["aroo0002", "arooSrc02"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "aroo0001",
-      "title": "A work with archive root Wellcome",
+      "id": "aroo0002",
+      "title": "A work with collection root Wellcome",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "arooSrc01",
+          "value": "arooSrc02",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,7 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveRoot": [
+      "collectionRoot": [
         {
           "id": "aca",
           "label": "Wellcome Archive"
@@ -100,7 +100,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["aroo0001", "arooSrc01"],
+      "identifiers.value": ["aroo0002", "arooSrc02"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,8 +110,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveRoot.id": ["aca"],
-      "archiveRoot.title": ["Wellcome Archive"]
+      "collectionRoot.id": ["aca"],
+      "collectionRoot.title": ["Wellcome Archive"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"
