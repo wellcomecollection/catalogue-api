@@ -8,6 +8,7 @@ import json
 import os
 import sys
 import tempfile
+import re
 import urllib.parse
 
 import click
@@ -23,13 +24,15 @@ STAGING_URL = "api-stage.wellcomecollection.org"
 
 
 class ApiDiffer:
-    """Performs a diff against the same call to both prod and stage works API,
-    printing the results to stdout.
+    """Performs a diff against the same call to both sides of a comparison:
+    by default the prod and stage works APIs, or, when an elastic cluster is
+    given, the prod API with and without that cluster selected.
     """
 
-    def __init__(self, path=None, params=None, **kwargs):
+    def __init__(self, path=None, params=None, elastic_cluster=None, **kwargs):
         self.path = f"/catalogue/v2{path}"
         self.params = params or {}
+        self.elastic_cluster = elastic_cluster
 
     @staticmethod
     def normalise_absolute_urls(json):
@@ -73,7 +76,13 @@ class ApiDiffer:
         """
 
         (prod_status, prod_json) = self.call_api(PROD_URL)
-        (stage_status, stage_json) = self.call_api(STAGING_URL)
+        if self.elastic_cluster:
+            (stage_status, stage_json) = self.call_api(
+                PROD_URL, extra_params={"elasticCluster": self.elastic_cluster}
+            )
+            stage_json = self.normalise_cluster_urls(stage_json)
+        else:
+            (stage_status, stage_json) = self.call_api(STAGING_URL)
         prod_json = ApiDiffer.normalise_absolute_urls(prod_json)
         stage_json = ApiDiffer.normalise_absolute_urls(stage_json)
         if prod_status != stage_status:
@@ -111,9 +120,30 @@ class ApiDiffer:
             else:
                 return ("different JSON", diff_lines)
 
-    def call_api(self, api_base):
+    def normalise_cluster_urls(self, json):
+        """
+        Removes the elasticCluster parameter from URLs (eg pagination links) so
+        that both sides of a cluster comparison take the same form.
+        """
+
+        def _normalise(data, remaining):
+            for key, val in remaining.items():
+                if isinstance(val, collections.abc.Mapping):
+                    data[key] = _normalise(data.get(key, {}), val)
+                elif isinstance(val, str):
+                    data[key] = re.sub(
+                        rf"[?&]elasticCluster={self.elastic_cluster}", "", val
+                    )
+                else:
+                    data[key] = val
+            return data
+
+        return _normalise({}, json)
+
+    def call_api(self, api_base, extra_params=None):
         url = f"https://{api_base}{self.path}"
-        response = httpx.get(url, params=self.params, follow_redirects=True)
+        params = {**self.params, **(extra_params or {})}
+        response = httpx.get(url, params=params, follow_redirects=True)
         try:
             return (response.status_code, response.json())
         except json.JSONDecodeError:
@@ -136,18 +166,24 @@ def _display_in_console(stats, diffs, outfile=None):
     echo()
     echo(click.style("Index statistics", underline=True))
     echo()
+    # Align the comparison row to the production row's column order: the two
+    # APIs do not return work types in a stable shared order.
+    work_type_keys = list(stats["prod"]["work_types"].keys())
     echo(
         tabulate(
             [
                 ["Production"]
-                + [humanize.intcomma(v) for v in stats["prod"]["work_types"].values()],
+                + [
+                    humanize.intcomma(stats["prod"]["work_types"][k])
+                    for k in work_type_keys
+                ],
                 ["Staging"]
                 + [
-                    humanize.intcomma(v)
-                    for v in stats["staging"]["work_types"].values()
+                    humanize.intcomma(stats["staging"]["work_types"].get(k, 0))
+                    for k in work_type_keys
                 ],
             ],
-            headers=stats["prod"]["work_types"].keys(),
+            headers=work_type_keys,
             colalign=("left", "right", "right", "right", "right", "right"),
         )
     )
@@ -184,12 +220,18 @@ def _display_in_console(stats, diffs, outfile=None):
 )
 @click.option("--console", is_flag=True, help="Print results in console")
 @click.option("--outfile", default=None)
-def main(routes_file, console, outfile):
+@click.option(
+    "--elastic-cluster",
+    default=None,
+    help="Compare prod against prod with this elasticCluster selected "
+    "(eg axiell-collections-testing), instead of against staging",
+)
+def main(routes_file, console, outfile, elastic_cluster):
     with open(routes_file) as f:
         routes = json.load(f)
 
     def get_diff(route):
-        differ = ApiDiffer(**route)
+        differ = ApiDiffer(**route, elastic_cluster=elastic_cluster)
         status, diff_lines = differ.get_html_diff()
 
         return {
@@ -205,9 +247,16 @@ def main(routes_file, console, outfile):
 
         diffs = [fut.result() for fut in futures]
 
+    if elastic_cluster:
+        stat_sources = [
+            ("prod", PROD_URL, None),
+            ("staging", PROD_URL, elastic_cluster),
+        ]
+    else:
+        stat_sources = [("prod", PROD_URL, None), ("staging", STAGING_URL, None)]
     stats = {
-        label: api_stats.get_api_stats(api_url=api_url)
-        for (label, api_url) in [("prod", PROD_URL), ("staging", STAGING_URL)]
+        label: api_stats.get_api_stats(api_url=api_url, elastic_cluster=cluster)
+        for (label, api_url, cluster) in stat_sources
     }
 
     if console:
