@@ -64,9 +64,9 @@ object WorksRequestBuilder
     )
   }
 
-  private def sortConfig(implicit
-    searchOptions: WorkSearchOptions
-  ): Option[(String, SortingOrder)] =
+  private def sortConfig(
+    implicit
+    searchOptions: WorkSearchOptions): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         (

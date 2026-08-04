@@ -22,8 +22,9 @@ object SingleWorkParams extends QueryParamsUtils {
   def parse: Directive[Tuple1[SingleWorkParams]] =
     parameters(
       "include".as[WorksIncludes].?
-    ).tmap { case Tuple1(include) =>
-      SingleWorkParams(include)
+    ).tmap {
+      case Tuple1(include) =>
+        SingleWorkParams(include)
     }
 
   implicit val decodePaths: Decoder[List[String]] =
@@ -206,20 +207,20 @@ object MultipleWorksParams extends QueryParamsUtils {
       "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
       case (
-            items,
-            license,
-            identifiers,
-            locationType,
-            accessStatus,
-            createdDateFrom,
-            createdDateTo,
-            page,
-            pageSize,
-            sort,
-            sortOrder,
-            query,
-            includes,
-            aggregations
+          items,
+          license,
+          identifiers,
+          locationType,
+          accessStatus,
+          createdDateFrom,
+          createdDateTo,
+          page,
+          pageSize,
+          sort,
+          sortOrder,
+          query,
+          includes,
+          aggregations
           ) =>
         val itemsParams = ItemsParams(
           items,
@@ -254,24 +255,24 @@ object MultipleWorksParams extends QueryParamsUtils {
           "collectionRoot".as[CollectionRootFilter].?
         ).tflatMap {
           case (
-                format,
-                dateFrom,
-                dateTo,
-                languages,
-                archiveType,
-                genres,
-                genreConcepts,
-                subjectLabels,
-                subjectConcepts,
-                contributors,
-                contributorsConcepts,
-                identifiers,
-                partOf,
-                partOfTitle,
-                availabilities,
-                workType,
-                isCollectionRoot,
-                collectionRoot
+              format,
+              dateFrom,
+              dateTo,
+              languages,
+              archiveType,
+              genres,
+              genreConcepts,
+              subjectLabels,
+              subjectConcepts,
+              contributors,
+              contributorsConcepts,
+              identifiers,
+              partOf,
+              partOfTitle,
+              availabilities,
+              workType,
+              isCollectionRoot,
+              collectionRoot
               ) =>
             val filterParams = WorkFilterParams(
               format,
@@ -352,8 +353,9 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
     decodeIncludesAndExcludes(CatalogueAccessStatus.values)
-      .emap { case IncludesAndExcludes(includes, excludes) =>
-        Right(AccessStatusFilter(includes, excludes))
+      .emap {
+        case IncludesAndExcludes(includes, excludes) =>
+          Right(AccessStatusFilter(includes, excludes))
       }
 
   // These three are exposed so that OpenApiSpecEnumTest can assert the spec's

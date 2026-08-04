@@ -2,9 +2,9 @@ package weco.api.search.models.display
 
 import weco.api.search.models.{
   AggregationBucket,
-  CollectionRootFilter,
   ArchiveTypeFilter,
   AvailabilitiesFilter,
+  CollectionRootFilter,
   ContributorsLabelFilter,
   DocumentFilter,
   FormatFilter,
