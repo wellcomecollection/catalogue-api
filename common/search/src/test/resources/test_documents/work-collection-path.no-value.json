@@ -1,17 +1,17 @@
 {
-  "description": "a work for the referenceNumber sort test",
-  "id": "refn0002",
+  "description": "a work for the collectionPath sort test",
+  "id": "refn0004",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "refn0002",
+        "id": "refn0004",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "refnSrc02"
+          "value": "refnSrc04"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "refn0002",
-      "title": "A work with reference number PP/CRI/2",
+      "id": "refn0004",
+      "title": "A work with no collection path",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "refnSrc02",
-      "identifiers.value": ["refn0002", "refnSrc02"],
+      "sourceIdentifier.value": "refnSrc04",
+      "identifiers.value": ["refn0004", "refnSrc04"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -38,19 +38,16 @@
       "production.label": [],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
-      "genres.concepts.label": [],
-      "collectionPath.label": "PP/CRI/2",
-      "collectionPath.path": "PPCRI2",
-      "collectionPath.sort": "PPCRI/00002"
+      "genres.concepts.label": []
     },
     "display": {
-      "id": "refn0002",
-      "title": "A work with reference number PP/CRI/2",
+      "id": "refn0004",
+      "title": "A work with no collection path",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "refnSrc02",
+          "value": "refnSrc04",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -97,7 +94,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["refn0002", "refnSrc02"],
+      "identifiers.value": ["refn0004", "refnSrc04"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

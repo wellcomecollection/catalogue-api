@@ -310,25 +310,25 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
-  it("sorts by reference number") {
+  it("sorts by collection path") {
     withWorksApi {
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-reference-number.1",
-          "work-reference-number.2",
-          "work-reference-number.10"
+          "work-collection-path.1",
+          "work-collection-path.2",
+          "work-collection-path.10"
         )
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?sort=referenceNumber"
+          path = s"$rootPath/works?sort=collectionPath"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-reference-number.1",
-              "work-reference-number.2",
-              "work-reference-number.10"
+              "work-collection-path.1",
+              "work-collection-path.2",
+              "work-collection-path.10"
             ),
             strictOrdering = true
           )
@@ -336,25 +336,25 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
-  it("sorts by reference number in descending order") {
+  it("sorts by collection path in descending order") {
     withWorksApi {
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-reference-number.1",
-          "work-reference-number.2",
-          "work-reference-number.10"
+          "work-collection-path.1",
+          "work-collection-path.2",
+          "work-collection-path.10"
         )
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?sort=referenceNumber&sortOrder=desc"
+          path = s"$rootPath/works?sort=collectionPath&sortOrder=desc"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-reference-number.10",
-              "work-reference-number.2",
-              "work-reference-number.1"
+              "work-collection-path.10",
+              "work-collection-path.2",
+              "work-collection-path.1"
             ),
             strictOrdering = true
           )
@@ -362,25 +362,25 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
-  it("returns documents with no reference number last") {
+  it("returns documents with no collection path last") {
     withWorksApi {
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-reference-number.1",
-          "work-reference-number.no-value",
-          "work-reference-number.2"
+          "work-collection-path.1",
+          "work-collection-path.no-value",
+          "work-collection-path.2"
         )
 
         assertJsonResponse(
           routes,
-          path = s"$rootPath/works?sort=referenceNumber"
+          path = s"$rootPath/works?sort=collectionPath"
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-reference-number.1",
-              "work-reference-number.2",
-              "work-reference-number.no-value"
+              "work-collection-path.1",
+              "work-collection-path.2",
+              "work-collection-path.no-value"
             ),
             strictOrdering = true
           )

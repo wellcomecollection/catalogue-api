@@ -1,5 +1,5 @@
 {
-  "description": "a work for the referenceNumber sort test",
+  "description": "a work for the collectionPath sort test",
   "id": "refn0003",
   "document": {
     "type": "Visible",
@@ -23,7 +23,7 @@
     },
     "query": {
       "id": "refn0003",
-      "title": "A work with reference number PP/CRI/10",
+      "title": "A work with collection path PP/CRI/10",
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "refnSrc03",
@@ -45,7 +45,7 @@
     },
     "display": {
       "id": "refn0003",
-      "title": "A work with reference number PP/CRI/10",
+      "title": "A work with collection path PP/CRI/10",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [

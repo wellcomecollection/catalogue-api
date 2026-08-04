@@ -484,7 +484,7 @@ components:
           enum:
             - production.dates
             - items.locations.createdDate
-            - referenceNumber
+            - collectionPath
     WorksAccessStatusFilter:
       name: items.locations.accessConditions.status
       in: query

@@ -8,7 +8,7 @@ import weco.api.search.models._
 import weco.api.search.models.request.{
   DigitalLocationCreatedDateSortRequest,
   ProductionDateSortRequest,
-  ReferenceNumberSortRequest,
+  CollectionPathSortRequest,
   SortingOrder
 }
 import weco.api.search.rest.PaginationQuery
@@ -76,7 +76,7 @@ object WorksRequestBuilder
         (
           "filterableValues.items.locations.createdDate",
           searchOptions.sortOrder)
-      case ReferenceNumberSortRequest =>
+      case CollectionPathSortRequest =>
         ("query.collectionPath.sort", searchOptions.sortOrder)
     }
 

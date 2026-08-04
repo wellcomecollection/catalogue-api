@@ -6,4 +6,4 @@ case object ProductionDateSortRequest extends SortRequest
 
 case object DigitalLocationCreatedDateSortRequest extends SortRequest
 
-case object ReferenceNumberSortRequest extends SortRequest
+case object CollectionPathSortRequest extends SortRequest
