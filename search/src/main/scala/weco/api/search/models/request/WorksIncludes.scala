@@ -11,6 +11,8 @@ object WorkInclude {
   case object Contributors extends WorkInclude
   case object Production extends WorkInclude
   case object Languages extends WorkInclude
+  case object ArchiveType extends WorkInclude
+  case object IsArchiveRoot extends WorkInclude
   case object Notes extends WorkInclude
   case object FormerFrequency extends WorkInclude
   case object Designation extends WorkInclude
@@ -30,6 +32,8 @@ case class WorksIncludes(
   contributors: Boolean,
   production: Boolean,
   languages: Boolean,
+  archiveType: Boolean,
+  isArchiveRoot: Boolean,
   notes: Boolean,
   formerFrequency: Boolean,
   designation: Boolean,
@@ -51,6 +55,8 @@ case object WorksIncludes {
       contributors = includes.contains(WorkInclude.Contributors),
       production = includes.contains(WorkInclude.Production),
       languages = includes.contains(WorkInclude.Languages),
+      archiveType = includes.contains(WorkInclude.ArchiveType),
+      isArchiveRoot = includes.contains(WorkInclude.IsArchiveRoot),
       notes = includes.contains(WorkInclude.Notes),
       formerFrequency = includes.contains(WorkInclude.FormerFrequency),
       designation = includes.contains(WorkInclude.Designation),

@@ -41,6 +41,8 @@ object SingleWorkParams extends QueryParamsUtils {
     "contributors" -> WorkInclude.Contributors,
     "production" -> WorkInclude.Production,
     "languages" -> WorkInclude.Languages,
+    "archiveType" -> WorkInclude.ArchiveType,
+    "isArchiveRoot" -> WorkInclude.IsArchiveRoot,
     "notes" -> WorkInclude.Notes,
     "formerFrequency" -> WorkInclude.FormerFrequency,
     "designation" -> WorkInclude.Designation,
