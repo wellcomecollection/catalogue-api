@@ -55,12 +55,27 @@ class ApiDiffer:
         return _normalise({}, json)
 
     @property
+    def side_labels(self):
+        if self.elastic_cluster:
+            return ("prod", self.elastic_cluster)
+        return ("prod", "stage")
+
+    @property
     def display_url(self):
         display_params = urllib.parse.urlencode(list(self.params.items()))
         if display_params:
             return f"{self.path}?{display_params}"
         else:
             return self.path
+
+    @property
+    def stage_display_url(self):
+        """The comparison side's URL: in cluster mode, the prod path with the
+        elasticCluster parameter included."""
+        if not self.elastic_cluster:
+            return self.display_url
+        params = list(self.params.items()) + [("elasticCluster", self.elastic_cluster)]
+        return f"{self.path}?{urllib.parse.urlencode(params)}"
 
     def get_html_diff(self):
         """
@@ -75,6 +90,7 @@ class ApiDiffer:
 
         """
 
+        (prod_label, stage_label) = self.side_labels
         (prod_status, prod_json) = self.call_api(PROD_URL)
         if self.elastic_cluster:
             (stage_status, stage_json) = self.call_api(
@@ -87,12 +103,12 @@ class ApiDiffer:
         stage_json = ApiDiffer.normalise_absolute_urls(stage_json)
         if prod_status != stage_status:
             lines = [
-                f"* Received {prod_status} on prod and {stage_status} on stage",
+                f"* Received {prod_status} on {prod_label} and {stage_status} on {stage_label}",
                 "",
-                "prod:",
+                f"{prod_label}:",
                 f"{json.dumps(prod_json, indent=2)}",
                 "",
-                "stage:",
+                f"{stage_label}:",
                 f"{json.dumps(stage_json, indent=2)}",
             ]
             return ("different status", lines)
@@ -106,8 +122,8 @@ class ApiDiffer:
                 difflib.unified_diff(
                     prod_pretty.splitlines(),
                     stage_pretty.splitlines(),
-                    fromfile="prod",
-                    tofile="stage",
+                    fromfile=prod_label,
+                    tofile=stage_label,
                 )
             )
 
@@ -154,7 +170,7 @@ class ApiDiffer:
             sys.exit(1)
 
 
-def _display_in_console(stats, diffs, outfile=None):
+def _display_in_console(stats, diffs, outfile=None, side_names=("Production", "Staging")):
     def file_echo(*args, **kwargs):
         click.echo(*args, file=outfile, **kwargs)
 
@@ -172,12 +188,12 @@ def _display_in_console(stats, diffs, outfile=None):
     echo(
         tabulate(
             [
-                ["Production"]
+                [side_names[0]]
                 + [
                     humanize.intcomma(stats["prod"]["work_types"][k])
                     for k in work_type_keys
                 ],
-                ["Staging"]
+                [side_names[1]]
                 + [
                     humanize.intcomma(stats["staging"]["work_types"].get(k, 0))
                     for k in work_type_keys
@@ -237,6 +253,7 @@ def main(routes_file, console, outfile, elastic_cluster):
         return {
             "route": route,
             "display_url": differ.display_url,
+            "stage_display_url": differ.stage_display_url,
             "status": status,
             "diff_lines": diff_lines,
         }
@@ -259,11 +276,13 @@ def main(routes_file, console, outfile, elastic_cluster):
         for (label, api_url, cluster) in stat_sources
     }
 
+    side_names = ("Production", elastic_cluster or "Staging")
+
     if console:
         if outfile:
             with open(outfile, "w") as outfile_obj:
-                _display_in_console(stats, diffs, outfile_obj)
-        _display_in_console(stats, diffs)
+                _display_in_console(stats, diffs, outfile_obj, side_names)
+        _display_in_console(stats, diffs, side_names=side_names)
     else:
         env = Environment(
             loader=FileSystemLoader("."), autoescape=select_autoescape(["html", "xml"])
@@ -272,7 +291,13 @@ def main(routes_file, console, outfile, elastic_cluster):
         env.filters["intcomma"] = humanize.intcomma
 
         template = env.get_template("template.html")
-        html = template.render(now=datetime.datetime.now(), diffs=diffs, stats=stats)
+        html = template.render(
+            now=datetime.datetime.now(),
+            diffs=diffs,
+            stats=stats,
+            side_labels=("prod", elastic_cluster or "staging"),
+            stage_api_base=PROD_URL if elastic_cluster else STAGING_URL,
+        )
 
         _, tmp_path = tempfile.mkstemp(suffix=".html")
         with open(tmp_path, "w") as outfile:
