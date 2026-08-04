@@ -237,6 +237,80 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  describe("archiveType includes") {
+    it("includes archiveType on a list endpoint if we pass ?include=archiveType") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=archiveType"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-list-archiveType.json"
+            )
+          }
+      }
+    }
+
+    it(
+      "includes archiveType on a single work endpoint if we pass ?include=archiveType"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/i4c7c9yl?include=archiveType"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-single-archiveType.json"
+            )
+          }
+      }
+    }
+  }
+
+  describe("isArchiveRoot includes") {
+    it(
+      "includes isArchiveRoot on a list endpoint if we pass ?include=isArchiveRoot"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=isArchiveRoot"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-list-isArchiveRoot.json"
+            )
+          }
+      }
+    }
+
+    it(
+      "includes isArchiveRoot on a single work endpoint if we pass ?include=isArchiveRoot"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/i4c7c9yl?include=isArchiveRoot"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-single-isArchiveRoot.json"
+            )
+          }
+      }
+    }
+  }
+
   describe("notes includes") {
     it("includes notes on the list endpoint if we pass ?include=notes") {
       withWorksApi {
