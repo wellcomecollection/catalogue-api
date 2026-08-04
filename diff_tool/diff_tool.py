@@ -170,7 +170,9 @@ class ApiDiffer:
             sys.exit(1)
 
 
-def _display_in_console(stats, diffs, outfile=None, side_names=("Production", "Staging")):
+def _display_in_console(
+    stats, diffs, outfile=None, side_names=("Production", "Staging")
+):
     def file_echo(*args, **kwargs):
         click.echo(*args, file=outfile, **kwargs)
 
