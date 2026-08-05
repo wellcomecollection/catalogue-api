@@ -34,11 +34,11 @@ case class LanguagesFilter(languageIds: Seq[String])
     extends WorkFilter
     with Pairable
 
-case class ArchiveTypeFilter(archiveTypeIds: Seq[String])
+case class ArchiveCategoryFilter(archiveCategoryIds: Seq[String])
     extends WorkFilter
     with Pairable
 
-case class IsCollectionRootFilter(value: Boolean) extends WorkFilter
+case class CollectionIsRootFilter(value: Boolean) extends WorkFilter
 
 case class CollectionRootFilter(collectionRootIds: Seq[String])
     extends WorkFilter

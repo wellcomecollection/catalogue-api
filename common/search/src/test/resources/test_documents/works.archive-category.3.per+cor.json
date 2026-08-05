@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveType filter/aggregation tests",
-  "id": "atyp0005",
+  "description": "a work for archive.category filter/aggregation tests",
+  "id": "atyp0003",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "atyp0005",
+        "id": "atyp0003",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "atypSrc05"
+          "value": "atypSrc03"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "atyp0005",
-      "title": "A work with archive type Corporate",
+      "id": "atyp0003",
+      "title": "A work with archive category Personal, Corporate",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "atypSrc05",
-      "identifiers.value": ["atyp0005", "atypSrc05"],
+      "sourceIdentifier.value": "atypSrc03",
+      "identifiers.value": ["atyp0003", "atypSrc03"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "atyp0005",
-      "title": "A work with archive type Corporate",
+      "id": "atyp0003",
+      "title": "A work with archive category Personal, Corporate",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "atypSrc05",
+          "value": "atypSrc03",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,7 +80,11 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveType": [
+      "archive.category": [
+        {
+          "id": "per",
+          "label": "Personal"
+        },
         {
           "id": "cor",
           "label": "Corporate"
@@ -100,7 +104,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["atyp0005", "atypSrc05"],
+      "identifiers.value": ["atyp0003", "atypSrc03"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,7 +114,7 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveType.id": ["cor"]
+      "archive.category.id": ["per", "cor"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

@@ -1,17 +1,17 @@
 {
-  "description": "a work for the isCollectionRoot filter test",
-  "id": "isar0002",
+  "description": "a work for archive.category filter/aggregation tests",
+  "id": "atyp0005",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "isar0002",
+        "id": "atyp0005",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "isarSrc02"
+          "value": "atypSrc05"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "isar0002",
-      "title": "A work with no collection root value",
+      "id": "atyp0005",
+      "title": "A work with archive category Corporate",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "isarSrc02",
-      "identifiers.value": ["isar0002", "isarSrc02"],
+      "sourceIdentifier.value": "atypSrc05",
+      "identifiers.value": ["atyp0005", "atypSrc05"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "isar0002",
-      "title": "A work with no collection root value",
+      "id": "atyp0005",
+      "title": "A work with archive category Corporate",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "isarSrc02",
+          "value": "atypSrc05",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -79,7 +79,13 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
-      "availabilities": []
+      "availabilities": [],
+      "archive.category": [
+        {
+          "id": "cor",
+          "label": "Corporate"
+        }
+      ]
     },
     "filterableValues": {
       "workType": "Standard",
@@ -94,7 +100,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["isar0002", "isarSrc02"],
+      "identifiers.value": ["atyp0005", "atypSrc05"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -103,8 +109,9 @@
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],
-      "availabilities.id": []
+      "availabilities.id": [],
+      "archive.category.id": ["cor"]
     }
   },
-  "createdAt": "2026-06-03T16:56:01.798317+00:00"
+  "createdAt": "2026-06-03T16:56:01.816254+00:00"
 }

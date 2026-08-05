@@ -1,7 +1,7 @@
 package weco.api.search.works.filtering
 
 class FilterAndAggregateByCollectionRootTest
-    extends SingleFieldFilterTest("collectionRoot")
+    extends SingleFieldFilterTest("collection.root")
     with FilteringTestCases
     with AggregatingTestCases {
   val testWorks: Seq[String] = Seq(
@@ -13,7 +13,7 @@ class FilterAndAggregateByCollectionRootTest
     "works.collection-root.5.bca",
     "works.collection-root.6.cca"
   )
-  val listingParams: String = "collectionRoot=aca"
+  val listingParams: String = "collection.root=aca"
   val listingResponse: String = worksListResponse(
     ids = Seq(
       "works.collection-root.0.aca",
@@ -24,7 +24,7 @@ class FilterAndAggregateByCollectionRootTest
     )
   )
 
-  val multipleParams: String = "collectionRoot=bca,cca"
+  val multipleParams: String = "collection.root=bca,cca"
   val multipleResponse: String = worksListResponse(
     ids = Seq(
       "works.collection-root.3.aca+bca",
@@ -34,18 +34,18 @@ class FilterAndAggregateByCollectionRootTest
     )
   )
 
-  val searchingParams: String = "query=Business&collectionRoot=cca"
+  val searchingParams: String = "query=Business&collection.root=cca"
   val searchingResponse: String = worksListResponse(
     ids = Seq(
       "works.collection-root.4.aca+bca+cca"
     )
   )
 
-  val allValuesParams: String = "collectionRoot=cca&aggregations=collectionRoot"
+  val allValuesParams: String = "collection.root=cca&aggregations=collection.root"
   val allValuesResponse: String = worksListResponseWithAggs(
     Seq("works.collection-root.4.aca+bca+cca", "works.collection-root.6.cca"),
     Map(
-      "collectionRoot" -> Seq(
+      "collection.root" -> Seq(
         (5, "aca", "Wellcome Archive"),
         (3, "bca", "Business Archive"),
         (2, "cca", "Charity Archive")
@@ -61,7 +61,7 @@ class FilterAndAggregateByCollectionRootTest
     )
   )
   val redundantFilterParams: String =
-    "collectionRoot=aca&genres.label=NotAGenre&aggregations=collectionRoot"
+    "collection.root=aca&genres.label=NotAGenre&aggregations=collection.root"
   val redundantFilterBucket: String =
     """
       |{
@@ -69,8 +69,8 @@ class FilterAndAggregateByCollectionRootTest
       |            "label" : "Wellcome Archive"
       |          }
       |""".stripMargin
-  val aggregationName: String = "collectionRoot"
+  val aggregationName: String = "collection.root"
   val unattestedValueParams: String =
-    "collectionRoot=xyz&genres.label=NotAGenre&aggregations=collectionRoot"
+    "collection.root=xyz&genres.label=NotAGenre&aggregations=collection.root"
   val bogusValueResponse: String = ""
 }

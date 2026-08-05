@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveType filter/aggregation tests",
-  "id": "atyp0000",
+  "description": "a work for the collection.isRoot filter test",
+  "id": "isar0000",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "atyp0000",
+        "id": "isar0000",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "atypSrc00"
+          "value": "isarSrc00"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "atyp0000",
-      "title": "A work with archive type Personal",
+      "id": "isar0000",
+      "title": "A work which is a collection root",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "atypSrc00",
-      "identifiers.value": ["atyp0000", "atypSrc00"],
+      "sourceIdentifier.value": "isarSrc00",
+      "identifiers.value": ["isar0000", "isarSrc00"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "atyp0000",
-      "title": "A work with archive type Personal",
+      "id": "isar0000",
+      "title": "A work which is a collection root",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "atypSrc00",
+          "value": "isarSrc00",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -79,13 +79,7 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
-      "availabilities": [],
-      "archiveType": [
-        {
-          "id": "per",
-          "label": "Personal"
-        }
-      ]
+      "availabilities": []
     },
     "filterableValues": {
       "workType": "Standard",
@@ -100,7 +94,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["atyp0000", "atypSrc00"],
+      "identifiers.value": ["isar0000", "isarSrc00"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,8 +104,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveType.id": ["per"]
+      "collection.isRoot": true
     }
   },
-  "createdAt": "2026-06-03T16:56:01.816254+00:00"
+  "createdAt": "2026-06-03T16:56:01.798317+00:00"
 }

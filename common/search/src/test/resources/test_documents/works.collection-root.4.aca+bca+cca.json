@@ -1,5 +1,5 @@
 {
-  "description": "a work for collectionRoot filter/aggregation tests",
+  "description": "a work for collection.root filter/aggregation tests",
   "id": "aroo0004",
   "document": {
     "type": "Visible",
@@ -80,7 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "collectionRoot": [
+      "collection.root": [
         {
           "id": "aca",
           "label": "Wellcome Archive"
@@ -118,8 +118,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "collectionRoot.id": ["aca", "bca", "cca"],
-      "collectionRoot.title": [
+      "collection.root.id": ["aca", "bca", "cca"],
+      "collection.root.title": [
         "Wellcome Archive",
         "Business Archive",
         "Charity Archive"

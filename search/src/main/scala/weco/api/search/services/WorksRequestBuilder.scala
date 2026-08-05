@@ -110,23 +110,23 @@ object WorksRequestBuilder
         "filterableValues.languages.id",
         languageIds
       )
-    case ArchiveTypeFilter(archiveTypeIds) =>
+    case ArchiveCategoryFilter(archiveCategoryIds) =>
       termsQuery(
-        "filterableValues.archiveType.id",
-        archiveTypeIds
+        "filterableValues.archive.category.id",
+        archiveCategoryIds
       )
     case CollectionRootFilter(collectionRootIds) =>
       termsQuery(
-        "filterableValues.collectionRoot.id",
+        "filterableValues.collection.root.id",
         collectionRootIds
       )
-    case IsCollectionRootFilter(true) =>
-      termQuery("filterableValues.isCollectionRoot", true)
-    case IsCollectionRootFilter(false) =>
+    case CollectionIsRootFilter(true) =>
+      termQuery("filterableValues.collection.isRoot", true)
+    case CollectionIsRootFilter(false) =>
       boolQuery()
         .should(
-          termQuery("filterableValues.isCollectionRoot", false),
-          not(existsQuery("filterableValues.isCollectionRoot"))
+          termQuery("filterableValues.collection.isRoot", false),
+          not(existsQuery("filterableValues.collection.isRoot"))
         )
         .minimumShouldMatch(1)
     case GenreLabelFilter(genreQueries) =>

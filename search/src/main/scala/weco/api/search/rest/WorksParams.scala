@@ -41,8 +41,8 @@ object SingleWorkParams extends QueryParamsUtils {
     "contributors" -> WorkInclude.Contributors,
     "production" -> WorkInclude.Production,
     "languages" -> WorkInclude.Languages,
-    "archiveType" -> WorkInclude.ArchiveType,
-    "isCollectionRoot" -> WorkInclude.IsCollectionRoot,
+    "archive" -> WorkInclude.Archive,
+    "collection" -> WorkInclude.Collection,
     "notes" -> WorkInclude.Notes,
     "formerFrequency" -> WorkInclude.FormerFrequency,
     "designation" -> WorkInclude.Designation,
@@ -84,7 +84,7 @@ case class WorkFilterParams(
   `production.dates.from`: Option[LocalDate],
   `production.dates.to`: Option[LocalDate],
   languages: Option[LanguagesFilter],
-  archiveType: Option[ArchiveTypeFilter],
+  `archive.category`: Option[ArchiveCategoryFilter],
   `genres.label`: Option[GenreLabelFilter],
   `genres`: Option[GenreIdFilter],
   `subjects.label`: Option[SubjectLabelFilter],
@@ -96,8 +96,8 @@ case class WorkFilterParams(
   `partOf.title`: Option[PartOfTitleFilter],
   availabilities: Option[AvailabilitiesFilter],
   `type`: Option[WorkTypeFilter],
-  isCollectionRoot: Option[IsCollectionRootFilter],
-  collectionRoot: Option[CollectionRootFilter]
+  `collection.isRoot`: Option[CollectionIsRootFilter],
+  `collection.root`: Option[CollectionRootFilter]
 )
 
 case class MultipleWorksParams(
@@ -136,7 +136,7 @@ case class MultipleWorksParams(
       dateFilter,
       createdDateFilter,
       filterParams.languages,
-      filterParams.archiveType,
+      filterParams.`archive.category`,
       filterParams.`genres.label`,
       filterParams.`genres`,
       filterParams.`subjects.label`,
@@ -153,8 +153,8 @@ case class MultipleWorksParams(
       filterParams.partOf,
       filterParams.`partOf.title`,
       filterParams.availabilities,
-      filterParams.isCollectionRoot,
-      filterParams.collectionRoot
+      filterParams.`collection.isRoot`,
+      filterParams.`collection.root`
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
@@ -239,7 +239,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.from".as[LocalDate].?,
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
-          "archiveType".as[ArchiveTypeFilter].?,
+          "archive.category".as[ArchiveCategoryFilter].?,
           "genres.label".as[GenreLabelFilter].?,
           "genres".as[GenreIdFilter].?,
           "subjects.label".as[SubjectLabelFilter].?,
@@ -251,15 +251,15 @@ object MultipleWorksParams extends QueryParamsUtils {
           "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
           "type".as[WorkTypeFilter].?,
-          "isCollectionRoot".as[IsCollectionRootFilter].?,
-          "collectionRoot".as[CollectionRootFilter].?
+          "collection.isRoot".as[CollectionIsRootFilter].?,
+          "collection.root".as[CollectionRootFilter].?
         ).tflatMap {
           case (
               format,
               dateFrom,
               dateTo,
               languages,
-              archiveType,
+              archiveCategory,
               genres,
               genreConcepts,
               subjectLabels,
@@ -271,7 +271,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOfTitle,
               availabilities,
               workType,
-              isCollectionRoot,
+              collectionIsRoot,
               collectionRoot
               ) =>
             val filterParams = WorkFilterParams(
@@ -279,7 +279,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               dateFrom,
               dateTo,
               languages,
-              archiveType,
+              archiveCategory,
               genres,
               genreConcepts,
               subjectLabels,
@@ -291,7 +291,7 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOfTitle,
               availabilities,
               workType,
-              isCollectionRoot,
+              collectionIsRoot,
               collectionRoot
             )
 
@@ -319,16 +319,16 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val languagesFilter: Decoder[LanguagesFilter] =
     stringListFilter(LanguagesFilter)
 
-  implicit val archiveTypeFilter: Decoder[ArchiveTypeFilter] =
-    stringListFilter(ArchiveTypeFilter)
+  implicit val archiveCategoryFilter: Decoder[ArchiveCategoryFilter] =
+    stringListFilter(ArchiveCategoryFilter)
 
   implicit val collectionRootFilter: Decoder[CollectionRootFilter] =
     stringListFilter(CollectionRootFilter)
 
-  implicit val isCollectionRootFilter: Decoder[IsCollectionRootFilter] =
+  implicit val collectionIsRootFilter: Decoder[CollectionIsRootFilter] =
     Decoder.decodeString.emap {
-      case "true"  => Right(IsCollectionRootFilter(true))
-      case "false" => Right(IsCollectionRootFilter(false))
+      case "true"  => Right(CollectionIsRootFilter(true))
+      case "false" => Right(CollectionIsRootFilter(false))
       case other =>
         Left(s"Got value '$other' with wrong type, expecting 'true' or 'false'")
     }
@@ -368,8 +368,8 @@ object MultipleWorksParams extends QueryParamsUtils {
     "subjects.label" -> WorkAggregationRequest.SubjectLabel,
     "subjects" -> WorkAggregationRequest.SubjectId,
     "languages" -> WorkAggregationRequest.Languages,
-    "archiveType" -> WorkAggregationRequest.ArchiveType,
-    "collectionRoot" -> WorkAggregationRequest.CollectionRoot,
+    "archive.category" -> WorkAggregationRequest.ArchiveCategory,
+    "collection.root" -> WorkAggregationRequest.CollectionRoot,
     "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
     "contributors.agent" -> WorkAggregationRequest.ContributorId,
     "items.locations.license" -> WorkAggregationRequest.License,

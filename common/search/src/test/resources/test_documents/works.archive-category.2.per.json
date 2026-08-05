@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveType filter/aggregation tests",
-  "id": "atyp0001",
+  "description": "a work for archive.category filter/aggregation tests",
+  "id": "atyp0002",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "atyp0001",
+        "id": "atyp0002",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "atypSrc01"
+          "value": "atypSrc02"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "atyp0001",
-      "title": "A work with archive type Personal",
+      "id": "atyp0002",
+      "title": "A work with archive category Personal",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "atypSrc01",
-      "identifiers.value": ["atyp0001", "atypSrc01"],
+      "sourceIdentifier.value": "atypSrc02",
+      "identifiers.value": ["atyp0002", "atypSrc02"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "atyp0001",
-      "title": "A work with archive type Personal",
+      "id": "atyp0002",
+      "title": "A work with archive category Personal",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "atypSrc01",
+          "value": "atypSrc02",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,7 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveType": [
+      "archive.category": [
         {
           "id": "per",
           "label": "Personal"
@@ -100,7 +100,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["atyp0001", "atypSrc01"],
+      "identifiers.value": ["atyp0002", "atypSrc02"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,7 +110,7 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveType.id": ["per"]
+      "archive.category.id": ["per"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

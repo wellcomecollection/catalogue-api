@@ -571,42 +571,42 @@ class WorksFiltersTest
     }
   }
 
-  describe("isCollectionRoot filter") {
-    val isCollectionRootWorks = Seq(
-      "works.is-collection-root.0.true",
-      "works.is-collection-root.1.false",
-      "works.is-collection-root.2.no-value"
+  describe("collection.isRoot filter") {
+    val collectionIsRootWorks = Seq(
+      "works.collection-is-root.0.true",
+      "works.collection-is-root.1.false",
+      "works.collection-is-root.2.no-value"
     )
 
-    it("filters by isCollectionRoot=true") {
+    it("filters by collection.isRoot=true") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, isCollectionRootWorks: _*)
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?isCollectionRoot=true"
+            path = s"$rootPath/works?collection.isRoot=true"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq("works.is-collection-root.0.true")
+              ids = Seq("works.collection-is-root.0.true")
             )
           }
       }
     }
 
-    it("filters by isCollectionRoot=false, including works with no value") {
+    it("filters by collection.isRoot=false, including works with no value") {
       withWorksApi {
         case (worksIndex, routes) =>
-          indexTestDocuments(worksIndex, isCollectionRootWorks: _*)
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
 
           assertJsonResponse(
             routes,
-            path = s"$rootPath/works?isCollectionRoot=false"
+            path = s"$rootPath/works?collection.isRoot=false"
           ) {
             Status.OK -> worksListResponse(
               ids = Seq(
-                "works.is-collection-root.1.false",
-                "works.is-collection-root.2.no-value"
+                "works.collection-is-root.1.false",
+                "works.collection-is-root.2.no-value"
               )
             )
           }

@@ -1,5 +1,5 @@
 {
-  "description": "a work for collectionRoot filter/aggregation tests",
+  "description": "a work for collection.root filter/aggregation tests",
   "id": "aroo0006",
   "document": {
     "type": "Visible",
@@ -80,7 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "collectionRoot": [
+      "collection.root": [
         {
           "id": "cca",
           "label": "Charity Archive"
@@ -110,8 +110,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "collectionRoot.id": ["cca"],
-      "collectionRoot.title": ["Charity Archive"]
+      "collection.root.id": ["cca"],
+      "collection.root.title": ["Charity Archive"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

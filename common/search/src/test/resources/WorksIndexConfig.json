@@ -81,32 +81,6 @@
               }
             }
           },
-          "archiveType": {
-            "type": "nested",
-            "properties": {
-              "id": {
-                "type": "keyword",
-                "eager_global_ordinals": true
-              },
-              "label": {
-                "type": "keyword",
-                "eager_global_ordinals": true
-              }
-            }
-          },
-          "collectionRoot": {
-            "type": "nested",
-            "properties": {
-              "id": {
-                "type": "keyword",
-                "eager_global_ordinals": true
-              },
-              "label": {
-                "type": "keyword",
-                "eager_global_ordinals": true
-              }
-            }
-          },
           "production": {
             "properties": {
               "dates": {
@@ -147,6 +121,40 @@
               "label": {
                 "type": "keyword",
                 "eager_global_ordinals": true
+              }
+            }
+          },
+          "archive": {
+            "properties": {
+              "category": {
+                "type": "nested",
+                "properties": {
+                  "id": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  },
+                  "label": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  }
+                }
+              }
+            }
+          },
+          "collection": {
+            "properties": {
+              "root": {
+                "type": "nested",
+                "properties": {
+                  "id": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  },
+                  "label": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  }
+                }
               }
             }
           }
@@ -287,26 +295,6 @@
               }
             }
           },
-          "archiveType": {
-            "properties": {
-              "id": {
-                "type": "keyword"
-              }
-            }
-          },
-          "collectionRoot": {
-            "properties": {
-              "id": {
-                "type": "keyword"
-              },
-              "title": {
-                "type": "keyword"
-              }
-            }
-          },
-          "isCollectionRoot": {
-            "type": "boolean"
-          },
           "partOf": {
             "properties": {
               "id": {
@@ -352,6 +340,34 @@
           },
           "workType": {
             "type": "keyword"
+          },
+          "archive": {
+            "properties": {
+              "category": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "collection": {
+            "properties": {
+              "isRoot": {
+                "type": "boolean"
+              },
+              "root": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "title": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
           }
         }
       },

@@ -1,5 +1,5 @@
 {
-  "description": "a work for collectionRoot filter/aggregation tests",
+  "description": "a work for collection.root filter/aggregation tests",
   "id": "aroo0005",
   "document": {
     "type": "Visible",
@@ -80,7 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "collectionRoot": [
+      "collection.root": [
         {
           "id": "bca",
           "label": "Business Archive"
@@ -110,8 +110,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "collectionRoot.id": ["bca"],
-      "collectionRoot.title": ["Business Archive"]
+      "collection.root.id": ["bca"],
+      "collection.root.title": ["Business Archive"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

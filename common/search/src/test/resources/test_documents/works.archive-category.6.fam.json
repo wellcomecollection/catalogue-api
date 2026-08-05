@@ -1,17 +1,17 @@
 {
-  "description": "a work for archiveType filter/aggregation tests",
-  "id": "atyp0004",
+  "description": "a work for archive.category filter/aggregation tests",
+  "id": "atyp0006",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "atyp0004",
+        "id": "atyp0006",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "atypSrc04"
+          "value": "atypSrc06"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "atyp0004",
-      "title": "A work with archive type Personal, Corporate, Family",
+      "id": "atyp0006",
+      "title": "A work with archive category Family",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "atypSrc04",
-      "identifiers.value": ["atyp0004", "atypSrc04"],
+      "sourceIdentifier.value": "atypSrc06",
+      "identifiers.value": ["atyp0006", "atypSrc06"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -41,13 +41,13 @@
       "genres.concepts.label": []
     },
     "display": {
-      "id": "atyp0004",
-      "title": "A work with archive type Personal, Corporate, Family",
+      "id": "atyp0006",
+      "title": "A work with archive category Family",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "atypSrc04",
+          "value": "atypSrc06",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -80,15 +80,7 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archiveType": [
-        {
-          "id": "per",
-          "label": "Personal"
-        },
-        {
-          "id": "cor",
-          "label": "Corporate"
-        },
+      "archive.category": [
         {
           "id": "fam",
           "label": "Family"
@@ -108,7 +100,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["atyp0004", "atypSrc04"],
+      "identifiers.value": ["atyp0006", "atypSrc06"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -118,7 +110,7 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archiveType.id": ["per", "cor", "fam"]
+      "archive.category.id": ["fam"]
     }
   },
   "createdAt": "2026-06-03T16:56:01.816254+00:00"

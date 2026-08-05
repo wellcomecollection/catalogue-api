@@ -2,7 +2,7 @@ package weco.api.search.models.display
 
 import weco.api.search.models.{
   AggregationBucket,
-  ArchiveTypeFilter,
+  ArchiveCategoryFilter,
   AvailabilitiesFilter,
   CollectionRootFilter,
   ContributorsLabelFilter,
@@ -39,7 +39,7 @@ case class NeverAggregationMatcher() extends FilterAggregationMatcher {
 sealed trait FilterWithMatchingAggregation
 case object FormatFilterAgg extends FilterWithMatchingAggregation
 case object LanguagesFilterAgg extends FilterWithMatchingAggregation
-case object ArchiveTypeFilterAgg extends FilterWithMatchingAggregation
+case object ArchiveCategoryFilterAgg extends FilterWithMatchingAggregation
 case object CollectionRootFilterAgg extends FilterWithMatchingAggregation
 case object GenreFilterAgg extends FilterWithMatchingAggregation
 case object SubjectLabelFilterAgg extends FilterWithMatchingAggregation
@@ -67,8 +67,8 @@ object FilterBucketMatcher {
           FormatFilterAgg -> AggregationDataIdInFilter(ids)
         case LanguagesFilter(ids) =>
           LanguagesFilterAgg -> AggregationDataIdInFilter(ids)
-        case ArchiveTypeFilter(ids) =>
-          ArchiveTypeFilterAgg -> AggregationDataIdInFilter(ids)
+        case ArchiveCategoryFilter(ids) =>
+          ArchiveCategoryFilterAgg -> AggregationDataIdInFilter(ids)
         case CollectionRootFilter(ids) =>
           CollectionRootFilterAgg -> AggregationDataIdInFilter(ids)
         case GenreLabelFilter(labels) =>
