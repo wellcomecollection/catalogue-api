@@ -147,9 +147,11 @@ class ApiDiffer:
                 if isinstance(val, collections.abc.Mapping):
                     data[key] = _normalise(data.get(key, {}), val)
                 elif isinstance(val, str):
-                    data[key] = re.sub(
-                        rf"[?&]elasticCluster={self.elastic_cluster}", "", val
-                    )
+                    # Targeted substitution rather than parse/rebuild, so the
+                    # rest of the URL stays byte-identical to the prod side.
+                    cluster = re.escape(self.elastic_cluster)
+                    val = re.sub(rf"\?elasticCluster={cluster}&", "?", val)
+                    data[key] = re.sub(rf"[?&]elasticCluster={cluster}", "", val)
                 else:
                     data[key] = val
             return data
