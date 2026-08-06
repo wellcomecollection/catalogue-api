@@ -577,6 +577,17 @@ class WorksFiltersTest
       "works.archive.PPEBC.section"
     )
 
+    it("returns both works when no collection.isRoot filter is applied") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works") {
+            Status.OK -> worksListResponse(ids = collectionIsRootWorks)
+          }
+      }
+    }
+
     it("filters by collection.isRoot=true") {
       withWorksApi {
         case (worksIndex, routes) =>
