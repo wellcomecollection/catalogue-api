@@ -573,9 +573,8 @@ class WorksFiltersTest
 
   describe("collection.isRoot filter") {
     val collectionIsRootWorks = Seq(
-      "works.collection-is-root.0.true",
-      "works.collection-is-root.1.false",
-      "works.collection-is-root.2.no-value"
+      "works.archive.PPEBC.root",
+      "works.archive.PPEBC.section"
     )
 
     it("filters by collection.isRoot=true") {
@@ -588,7 +587,7 @@ class WorksFiltersTest
             path = s"$rootPath/works?collection.isRoot=true"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq("works.collection-is-root.0.true")
+              ids = Seq("works.archive.PPEBC.root")
             )
           }
       }
@@ -604,10 +603,7 @@ class WorksFiltersTest
             path = s"$rootPath/works?collection.isRoot=false"
           ) {
             Status.OK -> worksListResponse(
-              ids = Seq(
-                "works.collection-is-root.1.false",
-                "works.collection-is-root.2.no-value"
-              )
+              ids = Seq("works.archive.PPEBC.section")
             )
           }
       }

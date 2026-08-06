@@ -64,7 +64,7 @@ paths:
             type: string
         - name: collection.root
           in: query
-          description: "Filter by the archive collection a work belongs to. A comma-separated list of work ids."
+          description: "Filter by the collection a work belongs to. A comma-separated list of work ids."
           schema:
             type: string
         - name: collection.isRoot
@@ -763,7 +763,7 @@ components:
     Collection:
       title: Collection
       type: object
-      description: An archive collection, i.e. the work at the root of a collection path.
+      description: A collection, i.e. the work at the root of a collection path.
       properties:
         id:
           type: string
@@ -1511,7 +1511,7 @@ components:
               $ref: "#/components/schemas/ArchiveCategory"
         collection:
           type: object
-          description: Information about the archive collection this work belongs to.
+          description: Information about the collection this work belongs to.
           properties:
             root:
               $ref: "#/components/schemas/Collection"

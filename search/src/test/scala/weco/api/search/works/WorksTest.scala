@@ -310,15 +310,22 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  // These works have collection paths which only sort correctly when sorted
+  // naturally, i.e. when the numeric segments are compared as numbers rather
+  // than as strings:
+  //
+  //    SA/SRT/C2/9  <  SA/SRT/C2/010  <  SA/SRT/C2/010/1  <  SA/SRT/C10/1
+  val collectionPathSortWorks = Seq(
+    "works.collection-path-sort.0",
+    "works.collection-path-sort.1",
+    "works.collection-path-sort.2",
+    "works.collection-path-sort.3"
+  )
+
   it("sorts by collection path") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
-          worksIndex,
-          "work-collection-path.1",
-          "work-collection-path.2",
-          "work-collection-path.10"
-        )
+        indexTestDocuments(worksIndex, collectionPathSortWorks: _*)
 
         assertJsonResponse(
           routes,
@@ -326,9 +333,10 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-collection-path.1",
-              "work-collection-path.2",
-              "work-collection-path.10"
+              "works.collection-path-sort.0",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.2",
+              "works.collection-path-sort.3"
             ),
             strictOrdering = true
           )
@@ -339,12 +347,7 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
   it("sorts by collection path in descending order") {
     withWorksApi {
       case (worksIndex, routes) =>
-        indexTestDocuments(
-          worksIndex,
-          "work-collection-path.1",
-          "work-collection-path.2",
-          "work-collection-path.10"
-        )
+        indexTestDocuments(worksIndex, collectionPathSortWorks: _*)
 
         assertJsonResponse(
           routes,
@@ -352,9 +355,10 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-collection-path.10",
-              "work-collection-path.2",
-              "work-collection-path.1"
+              "works.collection-path-sort.3",
+              "works.collection-path-sort.2",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.0"
             ),
             strictOrdering = true
           )
@@ -367,9 +371,9 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
       case (worksIndex, routes) =>
         indexTestDocuments(
           worksIndex,
-          "work-collection-path.1",
-          "work-collection-path.no-value",
-          "work-collection-path.2"
+          "works.collection-path-sort.0",
+          "works.collection-path-sort.4",
+          "works.collection-path-sort.1"
         )
 
         assertJsonResponse(
@@ -378,9 +382,9 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
         ) {
           Status.OK -> worksListResponse(
             ids = Seq(
-              "work-collection-path.1",
-              "work-collection-path.2",
-              "work-collection-path.no-value"
+              "works.collection-path-sort.0",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.4"
             ),
             strictOrdering = true
           )

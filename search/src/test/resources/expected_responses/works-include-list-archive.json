@@ -1,0 +1,50 @@
+{
+  "pageSize": 10,
+  "results": [
+    {
+      "alternativeTitles": [],
+      "archive": {
+        "category": {
+          "id": "SA",
+          "label": "Societies and Associations",
+          "type": "ArchiveCategory"
+        }
+      },
+      "availabilities": [],
+      "id": "i4c7c9yl",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "archive": {
+        "category": {
+          "id": "SA",
+          "label": "Societies and Associations",
+          "type": "ArchiveCategory"
+        }
+      },
+      "availabilities": [],
+      "id": "jbh1pcrq",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    },
+    {
+      "alternativeTitles": [],
+      "archive": {
+        "category": {
+          "id": "SA",
+          "label": "Societies and Associations",
+          "type": "ArchiveCategory"
+        }
+      },
+      "availabilities": [],
+      "id": "jct270n3",
+      "title": "A work with all the include-able fields",
+      "type": "Work"
+    }
+  ],
+  "totalPages": 1,
+  "totalResults": 3,
+  "type": "ResultList"
+}

@@ -70,9 +70,18 @@ def strip_identifiers_from_concepts(
     return result
 
 
+# These includes are objects rather than lists, so a work which doesn't have one
+# omits the key entirely instead of returning an empty list.
+OBJECT_INCLUDES = {"archive", "collection"}
+
+
 def work_with_include(display: dict[str, Any], include_field: str) -> dict[str, Any]:
     """Return a work with minimal fields plus the specified include field."""
     work = minimal_work(display)
+    if include_field in OBJECT_INCLUDES:
+        if include_field in display:
+            work[include_field] = display[include_field]
+        return work
     value = display.get(include_field, [])
     # The API strips identifiers from nested objects unless ?include=identifiers is also passed
     if include_field == "items":
@@ -131,6 +140,8 @@ def main() -> None:
         "contributors",
         "production",
         "languages",
+        "archive",
+        "collection",
         "notes",
         "formerFrequency",
         "designation",

@@ -4,69 +4,48 @@
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "i4c7c9yl",
-      "partOf": [
-        {
-          "id": "29jcl6cu",
-          "referenceNumber": "SA/BSA/A",
-          "title": "wZL0ffJl0qmZquS",
-          "totalParts": 5,
-          "type": "Work"
-        },
-        {
+      "collection": {
+        "root": {
           "id": "7vafg1w2",
           "referenceNumber": "SA/BSA",
           "title": "08emPYDNpZDHkTv",
           "totalParts": 1,
           "type": "Work"
         }
-      ],
+      },
+      "id": "i4c7c9yl",
       "title": "A work with all the include-able fields",
       "type": "Work"
     },
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "jbh1pcrq",
-      "partOf": [
-        {
-          "id": "qviwg90e",
-          "referenceNumber": "SA/BSA/A",
-          "title": "yhwsxNZOmV0IIdv",
-          "totalParts": 5,
-          "type": "Work"
-        },
-        {
+      "collection": {
+        "root": {
           "id": "zm2wkrw9",
           "referenceNumber": "SA/BSA",
           "title": "qKgHe3LiFcH1Yow",
           "totalParts": 1,
           "type": "Work"
         }
-      ],
+      },
+      "id": "jbh1pcrq",
       "title": "A work with all the include-able fields",
       "type": "Work"
     },
     {
       "alternativeTitles": [],
       "availabilities": [],
-      "id": "jct270n3",
-      "partOf": [
-        {
-          "id": "n7mn5fmg",
-          "referenceNumber": "SA/BSA/A",
-          "title": "nzfgIzhGRDVPkcm",
-          "totalParts": 5,
-          "type": "Work"
-        },
-        {
+      "collection": {
+        "root": {
           "id": "wncm2n7n",
           "referenceNumber": "SA/BSA",
           "title": "GiMmJKHONBMz3P6",
           "totalParts": 1,
           "type": "Work"
         }
-      ],
+      },
+      "id": "jct270n3",
       "title": "A work with all the include-able fields",
       "type": "Work"
     }

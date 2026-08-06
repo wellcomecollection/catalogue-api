@@ -4,51 +4,57 @@ class FilterAndAggregateByCollectionRootTest
     extends SingleFieldFilterTest("collection.root")
     with FilteringTestCases
     with AggregatingTestCases {
+
+  // Each work belongs to exactly one collection, and a root belongs to its own
+  // collection. Across the corpus, gmf8ycys has three works, uy0hyncn has two
+  // and pufll8p5 has one.
   val testWorks: Seq[String] = Seq(
-    "works.collection-root.0.aca",
-    "works.collection-root.1.aca",
-    "works.collection-root.2.aca",
-    "works.collection-root.3.aca+bca",
-    "works.collection-root.4.aca+bca+cca",
-    "works.collection-root.5.bca",
-    "works.collection-root.6.cca"
+    "works.archive.GC253.root",
+    "works.archive.GC253.series",
+    "works.archive.GC253.item",
+    "works.archive.PPEBC.root",
+    "works.archive.PPEBC.section",
+    "works.archive.OH1.root"
   )
-  val listingParams: String = "collection.root=aca"
+
+  val listingParams: String = "collection.root=gmf8ycys"
   val listingResponse: String = worksListResponse(
     ids = Seq(
-      "works.collection-root.0.aca",
-      "works.collection-root.1.aca",
-      "works.collection-root.2.aca",
-      "works.collection-root.3.aca+bca",
-      "works.collection-root.4.aca+bca+cca"
+      "works.archive.GC253.root",
+      "works.archive.GC253.series",
+      "works.archive.GC253.item"
     )
   )
 
-  val multipleParams: String = "collection.root=bca,cca"
+  val multipleParams: String = "collection.root=uy0hyncn,pufll8p5"
   val multipleResponse: String = worksListResponse(
     ids = Seq(
-      "works.collection-root.3.aca+bca",
-      "works.collection-root.4.aca+bca+cca",
-      "works.collection-root.5.bca",
-      "works.collection-root.6.cca"
+      "works.archive.PPEBC.root",
+      "works.archive.PPEBC.section",
+      "works.archive.OH1.root"
     )
   )
 
-  val searchingParams: String = "query=Business&collection.root=cca"
+  // "Correspondence" matches works in more than one collection: the title of
+  // the GC253 series, and both PPEBC works (the title of the section, the
+  // description of the root). The collection filter narrows it to the latter two.
+  val searchingParams: String = "query=Correspondence&collection.root=uy0hyncn"
   val searchingResponse: String = worksListResponse(
     ids = Seq(
-      "works.collection-root.4.aca+bca+cca"
+      "works.archive.PPEBC.root",
+      "works.archive.PPEBC.section"
     )
   )
 
-  val allValuesParams: String = "collection.root=cca&aggregations=collection.root"
+  val allValuesParams: String =
+    "collection.root=pufll8p5&aggregations=collection.root"
   val allValuesResponse: String = worksListResponseWithAggs(
-    Seq("works.collection-root.4.aca+bca+cca", "works.collection-root.6.cca"),
+    Seq("works.archive.OH1.root"),
     Map(
       "collection.root" -> Seq(
-        (5, "aca", "Wellcome Archive"),
-        (3, "bca", "Business Archive"),
-        (2, "cca", "Charity Archive")
+        (3, "gmf8ycys", "Papers relating to the history of vaccination"),
+        (2, "uy0hyncn", "Papers of Ernst Boris Chain"),
+        (1, "pufll8p5", "Oral histories of British science")
       ).map {
         case (count, identifier, label) =>
           (count, s"""
@@ -60,15 +66,17 @@ class FilterAndAggregateByCollectionRootTest
       }
     )
   )
+
   val redundantFilterParams: String =
-    "collection.root=aca&genres.label=NotAGenre&aggregations=collection.root"
+    "collection.root=gmf8ycys&genres.label=NotAGenre&aggregations=collection.root"
   val redundantFilterBucket: String =
     """
       |{
-      |            "id" : "aca",
-      |            "label" : "Wellcome Archive"
+      |            "id" : "gmf8ycys",
+      |            "label" : "Papers relating to the history of vaccination"
       |          }
       |""".stripMargin
+
   val aggregationName: String = "collection.root"
   val unattestedValueParams: String =
     "collection.root=xyz&genres.label=NotAGenre&aggregations=collection.root"

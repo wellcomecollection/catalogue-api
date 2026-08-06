@@ -1,17 +1,17 @@
 {
-  "description": "a work for archive.category filter/aggregation tests",
-  "id": "atyp0002",
+  "description": "works whose collection paths only sort correctly when sorted naturally",
+  "id": "i0vc20lw",
   "document": {
     "type": "Visible",
     "debug": {
       "source": {
-        "id": "atyp0002",
+        "id": "i0vc20lw",
         "identifier": {
           "identifierType": {
             "id": "sierra-system-number"
           },
           "ontologyType": "Work",
-          "value": "atypSrc02"
+          "value": "vwOcXiCfIv"
         },
         "version": 1,
         "modifiedTime": "2025-01-01T00:00:00Z"
@@ -22,12 +22,12 @@
       "redirectSources": []
     },
     "query": {
-      "id": "atyp0002",
-      "title": "A work with archive category Personal",
+      "id": "i0vc20lw",
+      "title": "Collection path sorting test, SA/SRT/C2/010",
       "alternativeTitles": [],
       "languages.label": [],
-      "sourceIdentifier.value": "atypSrc02",
-      "identifiers.value": ["atyp0002", "atypSrc02"],
+      "sourceIdentifier.value": "vwOcXiCfIv",
+      "identifiers.value": ["i0vc20lw", "vwOcXiCfIv"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -38,16 +38,19 @@
       "production.label": [],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
-      "genres.concepts.label": []
+      "genres.concepts.label": [],
+      "collectionPath.label": "SA/SRT/C2/010",
+      "collectionPath.path": "SASRT/C2/010",
+      "collectionPath.sort": "SASRT/C0000000002/0000000010"
     },
     "display": {
-      "id": "atyp0002",
-      "title": "A work with archive category Personal",
+      "id": "i0vc20lw",
+      "title": "Collection path sorting test, SA/SRT/C2/010",
       "alternativeTitles": [],
       "contributors": [],
       "identifiers": [
         {
-          "value": "atypSrc02",
+          "value": "vwOcXiCfIv",
           "type": "Identifier",
           "identifierType": {
             "id": "sierra-system-number",
@@ -69,7 +72,14 @@
       "images": [],
       "parts": [],
       "partOf": [],
-      "type": "Work"
+      "type": "Work",
+      "archive": {
+        "category": {
+          "id": "SA",
+          "type": "ArchiveCategory",
+          "label": "Societies and Associations"
+        }
+      }
     },
     "aggregatableValues": {
       "workType": [],
@@ -80,12 +90,10 @@
       "contributors.agent": [],
       "items.locations.license": [],
       "availabilities": [],
-      "archive.category": [
-        {
-          "id": "per",
-          "label": "Personal"
-        }
-      ]
+      "archive.category": {
+        "id": "SA",
+        "label": "Societies and Associations"
+      }
     },
     "filterableValues": {
       "workType": "Standard",
@@ -100,7 +108,7 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["atyp0002", "atypSrc02"],
+      "identifiers.value": ["i0vc20lw", "vwOcXiCfIv"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
@@ -110,8 +118,8 @@
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": [],
-      "archive.category.id": ["per"]
+      "archive.category.id": "SA"
     }
   },
-  "createdAt": "2026-06-03T16:56:01.816254+00:00"
+  "createdAt": "2026-08-06T10:44:46.202051+00:00"
 }
