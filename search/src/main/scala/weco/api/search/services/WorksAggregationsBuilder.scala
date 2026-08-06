@@ -98,11 +98,13 @@ object WorksAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
+      // We want to return every possible archive category. At the time of writing,
+      // there are 16 different categories. Setting the size to 30 gives us headroom.
       case WorkAggregationRequest.ArchiveCategory =>
         AggregationParams(
           "archiveCategory",
           "aggregatableValues.archive.category",
-          20,
+          30,
           AggregationType.LabeledIdAggregation
         )
 
