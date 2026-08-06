@@ -69,7 +69,10 @@ paths:
             type: string
         - name: collection.isRoot
           in: query
-          description: Filter by whether a work is the root of a collection.
+          description: |
+            Filter by whether a work is the root of a collection. Note that
+            `collection.isRoot=false` matches every work which is not a collection
+            root, including the majority which do not belong to a collection at all.
           schema:
             type: boolean
         - name: genres.label
@@ -760,23 +763,6 @@ components:
         type:
           type: string
       description: Ways in which the work is available to access
-    Collection:
-      title: Collection
-      type: object
-      description: A collection, i.e. the work at the root of a collection path.
-      properties:
-        id:
-          type: string
-        title:
-          type: string
-        referenceNumber:
-          type: string
-        totalParts:
-          type: integer
-          format: int32
-          description: The number of works directly below this collection in the collection path.
-        type:
-          type: string
     Concept:
       title: Concept
       type: object
@@ -1402,10 +1388,6 @@ components:
           type: integer
           description: Number of child works.
           format: int32
-        totalDescendentParts:
-          type: integer
-          description: Number of descendent works.
-          format: int32
         type:
           type: string
     Subject:
@@ -1508,13 +1490,20 @@ components:
               $ref: "#/components/schemas/ArchiveCategory"
         collection:
           type: object
-          description: Information about the collection this work belongs to.
+          description: |
+            Information about the collection this work belongs to.
+
+            `root` is the work at the root of this work's collection path. Unlike
+            `partOf`, it is only ever the root rather than every ancestor, and it is
+            populated on the root itself.
           properties:
             root:
-              $ref: "#/components/schemas/Collection"
+              $ref: "#/components/schemas/RelatedWork"
             isRoot:
               type: boolean
-              description: Whether this work is the root of a collection.
+              description: |
+                Whether this work is the root of a collection, i.e. whether it has at
+                least one child work and no parent works. Only present when true.
         edition:
           type: string
           description: Information relating to the edition of a work.

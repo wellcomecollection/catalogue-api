@@ -122,6 +122,9 @@ object WorksRequestBuilder
       )
     case CollectionIsRootFilter(true) =>
       termQuery("filterableValues.collection.isRoot", true)
+    // The pipeline only sets this field on collection roots, so "not a root" has to
+    // include works with no value at all (which is most of the catalogue). The `false`
+    // term is here in case the pipeline starts writing the field out in full.
     case CollectionIsRootFilter(false) =>
       boolQuery()
         .should(

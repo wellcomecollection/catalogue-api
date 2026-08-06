@@ -62,7 +62,11 @@
           "_name": "ids_with_path_lax",
           "query": "{{query}}",
           "analyzer": "lowercase_whitespace_tokens",
-          "fields": ["query.items.shelfmark*", "query.collectionPath*"],
+          "fields": [
+            "query.items.shelfmark*",
+            "query.collectionPath.label*",
+            "query.collectionPath.path*"
+          ],
           "type": "cross_fields",
           "boost": 50,
           "operator": "OR",
@@ -114,7 +118,8 @@
                   "query.items.shelfmark*",
                   "query.images.id",
                   "query.images.identifiers.value",
-                  "query.collectionPath*"
+                  "query.collectionPath.label*",
+                  "query.collectionPath.path*"
                 ],
                 "type": "cross_fields",
                 "operator": "OR",
