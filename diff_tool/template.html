@@ -74,8 +74,8 @@
     <table>
       <tr>
         <th></th>
-        <th>prod ({{ stats.prod.index_name }})</th>
-        <th>staging ({{ stats.staging.index_name }})</th>
+        <th>{{ side_labels[0] }} ({{ stats.prod.index_name }})</th>
+        <th>{{ side_labels[1] }} ({{ stats.staging.index_name }})</th>
       </tr>
 
       {% for work_type in ["Visible", "Redirected", "Invisible", "Deleted", "TOTAL"] %}
@@ -111,8 +111,8 @@
     </summary>
 
     <p>
-      <a href="https://api.wellcomecollection.org{{ d.display_url }}">prod API</a> /
-      <a href="https://api-stage.wellcomecollection.org{{ d.display_url }}">staging API</a>
+      <a href="https://api.wellcomecollection.org{{ d.display_url }}">{{ side_labels[0] }} API</a> /
+      <a href="https://{{ stage_api_base }}{{ d.stage_display_url }}">{{ side_labels[1] }} API</a>
     </p>
 
     {% if d.diff_lines %}
