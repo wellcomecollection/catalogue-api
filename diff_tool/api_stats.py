@@ -9,17 +9,18 @@ def get_index_name(api_url):
     return search_templates_resp.json()["worksIndex"]
 
 
-def get_api_stats(*, api_url):
+def get_api_stats(*, api_url, elastic_cluster=None):
     """
     Returns some index stats about the API, including the index name and a breakdown
     of work types in the index.
     """
-    index_name = httpx.get(f"https://{api_url}/catalogue/v2/_elasticConfig").json()[
-        "worksIndex"
-    ]
+    params = {"elasticCluster": elastic_cluster} if elastic_cluster else {}
+    index_name = httpx.get(
+        f"https://{api_url}/catalogue/v2/_elasticConfig", params=params
+    ).json()["worksIndex"]
 
     work_types = httpx.get(
-        f"https://{api_url}/catalogue/v2/management/_workTypes"
+        f"https://{api_url}/catalogue/v2/management/_workTypes", params=params
     ).json()
 
     work_types["TOTAL"] = sum(work_types.values())
