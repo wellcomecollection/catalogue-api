@@ -123,6 +123,40 @@
                 "eager_global_ordinals": true
               }
             }
+          },
+          "archive": {
+            "properties": {
+              "category": {
+                "type": "nested",
+                "properties": {
+                  "id": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  },
+                  "label": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  }
+                }
+              }
+            }
+          },
+          "collection": {
+            "properties": {
+              "root": {
+                "type": "nested",
+                "properties": {
+                  "id": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  },
+                  "label": {
+                    "type": "keyword",
+                    "eager_global_ordinals": true
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -306,6 +340,34 @@
           },
           "workType": {
             "type": "keyword"
+          },
+          "archive": {
+            "properties": {
+              "category": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "collection": {
+            "properties": {
+              "isRoot": {
+                "type": "boolean"
+              },
+              "root": {
+                "properties": {
+                  "id": {
+                    "type": "keyword"
+                  },
+                  "title": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -390,6 +452,9 @@
                     "search_analyzer": "lowercase_whitespace_tokens"
                   }
                 }
+              },
+              "sort": {
+                "type": "keyword"
               }
             }
           },

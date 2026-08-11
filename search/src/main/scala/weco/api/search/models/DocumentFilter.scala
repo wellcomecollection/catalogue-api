@@ -34,6 +34,16 @@ case class LanguagesFilter(languageIds: Seq[String])
     extends WorkFilter
     with Pairable
 
+case class ArchiveCategoryFilter(archiveCategoryIds: Seq[String])
+    extends WorkFilter
+    with Pairable
+
+case class CollectionIsRootFilter(value: Boolean) extends WorkFilter
+
+case class CollectionRootFilter(collectionRootIds: Seq[String])
+    extends WorkFilter
+    with Pairable
+
 case class GenreLabelFilter(genreQuery: Seq[String])
     extends WorkFilter
     with ImageFilter

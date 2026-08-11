@@ -2,7 +2,9 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.{
+  ArchiveCategoryFilter,
   AvailabilitiesFilter,
+  CollectionRootFilter,
   ContributorsIdFilter,
   ContributorsLabelFilter,
   FormatFilter,
@@ -96,6 +98,24 @@ object WorksAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
+      // We want to return every possible archive category. At the time of writing,
+      // there are 16 different categories. Setting the size to 30 gives us headroom.
+      case WorkAggregationRequest.ArchiveCategory =>
+        AggregationParams(
+          "archiveCategory",
+          "aggregatableValues.archive.category",
+          30,
+          AggregationType.LabeledIdAggregation
+        )
+
+      case WorkAggregationRequest.CollectionRoot =>
+        AggregationParams(
+          "collectionRoot",
+          "aggregatableValues.collection.root",
+          20,
+          AggregationType.LabeledIdAggregation
+        )
+
       // Note: we want these aggregations to return every possible value, so we
       // want this to be as many licenses as we support in the catalogue pipeline.
       //
@@ -127,8 +147,12 @@ object WorksAggregationsBuilder
     filter: WorkFilter with Pairable
   ): List[WorkAggregationRequest] =
     filter match {
-      case _: FormatFilter       => List(WorkAggregationRequest.Format)
-      case _: LanguagesFilter    => List(WorkAggregationRequest.Languages)
+      case _: FormatFilter    => List(WorkAggregationRequest.Format)
+      case _: LanguagesFilter => List(WorkAggregationRequest.Languages)
+      case _: ArchiveCategoryFilter =>
+        List(WorkAggregationRequest.ArchiveCategory)
+      case _: CollectionRootFilter =>
+        List(WorkAggregationRequest.CollectionRoot)
       case _: GenreLabelFilter   => List(WorkAggregationRequest.GenreLabel)
       case _: GenreIdFilter      => List(WorkAggregationRequest.GenreId)
       case _: SubjectLabelFilter => List(WorkAggregationRequest.SubjectLabel)

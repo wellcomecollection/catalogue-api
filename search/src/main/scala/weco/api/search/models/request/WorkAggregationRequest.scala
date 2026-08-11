@@ -21,6 +21,10 @@ object WorkAggregationRequest {
 
   case object Languages extends WorkAggregationRequest
 
+  case object ArchiveCategory extends WorkAggregationRequest
+
+  case object CollectionRoot extends WorkAggregationRequest
+
   case object License extends WorkAggregationRequest
 
   case object Availabilities extends WorkAggregationRequest

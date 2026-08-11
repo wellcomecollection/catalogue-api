@@ -310,6 +310,88 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  // These works have collection paths which only sort correctly when sorted
+  // naturally, i.e. when the numeric segments are compared as numbers rather
+  // than as strings:
+  //
+  //    SA/SRT/C2/9  <  SA/SRT/C2/010  <  SA/SRT/C2/010/1  <  SA/SRT/C10/1
+  val collectionPathSortWorks = Seq(
+    "works.collection-path-sort.0",
+    "works.collection-path-sort.1",
+    "works.collection-path-sort.2",
+    "works.collection-path-sort.3"
+  )
+
+  it("sorts by collection path") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, collectionPathSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=collectionPath"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.collection-path-sort.0",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.2",
+              "works.collection-path-sort.3"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("sorts by collection path in descending order") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, collectionPathSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=collectionPath&sortOrder=desc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.collection-path-sort.3",
+              "works.collection-path-sort.2",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.0"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("returns documents with no collection path last") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          "works.collection-path-sort.0",
+          "works.collection-path-sort.4",
+          "works.collection-path-sort.1"
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=collectionPath"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.collection-path-sort.0",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.4"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>

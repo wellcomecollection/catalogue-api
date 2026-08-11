@@ -1,23 +1,16 @@
 {
   "alternativeTitles": [],
   "availabilities": [],
-  "id": "i4c7c9yl",
-  "partOf": [
-    {
-      "id": "29jcl6cu",
-      "referenceNumber": "SA/BSA/A",
-      "title": "wZL0ffJl0qmZquS",
-      "totalParts": 5,
-      "type": "Work"
-    },
-    {
+  "collection": {
+    "root": {
       "id": "7vafg1w2",
       "referenceNumber": "SA/BSA",
       "title": "08emPYDNpZDHkTv",
       "totalParts": 1,
       "type": "Work"
     }
-  ],
+  },
+  "id": "i4c7c9yl",
   "title": "A work with all the include-able fields",
   "type": "Work"
 }

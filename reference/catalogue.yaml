@@ -57,6 +57,24 @@ paths:
           description: "Filter by language. A comma-separated list of ISO 639-2 language ids."
           schema:
             type: string
+        - name: archive.category
+          in: query
+          description: "Filter by the category of archive a work belongs to. A comma-separated list of ArchiveCategory ids, e.g. `PP,SA`."
+          schema:
+            type: string
+        - name: collection.root
+          in: query
+          description: "Filter by the collection a work belongs to. A comma-separated list of work ids."
+          schema:
+            type: string
+        - name: collection.isRoot
+          in: query
+          description: |
+            Filter by whether a work is the root of a collection. Note that
+            `collection.isRoot=false` matches every work which is not a collection
+            root, including the majority which do not belong to a collection at all.
+          schema:
+            type: boolean
         - name: genres.label
           in: query
           description: "Filter by genre label. A comma-separated list of labels."
@@ -431,6 +449,8 @@ components:
             - contributors
             - production
             - languages
+            - archive
+            - collection
             - notes
             - formerFrequency
             - designation
@@ -463,6 +483,8 @@ components:
             - subjects.label
             - subjects
             - languages
+            - archive.category
+            - collection.root
             - contributors.agent.label
             - contributors.agent
             - items.locations.license
@@ -480,6 +502,7 @@ components:
           enum:
             - production.dates
             - items.locations.createdDate
+            - collectionPath
     WorksAccessStatusFilter:
       name: items.locations.accessConditions.status
       in: query
@@ -714,6 +737,17 @@ components:
         type:
           type: string
           default: AggregationBucket
+    ArchiveCategory:
+      title: ArchiveCategory
+      type: object
+      description: "A recognised category of archive, e.g. 'Personal Papers' for archives whose collection path starts with `PP/`."
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
     Availability:
       title: Availability
       type: object
@@ -1354,10 +1388,6 @@ components:
           type: integer
           description: Number of child works.
           format: int32
-        totalDescendentParts:
-          type: integer
-          description: Number of descendent works.
-          format: int32
         type:
           type: string
     Subject:
@@ -1452,6 +1482,28 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Language"
+        archive:
+          type: object
+          description: Information about the archive this work belongs to.
+          properties:
+            category:
+              $ref: "#/components/schemas/ArchiveCategory"
+        collection:
+          type: object
+          description: |
+            Information about the collection this work belongs to.
+
+            `root` is the work at the root of this work's collection path. Unlike
+            `partOf`, it is only ever the root rather than every ancestor, and it is
+            populated on the root itself.
+          properties:
+            root:
+              $ref: "#/components/schemas/RelatedWork"
+            isRoot:
+              type: boolean
+              description: |
+                Whether this work is the root of a collection, i.e. whether it has at
+                least one child work and no parent works. Only present when true.
         edition:
           type: string
           description: Information relating to the edition of a work.
@@ -1517,6 +1569,10 @@ components:
         contributors.agent.label:
           $ref: "#/components/schemas/Aggregation"
         languages:
+          $ref: "#/components/schemas/Aggregation"
+        archive.category:
+          $ref: "#/components/schemas/Aggregation"
+        collection.root:
           $ref: "#/components/schemas/Aggregation"
         items.locations.license:
           $ref: "#/components/schemas/Aggregation"

@@ -237,6 +237,80 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  describe("archive includes") {
+    it("includes archive on a list endpoint if we pass ?include=archive") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=archive"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-list-archive.json"
+            )
+          }
+      }
+    }
+
+    it(
+      "includes archive on a single work endpoint if we pass ?include=archive"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/i4c7c9yl?include=archive"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-single-archive.json"
+            )
+          }
+      }
+    }
+  }
+
+  describe("collection includes") {
+    it(
+      "includes collection on a list endpoint if we pass ?include=collection"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?include=collection"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-list-collection.json"
+            )
+          }
+      }
+    }
+
+    it(
+      "includes collection on a single work endpoint if we pass ?include=collection"
+    ) {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, worksEverything: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works/i4c7c9yl?include=collection"
+          ) {
+            Status.OK -> readResource(
+              "expected_responses/works-include-single-collection.json"
+            )
+          }
+      }
+    }
+  }
+
   describe("notes includes") {
     it("includes notes on the list endpoint if we pass ?include=notes") {
       withWorksApi {

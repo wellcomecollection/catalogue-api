@@ -41,6 +41,8 @@ object SingleWorkParams extends QueryParamsUtils {
     "contributors" -> WorkInclude.Contributors,
     "production" -> WorkInclude.Production,
     "languages" -> WorkInclude.Languages,
+    "archive" -> WorkInclude.Archive,
+    "collection" -> WorkInclude.Collection,
     "notes" -> WorkInclude.Notes,
     "formerFrequency" -> WorkInclude.FormerFrequency,
     "designation" -> WorkInclude.Designation,
@@ -82,6 +84,7 @@ case class WorkFilterParams(
   `production.dates.from`: Option[LocalDate],
   `production.dates.to`: Option[LocalDate],
   languages: Option[LanguagesFilter],
+  `archive.category`: Option[ArchiveCategoryFilter],
   `genres.label`: Option[GenreLabelFilter],
   `genres`: Option[GenreIdFilter],
   `subjects.label`: Option[SubjectLabelFilter],
@@ -92,7 +95,9 @@ case class WorkFilterParams(
   partOf: Option[PartOfFilter],
   `partOf.title`: Option[PartOfTitleFilter],
   availabilities: Option[AvailabilitiesFilter],
-  `type`: Option[WorkTypeFilter]
+  `type`: Option[WorkTypeFilter],
+  `collection.isRoot`: Option[CollectionIsRootFilter],
+  `collection.root`: Option[CollectionRootFilter]
 )
 
 case class MultipleWorksParams(
@@ -108,8 +113,10 @@ case class MultipleWorksParams(
   lazy val page = paginationParams.page
   lazy val pageSize = paginationParams.pageSize
 
-  def searchOptions(apiConfig: ApiConfig,
-                    semanticConfig: Option[SemanticConfig]): WorkSearchOptions =
+  def searchOptions(
+    apiConfig: ApiConfig,
+    semanticConfig: Option[SemanticConfig]
+  ): WorkSearchOptions =
     WorkSearchOptions(
       searchQuery = query map { query =>
         SearchQuery(query)
@@ -129,6 +136,7 @@ case class MultipleWorksParams(
       dateFilter,
       createdDateFilter,
       filterParams.languages,
+      filterParams.`archive.category`,
       filterParams.`genres.label`,
       filterParams.`genres`,
       filterParams.`subjects.label`,
@@ -144,7 +152,9 @@ case class MultipleWorksParams(
       filterParams.`type`,
       filterParams.partOf,
       filterParams.`partOf.title`,
-      filterParams.availabilities
+      filterParams.availabilities,
+      filterParams.`collection.isRoot`,
+      filterParams.`collection.root`
     ).flatten
 
   private def dateFilter: Option[DateRangeFilter] =
@@ -229,6 +239,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           "production.dates.from".as[LocalDate].?,
           "production.dates.to".as[LocalDate].?,
           "languages".as[LanguagesFilter].?,
+          "archive.category".as[ArchiveCategoryFilter].?,
           "genres.label".as[GenreLabelFilter].?,
           "genres".as[GenreIdFilter].?,
           "subjects.label".as[SubjectLabelFilter].?,
@@ -239,13 +250,16 @@ object MultipleWorksParams extends QueryParamsUtils {
           "partOf".as[PartOfFilter].?,
           "partOf.title".as[PartOfTitleFilter].?,
           "availabilities".as[AvailabilitiesFilter].?,
-          "type".as[WorkTypeFilter].?
+          "type".as[WorkTypeFilter].?,
+          "collection.isRoot".as[CollectionIsRootFilter].?,
+          "collection.root".as[CollectionRootFilter].?
         ).tflatMap {
           case (
               format,
               dateFrom,
               dateTo,
               languages,
+              archiveCategory,
               genres,
               genreConcepts,
               subjectLabels,
@@ -256,13 +270,16 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOf,
               partOfTitle,
               availabilities,
-              workType
+              workType,
+              collectionIsRoot,
+              collectionRoot
               ) =>
             val filterParams = WorkFilterParams(
               format,
               dateFrom,
               dateTo,
               languages,
+              archiveCategory,
               genres,
               genreConcepts,
               subjectLabels,
@@ -273,7 +290,9 @@ object MultipleWorksParams extends QueryParamsUtils {
               partOf,
               partOfTitle,
               availabilities,
-              workType
+              workType,
+              collectionIsRoot,
+              collectionRoot
             )
 
             val params = MultipleWorksParams(
@@ -299,6 +318,20 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   implicit val languagesFilter: Decoder[LanguagesFilter] =
     stringListFilter(LanguagesFilter)
+
+  implicit val archiveCategoryFilter: Decoder[ArchiveCategoryFilter] =
+    stringListFilter(ArchiveCategoryFilter)
+
+  implicit val collectionRootFilter: Decoder[CollectionRootFilter] =
+    stringListFilter(CollectionRootFilter)
+
+  implicit val collectionIsRootFilter: Decoder[CollectionIsRootFilter] =
+    Decoder.decodeString.emap {
+      case "true"  => Right(CollectionIsRootFilter(true))
+      case "false" => Right(CollectionIsRootFilter(false))
+      case other =>
+        Left(s"Got value '$other' with wrong type, expecting 'true' or 'false'")
+    }
 
   implicit val identifiersFilter: Decoder[IdentifiersFilter] =
     stringListFilter(IdentifiersFilter)
@@ -335,6 +368,8 @@ object MultipleWorksParams extends QueryParamsUtils {
     "subjects.label" -> WorkAggregationRequest.SubjectLabel,
     "subjects" -> WorkAggregationRequest.SubjectId,
     "languages" -> WorkAggregationRequest.Languages,
+    "archive.category" -> WorkAggregationRequest.ArchiveCategory,
+    "collection.root" -> WorkAggregationRequest.CollectionRoot,
     "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
     "contributors.agent" -> WorkAggregationRequest.ContributorId,
     "items.locations.license" -> WorkAggregationRequest.License,
@@ -343,7 +378,8 @@ object MultipleWorksParams extends QueryParamsUtils {
 
   val sortValues: Seq[(String, SortRequest)] = Seq(
     "production.dates" -> ProductionDateSortRequest,
-    "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest
+    "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest,
+    "collectionPath" -> CollectionPathSortRequest
   )
 
   val sortOrderValues: Seq[(String, SortingOrder)] = Seq(

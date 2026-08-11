@@ -11,7 +11,7 @@ class WorksErrorsTest
     with TableDrivenPropertyChecks {
 
   val includesString =
-    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
+    "['identifiers', 'items', 'holdings', 'subjects', 'genres', 'contributors', 'production', 'languages', 'archive', 'collection', 'notes', 'formerFrequency', 'designation', 'images', 'parts', 'partOf', 'precededBy', 'succeededBy']"
 
   describe("returns a 400 Bad Request for errors in the ?include parameter") {
     it("a single invalid include") {
@@ -56,7 +56,7 @@ class WorksErrorsTest
   }
 
   val aggregationsString =
-    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
+    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archive.category', 'collection.root', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
 
   describe(
     "returns a 400 Bad Request for errors in the ?aggregations parameter"
@@ -97,7 +97,7 @@ class WorksErrorsTest
       assertBadRequest(route)(
         path = s"$rootPath/works?sort=foo,bar",
         description =
-          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+          "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'collectionPath']"
       )
     }
   }
@@ -108,7 +108,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo",
           description =
-            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo' is not a valid value. Please choose one of: ['production.dates', 'items.locations.createdDate', 'collectionPath']"
         )
       }
     }
@@ -118,7 +118,7 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'collectionPath']"
         )
       }
     }
@@ -128,7 +128,19 @@ class WorksErrorsTest
         assertBadRequest(route)(
           path = s"$rootPath/works?sort=foo,production.dates,bar",
           description =
-            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate']"
+            "sort: 'foo', 'bar' are not valid values. Please choose one of: ['production.dates', 'items.locations.createdDate', 'collectionPath']"
+        )
+      }
+    }
+  }
+
+  describe("returns a 400 Bad Request for errors in the ?collection.isRoot parameter") {
+    it("an invalid collection.isRoot value") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/works?collection.isRoot=notabool",
+          description =
+            "collection.isRoot: Got value 'notabool' with wrong type, expecting 'true' or 'false'"
         )
       }
     }

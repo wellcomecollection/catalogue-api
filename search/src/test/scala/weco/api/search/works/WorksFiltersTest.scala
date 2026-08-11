@@ -571,6 +571,56 @@ class WorksFiltersTest
     }
   }
 
+  describe("collection.isRoot filter") {
+    val collectionIsRootWorks = Seq(
+      "works.archive.PPEBC.root",
+      "works.archive.PPEBC.section"
+    )
+
+    it("returns both works when no collection.isRoot filter is applied") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
+
+          assertJsonResponse(routes, path = s"$rootPath/works") {
+            Status.OK -> worksListResponse(ids = collectionIsRootWorks)
+          }
+      }
+    }
+
+    it("filters by collection.isRoot=true") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?collection.isRoot=true"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq("works.archive.PPEBC.root")
+            )
+          }
+      }
+    }
+
+    it("filters by collection.isRoot=false, including works with no value") {
+      withWorksApi {
+        case (worksIndex, routes) =>
+          indexTestDocuments(worksIndex, collectionIsRootWorks: _*)
+
+          assertJsonResponse(
+            routes,
+            path = s"$rootPath/works?collection.isRoot=false"
+          ) {
+            Status.OK -> worksListResponse(
+              ids = Seq("works.archive.PPEBC.section")
+            )
+          }
+      }
+    }
+  }
+
   describe("item filters") {
     it("filters by canonical ID on items") {
       assertItemsFilterWorks(

@@ -13,6 +13,8 @@ case class DisplayWorkAggregations(
   `subjects.label`: Option[DisplayAggregation],
   `contributors.agent.label`: Option[DisplayAggregation],
   languages: Option[DisplayAggregation],
+  `archive.category`: Option[DisplayAggregation],
+  `collection.root`: Option[DisplayAggregation],
   `items.locations.license`: Option[DisplayAggregation],
   availabilities: Option[DisplayAggregation],
   @JsonKey("type") ontologyType: String = "Aggregations"
@@ -51,6 +53,20 @@ object DisplayWorkAggregations {
           DisplayAggregation(
             _,
             retainEmpty = bucketMatcher.matchBucket(LanguagesFilterAgg)
+          )
+        ),
+      `archive.category` = aggs.archiveCategory
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = bucketMatcher.matchBucket(ArchiveCategoryFilterAgg)
+          )
+        ),
+      `collection.root` = aggs.collectionRoot
+        .map(
+          DisplayAggregation(
+            _,
+            retainEmpty = bucketMatcher.matchBucket(CollectionRootFilterAgg)
           )
         ),
       `subjects.label` = aggs.subjectsLabel.map(

@@ -6,6 +6,7 @@ import com.sksamuel.elastic4s.requests.searches.queries._
 import com.sksamuel.elastic4s.requests.searches.sort._
 import weco.api.search.models._
 import weco.api.search.models.request.{
+  CollectionPathSortRequest,
   DigitalLocationCreatedDateSortRequest,
   ProductionDateSortRequest,
   SortingOrder
@@ -70,11 +71,15 @@ object WorksRequestBuilder
       case ProductionDateSortRequest =>
         (
           "filterableValues.production.dates.range.from",
-          searchOptions.sortOrder)
+          searchOptions.sortOrder
+        )
       case DigitalLocationCreatedDateSortRequest =>
         (
           "filterableValues.items.locations.createdDate",
-          searchOptions.sortOrder)
+          searchOptions.sortOrder
+        )
+      case CollectionPathSortRequest =>
+        ("query.collectionPath.sort", searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
@@ -105,6 +110,28 @@ object WorksRequestBuilder
         "filterableValues.languages.id",
         languageIds
       )
+    case ArchiveCategoryFilter(archiveCategoryIds) =>
+      termsQuery(
+        "filterableValues.archive.category.id",
+        archiveCategoryIds
+      )
+    case CollectionRootFilter(collectionRootIds) =>
+      termsQuery(
+        "filterableValues.collection.root.id",
+        collectionRootIds
+      )
+    case CollectionIsRootFilter(true) =>
+      termQuery("filterableValues.collection.isRoot", true)
+    // The pipeline only sets this field on collection roots, so "not a root" has to
+    // include works with no value at all (which is most of the catalogue). The `false`
+    // term is here in case the pipeline starts writing the field out in full.
+    case CollectionIsRootFilter(false) =>
+      boolQuery()
+        .should(
+          termQuery("filterableValues.collection.isRoot", false),
+          not(existsQuery("filterableValues.collection.isRoot"))
+        )
+        .minimumShouldMatch(1)
     case GenreLabelFilter(genreQueries) =>
       termsQuery(
         "filterableValues.genres.label",

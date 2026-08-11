@@ -94,6 +94,8 @@ class CatalogueJsonUtilTest
     ("contributors", WorkInclude.Contributors),
     ("production", WorkInclude.Production),
     ("languages", WorkInclude.Languages),
+    ("archive", WorkInclude.Archive),
+    ("collection", WorkInclude.Collection),
     ("notes", WorkInclude.Notes),
     ("images", WorkInclude.Images),
     ("parts", WorkInclude.Parts),

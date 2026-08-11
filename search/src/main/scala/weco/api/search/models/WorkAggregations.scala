@@ -7,6 +7,8 @@ case class WorkAggregations(
   genresLabel: Option[Aggregation] = None,
   productionDates: Option[Aggregation] = None,
   languages: Option[Aggregation] = None,
+  archiveCategory: Option[Aggregation] = None,
+  collectionRoot: Option[Aggregation] = None,
   subjectsLabel: Option[Aggregation] = None,
   contributorsAgentsLabel: Option[Aggregation] = None,
   itemsLocationsLicense: Option[Aggregation] = None,
@@ -23,6 +25,8 @@ object WorkAggregations extends ElasticAggregations {
           genresLabel = e4sAggregations.decodeAgg("genres"),
           productionDates = e4sAggregations.decodeAgg("productionDates"),
           languages = e4sAggregations.decodeAgg("languages"),
+          archiveCategory = e4sAggregations.decodeAgg("archiveCategory"),
+          collectionRoot = e4sAggregations.decodeAgg("collectionRoot"),
           subjectsLabel = e4sAggregations.decodeAgg("subjects"),
           // TODO decode only agents here once `contributors` is removed
           contributorsAgentsLabel = e4sAggregations.decodeAgg("contributors"),
