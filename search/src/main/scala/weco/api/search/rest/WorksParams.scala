@@ -48,9 +48,7 @@ object SingleWorkParams extends QueryParamsUtils {
     "designation" -> WorkInclude.Designation,
     "images" -> WorkInclude.Images,
     "parts" -> WorkInclude.Parts,
-    "partOf" -> WorkInclude.PartOf,
-    "precededBy" -> WorkInclude.PrecededBy,
-    "succeededBy" -> WorkInclude.SucceededBy
+    "partOf" -> WorkInclude.PartOf
   )
 
   implicit val includesDecoder: Decoder[WorksIncludes] =

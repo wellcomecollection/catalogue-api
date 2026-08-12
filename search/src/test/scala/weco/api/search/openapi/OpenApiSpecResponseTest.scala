@@ -318,14 +318,7 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
     "Work.createdDate",
     "Work.currentFrequency",
     "Work.physicalDescription",
-    "Work.referenceNumber",
-    // The current ingestor's display model has no such fields at all (see
-    // catalogue_graph/src/ingestor/models/display/{work,relation}.py in the
-    // pipeline repo, confirmed against the live API). The spec documents them
-    // until we decide whether to drop them or restore them in the pipeline.
-    "RelatedWork.partOf",
-    "Work.precededBy",
-    "Work.succeededBy"
+    "Work.referenceNumber"
   )
 
   /** Every property of every component reachable from the Work and Image schemas, as

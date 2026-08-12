@@ -39,8 +39,6 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.images, "images")
         .removeKeyIf(!includes.parts, "parts")
         .removeKeyIf(!includes.partOf, "partOf")
-        .removeKeyIf(!includes.precededBy, "precededBy")
-        .removeKeyIf(!includes.succeededBy, "succeededBy")
   }
 
   implicit class ImageJsonOps(json: Json) {

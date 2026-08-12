@@ -457,8 +457,6 @@ components:
             - images
             - parts
             - partOf
-            - precededBy
-            - succeededBy
     WorksAggregations:
       name: aggregations
       in: query
@@ -1380,10 +1378,6 @@ components:
         referenceNumber:
           type: string
           description: The identifier used by researchers to cite or refer to a work.
-        partOf:
-          type: array
-          items:
-            $ref: "#/components/schemas/RelatedWork"
         totalParts:
           type: integer
           description: Number of child works.
@@ -1539,16 +1533,6 @@ components:
         partOf:
           type: array
           description: Ancestor works.
-          items:
-            $ref: "#/components/schemas/RelatedWork"
-        precededBy:
-          type: array
-          description: Sibling works earlier in a series.
-          items:
-            $ref: "#/components/schemas/RelatedWork"
-        succeededBy:
-          type: array
-          description: Sibling works later in a series.
           items:
             $ref: "#/components/schemas/RelatedWork"
         type:
