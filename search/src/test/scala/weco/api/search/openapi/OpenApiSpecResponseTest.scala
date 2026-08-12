@@ -220,21 +220,7 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
     */
   describe("the fixture coverage") {
     it("exhibits every field the spec documents") {
-      val observed = testDocuments.flatMap { file =>
-        val doc = circeOf(file)
-
-        for {
-          display <- doc.hcursor
-            .downField("document")
-            .downField("display")
-            .focus
-            .toSeq
-          name <- schemaNameOf(display).toSeq
-          path <- observedFields(schemaRef(name), display, name)
-        } yield path
-      }.toSet
-
-      val missing = documentedFields -- observed -- allowedUnexercised
+      val missing = documentedFields -- observedInFixtures -- allowedUnexercised
 
       withClue(
         s"""|The spec documents these fields, but no fixture contains them. Either the
@@ -250,50 +236,61 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
 
     it("does not allow fields the fixtures exercise") {
       // Entries here would mask a regression the assertion above exists to catch.
-      val observed = testDocuments.flatMap { file =>
-        val doc = circeOf(file)
-
-        for {
-          display <- doc.hcursor
-            .downField("document")
-            .downField("display")
-            .focus
-            .toSeq
-          name <- schemaNameOf(display).toSeq
-          path <- observedFields(schemaRef(name), display, name)
-        } yield path
-      }.toSet
-
-      allowedUnexercised.intersect(observed) shouldBe empty
+      allowedUnexercised.intersect(observedInFixtures) shouldBe empty
     }
 
     it("notices a documented field that no fixture contains") {
       // A control: an invented property must show up in the documented set.
+      val withExtra = schemaRef("Work").deepMerge(
+        Json.obj(
+          "properties" -> Json.obj(
+            "neverEmitted" -> Json.obj("type" -> Json.fromString("string"))
+          )
+        )
+      )
+
       documentedFieldsFrom(
         "Work",
-        name =>
-          if (name != "Work") schemaRef(name)
-          else {
-            val work = schemaRef("Work")
-            work.hcursor
-              .downField("properties")
-              .focus
-              .flatMap(_.asObject)
-              .map(
-                _.add(
-                  "neverEmitted",
-                  Json.obj("type" -> Json.fromString("string"))))
-              .map(Json.fromJsonObject)
-              .flatMap(
-                props =>
-                  work.hcursor
-                    .downField("properties")
-                    .set(props)
-                    .top
-              )
-              .get
-          }
+        name => if (name == "Work") withExtra else schemaRef(name)
       ) should contain("Work.neverEmitted")
+    }
+
+    /** The walks above understand `$ref`, `oneOf`, `properties` and `items`, and
+      * treat anything else as opaque. That is fine while the spec sticks to those,
+      * but an `allOf` refactor would silently exempt its subtree from every check
+      * in this file, so hold the line here.
+      */
+    it("only meets schema keywords the walks understand") {
+      def offences(json: Json, path: String): Seq[String] =
+        json.asObject match {
+          case Some(obj) =>
+            val here = Seq("allOf", "anyOf", "patternProperties")
+              .filter(obj.contains)
+              .map(k => s"$path uses $k")
+
+            val mixed =
+              if (obj.contains("oneOf") && (obj.contains("properties") || obj
+                    .contains("items")))
+                Seq(s"$path mixes oneOf with sibling properties/items")
+              else Seq.empty
+
+            here ++ mixed ++ obj.toIterable.flatMap {
+              case (key, value) => offences(value, s"$path/$key")
+            }
+
+          case None =>
+            json.asArray.toSeq.flatten.zipWithIndex.flatMap {
+              case (value, i) => offences(value, s"$path[$i]")
+            }
+        }
+
+      val schemas = specJson.hcursor
+        .downField("components")
+        .downField("schemas")
+        .focus
+        .get
+
+      offences(schemas, "components/schemas") shouldBe empty
     }
   }
 
@@ -302,18 +299,23 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
     */
   private lazy val allowedUnexercised: Set[String] = Set(
     // Spliced in by the API at request time, never part of an indexed document.
-    "Image.withSimilarFeatures",
-    // The spec reaches Period and Place only through production events and
-    // createdDate, where the ingestor's display transformer builds label-only
-    // concepts, dropping ids and identifiers even for identified concepts
-    // (work_display_transformer.py in the pipeline repo; the live API emits
-    // none either). Allowed rather than removed in case the transformer learns
-    // to keep them; the rare-fields fixture already carries identified inputs.
-    "Period.id",
-    "Period.identifiers",
-    "Place.id",
-    "Place.identifiers"
+    "Image.withSimilarFeatures"
   )
+
+  private lazy val observedInFixtures: Set[String] =
+    testDocuments.flatMap { file =>
+      val doc = circeOf(file)
+
+      for {
+        display <- doc.hcursor
+          .downField("document")
+          .downField("display")
+          .focus
+          .toSeq
+        name <- schemaNameOf(display).toSeq
+        path <- observedFields(schemaRef(name), display, name)
+      } yield path
+    }.toSet
 
   /** Every property of every component reachable from the Work and Image schemas, as
     * `Component.property` paths; inline sub-objects extend the dotted path instead.
@@ -379,8 +381,9 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
     * as [[documentedFields]]: paths restart at each named component, so a field
     * counts as observed wherever it appears.
     *
-    * Where `oneOf` branches share a property name, this follows all of them, so a
-    * field counts under every branch that could have produced it.
+    * A `oneOf` with a discriminator narrows to the branch the document names, so
+    * a field shared between branches is credited only to the one that produced
+    * it. Without a discriminator every branch holding the property counts.
     */
   private def observedFields(
     schema: Json,
@@ -389,7 +392,7 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
   ): Seq[String] =
     doc.asObject match {
       case Some(obj) =>
-        val alternatives = namedBranches(schema, path)
+        val alternatives = discriminate(namedBranches(schema, path), schema, doc)
 
         obj.toIterable.toSeq.flatMap {
           case (key, value) =>
@@ -443,6 +446,30 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
       .getOrElse(Vector((base, resolved)))
   }
 
+  /** Narrows `oneOf` alternatives to the branch the document's discriminator
+    * names, so a field shared between branches (a physical location's `license`)
+    * is not credited to the branch that didn't produce it. The spec declares
+    * `discriminator: propertyName: type` with the default mapping, so the
+    * document's `type` value is the component name.
+    */
+  private def discriminate(
+    alternatives: Seq[(String, Json)],
+    schema: Json,
+    doc: Json
+  ): Seq[(String, Json)] = {
+    val narrowed = for {
+      propertyName <- resolve(schema).hcursor
+        .downField("discriminator")
+        .get[String]("propertyName")
+        .toOption
+      value <- doc.hcursor.get[String](propertyName).toOption
+      matching = alternatives.filter { case (name, _) => name == value }
+      if matching.nonEmpty
+    } yield matching
+
+    narrowed.getOrElse(alternatives)
+  }
+
   private lazy val specJson: Json = OpenApiSpec.parsed
 
   private def circeOf(file: File): Json = {
@@ -468,10 +495,7 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
 
   /** Follows a `$ref` to the schema it names. */
   private def resolve(schema: Json): Json =
-    schema.hcursor.get[String]("$ref").toOption match {
-      case Some(ref) => schemaRef(ref.stripPrefix("#/components/schemas/"))
-      case None      => schema
-    }
+    refNameOf(schema).map(schemaRef).getOrElse(schema)
 
   private def branches(schema: Json): Vector[Json] = {
     val s = resolve(schema)

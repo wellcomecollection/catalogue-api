@@ -1281,14 +1281,8 @@ components:
       title: Period
       type: object
       properties:
-        id:
-          type: string
         label:
           type: string
-        identifiers:
-          type: array
-          items:
-            $ref: "#/components/schemas/Identifier"
         type:
           type: string
       description: A period of time
@@ -1319,14 +1313,8 @@ components:
       title: Place
       type: object
       properties:
-        id:
-          type: string
         label:
           type: string
-        identifiers:
-          type: array
-          items:
-            $ref: "#/components/schemas/Identifier"
         type:
           type: string
       description: A place

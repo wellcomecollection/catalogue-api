@@ -77,6 +77,13 @@ class OpenApiSpecEnumTest extends AnyFunSpec with Matchers {
       checkEnum("WorksInclude", names(SingleWorkParams.includeValues))
     }
 
+    it("keeps the deprecated includes undocumented") {
+      // Tolerated for iiif-builder, but they do nothing, so the spec must not
+      // advertise them.
+      specEnum("WorksInclude")
+        .intersect(SingleWorkParams.deprecatedIncludeValues.toSet) shouldBe empty
+    }
+
     it("documents every aggregation the API accepts") {
       checkEnum(
         "WorksAggregations",
