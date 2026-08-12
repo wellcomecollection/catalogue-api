@@ -5,6 +5,7 @@ export const concept = (
 ): Concept => ({
   id,
   label: "Test Concept",
+  displayLabel: "Test Concept",
   alternativeLabels: [],
   identifiers: [
     {
@@ -18,4 +19,16 @@ export const concept = (
     },
   ],
   type: "Concept",
+  relatedConcepts: {
+    relatedTo: [],
+    fieldsOfWork: [],
+    narrowerThan: [],
+    broaderThan: [],
+    people: [],
+    frequentCollaborators: [],
+    relatedTopics: [],
+    foundedBy: [],
+  },
+  sameAs: [],
+  displayImages: [],
 });

@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import Ajv2020 from "ajv/dist/2020";
 import { parse } from "yaml";
 import createApp from "../src/app";
 import { defaultPageSize, limits } from "../src/controllers/pagination";
@@ -78,6 +79,199 @@ describe("the endpoints this service keeps out of the spec", () => {
     undocumentedInternalPaths.forEach((p) => {
       expect(allSpecPaths()).not.toContain(p);
     });
+  });
+});
+
+/**
+ * Response-schema checks, mirroring the search API's OpenApiSpecResponseTest.
+ *
+ * This service serves pre-rendered `display` documents straight out of
+ * Elasticsearch, so the Concept schema cannot be generated here, only checked.
+ * The pipeline generates the fixtures under
+ * common/search/src/test/resources/test_documents (concepts.*.json); each one's
+ * `document.display` is exactly what this API returns for that record.
+ *
+ * Three directions: every fixture must validate against the Concept schema
+ * (catches shape changes), every fixture key must be documented (catches fields
+ * the pipeline added that the spec misses), and every documented field must
+ * appear in at least one fixture (catches removals the spec never caught up
+ * with). Fields are compared per component, so `Identifier.value` counts as
+ * exercised wherever an identifier appears.
+ */
+describe("the response schemas", () => {
+  const fixturesDir = path.resolve(
+    __dirname,
+    "../../common/search/src/test/resources/test_documents"
+  );
+
+  const conceptFixtures = (): { name: string; display: any }[] =>
+    fs
+      .readdirSync(fixturesDir)
+      .filter((f) => f.startsWith("concepts.") && f.endsWith(".json"))
+      .sort()
+      .map((f) => ({
+        name: f,
+        display: JSON.parse(fs.readFileSync(path.join(fixturesDir, f), "utf8"))
+          .document.display,
+      }));
+
+  const ajv = new Ajv2020({ strict: false });
+  const validateConcept = ajv.compile({
+    $ref: "#/components/schemas/Concept",
+    components: spec.components,
+  });
+
+  it("finds fixtures to check", () => {
+    // A negative control: everything below would pass vacuously on an empty set.
+    expect(conceptFixtures().length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("accepts every concept document the pipeline generates", () => {
+    conceptFixtures().forEach(({ name, display }) => {
+      const valid = validateConcept(display);
+      expect({ name, errors: valid ? [] : validateConcept.errors }).toEqual({
+        name,
+        errors: [],
+      });
+    });
+  });
+
+  it("rejects a concept document with the wrong shape", () => {
+    // A second control: the validator must actually reject something.
+    expect(validateConcept({ id: 12345, type: "Concept" })).toBe(false);
+  });
+
+  const schemaOf = (name: string): any => spec.components.schemas[name];
+  const refNameOf = (schema: any): string | undefined =>
+    schema?.$ref?.replace("#/components/schemas/", "");
+
+  /**
+   * Every property of every component reachable from the Concept schema, as
+   * `Component.property` paths; inline sub-objects extend the dotted path.
+   * The concepts subtree uses no oneOf, and the search API's spec tests pin
+   * the whole spec to the keywords these walks understand.
+   */
+  const documentedFields = (): Set<string> => {
+    const paths = new Set<string>();
+    const visited = new Set(["Concept"]);
+    const queue = ["Concept"];
+
+    const follow = (schema: any, p: string): void => {
+      const ref = refNameOf(schema);
+      if (ref !== undefined) {
+        if (!visited.has(ref)) {
+          visited.add(ref);
+          queue.push(ref);
+        }
+        return;
+      }
+      walk(schema, p);
+    };
+
+    const walk = (schema: any, p: string): void => {
+      Object.entries(schema?.properties ?? {}).forEach(([key, sub]) => {
+        paths.add(`${p}.${key}`);
+        follow(sub, `${p}.${key}`);
+      });
+      if (schema?.items !== undefined) follow(schema.items, `${p}[]`);
+    };
+
+    while (queue.length > 0) {
+      const name = queue.shift() as string;
+      walk(schemaOf(name), name);
+    }
+    return paths;
+  };
+
+  /**
+   * Walks a document alongside its schema, recording the documented fields it
+   * exhibits and any keys the schema doesn't know about. Paths restart at each
+   * named component, matching documentedFields.
+   */
+  const walkDocument = (
+    schema: any,
+    doc: any,
+    p: string,
+    observed: Set<string>,
+    undocumented: Set<string>
+  ): void => {
+    const ref = refNameOf(schema);
+    const base = ref ?? p;
+    const resolved = ref !== undefined ? schemaOf(ref) : schema;
+
+    if (Array.isArray(doc)) {
+      if (resolved?.items !== undefined) {
+        doc.forEach((item) =>
+          walkDocument(
+            resolved.items,
+            item,
+            `${base}[]`,
+            observed,
+            undocumented
+          )
+        );
+      }
+      return;
+    }
+    if (doc === null || typeof doc !== "object") return;
+
+    const properties = resolved?.properties;
+    if (properties === undefined) return; // opaque schema; free-form objects don't report
+
+    Object.entries(doc).forEach(([key, value]) => {
+      if (properties[key] !== undefined) {
+        observed.add(`${base}.${key}`);
+        walkDocument(
+          properties[key],
+          value,
+          `${base}.${key}`,
+          observed,
+          undocumented
+        );
+      } else {
+        undocumented.add(`${base}.${key}`);
+      }
+    });
+  };
+
+  const walkAllFixtures = (): {
+    observed: Set<string>;
+    undocumented: Set<string>;
+  } => {
+    const observed = new Set<string>();
+    const undocumented = new Set<string>();
+    conceptFixtures().forEach(({ display }) =>
+      walkDocument(
+        schemaOf("Concept"),
+        display,
+        "Concept",
+        observed,
+        undocumented
+      )
+    );
+    return { observed, undocumented };
+  };
+
+  it("documents every field the pipeline's concept documents contain", () => {
+    expect([...walkAllFixtures().undocumented].sort()).toEqual([]);
+  });
+
+  it("exhibits every field the spec documents", () => {
+    const missing = [...documentedFields()]
+      .filter((p) => !walkAllFixtures().observed.has(p))
+      .sort();
+    expect(missing).toEqual([]);
+  });
+
+  it("notices a documented field that no fixture contains", () => {
+    // A control: an invented property must show up in the documented set.
+    const schemas = spec.components.schemas;
+    schemas.Concept.properties.neverEmitted = { type: "string" };
+    try {
+      expect(documentedFields()).toContain("Concept.neverEmitted");
+    } finally {
+      delete schemas.Concept.properties.neverEmitted;
+    }
   });
 });
 

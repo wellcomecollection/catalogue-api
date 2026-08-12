@@ -861,6 +861,9 @@ components:
           type: string
         label:
           type: string
+        relationshipType:
+          type: string
+          description: "The nature of the relationship, e.g. `has_works_about`."
         conceptType:
           type: string
     RelatedConcepts:
