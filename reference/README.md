@@ -50,16 +50,20 @@ the concepts test compares both directions.
 ### The response schemas
 
 The pipeline generates the documents in
-`common/search/src/test/resources/test_documents/`, and `copy_test_documents.py` copies
-them here from a local clone of the pipeline repo. Each one's `document.display` object
+`common/search/src/test/resources/test_documents/`. When they change on the pipeline's
+`main`, its `sync-test-documents.yml` workflow opens a pull request here updating our
+copy; `copy_test_documents.py` still does the same from a local clone if you need a
+refresh without waiting for a merge. Each one's `document.display` object
 is exactly what the API returns for that record, so `OpenApiSpecResponseTest` validates
 all of them against the `Work` and `Image` schemas.
 
 Two limits to that. The fixtures are a sample, not every field the pipeline can emit,
 so the test proves the schemas accept what we have rather than everything that exists.
 The schemas were missing `Genre`-typed concepts for a while because no fixture contained
-one. And because `copy_test_documents.py` runs by hand, a change to the pipeline's
-display model is only caught once someone refreshes the fixtures.
+one. And a display model change is only caught when the fixtures are refreshed: the
+sync workflow does that on merge, so expect its pull request to arrive with failing
+tests whenever the pipeline changes the display shape. That failure is the mechanism
+working; update this spec on that branch before merging it.
 
 ## Checking your changes
 

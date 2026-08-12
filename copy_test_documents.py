@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 """
-This script copies test documents from the pipeline repo into this repo.
+This script copies test documents from a local clone of the pipeline repo.
 
-For now, it's using a local clone, but eventually this script will be
-extended to fetch from a remote repo on GitHub.
+The routine path is automated: the pipeline's sync-test-documents.yml
+workflow opens a PR here when the documents change on its main branch.
+Use this script for a local refresh from an unmerged pipeline branch.
 """
 
 import glob
