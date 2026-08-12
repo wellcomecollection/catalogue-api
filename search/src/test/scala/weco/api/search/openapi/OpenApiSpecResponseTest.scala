@@ -303,22 +303,16 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
   private lazy val allowedUnexercised: Set[String] = Set(
     // Spliced in by the API at request time, never part of an indexed document.
     "Image.withSimilarFeatures",
-    // Real fields the deterministic sample never populates. Teaching the pipeline's
-    // document generators about them would let these come off the list.
-    "AccessCondition.note",
-    "AccessCondition.terms",
-    "Agent.identifiers",
-    "Item.note",
-    "Item.title",
+    // The spec reaches Period and Place only through production events and
+    // createdDate, where the ingestor's display transformer builds label-only
+    // concepts, dropping ids and identifiers even for identified concepts
+    // (work_display_transformer.py in the pipeline repo; the live API emits
+    // none either). Allowed rather than removed in case the transformer learns
+    // to keep them; the rare-fields fixture already carries identified inputs.
     "Period.id",
     "Period.identifiers",
     "Place.id",
-    "Place.identifiers",
-    "ProductionEvent.function",
-    "Work.createdDate",
-    "Work.currentFrequency",
-    "Work.physicalDescription",
-    "Work.referenceNumber"
+    "Place.identifiers"
   )
 
   /** Every property of every component reachable from the Work and Image schemas, as
