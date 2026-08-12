@@ -811,6 +811,16 @@ components:
             - Person
             - Place
             - Subject
+      required:
+        - id
+        - identifiers
+        - label
+        - displayLabel
+        - alternativeLabels
+        - type
+        - relatedConcepts
+        - sameAs
+        - displayImages
     ConceptStub:
       title: ConceptStub
       type: object

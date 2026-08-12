@@ -4,6 +4,7 @@ import Ajv2020 from "ajv/dist/2020";
 import { parse } from "yaml";
 import createApp from "../src/app";
 import { defaultPageSize, limits } from "../src/controllers/pagination";
+import { concept } from "./fixtures/concepts";
 
 /**
  * Checks that reference/catalogue.yaml describes what this service serves.
@@ -82,38 +83,26 @@ describe("the endpoints this service keeps out of the spec", () => {
   });
 });
 
-/**
- * Response-schema checks, mirroring the search API's OpenApiSpecResponseTest.
- *
- * This service serves pre-rendered `display` documents straight out of
- * Elasticsearch, so the Concept schema cannot be generated here, only checked.
- * The pipeline generates the fixtures under
- * common/search/src/test/resources/test_documents (concepts.*.json); each one's
- * `document.display` is exactly what this API returns for that record.
- *
- * Three directions: every fixture must validate against the Concept schema
- * (catches shape changes), every fixture key must be documented (catches fields
- * the pipeline added that the spec misses), and every documented field must
- * appear in at least one fixture (catches removals the spec never caught up
- * with). Fields are compared per component, so `Identifier.value` counts as
- * exercised wherever an identifier appears.
- */
+// Response-schema checks mirroring the search API's OpenApiSpecResponseTest:
+// the pipeline-generated fixtures (concepts.*.json) must validate against the
+// Concept schema, contain no undocumented keys, and collectively exhibit every
+// documented field (compared per component, so `Identifier.value` counts
+// wherever an identifier appears).
 describe("the response schemas", () => {
   const fixturesDir = path.resolve(
     __dirname,
     "../../common/search/src/test/resources/test_documents"
   );
 
-  const conceptFixtures = (): { name: string; display: any }[] =>
-    fs
-      .readdirSync(fixturesDir)
-      .filter((f) => f.startsWith("concepts.") && f.endsWith(".json"))
-      .sort()
-      .map((f) => ({
-        name: f,
-        display: JSON.parse(fs.readFileSync(path.join(fixturesDir, f), "utf8"))
-          .document.display,
-      }));
+  const conceptFixtures: { name: string; display: any }[] = fs
+    .readdirSync(fixturesDir)
+    .filter((f) => f.startsWith("concepts.") && f.endsWith(".json"))
+    .sort()
+    .map((f) => ({
+      name: f,
+      display: JSON.parse(fs.readFileSync(path.join(fixturesDir, f), "utf8"))
+        .document.display,
+    }));
 
   const ajv = new Ajv2020({ strict: false });
   const validateConcept = ajv.compile({
@@ -123,11 +112,11 @@ describe("the response schemas", () => {
 
   it("finds fixtures to check", () => {
     // A negative control: everything below would pass vacuously on an empty set.
-    expect(conceptFixtures().length).toBeGreaterThanOrEqual(4);
+    expect(conceptFixtures.length).toBeGreaterThanOrEqual(4);
   });
 
   it("accepts every concept document the pipeline generates", () => {
-    conceptFixtures().forEach(({ name, display }) => {
+    conceptFixtures.forEach(({ name, display }) => {
       const valid = validateConcept(display);
       expect({ name, errors: valid ? [] : validateConcept.errors }).toEqual({
         name,
@@ -141,16 +130,34 @@ describe("the response schemas", () => {
     expect(validateConcept({ id: 12345, type: "Concept" })).toBe(false);
   });
 
+  it("rejects a concept document with a missing field", () => {
+    // Guards the schema's required list: without it, ajv passes {} and a
+    // dropped field would never fail validation.
+    expect(validateConcept({})).toBe(false);
+  });
+
+  it("keeps types.ts and its fixture builder aligned with the schema", () => {
+    const built = concept();
+    const valid = validateConcept(built);
+    expect(valid ? [] : validateConcept.errors).toEqual([]);
+  });
+
   const schemaOf = (name: string): any => spec.components.schemas[name];
   const refNameOf = (schema: any): string | undefined =>
     schema?.$ref?.replace("#/components/schemas/", "");
 
-  /**
-   * Every property of every component reachable from the Concept schema, as
-   * `Component.property` paths; inline sub-objects extend the dotted path.
-   * The concepts subtree uses no oneOf, and the search API's spec tests pin
-   * the whole spec to the keywords these walks understand.
-   */
+  // The walks understand $ref, properties and items only; anything else must
+  // fail loudly rather than silently under-covering a subtree.
+  const assertWalkable = (schema: any, p: string): void => {
+    ["oneOf", "allOf", "anyOf", "patternProperties"].forEach((keyword) => {
+      if (schema?.[keyword] !== undefined) {
+        throw new Error(`${p} uses ${keyword}, which these walks don't handle`);
+      }
+    });
+  };
+
+  // Every property of every component reachable from the Concept schema, as
+  // `Component.property` paths; inline sub-objects extend the dotted path.
   const documentedFields = (): Set<string> => {
     const paths = new Set<string>();
     const visited = new Set(["Concept"]);
@@ -169,6 +176,7 @@ describe("the response schemas", () => {
     };
 
     const walk = (schema: any, p: string): void => {
+      assertWalkable(schema, p);
       Object.entries(schema?.properties ?? {}).forEach(([key, sub]) => {
         paths.add(`${p}.${key}`);
         follow(sub, `${p}.${key}`);
@@ -183,11 +191,9 @@ describe("the response schemas", () => {
     return paths;
   };
 
-  /**
-   * Walks a document alongside its schema, recording the documented fields it
-   * exhibits and any keys the schema doesn't know about. Paths restart at each
-   * named component, matching documentedFields.
-   */
+  // Walks a document alongside its schema, recording the documented fields it
+  // exhibits and any keys the schema doesn't know about. Paths restart at each
+  // named component, matching documentedFields.
   const walkDocument = (
     schema: any,
     doc: any,
@@ -198,6 +204,7 @@ describe("the response schemas", () => {
     const ref = refNameOf(schema);
     const base = ref ?? p;
     const resolved = ref !== undefined ? schemaOf(ref) : schema;
+    assertWalkable(resolved, base);
 
     if (Array.isArray(doc)) {
       if (resolved?.items !== undefined) {
@@ -234,22 +241,27 @@ describe("the response schemas", () => {
     });
   };
 
-  const walkAllFixtures = (): {
-    observed: Set<string>;
-    undocumented: Set<string>;
-  } => {
-    const observed = new Set<string>();
-    const undocumented = new Set<string>();
-    conceptFixtures().forEach(({ display }) =>
-      walkDocument(
-        schemaOf("Concept"),
-        display,
-        "Concept",
-        observed,
-        undocumented
-      )
-    );
-    return { observed, undocumented };
+  // Documented fields with no fixture yet. Each needs a reason; an entry the
+  // fixtures do exercise fails the guard test below, so this cannot rot.
+  const allowedUnexercised = new Set<string>([]);
+
+  let cachedWalk: { observed: Set<string>; undocumented: Set<string> };
+  const walkAllFixtures = (): typeof cachedWalk => {
+    if (cachedWalk === undefined) {
+      const observed = new Set<string>();
+      const undocumented = new Set<string>();
+      conceptFixtures.forEach(({ display }) =>
+        walkDocument(
+          schemaOf("Concept"),
+          display,
+          "Concept",
+          observed,
+          undocumented
+        )
+      );
+      cachedWalk = { observed, undocumented };
+    }
+    return cachedWalk;
   };
 
   it("documents every field the pipeline's concept documents contain", () => {
@@ -257,10 +269,16 @@ describe("the response schemas", () => {
   });
 
   it("exhibits every field the spec documents", () => {
+    const { observed } = walkAllFixtures();
     const missing = [...documentedFields()]
-      .filter((p) => !walkAllFixtures().observed.has(p))
+      .filter((p) => !observed.has(p) && !allowedUnexercised.has(p))
       .sort();
     expect(missing).toEqual([]);
+  });
+
+  it("does not allow fields the fixtures exercise", () => {
+    const { observed } = walkAllFixtures();
+    expect([...allowedUnexercised].filter((p) => observed.has(p))).toEqual([]);
   });
 
   it("notices a documented field that no fixture contains", () => {

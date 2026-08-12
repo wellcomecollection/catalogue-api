@@ -9,10 +9,8 @@ export type Displayable<T = any> = {
   display: T;
 };
 
-// These types mirror the pipeline's ConceptDisplay model
-// (catalogue_graph/src/ingestor/models/indexable/concept.py) and the Concept
-// schema in reference/catalogue.yaml. The service passes documents through
-// untyped at runtime; openapi.test.ts holds these three in sync.
+// Mirrors the pipeline's ConceptDisplay and the spec's Concept schema;
+// openapi.test.ts validates the fixture builder against the schema.
 export type Concept = {
   id: string;
   identifiers: Identifier[];
