@@ -207,6 +207,255 @@ class OpenApiSpecResponseTest extends AnyFunSpec with Matchers {
     }
   }
 
+  /** The walk above catches a field the pipeline added and we never documented. This
+    * is the reverse: a field the spec documents should appear in at least one fixture,
+    * or it is evidence of a removal the spec never caught up with (or a field that was
+    * never real).
+    *
+    * Fields are compared per component, not per position: `Identifier.value` counts
+    * as exercised wherever an identifier appears, so a fixture doesn't need to carry
+    * identifiers on every entity that can hold them. Some documented fields are
+    * genuinely rare and the generated sample doesn't reach them at all; those are
+    * allowed by name below, so a removal of anything else fails here.
+    */
+  describe("the fixture coverage") {
+    it("exhibits every field the spec documents") {
+      val observed = testDocuments.flatMap { file =>
+        val doc = circeOf(file)
+
+        for {
+          display <- doc.hcursor
+            .downField("document")
+            .downField("display")
+            .focus
+            .toSeq
+          name <- schemaNameOf(display).toSeq
+          path <- observedFields(schemaRef(name), display, name)
+        } yield path
+      }.toSet
+
+      val missing = documentedFields -- observed -- allowedUnexercised
+
+      withClue(
+        s"""|The spec documents these fields, but no fixture contains them. Either the
+            |pipeline no longer emits them and the spec should drop them, or they are
+            |rare and belong in allowedUnexercised with a note.
+            |
+            |${missing.toSeq.sorted.mkString("\n  ")}
+            |""".stripMargin
+      ) {
+        missing shouldBe empty
+      }
+    }
+
+    it("does not allow fields the fixtures exercise") {
+      // Entries here would mask a regression the assertion above exists to catch.
+      val observed = testDocuments.flatMap { file =>
+        val doc = circeOf(file)
+
+        for {
+          display <- doc.hcursor
+            .downField("document")
+            .downField("display")
+            .focus
+            .toSeq
+          name <- schemaNameOf(display).toSeq
+          path <- observedFields(schemaRef(name), display, name)
+        } yield path
+      }.toSet
+
+      allowedUnexercised.intersect(observed) shouldBe empty
+    }
+
+    it("notices a documented field that no fixture contains") {
+      // A control: an invented property must show up in the documented set.
+      documentedFieldsFrom(
+        "Work",
+        name =>
+          if (name != "Work") schemaRef(name)
+          else {
+            val work = schemaRef("Work")
+            work.hcursor
+              .downField("properties")
+              .focus
+              .flatMap(_.asObject)
+              .map(
+                _.add(
+                  "neverEmitted",
+                  Json.obj("type" -> Json.fromString("string"))))
+              .map(Json.fromJsonObject)
+              .flatMap(
+                props =>
+                  work.hcursor
+                    .downField("properties")
+                    .set(props)
+                    .top
+              )
+              .get
+          }
+      ) should contain("Work.neverEmitted")
+    }
+  }
+
+  /** Documented fields with no fixture yet. Each needs a reason; an entry the fixtures
+    * do exercise fails the guard test above, so this list cannot rot silently.
+    */
+  private lazy val allowedUnexercised: Set[String] = Set(
+    // Spliced in by the API at request time, never part of an indexed document.
+    "Image.withSimilarFeatures",
+    // Real fields the deterministic sample never populates. Teaching the pipeline's
+    // document generators about them would let these come off the list.
+    "AccessCondition.note",
+    "AccessCondition.terms",
+    "Agent.identifiers",
+    "Item.note",
+    "Item.title",
+    "Period.id",
+    "Period.identifiers",
+    "Place.id",
+    "Place.identifiers",
+    "ProductionEvent.function",
+    "Work.createdDate",
+    "Work.currentFrequency",
+    "Work.physicalDescription",
+    "Work.referenceNumber",
+    // The current ingestor's display model has no such fields at all (see
+    // catalogue_graph/src/ingestor/models/display/{work,relation}.py in the
+    // pipeline repo, confirmed against the live API). The spec documents them
+    // until we decide whether to drop them or restore them in the pipeline.
+    "RelatedWork.partOf",
+    "Work.precededBy",
+    "Work.succeededBy"
+  )
+
+  /** Every property of every component reachable from the Work and Image schemas, as
+    * `Component.property` paths; inline sub-objects extend the dotted path instead.
+    */
+  private lazy val documentedFields: Set[String] =
+    documentedFieldsFrom("Work", schemaRef) ++
+      documentedFieldsFrom("Image", schemaRef)
+
+  private def refNameOf(schema: Json): Option[String] =
+    schema.hcursor
+      .get[String]("$ref")
+      .toOption
+      .map(_.stripPrefix("#/components/schemas/"))
+
+  private def documentedFieldsFrom(
+    root: String,
+    componentSchema: String => Json
+  ): Set[String] = {
+    val visited = scala.collection.mutable.Set(root)
+    val queue = scala.collection.mutable.Queue(root)
+    val paths = scala.collection.mutable.Set.empty[String]
+
+    // A $ref starts its own component walk; everything inline extends the path.
+    def follow(schema: Json, path: String): Unit =
+      refNameOf(schema) match {
+        case Some(name) => if (visited.add(name)) queue += name
+        case None       => walkInline(schema, path)
+      }
+
+    def walkInline(schema: Json, path: String): Unit = {
+      schema.hcursor
+        .downField("oneOf")
+        .focus
+        .flatMap(_.asArray)
+        .getOrElse(Vector.empty)
+        .foreach(follow(_, path))
+
+      schema.hcursor
+        .downField("properties")
+        .focus
+        .flatMap(_.asObject)
+        .foreach(_.toIterable.foreach {
+          case (key, sub) =>
+            paths += s"$path.$key"
+            follow(sub, s"$path.$key")
+        })
+
+      schema.hcursor
+        .downField("items")
+        .focus
+        .foreach(follow(_, s"$path[]"))
+    }
+
+    while (queue.nonEmpty) {
+      val name = queue.dequeue()
+      walkInline(componentSchema(name), name)
+    }
+
+    paths.toSet
+  }
+
+  /** Reports every key in `doc` that the schema documents, in the same path grammar
+    * as [[documentedFields]]: paths restart at each named component, so a field
+    * counts as observed wherever it appears.
+    *
+    * Where `oneOf` branches share a property name, this follows all of them, so a
+    * field counts under every branch that could have produced it.
+    */
+  private def observedFields(
+    schema: Json,
+    doc: Json,
+    path: String
+  ): Seq[String] =
+    doc.asObject match {
+      case Some(obj) =>
+        val alternatives = namedBranches(schema, path)
+
+        obj.toIterable.toSeq.flatMap {
+          case (key, value) =>
+            alternatives.flatMap {
+              case (base, alt) =>
+                alt.hcursor
+                  .downField("properties")
+                  .downField(key)
+                  .focus
+                  .toSeq
+                  .flatMap { sub =>
+                    s"$base.$key" +: observedFields(sub, value, s"$base.$key")
+                  }
+            }
+        }
+
+      case None =>
+        doc.asArray match {
+          case Some(items) =>
+            namedBranches(schema, path).flatMap {
+              case (base, alt) =>
+                alt.hcursor.downField("items").focus.toSeq.flatMap { s =>
+                  items.flatMap(observedFields(s, _, s"$base[]"))
+                }
+            }
+
+          case None => Seq.empty
+        }
+    }
+
+  /** The `oneOf` alternatives of a schema, resolved, each with the path its fields
+    * belong under: the component name for a `$ref`, the inline path otherwise.
+    */
+  private def namedBranches(
+    schema: Json,
+    path: String
+  ): Seq[(String, Json)] = {
+    def named(s: Json): (String, Json) =
+      refNameOf(s) match {
+        case Some(name) => (name, schemaRef(name))
+        case None       => (path, s)
+      }
+
+    val (base, resolved) = named(schema)
+
+    resolved.hcursor
+      .downField("oneOf")
+      .focus
+      .flatMap(_.asArray)
+      .map(_.map(named))
+      .getOrElse(Vector((base, resolved)))
+  }
+
   private lazy val specJson: Json = OpenApiSpec.parsed
 
   private def circeOf(file: File): Json = {
