@@ -10,6 +10,12 @@ request against
 to update its copy at `reference/catalogue.yaml`. Don't edit that copy by hand; it will
 be overwritten by the next sync.
 
+[wellcomecollection.org](https://github.com/wellcomecollection/wellcomecollection.org)
+generates TypeScript types from this spec. When it changes on `main`,
+`.github/workflows/sync-catalogue-types.yml` sends that repo a
+`repository_dispatch` event (`catalogue-spec-updated`), and a workflow there
+regenerates its committed types and opens a pull request if they changed.
+
 ## What it covers
 
 One file, two services, because both are served under
