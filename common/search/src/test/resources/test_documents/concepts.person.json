@@ -1,0 +1,154 @@
+{
+  "description": "a person concept with every field populated",
+  "id": "oxkv1dgj",
+  "document": {
+    "query": {
+      "id": "oxkv1dgj",
+      "identifiers": [
+        {
+          "value": "2soc0ko67",
+          "identifierType": "lc-names"
+        },
+        {
+          "value": "imrebhomm",
+          "identifierType": "wikidata"
+        },
+        {
+          "value": "1khzfx1hc",
+          "identifierType": "viaf"
+        }
+      ],
+      "label": "Pemberton, Petronella",
+      "alternativeLabels": ["P. Pemberton", "Pemberton, Petronella, 1888-1976"],
+      "type": "Person"
+    },
+    "display": {
+      "id": "oxkv1dgj",
+      "identifiers": [
+        {
+          "value": "2soc0ko67",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "lc-names",
+            "type": "IdentifierType",
+            "label": "Library of Congress Name authority records"
+          }
+        },
+        {
+          "value": "imrebhomm",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "wikidata",
+            "type": "IdentifierType",
+            "label": "Wikidata"
+          }
+        },
+        {
+          "value": "1khzfx1hc",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "viaf",
+            "type": "IdentifierType",
+            "label": "VIAF: The Virtual International Authority File"
+          }
+        }
+      ],
+      "label": "Pemberton, Petronella",
+      "displayLabel": "Petronella Pemberton",
+      "alternativeLabels": ["P. Pemberton", "Pemberton, Petronella, 1888-1976"],
+      "description": {
+        "text": "2yW4Acq9GFz6Y1t9EwL56nGisiWgNZq6ITZM5jtg",
+        "sourceLabel": "wikidata",
+        "sourceUrl": "https://www.wikidata.org/wiki/ue52rvejg"
+      },
+      "type": "Person",
+      "relatedConcepts": {
+        "relatedTo": [
+          {
+            "label": "Pemberton, Percival",
+            "id": "w1un9427",
+            "relationshipType": "has_sibling",
+            "conceptType": "Person"
+          },
+          {
+            "label": "Aardvark antics",
+            "id": "qd9afza5",
+            "conceptType": "Concept"
+          }
+        ],
+        "fieldsOfWork": [
+          {
+            "label": "Badger ballet",
+            "id": "vpuemopj",
+            "conceptType": "Concept"
+          },
+          {
+            "label": "Capybara cartography",
+            "id": "82ffu65g",
+            "conceptType": "Concept"
+          }
+        ],
+        "narrowerThan": [],
+        "broaderThan": [],
+        "people": [],
+        "frequentCollaborators": [
+          {
+            "label": "Ostrich, Olga",
+            "id": "t9sh9v8n",
+            "conceptType": "Person"
+          }
+        ],
+        "relatedTopics": [],
+        "foundedBy": []
+      },
+      "sameAs": ["9s2fyups", "lmlcq4ef"],
+      "displayImages": [
+        {
+          "locationType": {
+            "id": "iiif-image",
+            "type": "LocationType",
+            "label": "IIIF Image API"
+          },
+          "accessConditions": [],
+          "url": "https://iiif.wellcomecollection.org/image/Vrwi4j7c/full/full/0/default.jpg",
+          "type": "DigitalLocation"
+        },
+        {
+          "locationType": {
+            "id": "iiif-image",
+            "type": "LocationType",
+            "label": "IIIF Image API"
+          },
+          "license": {
+            "id": "cc-by",
+            "type": "License",
+            "label": "Attribution 4.0 International (CC BY 4.0)",
+            "url": "http://creativecommons.org/licenses/by/4.0/"
+          },
+          "accessConditions": [
+            {
+              "method": {
+                "id": "view-online",
+                "type": "AccessMethod",
+                "label": "View online"
+              },
+              "status": {
+                "id": "open",
+                "type": "AccessStatus",
+                "label": "Open"
+              },
+              "terms": "Terms: 6YwfuNhFLO",
+              "note": "Note: 2mpbUrh",
+              "type": "AccessCondition"
+            }
+          ],
+          "url": "https://iiif.wellcomecollection.org/image/V1f5s71i/full/full/0/default.jpg",
+          "credit": "Credit line: z1THrHZp2n",
+          "linkText": "Link text: L08ALrCFQP",
+          "type": "DigitalLocation"
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-08-12T14:54:27.661687+00:00"
+}

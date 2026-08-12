@@ -1,0 +1,73 @@
+{
+  "description": "a place concept with identifiers from multiple sources",
+  "id": "jrvvxfvc",
+  "document": {
+    "query": {
+      "id": "jrvvxfvc",
+      "identifiers": [
+        {
+          "value": "crkjlsxzj",
+          "identifierType": "lc-subjects"
+        },
+        {
+          "value": "isheup7dt",
+          "identifierType": "nlm-mesh"
+        }
+      ],
+      "label": "Lower Quokka-on-the-Wold",
+      "alternativeLabels": ["Quokka-on-the-Wold, Lower"],
+      "type": "Place"
+    },
+    "display": {
+      "id": "jrvvxfvc",
+      "identifiers": [
+        {
+          "value": "crkjlsxzj",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "lc-subjects",
+            "type": "IdentifierType",
+            "label": "Library of Congress Subject Headings (LCSH)"
+          }
+        },
+        {
+          "value": "isheup7dt",
+          "type": "Identifier",
+          "identifierType": {
+            "id": "nlm-mesh",
+            "type": "IdentifierType",
+            "label": "Medical Subject Headings (MeSH) identifier"
+          }
+        }
+      ],
+      "label": "Lower Quokka-on-the-Wold",
+      "displayLabel": "Lower Quokka-on-the-Wold",
+      "alternativeLabels": ["Quokka-on-the-Wold, Lower"],
+      "description": {
+        "text": "a0RHNgmhMPm3trSlgE27zOfbr6CZYh3qiPH0PPwh",
+        "sourceLabel": "wikidata",
+        "sourceUrl": "https://www.wikidata.org/wiki/3jr2bccnr"
+      },
+      "type": "Place",
+      "relatedConcepts": {
+        "relatedTo": [
+          {
+            "label": "Upper Quokka",
+            "id": "q9uxc531",
+            "conceptType": "Place"
+          }
+        ],
+        "fieldsOfWork": [],
+        "narrowerThan": [],
+        "broaderThan": [],
+        "people": [],
+        "frequentCollaborators": [],
+        "relatedTopics": [],
+        "foundedBy": []
+      },
+      "sameAs": ["x8lnysai"],
+      "displayImages": []
+    }
+  },
+  "createdAt": "2026-08-12T14:54:27.679141+00:00"
+}
