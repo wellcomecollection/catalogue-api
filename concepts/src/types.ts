@@ -21,7 +21,7 @@ export type Concept = {
   type: ConceptType;
   relatedConcepts: RelatedConcepts;
   sameAs: string[];
-  displayImages: DigitalLocation[];
+  displayImages: ConceptImage[];
 };
 
 export type ConceptDescription = {
@@ -48,39 +48,17 @@ export type RelatedConcepts = {
   foundedBy: RelatedConcept[];
 };
 
-export type DigitalLocation = {
+// The subset of digital location fields concept documents carry; the
+// accessConditions list is always empty.
+export type ConceptImage = {
   locationType: {
     id: string;
     label: string;
     type: "LocationType";
   };
   url: string;
-  credit?: string;
-  linkText?: string;
-  license?: {
-    id: string;
-    label: string;
-    url: string;
-    type: "License";
-  };
-  accessConditions: AccessCondition[];
+  accessConditions: [];
   type: "DigitalLocation";
-};
-
-export type AccessCondition = {
-  method?: {
-    id: string;
-    label: string;
-    type: "AccessMethod";
-  };
-  status?: {
-    id: string;
-    label: string;
-    type: "AccessStatus";
-  };
-  terms?: string;
-  note?: string;
-  type: "AccessCondition";
 };
 
 export type ResultList<Result> = {
