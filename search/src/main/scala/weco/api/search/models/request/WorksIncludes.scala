@@ -19,8 +19,6 @@ object WorkInclude {
   case object Images extends WorkInclude
   case object Parts extends WorkInclude
   case object PartOf extends WorkInclude
-  case object PrecededBy extends WorkInclude
-  case object SucceededBy extends WorkInclude
 }
 
 case class WorksIncludes(
@@ -39,9 +37,7 @@ case class WorksIncludes(
   designation: Boolean,
   images: Boolean,
   parts: Boolean,
-  partOf: Boolean,
-  precededBy: Boolean,
-  succeededBy: Boolean
+  partOf: Boolean
 )
 
 case object WorksIncludes {
@@ -62,9 +58,7 @@ case object WorksIncludes {
       designation = includes.contains(WorkInclude.Designation),
       images = includes.contains(WorkInclude.Images),
       parts = includes.contains(WorkInclude.Parts),
-      partOf = includes.contains(WorkInclude.PartOf),
-      precededBy = includes.contains(WorkInclude.PrecededBy),
-      succeededBy = includes.contains(WorkInclude.SucceededBy)
+      partOf = includes.contains(WorkInclude.PartOf)
     )
 
   def none: WorksIncludes = WorksIncludes()

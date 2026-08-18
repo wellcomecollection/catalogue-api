@@ -21,12 +21,13 @@ prefixes = [
     "catalogue_graph/document_generators/test_documents",
 ]
 
+TARGET = "common/search/src/test/resources/test_documents"
+
+# Mirror deletions too: a fixture removed upstream must not linger here as
+# stale evidence for the OpenAPI response tests.
+for stale in glob.glob(f"{TARGET}/*.json"):
+    os.remove(stale)
+
 for prefix in prefixes:
     for path in glob.glob(f"{PIPELINE_ROOT}/{prefix}/*.json"):
-        shutil.copyfile(
-            path,
-            os.path.join(
-                "common/search/src/test/resources/test_documents",
-                os.path.basename(path),
-            ),
-        )
+        shutil.copyfile(path, os.path.join(TARGET, os.path.basename(path)))

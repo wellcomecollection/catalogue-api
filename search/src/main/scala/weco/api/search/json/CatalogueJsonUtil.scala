@@ -39,8 +39,11 @@ trait CatalogueJsonUtil {
         .removeKeyIf(!includes.images, "images")
         .removeKeyIf(!includes.parts, "parts")
         .removeKeyIf(!includes.partOf, "partOf")
-        .removeKeyIf(!includes.precededBy, "precededBy")
-        .removeKeyIf(!includes.succeededBy, "succeededBy")
+        // Pre-catalogue_graph indices still hold these, so strip them
+        // unconditionally: a rollback or elasticCluster override must not
+        // leak fields the spec no longer documents.
+        .removeKey("precededBy")
+        .removeKey("succeededBy")
   }
 
   implicit class ImageJsonOps(json: Json) {

@@ -30,12 +30,10 @@ config:
         - duration: 10
           arrivalRate: 10
   payload:
-    -
-      path: "ids.csv"
+    - path: "ids.csv"
       fields:
         - "id"
-    -
-      path: "queries.csv"
+    - path: "queries.csv"
       fields:
         - "query"
 
@@ -43,7 +41,7 @@ scenarios:
   - name: "Normal usage"
     flow:
       - get:
-          url: "/catalogue/v2/works?query={{ query }}&includes=identifiers,production,contributors,subjects,partOf&aggregations=workType,availabilities,genres.label,languages,subjects.label,contributors.agent.label"
+          url: "/catalogue/v2/works?query={{ query }}&include=identifiers,production,contributors,subjects,partOf&aggregations=workType,availabilities,genres.label,languages,subjects.label,contributors.agent.label"
       - think: 0.5
       - get:
-          url: "/catalogue/v2/works/{{ id }}?includes=identifiers,images,items,subjects,genres,contributors,production,notes,parts,partOf,precededBy,succeededBy,languages,holdings"
+          url: "/catalogue/v2/works/{{ id }}?include=identifiers,images,items,subjects,genres,contributors,production,notes,parts,partOf,languages,holdings"

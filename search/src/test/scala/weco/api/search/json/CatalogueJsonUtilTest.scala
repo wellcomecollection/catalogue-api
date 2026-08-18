@@ -99,9 +99,7 @@ class CatalogueJsonUtilTest
     ("notes", WorkInclude.Notes),
     ("images", WorkInclude.Images),
     ("parts", WorkInclude.Parts),
-    ("partOf", WorkInclude.PartOf),
-    ("precededBy", WorkInclude.PrecededBy),
-    ("succeededBy", WorkInclude.SucceededBy)
+    ("partOf", WorkInclude.PartOf)
   )
 
   describe("WorkJsonOps") {
