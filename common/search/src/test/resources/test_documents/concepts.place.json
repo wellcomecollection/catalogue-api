@@ -15,7 +15,9 @@
         }
       ],
       "label": "Lower Quokka-on-the-Wold",
-      "alternativeLabels": ["Quokka-on-the-Wold, Lower"],
+      "alternativeLabels": [
+        "Quokka-on-the-Wold, Lower"
+      ],
       "type": "Place"
     },
     "display": {
@@ -42,7 +44,9 @@
       ],
       "label": "Lower Quokka-on-the-Wold",
       "displayLabel": "Lower Quokka-on-the-Wold",
-      "alternativeLabels": ["Quokka-on-the-Wold, Lower"],
+      "alternativeLabels": [
+        "Quokka-on-the-Wold, Lower"
+      ],
       "description": {
         "text": "F6JMWa4cFut1DdZ04ZAmJ9Of1Uiaz8RAuanaTWa0",
         "sourceLabel": "wikidata",
@@ -65,7 +69,9 @@
         "relatedTopics": [],
         "foundedBy": []
       },
-      "sameAs": ["r2hqi7wh"],
+      "sameAs": [
+        "r2hqi7wh"
+      ],
       "displayImages": []
     }
   },

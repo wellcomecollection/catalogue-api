@@ -163,7 +163,7 @@ trait QueryParamsUtils extends Directives {
   def stringListFilter[T](applyFilter: Seq[String] => T): Decoder[T] =
     decodeCommaSeparated.emap(strs => Right(applyFilter(strs)))
 
-  private def invalidValuesMsg(
+  def invalidValuesMsg(
     values: List[String],
     validValues: List[String]
   ): String = {
@@ -187,7 +187,7 @@ trait QueryParamsUtils extends Directives {
           .toDirective[Tuple1[T]]
     }
 
-  private def mapStringsToValues[T](
+  def mapStringsToValues[T](
     strs: List[String],
     mapping: Map[String, T]
   ): Either[List[String], List[T]] = {

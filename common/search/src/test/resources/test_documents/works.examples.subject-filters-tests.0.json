@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "B4AIvnisfi",
-      "identifiers.value": ["dvdie7hh", "B4AIvnisfi"],
+      "identifiers.value": [
+        "dvdie7hh",
+        "B4AIvnisfi"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -36,7 +39,10 @@
       "notes.contents": [],
       "partOf.title": [],
       "production.label": [],
-      "subjects.concepts.label": ["lmMcvwXEt9YvKvu", "4pbfJgQtBys1uEd"],
+      "subjects.concepts.label": [
+        "lmMcvwXEt9YvKvu",
+        "4pbfJgQtBys1uEd"
+      ],
       "contributors.agent.label": [],
       "genres.concepts.label": []
     },
@@ -153,8 +159,12 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["Sanitation"],
-      "subjects.concepts.id": ["sanitati"],
+      "subjects.label": [
+        "Sanitation"
+      ],
+      "subjects.concepts.id": [
+        "sanitati"
+      ],
       "subjects.concepts.sourceIdentifier": [
         "lcsh-sanitation",
         "mesh-sanitation"
@@ -162,7 +172,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["dvdie7hh", "B4AIvnisfi"],
+      "identifiers.value": [
+        "dvdie7hh",
+        "B4AIvnisfi"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

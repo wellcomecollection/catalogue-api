@@ -41,6 +41,30 @@ class WorksIncludesTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  it("accepts the deprecated includes and ignores them") {
+    // precededBy and succeededBy stopped existing with catalogue_graph, but
+    // iiif-builder still sends them, so they must not 400 yet.
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, "works.visible.0")
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works/afza5vpu?include=precededBy,succeededBy"
+        ) {
+          Status.OK -> s"""
+            {
+              "id" : "afza5vpu",
+              "title" : "52RvEJgwBuNO6n9",
+              "alternativeTitles": [],
+              "availabilities": [],
+              "type": "Work"
+            }
+          """
+        }
+    }
+  }
+
   it("renders the items if the items include is present") {
     withWorksApi {
       case (worksIndex, routes) =>

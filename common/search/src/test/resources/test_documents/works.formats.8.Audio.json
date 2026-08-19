@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "qOAy5bsPpn",
-      "identifiers.value": ["fjp7n2ua", "qOAy5bsPpn"],
+      "identifiers.value": [
+        "fjp7n2ua",
+        "qOAy5bsPpn"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -105,7 +108,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["fjp7n2ua", "qOAy5bsPpn"],
+      "identifiers.value": [
+        "fjp7n2ua",
+        "qOAy5bsPpn"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

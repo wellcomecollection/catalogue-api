@@ -48,13 +48,24 @@ object SingleWorkParams extends QueryParamsUtils {
     "designation" -> WorkInclude.Designation,
     "images" -> WorkInclude.Images,
     "parts" -> WorkInclude.Parts,
-    "partOf" -> WorkInclude.PartOf,
-    "precededBy" -> WorkInclude.PrecededBy,
-    "succeededBy" -> WorkInclude.SucceededBy
+    "partOf" -> WorkInclude.PartOf
   )
 
+  /** Accepted and ignored, deliberately undocumented. The pipeline stopped
+    * emitting these fields in the move to catalogue_graph, but iiif-builder
+    * still sends them on every request, so a hard 400 would break IIIF
+    * manifest building. Remove once iiif-builder stops sending them.
+    */
+  val deprecatedIncludeValues: Seq[String] = Seq("precededBy", "succeededBy")
+
   implicit val includesDecoder: Decoder[WorksIncludes] =
-    decodeOneOfCommaSeparated(includeValues: _*)
+    decodeCommaSeparated
+      .map(_.filterNot(deprecatedIncludeValues.contains))
+      .emap { strs =>
+        mapStringsToValues(strs, includeValues.toMap).left.map { invalidStrs =>
+          invalidValuesMsg(invalidStrs, includeValues.map(_._1).toList)
+        }
+      }
       .emap(values => Right(WorksIncludes(values: _*)))
 }
 

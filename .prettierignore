@@ -8,3 +8,6 @@
 target
 .idea
 .releases
+
+# Pipeline-generated fixtures, synced verbatim; local prettier must not reformat them
+common/search/src/test/resources/test_documents/

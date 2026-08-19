@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "io4JaIUiL0",
-      "identifiers.value": ["slk5c5t9", "io4JaIUiL0"],
+      "identifiers.value": [
+        "slk5c5t9",
+        "io4JaIUiL0"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -38,7 +41,10 @@
       "production.label": [],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
-      "genres.concepts.label": ["Annual reports", "LWg16bc7eRSSYo7"]
+      "genres.concepts.label": [
+        "Annual reports",
+        "LWg16bc7eRSSYo7"
+      ]
     },
     "display": {
       "id": "slk5c5t9",
@@ -129,16 +135,25 @@
       "workType": "Standard",
       "production.dates.range.from": [],
       "languages.id": [],
-      "genres.label": ["Annual reports"],
-      "genres.concepts.id": ["g00dcafe"],
-      "genres.concepts.sourceIdentifier": ["PCSN7XAnXI"],
+      "genres.label": [
+        "Annual reports"
+      ],
+      "genres.concepts.id": [
+        "g00dcafe"
+      ],
+      "genres.concepts.sourceIdentifier": [
+        "PCSN7XAnXI"
+      ],
       "subjects.label": [],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["slk5c5t9", "io4JaIUiL0"],
+      "identifiers.value": [
+        "slk5c5t9",
+        "io4JaIUiL0"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

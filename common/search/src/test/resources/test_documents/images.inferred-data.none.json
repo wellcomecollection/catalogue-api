@@ -59,7 +59,10 @@
         "alternativeTitles": [],
         "languages.label": [],
         "sourceIdentifier.value": "2nwKhEpYj6",
-        "identifiers.value": ["bjllhyk7", "2nwKhEpYj6"],
+        "identifiers.value": [
+          "bjllhyk7",
+          "2nwKhEpYj6"
+        ],
         "images.id": [],
         "images.identifiers.value": [],
         "items.identifiers.value": [],
@@ -85,7 +88,9 @@
       "source.subjects": []
     },
     "filterableValues": {
-      "locations.license.id": ["cc-by"],
+      "locations.license.id": [
+        "cc-by"
+      ],
       "source.contributors.agent.label": [],
       "source.contributors.agent.id": [],
       "source.contributors.agent.sourceIdentifier": [],

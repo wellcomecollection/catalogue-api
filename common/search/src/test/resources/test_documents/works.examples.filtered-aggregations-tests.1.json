@@ -25,9 +25,14 @@
       "id": "lpl6kr23",
       "title": "capybara",
       "alternativeTitles": [],
-      "languages.label": ["Marathi"],
+      "languages.label": [
+        "Marathi"
+      ],
       "sourceIdentifier.value": "Q3czwaEKw6",
-      "identifiers.value": ["lpl6kr23", "Q3czwaEKw6"],
+      "identifiers.value": [
+        "lpl6kr23",
+        "Q3czwaEKw6"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -106,7 +111,9 @@
       "format.id": "d",
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["mar"],
+      "languages.id": [
+        "mar"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -116,7 +123,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["lpl6kr23", "Q3czwaEKw6"],
+      "identifiers.value": [
+        "lpl6kr23",
+        "Q3czwaEKw6"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

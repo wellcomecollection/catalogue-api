@@ -25,9 +25,14 @@
       "id": "v3j858fq",
       "title": "tapirs",
       "alternativeTitles": [],
-      "languages.label": ["Quechua"],
+      "languages.label": [
+        "Quechua"
+      ],
       "sourceIdentifier.value": "s0oPISgr2f",
-      "identifiers.value": ["v3j858fq", "s0oPISgr2f"],
+      "identifiers.value": [
+        "v3j858fq",
+        "s0oPISgr2f"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -106,7 +111,9 @@
       "format.id": "d",
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["que"],
+      "languages.id": [
+        "que"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -116,7 +123,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["v3j858fq", "s0oPISgr2f"],
+      "identifiers.value": [
+        "v3j858fq",
+        "s0oPISgr2f"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
