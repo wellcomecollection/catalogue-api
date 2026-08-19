@@ -48,11 +48,13 @@ class ResilientElasticClient(
         retryIfRefreshed(currentClient, t, response)
       case Success(response)                               => Future.successful(response)
       case Failure(NonFatal(e)) if client ne currentClient =>
-        // Our client was replaced mid-flight and likely closed under us
+        // Our client was replaced mid-flight and likely closed under us; retry
+        // through execute so a 401 on the retry still gets refresh handling.
+        // Re-entry is bounded: each level requires another swap to have happened.
         warn(
           "Request failed on a replaced Elasticsearch client, retrying on the current one",
           e)
-        client.execute(t)
+        execute(t)
       // Transport errors are not rotation evidence: fail fast, no refresh
       case Failure(e) => Future.failed(e)
     }
@@ -132,10 +134,11 @@ class ResilientElasticClient(
         case Left(_) => promise.trySuccess(true)
       }
     )
-    refreshExecutor.schedule(new Runnable {
+    val timeout = refreshExecutor.schedule(new Runnable {
       override def run(): Unit = promise.trySuccess(true)
     }, probeTimeoutMs, TimeUnit.MILLISECONDS)
-    promise.future
+    // Don't leave a timer queued for every probe that answered promptly
+    promise.future.andThen { case _ => timeout.cancel(false) }(refreshEc)
   }
 
   private def swapIn(candidate: ElasticClient): Unit = {

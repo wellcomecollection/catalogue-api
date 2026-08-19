@@ -16,7 +16,7 @@ import java.io.IOException
 import java.time.Clock
 import java.util.concurrent.{ConcurrentLinkedQueue, CountDownLatch}
 import java.util.concurrent.atomic.AtomicInteger
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.{blocking, Future, Promise}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ResilientElasticClientTest
@@ -244,6 +244,45 @@ class ResilientElasticClientTest
       healthy.requestCount.get shouldBe 2
     }
 
+    it("refreshes again if the retry after a mid-flight swap gets a 401") {
+      val firstRequestGate = Promise[HttpResponse]()
+      val firstSeen = new AtomicInteger(0)
+      // First request is held open; later requests fail fast with 401
+      val first = new MockHttpClient(
+        _ =>
+          if (firstSeen.incrementAndGet() == 1) firstRequestGate.future
+          else Future.successful(createResponse(401)))
+      // Second client authenticates but still 401s requests
+      val second = new MockHttpClient(respondWith(200, 401))
+      val third = new MockHttpClient(respond(200))
+      val (factory, factoryCallCount) =
+        clientSequenceFactory(first, second, third)
+      val resilientClient =
+        newResilientClient(factory, minRefreshIntervalMs = 1)
+
+      val heldRequest = resilientClient.execute("held request")
+      eventually { first.requestCount.get shouldBe 1 }
+
+      // Swap in the second client via a fast 401
+      val refreshingRequest = resilientClient.execute("fast request")
+      whenReady(refreshingRequest) { response =>
+        response.status shouldBe 401 // Retried on second, which also 401s
+      }
+      factoryCallCount.get shouldBe 2
+
+      // Let the cooldown lapse so the recursive retry can refresh again
+      Thread.sleep(10)
+
+      // The held request's transport-failure retry 401s on second, so it
+      // must go through the full refresh path and succeed on third
+      firstRequestGate.failure(new IOException("connection closed"))
+      whenReady(heldRequest) { response =>
+        response.status shouldBe 200
+      }
+      factoryCallCount.get shouldBe 3
+      third.requestCount.get shouldBe 1
+    }
+
     it("retries against the current client when it was refreshed mid-request") {
       val firstRequestGate = Promise[HttpResponse]()
       val brokenSeen = new AtomicInteger(0)
@@ -461,7 +500,7 @@ class ResilientElasticClientTest
       val broken = new MockHttpClient(_ =>
         Future {
           bothArrived.countDown()
-          bothArrived.await()
+          blocking(bothArrived.await())
           createResponse(401)
       })
       val healthy = new MockHttpClient(respond(200))
