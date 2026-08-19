@@ -25,9 +25,16 @@
       "id": "3q8k2zag",
       "title": "A work with languages English, Swedish, Turkish",
       "alternativeTitles": [],
-      "languages.label": ["English", "Swedish", "Turkish"],
+      "languages.label": [
+        "English",
+        "Swedish",
+        "Turkish"
+      ],
       "sourceIdentifier.value": "afvWvC2mpx",
-      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
+      "identifiers.value": [
+        "3q8k2zag",
+        "afvWvC2mpx"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -113,7 +120,11 @@
     "filterableValues": {
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["eng", "swe", "tur"],
+      "languages.id": [
+        "eng",
+        "swe",
+        "tur"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -123,7 +134,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
+      "identifiers.value": [
+        "3q8k2zag",
+        "afvWvC2mpx"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

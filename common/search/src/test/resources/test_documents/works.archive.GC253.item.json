@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "2faCsrX4xc",
-      "identifiers.value": ["0ccmajfm", "2faCsrX4xc"],
+      "identifiers.value": [
+        "0ccmajfm",
+        "2faCsrX4xc"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -139,14 +142,20 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["0ccmajfm", "2faCsrX4xc"],
+      "identifiers.value": [
+        "0ccmajfm",
+        "2faCsrX4xc"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
       "items.locations.createdDate": [],
-      "partOf.id": ["gmf8ycys", "m70k1brq"],
+      "partOf.id": [
+        "gmf8ycys",
+        "m70k1brq"
+      ],
       "partOf.title": [
         "Papers relating to the history of vaccination",
         "Correspondence"

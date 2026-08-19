@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "g5OuzxhIX5",
-      "identifiers.value": ["j4y7wr8j", "g5OuzxhIX5"],
+      "identifiers.value": [
+        "j4y7wr8j",
+        "g5OuzxhIX5"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -163,13 +166,18 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["agg-subject-1"],
+      "subjects.label": [
+        "agg-subject-1"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["j4y7wr8j", "g5OuzxhIX5"],
+      "identifiers.value": [
+        "j4y7wr8j",
+        "g5OuzxhIX5"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

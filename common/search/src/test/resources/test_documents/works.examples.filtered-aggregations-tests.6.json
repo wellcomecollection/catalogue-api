@@ -25,9 +25,14 @@
       "id": "7uo6pqb6",
       "title": "rats",
       "alternativeTitles": [],
-      "languages.label": ["Quechua"],
+      "languages.label": [
+        "Quechua"
+      ],
       "sourceIdentifier.value": "U79wgKxRv0",
-      "identifiers.value": ["7uo6pqb6", "U79wgKxRv0"],
+      "identifiers.value": [
+        "7uo6pqb6",
+        "U79wgKxRv0"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -106,7 +111,9 @@
       "format.id": "d",
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["que"],
+      "languages.id": [
+        "que"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -116,7 +123,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["7uo6pqb6", "U79wgKxRv0"],
+      "identifiers.value": [
+        "7uo6pqb6",
+        "U79wgKxRv0"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

@@ -25,16 +25,44 @@
       "id": "i4c7c9yl",
       "title": "A work with all the include-able fields",
       "alternativeTitles": [],
-      "languages.label": ["o8Pue", "Bi57nCBjwt", "YVAyaA5qII"],
+      "languages.label": [
+        "o8Pue",
+        "Bi57nCBjwt",
+        "YVAyaA5qII"
+      ],
       "sourceIdentifier.value": "Mjz3tGdki5",
-      "identifiers.value": ["i4c7c9yl", "Mjz3tGdki5", "vE9ss749JO"],
-      "images.id": ["f1g3jcqv", "c89qc3zh"],
-      "images.identifiers.value": ["ZVUybO74cF", "zwFdbrVcqR"],
-      "items.identifiers.value": ["C7e7BOz8rq", "E6HicfK3wx"],
-      "items.id": ["e2p26gmk", "c3wirubz"],
+      "identifiers.value": [
+        "i4c7c9yl",
+        "Mjz3tGdki5",
+        "vE9ss749JO"
+      ],
+      "images.id": [
+        "f1g3jcqv",
+        "c89qc3zh"
+      ],
+      "images.identifiers.value": [
+        "ZVUybO74cF",
+        "zwFdbrVcqR"
+      ],
+      "items.identifiers.value": [
+        "C7e7BOz8rq",
+        "E6HicfK3wx"
+      ],
+      "items.id": [
+        "e2p26gmk",
+        "c3wirubz"
+      ],
       "items.shelfmark.value": [],
-      "notes.contents": ["TDWcK6hA9y", "GiN3Q", "Sjfvp110lp", "VY1RJk"],
-      "partOf.title": ["08emPYDNpZDHkTv", "wZL0ffJl0qmZquS"],
+      "notes.contents": [
+        "TDWcK6hA9y",
+        "GiN3Q",
+        "Sjfvp110lp",
+        "VY1RJk"
+      ],
+      "partOf.title": [
+        "08emPYDNpZDHkTv",
+        "wZL0ffJl0qmZquS"
+      ],
       "production.label": [
         "pns4VQaVIGB2dhy",
         "LkiZaJGuxLObZi4",
@@ -51,7 +79,10 @@
         "iKHOnIgA9OIzVX5",
         "EVAnEFSGuFP9dCt"
       ],
-      "contributors.agent.label": ["person-pg0Wj", "person-46nCNe0B"],
+      "contributors.agent.label": [
+        "person-pg0Wj",
+        "person-46nCNe0B"
+      ],
       "genres.concepts.label": [
         "genre-VFd4Nn",
         "RBjC7TjHuin6lCw",
@@ -423,7 +454,10 @@
       ],
       "holdings": [
         {
-          "enumeration": ["0aL0dKj8wx", "OsuFYzM"],
+          "enumeration": [
+            "0aL0dKj8wx",
+            "OsuFYzM"
+          ],
           "location": {
             "locationType": {
               "id": "open-shelves",
@@ -444,7 +478,9 @@
         },
         {
           "note": "Holdings note: 7a8UE68",
-          "enumeration": ["J7Br8"],
+          "enumeration": [
+            "J7Br8"
+          ],
           "location": {
             "locationType": {
               "id": "closed-stores",
@@ -466,7 +502,10 @@
         },
         {
           "note": "Holdings note: rtsaBX0T",
-          "enumeration": ["HJuvmTYBY", "2aWGjY"],
+          "enumeration": [
+            "HJuvmTYBY",
+            "2aWGjY"
+          ],
           "location": {
             "locationType": {
               "id": "open-shelves",
@@ -552,7 +591,10 @@
       ],
       "notes": [
         {
-          "contents": ["TDWcK6hA9y", "Sjfvp110lp"],
+          "contents": [
+            "TDWcK6hA9y",
+            "Sjfvp110lp"
+          ],
           "noteType": {
             "id": "location-of-duplicates-note",
             "type": "NoteType",
@@ -561,7 +603,10 @@
           "type": "Note"
         },
         {
-          "contents": ["GiN3Q", "VY1RJk"],
+          "contents": [
+            "GiN3Q",
+            "VY1RJk"
+          ],
           "noteType": {
             "id": "general-note",
             "type": "NoteType",
@@ -570,8 +615,15 @@
           "type": "Note"
         }
       ],
-      "formerFrequency": ["Published in 2001", "Published in 2002"],
-      "designation": ["Designation #1", "Designation #2", "Designation #3"],
+      "formerFrequency": [
+        "Published in 2001",
+        "Published in 2002"
+      ],
+      "designation": [
+        "Designation #1",
+        "Designation #2",
+        "Designation #3"
+      ],
       "images": [
         {
           "id": "f1g3jcqv",
@@ -691,30 +743,72 @@
     },
     "filterableValues": {
       "workType": "Standard",
-      "production.dates.range.from": [-2177452800000, -4891363200000],
-      "languages.id": ["bpc", "0dw", "lPv"],
-      "genres.label": ["genre-VFd4Nn", "genre-X44wADd"],
-      "genres.concepts.id": ["bw4za7ef", "79135q4n"],
-      "genres.concepts.sourceIdentifier": ["R8V7Qzaxch", "vrccdkwasP"],
-      "subjects.label": ["subject-lLfgILt", "subject-tIMjBTWEfR"],
+      "production.dates.range.from": [
+        -2177452800000,
+        -4891363200000
+      ],
+      "languages.id": [
+        "bpc",
+        "0dw",
+        "lPv"
+      ],
+      "genres.label": [
+        "genre-VFd4Nn",
+        "genre-X44wADd"
+      ],
+      "genres.concepts.id": [
+        "bw4za7ef",
+        "79135q4n"
+      ],
+      "genres.concepts.sourceIdentifier": [
+        "R8V7Qzaxch",
+        "vrccdkwasP"
+      ],
+      "subjects.label": [
+        "subject-lLfgILt",
+        "subject-tIMjBTWEfR"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
-      "contributors.agent.label": ["person-pg0Wj", "person-46nCNe0B"],
+      "contributors.agent.label": [
+        "person-pg0Wj",
+        "person-46nCNe0B"
+      ],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["i4c7c9yl", "Mjz3tGdki5", "vE9ss749JO"],
-      "items.locations.license.id": ["cc-by", "cc-by", "cc-by"],
+      "identifiers.value": [
+        "i4c7c9yl",
+        "Mjz3tGdki5",
+        "vE9ss749JO"
+      ],
+      "items.locations.license.id": [
+        "cc-by",
+        "cc-by",
+        "cc-by"
+      ],
       "items.locations.accessConditions.status.id": [],
-      "items.id": ["e2p26gmk", "c3wirubz"],
-      "items.identifiers.value": ["C7e7BOz8rq", "E6HicfK3wx"],
+      "items.id": [
+        "e2p26gmk",
+        "c3wirubz"
+      ],
+      "items.identifiers.value": [
+        "C7e7BOz8rq",
+        "E6HicfK3wx"
+      ],
       "items.locations.locationType.id": [
         "iiif-image",
         "iiif-image",
         "iiif-image"
       ],
       "items.locations.createdDate": [],
-      "partOf.id": ["7vafg1w2", "29jcl6cu"],
-      "partOf.title": ["08emPYDNpZDHkTv", "wZL0ffJl0qmZquS"],
+      "partOf.id": [
+        "7vafg1w2",
+        "29jcl6cu"
+      ],
+      "partOf.title": [
+        "08emPYDNpZDHkTv",
+        "wZL0ffJl0qmZquS"
+      ],
       "availabilities.id": [],
       "archive.category.id": "SA",
       "collection.root.id": "7vafg1w2",

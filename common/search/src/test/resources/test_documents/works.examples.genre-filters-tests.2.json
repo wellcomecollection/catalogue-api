@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "NdqKHVdQEK",
-      "identifiers.value": ["d0lbaqle", "NdqKHVdQEK"],
+      "identifiers.value": [
+        "d0lbaqle",
+        "NdqKHVdQEK"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -38,7 +41,9 @@
       "production.label": [],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
-      "genres.concepts.label": ["Psychology, Pathological"]
+      "genres.concepts.label": [
+        "Psychology, Pathological"
+      ]
     },
     "display": {
       "id": "d0lbaqle",
@@ -113,16 +118,25 @@
       "workType": "Standard",
       "production.dates.range.from": [],
       "languages.id": [],
-      "genres.label": ["Psychology, Pathological"],
-      "genres.concepts.id": ["baadf00d"],
-      "genres.concepts.sourceIdentifier": ["UFD4dtIPJ9"],
+      "genres.label": [
+        "Psychology, Pathological"
+      ],
+      "genres.concepts.id": [
+        "baadf00d"
+      ],
+      "genres.concepts.sourceIdentifier": [
+        "UFD4dtIPJ9"
+      ],
       "subjects.label": [],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["d0lbaqle", "NdqKHVdQEK"],
+      "identifiers.value": [
+        "d0lbaqle",
+        "NdqKHVdQEK"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

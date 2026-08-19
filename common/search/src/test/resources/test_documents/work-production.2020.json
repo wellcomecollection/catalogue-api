@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "4nofX044OX",
-      "identifiers.value": ["6706thj1", "4nofX044OX"],
+      "identifiers.value": [
+        "6706thj1",
+        "4nofX044OX"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -35,7 +38,9 @@
       "items.shelfmark.value": [],
       "notes.contents": [],
       "partOf.title": [],
-      "production.label": ["2020"],
+      "production.label": [
+        "2020"
+      ],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
       "genres.concepts.label": []
@@ -101,7 +106,9 @@
     },
     "filterableValues": {
       "workType": "Standard",
-      "production.dates.range.from": [1577836800000],
+      "production.dates.range.from": [
+        1577836800000
+      ],
       "languages.id": [],
       "genres.label": [],
       "genres.concepts.id": [],
@@ -112,7 +119,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["6706thj1", "4nofX044OX"],
+      "identifiers.value": [
+        "6706thj1",
+        "4nofX044OX"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
