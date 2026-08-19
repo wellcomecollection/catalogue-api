@@ -27,11 +27,18 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "cz3WyrvmGT",
-      "identifiers.value": ["pc5pnrkl", "cz3WyrvmGT"],
+      "identifiers.value": [
+        "pc5pnrkl",
+        "cz3WyrvmGT"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
-      "items.identifiers.value": ["DYeVgUD1Oj"],
-      "items.id": ["q6a7e0h0"],
+      "items.identifiers.value": [
+        "DYeVgUD1Oj"
+      ],
+      "items.id": [
+        "q6a7e0h0"
+      ],
       "items.shelfmark.value": [],
       "notes.contents": [],
       "partOf.title": [],
@@ -151,12 +158,25 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["pc5pnrkl", "cz3WyrvmGT"],
-      "items.locations.license.id": ["cc-by", "cc-by"],
+      "identifiers.value": [
+        "pc5pnrkl",
+        "cz3WyrvmGT"
+      ],
+      "items.locations.license.id": [
+        "cc-by",
+        "cc-by"
+      ],
       "items.locations.accessConditions.status.id": [],
-      "items.id": ["q6a7e0h0"],
-      "items.identifiers.value": ["DYeVgUD1Oj"],
-      "items.locations.locationType.id": ["iiif-image", "iiif-presentation"],
+      "items.id": [
+        "q6a7e0h0"
+      ],
+      "items.identifiers.value": [
+        "DYeVgUD1Oj"
+      ],
+      "items.locations.locationType.id": [
+        "iiif-image",
+        "iiif-presentation"
+      ],
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],

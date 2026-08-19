@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "VbGRebTAwm",
-      "identifiers.value": ["nv1gc51t", "VbGRebTAwm"],
+      "identifiers.value": [
+        "nv1gc51t",
+        "VbGRebTAwm"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -36,7 +39,10 @@
       "notes.contents": [],
       "partOf.title": [],
       "production.label": [],
-      "subjects.concepts.label": ["3zSaUsJ7StAMuFT", "sBsZ1D5UEN9VK5A"],
+      "subjects.concepts.label": [
+        "3zSaUsJ7StAMuFT",
+        "sBsZ1D5UEN9VK5A"
+      ],
       "contributors.agent.label": [],
       "genres.concepts.label": []
     },
@@ -144,13 +150,22 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["Darwin \"Jones\", Charles"],
-      "subjects.concepts.id": ["darwin01"],
-      "subjects.concepts.sourceIdentifier": ["lcnames-darwin"],
+      "subjects.label": [
+        "Darwin \"Jones\", Charles"
+      ],
+      "subjects.concepts.id": [
+        "darwin01"
+      ],
+      "subjects.concepts.sourceIdentifier": [
+        "lcnames-darwin"
+      ],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["nv1gc51t", "VbGRebTAwm"],
+      "identifiers.value": [
+        "nv1gc51t",
+        "VbGRebTAwm"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

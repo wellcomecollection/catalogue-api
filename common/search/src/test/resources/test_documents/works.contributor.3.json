@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "6WCBgxWohu",
-      "identifiers.value": ["imp9u5v4", "6WCBgxWohu"],
+      "identifiers.value": [
+        "imp9u5v4",
+        "6WCBgxWohu"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -37,7 +40,10 @@
       "partOf.title": [],
       "production.label": [],
       "subjects.concepts.label": [],
-      "contributors.agent.label": ["MI5", "GCHQ"],
+      "contributors.agent.label": [
+        "MI5",
+        "GCHQ"
+      ],
       "genres.concepts.label": []
     },
     "display": {
@@ -119,10 +125,16 @@
       "subjects.label": [],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
-      "contributors.agent.label": ["MI5", "GCHQ"],
+      "contributors.agent.label": [
+        "MI5",
+        "GCHQ"
+      ],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["imp9u5v4", "6WCBgxWohu"],
+      "identifiers.value": [
+        "imp9u5v4",
+        "6WCBgxWohu"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],

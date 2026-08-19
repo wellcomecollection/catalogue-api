@@ -29,17 +29,32 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "3QF59FdNQJ",
-      "identifiers.value": ["4cbgoe8p", "3QF59FdNQJ"],
+      "identifiers.value": [
+        "4cbgoe8p",
+        "3QF59FdNQJ"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
-      "items.identifiers.value": ["Y14y2h0Rzl"],
-      "items.id": ["l5mem3bu"],
-      "items.shelfmark.value": ["Shelfmark: NaTDHzrYbX"],
+      "items.identifiers.value": [
+        "Y14y2h0Rzl"
+      ],
+      "items.id": [
+        "l5mem3bu"
+      ],
+      "items.shelfmark.value": [
+        "Shelfmark: NaTDHzrYbX"
+      ],
       "notes.contents": [],
       "partOf.title": [],
-      "production.label": ["London", "Printed for the author", "1897"],
+      "production.label": [
+        "London",
+        "Printed for the author",
+        "1897"
+      ],
       "subjects.concepts.label": [],
-      "contributors.agent.label": ["Wellcome, Henry Solomon, Sir"],
+      "contributors.agent.label": [
+        "Wellcome, Henry Solomon, Sir"
+      ],
       "genres.concepts.label": []
     },
     "display": {
@@ -214,7 +229,9 @@
     },
     "filterableValues": {
       "workType": "Standard",
-      "production.dates.range.from": [-2303596800000],
+      "production.dates.range.from": [
+        -2303596800000
+      ],
       "languages.id": [],
       "genres.label": [],
       "genres.concepts.id": [],
@@ -222,15 +239,34 @@
       "subjects.label": [],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
-      "contributors.agent.label": ["Wellcome, Henry Solomon, Sir"],
-      "contributors.agent.id": ["xoptq11r"],
-      "contributors.agent.sourceIdentifier": ["sibpiNFnJJ"],
-      "identifiers.value": ["4cbgoe8p", "3QF59FdNQJ"],
-      "items.locations.license.id": ["pdm"],
-      "items.locations.accessConditions.status.id": ["restricted"],
-      "items.id": ["l5mem3bu"],
-      "items.identifiers.value": ["Y14y2h0Rzl"],
-      "items.locations.locationType.id": ["closed-stores"],
+      "contributors.agent.label": [
+        "Wellcome, Henry Solomon, Sir"
+      ],
+      "contributors.agent.id": [
+        "xoptq11r"
+      ],
+      "contributors.agent.sourceIdentifier": [
+        "sibpiNFnJJ"
+      ],
+      "identifiers.value": [
+        "4cbgoe8p",
+        "3QF59FdNQJ"
+      ],
+      "items.locations.license.id": [
+        "pdm"
+      ],
+      "items.locations.accessConditions.status.id": [
+        "restricted"
+      ],
+      "items.id": [
+        "l5mem3bu"
+      ],
+      "items.identifiers.value": [
+        "Y14y2h0Rzl"
+      ],
+      "items.locations.locationType.id": [
+        "closed-stores"
+      ],
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],

@@ -25,9 +25,15 @@
       "id": "tr7h9vaj",
       "title": "A work with languages English, Swedish",
       "alternativeTitles": [],
-      "languages.label": ["English", "Swedish"],
+      "languages.label": [
+        "English",
+        "Swedish"
+      ],
       "sourceIdentifier.value": "OUgAdR1sMk",
-      "identifiers.value": ["tr7h9vaj", "OUgAdR1sMk"],
+      "identifiers.value": [
+        "tr7h9vaj",
+        "OUgAdR1sMk"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -104,7 +110,10 @@
     "filterableValues": {
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["eng", "swe"],
+      "languages.id": [
+        "eng",
+        "swe"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -114,7 +123,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["tr7h9vaj", "OUgAdR1sMk"],
+      "identifiers.value": [
+        "tr7h9vaj",
+        "OUgAdR1sMk"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.id": [],
