@@ -27,10 +27,7 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "jMz2X9xVs8",
-      "identifiers.value": [
-        "w6xbaajq",
-        "jMz2X9xVs8"
-      ],
+      "identifiers.value": ["w6xbaajq", "jMz2X9xVs8"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -146,33 +143,26 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
       "workType": "Standard",
       "production.dates.range.from": [],
       "languages.id": [],
-      "genres.label": [
-        "Electronic books"
-      ],
-      "genres.concepts.id": [
-        "concept0a"
-      ],
-      "genres.concepts.sourceIdentifier": [
-        "0g7FBfhET3"
-      ],
+      "genres.label": ["Electronic books"],
+      "genres.concepts.id": ["concept0a"],
+      "genres.concepts.sourceIdentifier": ["0g7FBfhET3"],
       "subjects.label": [],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "w6xbaajq",
-        "jMz2X9xVs8"
-      ],
+      "identifiers.value": ["w6xbaajq", "jMz2X9xVs8"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
@@ -182,5 +172,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-30T07:40:46.607116+00:00"
+  "createdAt": "2026-08-19T14:58:27.804285+00:00"
 }

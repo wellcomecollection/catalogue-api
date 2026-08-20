@@ -27,10 +27,7 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "F5Z7or4RMJ",
-      "identifiers.value": [
-        "13t2o80g",
-        "F5Z7or4RMJ"
-      ],
+      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -146,6 +143,7 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
@@ -155,20 +153,16 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": [
-        "Psychology, Pathological"
-      ],
+      "subjects.label": ["Psychology, Pathological"],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "13t2o80g",
-        "F5Z7or4RMJ"
-      ],
+      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
@@ -178,5 +172,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T16:56:02.416015+00:00"
+  "createdAt": "2026-08-19T14:58:29.240451+00:00"
 }

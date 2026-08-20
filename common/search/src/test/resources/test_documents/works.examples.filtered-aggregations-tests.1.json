@@ -25,14 +25,9 @@
       "id": "lpl6kr23",
       "title": "capybara",
       "alternativeTitles": [],
-      "languages.label": [
-        "Marathi"
-      ],
+      "languages.label": ["Marathi"],
       "sourceIdentifier.value": "Q3czwaEKw6",
-      "identifiers.value": [
-        "lpl6kr23",
-        "Q3czwaEKw6"
-      ],
+      "identifiers.value": ["lpl6kr23", "Q3czwaEKw6"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -105,15 +100,14 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
       "format.id": "d",
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": [
-        "mar"
-      ],
+      "languages.id": ["mar"],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -123,12 +117,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "lpl6kr23",
-        "Q3czwaEKw6"
-      ],
+      "identifiers.value": ["lpl6kr23", "Q3czwaEKw6"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
@@ -138,5 +130,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T16:56:02.568690+00:00"
+  "createdAt": "2026-08-19T14:58:29.422643+00:00"
 }

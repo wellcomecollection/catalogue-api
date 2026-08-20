@@ -1,6 +1,7 @@
 package weco.api.search.models.display
 
 import weco.api.search.models.{
+  AccessMethodFilter,
   AggregationBucket,
   ArchiveCategoryFilter,
   AvailabilitiesFilter,
@@ -45,6 +46,7 @@ case object GenreFilterAgg extends FilterWithMatchingAggregation
 case object SubjectLabelFilterAgg extends FilterWithMatchingAggregation
 case object ContributorsFilterAgg extends FilterWithMatchingAggregation
 case object LicenseFilterAgg extends FilterWithMatchingAggregation
+case object AccessMethodFilterAgg extends FilterWithMatchingAggregation
 case object AvailabilitiesFilterAgg extends FilterWithMatchingAggregation
 
 class FilterBucketMatcher(
@@ -81,6 +83,8 @@ object FilterBucketMatcher {
             AggregationDataLabelInFilter(labels)
         case LicenseFilter(ids) =>
           LicenseFilterAgg -> AggregationDataIdInFilter(ids)
+        case AccessMethodFilter(ids) =>
+          AccessMethodFilterAgg -> AggregationDataIdInFilter(ids)
         case AvailabilitiesFilter(availabilityIds) =>
           AvailabilitiesFilterAgg ->
             AggregationDataIdInFilter(availabilityIds)

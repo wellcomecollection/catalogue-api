@@ -27,10 +27,7 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "ZbbFRZy8Iw",
-      "identifiers.value": [
-        "947294lb",
-        "ZbbFRZy8Iw"
-      ],
+      "identifiers.value": ["947294lb", "ZbbFRZy8Iw"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -146,6 +143,7 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
@@ -155,20 +153,16 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": [
-        "paleoNeuroBiology"
-      ],
+      "subjects.label": ["paleoNeuroBiology"],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "947294lb",
-        "ZbbFRZy8Iw"
-      ],
+      "identifiers.value": ["947294lb", "ZbbFRZy8Iw"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
@@ -178,5 +172,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T16:56:01.897914+00:00"
+  "createdAt": "2026-08-19T14:58:27.996608+00:00"
 }

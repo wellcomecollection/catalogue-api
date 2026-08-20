@@ -12,6 +12,7 @@ case class WorkAggregations(
   subjectsLabel: Option[Aggregation] = None,
   contributorsAgentsLabel: Option[Aggregation] = None,
   itemsLocationsLicense: Option[Aggregation] = None,
+  itemsLocationsAccessConditionsMethod: Option[Aggregation] = None,
   availabilities: Option[Aggregation] = None
 )
 
@@ -31,6 +32,8 @@ object WorkAggregations extends ElasticAggregations {
           // TODO decode only agents here once `contributors` is removed
           contributorsAgentsLabel = e4sAggregations.decodeAgg("contributors"),
           itemsLocationsLicense = e4sAggregations.decodeAgg("license"),
+          itemsLocationsAccessConditionsMethod =
+            e4sAggregations.decodeAgg("accessMethod"),
           availabilities = e4sAggregations.decodeAgg("availabilities")
         )
       )

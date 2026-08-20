@@ -27,23 +27,12 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "HlLPJCooJA",
-      "identifiers.value": [
-        "4lc7rs6g",
-        "HlLPJCooJA"
-      ],
+      "identifiers.value": ["4lc7rs6g", "HlLPJCooJA"],
       "images.id": [],
       "images.identifiers.value": [],
-      "items.identifiers.value": [
-        "WScnkeT1uy",
-        "ONzuiLHYMC"
-      ],
-      "items.id": [
-        "l5i449x6",
-        "qkk3gwo8"
-      ],
-      "items.shelfmark.value": [
-        "Shelfmark: BOnJHJ"
-      ],
+      "items.identifiers.value": ["WScnkeT1uy", "ONzuiLHYMC"],
+      "items.id": ["l5i449x6", "qkk3gwo8"],
+      "items.shelfmark.value": ["Shelfmark: BOnJHJ"],
       "notes.contents": [],
       "partOf.title": [],
       "production.label": [],
@@ -220,6 +209,12 @@
           "label": "Attribution 4.0 International (CC BY 4.0)"
         }
       ],
+      "items.locations.accessConditions.method": [
+        {
+          "id": "view-online",
+          "label": "View online"
+        }
+      ],
       "availabilities": [
         {
           "id": "closed-stores",
@@ -248,26 +243,12 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "4lc7rs6g",
-        "HlLPJCooJA"
-      ],
-      "items.locations.license.id": [
-        "pdm",
-        "pdm",
-        "cc-by"
-      ],
-      "items.locations.accessConditions.status.id": [
-        "open-with-advisory"
-      ],
-      "items.id": [
-        "l5i449x6",
-        "qkk3gwo8"
-      ],
-      "items.identifiers.value": [
-        "WScnkeT1uy",
-        "ONzuiLHYMC"
-      ],
+      "identifiers.value": ["4lc7rs6g", "HlLPJCooJA"],
+      "items.locations.license.id": ["pdm", "pdm", "cc-by"],
+      "items.locations.accessConditions.status.id": ["open-with-advisory"],
+      "items.locations.accessConditions.method.id": ["view-online"],
+      "items.id": ["l5i449x6", "qkk3gwo8"],
+      "items.identifiers.value": ["WScnkeT1uy", "ONzuiLHYMC"],
       "items.locations.locationType.id": [
         "closed-stores",
         "open-shelves",
@@ -276,12 +257,8 @@
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],
-      "availabilities.id": [
-        "closed-stores",
-        "open-shelves",
-        "online"
-      ]
+      "availabilities.id": ["closed-stores", "open-shelves", "online"]
     }
   },
-  "createdAt": "2026-06-03T16:56:02.599545+00:00"
+  "createdAt": "2026-08-19T14:58:29.469288+00:00"
 }

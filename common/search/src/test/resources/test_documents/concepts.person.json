@@ -19,10 +19,7 @@
         }
       ],
       "label": "Pemberton, Petronella",
-      "alternativeLabels": [
-        "P. Pemberton",
-        "Pemberton, Petronella, 1888-1976"
-      ],
+      "alternativeLabels": ["P. Pemberton", "Pemberton, Petronella, 1888-1976"],
       "type": "Person"
     },
     "display": {
@@ -58,10 +55,7 @@
       ],
       "label": "Pemberton, Petronella",
       "displayLabel": "Petronella Pemberton",
-      "alternativeLabels": [
-        "P. Pemberton",
-        "Pemberton, Petronella, 1888-1976"
-      ],
+      "alternativeLabels": ["P. Pemberton", "Pemberton, Petronella, 1888-1976"],
       "description": {
         "text": "2yW4Acq9GFz6Y1t9EwL56nGisiWgNZq6ITZM5jtg",
         "sourceLabel": "wikidata",
@@ -107,10 +101,7 @@
         "relatedTopics": [],
         "foundedBy": []
       },
-      "sameAs": [
-        "9s2fyups",
-        "lmlcq4ef"
-      ],
+      "sameAs": ["9s2fyups", "lmlcq4ef"],
       "displayImages": [
         {
           "locationType": {

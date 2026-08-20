@@ -56,7 +56,7 @@ class WorksErrorsTest
   }
 
   val aggregationsString =
-    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archive.category', 'collection.root', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'availabilities']"
+    "['workType', 'genres.label', 'genres', 'production.dates', 'subjects.label', 'subjects', 'languages', 'archive.category', 'collection.root', 'contributors.agent.label', 'contributors.agent', 'items.locations.license', 'items.locations.accessConditions.method', 'availabilities']"
 
   describe(
     "returns a 400 Bad Request for errors in the ?aggregations parameter"

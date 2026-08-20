@@ -27,10 +27,7 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "JzNrnfBbIE",
-      "identifiers.value": [
-        "vams026s",
-        "JzNrnfBbIE"
-      ],
+      "identifiers.value": ["vams026s", "JzNrnfBbIE"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -112,6 +109,7 @@
           "label": "Attribution 4.0 International (CC BY 4.0)"
         }
       ],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
@@ -127,24 +125,18 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "vams026s",
-        "JzNrnfBbIE"
-      ],
-      "items.locations.license.id": [
-        "cc-by"
-      ],
+      "identifiers.value": ["vams026s", "JzNrnfBbIE"],
+      "items.locations.license.id": ["cc-by"],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
-      "items.locations.locationType.id": [
-        "iiif-image"
-      ],
+      "items.locations.locationType.id": ["iiif-image"],
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T16:56:01.862259+00:00"
+  "createdAt": "2026-08-19T14:58:27.765864+00:00"
 }

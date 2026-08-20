@@ -25,16 +25,9 @@
       "id": "3q8k2zag",
       "title": "A work with languages English, Swedish, Turkish",
       "alternativeTitles": [],
-      "languages.label": [
-        "English",
-        "Swedish",
-        "Turkish"
-      ],
+      "languages.label": ["English", "Swedish", "Turkish"],
       "sourceIdentifier.value": "afvWvC2mpx",
-      "identifiers.value": [
-        "3q8k2zag",
-        "afvWvC2mpx"
-      ],
+      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -115,16 +108,13 @@
       "production.dates": [],
       "contributors.agent": [],
       "items.locations.license": [],
+      "items.locations.accessConditions.method": [],
       "availabilities": []
     },
     "filterableValues": {
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": [
-        "eng",
-        "swe",
-        "tur"
-      ],
+      "languages.id": ["eng", "swe", "tur"],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -134,12 +124,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": [
-        "3q8k2zag",
-        "afvWvC2mpx"
-      ],
+      "identifiers.value": ["3q8k2zag", "afvWvC2mpx"],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
+      "items.locations.accessConditions.method.id": [],
       "items.id": [],
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
@@ -149,5 +137,5 @@
       "availabilities.id": []
     }
   },
-  "createdAt": "2026-06-03T16:56:01.822197+00:00"
+  "createdAt": "2026-08-19T14:58:27.692863+00:00"
 }
