@@ -9,6 +9,11 @@ COPY ./concepts ./concepts
 # openapi.test.ts reads this to check the spec still matches the routes we serve.
 COPY ./reference ./reference
 
+# openapi.test.ts validates responses against the pipeline-generated concept
+# fixtures. Only concepts.* is copied, so the frequently-synced works and
+# images fixtures don't invalidate this layer.
+COPY ./common/search/src/test/resources/test_documents/concepts.*.json ./common/search/src/test/resources/test_documents/
+
 WORKDIR concepts
 RUN yarn install --frozen-lockfile && yarn cache clean
 
