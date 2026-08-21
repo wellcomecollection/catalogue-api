@@ -1,0 +1,4 @@
+# Local backend config (real ARNs / AWS profile). Commit the .example instead.
+# The prototype's other patterns (.venv, __pycache__, *.pyc, .pytest_cache,
+# .hypothesis) are already covered by the repository root .gitignore.
+.env*.local

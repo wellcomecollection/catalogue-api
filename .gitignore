@@ -232,6 +232,10 @@ target/
 # pyenv
 .python-version
 
+# ...but the shared python_check action reads this file to pick the Python
+# version, so the Identifiers API's copy has to be committed.
+!identifiers/.python-version
+
 # celery beat schedule file
 celerybeat-schedule
 
