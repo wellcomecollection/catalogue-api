@@ -31,7 +31,7 @@ def _route(path: str) -> tuple[str | None, dict]:
     Lambda decoded values, so we unquote each segment here.
     """
     if path.startswith(_REVERSE_PREFIX):
-        rest = path[len(_REVERSE_PREFIX):]
+        rest = path[len(_REVERSE_PREFIX) :]
         segments = rest.split("/")
         if len(segments) == 2 and all(segments):
             return _REVERSE, {
@@ -40,7 +40,7 @@ def _route(path: str) -> tuple[str | None, dict]:
             }
         return None, {}
     if path.startswith(_FORWARD_PREFIX):
-        rest = path[len(_FORWARD_PREFIX):]
+        rest = path[len(_FORWARD_PREFIX) :]
         if rest and "/" not in rest:
             return _FORWARD, {"canonicalId": unquote(rest)}
     return None, {}
@@ -75,9 +75,13 @@ class _Handler(BaseHTTPRequestHandler):
 def main():
     port = int(os.environ.get("PORT", "8000"))
     server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
-    print(f"Identifiers API (prototype) on http://127.0.0.1:{port}  [backend: {BACKEND}]")
+    print(
+        f"Identifiers API (prototype) on http://127.0.0.1:{port}  [backend: {BACKEND}]"
+    )
     print("  GET /v1/identifiers/{canonicalId}")
-    print("  GET /v1/identifiers/by-source/{sourceSystem}/{value}?type=Work[&include=siblings]")
+    print(
+        "  GET /v1/identifiers/by-source/{sourceSystem}/{value}?type=Work[&include=siblings]"
+    )
     try:
         server.serve_forever()
     except KeyboardInterrupt:

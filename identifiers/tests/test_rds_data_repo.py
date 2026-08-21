@@ -42,10 +42,18 @@ def make_repo(response):
 def test_get_by_canonical_maps_columns_and_normalises_timestamp():
     response = {
         "records": [
-            [_str("Work"), _str("sierra-system-number"), _str("b1161044x"),
-             _str("2019-03-04 10:14:22")],
-            [_str("Work"), _str("axiell-collections-id"), _str("12345"),
-             _str("2026-02-10 12:00:00")],
+            [
+                _str("Work"),
+                _str("sierra-system-number"),
+                _str("b1161044x"),
+                _str("2019-03-04 10:14:22"),
+            ],
+            [
+                _str("Work"),
+                _str("axiell-collections-id"),
+                _str("12345"),
+                _str("2026-02-10 12:00:00"),
+            ],
         ]
     }
     repo = make_repo(response)
@@ -94,8 +102,14 @@ def test_only_select_statements_are_issued():
 
 
 @pytest.mark.parametrize(
-    "sql", ["UPDATE identifiers SET x=1", "INSERT INTO t VALUES (1)",
-            "DELETE FROM t", "DROP TABLE t", "  update t set a=1"]
+    "sql",
+    [
+        "UPDATE identifiers SET x=1",
+        "INSERT INTO t VALUES (1)",
+        "DELETE FROM t",
+        "DROP TABLE t",
+        "  update t set a=1",
+    ],
 )
 def test_read_only_guard_refuses_writes(sql):
     with pytest.raises(RuntimeError, match="read-only"):
