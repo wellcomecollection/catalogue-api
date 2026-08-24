@@ -46,7 +46,7 @@ build fails.
 | `search/…/openapi/OpenApiSpecEnumTest.scala`     | The closed enums (`include`, `aggregations`, `sort`, `sortOrder`, the access status filter) match the decoders in `search/…/rest/`, and the pagination bounds match `PaginationLimits`.                                     |
 | `search/…/openapi/OpenApiSpecEndpointTest.scala` | Every works and images endpoint documented here is routable, and the internal endpoints stay undocumented.                                                                                                                  |
 | `search/…/openapi/OpenApiSpecResponseTest.scala` | The `Work` and `Image` schemas accept every display document in `test_documents/`, document every field those documents contain, and document nothing the fixtures don't exhibit (a named allowlist covers the exceptions). |
-| `concepts/test/openapi.test.ts`                  | The concepts endpoints served match those documented here exactly, and the pagination limits agree with the search API's.                                                                                                   |
+| `concepts/test/openapi.test.ts`                  | The concepts endpoints served match those documented here exactly, the pagination limits agree with the search API's, the `Concept` schema accepts every concept fixture and documents nothing the fixtures don't exhibit.  |
 
 The two services support different checks. A Pekko route is an opaque function, so the
 search test can only ask whether a documented path exists. A new public route added to
@@ -76,5 +76,5 @@ working; update this spec on that branch before merging it.
 ```
 yarn lint:openapi                                   # validate the spec
 sbt "search/testOnly weco.api.search.openapi.*"     # enums, endpoints, responses
-yarn --cwd concepts test openapi                    # concepts endpoints + pagination
+yarn --cwd concepts test openapi                    # concepts endpoints, pagination, responses
 ```

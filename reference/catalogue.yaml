@@ -796,7 +796,7 @@ components:
           type: array
           description: Locations of images used to illustrate the concept.
           items:
-            $ref: "#/components/schemas/DigitalLocation"
+            $ref: "#/components/schemas/ConceptImage"
         type:
           type: string
           enum:
@@ -809,6 +809,16 @@ components:
             - Person
             - Place
             - Subject
+      required:
+        - id
+        - identifiers
+        - label
+        - displayLabel
+        - alternativeLabels
+        - type
+        - relatedConcepts
+        - sameAs
+        - displayImages
     ConceptStub:
       title: ConceptStub
       type: object
@@ -850,6 +860,31 @@ components:
         sourceUrl:
           type: string
           description: A link to the description in its source.
+    ConceptImage:
+      title: ConceptImage
+      type: object
+      description: |
+        The location of an image used to illustrate a concept. This is the subset of
+        digital location fields that concept documents carry; unlike a work item's
+        `DigitalLocation`, it never has a license, credit or linkText.
+      properties:
+        locationType:
+          $ref: "#/components/schemas/LocationType"
+        url:
+          type: string
+          description: The URL of the image.
+        accessConditions:
+          type: array
+          description: Always empty on concept documents.
+          maxItems: 0
+        type:
+          type: string
+          const: DigitalLocation
+      required:
+        - locationType
+        - url
+        - accessConditions
+        - type
     RelatedConcept:
       title: RelatedConcept
       type: object
@@ -859,6 +894,9 @@ components:
           type: string
         label:
           type: string
+        relationshipType:
+          type: string
+          description: "The nature of the relationship, e.g. `has_works_about`."
         conceptType:
           type: string
     RelatedConcepts:
