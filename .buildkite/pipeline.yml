@@ -68,6 +68,7 @@ steps:
           command: ["yarn", "test"]
 
   - label: "Concepts API (publish image)"
+    branches: "main"
     depends_on:
       - "concepts-test"
     plugins:
