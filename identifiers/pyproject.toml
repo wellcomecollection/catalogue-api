@@ -14,6 +14,10 @@ dev = [
     "openapi-core>=0.19",
     "openapi-spec-validator>=0.7",
     "pyyaml>=6",
+    "ruff",
+    "mypy>=1.16",
+    "types-PyYAML",
+    "boto3-stubs",
 ]
 # Bonus: validate the *running* app against the contract (see README).
 # Kept out of the default dev group because schemathesis pulls a large tree.
@@ -29,6 +33,23 @@ rds = [
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["E501", "B019"]
+
+# Deliberately looser than catalogue_graph: disallow_untyped_defs would mean
+# annotating the whole test suite. Worth tightening separately.
+[tool.mypy]
+mypy_path = "src"
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
 
 [build-system]
 requires = ["hatchling"]

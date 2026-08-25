@@ -102,7 +102,9 @@ def security_str(security):
     for requirement in security:
         schemes = []
         for scheme, scopes in requirement.items():
-            schemes.append(f"`{scheme}`" + (f" ({', '.join(scopes)})" if scopes else ""))
+            schemes.append(
+                f"`{scheme}`" + (f" ({', '.join(scopes)})" if scopes else "")
+            )
         parts.append(" + ".join(schemes))
     return " or ".join(parts)
 
@@ -144,7 +146,9 @@ def render_operation(method, path, op, path_params, spec):
             lines += [f"- {type_str(schema)}", ""]
         else:
             table = properties_table(schema)
-            lines += (table + [""]) if table else [f"- {type_str(schema) or 'object'}", ""]
+            lines += (
+                (table + [""]) if table else [f"- {type_str(schema) or 'object'}", ""]
+            )
 
     # Responses.
     lines += [
@@ -212,7 +216,9 @@ def render(spec):
             lines += [clean(tag_desc[tag]), ""]
         lines += ["| Method | Path | Summary |", "|---|---|---|"]
         for method, path, op, _ in ops:
-            lines.append(f"| `{method.upper()}` | `{path}` | {clean(op.get('summary'))} |")
+            lines.append(
+                f"| `{method.upper()}` | `{path}` | {clean(op.get('summary'))} |"
+            )
         lines.append("")
         for method, path, op, path_params in ops:
             lines += render_operation(method, path, op, path_params, spec)
@@ -250,7 +256,9 @@ def main():
 
     try:
         validate(spec)
-    except Exception as exc:  # openapi-spec-validator raises a validation error subclass
+    except (
+        Exception
+    ) as exc:  # openapi-spec-validator raises a validation error subclass
         sys.exit(f"OpenAPI spec validation failed:\n{exc}")
 
     OUT_PATH.write_text(render(spec), encoding="utf-8")

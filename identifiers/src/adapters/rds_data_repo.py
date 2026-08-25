@@ -20,6 +20,7 @@ as MySQL ``"YYYY-MM-DD HH:MM:SS"`` and is normalised to the contract's ISO-8601.
 """
 
 import os
+from typing import cast
 
 from core.models import SourceRow
 
@@ -91,11 +92,13 @@ class RdsDataRepository:
         )
         params = [_param("canonical_id", canonical_id)]
         records = self._execute(sql, params).get("records", [])
+        # These three columns are NOT NULL and form the primary key (db/schema.sql),
+        # so _field cannot return None for them.
         return [
             SourceRow(
-                ontology_type=_field(rec[0]),
-                source_system=_field(rec[1]),
-                source_id=_field(rec[2]),
+                ontology_type=cast(str, _field(rec[0])),
+                source_system=cast(str, _field(rec[1])),
+                source_id=cast(str, _field(rec[2])),
                 created_at=_to_iso(_field(rec[3])),
             )
             for rec in records

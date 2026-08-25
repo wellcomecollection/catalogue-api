@@ -69,7 +69,7 @@ class _Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def log_message(self, fmt, *args):  # quieter console
-        sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
+        sys.stderr.write(f"{self.address_string()} - {fmt % args}\n")
 
 
 def main():

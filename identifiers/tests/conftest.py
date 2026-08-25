@@ -32,7 +32,7 @@ def make_event(
     """Synthesize an API Gateway Lambda-proxy event for a GET."""
     path = resource
     for key, value in (path_params or {}).items():
-        path = path.replace("{%s}" % key, value)
+        path = path.replace(f"{{{key}}}", value)
     return {
         "resource": resource,
         "path": path,
