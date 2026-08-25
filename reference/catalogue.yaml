@@ -145,11 +145,7 @@ paths:
           description: "Filter by the license of items on the retrieved works. A comma-separated list of License ids."
           schema:
             type: string
-        - name: items.locations.accessConditions.method.id
-          in: query
-          description: "Filter by the access method of items on the retrieved works. A comma-separated list of AccessMethod ids, e.g. `online-request,view-online`."
-          schema:
-            type: string
+        - $ref: "#/components/parameters/WorksAccessMethodFilter"
         - name: production.dates.from
           in: query
           description: "Return works produced on or after this date, in `YYYY-MM-DD` format."
@@ -528,6 +524,24 @@ components:
             - licensed-resources
             - unavailable
             - permission-required
+    WorksAccessMethodFilter:
+      name: items.locations.accessConditions.method
+      in: query
+      description: |
+        Filter by the access method of items on the retrieved works. A comma-separated
+        list of AccessMethod ids, e.g. `online-request,view-online`.
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - online-request
+            - manual-request
+            - not-requestable
+            - view-online
+            - open-shelves
     ImagesInclude:
       name: include
       in: query

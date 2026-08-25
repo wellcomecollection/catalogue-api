@@ -12,7 +12,7 @@ class FilterAndAggregateByAccessMethodTest
   )
 
   val listingParams: String =
-    "items.locations.accessConditions.method.id=view-online"
+    "items.locations.accessConditions.method=view-online"
   val listingResponse: String = worksListResponse(
     ids = Seq(
       "works.examples.availabilities.online-only",
@@ -20,15 +20,15 @@ class FilterAndAggregateByAccessMethodTest
     )
   )
   val multipleParams: String =
-    "items.locations.accessConditions.method.id=view-online,manual-request"
+    "items.locations.accessConditions.method=view-online,manual-request"
   val multipleResponse: String = worksListResponse(ids = testWorks)
   val searchingParams: String =
-    "query=nowhere&items.locations.accessConditions.method.id=view-online"
+    "query=nowhere&items.locations.accessConditions.method=view-online"
   val searchingResponse: String = worksListResponse(ids = Nil)
 
   val aggregationName: String = "items.locations.accessConditions.method"
   val allValuesParams: String =
-    "items.locations.accessConditions.method.id=view-online&aggregations=items.locations.accessConditions.method"
+    "items.locations.accessConditions.method=view-online&aggregations=items.locations.accessConditions.method"
   val allValuesResponse: String = worksListResponseWithAggs(
     Seq(
       "works.examples.availabilities.online-only",
@@ -50,11 +50,11 @@ class FilterAndAggregateByAccessMethodTest
     )
   )
   val redundantFilterParams: String =
-    "items.locations.accessConditions.method.id=view-online&genres.label=ThisIsNotAGenre&aggregations=items.locations.accessConditions.method"
+    "items.locations.accessConditions.method=view-online&genres.label=ThisIsNotAGenre&aggregations=items.locations.accessConditions.method"
   val redundantFilterBucket: String = """{
                                        |            "id" : "view-online",
                                        |            "label" : "View online"
                                        |          }""".stripMargin
   val unattestedValueParams: String =
-    "items.locations.accessConditions.method.id=open-shelves&genres.label=ThisIsNotAGenre&aggregations=items.locations.accessConditions.method"
+    "items.locations.accessConditions.method=open-shelves&genres.label=ThisIsNotAGenre&aggregations=items.locations.accessConditions.method"
 }

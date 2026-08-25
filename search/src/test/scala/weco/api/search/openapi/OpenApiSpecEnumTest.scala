@@ -10,7 +10,10 @@ import weco.api.search.rest.{
   SingleImageParams,
   SingleWorkParams
 }
-import weco.catalogue.display_model.locations.CatalogueAccessStatus
+import weco.catalogue.display_model.locations.{
+  CatalogueAccessMethod,
+  CatalogueAccessStatus
+}
 
 /** Checks that the enums in reference/catalogue.yaml describe what the API accepts.
   *
@@ -96,6 +99,10 @@ class OpenApiSpecEnumTest extends AnyFunSpec with Matchers {
 
     it("documents every access status the filter accepts") {
       checkEnum("WorksAccessStatusFilter", CatalogueAccessStatus.values)
+    }
+
+    it("documents every access method the filter accepts") {
+      checkEnum("WorksAccessMethodFilter", CatalogueAccessMethod.values.toSet)
     }
   }
 

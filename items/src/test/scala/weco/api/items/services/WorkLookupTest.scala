@@ -7,12 +7,13 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import weco.pekko.fixtures.Pekko
 import weco.api.items.fixtures.ItemsApiGenerators
-import weco.api.stacks.models.{CatalogueAccessMethod, CatalogueWork}
+import weco.api.stacks.models.CatalogueWork
 import weco.catalogue.display_model.identifiers.{
   DisplayIdentifier,
   DisplayIdentifierType
 }
 import weco.catalogue.display_model.locations.{
+  CatalogueAccessMethod,
   CatalogueAccessStatus,
   DisplayAccessCondition,
   DisplayLocationType,

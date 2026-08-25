@@ -1,6 +1,7 @@
 package weco.api.stacks.models
 
 import weco.catalogue.display_model.locations.{
+  CatalogueAccessMethod,
   DisplayAccessCondition,
   DisplayLocationType
 }

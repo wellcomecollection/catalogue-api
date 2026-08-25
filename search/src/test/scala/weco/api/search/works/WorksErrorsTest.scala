@@ -146,6 +146,34 @@ class WorksErrorsTest
     }
   }
 
+  val accessMethodsString =
+    "['online-request', 'manual-request', 'not-requestable', 'view-online', 'open-shelves']"
+
+  describe(
+    "returns a 400 Bad Request for errors in the ?items.locations.accessConditions.method parameter") {
+    val filter = "items.locations.accessConditions.method"
+
+    it("a single invalid access method") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/works?$filter=view_online",
+          description =
+            s"$filter: 'view_online' is not a valid value. Please choose one of: $accessMethodsString"
+        )
+      }
+    }
+
+    it("a mixture of valid and invalid access methods") {
+      withApi { route =>
+        assertBadRequest(route)(
+          path = s"$rootPath/works?$filter=view-online,elsewhere",
+          description =
+            s"$filter: 'elsewhere' is not a valid value. Please choose one of: $accessMethodsString"
+        )
+      }
+    }
+  }
+
   describe("returns a 400 Bad Request for user errors") {
     describe("errors in the ?pageSize query") {
       it("not an integer") {
