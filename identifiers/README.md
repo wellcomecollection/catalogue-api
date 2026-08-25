@@ -1,4 +1,4 @@
-# Identifiers API — prototype
+# Identifiers API
 
 A read-only lookup over the catalogue **ID Registry** (the RFC 083 store the ID
 Minter writes to): it resolves a **canonical** identifier to its **source**
@@ -7,21 +7,34 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-This is a prototype to prove the contract and the data-model behaviour for an
-RFC — **not** a deployment. It also stands as the proposed **"service" answer**
-to the identifier-translation open question in the sibling `folio-api`
-requesting prototype (see [Requesting integration](#requesting-integration)).
+**It is not deployed yet.** There is no Lambda, no gateway, no API keys and no
+cache: that work is tracked on
+[platform#6403](https://github.com/wellcomecollection/platform/issues/6403), and
+the first callable URL arrives with
+[platform#6531](https://github.com/wellcomecollection/platform/issues/6531).
+Until then, run it locally as below.
 
-The authoritative contract is [`spec/openapi.yaml`](spec/openapi.yaml).
+It also stands as the proposed **"service" answer** to the identifier-translation
+open question in the `folio-api` requesting prototype (see
+[Requesting integration](#requesting-integration)).
 
-**See also** (RFC-prep write-ups): [docs/identifiers-api-prototype.md](../../docs/identifiers-api-prototype.md)
-(problem, consumers, API auth) · [docs/identifiers-api-architecture.md](../../docs/identifiers-api-architecture.md)
-(AWS shape, data model) · [caching open question](../../docs/discovery/open-questions/identifiers-api-caching.md).
+The authoritative contract is [`spec/openapi.yaml`](spec/openapi.yaml), rendered
+for reading as [`spec/openapi.md`](spec/openapi.md).
+
+**See also**: [RFC 089](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api),
+which carries the problem and consumers
+([Context](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api#context)),
+the AWS shape and data model
+([Proposed architecture](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api#proposed-architecture)),
+API auth
+([Authentication and cost](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api#authentication-and-cost))
+and the caching question
+([Caching](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api#caching)).
 
 ## Quick start
 
 ```bash
-cd prototypes/identifiers-api
+cd identifiers
 
 # Run the test suite (contract + highlights + validation + ETag/304)
 uv run pytest
@@ -33,7 +46,7 @@ uv run python src/adapters/run_local.py
 
 The local server is a thin stdlib invoker: it turns each HTTP request into an
 API-Gateway Lambda-proxy event, calls the same `handler` a Lambda would, and
-writes the proxy response back as HTTP. No web framework — the prototype stays
+writes the proxy response back as HTTP. No web framework, so local runs stay
 faithful to the production shape (Python Lambda behind API Gateway).
 
 ## Architecture (the seam that matters)
@@ -46,7 +59,7 @@ src/
     repository.py   Repository Protocol (get_by_canonical, get_by_source)
     service.py      ordering, isAlias, ETag, cache policy, 404 rules
   adapters/
-    sqlite_repo.py    Repository impl over the prototype SQLite DB (default)
+    sqlite_repo.py    Repository impl over the seeded SQLite DB (default)
     rds_data_repo.py  Repository impl over Aurora via the RDS Data API (read-only)
     handler.py        Lambda proxy handler: HTTP <-> core; picks the backend
     run_local.py      stdlib HTTP invoker for the live demo
@@ -99,7 +112,7 @@ uv run --group rds python src/adapters/run_local.py
 The ARNs are infrastructure identifiers, not secrets; access is gated by IAM
 (the secret value is fetched by the Data API service, never by this code).
 
-### Real-data findings (for the RFC / spec authors)
+### Real-data findings
 
 Discovered by read-only inspection of `identifiers-v2-serverless-test`:
 
@@ -114,8 +127,8 @@ Discovered by read-only inspection of `identifiers-v2-serverless-test`:
   types beyond `Work`/`Image`/`Item` (e.g. `Concept`). The reverse lookup rejects
   non-enum `type` with `400`, but a forward lookup on a canonical id whose rows
   include such a type would emit a `type` value outside the `SourceIdentifier`
-  enum. **The enum likely needs to be opened (or the API explicitly scoped) —
-  feedback for the spec authors.**
+  enum. Tracked as
+  [platform#6537](https://github.com/wellcomecollection/platform/issues/6537).
 - **Indexed lookups only.** The table is large — a full `COUNT(*)` times out on
   the serverless cluster. The repo issues only point/`idx_canonical` reads
   (matching the contract's two operations), which return promptly.
@@ -291,7 +304,7 @@ below), so the running app does not enforce them.
 ## Requesting integration
 
 This API is the proposed resolution to the identifier-translation open question
-in `folio-api` (see `docs/discovery/open-questions/identifier-translation.md`),
+in `folio-api` (see [RFC 088](https://github.com/wellcomecollection/docs/tree/main/rfcs/088-folio-identity-requesting-migration)),
 whose requesting routes currently stub translation with a hard-coded
 `WORK_ID_BY_ITEM` table. The consumption pattern — **without changing `folio-api`
 in this pass**:
