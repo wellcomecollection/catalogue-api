@@ -1,0 +1,37 @@
+name: "Identifiers API: Build and Test"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "identifiers/**"
+      - ".github/workflows/identifiers-ci.yml"
+  pull_request:
+    paths:
+      - "identifiers/**"
+      - ".github/workflows/identifiers-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/python_check@main
+        with:
+          folder: identifiers
+
+  check-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: Validate the spec and regenerate its rendered docs
+        working-directory: identifiers
+        run: uv run python spec/render_docs.py
+      - name: Check the rendered docs are up to date
+        working-directory: identifiers
+        run: git diff --exit-code spec/openapi.md
