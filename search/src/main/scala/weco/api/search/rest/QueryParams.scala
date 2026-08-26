@@ -168,16 +168,20 @@ trait QueryParamsUtils extends Directives {
     */
   def validatedStringListFilter[T](
     validStrs: Seq[String]
-  )(applyFilter: Seq[String] => T): Decoder[T] =
+  )(applyFilter: Seq[String] => T): Decoder[T] = {
+    val validStrsSet = validStrs.toSet
+    val validStrsList = validStrs.toList
+
     decodeCommaSeparated.emap { strs =>
-      val invalidStrs = strs.filterNot(validStrs.contains)
+      val invalidStrs = strs.filterNot(validStrsSet.contains)
 
       Either.cond(
         invalidStrs.isEmpty,
         right = applyFilter(strs),
-        left = invalidValuesMsg(invalidStrs, validStrs.toList)
+        left = invalidValuesMsg(invalidStrs, validStrsList)
       )
     }
+  }
 
   def invalidValuesMsg(
     values: List[String],
