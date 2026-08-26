@@ -25,9 +25,14 @@
       "id": "hpw42lw1",
       "title": "A work with languages English",
       "alternativeTitles": [],
-      "languages.label": ["English"],
+      "languages.label": [
+        "English"
+      ],
       "sourceIdentifier.value": "NU6mvAX7i9",
-      "identifiers.value": ["hpw42lw1", "NU6mvAX7i9"],
+      "identifiers.value": [
+        "hpw42lw1",
+        "NU6mvAX7i9"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -96,7 +101,9 @@
     "filterableValues": {
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["eng"],
+      "languages.id": [
+        "eng"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -106,7 +113,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["hpw42lw1", "NU6mvAX7i9"],
+      "identifiers.value": [
+        "hpw42lw1",
+        "NU6mvAX7i9"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

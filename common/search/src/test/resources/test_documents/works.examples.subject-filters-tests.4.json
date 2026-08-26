@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "u3MxHD1BZm",
-      "identifiers.value": ["zdw6y3zq", "u3MxHD1BZm"],
+      "identifiers.value": [
+        "zdw6y3zq",
+        "u3MxHD1BZm"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -275,12 +278,19 @@
         "Psychology, Pathological",
         "Darwin \"Jones\", Charles"
       ],
-      "subjects.concepts.id": ["darwin01"],
-      "subjects.concepts.sourceIdentifier": ["lcnames-darwin"],
+      "subjects.concepts.id": [
+        "darwin01"
+      ],
+      "subjects.concepts.sourceIdentifier": [
+        "lcnames-darwin"
+      ],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["zdw6y3zq", "u3MxHD1BZm"],
+      "identifiers.value": [
+        "zdw6y3zq",
+        "u3MxHD1BZm"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "ZbbFRZy8Iw",
-      "identifiers.value": ["947294lb", "ZbbFRZy8Iw"],
+      "identifiers.value": [
+        "947294lb",
+        "ZbbFRZy8Iw"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -153,13 +156,18 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["paleoNeuroBiology"],
+      "subjects.label": [
+        "paleoNeuroBiology"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["947294lb", "ZbbFRZy8Iw"],
+      "identifiers.value": [
+        "947294lb",
+        "ZbbFRZy8Iw"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

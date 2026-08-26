@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "NAqErNVI6R",
-      "identifiers.value": ["oskpm5pp", "NAqErNVI6R"],
+      "identifiers.value": [
+        "oskpm5pp",
+        "NAqErNVI6R"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -164,13 +167,18 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["agg-subject-0"],
+      "subjects.label": [
+        "agg-subject-0"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["oskpm5pp", "NAqErNVI6R"],
+      "identifiers.value": [
+        "oskpm5pp",
+        "NAqErNVI6R"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

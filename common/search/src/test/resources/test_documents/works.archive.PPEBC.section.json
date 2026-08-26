@@ -28,14 +28,20 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "FQ5VXvGoJV",
-      "identifiers.value": ["p54phijr", "FQ5VXvGoJV"],
+      "identifiers.value": [
+        "p54phijr",
+        "FQ5VXvGoJV"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
       "items.id": [],
       "items.shelfmark.value": [],
       "notes.contents": [],
-      "partOf.title": ["Papers of Ernst Boris Chain", "Personal papers"],
+      "partOf.title": [
+        "Papers of Ernst Boris Chain",
+        "Personal papers"
+      ],
       "production.label": [],
       "subjects.concepts.label": [],
       "contributors.agent.label": [],
@@ -159,7 +165,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["p54phijr", "FQ5VXvGoJV"],
+      "identifiers.value": [
+        "p54phijr",
+        "FQ5VXvGoJV"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],
@@ -167,8 +176,14 @@
       "items.identifiers.value": [],
       "items.locations.locationType.id": [],
       "items.locations.createdDate": [],
-      "partOf.id": ["uy0hyncn", "6yky3cq3"],
-      "partOf.title": ["Papers of Ernst Boris Chain", "Personal papers"],
+      "partOf.id": [
+        "uy0hyncn",
+        "6yky3cq3"
+      ],
+      "partOf.title": [
+        "Papers of Ernst Boris Chain",
+        "Personal papers"
+      ],
       "availabilities.id": [],
       "archive.category.id": "PP",
       "collection.root.id": "uy0hyncn",

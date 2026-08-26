@@ -27,11 +27,18 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "WMzzlb7deZ",
-      "identifiers.value": ["g5genzur", "WMzzlb7deZ"],
+      "identifiers.value": [
+        "g5genzur",
+        "WMzzlb7deZ"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
-      "items.identifiers.value": ["ZEJzJmoz0e"],
-      "items.id": ["f0rnhvpv"],
+      "items.identifiers.value": [
+        "ZEJzJmoz0e"
+      ],
+      "items.id": [
+        "f0rnhvpv"
+      ],
       "items.shelfmark.value": [],
       "notes.contents": [],
       "partOf.title": [],
@@ -154,13 +161,28 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["g5genzur", "WMzzlb7deZ"],
-      "items.locations.license.id": ["cc-by"],
-      "items.locations.accessConditions.status.id": ["licensed-resources"],
-      "items.locations.accessConditions.method.id": ["manual-request"],
-      "items.id": ["f0rnhvpv"],
-      "items.identifiers.value": ["ZEJzJmoz0e"],
-      "items.locations.locationType.id": ["iiif-image"],
+      "identifiers.value": [
+        "g5genzur",
+        "WMzzlb7deZ"
+      ],
+      "items.locations.license.id": [
+        "cc-by"
+      ],
+      "items.locations.accessConditions.status.id": [
+        "licensed-resources"
+      ],
+      "items.locations.accessConditions.method.id": [
+        "manual-request"
+      ],
+      "items.id": [
+        "f0rnhvpv"
+      ],
+      "items.identifiers.value": [
+        "ZEJzJmoz0e"
+      ],
+      "items.locations.locationType.id": [
+        "iiif-image"
+      ],
       "items.locations.createdDate": [],
       "partOf.id": [],
       "partOf.title": [],

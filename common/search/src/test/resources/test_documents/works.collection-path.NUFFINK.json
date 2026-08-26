@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "taKAwev9r0",
-      "identifiers.value": ["wgtjwcaz", "taKAwev9r0"],
+      "identifiers.value": [
+        "wgtjwcaz",
+        "taKAwev9r0"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -113,7 +116,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["wgtjwcaz", "taKAwev9r0"],
+      "identifiers.value": [
+        "wgtjwcaz",
+        "taKAwev9r0"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

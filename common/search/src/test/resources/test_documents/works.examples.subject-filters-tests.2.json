@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "F5Z7or4RMJ",
-      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
+      "identifiers.value": [
+        "13t2o80g",
+        "F5Z7or4RMJ"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -153,13 +156,18 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["Psychology, Pathological"],
+      "subjects.label": [
+        "Psychology, Pathological"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["13t2o80g", "F5Z7or4RMJ"],
+      "identifiers.value": [
+        "13t2o80g",
+        "F5Z7or4RMJ"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

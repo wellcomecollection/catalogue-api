@@ -27,7 +27,10 @@
       "alternativeTitles": [],
       "languages.label": [],
       "sourceIdentifier.value": "UMGJaZokaK",
-      "identifiers.value": ["2qsl6zug", "UMGJaZokaK"],
+      "identifiers.value": [
+        "2qsl6zug",
+        "UMGJaZokaK"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -153,13 +156,18 @@
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
-      "subjects.label": ["London (England)"],
+      "subjects.label": [
+        "London (England)"
+      ],
       "subjects.concepts.id": [],
       "subjects.concepts.sourceIdentifier": [],
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["2qsl6zug", "UMGJaZokaK"],
+      "identifiers.value": [
+        "2qsl6zug",
+        "UMGJaZokaK"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],

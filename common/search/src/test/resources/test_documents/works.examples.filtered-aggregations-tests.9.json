@@ -25,9 +25,14 @@
       "id": "ajx4gpyo",
       "title": "rats",
       "alternativeTitles": [],
-      "languages.label": ["Chechen"],
+      "languages.label": [
+        "Chechen"
+      ],
       "sourceIdentifier.value": "nkhruJbvG8",
-      "identifiers.value": ["ajx4gpyo", "nkhruJbvG8"],
+      "identifiers.value": [
+        "ajx4gpyo",
+        "nkhruJbvG8"
+      ],
       "images.id": [],
       "images.identifiers.value": [],
       "items.identifiers.value": [],
@@ -107,7 +112,9 @@
       "format.id": "i",
       "workType": "Standard",
       "production.dates.range.from": [],
-      "languages.id": ["che"],
+      "languages.id": [
+        "che"
+      ],
       "genres.label": [],
       "genres.concepts.id": [],
       "genres.concepts.sourceIdentifier": [],
@@ -117,7 +124,10 @@
       "contributors.agent.label": [],
       "contributors.agent.id": [],
       "contributors.agent.sourceIdentifier": [],
-      "identifiers.value": ["ajx4gpyo", "nkhruJbvG8"],
+      "identifiers.value": [
+        "ajx4gpyo",
+        "nkhruJbvG8"
+      ],
       "items.locations.license.id": [],
       "items.locations.accessConditions.status.id": [],
       "items.locations.accessConditions.method.id": [],
