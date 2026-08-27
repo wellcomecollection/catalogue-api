@@ -89,6 +89,10 @@ case class AccessStatusFilter(
   excludes: List[String]
 ) extends WorkFilter
 
+case class AccessMethodFilter(methodIds: Seq[String])
+    extends WorkFilter
+    with Pairable
+
 case class PartOfFilter(id: String) extends WorkFilter
 case class PartOfTitleFilter(id: String) extends WorkFilter
 

@@ -4,7 +4,10 @@ import org.apache.pekko.http.scaladsl.server.Directive
 import io.circe.Decoder
 import weco.api.search.models._
 import weco.api.search.models.request._
-import weco.catalogue.display_model.locations.CatalogueAccessStatus
+import weco.catalogue.display_model.locations.{
+  CatalogueAccessMethod,
+  CatalogueAccessStatus
+}
 
 import java.time.LocalDate
 
@@ -79,6 +82,7 @@ case class ItemsParams(
   `items.locations.license`: Option[LicenseFilter],
   `items.locations.locationType`: Option[ItemLocationTypeIdFilter],
   `items.locations.accessConditions.status`: Option[AccessStatusFilter],
+  `items.locations.accessConditions.method`: Option[AccessMethodFilter],
   `items.locations.createdDate.from`: Option[LocalDate],
   `items.locations.createdDate.to`: Option[LocalDate]
 )
@@ -158,6 +162,7 @@ case class MultipleWorksParams(
       itemsParams.`items`,
       itemsParams.`items.identifiers`,
       itemsParams.`items.locations.accessConditions.status`,
+      itemsParams.`items.locations.accessConditions.method`,
       itemsParams.`items.locations.license`,
       itemsParams.`items.locations.locationType`,
       filterParams.`type`,
@@ -207,6 +212,7 @@ object MultipleWorksParams extends QueryParamsUtils {
       "items.identifiers".as[ItemsIdentifiersFilter].?,
       "items.locations.locationType".as[ItemLocationTypeIdFilter].?,
       "items.locations.accessConditions.status".as[AccessStatusFilter].?,
+      "items.locations.accessConditions.method".as[AccessMethodFilter].?,
       "items.locations.createdDate.from".as[LocalDate].?,
       "items.locations.createdDate.to".as[LocalDate].?,
       "page".as[Int].?,
@@ -223,6 +229,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           identifiers,
           locationType,
           accessStatus,
+          accessMethod,
           createdDateFrom,
           createdDateTo,
           page,
@@ -239,6 +246,7 @@ object MultipleWorksParams extends QueryParamsUtils {
           license,
           locationType,
           accessStatus,
+          accessMethod,
           createdDateFrom,
           createdDateTo
         )
@@ -362,6 +370,9 @@ object MultipleWorksParams extends QueryParamsUtils {
   implicit val availabilitiesFilter: Decoder[AvailabilitiesFilter] =
     stringListFilter(AvailabilitiesFilter)
 
+  implicit val accessMethodFilter: Decoder[AccessMethodFilter] =
+    validatedStringListFilter(CatalogueAccessMethod.values)(AccessMethodFilter)
+
   implicit val accessStatusFilter: Decoder[AccessStatusFilter] =
     decodeIncludesAndExcludes(CatalogueAccessStatus.values)
       .emap {
@@ -384,6 +395,7 @@ object MultipleWorksParams extends QueryParamsUtils {
     "contributors.agent.label" -> WorkAggregationRequest.ContributorLabel,
     "contributors.agent" -> WorkAggregationRequest.ContributorId,
     "items.locations.license" -> WorkAggregationRequest.License,
+    "items.locations.accessConditions.method" -> WorkAggregationRequest.AccessMethod,
     "availabilities" -> WorkAggregationRequest.Availabilities
   )
 
