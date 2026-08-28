@@ -12,11 +12,8 @@ dependencies = []
 dev = [
     "pytest>=8",
     "openapi-core>=0.19",
-    "openapi-spec-validator>=0.7",
-    "pyyaml>=6",
     "ruff",
     "mypy>=1.16",
-    "types-PyYAML",
     "boto3-stubs",
 ]
 # Bonus: validate the *running* app against the contract (see README).

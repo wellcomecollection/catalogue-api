@@ -18,8 +18,7 @@ It also stands as the proposed **"service" answer** to the identifier-translatio
 open question in the `folio-api` requesting prototype (see
 [Requesting integration](#requesting-integration)).
 
-The authoritative contract is [`spec/openapi.yaml`](spec/openapi.yaml), rendered
-for reading as [`spec/openapi.md`](spec/openapi.md).
+The authoritative contract is [`spec/openapi.yaml`](spec/openapi.yaml).
 
 **See also**: [RFC 089](https://github.com/wellcomecollection/docs/tree/main/rfcs/089-identifiers-api),
 which carries the problem and consumers
