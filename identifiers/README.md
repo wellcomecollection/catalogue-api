@@ -291,7 +291,7 @@ they aren't mistaken for committed contract:
 
 ```bash
 uv run python src/adapters/run_local.py        # in one shell, on :8000
-uv run --group bonus schemathesis run spec/openapi.yaml --url http://127.0.0.1:8000 \
+uvx schemathesis run spec/openapi.yaml --url http://127.0.0.1:8000 \
   --checks response_schema_conformance,status_code_conformance,content_type_conformance
 # → 151 generated, all passed (responses conform to the contract)
 ```
