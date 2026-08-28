@@ -4,6 +4,8 @@ Covers both arms of the 200 `oneOf`: the bare CanonicalIdRef and the
 include=siblings IdentifierSet.
 """
 
+from adapters import handler
+
 REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
 
 
@@ -61,3 +63,14 @@ def test_reverse_bad_type_enum_is_400(invoke, assert_contract):
         {"type": "Banana"},
     )
     assert_contract(result, "GET", REVERSE, 400, query={"type": "Banana"})
+
+
+def test_reverse_siblings_with_no_rows_is_404(invoke, monkeypatch):
+    # The seeded store cannot produce this: its two reads always agree.
+    monkeypatch.setattr(handler._repo, "get_by_canonical", lambda _: [])
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
+        {"type": "Work", "include": "siblings"},
+    )
+    assert result["statusCode"] == 404

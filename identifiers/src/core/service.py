@@ -87,6 +87,8 @@ class IdentifiersService:
 
         if include == "siblings":
             rows = self._repo.get_by_canonical(canonical_id)
+            if not rows:
+                raise NotFound("notFound", "no mapping found")
             return self._set_result(canonical_id, rows)
 
         # Bare reverse lookup is immutable once minted -> long TTL, no ETag.
