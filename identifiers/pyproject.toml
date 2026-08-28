@@ -1,0 +1,52 @@
+[project]
+name = "identifiers-api"
+version = "0.1.0"
+description = "Read-only canonical <-> source identifier lookup (RFC 083 ID Registry projection)"
+# Pinned to match catalogue_graph, which documents why it needs the ceiling.
+requires-python = ">=3.12,<3.13"
+# No runtime dependencies: the core is pure stdlib, and the prototype DB is
+# SQLite (also stdlib). The production target swaps the SQLite Repository for an
+# Aurora/RDS-Data-API implementation; nothing in `core` would change.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "openapi-core>=0.19",
+    "ruff",
+    "mypy>=1.16",
+    "boto3-stubs",
+]
+# Only needed to run against the real Aurora ID Registry (IDENTIFIERS_BACKEND=rds).
+# The SQLite path and the whole test suite need no boto3.
+rds = [
+    "boto3>=1.34",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["E501", "B019"]
+
+# Deliberately looser than catalogue_graph: disallow_untyped_defs would mean
+# annotating the whole test suite. Worth tightening separately.
+[tool.mypy]
+mypy_path = "src"
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

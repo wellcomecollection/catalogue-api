@@ -1,6 +1,8 @@
 apis:
   catalogue:
     root: reference/catalogue.yaml
+  identifiers:
+    root: identifiers/spec/openapi.yaml
 
 rules:
   # The catalogue API is public and unauthenticated, so there is no security
