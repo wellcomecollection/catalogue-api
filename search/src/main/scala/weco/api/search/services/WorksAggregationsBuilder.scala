@@ -2,6 +2,7 @@ package weco.api.search.services
 
 import com.sksamuel.elastic4s.requests.searches.queries.Query
 import weco.api.search.models.{
+  AccessMethodFilter,
   ArchiveCategoryFilter,
   AvailabilitiesFilter,
   CollectionRootFilter,
@@ -129,6 +130,16 @@ object WorksAggregationsBuilder
           AggregationType.LabeledIdAggregation
         )
 
+      // We want to return every possible access method. At the time of writing,
+      // there are 5 of them. Setting the size to 10 gives us headroom.
+      case WorkAggregationRequest.AccessMethod =>
+        AggregationParams(
+          "accessMethod",
+          "aggregatableValues.items.locations.accessConditions.method",
+          10,
+          AggregationType.LabeledIdAggregation
+        )
+
       // Note: we want these aggregations to return every possible value, so we
       // want this to be as many availabilities as we support in the catalogue pipeline.
       //
@@ -162,6 +173,8 @@ object WorksAggregationsBuilder
       case _: ContributorsIdFilter =>
         List(WorkAggregationRequest.ContributorId)
       case _: LicenseFilter => List(WorkAggregationRequest.License)
+      case _: AccessMethodFilter =>
+        List(WorkAggregationRequest.AccessMethod)
       case _: AvailabilitiesFilter =>
         List(WorkAggregationRequest.Availabilities)
     }

@@ -8,6 +8,7 @@
       "partOf": [
         {
           "id": "29jcl6cu",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA/A",
           "title": "wZL0ffJl0qmZquS",
           "totalParts": 5,
@@ -15,6 +16,7 @@
         },
         {
           "id": "7vafg1w2",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA",
           "title": "08emPYDNpZDHkTv",
           "totalParts": 1,
@@ -31,6 +33,7 @@
       "partOf": [
         {
           "id": "qviwg90e",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA/A",
           "title": "yhwsxNZOmV0IIdv",
           "totalParts": 5,
@@ -38,6 +41,7 @@
         },
         {
           "id": "zm2wkrw9",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA",
           "title": "qKgHe3LiFcH1Yow",
           "totalParts": 1,
@@ -54,6 +58,7 @@
       "partOf": [
         {
           "id": "n7mn5fmg",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA/A",
           "title": "nzfgIzhGRDVPkcm",
           "totalParts": 5,
@@ -61,6 +66,7 @@
         },
         {
           "id": "wncm2n7n",
+          "isAvailableOnline": false,
           "referenceNumber": "SA/BSA",
           "title": "GiMmJKHONBMz3P6",
           "totalParts": 1,

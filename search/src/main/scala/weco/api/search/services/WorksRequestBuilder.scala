@@ -174,6 +174,11 @@ object WorksRequestBuilder
 
     case LicenseFilter(licenseIds) =>
       termsQuery("filterableValues.items.locations.license.id", licenseIds)
+    case AccessMethodFilter(methodIds) =>
+      termsQuery(
+        "filterableValues.items.locations.accessConditions.method.id",
+        methodIds
+      )
     case AccessStatusFilter(includes, excludes) =>
       includesExcludesQuery(
         field = "filterableValues.items.locations.accessConditions.status.id",

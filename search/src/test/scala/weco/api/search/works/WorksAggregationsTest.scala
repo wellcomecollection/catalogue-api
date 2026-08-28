@@ -448,4 +448,58 @@ class WorksAggregationsTest extends AnyFunSpec with ApiWorksTestBase {
         }
     }
   }
+
+  it("aggregates by access method") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        val works = Seq(
+          "works.examples.availabilities.online-only",
+          "works.examples.availabilities.everywhere",
+          "works.examples.access-status-filters-tests.0",
+          "works.examples.access-status-filters-tests.1"
+        )
+
+        indexTestDocuments(worksIndex, works: _*)
+        val displayWorks = getMinimalDisplayWorks(works)
+
+        assertJsonResponse(
+          routes,
+          path =
+            s"$rootPath/works?aggregations=items.locations.accessConditions.method"
+        ) {
+          Status.OK -> s"""
+            {
+              ${resultList(totalResults = works.size)},
+              "aggregations": {
+                "items.locations.accessConditions.method": {
+                  "buckets": [
+                    {
+                      "count" : 2,
+                      "data" : {
+                        "id" : "manual-request",
+                        "label" : "Manual request"
+                      },
+                      "type" : "AggregationBucket"
+                    },
+                    {
+                      "count" : 2,
+                      "data" : {
+                        "id" : "view-online",
+                        "label" : "View online"
+                      },
+                      "type" : "AggregationBucket"
+                    }
+                  ],
+                  "type": "Aggregation"
+                },
+                "type": "Aggregations"
+              },
+              "results": [
+                ${displayWorks.mkString(",")}
+              ]
+            }
+          """.stripMargin
+        }
+    }
+  }
 }

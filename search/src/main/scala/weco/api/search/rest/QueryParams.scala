@@ -163,6 +163,26 @@ trait QueryParamsUtils extends Directives {
   def stringListFilter[T](applyFilter: Seq[String] => T): Decoder[T] =
     decodeCommaSeparated.emap(strs => Right(applyFilter(strs)))
 
+  /** As stringListFilter, but rejects values outside a known set, so that a typo
+    * gets a 400 rather than an empty result set.
+    */
+  def validatedStringListFilter[T](
+    validStrs: Seq[String]
+  )(applyFilter: Seq[String] => T): Decoder[T] = {
+    val validStrsSet = validStrs.toSet
+    val validStrsList = validStrs.toList
+
+    decodeCommaSeparated.emap { strs =>
+      val invalidStrs = strs.filterNot(validStrsSet.contains)
+
+      Either.cond(
+        invalidStrs.isEmpty,
+        right = applyFilter(strs),
+        left = invalidValuesMsg(invalidStrs, validStrsList)
+      )
+    }
+  }
+
   def invalidValuesMsg(
     values: List[String],
     validValues: List[String]

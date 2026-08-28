@@ -16,6 +16,7 @@ case class DisplayWorkAggregations(
   `archive.category`: Option[DisplayAggregation],
   `collection.root`: Option[DisplayAggregation],
   `items.locations.license`: Option[DisplayAggregation],
+  `items.locations.accessConditions.method`: Option[DisplayAggregation],
   availabilities: Option[DisplayAggregation],
   @JsonKey("type") ontologyType: String = "Aggregations"
 )
@@ -89,6 +90,14 @@ object DisplayWorkAggregations {
             retainEmpty = bucketMatcher.matchBucket(LicenseFilterAgg)
           )
         ),
+      `items.locations.accessConditions.method` =
+        aggs.itemsLocationsAccessConditionsMethod
+          .map(
+            DisplayAggregation(
+              _,
+              retainEmpty = bucketMatcher.matchBucket(AccessMethodFilterAgg)
+            )
+          ),
       availabilities = aggs.availabilities.map(
         DisplayAggregation(
           _,
