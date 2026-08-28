@@ -233,14 +233,12 @@ ETag: W/"2-2026-02-10T12:00:00Z"
 ### Not found / bad request
 
 ```http
-GET /v1/identifiers/vacant23        →  404  {"error": "notFound",   "message": "no mapping found"}
 GET /v1/identifiers/abcdefgh        →  404  {"error": "notFound",   "message": "no mapping found"}
 GET /v1/identifiers/zzz             →  400  {"error": "badRequest", "message": "canonicalId does not match the required format"}
 ```
 
-`vacant23` exists in `canonical_ids` (status `free`) but has no `identifiers`
-rows — the pre-generated-but-unassigned case collapses into `404` like any
-unknown id.
+A canonical id that the registry has pre-generated but not yet assigned has no
+`identifiers` rows either, so it collapses into the same `404` as an unknown id.
 
 ## Status codes
 

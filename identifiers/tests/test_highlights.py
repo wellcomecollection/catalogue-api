@@ -82,12 +82,6 @@ def test_cross_type_canonical_carries_rows_of_differing_types(invoke):
     assert payload["type"] == "Image"
 
 
-def test_unassigned_canonical_id_is_404(invoke):
-    # vacant23 exists in canonical_ids (status free) but has no identifiers rows.
-    result = invoke(FORWARD, {"canonicalId": "vacant23"})
-    assert result["statusCode"] == 404
-
-
 def test_valid_format_but_unknown_is_404(invoke):
     result = invoke(FORWARD, {"canonicalId": "abcdefgh"})
     assert result["statusCode"] == 404

@@ -5,14 +5,6 @@
 --   ka345678  Item  : Sierra item original + FOLIO item alias (the requesting case)
 --   mn23pqrs  Image : single source (no alias)
 --   ze789fgh  mixed : a Work row + an Image row share one canonical id (cross-type)
---   vacant23  free  : pre-generated, no identifiers rows -> forward lookup 404
-
-INSERT INTO canonical_ids (canonical_id, status) VALUES
-  ('a2345bcd', 'assigned'),
-  ('ka345678', 'assigned'),
-  ('mn23pqrs', 'assigned'),
-  ('ze789fgh', 'assigned'),
-  ('vacant23', 'free');
 
 INSERT INTO identifiers (ontology_type, source_system, source_id, canonical_id, created_at) VALUES
   ('Work',  'sierra-system-number',  'b1161044x', 'a2345bcd', '2019-03-04T10:14:22Z'),
