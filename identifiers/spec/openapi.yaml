@@ -44,9 +44,10 @@ paths:
       summary: Resolve a canonical id to its source identifiers
       description: >-
         Returns the full set of source identifiers that share this canonical id,
-        ordered by createdAt ascending so the original is always first. The set
-        can grow during a source-system migration as aliases are inherited, so
-        responses are cached with a bounded TTL and revalidated via ETag.
+        ordered by createdAt descending so the most recent is always first. The
+        original is the row with `isAlias` false, which is last. The set can grow
+        during a source-system migration as aliases are inherited, so responses
+        are cached with a bounded TTL and revalidated via ETag.
       parameters:
         - $ref: '#/components/parameters/CanonicalId'
       responses:
@@ -123,15 +124,15 @@ paths:
                     type: Work
                     sourceIdentifiers:
                       - type: Work
-                        sourceSystem: sierra-system-number
-                        value: b1161044x
-                        isAlias: false
-                        createdAt: "2019-03-04T10:14:22Z"
-                      - type: Work
                         sourceSystem: axiell-collections-id
                         value: "12345"
                         isAlias: true
                         createdAt: "2026-02-10T12:00:00Z"
+                      - type: Work
+                        sourceSystem: sierra-system-number
+                        value: b1161044x
+                        isAlias: false
+                        createdAt: "2019-03-04T10:14:22Z"
         '304':
           $ref: '#/components/responses/NotModified'
         '400':
@@ -309,7 +310,7 @@ components:
           example: Work
         sourceIdentifiers:
           type: array
-          description: Ordered by createdAt ascending; original first.
+          description: Ordered by createdAt descending; most recent first.
           minItems: 1
           items:
             $ref: '#/components/schemas/SourceIdentifier'

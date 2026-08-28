@@ -19,12 +19,12 @@ def test_forward_returns_ordered_set_with_isalias(invoke):
     assert payload["type"] == "Work"
     rows = payload["sourceIdentifiers"]
     assert len(rows) == 2
-    # Sierra original first (earliest createdAt), isAlias false.
-    assert rows[0]["sourceSystem"] == "sierra-system-number"
-    assert rows[0]["isAlias"] is False
-    # Axiell alias second, isAlias true.
-    assert rows[1]["sourceSystem"] == "axiell-collections-id"
-    assert rows[1]["isAlias"] is True
+    # Axiell alias first (most recent createdAt), isAlias true.
+    assert rows[0]["sourceSystem"] == "axiell-collections-id"
+    assert rows[0]["isAlias"] is True
+    # Sierra original last (earliest createdAt), isAlias false.
+    assert rows[1]["sourceSystem"] == "sierra-system-number"
+    assert rows[1]["isAlias"] is False
 
 
 def test_reverse_bare_returns_canonical_id(invoke):
@@ -73,10 +73,12 @@ def test_cross_type_canonical_carries_rows_of_differing_types(invoke):
     payload = body(result)
     rows = payload["sourceIdentifiers"]
     assert {r["type"] for r in rows} == {"Work", "Image"}
-    # Image (2019) precedes Work (2026) by createdAt; Image is the original.
-    assert rows[0]["type"] == "Image"
-    assert rows[0]["isAlias"] is False
-    # Top-level type follows the original, so it is Image, not the later Work alias.
+    # Work (2026) comes first, but Image (2019) is the original.
+    assert rows[0]["type"] == "Work"
+    assert rows[0]["isAlias"] is True
+    assert rows[1]["type"] == "Image"
+    assert rows[1]["isAlias"] is False
+    # Top-level type follows the original, so it is Image, not the first row's Work.
     assert payload["type"] == "Image"
 
 

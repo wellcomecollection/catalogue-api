@@ -101,23 +101,21 @@ class IdentifiersService:
 
     def _set_result(self, canonical_id: str, rows: list[SourceRow]) -> LookupResult:
         ordered = _order_rows(rows)
+        # Derived from createdAt, not from position: the response is ordered
+        # newest first, so the original is last rather than first.
+        original = _original_row(ordered)
         identifiers = [
             SourceIdentifier(
                 type=row.ontology_type,
                 source_system=row.source_system,
                 value=row.source_id,
-                # Prototype default: the single first row after ordering is the
-                # original; every later row is an inherited alias. (Tie-break on
-                # equal createdAt is the secondary source_system sort.)
-                is_alias=(index > 0),
+                is_alias=(row is not original),
                 created_at=row.created_at,
             )
-            for index, row in enumerate(ordered)
+            for row in ordered
         ]
-        # Top-level type is the original row's type. `ordered` is non-empty (the
-        # callers raise NotFound on no rows), and the original is the single
-        # isAlias=false row, so this is unambiguous even for a mixed-type set.
-        top_level_type = ordered[0].ontology_type
+        # The original's type, so this is unambiguous even for a mixed-type set.
+        top_level_type = original.ontology_type
         return LookupResult(
             body=IdentifierSet(
                 canonical_id=canonical_id,
@@ -130,11 +128,16 @@ class IdentifiersService:
 
 
 def _order_rows(rows: list[SourceRow]) -> list[SourceRow]:
-    """Ascending by createdAt, then source_system as a stable tie-break.
+    """Descending by createdAt, most recent first, then source_system.
 
     ISO-8601 UTC timestamps in a fixed format sort correctly as strings.
     """
-    return sorted(rows, key=lambda r: (r.created_at, r.source_system))
+    return sorted(rows, key=lambda r: (r.created_at, r.source_system), reverse=True)
+
+
+def _original_row(rows: list[SourceRow]) -> SourceRow:
+    """The earliest row: the original, from which every later row is inherited."""
+    return min(rows, key=lambda r: (r.created_at, r.source_system))
 
 
 def _etag(ordered_rows: list[SourceRow]) -> str:

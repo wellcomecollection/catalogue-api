@@ -155,8 +155,9 @@ GET /v1/identifiers/by-source/axiell-guid/0002acb1-5945-4ffa-9b7f-2e5f226636e9?t
 | `…?type=Work&include=siblings` | The same full `IdentifierSet`. |
 
 `type` is `Work` \| `Image` \| `Item`, defaults to `Work`, and is a real key
-component. `isAlias` is `false` for the earliest-`createdAt` row and `true` for
-later (inherited) rows. An `IdentifierSet` also carries a top-level `type`,
+component. The set is ordered by `createdAt` descending, most recent first.
+`isAlias` is `false` for the earliest-`createdAt` row (the original, so last in
+the set) and `true` for later (inherited) rows. An `IdentifierSet` also carries a top-level `type`,
 copied from the original (`isAlias=false`) row, so a caller can read the
 canonical id's type without scanning the set. Element shape (`SourceIdentifier`)
 is identical across both endpoints; the queried tuple is always included in any
@@ -178,8 +179,8 @@ ETag: W/"2-2026-02-10T12:00:00Z"
 Content-Type: application/json
 
 {"canonicalId": "a2345bcd", "type": "Work", "sourceIdentifiers": [
-  {"type": "Work", "sourceSystem": "sierra-system-number",  "value": "b1161044x", "isAlias": false, "createdAt": "2019-03-04T10:14:22Z"},
-  {"type": "Work", "sourceSystem": "axiell-collections-id", "value": "12345",     "isAlias": true,  "createdAt": "2026-02-10T12:00:00Z"}
+  {"type": "Work", "sourceSystem": "axiell-collections-id", "value": "12345",     "isAlias": true,  "createdAt": "2026-02-10T12:00:00Z"},
+  {"type": "Work", "sourceSystem": "sierra-system-number",  "value": "b1161044x", "isAlias": false, "createdAt": "2019-03-04T10:14:22Z"}
 ]}
 ```
 
@@ -203,8 +204,8 @@ GET /v1/identifiers/by-source/sierra-system-number/b1161044x?type=Work&include=s
 ```
 ```json
 {"canonicalId": "a2345bcd", "type": "Work", "sourceIdentifiers": [
-  {"type": "Work", "sourceSystem": "sierra-system-number",  "value": "b1161044x", "isAlias": false, "createdAt": "2019-03-04T10:14:22Z"},
-  {"type": "Work", "sourceSystem": "axiell-collections-id", "value": "12345",     "isAlias": true,  "createdAt": "2026-02-10T12:00:00Z"}
+  {"type": "Work", "sourceSystem": "axiell-collections-id", "value": "12345",     "isAlias": true,  "createdAt": "2026-02-10T12:00:00Z"},
+  {"type": "Work", "sourceSystem": "sierra-system-number",  "value": "b1161044x", "isAlias": false, "createdAt": "2019-03-04T10:14:22Z"}
 ]}
 ```
 
@@ -266,8 +267,8 @@ they aren't mistaken for committed contract:
 - **TTLs** — `max-age=300` for forward / `include=siblings`; `max-age=86400` for
   the immutable bare reverse lookup. (`core/service.py`)
 - **Weak `ETag`** form `W/"{row_count}-{max(createdAt)}"`.
-- **`createdAt` tie-break** — order by `createdAt` then `sourceSystem`; the single
-  first row after that ordering is the original (`isAlias=false`).
+- **`createdAt` tie-break** — order by `createdAt` then `sourceSystem`, both
+  descending; the earliest row is the original (`isAlias=false`).
 - **DB** — a fresh in-memory SQLite seeded from `db/` on each run, for
   reproducibility.
 - **`If-None-Match`** — exact-token match (the client echoes the issued ETag); a
