@@ -8,9 +8,9 @@ same `Repository` protocol as the SQLite prototype store.
 READ-ONLY BY CONTRACT AND BY GUARD
 ==================================
 The Identifiers API is a read-only projection; all writes belong to the ID
-Minter (RFC 083). This repository issues **only SELECT statements** and refuses
-anything else via ``_assert_read_only``. It must NEVER write to or seed the
-database. Do not add INSERT/UPDATE/DELETE/DDL/transaction methods here.
+Minter (RFC 083). This repository issues **only the two read statements below**
+and refuses anything else via ``_assert_read_only``. It must NEVER write to or
+seed the database. Do not add INSERT/UPDATE/DELETE/DDL/transaction methods here.
 
 Schema note: the live Aurora MySQL tables are ``canonical_ids`` / ``identifiers``
 (snake_case table names) but their COLUMNS are PascalCase per RFC 083
@@ -24,12 +24,24 @@ from typing import cast
 
 from core.models import SourceRow
 
+_SQL_BY_CANONICAL = (
+    "SELECT OntologyType, SourceSystem, SourceId, CreatedAt "
+    "FROM identifiers WHERE CanonicalId = :canonical_id"
+)
+_SQL_BY_SOURCE = (
+    "SELECT CanonicalId FROM identifiers "
+    "WHERE OntologyType = :ontology_type "
+    "AND SourceSystem = :source_system "
+    "AND SourceId = :source_id LIMIT 1"
+)
+_ALLOWED_SQL = frozenset({_SQL_BY_CANONICAL, _SQL_BY_SOURCE})
+
 
 def _assert_read_only(sql: str) -> None:
-    """Defence-in-depth: refuse any statement that is not a plain SELECT."""
-    if not sql.lstrip().upper().startswith("SELECT"):
+    """Defence-in-depth: only the two statements above may be issued."""
+    if sql not in _ALLOWED_SQL:
         raise RuntimeError(
-            "RdsDataRepository is read-only; refusing non-SELECT statement"
+            "RdsDataRepository is read-only; statement is not on the read allowlist"
         )
 
 
@@ -86,12 +98,8 @@ class RdsDataRepository:
 
     def get_by_canonical(self, canonical_id: str) -> list[SourceRow]:
         # Rides idx_canonical; ordering/isAlias are derived in core.
-        sql = (
-            "SELECT OntologyType, SourceSystem, SourceId, CreatedAt "
-            "FROM identifiers WHERE CanonicalId = :canonical_id"
-        )
         params = [_param("canonical_id", canonical_id)]
-        records = self._execute(sql, params).get("records", [])
+        records = self._execute(_SQL_BY_CANONICAL, params).get("records", [])
         # These three columns are NOT NULL and form the primary key (db/schema.sql),
         # so _field cannot return None for them.
         return [
@@ -108,18 +116,12 @@ class RdsDataRepository:
         self, ontology_type: str, source_system: str, source_id: str
     ) -> str | None:
         # Point read on the three-part primary key.
-        sql = (
-            "SELECT CanonicalId FROM identifiers "
-            "WHERE OntologyType = :ontology_type "
-            "AND SourceSystem = :source_system "
-            "AND SourceId = :source_id LIMIT 1"
-        )
         params = [
             _param("ontology_type", ontology_type),
             _param("source_system", source_system),
             _param("source_id", source_id),
         ]
-        records = self._execute(sql, params).get("records", [])
+        records = self._execute(_SQL_BY_SOURCE, params).get("records", [])
         if not records:
             return None
         return _field(records[0][0])

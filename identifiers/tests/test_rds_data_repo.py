@@ -116,6 +116,11 @@ def test_read_only_guard_refuses_writes(sql):
         _assert_read_only(sql)
 
 
+def test_read_only_guard_refuses_unlisted_reads():
+    with pytest.raises(RuntimeError, match="read-only"):
+        _assert_read_only("SELECT * FROM identifiers")
+
+
 def test_to_iso_handles_missing():
     assert _to_iso(None) == ""
     assert _to_iso("") == ""
