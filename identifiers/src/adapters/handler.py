@@ -62,6 +62,8 @@ def handler(event: dict, context=None) -> dict:
         return _error(400, exc.code, exc.message)
     except NotFound as exc:
         return _error(404, exc.code, exc.message)
+    except Exception:
+        return _error(500, "internalServerError", "the request could not be completed")
 
     return _ok(event, result)
 

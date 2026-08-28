@@ -68,6 +68,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
       x-amazon-apigateway-integration:
         type: aws_proxy
         httpMethod: POST
@@ -139,6 +141,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
       x-amazon-apigateway-integration:
         type: aws_proxy
         httpMethod: POST
@@ -257,6 +261,17 @@ components:
           example:
             error: notFound
             message: no mapping found
+    InternalServerError:
+      description: >-
+        The lookup could not be completed. The message is fixed, so no registry
+        or infrastructure detail reaches the consumer.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: internalServerError
+            message: the request could not be completed
 
   schemas:
 
