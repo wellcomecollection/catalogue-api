@@ -1476,6 +1476,9 @@ components:
         description:
           type: string
           description: A description given to a thing.
+        shortDescription:
+          type: string
+          description: A trimmed version of the description.
         physicalDescription:
           type: string
           description: A description of specific physical characteristics of the work.
