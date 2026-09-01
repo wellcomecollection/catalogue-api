@@ -11,7 +11,9 @@ from folio-api's `{message}` shape — see the README.
 
 import json
 import os
+from typing import Any
 
+from core.repository import Repository
 from core.service import BadRequest, IdentifiersService, LookupResult, NotFound
 
 # Backend selection (prototype default: the seeded SQLite store). Set
@@ -21,7 +23,7 @@ from core.service import BadRequest, IdentifiersService, LookupResult, NotFound
 BACKEND = os.environ.get("IDENTIFIERS_BACKEND", "sqlite").lower()
 
 
-def _build_repo():
+def _build_repo() -> Repository:
     if BACKEND == "rds":
         # Lazy import so the SQLite path never requires boto3.
         from adapters.rds_data_repo import RdsDataRepository
@@ -41,7 +43,7 @@ _FORWARD = "/v1/identifiers/{canonicalId}"
 _REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
 
 
-def handler(event: dict, context=None) -> dict:
+def handler(event: dict, context: Any = None) -> dict:
     resource = event.get("resource")
     path_params = event.get("pathParameters") or {}
     query = event.get("queryStringParameters") or {}
@@ -98,7 +100,7 @@ def _if_none_match(event: dict, etag: str) -> bool:
 
 def _header(event: dict, name: str) -> str | None:
     """Case-insensitive lookup over proxy-event headers."""
-    headers = event.get("headers") or {}
+    headers: dict[str, str] = event.get("headers") or {}
     lowered = name.lower()
     for key, value in headers.items():
         if key.lower() == lowered:

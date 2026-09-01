@@ -5,6 +5,8 @@ SQL, parameter binding, column mapping, CreatedAt normalisation, and the
 read-only guard without touching AWS. The repository must never write.
 """
 
+from typing import Any
+
 import pytest
 
 from adapters.rds_data_repo import (
@@ -17,20 +19,20 @@ from adapters.rds_data_repo import (
 class FakeDataClient:
     """Records calls and returns a pre-set Data API response."""
 
-    def __init__(self, response: dict):
+    def __init__(self, response: dict) -> None:
         self._response = response
         self.calls: list[dict] = []
 
-    def execute_statement(self, **kwargs):
+    def execute_statement(self, **kwargs: Any) -> dict:
         self.calls.append(kwargs)
         return self._response
 
 
-def _str(value):
+def _str(value: str) -> dict:
     return {"stringValue": value}
 
 
-def make_repo(response):
+def make_repo(response: dict) -> RdsDataRepository:
     return RdsDataRepository(
         client=FakeDataClient(response),
         resource_arn="arn:aws:rds:eu-west-1:0:cluster:test",
@@ -39,7 +41,7 @@ def make_repo(response):
     )
 
 
-def test_get_by_canonical_maps_columns_and_normalises_timestamp():
+def test_get_by_canonical_maps_columns_and_normalises_timestamp() -> None:
     response = {
         "records": [
             [
@@ -68,20 +70,20 @@ def test_get_by_canonical_maps_columns_and_normalises_timestamp():
     assert rows[1].created_at == "2026-02-10T12:00:00Z"
 
 
-def test_get_by_canonical_empty_returns_empty_list():
+def test_get_by_canonical_empty_returns_empty_list() -> None:
     assert make_repo({"records": []}).get_by_canonical("missing23") == []
 
 
-def test_get_by_source_returns_canonical_id():
+def test_get_by_source_returns_canonical_id() -> None:
     repo = make_repo({"records": [[_str("ka345678")]]})
     assert repo.get_by_source("Item", "folio-item", "3f2a...uuid") == "ka345678"
 
 
-def test_get_by_source_unknown_returns_none():
+def test_get_by_source_unknown_returns_none() -> None:
     assert make_repo({"records": []}).get_by_source("Work", "x", "y") is None
 
 
-def test_queries_are_parameterised_not_interpolated():
+def test_queries_are_parameterised_not_interpolated() -> None:
     repo = make_repo({"records": [[_str("a2345bcd")]]})
     repo.get_by_source("Work", "sierra-system-number", "b1161044x")
     call = repo._client.calls[0]
@@ -92,7 +94,7 @@ def test_queries_are_parameterised_not_interpolated():
     ]
 
 
-def test_only_select_statements_are_issued():
+def test_only_select_statements_are_issued() -> None:
     row = [_str("Work"), _str("s"), _str("v"), _str("2020-01-01 00:00:00")]
     repo = make_repo({"records": [row]})
     repo.get_by_canonical("a2345bcd")
@@ -111,17 +113,17 @@ def test_only_select_statements_are_issued():
         "  update t set a=1",
     ],
 )
-def test_read_only_guard_refuses_writes(sql):
+def test_read_only_guard_refuses_writes(sql: str) -> None:
     with pytest.raises(RuntimeError, match="read-only"):
         _assert_read_only(sql)
 
 
-def test_read_only_guard_refuses_unlisted_reads():
+def test_read_only_guard_refuses_unlisted_reads() -> None:
     with pytest.raises(RuntimeError, match="read-only"):
         _assert_read_only("SELECT * FROM identifiers")
 
 
-def test_to_iso_handles_missing():
+def test_to_iso_handles_missing() -> None:
     assert _to_iso(None) == ""
     assert _to_iso("") == ""
     assert _to_iso("2020-01-01 00:00:00") == "2020-01-01T00:00:00Z"
