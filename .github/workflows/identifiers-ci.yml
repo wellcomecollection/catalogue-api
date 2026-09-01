@@ -1,0 +1,35 @@
+name: "Identifiers API: Build and Test"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "identifiers/**"
+      - ".github/workflows/identifiers-ci.yml"
+  pull_request:
+    paths:
+      - "identifiers/**"
+      - ".github/workflows/identifiers-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/python_check@main
+        with:
+          folder: identifiers
+
+  check-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint:openapi
