@@ -13,10 +13,7 @@ import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, unquote, urlsplit
 
-# Make `core` and `adapters` importable when run as a script.
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from adapters.handler import BACKEND, handler  # noqa: E402
+from adapters.handler import BACKEND, handler
 
 _FORWARD = "/v1/identifiers/{canonicalId}"
 _REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
