@@ -33,6 +33,14 @@ resource "aws_ecr_repository" "concepts" {
   }
 }
 
+resource "aws_ecr_repository" "identifiers" {
+  name = "uk.ac.wellcome/identifiers"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_ecr_repository" "nginx_api_gw" {
   name = "uk.ac.wellcome/nginx_api_gw"
 
