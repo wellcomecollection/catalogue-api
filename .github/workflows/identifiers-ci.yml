@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   python-checks:
@@ -33,3 +34,21 @@ jobs:
           node-version: 24
       - run: yarn install --frozen-lockfile
       - run: yarn lint:openapi
+
+  build-identifiers-image:
+    runs-on: ubuntu-latest
+    needs: [python-checks]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/docker-build-and-push@main
+        with:
+          registry: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
+          folder: identifiers
+          target: identifiers
+          dockerfile: lambda.Dockerfile
+          tag: ${{ github.sha }}
+          role_to_assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
+          # Pull requests build without publishing, which also covers dependabot
+          # and fork runs, where no repo secret is available.
+          push: ${{ github.ref == 'refs/heads/main' && secrets.IDENTIFIERS_CI_ROLE_ARN != '' }}
+          publish_latest: ${{ github.ref == 'refs/heads/main' }}
