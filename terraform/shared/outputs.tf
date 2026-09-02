@@ -17,3 +17,7 @@ output "ecr_requests_repository_url" {
 output "ecr_concepts_repository_url" {
   value = aws_ecr_repository.concepts.repository_url
 }
+
+output "ecr_identifiers_repository_url" {
+  value = aws_ecr_repository.identifiers.repository_url
+}
