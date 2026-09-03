@@ -14,14 +14,14 @@ COPY pyproject.toml uv.lock ./
 # Install uv
 RUN pip install uv
 
-# Install boto3 from the `rds` dependency group, which is where it lives because
-# only the RDS Data API backend needs it. --no-emit-project keeps the export to
-# dependencies, so this runs before the source is copied in.
-RUN uv export --frozen --only-group rds --no-emit-project --no-hashes -o requirements.txt \
+# Install dependencies before the source, so the layer survives source changes.
+RUN uv export --frozen --no-default-groups --no-emit-project --no-hashes -o requirements.txt \
     && uv pip install --system -r requirements.txt
 
 # Copy application source code. `core` and `adapters` are imported as top-level
 # modules, so the contents of src/ go directly into the task root.
 COPY src/ ${LAMBDA_TASK_ROOT}
+
+ENV IDENTIFIERS_BACKEND=rds
 
 CMD [ "adapters.handler.handler" ]
