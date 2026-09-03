@@ -7,6 +7,7 @@ openapi-core, so the spec is what a response has to satisfy.
 """
 
 import json
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
@@ -43,11 +44,21 @@ def make_event(
     }
 
 
+# Type aliases for the callable fixtures below.
+Invoke = Callable[..., dict]
+AssertContract = Callable[..., None]
+
+
 @pytest.fixture
-def invoke():
+def invoke() -> Invoke:
     """Call the handler with a synthesized event; return the response dict."""
 
-    def call(resource, path_params=None, query=None, headers=None):
+    def call(
+        resource: str,
+        path_params: dict | None = None,
+        query: dict | None = None,
+        headers: dict | None = None,
+    ) -> dict:
         return handler(make_event(resource, path_params, query, headers))
 
     return call
@@ -55,7 +66,8 @@ def invoke():
 
 def body(result: dict) -> dict:
     """Parse a response's JSON body."""
-    return json.loads(result["body"])
+    parsed: dict = json.loads(result["body"])
+    return parsed
 
 
 @pytest.fixture(scope="session")
@@ -64,7 +76,7 @@ def openapi() -> OpenAPI:
 
 
 @pytest.fixture
-def assert_contract(openapi):
+def assert_contract(openapi: OpenAPI) -> AssertContract:
     """Validate a handler's response against the spec for (method, resource)."""
 
     def check(
@@ -73,7 +85,7 @@ def assert_contract(openapi):
         resource: str,
         expected_status: int,
         query: dict | None = None,
-    ):
+    ) -> None:
         assert result["statusCode"] == expected_status, (
             f"expected {expected_status}, got {result['statusCode']}: "
             f"{result.get('body')!r}"

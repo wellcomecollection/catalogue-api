@@ -127,6 +127,9 @@ wheels = [
 name = "identifiers-api"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "boto3" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -136,11 +139,9 @@ dev = [
     { name = "pytest" },
     { name = "ruff" },
 ]
-rds = [
-    { name = "boto3" },
-]
 
 [package.metadata]
+requires-dist = [{ name = "boto3" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -150,7 +151,6 @@ dev = [
     { name = "pytest", specifier = ">=8" },
     { name = "ruff" },
 ]
-rds = [{ name = "boto3", specifier = ">=1.34" }]
 
 [[package]]
 name = "iniconfig"

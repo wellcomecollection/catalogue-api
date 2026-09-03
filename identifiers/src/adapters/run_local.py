@@ -11,12 +11,10 @@ Run:  uv run python src/adapters/run_local.py   (defaults to port 8000)
 import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
-# Make `core` and `adapters` importable when run as a script.
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from adapters.handler import BACKEND, handler  # noqa: E402
+from adapters.handler import BACKEND, handler
 
 _FORWARD = "/v1/identifiers/{canonicalId}"
 _REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
@@ -47,7 +45,7 @@ def _route(path: str) -> tuple[str | None, dict]:
 
 
 class _Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def do_GET(self) -> None:
         split = urlsplit(self.path)
         resource, path_params = _route(split.path)
         query = {k: v[0] for k, v in parse_qs(split.query).items()}
@@ -68,11 +66,11 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    def log_message(self, fmt, *args):  # quieter console
+    def log_message(self, fmt: str, *args: Any) -> None:  # quieter console
         sys.stderr.write(f"{self.address_string()} - {fmt % args}\n")
 
 
-def main():
+def main() -> None:
     port = int(os.environ.get("PORT", "8000"))
     server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
     print(
