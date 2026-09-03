@@ -18,8 +18,9 @@ Always `cd identifiers/` before any `uv run ...` command: this project has its o
   `rds_data_repo.py` (two implementations of the same `Repository` protocol),
   `handler.py` (the Lambda proxy handler, which picks the backend) and `run_local.py`
   (a stdlib HTTP invoker for local runs).
-- `spec/openapi.yaml` is the authoritative contract. `db/` holds the schema and the seed
-  fixtures.
+- `spec/openapi.yaml` is the authoritative contract. `src/adapters/db/` holds the schema
+  and the seed fixtures, next to the module that reads them so that copying `src/` into
+  the image carries them along.
 - `tests/` mirrors `src/`. `src/` is packaged via `[tool.uv] package = true`, so import as
   `from core.service ...` and `from adapters.handler ...`, **not** `from src.core ...`.
 
