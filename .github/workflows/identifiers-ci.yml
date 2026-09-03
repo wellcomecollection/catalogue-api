@@ -51,4 +51,3 @@ jobs:
           # Pull requests build without publishing, which also covers dependabot
           # and fork runs, where no repo secret is available.
           push: ${{ github.ref == 'refs/heads/main' && secrets.IDENTIFIERS_CI_ROLE_ARN != '' }}
-          publish_latest: ${{ github.ref == 'refs/heads/main' }}
