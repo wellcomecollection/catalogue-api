@@ -22,6 +22,8 @@ as MySQL ``"YYYY-MM-DD HH:MM:SS"`` and is normalised to the contract's ISO-8601.
 import os
 from typing import Any, cast
 
+import boto3
+
 from core.models import SourceRow
 
 _SQL_BY_CANONICAL = (
@@ -87,8 +89,6 @@ class RdsDataRepository:
         RDS_DATABASE      — database name (defaults to "identifiers")
         Region comes from the standard boto3/AWS resolution (AWS_REGION etc.).
         """
-        import boto3  # imported lazily so the SQLite path needs no boto3
-
         return cls(
             client=boto3.client("rds-data"),
             resource_arn=os.environ["RDS_RESOURCE_ARN"],

@@ -96,7 +96,7 @@ cp .env.rds.local.example .env.rds.local   # ARNs are pre-filled; adjust if need
 
 `.env.rds.local` is gitignored (the repo's `.env*.local` convention);
 `run-local-rds.sh` sources it, forces `IDENTIFIERS_BACKEND=rds`, and starts the
-local invoker via `uv run --group rds`.
+local invoker.
 
 Equivalent manual form:
 
@@ -108,7 +108,7 @@ export RDS_RESOURCE_ARN="arn:aws:rds:eu-west-1:760097843905:cluster:identifiers-
 export RDS_SECRET_ARN="<cluster managed master-user secret ARN>"   # Secrets Manager, user 'wellcome'
 export RDS_DATABASE=identifiers
 
-uv run --group rds python src/adapters/run_local.py
+uv run python src/adapters/run_local.py
 ```
 
 The ARNs are infrastructure identifiers, not secrets; access is gated by IAM

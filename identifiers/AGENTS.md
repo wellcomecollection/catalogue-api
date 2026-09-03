@@ -46,9 +46,6 @@ names.
 - Always use `uv`, never pip or poetry. Add new deps with `uv add ...`, dev-only deps with
   `uv add --dev ...`. Dev dependencies live in `[dependency-groups]` in `pyproject.toml`.
 - `requires-python` is capped below 3.13 to match catalogue_graph.
-- `rds` is an optional group holding boto3, needed only to run against the real Aurora ID
-  Registry (`IDENTIFIERS_BACKEND=rds`). The SQLite path and the whole test suite run
-  without it, so don't move boto3 into the default group.
 - Don't commit `uv.lock` changes unless you intentionally changed dependencies.
 
 ## Testing

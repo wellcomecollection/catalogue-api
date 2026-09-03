@@ -4,10 +4,9 @@ version = "0.1.0"
 description = "Read-only canonical <-> source identifier lookup (RFC 083 ID Registry projection)"
 # Pinned to match catalogue_graph, which documents why it needs the ceiling.
 requires-python = ">=3.12,<3.13"
-# No runtime dependencies: the core is pure stdlib, and the prototype DB is
-# SQLite (also stdlib). The production target swaps the SQLite Repository for an
-# Aurora/RDS-Data-API implementation; nothing in `core` would change.
-dependencies = []
+dependencies = [
+    "boto3",
+]
 
 [tool.uv]
 package = true
@@ -19,11 +18,6 @@ dev = [
     "ruff",
     "mypy>=1.16",
     "boto3-stubs",
-]
-# Only needed to run against the real Aurora ID Registry (IDENTIFIERS_BACKEND=rds).
-# The SQLite path and the whole test suite need no boto3.
-rds = [
-    "boto3>=1.34",
 ]
 
 [tool.pytest.ini_options]

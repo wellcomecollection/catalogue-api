@@ -13,6 +13,8 @@ import json
 import os
 from typing import Any
 
+from adapters.rds_data_repo import RdsDataRepository
+from adapters.sqlite_repo import SqliteRepository, build_seeded_connection
 from core.repository import Repository
 from core.service import BadRequest, IdentifiersService, LookupResult, NotFound
 
@@ -25,12 +27,7 @@ BACKEND = os.environ.get("IDENTIFIERS_BACKEND", "sqlite").lower()
 
 def _build_repo() -> Repository:
     if BACKEND == "rds":
-        # Lazy import so the SQLite path never requires boto3.
-        from adapters.rds_data_repo import RdsDataRepository
-
         return RdsDataRepository.build_from_env()
-    from adapters.sqlite_repo import SqliteRepository, build_seeded_connection
-
     return SqliteRepository(build_seeded_connection())
 
 
