@@ -32,4 +32,4 @@ export IDENTIFIERS_BACKEND=rds
 unset VIRTUAL_ENV || true
 
 echo "Starting Identifiers API against RDS (read-only): $RDS_RESOURCE_ARN"
-exec uv run --group rds python src/adapters/run_local.py
+exec uv run python src/adapters/run_local.py

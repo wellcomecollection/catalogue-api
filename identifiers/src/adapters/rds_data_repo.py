@@ -20,7 +20,9 @@ as MySQL ``"YYYY-MM-DD HH:MM:SS"`` and is normalised to the contract's ISO-8601.
 """
 
 import os
-from typing import cast
+from typing import Any, cast
+
+import boto3
 
 from core.models import SourceRow
 
@@ -70,7 +72,9 @@ def _to_iso(value: str | None) -> str:
 class RdsDataRepository:
     """Read-only Repository over Aurora via the RDS Data API."""
 
-    def __init__(self, client, resource_arn: str, secret_arn: str, database: str):
+    def __init__(
+        self, client: Any, resource_arn: str, secret_arn: str, database: str
+    ) -> None:
         self._client = client
         self._resource_arn = resource_arn
         self._secret_arn = secret_arn
@@ -85,8 +89,6 @@ class RdsDataRepository:
         RDS_DATABASE      — database name (defaults to "identifiers")
         Region comes from the standard boto3/AWS resolution (AWS_REGION etc.).
         """
-        import boto3  # imported lazily so the SQLite path needs no boto3
-
         return cls(
             client=boto3.client("rds-data"),
             resource_arn=os.environ["RDS_RESOURCE_ARN"],
@@ -130,13 +132,14 @@ class RdsDataRepository:
 
     def _execute(self, sql: str, parameters: list[dict]) -> dict:
         _assert_read_only(sql)
-        return self._client.execute_statement(
+        response: dict = self._client.execute_statement(
             resourceArn=self._resource_arn,
             secretArn=self._secret_arn,
             database=self._database,
             sql=sql,
             parameters=parameters,
         )
+        return response
 
 
 def _param(name: str, value: str) -> dict:

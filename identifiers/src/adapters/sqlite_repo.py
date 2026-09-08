@@ -10,7 +10,7 @@ from pathlib import Path
 
 from core.models import SourceRow
 
-_DB_DIR = Path(__file__).resolve().parents[2] / "db"
+_DB_DIR = Path(__file__).parent / "db"
 _SCHEMA = _DB_DIR / "schema.sql"
 _SEED = _DB_DIR / "seed.sql"
 

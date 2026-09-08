@@ -4,13 +4,13 @@ These are the cases the README transcripts demonstrate and the raw material for
 the RFC's demonstration section.
 """
 
-from conftest import body
+from conftest import Invoke, body
 
 FORWARD = "/v1/identifiers/{canonicalId}"
 REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
 
 
-def test_forward_returns_ordered_set_with_isalias(invoke):
+def test_forward_returns_ordered_set_with_isalias(invoke: Invoke) -> None:
     result = invoke(FORWARD, {"canonicalId": "a2345bcd"})
     assert result["statusCode"] == 200
     payload = body(result)
@@ -27,7 +27,7 @@ def test_forward_returns_ordered_set_with_isalias(invoke):
     assert rows[1]["isAlias"] is False
 
 
-def test_reverse_bare_returns_canonical_id(invoke):
+def test_reverse_bare_returns_canonical_id(invoke: Invoke) -> None:
     result = invoke(
         REVERSE,
         {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
@@ -37,7 +37,7 @@ def test_reverse_bare_returns_canonical_id(invoke):
     assert body(result) == {"canonicalId": "a2345bcd"}
 
 
-def test_reverse_with_siblings_returns_full_set(invoke):
+def test_reverse_with_siblings_returns_full_set(invoke: Invoke) -> None:
     result = invoke(
         REVERSE,
         {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
@@ -55,7 +55,7 @@ def test_reverse_with_siblings_returns_full_set(invoke):
     )
 
 
-def test_reverse_folio_item_translation(invoke):
+def test_reverse_folio_item_translation(invoke: Invoke) -> None:
     """The requesting reverse-translation case (RFC 088): FOLIO item UUID ->
     canonical item id."""
     result = invoke(
@@ -67,7 +67,7 @@ def test_reverse_folio_item_translation(invoke):
     assert body(result) == {"canonicalId": "ka345678"}
 
 
-def test_cross_type_canonical_carries_rows_of_differing_types(invoke):
+def test_cross_type_canonical_carries_rows_of_differing_types(invoke: Invoke) -> None:
     result = invoke(FORWARD, {"canonicalId": "ze789fgh"})
     assert result["statusCode"] == 200
     payload = body(result)
@@ -82,11 +82,11 @@ def test_cross_type_canonical_carries_rows_of_differing_types(invoke):
     assert payload["type"] == "Image"
 
 
-def test_valid_format_but_unknown_is_404(invoke):
+def test_valid_format_but_unknown_is_404(invoke: Invoke) -> None:
     result = invoke(FORWARD, {"canonicalId": "abcdefgh"})
     assert result["statusCode"] == 404
 
 
-def test_malformed_canonical_id_is_400(invoke):
+def test_malformed_canonical_id_is_400(invoke: Invoke) -> None:
     result = invoke(FORWARD, {"canonicalId": "zzz"})
     assert result["statusCode"] == 400

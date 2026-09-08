@@ -62,10 +62,13 @@ src/
     rds_data_repo.py  Repository impl over Aurora via the RDS Data API (read-only)
     handler.py        Lambda proxy handler: HTTP <-> core; picks the backend
     run_local.py      stdlib HTTP invoker for the live demo
-db/
-  schema.sql        portable rendering of the RFC 083 two-table model
-  seed.sql          fixtures exercising every interesting case
+    db/
+      schema.sql      portable rendering of the RFC 083 two-table model
+      seed.sql        fixtures exercising every interesting case
 ```
+
+The SQL sits next to the one module that reads it, so copying `src/` into the
+image carries it along.
 
 `core` has **no** FastAPI and **no** SQLite imports. The production target is a
 Python Lambda reading Aurora via the **RDS Data API**; that swap is just a second
@@ -93,7 +96,7 @@ cp .env.rds.local.example .env.rds.local   # ARNs are pre-filled; adjust if need
 
 `.env.rds.local` is gitignored (the repo's `.env*.local` convention);
 `run-local-rds.sh` sources it, forces `IDENTIFIERS_BACKEND=rds`, and starts the
-local invoker via `uv run --group rds`.
+local invoker.
 
 Equivalent manual form:
 
@@ -105,7 +108,7 @@ export RDS_RESOURCE_ARN="arn:aws:rds:eu-west-1:760097843905:cluster:identifiers-
 export RDS_SECRET_ARN="<cluster managed master-user secret ARN>"   # Secrets Manager, user 'wellcome'
 export RDS_DATABASE=identifiers
 
-uv run --group rds python src/adapters/run_local.py
+uv run python src/adapters/run_local.py
 ```
 
 The ARNs are infrastructure identifiers, not secrets; access is gated by IAM
@@ -165,7 +168,7 @@ returned set.
 
 ## Transcripts
 
-Captured against the running prototype (`db/seed.sql`).
+Captured against the running prototype (`src/adapters/db/seed.sql`).
 
 ### Forward lookup — full set, ordered, with `isAlias`
 
@@ -267,7 +270,7 @@ they aren't mistaken for committed contract:
 - **Weak `ETag`** form `W/"{row_count}-{max(createdAt)}"`.
 - **`createdAt` tie-break** — order by `createdAt` then `sourceSystem`, both
   descending; the earliest row is the original (`isAlias=false`).
-- **DB** — a fresh in-memory SQLite seeded from `db/` on each run, for
+- **DB** — a fresh in-memory SQLite seeded from `adapters/db/` on each run, for
   reproducibility.
 - **`If-None-Match`** — exact-token match (the client echoes the issued ETag); a
   production gateway applies full weak-comparison semantics.
