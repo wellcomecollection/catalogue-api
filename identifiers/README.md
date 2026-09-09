@@ -79,8 +79,9 @@ Python Lambda reading Aurora via the **RDS Data API**; that swap is just a secon
 
 By default the API runs against the seeded SQLite store. Set
 `IDENTIFIERS_BACKEND=rds` to read the **real Aurora ID Registry**
-(`identifiers-v2-serverless-test`) over the RDS Data API instead —
-`adapters/rds_data_repo.py`, selected by `adapters/handler.py`.
+(`identifiers-v2-serverless-2026-07-03`) over the RDS Data API instead —
+`adapters/rds_data_repo.py`, selected by `adapters/handler.py`. The Lambda image
+sets that variable, so the deployed API always uses the RDS backend.
 
 > **READ-ONLY. NEVER WRITE OR SEED THIS DATABASE.** This API is a read-only
 > projection; all writes belong to the ID Minter (RFC 083). `RdsDataRepository`
@@ -104,7 +105,7 @@ Equivalent manual form:
 export AWS_PROFILE=platform-developer            # IAM-gated; dev account 760097843905
 export AWS_REGION=eu-west-1
 export IDENTIFIERS_BACKEND=rds
-export RDS_RESOURCE_ARN="arn:aws:rds:eu-west-1:760097843905:cluster:identifiers-v2-serverless-test"
+export RDS_RESOURCE_ARN="arn:aws:rds:eu-west-1:760097843905:cluster:identifiers-v2-serverless-2026-07-03"
 export RDS_SECRET_ARN="<cluster managed master-user secret ARN>"   # Secrets Manager, user 'wellcome'
 export RDS_DATABASE=identifiers
 
