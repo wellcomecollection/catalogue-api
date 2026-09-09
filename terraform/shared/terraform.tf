@@ -1,6 +1,8 @@
 terraform {
   backend "s3" {
-    role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    assume_role = {
+      role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
+    }
 
     bucket         = "wellcomecollection-catalogue-infra-delta"
     key            = "terraform/catalogue/api/shared.tfstate"
