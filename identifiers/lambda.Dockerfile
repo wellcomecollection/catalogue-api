@@ -12,10 +12,11 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install uv
-RUN pip install uv
+RUN pip install --no-cache-dir uv==0.12.6
 
 # Install dependencies before the source, so the layer survives source changes.
-RUN uv export --frozen --no-default-groups --no-emit-project --no-hashes -o requirements.txt \
+# --locked fails the build if uv.lock is out of date with pyproject.toml.
+RUN uv export --locked --no-default-groups --no-emit-project -o requirements.txt \
     && uv pip install --system -r requirements.txt
 
 # Copy application source code. `core` and `adapters` are imported as top-level

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Start the Identifiers API locally against the REAL Aurora ID Registry
-# (identifiers-v2-serverless-test) via the RDS Data API.
+# (identifiers-v2-serverless-2026-07-03) via the RDS Data API.
 #
 # READ-ONLY: this backend only issues SELECTs and never writes or seeds the DB.
 #
