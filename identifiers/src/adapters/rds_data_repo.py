@@ -23,6 +23,11 @@ import os
 from typing import Any, cast
 
 import boto3
+from botocore.credentials import (
+    AssumeRoleCredentialFetcher,
+    DeferredRefreshableCredentials,
+)
+from botocore.session import Session as BotocoreSession
 
 from core.models import SourceRow
 
@@ -84,13 +89,21 @@ class RdsDataRepository:
     def build_from_env(cls) -> "RdsDataRepository":
         """Construct from env vars, mirroring folio-api's runtime config.
 
-        RDS_RESOURCE_ARN  — the Aurora cluster ARN
-        RDS_SECRET_ARN    — Secrets Manager ARN holding the DB credentials
-        RDS_DATABASE      — database name (defaults to "identifiers")
+        RDS_RESOURCE_ARN     — the Aurora cluster ARN
+        RDS_SECRET_ARN       — Secrets Manager ARN holding the DB credentials
+        RDS_DATABASE         — database name (defaults to "identifiers")
+        RDS_ASSUME_ROLE_ARN  — optional role to assume, for a registry in another
+                               account. Unset uses the ambient credentials.
         Region comes from the standard boto3/AWS resolution (AWS_REGION etc.).
         """
+        assume_role_arn = os.environ.get("RDS_ASSUME_ROLE_ARN")
+        session = (
+            _assumed_role_session(assume_role_arn)
+            if assume_role_arn
+            else boto3.Session()
+        )
         return cls(
-            client=boto3.client("rds-data"),
+            client=session.client("rds-data"),
             resource_arn=os.environ["RDS_RESOURCE_ARN"],
             secret_arn=os.environ["RDS_SECRET_ARN"],
             database=os.environ.get("RDS_DATABASE", "identifiers"),
@@ -145,3 +158,26 @@ class RdsDataRepository:
 def _param(name: str, value: str) -> dict:
     """A Data API named parameter (values are bound, never interpolated)."""
     return {"name": name, "value": {"stringValue": value}}
+
+
+def _assumed_role_session(role_arn: str) -> boto3.Session:
+    """A session whose credentials come from assuming ``role_arn``.
+
+    Needed because the registry is in a different AWS account. The role is
+    assumed on first use and re-assumed before the credentials expire, so a
+    session held for longer than an hour keeps working.
+    """
+    botocore_session = BotocoreSession()
+    fetcher = AssumeRoleCredentialFetcher(
+        client_creator=botocore_session.create_client,
+        source_credentials=botocore_session.get_credentials(),
+        role_arn=role_arn,
+        extra_args={"RoleSessionName": "identifiers-api"},
+    )
+    # Private attribute; set_credentials takes static keys and would give up the
+    # refresh.
+    botocore_session._credentials = DeferredRefreshableCredentials(  # type: ignore[attr-defined]
+        method="assume-role",
+        refresh_using=fetcher.fetch_credentials,
+    )
+    return boto3.Session(botocore_session=botocore_session)
