@@ -172,7 +172,12 @@ def _assumed_role_session(role_arn: str) -> boto3.Session:
         client_creator=botocore_session.create_client,
         source_credentials=botocore_session.get_credentials(),
         role_arn=role_arn,
-        extra_args={"RoleSessionName": "identifiers-api"},
+        # Names the environment in CloudTrail, since one role serves them all.
+        extra_args={
+            "RoleSessionName": os.environ.get(
+                "AWS_LAMBDA_FUNCTION_NAME", "identifiers-api"
+            )
+        },
     )
     # Private attribute; set_credentials takes static keys and would give up the
     # refresh.
