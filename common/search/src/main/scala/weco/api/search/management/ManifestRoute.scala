@@ -9,6 +9,8 @@ import java.time.Instant
 
 /** Serves the commit a service was built from, so deploy tooling can tell which code
   * is live. BUILD_COMMIT is baked into the image by builds/build_sbt_image.sh.
+  *
+  * The contract this implements: https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md#the-manifest-endpoint
   */
 object ManifestRoute {
 
