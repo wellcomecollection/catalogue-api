@@ -53,3 +53,16 @@ jobs:
           # Pull requests build without publishing, which also covers dependabot
           # and fork runs, where no repo secret is available.
           push: ${{ github.ref == 'refs/heads/main' && secrets.IDENTIFIERS_CI_ROLE_ARN != '' }}
+
+  deploy:
+    # Only a merge, so dispatching this workflow rebuilds without deploying.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [build-identifiers-image]
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/identifiers-deploy.yml
+    with:
+      deploy_tag: ${{ github.sha }}
+    secrets:
+      IDENTIFIERS_CI_ROLE_ARN: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
