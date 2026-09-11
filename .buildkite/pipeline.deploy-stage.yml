@@ -4,7 +4,7 @@ steps:
     concurrency: 1
     concurrency_group: catalogue/deploy-stage
     command: |
-      ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
+      ENV_TAG="env.stage" LATEST_TAG="ref.$BUILDKITE_COMMIT" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/concepts \
         uk.ac.wellcome/items \
         uk.ac.wellcome/search
@@ -26,7 +26,7 @@ steps:
     concurrency: 1
     concurrency_group: requests/deploy-stage
     command: |
-      ENV_TAG="env.stage" ./builds/update_ecr_image_tag.sh \
+      ENV_TAG="env.stage" LATEST_TAG="ref.$BUILDKITE_COMMIT" ./builds/update_ecr_image_tag.sh \
         uk.ac.wellcome/requests
       CLUSTER="identity-stage" ./builds/deploy_ecs_services.sh \
         requests-stage
