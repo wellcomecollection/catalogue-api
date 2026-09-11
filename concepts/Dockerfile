@@ -17,5 +17,10 @@ COPY ./common/search/src/test/resources/test_documents/concepts.*.json ./common/
 WORKDIR concepts
 RUN yarn install --frozen-lockfile && yarn cache clean
 
+# Served at /management/manifest so deploy tooling can see which commit is live.
+# Last so a new commit only invalidates this layer, not the install.
+ARG BUILD_COMMIT
+ENV BUILD_COMMIT=$BUILD_COMMIT
+
 CMD ["yarn", "start"]
 
