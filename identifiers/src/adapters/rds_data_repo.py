@@ -180,8 +180,8 @@ def _assumed_role_session(role_arn: str) -> boto3.Session:
         },
     )
     # Private attribute; set_credentials takes static keys and would give up the
-    # refresh.
-    botocore_session._credentials = DeferredRefreshableCredentials(  # type: ignore[attr-defined]
+    # refresh. Cast so only this assignment goes unchecked.
+    cast(Any, botocore_session)._credentials = DeferredRefreshableCredentials(
         method="assume-role",
         refresh_using=fetcher.fetch_credentials,
     )
