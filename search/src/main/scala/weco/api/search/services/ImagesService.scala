@@ -17,7 +17,7 @@ class ImagesService(
   val ec: ExecutionContext)
     extends SearchService[
       IndexedImage,
-      IndexedImage,
+      IndexedImage.Display,
       ImageAggregations,
       ImageSearchOptions
     ] {
@@ -26,8 +26,8 @@ class ImagesService(
 
   implicit val decoder: Decoder[IndexedImage] =
     deriveConfiguredDecoder
-  implicit val decoderV: Decoder[IndexedImage] =
-    decoder
+  implicit val decoderV: Decoder[IndexedImage.Display] =
+    deriveConfiguredDecoder
 
   override protected def createAggregations(
     searchResponse: SearchResponse
@@ -43,7 +43,7 @@ class ImagesService(
     imageId: String,
     image: IndexedImage,
     minScore: Option[Double] = None
-  ): Future[List[IndexedImage]] = {
+  ): Future[List[IndexedImage.Display]] = {
     val builder = ImagesRequestBuilder.requestWithSimilarFeatures
     // The features metric use KNN which gives a value between 0 and 1.  The ideal threshold value is yet to be determined.
     val defaultMinScore = 0
@@ -52,7 +52,7 @@ class ImagesService(
       builder(index, imageId, image, nVisuallySimilarImages, minScoreValue)
 
     elasticsearchService
-      .findBySearch(searchRequest)(decoder)
+      .findBySearch(searchRequest)(decoderV)
       .map {
         case Left(_) =>
           Nil

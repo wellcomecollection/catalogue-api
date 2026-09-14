@@ -51,7 +51,7 @@ object DisplayResultList extends CatalogueJsonUtil {
     }
 
   def apply(
-    resultList: ResultList[IndexedImage, ImageAggregations],
+    resultList: ResultList[IndexedImage.Display, ImageAggregations],
     searchOptions: SearchOptions[ImageFilter, _],
     includes: MultipleImagesIncludes,
     requestUri: Uri
