@@ -6,10 +6,12 @@ on:
     paths:
       - "identifiers/**"
       - ".github/workflows/identifiers-ci.yml"
+      - ".github/workflows/identifiers-deploy.yml"
   pull_request:
     paths:
       - "identifiers/**"
       - ".github/workflows/identifiers-ci.yml"
+      - ".github/workflows/identifiers-deploy.yml"
   workflow_dispatch:
 
 permissions:
@@ -57,7 +59,7 @@ jobs:
   deploy:
     # Only a merge, so dispatching this workflow rebuilds without deploying.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: [build-identifiers-image]
+    needs: [build-identifiers-image, check-spec]
     permissions:
       contents: read
       id-token: write
