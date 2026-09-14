@@ -30,7 +30,7 @@ resource "aws_api_gateway_integration" "integration" {
   rest_api_id = var.rest_api_id
   resource_id = aws_api_gateway_resource.resource.id
 
-  http_method             = "ANY"
+  http_method             = aws_api_gateway_method.method.http_method
   integration_http_method = "ANY"
   type                    = "HTTP_PROXY"
   connection_type         = "VPC_LINK"

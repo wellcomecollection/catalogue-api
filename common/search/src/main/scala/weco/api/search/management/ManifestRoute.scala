@@ -14,7 +14,13 @@ import java.time.Instant
   */
 object ManifestRoute {
 
-  val route: Route = routeFor(sys.env.getOrElse("BUILD_COMMIT", "unknown"))
+  val route: Route = routeFor(commitFrom(sys.env))
+
+  /** The Dockerfiles always define BUILD_COMMIT, so an image built without the
+    * build argument carries it empty rather than absent.
+    */
+  private[management] def commitFrom(env: Map[String, String]): String =
+    env.get("BUILD_COMMIT").filter(_.nonEmpty).getOrElse("unknown")
 
   private[management] def routeFor(
     commit: String,

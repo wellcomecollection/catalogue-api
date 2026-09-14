@@ -38,13 +38,19 @@ class ManifestRouteTest
       }
     }
 
-    it("says unknown when nothing was baked in") {
-      Get("/manifest") ~> ManifestRoute.routeFor(
-        commit = "unknown",
-        startedAt = "2026-09-11T08:00:00Z"
-      ) ~> check {
-        responseAs[String] should include(""""commit":"unknown"""")
-      }
+  }
+
+  describe("reading the commit from the environment") {
+    it("uses BUILD_COMMIT when the image was built with it") {
+      ManifestRoute.commitFrom(Map("BUILD_COMMIT" -> "3e82edf9")) shouldBe "3e82edf9"
+    }
+
+    it("says unknown when the build argument was not passed") {
+      ManifestRoute.commitFrom(Map("BUILD_COMMIT" -> "")) shouldBe "unknown"
+    }
+
+    it("says unknown when the variable is absent") {
+      ManifestRoute.commitFrom(Map.empty) shouldBe "unknown"
     }
   }
 }
