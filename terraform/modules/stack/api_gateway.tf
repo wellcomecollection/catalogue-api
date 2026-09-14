@@ -18,9 +18,10 @@ resource "aws_api_gateway_deployment" "default" {
     redeployment = sha1(jsonencode(concat(
       [
         aws_api_gateway_resource.v2.id,
-        aws_api_gateway_resource.items.id,
-        aws_api_gateway_resource.items_management.id,
-        aws_api_gateway_resource.concepts_management.id,
+        aws_api_gateway_resource.management.id,
+        aws_api_gateway_resource.management_search.id,
+        aws_api_gateway_resource.management_items.id,
+        aws_api_gateway_resource.management_concepts.id,
         aws_api_gateway_gateway_response.no_resource.id,
         aws_api_gateway_gateway_response.not_found_404.id,
         module.gateway_responses.fingerprint,
@@ -32,6 +33,7 @@ resource "aws_api_gateway_deployment" "default" {
       module.items_route.all_ids,
       module.concepts_route.all_ids,
       module.single_concept_route.all_ids,
+      module.search_manifest_route.all_ids,
       module.items_manifest_route.all_ids,
       module.concepts_manifest_route.all_ids,
       module.default_route.all_ids,
@@ -185,27 +187,52 @@ module "single_concept_route" {
   external_hostname = var.external_hostname
 }
 
-// The items and concepts containers are otherwise unreachable from outside, so
-// their manifests need a route each. Search's is covered by the catch-all below.
-
-// /v2/items/management/manifest
-resource "aws_api_gateway_resource" "items" {
+// Each deployed service reports the commit it is running at
+// /catalogue/management/<service>/manifest. These sit outside /v2 because they are
+// not part of the versioned contract, and the path part names the deployable unit
+// rather than an API version, so two services would get two entries here.
+//
+// Search's own /v2/management endpoints keep working through the catch-all below.
+resource "aws_api_gateway_resource" "management" {
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = aws_api_gateway_resource.v2.id
-  path_part   = "items"
+  parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
+  path_part   = "management"
 }
 
-resource "aws_api_gateway_resource" "items_management" {
+// search
+resource "aws_api_gateway_resource" "management_search" {
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = aws_api_gateway_resource.items.id
-  path_part   = "management"
+  parent_id   = aws_api_gateway_resource.management.id
+  path_part   = "search"
+}
+
+module "search_manifest_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.management_search.id
+  path_part   = "manifest"
+  http_method = "GET"
+
+  integration_path = "/management/manifest"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+// items
+resource "aws_api_gateway_resource" "management_items" {
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.management.id
+  path_part   = "items"
 }
 
 module "items_manifest_route" {
   source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = aws_api_gateway_resource.items_management.id
+  parent_id   = aws_api_gateway_resource.management_items.id
   path_part   = "manifest"
   http_method = "GET"
 
@@ -216,22 +243,18 @@ module "items_manifest_route" {
   external_hostname = var.external_hostname
 }
 
-// /v2/concepts/management/manifest
-//
-// A literal path part beats {conceptId}, so /v2/concepts/management on its own now
-// stops at the gateway rather than reaching the app. It was a lookup for a concept
-// called "management", which 404s either way.
-resource "aws_api_gateway_resource" "concepts_management" {
+// concepts
+resource "aws_api_gateway_resource" "management_concepts" {
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = module.concepts_route.resource_id
-  path_part   = "management"
+  parent_id   = aws_api_gateway_resource.management.id
+  path_part   = "concepts"
 }
 
 module "concepts_manifest_route" {
   source = "../api_route"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  parent_id   = aws_api_gateway_resource.concepts_management.id
+  parent_id   = aws_api_gateway_resource.management_concepts.id
   path_part   = "manifest"
   http_method = "GET"
 
