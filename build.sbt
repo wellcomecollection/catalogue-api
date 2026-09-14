@@ -24,6 +24,8 @@ def setupProject(
     .enablePlugins(JavaAppPackaging)
     .dependsOn(dependsOn: _*)
     .settings(libraryDependencies ++= externalDependencies)
+    // An OOM leaves a zombie JVM the healthcheck can't see; exit so ECS replaces the task.
+    .settings(Universal / javaOptions += "-J-XX:+ExitOnOutOfMemoryError")
 }
 
 lazy val display = setupProject(
