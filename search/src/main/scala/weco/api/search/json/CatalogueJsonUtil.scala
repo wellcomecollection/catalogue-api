@@ -49,7 +49,7 @@ trait CatalogueJsonUtil {
   implicit class ImageJsonOps(json: Json) {
     def asJson(
       includes: SingleImageIncludes,
-      withSimilarFeatures: Option[Seq[IndexedImage]]
+      withSimilarFeatures: Option[Seq[IndexedImage.Display]]
     ): Json =
       json
         .addImagesIf(
@@ -63,7 +63,7 @@ trait CatalogueJsonUtil {
     def addImagesIf[V](
       b: Boolean,
       key: String,
-      value: Option[Seq[IndexedImage]]
+      value: Option[Seq[IndexedImage.Display]]
     ): Json =
       if (b)
         json.mapObject(

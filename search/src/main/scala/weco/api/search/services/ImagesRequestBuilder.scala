@@ -5,6 +5,7 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.requests.searches._
 import com.sksamuel.elastic4s.requests.searches.queries.{Query, RangeQuery}
 import com.sksamuel.elastic4s.requests.searches.sort._
+import io.circe.syntax._
 import io.circe.{Json, JsonObject}
 import weco.api.search.models.index.IndexedImage
 import weco.api.search.elasticsearch.{ColorQuery, ImageSimilarity}
@@ -18,6 +19,10 @@ object ImagesRequestBuilder
     with ImagesTemplateSearchBuilder {
 
   val idSort: FieldSort = fieldSort("query.id").order(SortOrder.ASC)
+
+  // Hits only need display; the 4096-float feature vector is fetched by id for similar images. See platform-infrastructure#547.
+  private val displayOnlyIncludes = Seq("display")
+
   def request(
     searchOptions: ImageSearchOptions,
     index: Index
@@ -44,7 +49,7 @@ object ImagesRequestBuilder
           sortField = sortConfig.map(_._1),
           sortByScore =
             searchOptions.searchQuery.isDefined || searchOptions.color.isDefined,
-          includes = Seq("display", "vectorValues.features"),
+          includes = displayOnlyIncludes,
           aggs = ImagesAggregationsBuilder
             .getAggregations(pairables, searchOptions.aggregations),
           preFilter = unpairables.collect(buildImageFilterQuery),
@@ -135,6 +140,8 @@ object ImagesRequestBuilder
           query(imageId, image)
             .add("min_score", Json.fromDouble(minScore).get)
             .add("size", Json.fromInt(n))
+            // Bypasses the template, so needs its own _source; the query vector comes from findById.
+            .add("_source", Json.obj("includes" -> displayOnlyIncludes.asJson))
         )
         .noSpaces
     )

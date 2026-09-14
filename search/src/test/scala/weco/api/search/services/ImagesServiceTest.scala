@@ -13,6 +13,7 @@ import weco.api.search.fixtures.{
   ResilientElasticClientFixture,
   TestDocumentFixtures
 }
+import weco.api.search.models.ImageSearchOptions
 import weco.api.search.models.index.IndexedImage
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -75,6 +76,45 @@ class ImagesServiceTest
     }
   }
 
+  describe("listOrSearch") {
+    it("returns the display document for each image") {
+      withLocalImagesIndex { index =>
+        val ids = (0 to 5).map(i => s"images.similar-features.$i")
+        indexTestDocuments(index, ids: _*)
+
+        val expectedImages = ids.map(
+          id => IndexedImage.Display(display = getDisplayImage(id))
+        )
+
+        val future =
+          imagesService.listOrSearch(index, ImageSearchOptions())
+
+        whenReady(future) {
+          _.right.value.results should contain theSameElementsAs expectedImages
+        }
+      }
+    }
+
+    // Asserts on the raw hit: the Display decoder ignores extra keys, so it
+    // would not notice the feature vectors coming back.
+    it("fetches only the display document from Elasticsearch") {
+      withLocalImagesIndex { index =>
+        val ids = (0 to 5).map(i => s"images.similar-features.$i")
+        indexTestDocuments(index, ids: _*)
+
+        val request =
+          ImagesRequestBuilder.request(ImageSearchOptions(), index).value
+
+        whenReady(elasticsearchService.executeTemplateSearchRequest(request)) {
+          response =>
+            val hits = response.right.value.hits.hits
+            hits should have size ids.size
+            every(hits.map(_.sourceAsMap.keySet)) shouldBe Set("display")
+        }
+      }
+    }
+  }
+
   describe("retrieveSimilarImages") {
     it("gets images with similar features") {
       withLocalImagesIndex { index =>
@@ -85,10 +125,9 @@ class ImagesServiceTest
 
         val expectedImages = (1 to 5).map(
           i =>
-            IndexedImage(
-              display = getDisplayImage(s"images.similar-features.$i"),
-              vectorValues = getVectorValuesImage(s"images.similar-features.$i")
-            )
+            IndexedImage.Display(
+              display = getDisplayImage(s"images.similar-features.$i")
+          )
         )
 
         val future =
@@ -105,6 +144,34 @@ class ImagesServiceTest
 
         whenReady(future) {
           _ should contain theSameElementsAs expectedImages
+        }
+      }
+    }
+
+    // Raw-hit assertion, as above: the knn request bypasses the template.
+    it("fetches only the display document from Elasticsearch") {
+      withLocalImagesIndex { index =>
+        indexTestDocuments(
+          index,
+          (0 to 5).map(i => s"images.similar-features.$i"): _*
+        )
+
+        val request = ImagesRequestBuilder.requestWithSimilarFeatures(
+          index,
+          getTestImageId("images.similar-features.0"),
+          IndexedImage(
+            display = getDisplayImage("images.similar-features.0"),
+            vectorValues = getVectorValuesImage("images.similar-features.0")
+          ),
+          5,
+          0.0
+        )
+
+        whenReady(elasticsearchService.executeSearchRequest(request)) {
+          response =>
+            val hits = response.right.value.hits.hits
+            hits should have size 5
+            every(hits.map(_.sourceAsMap.keySet)) shouldBe Set("display")
         }
       }
     }
