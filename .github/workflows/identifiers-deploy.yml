@@ -1,0 +1,58 @@
+name: "Identifiers API: Deploy"
+
+on:
+  workflow_call:
+    inputs:
+      deploy_tag:
+        description: "Image tag to deploy (e.g. a commit SHA)"
+        required: true
+        type: string
+    secrets:
+      IDENTIFIERS_CI_ROLE_ARN:
+        description: "Role ARN to assume for updating the Lambda"
+        required: true
+  workflow_dispatch:
+    inputs:
+      deploy_tag:
+        description: "Image tag to deploy (e.g. a commit SHA)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+# Lambda rejects concurrent code updates, so serialise deploys.
+concurrency:
+  group: identifiers-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy-identifiers-lambda:
+    runs-on: ubuntu-latest
+    # Deploys only from main. Pull requests never reach here, so there is no
+    # need to guard on the role secret existing.
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
+
+      - name: Point the Lambda at the image
+        shell: bash
+        run: |
+          aws lambda update-function-code \
+            --function-name "$FUNCTION_NAME" \
+            --image-uri "$REGISTRY/identifiers:$DEPLOY_TAG" \
+            --no-cli-pager \
+            --query 'LastModified' \
+            --output text
+
+          # Updates are asynchronous, so the command above returns before the
+          # new image is live.
+          aws lambda wait function-updated --function-name "$FUNCTION_NAME"
+        env:
+          FUNCTION_NAME: identifiers-api-stage
+          REGISTRY: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
+          DEPLOY_TAG: ${{ inputs.deploy_tag }}
