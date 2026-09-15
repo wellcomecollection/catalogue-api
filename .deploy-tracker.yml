@@ -16,8 +16,46 @@ version: 1
 slack:
   channel: "#wc-platform-deploys"
 
+# Written once and reached at each environment's host below. The paths are what
+# each image contains rather than what shares a directory name.
+checkpoints:
+  - name: search
+    path: /catalogue/management/search/manifest
+    paths:
+      [
+        search/,
+        common/display/,
+        common/search/src/main/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+  - name: items
+    path: /catalogue/management/items/manifest
+    paths:
+      [
+        items/,
+        common/display/,
+        common/search/src/main/,
+        common/stacks/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+  - name: concepts
+    path: /catalogue/management/concepts/manifest
+    paths:
+      [
+        concepts/,
+        reference/,
+        yarn.lock,
+        package.json,
+        common/search/src/test/resources/test_documents/,
+      ]
+
 environments:
   stage:
+    host: https://api-stage.wellcomecollection.org
     paths:
       - search/
       - items/
@@ -30,41 +68,8 @@ environments:
       - build.sbt
       - yarn.lock
       - package.json
-    checkpoints:
-      - name: search
-        url: https://api-stage.wellcomecollection.org/catalogue/management/search/manifest
-        paths:
-          [
-            search/,
-            common/display/,
-            common/search/src/main/,
-            project/,
-            builds/,
-            build.sbt,
-          ]
-      - name: items
-        url: https://api-stage.wellcomecollection.org/catalogue/management/items/manifest
-        paths:
-          [
-            items/,
-            common/display/,
-            common/search/src/main/,
-            common/stacks/,
-            project/,
-            builds/,
-            build.sbt,
-          ]
-      - name: concepts
-        url: https://api-stage.wellcomecollection.org/catalogue/management/concepts/manifest
-        paths:
-          [
-            concepts/,
-            reference/,
-            yarn.lock,
-            package.json,
-            common/search/src/test/resources/test_documents/,
-          ]
   prod:
+    host: https://api.wellcomecollection.org
     promote_from: stage
     paths:
       - search/
@@ -79,40 +84,6 @@ environments:
       - yarn.lock
       - package.json
       - snapshots/snapshot_generator/
-    checkpoints:
-      - name: search
-        url: https://api.wellcomecollection.org/catalogue/management/search/manifest
-        paths:
-          [
-            search/,
-            common/display/,
-            common/search/src/main/,
-            project/,
-            builds/,
-            build.sbt,
-          ]
-      - name: items
-        url: https://api.wellcomecollection.org/catalogue/management/items/manifest
-        paths:
-          [
-            items/,
-            common/display/,
-            common/search/src/main/,
-            common/stacks/,
-            project/,
-            builds/,
-            build.sbt,
-          ]
-      - name: concepts
-        url: https://api.wellcomecollection.org/catalogue/management/concepts/manifest
-        paths:
-          [
-            concepts/,
-            reference/,
-            yarn.lock,
-            package.json,
-            common/search/src/test/resources/test_documents/,
-          ]
 
 # Off for the first week, as wellcomecollection.org did, so the Slack feed can be
 # judged before the tracker starts writing on pull requests. Add overdue on prod
