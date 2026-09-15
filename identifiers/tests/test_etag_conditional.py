@@ -2,8 +2,8 @@
 
 from conftest import AssertContract, Invoke
 
-FORWARD = "/v1/identifiers/{canonicalId}"
-REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
+FORWARD = "/identifiers/v1/{canonicalId}"
+REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
 
 
 def test_forward_emits_weak_etag_and_cache_control(invoke: Invoke) -> None:

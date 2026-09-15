@@ -9,7 +9,7 @@ from conftest import AssertContract, Invoke
 
 from adapters import handler
 
-REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
+REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
 
 
 def test_reverse_bare_200_matches_canonical_ref(

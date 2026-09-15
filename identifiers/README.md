@@ -7,12 +7,11 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-**It is not deployed yet.** There is no Lambda, no gateway, no API keys and no
-cache: that work is tracked on
-[platform#6403](https://github.com/wellcomecollection/platform/issues/6403), and
-the first callable URL arrives with
-[platform#6531](https://github.com/wellcomecollection/platform/issues/6531).
-Until then, run it locally as below.
+**Stage is deployed** at `identifiers.api-stage.wellcomecollection.org`
+([platform#6531](https://github.com/wellcomecollection/platform/issues/6531)).
+API keys, caching and production promotion are tracked on
+[platform#6403](https://github.com/wellcomecollection/platform/issues/6403).
+To run it locally, see below.
 
 It also stands as the proposed **"service" answer** to the identifier-translation
 open question in the `folio-api` requesting prototype (see
@@ -139,14 +138,14 @@ Discovered by read-only inspection of `identifiers-v2-serverless-test`:
 ### Verified live (read-only)
 
 ```text
-GET /v1/identifiers/r5ky3c4e
+GET /identifiers/v1/r5ky3c4e
   → 200  ETag: W/"1-2026-05-11T15:35:48Z"
     {"canonicalId":"r5ky3c4e","type":"Work","sourceIdentifiers":[
       {"type":"Work","sourceSystem":"axiell-guid",
        "value":"0002acb1-5945-4ffa-9b7f-2e5f226636e9","isAlias":false,
        "createdAt":"2026-05-11T15:35:48Z"}]}
 
-GET /v1/identifiers/by-source/axiell-guid/0002acb1-5945-4ffa-9b7f-2e5f226636e9?type=Work
+GET /identifiers/v1/by-source/axiell-guid/0002acb1-5945-4ffa-9b7f-2e5f226636e9?type=Work
   → 200  {"canonicalId":"r5ky3c4e"}        # reverse round-trips to the same id
 ```
 
@@ -154,8 +153,8 @@ GET /v1/identifiers/by-source/axiell-guid/0002acb1-5945-4ffa-9b7f-2e5f226636e9?t
 
 | Endpoint | Returns |
 |----------|---------|
-| `GET /v1/identifiers/{canonicalId}` | Full `IdentifierSet` (always — no aliases toggle). |
-| `GET /v1/identifiers/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`. |
+| `GET /identifiers/v1/{canonicalId}` | Full `IdentifierSet` (always, no aliases toggle). |
+| `GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`. |
 | `…?type=Work&include=siblings` | The same full `IdentifierSet`. |
 
 `type` is `Work` \| `Image` \| `Item`, defaults to `Work`, and is a real key
@@ -174,7 +173,7 @@ Captured against the running prototype (`src/adapters/db/seed.sql`).
 ### Forward lookup — full set, ordered, with `isAlias`
 
 ```http
-GET /v1/identifiers/a2345bcd
+GET /identifiers/v1/a2345bcd
 ```
 ```http
 HTTP/1.0 200 OK
@@ -191,7 +190,7 @@ Content-Type: application/json
 ### Reverse lookup — bare (immutable, long TTL, no ETag)
 
 ```http
-GET /v1/identifiers/by-source/sierra-system-number/b1161044x?type=Work
+GET /identifiers/v1/by-source/sierra-system-number/b1161044x?type=Work
 ```
 ```http
 HTTP/1.0 200 OK
@@ -204,7 +203,7 @@ Content-Type: application/json
 ### Reverse lookup — `include=siblings` (same set as forward)
 
 ```http
-GET /v1/identifiers/by-source/sierra-system-number/b1161044x?type=Work&include=siblings
+GET /identifiers/v1/by-source/sierra-system-number/b1161044x?type=Work&include=siblings
 ```
 ```json
 {"canonicalId": "a2345bcd", "type": "Work", "sourceIdentifiers": [
@@ -216,7 +215,7 @@ GET /v1/identifiers/by-source/sierra-system-number/b1161044x?type=Work&include=s
 ### Reverse lookup — the requesting case (FOLIO item UUID → canonical item id)
 
 ```http
-GET /v1/identifiers/by-source/folio-item/3f2a...uuid?type=Item
+GET /identifiers/v1/by-source/folio-item/3f2a...uuid?type=Item
 ```
 ```json
 {"canonicalId": "ka345678"}
@@ -225,7 +224,7 @@ GET /v1/identifiers/by-source/folio-item/3f2a...uuid?type=Item
 ### Conditional GET — `If-None-Match` → `304`
 
 ```http
-GET /v1/identifiers/a2345bcd
+GET /identifiers/v1/a2345bcd
 If-None-Match: W/"2-2026-02-10T12:00:00Z"
 ```
 ```http
@@ -237,8 +236,8 @@ ETag: W/"2-2026-02-10T12:00:00Z"
 ### Not found / bad request
 
 ```http
-GET /v1/identifiers/abcdefgh        →  404  {"error": "notFound",   "message": "no mapping found"}
-GET /v1/identifiers/zzz             →  400  {"error": "badRequest", "message": "canonicalId does not match the required format"}
+GET /identifiers/v1/abcdefgh        →  404  {"error": "notFound",   "message": "no mapping found"}
+GET /identifiers/v1/zzz             →  400  {"error": "badRequest", "message": "canonicalId does not match the required format"}
 ```
 
 A canonical id that the registry has pre-generated but not yet assigned has no
@@ -313,10 +312,10 @@ in this pass**:
 
 - **`POST …/item-requests`** receives a **canonical** `itemId`. To place the hold
   on FOLIO it needs the FOLIO item UUID, so it calls the **forward** lookup
-  `GET /v1/identifiers/{itemId}` and picks the `folio-item` source row.
+  `GET /identifiers/v1/{itemId}` and picks the `folio-item` source row.
 - **`GET …/item-requests`** lists FOLIO holds carrying FOLIO item UUIDs. It calls
   the **reverse** lookup
-  `GET /v1/identifiers/by-source/folio-item/{uuid}?type=Item` to recover the
+  `GET /identifiers/v1/by-source/folio-item/{uuid}?type=Item` to recover the
   canonical item id, then queries the **catalogue API in canonical** for `workId`
   / `workTitle` (explicitly **not** this API's job — this API does id translation
   only).

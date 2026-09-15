@@ -36,8 +36,8 @@ def _build_repo() -> Repository:
 _repo = _build_repo()
 _service = IdentifiersService(_repo)
 
-_FORWARD = "/v1/identifiers/{canonicalId}"
-_REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
+_FORWARD = "/identifiers/v1/{canonicalId}"
+_REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
 
 
 def handler(event: dict, context: Any = None) -> dict:
