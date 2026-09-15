@@ -3,24 +3,19 @@
 # Reports deployments of this repository to Slack. See
 # https://github.com/wellcomecollection/deploy-tracker for what the tracker does.
 #
-# `paths` lists what each environment deploys. A change outside them is not
-# reported as having reached that environment, so a change to terraform/, docs/
-# or the pipeline is reported for neither. The snapshot generator is deployed by
-# the prod build alone, so it appears under prod and not stage.
+# A service's paths are the code it ships, which is what each image contains
+# rather than what shares a directory name. An environment deploys some of the
+# services, and a change to code no environment ships is reported for neither.
 #
-# A new deployable directory has to be added to both lists, or changes to it go
-# unreported. identifiers/ deploys from GitHub Actions rather than this pipeline
-# and is not covered here yet.
+# identifiers/ deploys from GitHub Actions rather than this pipeline, so it is
+# not a service here yet.
 version: 1
 
 slack:
   channel: "#wc-platform-deploys"
 
-# Written once and reached at each environment's host below. The paths are what
-# each image contains rather than what shares a directory name.
-checkpoints:
-  - name: search
-    path: /catalogue/management/search/manifest
+services:
+  search:
     paths:
       [
         search/,
@@ -30,8 +25,8 @@ checkpoints:
         builds/,
         build.sbt,
       ]
-  - name: items
-    path: /catalogue/management/items/manifest
+    manifest: /catalogue/management/search/manifest
+  items:
     paths:
       [
         items/,
@@ -42,8 +37,8 @@ checkpoints:
         builds/,
         build.sbt,
       ]
-  - name: concepts
-    path: /catalogue/management/concepts/manifest
+    manifest: /catalogue/management/items/manifest
+  concepts:
     paths:
       [
         concepts/,
@@ -52,38 +47,22 @@ checkpoints:
         package.json,
         common/search/src/test/resources/test_documents/,
       ]
+    manifest: /catalogue/management/concepts/manifest
+  # Fronted by the identity account's gateway, so its manifest is not reachable.
+  requests:
+    paths: [requests/, common/stacks/, project/, builds/, build.sbt]
+  # A queue worker with no HTTP surface, deployed by the prod build alone.
+  snapshot-generator:
+    paths: [snapshots/snapshot_generator/, common/display/, project/, build.sbt]
 
 environments:
   stage:
     host: https://api-stage.wellcomecollection.org
-    paths:
-      - search/
-      - items/
-      - concepts/
-      - requests/
-      - common/
-      - reference/
-      - project/
-      - builds/
-      - build.sbt
-      - yarn.lock
-      - package.json
+    deploys: [search, items, concepts, requests]
   prod:
     host: https://api.wellcomecollection.org
+    deploys: [search, items, concepts, requests, snapshot-generator]
     promote_from: stage
-    paths:
-      - search/
-      - items/
-      - concepts/
-      - requests/
-      - common/
-      - reference/
-      - project/
-      - builds/
-      - build.sbt
-      - yarn.lock
-      - package.json
-      - snapshots/snapshot_generator/
 
 # Off for the first week, as wellcomecollection.org did, so the Slack feed can be
 # judged before the tracker starts writing on pull requests. Add overdue on prod
