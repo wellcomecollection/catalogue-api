@@ -2,8 +2,8 @@
 
 from conftest import Invoke, body
 
-FORWARD = "/v1/identifiers/{canonicalId}"
-REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
+FORWARD = "/identifiers/v1/{canonicalId}"
+REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
 
 
 def test_error_body_shape(invoke: Invoke) -> None:

@@ -38,7 +38,7 @@ security:
   - ApiKeyAuth: []
 
 paths:
-  /v1/identifiers/{canonicalId}:
+  /identifiers/v1/{canonicalId}:
     get:
       operationId: getByCanonicalId
       summary: Resolve a canonical id to its source identifiers
@@ -78,7 +78,7 @@ paths:
         passthroughBehavior: when_no_match
         timeoutInMillis: 29000
 
-  /v1/identifiers/by-source/{sourceSystem}/{value}:
+  /identifiers/v1/by-source/{sourceSystem}/{value}:
     get:
       operationId: getBySourceIdentifier
       summary: Resolve a source identifier to its canonical id
