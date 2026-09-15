@@ -50,10 +50,27 @@ services:
     manifest: /catalogue/management/concepts/manifest
   # Fronted by the identity account's gateway, so its manifest is not reachable.
   requests:
-    paths: [requests/, common/stacks/, project/, builds/, build.sbt]
+    paths:
+      [
+        requests/,
+        common/display/,
+        common/search/src/main/,
+        common/stacks/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
   # A queue worker with no HTTP surface, deployed by the prod build alone.
   snapshot-generator:
-    paths: [snapshots/snapshot_generator/, common/display/, project/, build.sbt]
+    paths:
+      [
+        snapshots/snapshot_generator/,
+        common/display/,
+        common/search/src/main/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
 
 environments:
   stage:
