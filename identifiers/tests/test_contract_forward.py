@@ -7,7 +7,7 @@ from conftest import AssertContract, Invoke
 
 from adapters import handler
 
-FORWARD = "/v1/identifiers/{canonicalId}"
+FORWARD = "/identifiers/v1/{canonicalId}"
 
 
 def test_forward_200_matches_identifier_set(

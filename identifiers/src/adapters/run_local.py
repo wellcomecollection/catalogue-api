@@ -16,10 +16,10 @@ from urllib.parse import parse_qs, unquote, urlsplit
 
 from adapters.handler import BACKEND, handler
 
-_FORWARD = "/v1/identifiers/{canonicalId}"
-_REVERSE = "/v1/identifiers/by-source/{sourceSystem}/{value}"
-_REVERSE_PREFIX = "/v1/identifiers/by-source/"
-_FORWARD_PREFIX = "/v1/identifiers/"
+_FORWARD = "/identifiers/v1/{canonicalId}"
+_REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
+_REVERSE_PREFIX = "/identifiers/v1/by-source/"
+_FORWARD_PREFIX = "/identifiers/v1/"
 
 
 def _route(path: str) -> tuple[str | None, dict]:
@@ -76,9 +76,9 @@ def main() -> None:
     print(
         f"Identifiers API (prototype) on http://127.0.0.1:{port}  [backend: {BACKEND}]"
     )
-    print("  GET /v1/identifiers/{canonicalId}")
+    print("  GET /identifiers/v1/{canonicalId}")
     print(
-        "  GET /v1/identifiers/by-source/{sourceSystem}/{value}?type=Work[&include=siblings]"
+        "  GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work[&include=siblings]"
     )
     try:
         server.serve_forever()
