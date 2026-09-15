@@ -47,6 +47,13 @@ API-Gateway Lambda-proxy event, calls the same `handler` a Lambda would, and
 writes the proxy response back as HTTP. No web framework, so local runs stay
 faithful to the production shape (Python Lambda behind API Gateway).
 
+## Calling the deployed API
+
+Every request needs an `x-api-key` header, and one without it gets
+`403 {"message":"Forbidden"}` from the gateway rather than reaching the Lambda.
+The development key is for our own testing, and lives in Secrets Manager in the
+catalogue account at `identifiers_api/development/<environment>/api_key`.
+
 ## Architecture (the seam that matters)
 
 ```
