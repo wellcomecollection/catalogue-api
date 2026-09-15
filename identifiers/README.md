@@ -7,12 +7,11 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-**It is not deployed yet.** There is no Lambda, no gateway, no API keys and no
-cache: that work is tracked on
-[platform#6403](https://github.com/wellcomecollection/platform/issues/6403), and
-the first callable URL arrives with
-[platform#6531](https://github.com/wellcomecollection/platform/issues/6531).
-Until then, run it locally as below.
+**Deployed to stage only.** `identifiers.api-stage.wellcomecollection.org` reads
+the 2026-07-03 registry and requires an API key on every request: see
+[Calling the deployed API](#calling-the-deployed-api). There is no production
+deployment and no cache, and the remaining work is tracked on
+[platform#6403](https://github.com/wellcomecollection/platform/issues/6403).
 
 It also stands as the proposed **"service" answer** to the identifier-translation
 open question in the `folio-api` requesting prototype (see
@@ -47,6 +46,13 @@ The local server is a thin stdlib invoker: it turns each HTTP request into an
 API-Gateway Lambda-proxy event, calls the same `handler` a Lambda would, and
 writes the proxy response back as HTTP. No web framework, so local runs stay
 faithful to the production shape (Python Lambda behind API Gateway).
+
+## Calling the deployed API
+
+Every request needs an `x-api-key` header, and one without it gets
+`403 {"message":"Forbidden"}` from the gateway rather than reaching the Lambda.
+The development key is for our own testing, and lives in Secrets Manager in the
+catalogue account at `identifiers_api/development/<environment>/api_key`.
 
 ## Architecture (the seam that matters)
 
