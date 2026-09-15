@@ -1,0 +1,121 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wellcomecollection/deploy-tracker/main/schema/deploy-tracker.schema.json
+#
+# Reports deployments of this repository to Slack. See
+# https://github.com/wellcomecollection/deploy-tracker for what the tracker does.
+#
+# `paths` lists what each environment deploys. A change outside them is not
+# reported as having reached that environment, so a change to terraform/, docs/
+# or the pipeline is reported for neither. The snapshot generator is deployed by
+# the prod build alone, so it appears under prod and not stage.
+#
+# A new deployable directory has to be added to both lists, or changes to it go
+# unreported. identifiers/ deploys from GitHub Actions rather than this pipeline
+# and is not covered here yet.
+version: 1
+
+slack:
+  channel: "#wc-platform-deploys"
+
+environments:
+  stage:
+    paths:
+      - search/
+      - items/
+      - concepts/
+      - requests/
+      - common/
+      - reference/
+      - project/
+      - builds/
+      - build.sbt
+      - yarn.lock
+      - package.json
+    checkpoints:
+      - name: search
+        url: https://api-stage.wellcomecollection.org/catalogue/management/search/manifest
+        paths:
+          [
+            search/,
+            common/display/,
+            common/search/src/main/,
+            project/,
+            builds/,
+            build.sbt,
+          ]
+      - name: items
+        url: https://api-stage.wellcomecollection.org/catalogue/management/items/manifest
+        paths:
+          [
+            items/,
+            common/display/,
+            common/search/src/main/,
+            common/stacks/,
+            project/,
+            builds/,
+            build.sbt,
+          ]
+      - name: concepts
+        url: https://api-stage.wellcomecollection.org/catalogue/management/concepts/manifest
+        paths:
+          [
+            concepts/,
+            reference/,
+            yarn.lock,
+            package.json,
+            common/search/src/test/resources/test_documents/,
+          ]
+  prod:
+    promote_from: stage
+    paths:
+      - search/
+      - items/
+      - concepts/
+      - requests/
+      - common/
+      - reference/
+      - project/
+      - builds/
+      - build.sbt
+      - yarn.lock
+      - package.json
+      - snapshots/snapshot_generator/
+    checkpoints:
+      - name: search
+        url: https://api.wellcomecollection.org/catalogue/management/search/manifest
+        paths:
+          [
+            search/,
+            common/display/,
+            common/search/src/main/,
+            project/,
+            builds/,
+            build.sbt,
+          ]
+      - name: items
+        url: https://api.wellcomecollection.org/catalogue/management/items/manifest
+        paths:
+          [
+            items/,
+            common/display/,
+            common/search/src/main/,
+            common/stacks/,
+            project/,
+            builds/,
+            build.sbt,
+          ]
+      - name: concepts
+        url: https://api.wellcomecollection.org/catalogue/management/concepts/manifest
+        paths:
+          [
+            concepts/,
+            reference/,
+            yarn.lock,
+            package.json,
+            common/search/src/test/resources/test_documents/,
+          ]
+
+# Off for the first week, as wellcomecollection.org did, so the Slack feed can be
+# judged before the tracker starts writing on pull requests. Add overdue on prod
+# when they go on, since the prod gate is a manual block step.
+labels: false
+pr_comments: false
