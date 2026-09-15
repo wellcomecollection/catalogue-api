@@ -88,15 +88,15 @@ steps:
 
   - wait
 
-  - label: trigger stage deploy
+  # Creating a GitHub Deployment starts "Catalogue API: Deploy", whose trigger
+  # mode is "deployment". Buildkite then posts the deployment_status transitions
+  # itself, which is what the deploy tracker reads.
+  - label: "Trigger stage deployment"
     branches: "main"
-    trigger: "catalogue-api-deploy-stage"
-    async: true
-    build:
-      message: "${BUILDKITE_MESSAGE}"
-      commit: "${BUILDKITE_COMMIT}"
-      branch: "${BUILDKITE_BRANCH}"
-      env:
-        BUILDKITE_PULL_REQUEST: "${BUILDKITE_PULL_REQUEST}"
-        BUILDKITE_PULL_REQUEST_BASE_BRANCH: "${BUILDKITE_PULL_REQUEST_BASE_BRANCH}"
-        BUILDKITE_PULL_REQUEST_REPO: "${BUILDKITE_PULL_REQUEST_REPO}"
+    plugins:
+      - wellcomecollection/github-deployments#v0.3.0:
+          assume_role: "arn:aws:iam::756629837203:role/catalogue-ci"
+          environment: stage
+          ref: "${BUILDKITE_COMMIT}"
+    agents:
+      queue: nano
