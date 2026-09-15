@@ -1,0 +1,88 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wellcomecollection/deploy-tracker/main/schema/deploy-tracker.schema.json
+#
+# Reports deployments of this repository to Slack. See
+# https://github.com/wellcomecollection/deploy-tracker for what the tracker does.
+#
+# A service's paths are the code it ships, which is what each image contains
+# rather than what shares a directory name. An environment deploys some of the
+# services, and a change to code no environment ships is reported for neither.
+#
+# identifiers/ deploys from GitHub Actions rather than this pipeline, so it is
+# not a service here yet.
+version: 1
+
+slack:
+  channel: "#wc-platform-deploys"
+
+services:
+  search:
+    paths:
+      [
+        search/,
+        common/display/,
+        common/search/src/main/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+    manifest: /catalogue/management/search/manifest
+  items:
+    paths:
+      [
+        items/,
+        common/display/,
+        common/search/src/main/,
+        common/stacks/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+    manifest: /catalogue/management/items/manifest
+  concepts:
+    paths:
+      [
+        concepts/,
+        reference/,
+        yarn.lock,
+        package.json,
+        common/search/src/test/resources/test_documents/,
+      ]
+    manifest: /catalogue/management/concepts/manifest
+  # Fronted by the identity account's gateway, so its manifest is not reachable.
+  requests:
+    paths:
+      [
+        requests/,
+        common/display/,
+        common/search/src/main/,
+        common/stacks/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+  # A queue worker with no HTTP surface, deployed by the prod build alone.
+  snapshot-generator:
+    paths:
+      [
+        snapshots/snapshot_generator/,
+        common/display/,
+        common/search/src/main/,
+        project/,
+        builds/,
+        build.sbt,
+      ]
+
+environments:
+  stage:
+    host: https://api-stage.wellcomecollection.org
+    deploys: [search, items, concepts, requests]
+  prod:
+    host: https://api.wellcomecollection.org
+    deploys: [search, items, concepts, requests, snapshot-generator]
+    promote_from: stage
+
+# Off for the first week, as wellcomecollection.org did, so the Slack feed can be
+# judged before the tracker starts writing on pull requests. Add overdue on prod
+# when they go on, since the prod gate is a manual block step.
+labels: false
+pr_comments: false
