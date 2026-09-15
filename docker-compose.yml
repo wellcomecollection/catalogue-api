@@ -16,3 +16,6 @@ services:
     build:
       context: .
       dockerfile: ./concepts/Dockerfile
+      args:
+        # Buildkite sets BUILDKITE_COMMIT; empty locally, which the app reads as unknown.
+        BUILD_COMMIT: ${BUILDKITE_COMMIT:-}

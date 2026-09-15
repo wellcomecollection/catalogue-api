@@ -38,4 +38,5 @@ echo "*** Building Docker image for sbt app"
 docker build \
   --file "$PROJECT_DIRECTORY/Dockerfile" \
   --tag "$PROJECT_NAME:$IMAGE_TAG" \
+  --build-arg BUILD_COMMIT="${IMAGE_TAG#ref.}" \
   "$PROJECT_DIRECTORY"

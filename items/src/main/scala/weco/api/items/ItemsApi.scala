@@ -4,6 +4,7 @@ import org.apache.pekko.http.scaladsl.server.Route
 import weco.Tracing
 import weco.api.items.responses.LookupItemStatus
 import weco.api.items.services.{ItemUpdateService, WorkLookup}
+import weco.api.search.management.ManifestRoute
 import weco.api.search.models.ApiConfig
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.FutureDirectives
@@ -37,11 +38,14 @@ class ItemsApi(
       }
     },
     pathPrefix("management") {
-      concat(path("healthcheck") {
-        get {
-          complete("message" -> "ok")
-        }
-      })
+      concat(
+        path("healthcheck") {
+          get {
+            complete("message" -> "ok")
+          }
+        },
+        ManifestRoute.route
+      )
     }
   )
 }

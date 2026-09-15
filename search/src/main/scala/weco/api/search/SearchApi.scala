@@ -24,6 +24,7 @@ import weco.api.search.services.{
   ImagesTemplateSearchBuilder,
   WorksTemplateSearchBuilder
 }
+import weco.api.search.management.ManifestRoute
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.models.DisplayError
 
@@ -172,6 +173,7 @@ class SearchApi(
               complete("message" -> "ok")
             }
           },
+          ManifestRoute.route,
           path("clusterhealth") {
             get {
               withFuture {

@@ -33,6 +33,7 @@ class OpenApiSpecEndpointTest
     "/search-templates.json",
     "/_elasticConfig",
     "/management/healthcheck",
+    "/management/manifest",
     "/management/clusterhealth",
     "/management/_workTypes"
   )

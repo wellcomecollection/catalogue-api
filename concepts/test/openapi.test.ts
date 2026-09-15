@@ -22,7 +22,10 @@ const spec = parse(fs.readFileSync(specPath, "utf8"));
  * Endpoints this service serves on purpose but does not document. If you document
  * one of these, delete it from here.
  */
-const undocumentedInternalPaths = ["/management/healthcheck"];
+const undocumentedInternalPaths = [
+  "/management/healthcheck",
+  "/management/manifest",
+];
 
 /** The routes express will actually match, e.g. `/concepts/:id`. */
 const servedPaths = (): string[] => {

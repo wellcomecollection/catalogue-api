@@ -5,6 +5,7 @@ import org.apache.pekko.http.scaladsl.server.{Directive, PathMatcher, Route}
 import weco.api.requests.models.ItemRequest
 import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.requests.services.RequestsService
+import weco.api.search.management.ManifestRoute
 import weco.api.search.models.ApiConfig
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.ErrorDirectives
@@ -51,11 +52,14 @@ class RequestsApi(
           }
       },
     pathPrefix("management") {
-      concat(path("healthcheck") {
-        get {
-          complete("message" -> "ok")
-        }
-      })
+      concat(
+        path("healthcheck") {
+          get {
+            complete("message" -> "ok")
+          }
+        },
+        ManifestRoute.route
+      )
     }
   )
 }
