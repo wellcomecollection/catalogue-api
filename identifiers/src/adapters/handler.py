@@ -11,6 +11,7 @@ from folio-api's `{message}` shape — see the README.
 
 import json
 import os
+from datetime import UTC, datetime
 from typing import Any
 
 from adapters.rds_data_repo import RdsDataRepository
@@ -38,12 +39,29 @@ _service = IdentifiersService(_repo)
 
 _FORWARD = "/identifiers/v1/{canonicalId}"
 _REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
+_MANIFEST = "/management/manifest"
+
+# Baked into the image by CI, since a running container has no repository to ask.
+# The Dockerfile always defines it, so an image built without the build argument
+# carries it empty rather than absent. "unknown" matches ManifestRoute.scala and
+# the concepts controller, so the same string means the same thing everywhere.
+BUILD_COMMIT = os.environ.get("BUILD_COMMIT") or "unknown"
+# Module import is close enough to process start, and it is what a warm
+# container reports for its whole life, which is the useful reading.
+STARTED_AT = datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
 def handler(event: dict, context: Any = None) -> dict:
     resource = event.get("resource")
     path_params = event.get("pathParameters") or {}
     query = event.get("queryStringParameters") or {}
+
+    if resource == _MANIFEST:
+        # Ahead of the try: it reads two module constants and can raise nothing
+        # the error mapping below would have anything useful to say about. It
+        # does still depend on the repository built at import, so a Lambda that
+        # fails to initialise serves no manifest either.
+        return _manifest()
 
     try:
         if resource == _FORWARD:
@@ -103,6 +121,18 @@ def _header(event: dict, name: str) -> str | None:
         if key.lower() == lowered:
             return value
     return None
+
+
+def _manifest() -> dict:
+    """The commit this image is running, for the deploy tracker.
+
+    No-store because a cached response would report the previous deployment.
+    """
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json", "Cache-Control": "no-store"},
+        "body": json.dumps({"commit": BUILD_COMMIT, "startedAt": STARTED_AT}),
+    }
 
 
 def _error(status_code: int, code: str, message: str) -> dict:
