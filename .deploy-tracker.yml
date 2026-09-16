@@ -3,15 +3,12 @@
 # Reports deployments of this repository to Slack. See
 # https://github.com/wellcomecollection/deploy-tracker for what the tracker does.
 #
-# A service's paths are the code it ships, which is what each image contains
-# rather than what shares a directory name. An environment deploys some of the
-# services, so a change to a service only prod deploys is reported for prod
-# alone. A change no service ships at all, to CI or to a build script, is named
-# by whichever deployment carried it, since no other one ever will.
+# A deployment carries the whole commit, so every pull request in its range is
+# reported. Only `paths` narrow that, and only for a service some environment
+# leaves out, which here is the snapshot generator.
 #
 # identifiers/ deploys from GitHub Actions rather than this pipeline, so it is
-# not a service here yet. Until it is, changes to it are reported as shipped by
-# no service.
+# not a service here yet.
 version: 1
 
 slack:
@@ -19,61 +16,18 @@ slack:
 
 services:
   search:
-    paths:
-      [
-        search/,
-        common/display/,
-        common/search/src/main/,
-        project/,
-        builds/,
-        build.sbt,
-      ]
     manifest: /catalogue/management/search/manifest
   items:
-    paths:
-      [
-        items/,
-        common/display/,
-        common/search/src/main/,
-        common/stacks/,
-        project/,
-        builds/,
-        build.sbt,
-      ]
     manifest: /catalogue/management/items/manifest
   concepts:
-    paths:
-      [
-        concepts/,
-        reference/,
-        yarn.lock,
-        package.json,
-        common/search/src/test/resources/test_documents/,
-      ]
     manifest: /catalogue/management/concepts/manifest
   # Fronted by the identity account's gateway, so its manifest is not reachable.
   requests:
-    paths:
-      [
-        requests/,
-        common/display/,
-        common/search/src/main/,
-        common/stacks/,
-        project/,
-        builds/,
-        build.sbt,
-      ]
-  # A queue worker with no HTTP surface, deployed by the prod build alone.
+  # A queue worker with no HTTP surface, deployed by the prod build alone. Its own
+  # directory and nothing else: the shared Scala it is built from is shared with
+  # services stage does deploy, and listing it here would hide those changes.
   snapshot-generator:
-    paths:
-      [
-        snapshots/snapshot_generator/,
-        common/display/,
-        common/search/src/main/,
-        project/,
-        builds/,
-        build.sbt,
-      ]
+    paths: [snapshots/snapshot_generator/]
 
 environments:
   stage:
