@@ -14,5 +14,5 @@ trait IdentifiersGenerators extends RandomGenerators {
     * directly.
     */
   def createCanonicalId: String =
-    randomAlphanumeric(length  =  8).toLowerCase
+    randomAlphanumeric(length = 8).toLowerCase
 }
