@@ -38,6 +38,8 @@ environments:
     host: https://api.wellcomecollection.org
     deploys: [search, items, concepts, requests, snapshot-generator]
     promote_from: stage
+    # Working hours waiting on stage before a nudge, since the prod gate is manual
+    overdue: 2h
 
 labels: true
 pr_comments: true
