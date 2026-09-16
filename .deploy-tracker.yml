@@ -5,10 +5,13 @@
 #
 # A service's paths are the code it ships, which is what each image contains
 # rather than what shares a directory name. An environment deploys some of the
-# services, and a change to code no environment ships is reported for neither.
+# services, so a change to a service only prod deploys is reported for prod
+# alone. A change no service ships at all, to CI or to a build script, is named
+# by whichever deployment carried it, since no other one ever will.
 #
 # identifiers/ deploys from GitHub Actions rather than this pipeline, so it is
-# not a service here yet.
+# not a service here yet. Until it is, changes to it are reported as shipped by
+# no service.
 version: 1
 
 slack:
