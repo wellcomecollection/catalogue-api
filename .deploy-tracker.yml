@@ -21,7 +21,8 @@ services:
     manifest: /catalogue/management/items/manifest
   concepts:
     manifest: /catalogue/management/concepts/manifest
-  # Fronted by the identity account's gateway, so its manifest is not reachable.
+  # Serves /management/manifest, but no gateway routes to it. requests sits behind
+  # the identity account's API, so the route has to be added in that repository.
   requests:
   # A queue worker with no HTTP surface, deployed by the prod build alone. Its own
   # directory and nothing else: the shared Scala it is built from is shared with
@@ -38,8 +39,5 @@ environments:
     deploys: [search, items, concepts, requests, snapshot-generator]
     promote_from: stage
 
-# Off for the first week, as wellcomecollection.org did, so the Slack feed can be
-# judged before the tracker starts writing on pull requests. Add overdue on prod
-# when they go on, since the prod gate is a manual block step.
-labels: false
-pr_comments: false
+labels: true
+pr_comments: true
