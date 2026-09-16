@@ -74,9 +74,9 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
     """
     spec = openapi.spec
     root = [list(requirement.keys()) for requirement in spec["security"]]
-    assert any(SCHEME in names for names in root), (
-        "the spec must still require a key by default"
-    )
+    assert any(
+        SCHEME in names for names in root
+    ), "the spec must still require a key by default"
 
     # Any key under a path that is not one of these is an operation, so a route
     # added as x-amazon-apigateway-any-method is checked too.
@@ -98,6 +98,6 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
             if path == MANIFEST:
                 assert effective == [], f"{route} is the one route meant to be open"
             else:
-                assert any(SCHEME in names for names in effective), (
-                    f"{route} does not require {SCHEME}, so it is publicly readable"
-                )
+                assert any(
+                    SCHEME in names for names in effective
+                ), f"{route} does not require {SCHEME}, so it is publicly readable"
