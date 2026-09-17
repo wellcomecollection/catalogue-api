@@ -594,6 +594,31 @@ class SierraItemUpdaterTest
       }
     }
 
+    describe("localDateAtVenue") {
+      val london = ZoneId.of("Europe/London")
+
+      it("uses the calendar date at the venue, not in UTC") {
+        SierraItemUpdater.localDateAtVenue(
+          "2024-04-23T23:00:00.000Z",
+          ZoneId.of("Australia/Brisbane")
+        ) shouldBe LocalDate.parse("2024-04-24")
+      }
+
+      it("applies British Summer Time") {
+        SierraItemUpdater.localDateAtVenue(
+          "2024-04-24T23:30:00.000Z",
+          london
+        ) shouldBe LocalDate.parse("2024-04-25")
+      }
+
+      it("applies no offset in winter") {
+        SierraItemUpdater.localDateAtVenue(
+          "2024-01-24T23:30:00.000Z",
+          london
+        ) shouldBe LocalDate.parse("2024-01-24")
+      }
+    }
+
     it(
       "adds available dates as an empty list if contentApiVenueRequest returns an error"
     ) {

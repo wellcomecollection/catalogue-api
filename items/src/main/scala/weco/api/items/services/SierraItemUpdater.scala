@@ -16,7 +16,7 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.{SierraItemDataEntries, SierraLocation}
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.{Clock, LocalDate, LocalDateTime, OffsetDateTime}
+import java.time.{Clock, LocalDate, LocalDateTime, OffsetDateTime, ZoneId}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -207,11 +207,15 @@ class SierraItemUpdater(
     }
   }
 
-  // Opening times come from the Content API as UTC instants; we want the
-  // calendar date at the venue.
   private def parseISOStringToLocalDate(isoString: String): LocalDate =
-    OffsetDateTime
-      .parse(isoString)
-      .atZoneSameInstant(venueClock.getZone)
-      .toLocalDate
+    SierraItemUpdater.localDateAtVenue(isoString, venueClock.getZone)
+}
+
+object SierraItemUpdater {
+
+  /** Opening times come from the Content API as UTC instants; we want the
+    * calendar date at the venue.
+    */
+  def localDateAtVenue(isoString: String, zone: ZoneId): LocalDate =
+    OffsetDateTime.parse(isoString).atZoneSameInstant(zone).toLocalDate
 }
