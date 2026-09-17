@@ -12,6 +12,7 @@ import java.time.LocalDate
   */
 object BlockedCollectionDates {
   val dates: Set[LocalDate] = Set(
+    // See https://wellcome.slack.com/archives/C02ANCYL90E/p1789639093500899?thread_ts=1789637343.866199&cid=C02ANCYL90E
     LocalDate.of(2026, 10, 5)
   )
 }
