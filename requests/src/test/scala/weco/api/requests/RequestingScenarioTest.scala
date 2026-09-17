@@ -113,6 +113,49 @@ class RequestingScenarioTest
       }
     }
 
+    Scenario("An item requested for a blocked collection date") {
+      Given("a date on which items cannot be collected")
+      val pickupDate = LocalDate.parse("2022-02-18")
+
+      implicit val route: Route =
+        createRoute(blockedCollectionDates = Set(pickupDate))
+
+      When("the user requests an item for that date")
+      val itemId = createCanonicalId
+      val response = makePostRequest(
+        path = "/users/1234567/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "$itemId",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the hold is rejected without going to Sierra")
+      response.status shouldBe StatusCodes.BadRequest
+
+      And("the error explains why the hold is rejected")
+      withStringEntity(response.entity) {
+        assertJsonStringsAreEqual(
+          _,
+          s"""
+             |{
+             |  "type": "Error",
+             |  "errorType": "http",
+             |  "httpStatus": 400,
+             |  "label": "Bad Request",
+             |  "description": "Items cannot be collected on $pickupDate"
+             |}
+             |""".stripMargin
+        )
+      }
+    }
+
     Scenario("An item which does not exist") {
       Given("an item ID that doesn't exist")
       val itemId = createCanonicalId
@@ -1406,7 +1449,8 @@ class RequestingScenarioTest
   def createRoute(
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     catalogueResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    holdLimit: Int = 10
+    holdLimit: Int = 10,
+    blockedCollectionDates: Set[LocalDate] = Set.empty
   ): Route = {
     val sierraClient = new MemoryHttpClient(sierraResponses) with HttpGet
     with HttpPost {
@@ -1423,7 +1467,8 @@ class RequestingScenarioTest
       itemLookup = new ItemLookup(catalogueClient)
     )
 
-    val api: RequestsApi = new RequestsApi(requestsService)
+    val api: RequestsApi =
+      new RequestsApi(requestsService, blockedCollectionDates)
 
     api.routes
   }

@@ -21,7 +21,7 @@ import weco.sierra.fixtures.SierraSourceFixture
 import weco.sierra.generators.SierraIdentifierGenerators
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.{Clock, Instant, ZoneId}
+import java.time.{Clock, Instant, LocalDate, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -38,12 +38,13 @@ class SierraItemUpdaterTest
   def withSierraItemUpdater[R](
     sierraResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
     contentApiResponses: Seq[(HttpRequest, HttpResponse)] = Seq(),
-    clock: Clock
+    clock: Clock,
+    blockedCollectionDates: Set[LocalDate] = Set.empty
   )(testWith: TestWith[ItemUpdater, R]): R =
     withActorSystem { implicit actorSystem =>
       withSierraSource(sierraResponses) { sierraSource =>
         val contentApiClient = new MemoryHttpClient(contentApiResponses)
-          with HttpGet {
+        with HttpGet {
           override val baseUri: Uri = Uri("http://content:9002")
         }
 
@@ -51,7 +52,8 @@ class SierraItemUpdaterTest
           new SierraItemUpdater(
             sierraSource,
             new VenuesOpeningTimesLookup(contentApiClient),
-            clock
+            clock,
+            blockedCollectionDates
           )
         )
       }
@@ -491,6 +493,102 @@ class SierraItemUpdaterTest
                 )
               )
             )
+          }
+        }
+      }
+    }
+
+    describe("blocked collection dates") {
+      it("removes a blocked date from an on-site item's available dates") {
+        // Without the block, a request before 10am on 24 April offers
+        // 25 and 26 April (see the "before 10am" test above).
+        withClock("2024-04-24T08:58:00.000Z") { clock =>
+          withSierraItemUpdater(
+            availableItemResponses(workWithAvailableItemNumber),
+            Seq(
+              (contentApiVenueRequest("library"), contentApiVenueResponse())
+            ),
+            clock,
+            blockedCollectionDates = Set(LocalDate.parse("2024-04-25"))
+          ) { sierraItemUpdater =>
+            whenReady(
+              sierraItemUpdater.updateItems(workWithAvailableItem.items)
+            ) { updatedItems =>
+              updatedItems.head.availableDates shouldBe Some(
+                List(
+                  AvailabilitySlot(
+                    "2024-04-26T09:00:00.000Z",
+                    "2024-04-26T17:00:00.000Z"
+                  )
+                )
+              )
+            }
+          }
+        }
+      }
+
+      it(
+        "does not shift the lead time when a blocked date falls inside it"
+      ) {
+        // 24 April is the day of the request and would be dropped by the
+        // lead-time rule anyway; blocking it must not push everything back.
+        withClock("2024-04-24T08:58:00.000Z") { clock =>
+          withSierraItemUpdater(
+            availableItemResponses(workWithAvailableItemNumber),
+            Seq(
+              (contentApiVenueRequest("library"), contentApiVenueResponse())
+            ),
+            clock,
+            blockedCollectionDates = Set(LocalDate.parse("2024-04-24"))
+          ) { sierraItemUpdater =>
+            whenReady(
+              sierraItemUpdater.updateItems(workWithAvailableItem.items)
+            ) { updatedItems =>
+              updatedItems.head.availableDates shouldBe availableDates
+            }
+          }
+        }
+      }
+
+      it("removes a blocked date from a deepstore item's available dates") {
+        // Without the block, the deepstore item is offered on 5 May only
+        // (see the deepstore test above), so blocking it leaves nothing.
+        withClock() { clock =>
+          withSierraItemUpdater(
+            availableDeepstoreItemResponse(workWithAvailableItemNumber),
+            Seq(
+              (
+                contentApiVenueRequest("deepstore"),
+                contentApiVenueResponse("deepstore")
+              )
+            ),
+            clock,
+            blockedCollectionDates = Set(LocalDate.parse("2024-05-05"))
+          ) { sierraItemUpdater =>
+            whenReady(
+              sierraItemUpdater.updateItems(workWithAvailableItem.items)
+            ) { updatedItems =>
+              updatedItems.head.availableDates shouldBe Some(List())
+            }
+          }
+        }
+      }
+
+      it("ignores blocked dates that aren't offered anyway") {
+        withClock("2024-04-24T08:58:00.000Z") { clock =>
+          withSierraItemUpdater(
+            availableItemResponses(workWithAvailableItemNumber),
+            Seq(
+              (contentApiVenueRequest("library"), contentApiVenueResponse())
+            ),
+            clock,
+            blockedCollectionDates = Set(LocalDate.parse("2024-12-25"))
+          ) { sierraItemUpdater =>
+            whenReady(
+              sierraItemUpdater.updateItems(workWithAvailableItem.items)
+            ) { updatedItems =>
+              updatedItems.head.availableDates shouldBe availableDates
+            }
           }
         }
       }
