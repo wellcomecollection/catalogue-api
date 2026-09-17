@@ -16,8 +16,7 @@ import weco.sierra.models.errors.SierraItemLookupError
 import weco.sierra.models.fields.{SierraItemDataEntries, SierraLocation}
 import weco.sierra.models.identifiers.SierraItemNumber
 
-import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate, LocalDateTime}
+import java.time.{Clock, LocalDate, LocalDateTime, OffsetDateTime, ZoneId}
 import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
@@ -29,7 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SierraItemUpdater(
   sierraSource: SierraSource,
   venuesOpeningTimesLookup: VenuesOpeningTimesLookup,
-  venueClock: Clock
+  venueClock: Clock,
+  blockedCollectionDates: Set[LocalDate] = Set.empty
 )(implicit executionContext: ExecutionContext)
     extends ItemUpdater
     with Logging
@@ -106,6 +106,7 @@ class SierraItemUpdater(
   /** Set availability slots for a single item
     *  - if its physicalAccessCondition exists and is requestable
     *  - based on its location
+    *  - excluding any blocked collection dates
     *  If any of the above are not true/defined, we return the item without availableDates
     */
   private def setAvailableDates(
@@ -129,7 +130,10 @@ class SierraItemUpdater(
         } else {
           List.empty
         }
-      } yield item.copy(availableDates = Some(availableDates))
+        collectableDates = availableDates.filterNot { slot =>
+          blockedCollectionDates.contains(parseISOStringToLocalDate(slot.from))
+        }
+      } yield item.copy(availableDates = Some(collectableDates))
     } else {
       Future.successful(item)
     }
@@ -204,8 +208,14 @@ class SierraItemUpdater(
   }
 
   private def parseISOStringToLocalDate(isoString: String): LocalDate =
-    LocalDate.parse(
-      isoString,
-      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    )
+    SierraItemUpdater.localDateAtVenue(isoString, venueClock.getZone)
+}
+
+object SierraItemUpdater {
+
+  /** Opening times come from the Content API as UTC instants; we want the
+    * calendar date at the venue.
+    */
+  def localDateAtVenue(isoString: String, zone: ZoneId): LocalDate =
+    OffsetDateTime.parse(isoString).atZoneSameInstant(zone).toLocalDate
 }

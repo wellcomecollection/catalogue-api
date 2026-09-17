@@ -12,10 +12,12 @@ import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
 import weco.sierra.models.identifiers.SierraPatronNumber
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 class RequestsApi(
-  val requestsService: RequestsService
+  val requestsService: RequestsService,
+  blockedCollectionDates: Set[LocalDate] = Set.empty
 )(implicit
   val ec: ExecutionContext,
   val apiConfig: ApiConfig)
@@ -35,12 +37,19 @@ class RequestsApi(
                 // Should we query based on the work ID?
                 itemRequest.itemId match {
                   case itemId if looksLikeCanonicalId(itemId) =>
-                    withFuture {
-                      createRequest(
-                        itemId = itemId,
-                        pickupDate = itemRequest.pickupDate,
-                        patronNumber = userIdentifier
-                      )
+                    itemRequest.pickupDate match {
+                      case Some(date)
+                          if blockedCollectionDates.contains(date) =>
+                        invalidRequest(s"Items cannot be collected on $date")
+
+                      case pickupDate =>
+                        withFuture {
+                          createRequest(
+                            itemId = itemId,
+                            pickupDate = pickupDate,
+                            patronNumber = userIdentifier
+                          )
+                        }
                     }
 
                   case itemId =>
