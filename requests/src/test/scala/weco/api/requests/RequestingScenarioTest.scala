@@ -156,6 +156,56 @@ class RequestingScenarioTest
       }
     }
 
+    Scenario("An item requested for a date other than a blocked one") {
+      Given("a physical item from Sierra and a blocked collection date")
+      val patronNumber = createSierraPatronNumber
+      val itemNumber = createSierraItemNumber
+      val itemId = createCanonicalId
+      val blockedDate = LocalDate.parse("2022-02-17")
+      val pickupDate = LocalDate.parse("2022-02-18")
+
+      val sierraResponses = Seq(
+        (
+          createHoldRequest(patronNumber, itemNumber, pickupDate),
+          HttpResponse(status = StatusCodes.NoContent)
+        )
+      )
+
+      val catalogueResponses = Seq(
+        (
+          catalogueItemRequest(itemId),
+          catalogueItemResponse(itemId, itemNumber)
+        )
+      )
+
+      implicit val route: Route = createRoute(
+        sierraResponses = sierraResponses,
+        catalogueResponses = catalogueResponses,
+        blockedCollectionDates = Set(blockedDate)
+      )
+
+      When("the user requests the item for a different date")
+      val response = makePostRequest(
+        path = s"/users/$patronNumber/item-requests",
+        entity = createJsonHttpEntityWith(
+          s"""
+             |{
+             |  "itemId": "$itemId",
+             |  "workId": "$createCanonicalId",
+             |  "pickupDate": "$pickupDate",
+             |  "type": "ItemRequest"
+             |}
+             |""".stripMargin
+        )
+      )
+
+      Then("the hold is placed in Sierra and the API returns Accepted")
+      response.status shouldBe StatusCodes.Accepted
+
+      And("an empty body")
+      response.entity shouldBe HttpEntity.Empty
+    }
+
     Scenario("An item which does not exist") {
       Given("an item ID that doesn't exist")
       val itemId = createCanonicalId

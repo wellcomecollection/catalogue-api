@@ -49,8 +49,8 @@ The dates are worked out in `SierraItemUpdater` from the venue opening times in 
 
 ### Days when the library is closed
 
-Mark the library as closed in Prismic, as for any other closure. The Content API stops returning that day as an opening
-day, and the items API stops offering it.
+Mark the library as closed in Prismic. The Content API stops returning that day as an opening day, and the items API
+stops offering it.
 
 ### Days when the library is open but items can't be collected
 
