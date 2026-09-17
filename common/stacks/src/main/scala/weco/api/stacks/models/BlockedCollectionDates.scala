@@ -7,9 +7,11 @@ import java.time.LocalDate
   * opening times in the Content API and don't need listing here.
   *
   * The items API stops offering these dates and the requests API rejects
-  * them. Both services are redeployed when this is merged. Add a date as
-  * LocalDate.of(2026, 10, 13) and remove it once it has passed.
+  * them. Both services are redeployed when this is merged. Remove dates
+  * once they have passed.
   */
 object BlockedCollectionDates {
-  val dates: Set[LocalDate] = Set()
+  val dates: Set[LocalDate] = Set(
+    LocalDate.of(2026, 10, 5)
+  )
 }
