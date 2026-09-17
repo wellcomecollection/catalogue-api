@@ -7,7 +7,6 @@ import weco.api.requests.responses.{CreateRequest, LookupPendingRequests}
 import weco.api.requests.services.RequestsService
 import weco.api.search.management.ManifestRoute
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.models.BlockedCollectionDates
 import weco.catalogue.display_model.rest.IdentifierDirectives
 import weco.http.ErrorDirectives
 import weco.http.models.DisplayError
@@ -18,7 +17,7 @@ import scala.concurrent.ExecutionContext
 
 class RequestsApi(
   val requestsService: RequestsService,
-  blockedCollectionDates: Set[LocalDate] = BlockedCollectionDates.dates
+  blockedCollectionDates: Set[LocalDate] = Set.empty
 )(implicit
   val ec: ExecutionContext,
   val apiConfig: ApiConfig)
