@@ -150,6 +150,41 @@ paths:
         passthroughBehavior: when_no_match
         timeoutInMillis: 29000
 
+  /management/manifest:
+    get:
+      operationId: getManifest
+      summary: The commit this service is running
+      description: >-
+        Read by the deploy tracker to confirm a change has reached an
+        environment. `commit` is baked into the image at build time, since a
+        running container has no repository to ask. See the contract at
+        https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
+      # The only operation without a key. The tracker holds no credentials for
+      # the services it checks, and this exposes a commit that is already public.
+      # tests/test_manifest.py fails if any other operation stops requiring one.
+      security: []
+      responses:
+        '200':
+          description: >-
+            Whenever the Lambda initialises. It reports what is running, not
+            whether the service is healthy, so it does not answer when the
+            function itself cannot start.
+          headers:
+            Cache-Control:
+              description: Always no-store, or a cache reports the previous deployment.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Manifest'
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: ${identifiers_lambda_invoke_arn}
+        passthroughBehavior: when_no_match
+        timeoutInMillis: 29000
+
 components:
 
   securitySchemes:
@@ -274,6 +309,23 @@ components:
             message: the request could not be completed
 
   schemas:
+
+    Manifest:
+      type: object
+      description: What the deploy tracker reads to confirm a deployment landed.
+      required: [commit, startedAt]
+      properties:
+        commit:
+          type: string
+          description: >-
+            The commit this image was built from, or "unknown" if the image
+            was built without the BUILD_COMMIT argument.
+          example: 7aacfdd974cfd315894c24ff831e3327aa3bb98b
+        startedAt:
+          type: string
+          format: date-time
+          description: When this process started, which answers the next question a person asks.
+          example: "2026-09-16T08:00:00Z"
 
     SourceIdentifier:
       type: object
