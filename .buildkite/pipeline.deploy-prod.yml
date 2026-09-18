@@ -1,3 +1,5 @@
+# The deploy tracker reads GitHub Deployments, and this pipeline creates and
+# completes its own prod Deployment, the way the stage pipeline does for stage.
 steps:
   - label: "Diff tool: Compare stage & prod"
     branches: "main"
@@ -25,6 +27,7 @@ steps:
     prompt: "Deploying ref.$BUILDKITE_COMMIT: Have you checked staging & diff-tool?"
 
   - label: "Deploy (catalogue prod)"
+    key: "deploy-catalogue-prod"
     branches: "main"
     concurrency: 1
     concurrency_group: catalogue/deploy-prod
@@ -42,11 +45,19 @@ steps:
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      # Creates the prod Deployment and posts in_progress before the command
+      # above, then failure if it fails. No assume_role: the step is already
+      # catalogue-ci, and that role carries the plugin's secret access.
+      - wellcomecollection/github-deployments#v0.4.0:
+          environment: prod
+          ref: "${BUILDKITE_COMMIT}"
+          wrap: true
 
     agents:
       queue: nano
 
   - label: "Deploy (snapshot generator)"
+    key: "deploy-snapshot-generator-prod"
     branches: "main"
     concurrency: 1
     concurrency_group: snapshots/deploy-prod
@@ -65,6 +76,7 @@ steps:
       queue: nano
 
   - label: "Deploy (requests prod)"
+    key: "deploy-requests-prod"
     branches: "main"
     concurrency: 1
     concurrency_group: requests/deploy-prod
@@ -84,6 +96,7 @@ steps:
   - wait
 
   - label: "Smoke Tests: Catalogue API (prod)"
+    key: "smoke-tests-prod"
     branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -125,3 +138,24 @@ steps:
           propagate-environment: true
           propagate-aws-auth-tokens: true
           shell: false
+
+  - label: "Report the prod deployment"
+    branches: "main"
+    # Runs after a failure too, which is the point: without it a failed deploy
+    # leaves the Deployment at in_progress with nothing to resolve it.
+    depends_on:
+      - "deploy-catalogue-prod"
+      - "deploy-snapshot-generator-prod"
+      - "deploy-requests-prod"
+      - "smoke-tests-prod"
+    allow_dependency_failure: true
+    # Rank and e2e results are deliberately not read. They measure search
+    # quality and the front end against this deploy, not whether it landed.
+    command: |
+      .buildkite/scripts/report_deployment.sh prod \
+        deploy-catalogue-prod \
+        deploy-snapshot-generator-prod \
+        deploy-requests-prod \
+        smoke-tests-prod
+    agents:
+      queue: nano
