@@ -1,5 +1,11 @@
+# The deploy tracker reads GitHub Deployments, and this pipeline creates and
+# completes its own rather than letting Buildkite do it from a deployment
+# trigger. Nothing in this repository listens for Deployment events, so the
+# identifiers API's Actions workflow can deploy alongside these pipelines
+# without either producer starting or reporting on the other's work.
 steps:
   - label: "Deploy (catalogue stage)"
+    key: "deploy-catalogue-stage"
     branches: "main"
     concurrency: 1
     concurrency_group: catalogue/deploy-stage
@@ -17,11 +23,19 @@ steps:
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
           role: "arn:aws:iam::756629837203:role/catalogue-ci"
+      # Creates the stage Deployment and posts in_progress before the command
+      # above, then failure if it fails. No assume_role: the step is already
+      # catalogue-ci, and that role carries the plugin's secret access.
+      - wellcomecollection/github-deployments#v0.4.0:
+          environment: stage
+          ref: "${BUILDKITE_COMMIT}"
+          wrap: true
 
     agents:
       queue: nano
 
   - label: "Deploy (requests stage)"
+    key: "deploy-requests-stage"
     branches: "main"
     concurrency: 1
     concurrency_group: requests/deploy-stage
@@ -41,6 +55,7 @@ steps:
   - wait
 
   - label: "Smoke Tests: Catalogue API (stage)"
+    key: "smoke-tests-stage"
     branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -83,6 +98,25 @@ steps:
           propagate-environment: true
           propagate-aws-auth-tokens: true
           shell: false
+
+  - label: "Report the stage deployment"
+    branches: "main"
+    # Runs after a failure too, which is the point: without it a failed deploy
+    # leaves the Deployment at in_progress with nothing to resolve it.
+    depends_on:
+      - "deploy-catalogue-stage"
+      - "deploy-requests-stage"
+      - "smoke-tests-stage"
+    allow_dependency_failure: true
+    # Rank and e2e results are deliberately not read. They measure search
+    # quality and the front end against this deploy, not whether it landed.
+    command: |
+      .buildkite/scripts/report_deployment.sh stage \
+        deploy-catalogue-stage \
+        deploy-requests-stage \
+        smoke-tests-stage
+    agents:
+      queue: nano
 
   - wait
 
