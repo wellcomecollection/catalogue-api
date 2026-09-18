@@ -7,8 +7,9 @@
 # reported. Only `paths` narrow that, and only for a service some environment
 # leaves out, which here is the snapshot generator.
 #
-# identifiers/ deploys from GitHub Actions rather than this pipeline, so it is
-# not a service here yet.
+# identifiers/ deploys from GitHub Actions rather than these pipelines and has
+# its own unit at identifiers/.deploy-tracker.yml. It stays named below so that
+# this unit does not claim its changes.
 version: 1
 
 slack:
@@ -24,9 +25,9 @@ services:
   # Serves /management/manifest, but no gateway routes to it. requests sits behind
   # the identity account's API, so the route has to be added in that repository.
   requests:
-  # Deployed by GitHub Actions rather than this pipeline, so neither environment
-  # here deploys it. Named anyway: a change no service claims cannot be excluded,
-  # so without this an identifiers pull request is reported as live on both.
+  # Its own unit, so neither environment here deploys it. Named anyway: a change
+  # no service claims cannot be excluded, so without this an identifiers pull
+  # request is reported as live on both.
   identifiers:
     paths: [identifiers/]
   # A queue worker with no HTTP surface, deployed by the prod build alone. Its own
