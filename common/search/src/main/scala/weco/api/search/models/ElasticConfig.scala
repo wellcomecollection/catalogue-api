@@ -20,12 +20,16 @@ case class ElasticConfig(
   def getWorksIndex: Index =
     Index(
       worksIndex.getOrElse(
-        s"works-indexed-${ElasticConfig.defaultWorksIndexDate}"))
+        s"works-indexed-${ElasticConfig.defaultWorksIndexDate}"
+      )
+    )
 
   def getImagesIndex: Index =
     Index(
       imagesIndex.getOrElse(
-        s"images-indexed-${ElasticConfig.defaultImagesIndexDate}"))
+        s"images-indexed-${ElasticConfig.defaultImagesIndexDate}"
+      )
+    )
 }
 
 object ElasticConfig {
@@ -49,5 +53,5 @@ case class SemanticConfig(
   k: Int = 50,
   numCandidates: Int = 500,
   rankWindowSize: Int = 10000,
-  rankConstant: Int = 20,
+  rankConstant: Int = 20
 )

@@ -21,15 +21,13 @@ import scala.concurrent.ExecutionContext
 // currently the requests service).
 object SierraOauthHttpClientBuilder {
   def build(config: Config)(
-    implicit
-    as: ActorSystem,
+    implicit as: ActorSystem,
     ec: ExecutionContext
   ): SierraOauthHttpClient =
     build(config, ApiEnvironment.Prod)
 
   def build(config: Config, environment: ApiEnvironment = ApiEnvironment.Prod)(
-    implicit
-    as: ActorSystem,
+    implicit as: ActorSystem,
     ec: ExecutionContext
   ): SierraOauthHttpClient = {
 

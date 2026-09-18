@@ -40,8 +40,10 @@ class SearchApi(
     extends CustomDirectives
     with IdentifierDirectives {
 
-  private val elasticConfigs = Map("default" -> elasticConfig) ++ additionalElasticConfigs
-  private val elasticClients = Map("default" -> elasticClient) ++ additionalElasticClients
+  private val elasticConfigs =
+    Map("default" -> elasticConfig) ++ additionalElasticConfigs
+  private val elasticClients =
+    Map("default" -> elasticClient) ++ additionalElasticClients
 
   private def getControllers[T](
     // we only create the controller if the relevant index is part of the ElasticConfig
@@ -77,23 +79,24 @@ class SearchApi(
   def routes: Route = handleRejections(rejectionHandler) {
     withRequestTimeoutResponse(request => timeoutResponse) {
       ignoreTrailingSlash {
-        parameter("elasticCluster".?) { elasticClusterParam =>
-          def routesFor(cluster: String): Route = {
-            val worksController = worksControllers.get(cluster)
-            val imagesController = imagesControllers.get(cluster)
+        parameter("elasticCluster".?) {
+          elasticClusterParam =>
+            def routesFor(cluster: String): Route = {
+              val worksController = worksControllers.get(cluster)
+              val imagesController = imagesControllers.get(cluster)
 
-            buildRoutes(cluster, worksController, imagesController)
-          }
+              buildRoutes(cluster, worksController, imagesController)
+            }
 
-          elasticClusterParam match {
-            case Some(cluster) if elasticConfigs.contains(cluster) =>
-              routesFor(cluster)
-            case Some(cluster) =>
-              notFound(s"Cluster '$cluster' is not configured")
-            // Use default Elasticsearch cluster if `elasticCluster` parameter missing
-            case None =>
-              routesFor("default")
-          }
+            elasticClusterParam match {
+              case Some(cluster) if elasticConfigs.contains(cluster) =>
+                routesFor(cluster)
+              case Some(cluster) =>
+                notFound(s"Cluster '$cluster' is not configured")
+              // Use default Elasticsearch cluster if `elasticCluster` parameter missing
+              case None =>
+                routesFor("default")
+            }
         }
       }
     }
@@ -116,36 +119,40 @@ class SearchApi(
   ): Route =
     concat(
       path("works") {
-        requireController(worksController, clusterName) { controller =>
-          MultipleWorksParams.parse {
-            controller.multipleWorks
-          }
+        requireController(worksController, clusterName) {
+          controller =>
+            MultipleWorksParams.parse {
+              controller.multipleWorks
+            }
         }
       },
       path("works" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          requireController(worksController, clusterName) { controller =>
-            SingleWorkParams.parse {
-              controller.singleWork(id, _)
-            }
+          requireController(worksController, clusterName) {
+            controller =>
+              SingleWorkParams.parse {
+                controller.singleWork(id, _)
+              }
           }
 
         case id =>
           notFound(s"Work not found for identifier $id")
       },
       path("images") {
-        requireController(imagesController, clusterName) { controller =>
-          MultipleImagesParams.parse {
-            controller.multipleImages
-          }
+        requireController(imagesController, clusterName) {
+          controller =>
+            MultipleImagesParams.parse {
+              controller.multipleImages
+            }
         }
       },
       path("images" / Segment) {
         case id if looksLikeCanonicalId(id) =>
-          requireController(imagesController, clusterName) { controller =>
-            SingleImageParams.parse {
-              controller.singleImage(id, _)
-            }
+          requireController(imagesController, clusterName) {
+            controller =>
+              SingleImageParams.parse {
+                controller.singleImage(id, _)
+              }
           }
 
         case id => notFound(s"Image not found for identifier $id")
@@ -192,19 +199,20 @@ class SearchApi(
           // which ES cluster the API is connecting to or which index it's using.
           path("_workTypes") {
             get {
-              requireController(worksController, clusterName) { controller =>
-                withFuture {
-                  val config = elasticConfigs(clusterName)
-                  controller
-                    .countWorkTypes(config.getWorksIndex.name)
-                    .map {
-                      case Right(tally) => complete(tally)
-                      case Left(err) =>
-                        internalError(
-                          new Throwable(s"Error counting work types: $err")
-                        )
-                    }
-                }
+              requireController(worksController, clusterName) {
+                controller =>
+                  withFuture {
+                    val config = elasticConfigs(clusterName)
+                    controller
+                      .countWorkTypes(config.getWorksIndex.name)
+                      .map {
+                        case Right(tally) => complete(tally)
+                        case Left(err) =>
+                          internalError(
+                            new Throwable(s"Error counting work types: $err")
+                          )
+                      }
+                  }
               }
             }
           }
@@ -270,8 +278,9 @@ class SearchApi(
         case ValidationRejection(msg, _) =>
           invalidRequest(s"$msg")
       }
-      .handleNotFound(extractPublicUri { uri =>
-        notFound(s"Page not found for URL ${uri.path}")
+      .handleNotFound(extractPublicUri {
+        uri =>
+          notFound(s"Page not found for URL ${uri.path}")
       })
       .result
 }

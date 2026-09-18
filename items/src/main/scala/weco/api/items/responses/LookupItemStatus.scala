@@ -27,20 +27,21 @@ trait LookupItemStatus extends ErrorDirectives {
       case Right(work: CatalogueWork) =>
         itemUpdateService
           .updateItems(work)
-          .map { items =>
-            complete(
-              HttpResponse(
-                entity = HttpEntity(
-                  contentType = ContentTypes.`application/json`,
-                  toJson(
-                    DisplayItemsList(
-                      totalResults = items.length,
-                      results = items
+          .map {
+            items =>
+              complete(
+                HttpResponse(
+                  entity = HttpEntity(
+                    contentType = ContentTypes.`application/json`,
+                    toJson(
+                      DisplayItemsList(
+                        totalResults = items.length,
+                        results = items
+                      )
                     )
                   )
                 )
               )
-            )
           }
 
       case Left(WorkNotFoundError(id)) =>

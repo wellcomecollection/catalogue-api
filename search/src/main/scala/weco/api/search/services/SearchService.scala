@@ -32,7 +32,7 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _]] {
     searchOptions: S
   ): Future[Either[ElasticsearchError, ResultList[VisibleT, Aggs]]] =
     executeSearch(searchOptions, index)
-      .map { _.map(createResultList) }
+      .map(_.map(createResultList))
 
   private def createResultList(
     searchResponse: SearchResponse
@@ -82,15 +82,15 @@ trait SearchService[T, VisibleT, Aggs, S <: SearchOptions[_, _]] {
       transaction.setLabel("sortOrder", searchOptions.sortOrder.toString)
       transaction.setLabel(
         "sortBy",
-        searchOptions.sortBy.map { _.toString }.mkString(",")
+        searchOptions.sortBy.map(_.toString).mkString(",")
       )
       transaction.setLabel(
         "filters",
-        searchOptions.filters.map { _.toString }.mkString(",")
+        searchOptions.filters.map(_.toString).mkString(",")
       )
       transaction.setLabel(
         "aggregations",
-        searchOptions.aggregations.map { _.toString }.mkString(",")
+        searchOptions.aggregations.map(_.toString).mkString(",")
       )
     }
   }

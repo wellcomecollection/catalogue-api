@@ -19,7 +19,8 @@ import weco.sierra.models.identifiers.{SierraItemNumber, SierraPatronNumber}
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-/** @param holdLimit What's the most items a single user can have on hold at once?
+/** @param holdLimit
+  *   What's the most items a single user can have on hold at once?
   */
 class SierraRequestsService(
   sierraSource: SierraSource,
@@ -300,20 +301,20 @@ class SierraRequestsService(
           // which tracks doing something more sensible with these records.
           _.record.getPath.endsWith("@illd")
         }
-        .map { hold =>
-          val identifier = SierraItemIdentifier.toSourceIdentifier(
-            SierraItemIdentifier.fromUrl(hold.record)
-          )
+        .map {
+          hold =>
+            val identifier = SierraItemIdentifier.toSourceIdentifier(
+              SierraItemIdentifier.fromUrl(hold.record)
+            )
 
-          identifier -> hold
+            identifier -> hold
         }
     } yield sourceIdentifiers.toMap
 }
 
 object SierraRequestsService {
   def apply(client: HttpClient with HttpGet with HttpPost, holdLimit: Int)(
-    implicit
-    ec: ExecutionContext,
+    implicit ec: ExecutionContext,
     mat: Materializer
   ): SierraRequestsService =
     new SierraRequestsService(

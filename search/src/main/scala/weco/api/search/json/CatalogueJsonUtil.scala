@@ -10,8 +10,8 @@ trait CatalogueJsonUtil {
 
   implicit class WorkJsonOps(json: Json) {
 
-    /** Remove any fields from this JSON which aren't explicitly "include"-d
-      * in the user's request.
+    /** Remove any fields from this JSON which aren't explicitly "include"-d in
+      * the user's request.
       *
       * We remove identifiers recursively because they appear at multiple levels
       * in a Work (e.g. on the work itself and on items).
@@ -19,7 +19,6 @@ trait CatalogueJsonUtil {
       * We only remove the remaining fields on the top level because that's
       * where we expect them to appear, e.g. we don't expect "holdings" to be
       * anywhere but on the work itself.
-      *
       */
     def withIncludes(includes: WorksIncludes): Json =
       json
@@ -71,7 +70,7 @@ trait CatalogueJsonUtil {
             value match {
               case Some(v) => jsonObj.add(key, v.map(_.display).asJson)
               case None    => jsonObj
-          }
+            }
         )
       else
         json

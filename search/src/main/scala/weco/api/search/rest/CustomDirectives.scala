@@ -19,15 +19,16 @@ trait CustomDirectives extends FutureDirectives {
   // (without this URIs end up looking like https://localhost:8888/..., rather
   // than https://api.wellcomecollection.org/...))
   def extractPublicUri: Directive[Tuple1[Uri]] =
-    extractUri.map { uri =>
-      uri
-        .withScheme(apiConfig.publicScheme)
-        .withHost(apiConfig.publicHost)
-        // pekko-http uses 0 to indicate no explicit port in the URI
-        .withPort(0)
-        .withPath(
-          Uri.Path(apiConfig.publicRootPath) ++ uri.path
-        )
+    extractUri.map {
+      uri =>
+        uri
+          .withScheme(apiConfig.publicScheme)
+          .withHost(apiConfig.publicHost)
+          // pekko-http uses 0 to indicate no explicit port in the URI
+          .withPort(0)
+          .withPath(
+            Uri.Path(apiConfig.publicRootPath) ++ uri.path
+          )
     }
 
   def elasticError(documentType: String, err: ElasticsearchError): Route = {

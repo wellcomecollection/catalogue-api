@@ -118,20 +118,23 @@ object MultipleImagesParams extends QueryParamsUtils {
       "color".as[RgbColor].?,
       "include".as[MultipleImagesIncludes].?,
       "aggregations".as[List[ImageAggregationRequest]].?
-    ).tflatMap { args =>
-      val params = (MultipleImagesParams.apply _).tupled(args)
-      validated(params.paginationErrors, params)
+    ).tflatMap {
+      args =>
+        val params = (MultipleImagesParams.apply _).tupled(args)
+        validated(params.paginationErrors, params)
     }
 
   implicit val rgbColorDecoder: Decoder[RgbColor] =
-    Decoder.decodeString.emap(colorString =>
-      RgbColor.fromHex(colorString) match {
-        case Success(rgbColor) => Right(rgbColor)
-        case Failure(_) =>
-          Left(
-            s"'$colorString' is not a valid value. Please supply a single hex string."
-          )
-    })
+    Decoder.decodeString.emap(
+      colorString =>
+        RgbColor.fromHex(colorString) match {
+          case Success(rgbColor) => Right(rgbColor)
+          case Failure(_) =>
+            Left(
+              s"'$colorString' is not a valid value. Please supply a single hex string."
+            )
+        }
+    )
 
   // These four are exposed so that OpenApiSpecEnumTest can assert the spec's
   // enums still match what these decoders accept.

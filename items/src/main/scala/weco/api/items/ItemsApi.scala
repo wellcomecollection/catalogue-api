@@ -14,9 +14,7 @@ import scala.concurrent.ExecutionContext
 class ItemsApi(
   val itemUpdateService: ItemUpdateService,
   val workLookup: WorkLookup
-)(implicit
-  val ec: ExecutionContext,
-  val apiConfig: ApiConfig)
+)(implicit val ec: ExecutionContext, val apiConfig: ApiConfig)
     extends LookupItemStatus
     with IdentifierDirectives
     with FutureDirectives

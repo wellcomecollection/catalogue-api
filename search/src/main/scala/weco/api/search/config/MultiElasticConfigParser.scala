@@ -10,11 +10,10 @@ import grizzled.slf4j.Logging
 
 object MultiElasticConfigParser extends Logging {
 
-  /**
-    * Parse multi-cluster Elasticsearch configuration from Typesafe Config.
+  /** Parse multi-cluster Elasticsearch configuration from Typesafe Config.
     *
     * Looks for configuration keys like:
-    *   multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
+    * multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
     */
   def parse(config: Config): Map[String, ElasticConfig] = {
     // Check if multiCluster configuration exists
@@ -27,26 +26,31 @@ object MultiElasticConfigParser extends Logging {
     val clusterNames = multiElasticConfig.root().keySet().asScala.toSet
 
     info(
-      s"Found multi-cluster configuration for clusters: ${clusterNames.mkString(", ")}")
+      s"Found multi-cluster configuration for clusters: ${clusterNames.mkString(", ")}"
+    )
 
-    clusterNames.flatMap { clusterName =>
-      val config = multiElasticConfig.getConfig(clusterName)
+    clusterNames.flatMap {
+      clusterName =>
+        val config = multiElasticConfig.getConfig(clusterName)
 
-      // Additional clusters are not essential. If a cluster config fails to parse for any reason,
-      // fail gracefully and exclude it from the returned map.
-      Try(parseElasticConfig(clusterName, config)) match {
-        case Success(elasticConfig) =>
-          Some(clusterName -> elasticConfig)
-        case Failure(e) =>
-          error(
-            s"Could not parse cluster config for '$clusterName': ${e.getMessage}")
-          None
-      }
+        // Additional clusters are not essential. If a cluster config fails to parse for any reason,
+        // fail gracefully and exclude it from the returned map.
+        Try(parseElasticConfig(clusterName, config)) match {
+          case Success(elasticConfig) =>
+            Some(clusterName -> elasticConfig)
+          case Failure(e) =>
+            error(
+              s"Could not parse cluster config for '$clusterName': ${e.getMessage}"
+            )
+            None
+        }
     }.toMap
   }
 
-  private def parseElasticConfig(clusterName: String,
-                                 config: Config): ElasticConfig = {
+  private def parseElasticConfig(
+    clusterName: String,
+    config: Config
+  ): ElasticConfig = {
     val semanticConfig =
       if (config.hasPath("semantic"))
         Some(parseSemanticConfig(config.getConfig("semantic")))
@@ -76,7 +80,8 @@ object MultiElasticConfigParser extends Logging {
     }
     val default = SemanticConfig(
       modelId = config.getString("modelId"),
-      vectorType = vectorType)
+      vectorType = vectorType
+    )
     def intOrDefault(key: String, current: Int) =
       config.getIntOption(key).getOrElse(current)
 

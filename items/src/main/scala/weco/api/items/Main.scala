@@ -26,68 +26,72 @@ import scala.concurrent.ExecutionContext
 
 object Main extends WellcomeTypesafeApp {
 
-  runWithConfig { config: Config =>
-    implicit val actorSystem: ActorSystem =
-      ActorSystem("main-actor-system")
-    implicit val executionContext: ExecutionContext =
-      actorSystem.dispatcher
+  runWithConfig {
+    config: Config =>
+      implicit val actorSystem: ActorSystem =
+        ActorSystem("main-actor-system")
+      implicit val executionContext: ExecutionContext =
+        actorSystem.dispatcher
 
-    implicit val apiConfig: ApiConfig = ApiConfig.build(config)
+      implicit val apiConfig: ApiConfig = ApiConfig.build(config)
 
-    apiConfig.environment match {
-      case ApiEnvironment.Dev =>
-        info(s"Running in dev mode.")
-      case _ =>
-        info(s"Running in deployed mode (environment=${apiConfig.environment})")
-        // Only initialise tracing in deployed environments
-        Tracing.init(config)
-    }
+      apiConfig.environment match {
+        case ApiEnvironment.Dev =>
+          info(s"Running in dev mode.")
+        case _ =>
+          info(
+            s"Running in deployed mode (environment=${apiConfig.environment})"
+          )
+          // Only initialise tracing in deployed environments
+          Tracing.init(config)
+      }
 
-    // We don't actually care about the hold limit in the items service.
-    val client = SierraOauthHttpClientBuilder.build(
-      config = config,
-      environment = apiConfig.environment
-    )
-    val sierraSource = new SierraSource(client)
-
-    val contentHttpClient = new PekkoHttpClient() with HttpGet {
-      override val baseUri: Uri = config.getString("content.api.publicRoot")
-    }
-    val venueOpeningTimeLookup = new VenuesOpeningTimesLookup(contentHttpClient)
-    val venueClock = Clock.system(ZoneId.of("Europe/London"))
-
-    // To add an item updater for a new service:
-    // implement ItemUpdater and add it to the list here
-    val itemUpdaters = List(
-      new SierraItemUpdater(
-        sierraSource,
-        venueOpeningTimeLookup,
-        venueClock,
-        BlockedCollectionDates.dates
+      // We don't actually care about the hold limit in the items service.
+      val client = SierraOauthHttpClientBuilder.build(
+        config = config,
+        environment = apiConfig.environment
       )
-    )
+      val sierraSource = new SierraSource(client)
 
-    val itemUpdateService = new ItemUpdateService(itemUpdaters)
+      val contentHttpClient = new PekkoHttpClient() with HttpGet {
+        override val baseUri: Uri = config.getString("content.api.publicRoot")
+      }
+      val venueOpeningTimeLookup =
+        new VenuesOpeningTimesLookup(contentHttpClient)
+      val venueClock = Clock.system(ZoneId.of("Europe/London"))
 
-    val catalogueHttpClient = new PekkoHttpClient() with HttpGet {
-      override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
-    }
+      // To add an item updater for a new service:
+      // implement ItemUpdater and add it to the list here
+      val itemUpdaters = List(
+        new SierraItemUpdater(
+          sierraSource,
+          venueOpeningTimeLookup,
+          venueClock,
+          BlockedCollectionDates.dates
+        )
+      )
 
-    val router = new ItemsApi(
-      itemUpdateService = itemUpdateService,
-      workLookup = new WorkLookup(catalogueHttpClient)
-    )
+      val itemUpdateService = new ItemUpdateService(itemUpdaters)
 
-    val appName = "ItemsApi"
+      val catalogueHttpClient = new PekkoHttpClient() with HttpGet {
+        override val baseUri: Uri = config.getString("catalogue.api.publicRoot")
+      }
 
-    new WellcomeHttpApp(
-      routes = router.routes,
-      httpMetrics = new HttpMetrics(
-        name = appName,
-        metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
-      ),
-      httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
-      appName = appName
-    )
+      val router = new ItemsApi(
+        itemUpdateService = itemUpdateService,
+        workLookup = new WorkLookup(catalogueHttpClient)
+      )
+
+      val appName = "ItemsApi"
+
+      new WellcomeHttpApp(
+        routes = router.routes,
+        httpMetrics = new HttpMetrics(
+          name = appName,
+          metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
+        ),
+        httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
+        appName = appName
+      )
   }
 }

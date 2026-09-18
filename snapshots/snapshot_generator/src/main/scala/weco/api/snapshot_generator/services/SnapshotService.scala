@@ -40,16 +40,18 @@ class SnapshotService(
             bulkSize = job.bulkSize,
             query = job.query
           )
-          .map { work =>
-            workCount += 1
-            work
+          .map {
+            work =>
+              workCount += 1
+              work
           }
       }
 
       compressedBytes = GzipCompressor(jsonStrings)
-        .map { byte =>
-          s3Size += 1
-          byte
+        .map {
+          byte =>
+            s3Size += 1
+            byte
         }
 
       uploadResult <- uploader.upload(job.s3Location, compressedBytes)

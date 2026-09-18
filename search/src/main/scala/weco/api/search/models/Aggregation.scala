@@ -1,11 +1,11 @@
 package weco.api.search.models
 
 import io.circe.generic.extras.JsonKey
-import io.circe.{Json}
+import io.circe.Json
 import io.circe.parser._
 import io.circe.optics.JsonPath._
 
-import scala.util.{Try}
+import scala.util.Try
 
 // Each aggregated field is associated with two aggregations - a 'filtered' aggregation and a 'global' aggregation.
 //
@@ -82,31 +82,32 @@ object AggregationMapping {
     buckets: Seq[RawAggregationBucket]
   ) =
     buckets
-      .map { bucket =>
-        // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
-        // storing a list of labels associated with a given ID.
-        val labelBucketsOption = bucket.labelSubAggregation
-          .map(
-            _.hcursor.downField("buckets").as[Seq[LabelBucket]]
+      .map {
+        bucket =>
+          // Each ID-based aggregation bucket contains a list of label-based sub-aggregation buckets,
+          // storing a list of labels associated with a given ID.
+          val labelBucketsOption = bucket.labelSubAggregation
+            .map(
+              _.hcursor.downField("buckets").as[Seq[LabelBucket]]
+            )
+
+          // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
+          // but we only want to expose the most commonly used one to the frontend.
+          val firstLabelBucket: Option[LabelBucket] = for {
+            decoderResult <- labelBucketsOption
+            labelBuckets <- decoderResult.toOption
+            firstBucket <- labelBuckets.headOption
+          } yield firstBucket
+
+          val key = bucket.key.as[String].toOption.get
+
+          // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
+          val label = firstLabelBucket.map(_.key).getOrElse(key)
+
+          AggregationBucket(
+            data = AggregationBucketData(id = key, label),
+            count = bucket.count
           )
-
-        // Retrieve the label from the first bucket. There might be multiple labels associated with a given ID,
-        // but we only want to expose the most commonly used one to the frontend.
-        val firstLabelBucket: Option[LabelBucket] = for {
-          decoderResult <- labelBucketsOption
-          labelBuckets <- decoderResult.toOption
-          firstBucket <- labelBuckets.headOption
-        } yield firstBucket
-
-        val key = bucket.key.as[String].toOption.get
-
-        // For label-based aggregations (which do not contain sub-aggregation buckets), set the label equal to the key.
-        val label = firstLabelBucket.map(_.key).getOrElse(key)
-
-        AggregationBucket(
-          data = AggregationBucketData(id = key, label),
-          count = bucket.count
-        )
       }
       .toList
       .sortBy(b => (-b.count, b.data.label))
@@ -116,7 +117,8 @@ object AggregationMapping {
   // filtered aggregation to map IDs to labels, so we use this mapping to fill in the gaps.
   private def getUnfilteredIdLabelMap(json: Json): Map[String, String] = {
     val unfilteredSelfBuckets = parseNestedAggregationBuckets(
-      unfilteredSelfAggBuckets.getAll(json))
+      unfilteredSelfAggBuckets.getAll(json)
+    )
     unfilteredSelfBuckets
       .map(bucket => bucket.data.id -> bucket.data.label)
       .toMap
@@ -127,24 +129,29 @@ object AggregationMapping {
     globalJsonString: String
   ): Try[Aggregation] = {
     val unfilteredIdLabelMap = parse(globalJsonString)
-      .map { json =>
-        getUnfilteredIdLabelMap(json)
+      .map {
+        json =>
+          getUnfilteredIdLabelMap(json)
       }
       .getOrElse(Map())
 
     parse(filteredJsonString)
-      .map { json =>
-        val nestedBuckets =
-          parseNestedAggregationBuckets(getAllFilteredBuckets(json))
+      .map {
+        json =>
+          val nestedBuckets =
+            parseNestedAggregationBuckets(getAllFilteredBuckets(json))
 
-        val nestedBucketsWithUpdatedLabels = nestedBuckets.map { bucket =>
-          val id = bucket.data.id
-          bucket.copy(
-            data = AggregationBucketData(
-              id = id,
-              unfilteredIdLabelMap.getOrElse(id, bucket.data.label)))
-        }
-        Aggregation(nestedBucketsWithUpdatedLabels)
+          val nestedBucketsWithUpdatedLabels = nestedBuckets.map {
+            bucket =>
+              val id = bucket.data.id
+              bucket.copy(
+                data = AggregationBucketData(
+                  id = id,
+                  unfilteredIdLabelMap.getOrElse(id, bucket.data.label)
+                )
+              )
+          }
+          Aggregation(nestedBucketsWithUpdatedLabels)
       }
   }.toTry
 }

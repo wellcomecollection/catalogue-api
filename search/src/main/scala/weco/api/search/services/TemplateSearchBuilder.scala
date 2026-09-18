@@ -4,25 +4,21 @@ import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
 import io.circe.syntax.EncoderOps
 import io.circe.generic.auto._
 
-/**
-  * Builder for template-based search requests.
+/** Builder for template-based search requests.
   *
-  * = Scoring =
-  * Searches created by this trait may be ranked by query, or by KNN,
-  * but not both.
-  * If both a query term and a KNN are requested, then the
-  * query term becomes a filter for the KNN part, rather than
-  * populating a full query for itself.
-  * This is because the score for a document that matches both
-  * a query and a knn is the sum of both, giving no sensible provision to
-  * score a document that matches both over one that very highly
-  * matches one but not the other.
+  * =Scoring=
+  * Searches created by this trait may be ranked by query, or by KNN, but not
+  * both. If both a query term and a KNN are requested, then the query term
+  * becomes a filter for the KNN part, rather than populating a full query for
+  * itself. This is because the score for a document that matches both a query
+  * and a knn is the sum of both, giving no sensible provision to score a
+  * document that matches both over one that very highly matches one but not the
+  * other.
   *
-  * = Sorting =
-  * Results can be sorted by date (up or down) or score, and if neither
-  * value is given, results will be sorted by id.
-  * If both date and score sorting are requested, then results are sorted
-  *  by date and then score.
+  * =Sorting=
+  * Results can be sorted by date (up or down) or score, and if neither value is
+  * given, results will be sorted by id. If both date and score sorting are
+  * requested, then results are sorted by date and then score.
   */
 trait TemplateSearchBuilder extends Encoders {
   // Template for the "query" part of the request.

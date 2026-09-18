@@ -37,23 +37,27 @@ class ResilientElasticClient(
   private var inFlightRefresh: Option[Future[Unit]] = None
   private var pendingClose: Option[ElasticClient] = None
 
-  def execute[T, U](t: T)(implicit handler: Handler[T, U],
-                          manifest: Manifest[U]): Future[Response[U]] = {
+  def execute[T, U](t: T)(
+    implicit handler: Handler[T, U],
+    manifest: Manifest[U]
+  ): Future[Response[U]] = {
     val currentClient = client
     currentClient.execute(t).transformWith {
       case Success(response)
           if response.status == 401 || response.status == 403 =>
         warn(
-          s"Received ${response.status} from Elasticsearch, refreshing client and retrying...")
+          s"Received ${response.status} from Elasticsearch, refreshing client and retrying..."
+        )
         retryIfRefreshed(currentClient, t, response)
-      case Success(response)                               => Future.successful(response)
+      case Success(response) => Future.successful(response)
       case Failure(NonFatal(e)) if client ne currentClient =>
         // Our client was replaced mid-flight and likely closed under us; retry
         // through execute so a 401 on the retry still gets refresh handling.
         // Re-entry is bounded: each level requires another swap to have happened.
         warn(
           "Request failed on a replaced Elasticsearch client, retrying on the current one",
-          e)
+          e
+        )
         execute(t)
       // Transport errors are not rotation evidence: fail fast, no refresh
       case Failure(e) => Future.failed(e)
@@ -62,15 +66,19 @@ class ResilientElasticClient(
 
   // Join the coalesced refresh, then retry only if the client actually changed:
   // a retry on the same client is futile and just duplicates load
-  private def retryIfRefreshed[T, U](failedClient: ElasticClient,
-                                     t: T,
-                                     originalResponse: Response[U])(
+  private def retryIfRefreshed[T, U](
+    failedClient: ElasticClient,
+    t: T,
+    originalResponse: Response[U]
+  )(
     implicit handler: Handler[T, U],
-    manifest: Manifest[U]): Future[Response[U]] =
-    triggerRefresh(failedClient).flatMap { _ =>
-      val current = client
-      if (current ne failedClient) current.execute(t)
-      else Future.successful(originalResponse)
+    manifest: Manifest[U]
+  ): Future[Response[U]] =
+    triggerRefresh(failedClient).flatMap {
+      _ =>
+        val current = client
+        if (current ne failedClient) current.execute(t)
+        else Future.successful(originalResponse)
     }
 
   // Coalesces concurrent requests onto one in-flight refresh instead of queueing on a lock
@@ -85,8 +93,9 @@ class ResilientElasticClient(
           if (now - lastRefreshTime > minRefreshIntervalMs) {
             val refresh = doRefresh()
             inFlightRefresh = Some(refresh)
-            refresh.onComplete { _ =>
-              refreshLock.synchronized { inFlightRefresh = None }
+            refresh.onComplete {
+              _ =>
+                refreshLock.synchronized { inFlightRefresh = None }
             }(refreshEc)
             refresh
           } else {
@@ -103,16 +112,20 @@ class ResilientElasticClient(
   private def doRefresh(): Future[Unit] = {
     info("Refreshing Elasticsearch client...")
     Future(clientFactory())(refreshEc)
-      .flatMap { candidate =>
-        probeAccepts(candidate).map { accepted =>
-          if (accepted) swapIn(candidate)
-          else {
-            // Secrets Manager may still be serving the invalidated key; keep the
-            // current client and probe again on the next post-cooldown failure
-            warn("Rebuilt Elasticsearch client failed to authenticate; keeping current client.")
-            if (candidate ne client) closeQuietly(candidate)
-          }
-        }(refreshEc)
+      .flatMap {
+        candidate =>
+          probeAccepts(candidate).map {
+            accepted =>
+              if (accepted) swapIn(candidate)
+              else {
+                // Secrets Manager may still be serving the invalidated key; keep the
+                // current client and probe again on the next post-cooldown failure
+                warn(
+                  "Rebuilt Elasticsearch client failed to authenticate; keeping current client."
+                )
+                if (candidate ne client) closeQuietly(candidate)
+              }
+          }(refreshEc)
       }(refreshEc)
       .recover {
         case NonFatal(e) => error("Failed to refresh Elasticsearch client", e)
@@ -127,16 +140,22 @@ class ResilientElasticClient(
   private def probeAccepts(candidate: ElasticClient): Future[Boolean] = {
     val promise = Promise[Boolean]()
     candidate.client.send(
-      ElasticRequest("GET", "/_security/_authenticate"), {
+      ElasticRequest("GET", "/_security/_authenticate"),
+      {
         case Right(response) =>
           promise.trySuccess(
-            response.statusCode != 401 && response.statusCode != 403)
+            response.statusCode != 401 && response.statusCode != 403
+          )
         case Left(_) => promise.trySuccess(true)
       }
     )
-    val timeout = refreshExecutor.schedule(new Runnable {
-      override def run(): Unit = promise.trySuccess(true)
-    }, probeTimeoutMs, TimeUnit.MILLISECONDS)
+    val timeout = refreshExecutor.schedule(
+      new Runnable {
+        override def run(): Unit = promise.trySuccess(true)
+      },
+      probeTimeoutMs,
+      TimeUnit.MILLISECONDS
+    )
     // Don't leave a timer queued for every probe that answered promptly
     promise.future.andThen { case _ => timeout.cancel(false) }(refreshEc)
   }

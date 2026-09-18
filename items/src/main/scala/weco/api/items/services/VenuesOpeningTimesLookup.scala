@@ -33,7 +33,6 @@ class VenuesOpeningTimesLookup(client: HttpClient with HttpGet)(
     CirceMarshalling.fromDecoder[ContentApiVenueResponse]
 
   /** Returns venue(s) that corresponds to the title(s).
-    *
     */
   def byVenueName(
     venueName: String
@@ -64,8 +63,9 @@ class VenuesOpeningTimesLookup(client: HttpClient with HttpGet)(
     response.status match {
       case StatusCodes.OK =>
         info(s"OK for GET to $path with $params")
-        Unmarshal(response.entity).to[ContentApiVenueResponse].map { response =>
-          Right(response.results)
+        Unmarshal(response.entity).to[ContentApiVenueResponse].map {
+          response =>
+            Right(response.results)
         }
 
       case StatusCodes.NotFound =>

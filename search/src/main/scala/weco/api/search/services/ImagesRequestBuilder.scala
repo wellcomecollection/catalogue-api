@@ -65,13 +65,14 @@ object ImagesRequestBuilder
   }
 
   private def sortConfig(
-    implicit
-    searchOptions: ImageSearchOptions): Option[(String, SortingOrder)] =
+    implicit searchOptions: ImageSearchOptions
+  ): Option[(String, SortingOrder)] =
     searchOptions.sortBy collectFirst {
       case ProductionDateSortRequest =>
         (
           "filterableValues.source.production.dates.range.from",
-          searchOptions.sortOrder)
+          searchOptions.sortOrder
+        )
     }
 
   val buildImageFilterQuery: PartialFunction[ImageFilter, Query] = {

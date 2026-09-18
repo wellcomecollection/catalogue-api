@@ -21,9 +21,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class ElasticsearchService(elasticClient: ResilientElasticClient)(
-  implicit
-  ec: ExecutionContext)
-    extends Logging
+  implicit ec: ExecutionContext
+) extends Logging
     with Tracing
     with TemplateSearchHandlers {
 
@@ -51,17 +50,19 @@ class ElasticsearchService(elasticClient: ResilientElasticClient)(
     for {
       response <- executeSearchRequest(request)
 
-      results = response.map { searchResponse =>
-        searchResponse.hits.hits
-          .map(deserialize[T])
-          .toList
+      results = response.map {
+        searchResponse =>
+          searchResponse.hits.hits
+            .map(deserialize[T])
+            .toList
       }
     } yield results
 
   def findByMultiSearch[T](
     request: MultiSearchRequest
-  )(implicit
-    decoder: Decoder[T]): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
+  )(
+    implicit decoder: Decoder[T]
+  ): Future[Seq[Either[ElasticsearchError, Seq[T]]]] =
     for {
       multiSearchResults <- executeMultiSearchRequest(request)
       deserialisedResults = multiSearchResults.map {
@@ -146,24 +147,25 @@ class ElasticsearchService(elasticClient: ResilientElasticClient)(
               finalTimesTaken,
               finalResults
             ) =
-              multiResponse.items.foldLeft(foldInitial) { (acc, item) =>
-                val (timeTakenTotal, timesTaken, results) = acc
+              multiResponse.items.foldLeft(foldInitial) {
+                (acc, item) =>
+                  val (timeTakenTotal, timesTaken, results) = acc
 
-                item.response match {
-                  case Right(itemResponse) =>
-                    (
-                      timeTakenTotal + itemResponse.took,
-                      timesTaken :+ itemResponse.took,
-                      results :+ Right(itemResponse)
-                    )
+                  item.response match {
+                    case Right(itemResponse) =>
+                      (
+                        timeTakenTotal + itemResponse.took,
+                        timesTaken :+ itemResponse.took,
+                        results :+ Right(itemResponse)
+                      )
 
-                  case Left(error) =>
-                    (
-                      timeTakenTotal,
-                      timesTaken,
-                      results :+ Left(ElasticsearchError(error))
-                    )
-                }
+                    case Left(error) =>
+                      (
+                        timeTakenTotal,
+                        timesTaken,
+                        results :+ Left(ElasticsearchError(error))
+                      )
+                  }
               }
 
             finalTimesTaken.zipWithIndex.map {
