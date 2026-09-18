@@ -68,14 +68,15 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
 ) -> None:
     """The gateway is defined wholly by this spec, so this is the whole surface.
 
-    Asserts the positive, that every other operation resolves to a requirement
-    naming ApiKeyAuth. Looking for an empty `security` instead would miss the
-    ways an operation can be open without one: a requirement naming no scheme
-    at all, or one naming a scheme that does not exist, both of which leave
-    API Gateway with no key to enforce. `security-defined` is off in
-    redocly.yaml, so the lint does not catch a misspelled scheme either.
+    Asserts the positive, that every operation but the manifest names ApiKeyAuth.
+    The spec declares no default because API Gateway applies one to every method
+    and does not honour an operation-level `security: []` as an override, which
+    is how the manifest ended up needing a key. `security-defined` is off in
+    redocly.yaml, so the lint will not catch a misspelled scheme.
     """
     spec = openapi.spec
+
+    assert spec.get("security") is None, "the spec must declare no default security"
 
     # Defined as anything but a header API key, the gateway has no key to
     # enforce while every assertion below still passes. .get so a scheme with no
@@ -88,15 +89,7 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
     ) == ("apiKey", "header", "x-api-key")
     assert scheme_is_a_header_api_key, f"{SCHEME} must define a header API key"
 
-    root = [list(requirement.keys()) for requirement in spec["security"]]
-    # Bound to a name first: an assert whose message pushes it over the line
-    # length is formatted differently by different ruff versions, and this
-    # repository runs two of them.
-    root_requires_key = any(SCHEME in names for names in root)
-    assert root_requires_key, "the spec must require a key by default"
-
-    # Any key under a path that is not one of these is an operation, so a route
-    # added as x-amazon-apigateway-any-method is checked too.
+    # Anything else under a path is an operation, including any-method routes.
     not_operations = {"parameters", "summary", "description", "servers", "$ref"}
 
     # .items(), because iterating a SchemaPath yields values rather than keys
@@ -105,15 +98,14 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
             if name in not_operations:
                 continue
             declared = operation.get("security")
-            effective = (
-                root
-                if declared is None
-                else [list(requirement.keys()) for requirement in declared]
-            )
             route = f"{str(name).upper()} {path}"
 
             if path == MANIFEST:
-                assert effective == [], f"{route} is the one route meant to be open"
+                # Per method, not per path: another method added here would
+                # otherwise be exempted too, and be imported without a key.
+                assert name == "get", f"{route} must require a key, only GET is open"
+                assert not declared, f"{route} is the one route meant to be open"
             else:
-                requires_key = any(SCHEME in names for names in effective)
+                names = [list(requirement.keys()) for requirement in declared or []]
+                requires_key = any(SCHEME in n for n in names)
                 assert requires_key, f"{route} is readable without {SCHEME}"

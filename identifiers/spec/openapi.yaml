@@ -33,13 +33,11 @@ servers:
 # API Gateway reads the key from the x-api-key request header.
 x-amazon-apigateway-api-key-source: HEADER
 
-# Applied to every operation; API Gateway maps this to apiKeyRequired: true.
-security:
-  - ApiKeyAuth: []
-
 paths:
   /identifiers/v1/{canonicalId}:
     get:
+      security:
+        - ApiKeyAuth: []
       operationId: getByCanonicalId
       summary: Resolve a canonical id to its source identifiers
       description: >-
@@ -80,6 +78,8 @@ paths:
 
   /identifiers/v1/by-source/{sourceSystem}/{value}:
     get:
+      security:
+        - ApiKeyAuth: []
       operationId: getBySourceIdentifier
       summary: Resolve a source identifier to its canonical id
       description: >-
@@ -159,10 +159,9 @@ paths:
         environment. `commit` is baked into the image at build time, since a
         running container has no repository to ask. See the contract at
         https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
-      # The only operation without a key. The tracker holds no credentials for
-      # the services it checks, and this exposes a commit that is already public.
-      # tests/test_manifest.py fails if any other operation stops requiring one.
-      security: []
+      # Deliberately no security, and the spec declares no default. A default
+      # would reach this method too: the importer does not honour `security: []`
+      # as an override, which is how the manifest ended up needing a key.
       responses:
         '200':
           description: >-
