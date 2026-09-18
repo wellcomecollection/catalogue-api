@@ -1,0 +1,91 @@
+# Backstage-format description of this repository's software, gathered into
+# https://github.com/wellcomecollection/catalog, where every repository's
+# entities share one namespace, so the names carry the repository prefix.
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: catalogue-api
+  description: The public API serving the catalogue of works, images and concepts
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+spec:
+  owner: digital-platform
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-search
+  description: Serves works and images, and the queries behind them
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/search/
+    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#search
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-items
+  description: Serves the live availability of the items on a work
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/items/
+    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#items
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-concepts
+  description: Serves the people, places, subjects and genres used to describe works
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/concepts/
+    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#concepts
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
+---
+# Deployed from here but fronted by the identity account's gateway, so its
+# manifest is not reachable and it has no checkpoint.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-requests
+  description: Places and lists holds on items in the library stores
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/requests/
+    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
+---
+# A queue worker with no HTTP surface, so nothing to check. Deployed by the prod
+# build alone.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-snapshot-generator
+  description: Writes the nightly public snapshots of works and images
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/snapshot_generator/
+    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
