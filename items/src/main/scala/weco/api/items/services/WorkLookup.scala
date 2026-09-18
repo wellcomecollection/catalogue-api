@@ -30,6 +30,7 @@ class WorkLookup(client: HttpClient with HttpGet)(
     CirceMarshalling.fromDecoder[CatalogueWork]
 
   /** Returns the Work that corresponds to this canonical ID.
+    *
     */
   def byCanonicalId(
     id: String

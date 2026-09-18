@@ -10,10 +10,11 @@ import grizzled.slf4j.Logging
 
 object MultiElasticConfigParser extends Logging {
 
-  /** Parse multi-cluster Elasticsearch configuration from Typesafe Config.
+  /**
+    * Parse multi-cluster Elasticsearch configuration from Typesafe Config.
     *
     * Looks for configuration keys like:
-    * multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
+    *   multiCluster.xp-a.apiKeySecretPath="elasticsearch/xp-a/api_key"
     */
   def parse(config: Config): Map[String, ElasticConfig] = {
     // Check if multiCluster configuration exists

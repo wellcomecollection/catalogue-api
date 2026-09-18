@@ -33,6 +33,7 @@ class VenuesOpeningTimesLookup(client: HttpClient with HttpGet)(
     CirceMarshalling.fromDecoder[ContentApiVenueResponse]
 
   /** Returns venue(s) that corresponds to the title(s).
+    *
     */
   def byVenueName(
     venueName: String

@@ -56,8 +56,8 @@ object SingleWorkParams extends QueryParamsUtils {
 
   /** Accepted and ignored, deliberately undocumented. The pipeline stopped
     * emitting these fields in the move to catalogue_graph, but iiif-builder
-    * still sends them on every request, so a hard 400 would break IIIF manifest
-    * building. Remove once iiif-builder stops sending them.
+    * still sends them on every request, so a hard 400 would break IIIF
+    * manifest building. Remove once iiif-builder stops sending them.
     */
   val deprecatedIncludeValues: Seq[String] = Seq("precededBy", "succeededBy")
 

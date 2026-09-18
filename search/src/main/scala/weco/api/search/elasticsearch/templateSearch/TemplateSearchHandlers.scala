@@ -10,18 +10,18 @@ import com.sksamuel.elastic4s.requests.searches.SearchResponse
 import io.circe.Json
 import io.circe.syntax.EncoderOps
 
-/** Handler used by E4S ElasticClient.execute to turn a request (the E4S-style
-  * description of what we want the request to contain) into an ElasticRequest
-  * (the method/url/body combination that will do that)
+/**
+  * Handler used by E4S ElasticClient.execute to turn a
+  * request (the E4S-style description of what we want the request to contain)
+  * into an ElasticRequest (the method/url/body combination that will do that)
   *
-  * The template search implementation built in to E4S does not currently
-  * support sending the template in the source attribute. It only works with
-  * templates that have been stored on the cluster.
+  * The template search implementation built in to E4S does not currently support
+  * sending the template in the source attribute.  It only works with templates that
+  * have been stored on the cluster.
   *
-  * We do not want to permit the API to make cluster changes, and although (in
-  * the future) we may wish to configure the cluster at deploy time to contain
-  * the template, it is currently a step too far in terms of maintenance and
-  * ownership of the queries.
+  * We do not want to permit the API to make cluster changes, and although (in the future)
+  * we may wish to configure the cluster at deploy time to contain the template,
+  * it is currently a step too far in terms of maintenance and ownership of the queries.
   */
 trait TemplateSearchHandlers {
   implicit object TemplateSearchHandler

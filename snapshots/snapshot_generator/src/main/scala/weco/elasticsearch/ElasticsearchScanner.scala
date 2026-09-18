@@ -12,14 +12,14 @@ import scala.concurrent.duration._
 /** @param bulkSize
   *   How many documents should be fetched in a single request?
   *
-  * If this value is too small, we have to make extra requests and the scroll
-  * will take longer.
+  *   If this value is too small, we have to make extra requests and
+  *   the scroll will take longer.
   *
-  * If this value is too big, we may exceed the heap memory on a single request
-  * -- >100MB in one set of returned works, and we get an error:
+  *   If this value is too big, we may exceed the heap memory on a single
+  *   request -- >100MB in one set of returned works, and we get an error:
   *
-  * org.apache.http.ContentTooLongException: entity content is too long
-  * [167209080] for the configured buffer limit [104857600]
+  *       org.apache.http.ContentTooLongException: entity content is too
+  *       long [167209080] for the configured buffer limit [104857600]
   */
 class ElasticsearchScanner()(
   implicit client: ElasticClient,
