@@ -21,8 +21,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
   *
-  * This provides an up to date view on whether a hold can be placed on an item,
-  * and generates a list of dates when the item can be viewed in the library
+  *  This provides an up to date view on whether a hold
+  *  can be placed on an item, and generates a list of dates
+  *  when the item can be viewed in the library
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
@@ -84,10 +85,12 @@ class SierraItemUpdater(
       case _ => Future.successful(item)
     }
 
-  /** Updates the AccessCondition for a single item We are interested in
-    * updating the status of an Item a library patron can request. These are
-    * items with a PhysicalLocation. In data sourced from Sierra we can only
-    * have one PhysicalLocation, so we update it if we find it.
+  /** Updates the AccessCondition for a single item
+    *  We are interested in updating the status of an Item
+    *  a library patron can request. These are items with a
+    *  PhysicalLocation. In data sourced from Sierra we can
+    *  only have one PhysicalLocation, so we update it if
+    *  we find it.
     */
   private def updateAccessConditionIfExists(
     item: DisplayItem,
@@ -105,10 +108,10 @@ class SierraItemUpdater(
     }
 
   /** Set availability slots for a single item
-    *   - if its physicalAccessCondition exists and is requestable
-    *   - based on its location
-    *   - excluding any blocked collection dates If any of the above are not
-    *     true/defined, we return the item without availableDates
+    *  - if its physicalAccessCondition exists and is requestable
+    *  - based on its location
+    *  - excluding any blocked collection dates
+    *  If any of the above are not true/defined, we return the item without availableDates
     */
   private def setAvailableDates(
     item: DisplayItem,

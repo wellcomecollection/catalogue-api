@@ -41,8 +41,7 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
   ): Option[WorkAggregations] =
     WorkAggregations(searchResponse)
 
-  /** Returns a tally of all the work types in an index (e.g. Visible, Deleted).
-    */
+  /** Returns a tally of all the work types in an index (e.g. Visible, Deleted). */
   def countWorkTypes(
     index: Index
   ): Future[Either[ElasticsearchError, Map[String, Int]]] = {
