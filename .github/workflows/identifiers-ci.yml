@@ -51,10 +51,26 @@ jobs:
           target: identifiers
           dockerfile: lambda.Dockerfile
           tag: ${{ github.sha }}
+          build_args: BUILD_COMMIT=${{ github.sha }}
           role_to_assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
           # Pull requests build without publishing, which also covers dependabot
           # and fork runs, where no repo secret is available.
           push: ${{ github.ref == 'refs/heads/main' && secrets.IDENTIFIERS_CI_ROLE_ARN != '' }}
+
+      # An unrecognised action input is a warning rather than an error, and the
+      # action is pinned to @main, so a rename upstream would quietly publish an
+      # image with no commit in it. The manifest would then report "unknown" and
+      # the deploy tracker would call the service permanently behind, with
+      # nothing failing to say why.
+      - name: Check the commit reached the image
+        run: |
+          baked=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' \
+            "identifiers:$GITHUB_SHA" | sed -n 's/^BUILD_COMMIT=//p')
+          if [ "$baked" != "$GITHUB_SHA" ]; then
+            echo "::error::image has BUILD_COMMIT='$baked', expected '$GITHUB_SHA'"
+            exit 1
+          fi
+          echo "BUILD_COMMIT=$baked"
 
   deploy:
     # Only a merge, so dispatching this workflow rebuilds without deploying.

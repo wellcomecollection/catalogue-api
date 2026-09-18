@@ -24,8 +24,9 @@ Always `cd identifiers/` before any `uv run ...` command: this project has its o
 - `tests/` mirrors `src/`. `src/` is packaged via `[tool.uv] package = true`, so import as
   `from core.service ...` and `from adapters.handler ...`, **not** `from src.core ...`.
 - `lambda.Dockerfile` builds the deployed image: the locked runtime dependencies, the
-  contents of `src/` copied into the Lambda task root, and `IDENTIFIERS_BACKEND` defaulted
-  to `rds`.
+  contents of `src/` copied into the Lambda task root, `IDENTIFIERS_BACKEND` defaulted
+  to `rds`, and `BUILD_COMMIT` carrying the commit the image was built from, which CI
+  passes as a build argument for the deploy tracker's manifest to report.
 
 ## Before finalising a change
 
