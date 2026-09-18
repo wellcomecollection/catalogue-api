@@ -1,13 +1,18 @@
 module "gha_identifiers_ci_role" {
-  source = "github.com/wellcomecollection/terraform-aws-gha-role?ref=v1.0.0"
+  source = "github.com/wellcomecollection/terraform-aws-gha-role?ref=v2.1.0"
 
   policy_document = data.aws_iam_policy_document.gha_identifiers_ci.json
   role_name       = "identifiers-ci"
 
-  # Scoped to main rather than the whole repository. The role is only assumed by
-  # the publish and deploy steps, which run on main; pull request builds skip
-  # the push and never assume it.
-  github_repository = "wellcomecollection/catalogue-api:ref:refs/heads/main"
+  # Scoped to these three rather than the whole repository, which would take
+  # pull request runs with it. A job that names an environment presents
+  # environment:<name> instead of the ref, so the publish job and the two deploy
+  # jobs each present a different subject.
+  github_repositories = [
+    "wellcomecollection/catalogue-api:ref:refs/heads/main",
+    "wellcomecollection/catalogue-api:environment:stage",
+    "wellcomecollection/catalogue-api:environment:prod",
+  ]
 
   github_oidc_provider_arn = data.terraform_remote_state.catalogue_account.outputs.github_openid_connect_provider_arn
 }
