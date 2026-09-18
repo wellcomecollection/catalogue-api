@@ -24,6 +24,11 @@ services:
   # Serves /management/manifest, but no gateway routes to it. requests sits behind
   # the identity account's API, so the route has to be added in that repository.
   requests:
+  # Deployed by GitHub Actions rather than this pipeline, so neither environment
+  # here deploys it. Named anyway: a change no service claims cannot be excluded,
+  # so without this an identifiers pull request is reported as live on both.
+  identifiers:
+    paths: [identifiers/]
   # A queue worker with no HTTP surface, deployed by the prod build alone. Its own
   # directory and nothing else: the shared Scala it is built from is shared with
   # services stage does deploy, and listing it here would hide those changes.
