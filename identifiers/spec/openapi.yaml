@@ -159,8 +159,9 @@ paths:
         environment. `commit` is baked into the image at build time, since a
         running container has no repository to ask. See the contract at
         https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
-      # Deliberately no security, and no root default to inherit: API Gateway
-      # takes the requirement from the operation, and the tracker holds no key.
+      # Deliberately no security, and the spec declares no default. A default
+      # would reach this method too: the importer does not honour `security: []`
+      # as an override, which is how the manifest ended up needing a key.
       responses:
         '200':
           description: >-

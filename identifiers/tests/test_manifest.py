@@ -69,8 +69,9 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
     """The gateway is defined wholly by this spec, so this is the whole surface.
 
     Asserts the positive, that every operation but the manifest names ApiKeyAuth.
-    A root default would reach the manifest too, since API Gateway takes a
-    method's requirement from its own operation. `security-defined` is off in
+    The spec declares no default because API Gateway applies one to every method
+    and does not honour an operation-level `security: []` as an override, which
+    is how the manifest ended up needing a key. `security-defined` is off in
     redocly.yaml, so the lint will not catch a misspelled scheme.
     """
     spec = openapi.spec
@@ -100,7 +101,10 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
             route = f"{str(name).upper()} {path}"
 
             if path == MANIFEST:
-                assert declared is None, f"{route} is the one route meant to be open"
+                # Per method, not per path: another method added here would
+                # otherwise be exempted too, and be imported without a key.
+                assert name == "get", f"{route} must require a key, only GET is open"
+                assert not declared, f"{route} is the one route meant to be open"
             else:
                 names = [list(requirement.keys()) for requirement in declared or []]
                 requires_key = any(SCHEME in n for n in names)
