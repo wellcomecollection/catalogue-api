@@ -33,7 +33,6 @@ servers:
 # API Gateway reads the key from the x-api-key request header.
 x-amazon-apigateway-api-key-source: HEADER
 
-# Applied to every operation; API Gateway maps this to apiKeyRequired: true.
 paths:
   /identifiers/v1/{canonicalId}:
     get:

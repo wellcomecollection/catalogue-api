@@ -77,6 +77,17 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
 
     assert spec.get("security") is None, "the spec must declare no default security"
 
+    # Defined as anything but a header API key, the gateway has no key to
+    # enforce while every assertion below still passes. .get so a scheme with no
+    # `in` or `name`, such as type: http, fails here rather than raising.
+    scheme = spec["components"]["securitySchemes"][SCHEME]
+    scheme_is_a_header_api_key = (
+        scheme.get("type"),
+        scheme.get("in"),
+        scheme.get("name"),
+    ) == ("apiKey", "header", "x-api-key")
+    assert scheme_is_a_header_api_key, f"{SCHEME} must define a header API key"
+
     # Anything else under a path is an operation, including any-method routes.
     not_operations = {"parameters", "summary", "description", "servers", "$ref"}
 
