@@ -9,7 +9,7 @@
 # instead, so this reads the outcomes and uploads a step carrying the status they
 # add up to.
 #
-# Usage: report_deployment.sh <environment> <step key>...
+# Usage: report_deployment.sh <environment> <deploy step key>...
 
 set -o errexit
 set -o nounset
@@ -32,24 +32,32 @@ then
   exit 1
 fi
 
-# An uploaded step is inserted after this job, which puts it behind the wait that
-# the deploy steps sit in front of. A failure anywhere before that wait stops
-# everything after it, which is the one case this script exists for, so the
-# uploaded step depends on this one and inherits its exemption from the wait.
-if [[ -z "${BUILDKITE_STEP_KEY:-}" ]]
-then
-  echo "Refusing to report: this step needs a key for the status step to depend on" >&2
-  exit 1
-fi
+# The key the plugin writes the id under. task is left at the plugin's default
+# on the deploy steps, so it is the default here too.
+METADATA_KEY="github_deployment:$ENVIRONMENT:deploy:weco:id"
+
+read_outcome() {
+  local step="$1" outcome
+  # Retried because a single API blip would otherwise announce a deploy that
+  # worked as a failure, in a channel people read.
+  for _ in 1 2 3
+  do
+    if outcome=$(buildkite-agent step get "outcome" --step "$step" 2>/dev/null) &&
+       [[ -n "$outcome" ]]
+    then
+      echo "$outcome"
+      return 0
+    fi
+    sleep 2
+  done
+  echo "unreadable"
+}
 
 STATUS="success"
 
 for step in "$@"
 do
-  # Never fatal. This script's whole job is to resolve the Deployment, so a step
-  # key that no longer exists, or an agent API blip, has to read as a failure
-  # rather than abort and leave the Deployment in_progress for good.
-  OUTCOME=$(buildkite-agent step get "outcome" --step "$step" || echo "unreadable")
+  OUTCOME=$(read_outcome "$step")
   echo "$step: $OUTCOME"
 
   # passed is the only outcome that is not a failure. The others are
@@ -61,20 +69,34 @@ do
   fi
 done
 
+# No id means the plugin never created a Deployment, which it tolerates so that
+# announcing a deploy cannot stop one. There is nothing to post against, and
+# that is the one case where posting nothing is right. Checked here so that the
+# status step itself can stay fatal, and a GitHub or Secrets Manager failure
+# still turns the build red rather than leaving a live Deployment in_progress.
+if ! buildkite-agent meta-data exists "$METADATA_KEY"
+then
+  echo "No deployment was created for $ENVIRONMENT, so there is nothing to report"
+  exit 0
+fi
+
+# The same dependencies this step has. An uploaded step is inserted after the
+# job that uploads it, which would put it behind the wait the deploy steps sit in
+# front of, and a failure before that wait stops everything after it. Naming the
+# deploy steps rather than this one gives it the same exemption without making it
+# depend on the step that uploads it, which would be self-referential.
+DEPENDS=$(printf '"%s", ' "$@")
+DEPENDS="[${DEPENDS%, }]"
+
 echo "Reporting the $ENVIRONMENT deployment as $STATUS"
 
 # environment_url is set here rather than on the deploy step because GitHub
 # takes it from the status, not from the deployment.
-#
-# soft_fail because this step only writes the record. The plugin tolerates
-# failing to create a Deployment, so there may be none to post against, and a
-# deploy that worked should not go red over the note kept about it.
 buildkite-agent pipeline upload <<YAML
 steps:
   - label: "Deployment $STATUS ($ENVIRONMENT)"
-    depends_on: ["$BUILDKITE_STEP_KEY"]
+    depends_on: $DEPENDS
     allow_dependency_failure: true
-    soft_fail: true
     plugins:
       - wellcomecollection/github-deployments#v0.4.0:
           assume_role: "arn:aws:iam::756629837203:role/catalogue-ci"

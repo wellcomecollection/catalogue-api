@@ -96,7 +96,6 @@ steps:
   - wait
 
   - label: "Smoke Tests: Catalogue API (prod)"
-    key: "smoke-tests-prod"
     branches: "main"
     plugins:
       - wellcomecollection/aws-assume-role#v0.2.2:
@@ -148,15 +147,18 @@ steps:
       - "deploy-catalogue-prod"
       - "deploy-snapshot-generator-prod"
       - "deploy-requests-prod"
-      - "smoke-tests-prod"
     allow_dependency_failure: true
-    # Rank and e2e results are deliberately not read. They measure search
-    # quality and the front end against this deploy, not whether it landed.
+    # Only the deploy steps. deploy_ecs_services.sh waits for the services to go
+    # stable, so once they pass the commit is serving, and a flaky smoke test or
+    # rank run would otherwise announce a deploy that landed as a failure.
+    #
+    # Cancelling the build before this step runs leaves the Deployment at
+    # in_progress: Buildkite does not run allow_dependency_failure steps after a
+    # cancellation, and there is nothing else to resolve it.
     command: |
       .buildkite/scripts/report_deployment.sh prod \
         deploy-catalogue-prod \
         deploy-snapshot-generator-prod \
-        deploy-requests-prod \
-        smoke-tests-prod
+        deploy-requests-prod
     agents:
       queue: nano
