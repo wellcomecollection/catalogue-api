@@ -33,21 +33,23 @@ class ImagesController(
             .flatMap {
               case Right(image) =>
                 getSimilarityMetrics(params.include)
-                  .traverse { metric =>
-                    imagesService
-                      .retrieveSimilarImages(imagesIndex, id, image)
-                      .map(metric -> _)
+                  .traverse {
+                    metric =>
+                      imagesService
+                        .retrieveSimilarImages(imagesIndex, id, image)
+                        .map(metric -> _)
                   }
                   .map(_.toMap)
-                  .map { similarImages =>
-                    complete(
-                      image.display.asJson(
-                        includes =
-                          params.include.getOrElse(SingleImageIncludes.none),
-                        withSimilarFeatures =
-                          similarImages.get(SimilarityMetric.Features)
+                  .map {
+                    similarImages =>
+                      complete(
+                        image.display.asJson(
+                          includes =
+                            params.include.getOrElse(SingleImageIncludes.none),
+                          withSimilarFeatures =
+                            similarImages.get(SimilarityMetric.Features)
+                        )
                       )
-                    )
                   }
 
               case Left(err) =>
@@ -69,16 +71,17 @@ class ImagesController(
               case Left(err) => elasticError(documentType = "Image", err)
 
               case Right(resultList) =>
-                extractPublicUri { uri =>
-                  complete(
-                    DisplayResultList(
-                      resultList = resultList,
-                      searchOptions = searchOptions,
-                      includes =
-                        params.include.getOrElse(MultipleImagesIncludes.none),
-                      requestUri = uri
+                extractPublicUri {
+                  uri =>
+                    complete(
+                      DisplayResultList(
+                        resultList = resultList,
+                        searchOptions = searchOptions,
+                        includes =
+                          params.include.getOrElse(MultipleImagesIncludes.none),
+                        requestUri = uri
+                      )
                     )
-                  )
                 }
             }
         }
@@ -89,11 +92,12 @@ class ImagesController(
     maybeIncludes: Option[SingleImageIncludes]
   ): List[SimilarityMetric] =
     maybeIncludes
-      .map { includes =>
-        List(
-          if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
-          else None
-        ).flatten
+      .map {
+        includes =>
+          List(
+            if (includes.withSimilarFeatures) Some(SimilarityMetric.Features)
+            else None
+          ).flatten
       }
       .getOrElse(Nil)
 

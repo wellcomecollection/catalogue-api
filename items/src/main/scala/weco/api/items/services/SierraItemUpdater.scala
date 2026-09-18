@@ -21,9 +21,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 /** Updates the AccessCondition of sierra items
   *
-  *  This provides an up to date view on whether a hold
-  *  can be placed on an item, and generates a list of dates
-  *  when the item can be viewed in the library
+  * This provides an up to date view on whether a hold can be placed on an item,
+  * and generates a list of dates when the item can be viewed in the library
   */
 class SierraItemUpdater(
   sierraSource: SierraSource,
@@ -43,23 +42,27 @@ class SierraItemUpdater(
   ): Future[Map[SierraItemNumber, SierraItemData]] =
     sierraSource
       .lookupItemEntries(staleItemIds)
-      .map { itemEither =>
-        val items = itemEither match {
-          case Right(SierraItemDataEntries(_, _, entries)) =>
-            entries.map(entry => entry.id -> Some(entry)) toMap
-          case Left(
-              SierraItemLookupError.MissingItems(missingItems, itemsReturned)
-              ) =>
-            warn(s"Item lookup missing items: $missingItems")
-            itemsReturned.map(entry => entry.id -> Some(entry)) toMap
-          case Left(itemLookupError) =>
-            error(s"Item lookup failed: $itemLookupError")
-            Map.empty[SierraItemNumber, Option[SierraItemData]]
-        }
-        items collect {
-          case (sierraItemNumber, Some(sierraItemData)) =>
-            sierraItemNumber -> sierraItemData
-        }
+      .map {
+        itemEither =>
+          val items = itemEither match {
+            case Right(SierraItemDataEntries(_, _, entries)) =>
+              entries.map(entry => entry.id -> Some(entry)) toMap
+            case Left(
+                  SierraItemLookupError.MissingItems(
+                    missingItems,
+                    itemsReturned
+                  )
+                ) =>
+              warn(s"Item lookup missing items: $missingItems")
+              itemsReturned.map(entry => entry.id -> Some(entry)) toMap
+            case Left(itemLookupError) =>
+              error(s"Item lookup failed: $itemLookupError")
+              Map.empty[SierraItemNumber, Option[SierraItemData]]
+          }
+          items collect {
+            case (sierraItemNumber, Some(sierraItemData)) =>
+              sierraItemNumber -> sierraItemData
+          }
       }
 
   private def updateItem(
@@ -81,12 +84,10 @@ class SierraItemUpdater(
       case _ => Future.successful(item)
     }
 
-  /** Updates the AccessCondition for a single item
-    *  We are interested in updating the status of an Item
-    *  a library patron can request. These are items with a
-    *  PhysicalLocation. In data sourced from Sierra we can
-    *  only have one PhysicalLocation, so we update it if
-    *  we find it.
+  /** Updates the AccessCondition for a single item We are interested in
+    * updating the status of an Item a library patron can request. These are
+    * items with a PhysicalLocation. In data sourced from Sierra we can only
+    * have one PhysicalLocation, so we update it if we find it.
     */
   private def updateAccessConditionIfExists(
     item: DisplayItem,
@@ -104,34 +105,40 @@ class SierraItemUpdater(
     }
 
   /** Set availability slots for a single item
-    *  - if its physicalAccessCondition exists and is requestable
-    *  - based on its location
-    *  - excluding any blocked collection dates
-    *  If any of the above are not true/defined, we return the item without availableDates
+    *   - if its physicalAccessCondition exists and is requestable
+    *   - based on its location
+    *   - excluding any blocked collection dates If any of the above are not
+    *     true/defined, we return the item without availableDates
     */
   private def setAvailableDates(
     item: DisplayItem,
     sierraItemLocation: Option[SierraLocation]
   ): Future[DisplayItem] =
-    if (item.physicalAccessCondition.exists(
-          _.isRequestable
-        ) && sierraItemLocation.isDefined) {
+    if (
+      item.physicalAccessCondition.exists(
+        _.isRequestable
+      ) && sierraItemLocation.isDefined
+    ) {
       val locationName = sierraItemLocation.get.code match {
         case "harop" | "hgboo" => "deepstore"
         case _                 => "library"
       }
       for {
         openingTimes <- getVenuesOpeningTimes(locationName)
-        availableDates = if (openingTimes.nonEmpty) {
-          locationName match {
-            case "deepstore" => deepstoreItemAvailabilities(openingTimes)
-            case "library"   => libraryItemAvailabilities(openingTimes)
+        availableDates =
+          if (openingTimes.nonEmpty) {
+            locationName match {
+              case "deepstore" => deepstoreItemAvailabilities(openingTimes)
+              case "library"   => libraryItemAvailabilities(openingTimes)
+            }
+          } else {
+            List.empty
           }
-        } else {
-          List.empty
-        }
-        collectableDates = availableDates.filterNot { slot =>
-          blockedCollectionDates.contains(parseISOStringToLocalDate(slot.from))
+        collectableDates = availableDates.filterNot {
+          slot =>
+            blockedCollectionDates.contains(
+              parseISOStringToLocalDate(slot.from)
+            )
         }
       } yield item.copy(availableDates = Some(collectableDates))
     } else {
@@ -152,9 +159,14 @@ class SierraItemUpdater(
       .flatMap(
         venuesList =>
           venuesList
-            .map(venue =>
-              venue.title.toLowerCase() -> venue.openingTimes.map(openingTime =>
-                AvailabilitySlot(openingTime.open, openingTime.close)))) toMap
+            .map(
+              venue =>
+                venue.title.toLowerCase() -> venue.openingTimes.map(
+                  openingTime =>
+                    AvailabilitySlot(openingTime.open, openingTime.close)
+                )
+            )
+      ) toMap
 
   private def libraryItemAvailabilities(
     venuesOpeningTimes: Map[String, List[AvailabilitySlot]]
@@ -185,14 +197,16 @@ class SierraItemUpdater(
         parseISOStringToLocalDate(openingTime.from)
           .isAfter(
             parseISOStringToLocalDate(firstDeepstoreAvailabilitySlot.from)
-        ))
+          )
+    )
   }
 
   def updateItems(items: Seq[DisplayItem]): Future[Seq[DisplayItem]] = {
     val staleItemIds = items
       .filter(item => item.isStale)
-      .map(item =>
-        SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head))
+      .map(
+        item => SierraItemIdentifier.fromSourceIdentifier(item.identifiers.head)
+      )
 
     staleItemIds.size match {
       case 0 => Future.successful(items)

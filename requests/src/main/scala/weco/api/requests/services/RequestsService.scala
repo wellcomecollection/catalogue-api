@@ -78,18 +78,20 @@ class RequestsService(
           throw itemLookupError.err
       }
 
-      itemHoldTuples = itemsFound.flatMap { itemLookup =>
-        val identifiers =
-          itemLookup.item.hcursor
-            .get[List[DisplayIdentifier]]("identifiers")
-            .right
-            .get
+      itemHoldTuples = itemsFound.flatMap {
+        itemLookup =>
+          val identifiers =
+            itemLookup.item.hcursor
+              .get[List[DisplayIdentifier]]("identifiers")
+              .right
+              .get
 
-        val itemId = identifiers.head
+          val itemId = identifiers.head
 
-        holdsMap.get(itemId).map { hold =>
-          (hold, itemLookup)
-        }
+          holdsMap.get(itemId).map {
+            hold =>
+              (hold, itemLookup)
+          }
       }
 
     } yield itemHoldTuples.toList

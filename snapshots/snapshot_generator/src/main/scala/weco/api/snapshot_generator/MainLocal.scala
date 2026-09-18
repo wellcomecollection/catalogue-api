@@ -19,7 +19,8 @@ object MainLocal {
         PipelineElasticClientBuilder(
           "snapshot_generator",
           _,
-          ApiEnvironment.Dev),
+          ApiEnvironment.Dev
+        ),
         S3Client.builder().build()
       )
 

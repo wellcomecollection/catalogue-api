@@ -15,27 +15,28 @@ import weco.typesafe.WellcomeTypesafeApp
 import scala.concurrent.ExecutionContext
 
 object Main extends WellcomeTypesafeApp {
-  runWithConfig { config: Config =>
-    implicit val actorSystem: ActorSystem =
-      ActorSystem("main-actor-system")
-    implicit val executionContext: ExecutionContext =
-      actorSystem.dispatcher
+  runWithConfig {
+    config: Config =>
+      implicit val actorSystem: ActorSystem =
+        ActorSystem("main-actor-system")
+      implicit val executionContext: ExecutionContext =
+        actorSystem.dispatcher
 
-    val s3Client: S3Client = S3Client.builder().build()
+      val s3Client: S3Client = S3Client.builder().build()
 
-    val snapshotService =
-      new SnapshotService(
-        PipelineElasticClientBuilder("snapshot_generator", _),
-        s3Client
+      val snapshotService =
+        new SnapshotService(
+          PipelineElasticClientBuilder("snapshot_generator", _),
+          s3Client
+        )
+
+      new SnapshotGeneratorWorkerService(
+        snapshotService = snapshotService,
+        sqsStream = SQSBuilder.buildSQSStream[NotificationMessage](config),
+        messageSender = SNSBuilder.buildSNSMessageSender(
+          config,
+          subject = s"source: ${this.getClass.getSimpleName}.processMessage"
+        )
       )
-
-    new SnapshotGeneratorWorkerService(
-      snapshotService = snapshotService,
-      sqsStream = SQSBuilder.buildSQSStream[NotificationMessage](config),
-      messageSender = SNSBuilder.buildSNSMessageSender(
-        config,
-        subject = s"source: ${this.getClass.getSimpleName}.processMessage"
-      )
-    )
   }
 }

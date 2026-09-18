@@ -19,9 +19,8 @@ import weco.json.JsonUtil._
 import scala.concurrent.{ExecutionContext, Future}
 
 class WorksService(val elasticsearchService: ElasticsearchService)(
-  implicit
-  val ec: ExecutionContext)
-    extends SearchService[
+  implicit val ec: ExecutionContext
+) extends SearchService[
       IndexedWork,
       IndexedWork.Visible,
       WorkAggregations,
@@ -42,7 +41,8 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
   ): Option[WorkAggregations] =
     WorkAggregations(searchResponse)
 
-  /** Returns a tally of all the work types in an index (e.g. Visible, Deleted). */
+  /** Returns a tally of all the work types in an index (e.g. Visible, Deleted).
+    */
   def countWorkTypes(
     index: Index
   ): Future[Either[ElasticsearchError, Map[String, Int]]] = {
@@ -56,7 +56,7 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
     )
 
     searchResponse.map {
-      case Right(resp) => {
+      case Right(resp) =>
         val workTypeAggregation = resp.aggregations.getAgg("work_type").get
         val workTypeBuckets = workTypeAggregation
           .data("buckets")
@@ -67,10 +67,10 @@ class WorksService(val elasticsearchService: ElasticsearchService)(
             .map(
               bucket =>
                 bucket("key").asInstanceOf[String] -> bucket("doc_count")
-                  .asInstanceOf[Int])
+                  .asInstanceOf[Int]
+            )
             .toMap
         )
-      }
       case Left(err) => Left(err)
     }
   }

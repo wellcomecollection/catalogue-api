@@ -29,8 +29,7 @@ case class CatalogueWorkResults(
 )
 
 class ItemLookup(client: HttpClient with HttpGet)(
-  implicit
-  as: ActorSystem,
+  implicit as: ActorSystem,
   ec: ExecutionContext
 ) extends Logging
     with DisplayItemOps {
@@ -55,21 +54,22 @@ class ItemLookup(client: HttpClient with HttpGet)(
       result <- response.status match {
         case StatusCodes.OK =>
           info(s"OK for GET to $path with $params")
-          Unmarshal(response.entity).to[CatalogueWorkResults].map { results =>
-            val items = results.results.flatMap(_.items)
+          Unmarshal(response.entity).to[CatalogueWorkResults].map {
+            results =>
+              val items = results.results.flatMap(_.items)
 
-            val matchingItem = items.find(_.id.contains(itemId))
+              val matchingItem = items.find(_.id.contains(itemId))
 
-            matchingItem match {
-              case Some(item) => Right(item)
-              case None =>
-                Left(
-                  ItemNotFoundError(
-                    itemId,
-                    err = new Throwable(s"Could not find item $itemId")
+              matchingItem match {
+                case Some(item) => Right(item)
+                case None =>
+                  Left(
+                    ItemNotFoundError(
+                      itemId,
+                      err = new Throwable(s"Could not find item $itemId")
+                    )
                   )
-                )
-            }
+              }
           }
 
         case status =>
@@ -87,20 +87,22 @@ class ItemLookup(client: HttpClient with HttpGet)(
 
   /** Look up a collection of items and the corresponding Work data.
     *
-    * At least within Sierra, it's possible for a single Item to be associated with
-    * multiple Works, e.g. if multiple items are bound/contained together.
-    * For an extreme example, see Item i13000780 / ty6qpt7d, which is on 705 Works.
+    * At least within Sierra, it's possible for a single Item to be associated
+    * with multiple Works, e.g. if multiple items are bound/contained together.
+    * For an extreme example, see Item i13000780 / ty6qpt7d, which is on 705
+    * Works.
     *
-    * We want to return a consistent title/work ID to the user in the list of holds,
-    * so we use the work with the lowest alphabetical source identifier (i.e. lowest bib number).
-    * This mirrors what Encore/OPAC seems to do -- if an item is on multiple bibs,
-    * the list of user holds links to the lowest numbered bib.
+    * We want to return a consistent title/work ID to the user in the list of
+    * holds, so we use the work with the lowest alphabetical source identifier
+    * (i.e. lowest bib number). This mirrors what Encore/OPAC seems to do -- if
+    * an item is on multiple bibs, the list of user holds links to the lowest
+    * numbered bib.
     *
-    * We might want to remember the original request, and which Work the user was looking
-    * at, but that's a bigger piece of work.  It involves UX input on how to best explain
-    * the same item on multiple works.  Making this change is tracked in a separate ticket.
-    * See https://github.com/wellcomecollection/platform/issues/5267
-    *
+    * We might want to remember the original request, and which Work the user
+    * was looking at, but that's a bigger piece of work. It involves UX input on
+    * how to best explain the same item on multiple works. Making this change is
+    * tracked in a separate ticket. See
+    * https://github.com/wellcomecollection/platform/issues/5267
     */
   def bySourceIdentifier(
     itemIdentifiers: Seq[DisplayIdentifier]
@@ -130,19 +132,20 @@ class ItemLookup(client: HttpClient with HttpGet)(
         "pageSize" -> pageSize.toString,
         "page" -> page.toString
       )
-      client.get(path, params).flatMap { response =>
-        response.status match {
-          case StatusCodes.OK =>
-            info(s"OK for GET to $path with $params")
-            Unmarshal(response.entity).to[CatalogueWorkResults]
-          case errorStatus =>
-            val err = new Throwable(s"$errorStatus from the catalogue API")
-            error(
-              s"Unexpected status from GET to $path with $params: $errorStatus",
-              err
-            )
-            Future.failed(err)
-        }
+      client.get(path, params).flatMap {
+        response =>
+          response.status match {
+            case StatusCodes.OK =>
+              info(s"OK for GET to $path with $params")
+              Unmarshal(response.entity).to[CatalogueWorkResults]
+            case errorStatus =>
+              val err = new Throwable(s"$errorStatus from the catalogue API")
+              error(
+                s"Unexpected status from GET to $path with $params: $errorStatus",
+                err
+              )
+              Future.failed(err)
+          }
       }
     }
 
@@ -160,27 +163,33 @@ class ItemLookup(client: HttpClient with HttpGet)(
       }
 
     getWorks(itemIdentifiers)
-      .map { unsortedWorks =>
-        val works = unsortedWorks.sortBy(_.identifiers.headOption.map(_.value))
-        itemIdentifiers.map { itemId =>
-          val matchingRequestedItemWithWork = works.view.flatMap { work =>
-            work.items.find(_.identifiers.headOption.contains(itemId)).map {
-              item =>
-                RequestedItemWithWork(item, work)
-            }
-          }.headOption
+      .map {
+        unsortedWorks =>
+          val works =
+            unsortedWorks.sortBy(_.identifiers.headOption.map(_.value))
+          itemIdentifiers.map {
+            itemId =>
+              val matchingRequestedItemWithWork = works.view.flatMap {
+                work =>
+                  work.items
+                    .find(_.identifiers.headOption.contains(itemId))
+                    .map {
+                      item =>
+                        RequestedItemWithWork(item, work)
+                    }
+              }.headOption
 
-          matchingRequestedItemWithWork match {
-            case Some(requestedItem) => Right(requestedItem)
-            case None =>
-              Left(
-                ItemNotFoundError(
-                  itemId.value,
-                  err = new Throwable(s"Could not find item $itemId")
-                )
-              )
+              matchingRequestedItemWithWork match {
+                case Some(requestedItem) => Right(requestedItem)
+                case None =>
+                  Left(
+                    ItemNotFoundError(
+                      itemId.value,
+                      err = new Throwable(s"Could not find item $itemId")
+                    )
+                  )
+              }
           }
-        }
       }
       .recover {
         case e => itemIdentifiers.map(id => Left(UnknownItemError(id, e)))

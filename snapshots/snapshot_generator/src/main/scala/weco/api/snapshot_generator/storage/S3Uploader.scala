@@ -14,9 +14,8 @@ import weco.storage.store.s3.S3MultipartUploader
 import scala.util.Try
 
 class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
-  implicit
-  val s3Client: S3Client)
-    extends S3MultipartUploader {
+  implicit val s3Client: S3Client
+) extends S3MultipartUploader {
 
   def upload(
     location: S3ObjectLocation,

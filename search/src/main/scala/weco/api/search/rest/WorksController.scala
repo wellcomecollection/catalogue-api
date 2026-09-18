@@ -34,15 +34,16 @@ class WorksController(
               case Left(err) => elasticError(documentType = "Work", err)
 
               case Right(resultList) =>
-                extractPublicUri { requestUri =>
-                  complete(
-                    DisplayResultList(
-                      resultList = resultList,
-                      searchOptions = searchOptions,
-                      includes = params.include.getOrElse(WorksIncludes.none),
-                      requestUri = requestUri
+                extractPublicUri {
+                  requestUri =>
+                    complete(
+                      DisplayResultList(
+                        resultList = resultList,
+                        searchOptions = searchOptions,
+                        includes = params.include.getOrElse(WorksIncludes.none),
+                        requestUri = requestUri
+                      )
                     )
-                  )
                 }
             }
         }
@@ -57,8 +58,10 @@ class WorksController(
 
           worksService
             .findById(id)(worksIndex)
-            .mapVisible(work =>
-              Future.successful(complete(work.display.withIncludes(includes))))
+            .mapVisible(
+              work =>
+                Future.successful(complete(work.display.withIncludes(includes)))
+            )
         }
       }
     }

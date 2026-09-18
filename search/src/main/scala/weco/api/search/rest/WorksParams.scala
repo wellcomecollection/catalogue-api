@@ -56,18 +56,20 @@ object SingleWorkParams extends QueryParamsUtils {
 
   /** Accepted and ignored, deliberately undocumented. The pipeline stopped
     * emitting these fields in the move to catalogue_graph, but iiif-builder
-    * still sends them on every request, so a hard 400 would break IIIF
-    * manifest building. Remove once iiif-builder stops sending them.
+    * still sends them on every request, so a hard 400 would break IIIF manifest
+    * building. Remove once iiif-builder stops sending them.
     */
   val deprecatedIncludeValues: Seq[String] = Seq("precededBy", "succeededBy")
 
   implicit val includesDecoder: Decoder[WorksIncludes] =
     decodeCommaSeparated
       .map(_.filterNot(deprecatedIncludeValues.contains))
-      .emap { strs =>
-        mapStringsToValues(strs, includeValues.toMap).left.map { invalidStrs =>
-          invalidValuesMsg(invalidStrs, includeValues.map(_._1).toList)
-        }
+      .emap {
+        strs =>
+          mapStringsToValues(strs, includeValues.toMap).left.map {
+            invalidStrs =>
+              invalidValuesMsg(invalidStrs, includeValues.map(_._1).toList)
+          }
       }
       .emap(values => Right(WorksIncludes(values: _*)))
 }
@@ -133,8 +135,9 @@ case class MultipleWorksParams(
     semanticConfig: Option[SemanticConfig]
   ): WorkSearchOptions =
     WorkSearchOptions(
-      searchQuery = query map { query =>
-        SearchQuery(query)
+      searchQuery = query map {
+        query =>
+          SearchQuery(query)
       },
       filters = filters,
       pageSize = pageSize.getOrElse(apiConfig.defaultPageSize),
@@ -224,21 +227,21 @@ object MultipleWorksParams extends QueryParamsUtils {
       "aggregations".as[List[WorkAggregationRequest]].?
     ).tflatMap {
       case (
-          items,
-          license,
-          identifiers,
-          locationType,
-          accessStatus,
-          accessMethod,
-          createdDateFrom,
-          createdDateTo,
-          page,
-          pageSize,
-          sort,
-          sortOrder,
-          query,
-          includes,
-          aggregations
+            items,
+            license,
+            identifiers,
+            locationType,
+            accessStatus,
+            accessMethod,
+            createdDateFrom,
+            createdDateTo,
+            page,
+            pageSize,
+            sort,
+            sortOrder,
+            query,
+            includes,
+            aggregations
           ) =>
         val itemsParams = ItemsParams(
           items,
@@ -274,24 +277,24 @@ object MultipleWorksParams extends QueryParamsUtils {
           "collection.root".as[CollectionRootFilter].?
         ).tflatMap {
           case (
-              format,
-              dateFrom,
-              dateTo,
-              languages,
-              archiveCategory,
-              genres,
-              genreConcepts,
-              subjectLabels,
-              subjectConcepts,
-              contributors,
-              contributorsConcepts,
-              identifiers,
-              partOf,
-              partOfTitle,
-              availabilities,
-              workType,
-              collectionIsRoot,
-              collectionRoot
+                format,
+                dateFrom,
+                dateTo,
+                languages,
+                archiveCategory,
+                genres,
+                genreConcepts,
+                subjectLabels,
+                subjectConcepts,
+                contributors,
+                contributorsConcepts,
+                identifiers,
+                partOf,
+                partOfTitle,
+                availabilities,
+                workType,
+                collectionIsRoot,
+                collectionRoot
               ) =>
             val filterParams = WorkFilterParams(
               format,

@@ -18,86 +18,94 @@ import scala.util.{Failure, Success, Try}
 
 object Main extends WellcomeTypesafeApp {
 
-  runWithConfig { config: Config =>
-    implicit val apiConfig: ApiConfig = ApiConfig.build(config)
-    implicit val clock: java.time.Clock = java.time.Clock.systemUTC()
-    implicit val actorSystem: ActorSystem = ActorSystem("search-api")
-    implicit val ec: scala.concurrent.ExecutionContext = actorSystem.dispatcher
+  runWithConfig {
+    config: Config =>
+      implicit val apiConfig: ApiConfig = ApiConfig.build(config)
+      implicit val clock: java.time.Clock = java.time.Clock.systemUTC()
+      implicit val actorSystem: ActorSystem = ActorSystem("search-api")
+      implicit val ec: scala.concurrent.ExecutionContext =
+        actorSystem.dispatcher
 
-    apiConfig.environment match {
-      case ApiEnvironment.Dev =>
-        info(s"Running in dev mode.")
-      case _ =>
-        info(s"Running in deployed mode (environment=${apiConfig.environment})")
-        // Only initialise tracing in deployed environments
-        Tracing.init(config)
-    }
+      apiConfig.environment match {
+        case ApiEnvironment.Dev =>
+          info(s"Running in dev mode.")
+        case _ =>
+          info(
+            s"Running in deployed mode (environment=${apiConfig.environment})"
+          )
+          // Only initialise tracing in deployed environments
+          Tracing.init(config)
+      }
 
-    val pipelineDate = apiConfig.environment match {
-      case ApiEnvironment.Dev =>
-        val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
-        if (pipelineDateOverride.isDefined)
-          warn(s"Overridden pipeline date: $pipelineDateOverride")
-        pipelineDateOverride.getOrElse(ElasticConfig.defaultPipelineDate)
-      case _ =>
-        ElasticConfig.defaultPipelineDate
-    }
+      val pipelineDate = apiConfig.environment match {
+        case ApiEnvironment.Dev =>
+          val pipelineDateOverride = config.getStringOption("dev.pipelineDate")
+          if (pipelineDateOverride.isDefined)
+            warn(s"Overridden pipeline date: $pipelineDateOverride")
+          pipelineDateOverride.getOrElse(ElasticConfig.defaultPipelineDate)
+        case _ =>
+          ElasticConfig.defaultPipelineDate
+      }
 
-    def buildElasticClient(config: ElasticConfig): ResilientElasticClient =
-      new ResilientElasticClient(
-        clientFactory = () =>
-          PipelineElasticClientBuilder(
-            elasticConfig = config,
-            serviceName = "catalogue_api",
-            environment = apiConfig.environment,
-            pipelineDate = config.getPipelineDate
+      def buildElasticClient(config: ElasticConfig): ResilientElasticClient =
+        new ResilientElasticClient(
+          clientFactory = () =>
+            PipelineElasticClientBuilder(
+              elasticConfig = config,
+              serviceName = "catalogue_api",
+              environment = apiConfig.environment,
+              pipelineDate = config.getPipelineDate
+            )
         )
+
+      val elasticConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
+      val elasticClient = buildElasticClient(elasticConfig)
+
+      // Create additional non-essential Elasticsearch clients (if configured) for routing experimental queries.
+      // Catch all errors so that misconfigured experimental clusters do not cause the production API to crash.
+      val parsedAdditionalElasticConfigs =
+        MultiElasticConfigParser.parse(config)
+      val additionalClusters =
+        parsedAdditionalElasticConfigs.toList.flatMap {
+          case (name, config) =>
+            Try(buildElasticClient(config)) match {
+              case Success(client) =>
+                info(s"Configured additional Elasticsearch cluster '$name'")
+                Some((name, (client, config)))
+              case Failure(_) =>
+                error(
+                  s"Failed to build additional Elasticsearch cluster '$name'"
+                )
+                None
+            }
+        }.toMap
+
+      info(
+        s"Using default Elasticsearch cluster with ${additionalClusters.size} additional cluster(s)"
       )
 
-    val elasticConfig = ElasticConfig(pipelineDate = Some(pipelineDate))
-    val elasticClient = buildElasticClient(elasticConfig)
+      val router = new SearchApi(
+        elasticClient = elasticClient,
+        elasticConfig = elasticConfig,
+        additionalElasticClients = additionalClusters.map {
+          case (name, (client, _)) => name -> client
+        },
+        additionalElasticConfigs = additionalClusters.map {
+          case (name, (_, cfg)) => name -> cfg
+        },
+        apiConfig = apiConfig
+      )
 
-    // Create additional non-essential Elasticsearch clients (if configured) for routing experimental queries.
-    // Catch all errors so that misconfigured experimental clusters do not cause the production API to crash.
-    val parsedAdditionalElasticConfigs = MultiElasticConfigParser.parse(config)
-    val additionalClusters =
-      parsedAdditionalElasticConfigs.toList.flatMap {
-        case (name, config) =>
-          Try(buildElasticClient(config)) match {
-            case Success(client) =>
-              info(s"Configured additional Elasticsearch cluster '$name'")
-              Some((name, (client, config)))
-            case Failure(_) =>
-              error(s"Failed to build additional Elasticsearch cluster '$name'")
-              None
-          }
-      }.toMap
+      val appName = "SearchApi"
 
-    info(
-      s"Using default Elasticsearch cluster with ${additionalClusters.size} additional cluster(s)")
-
-    val router = new SearchApi(
-      elasticClient = elasticClient,
-      elasticConfig = elasticConfig,
-      additionalElasticClients = additionalClusters.map {
-        case (name, (client, _)) => name -> client
-      },
-      additionalElasticConfigs = additionalClusters.map {
-        case (name, (_, cfg)) => name -> cfg
-      },
-      apiConfig = apiConfig
-    )
-
-    val appName = "SearchApi"
-
-    new WellcomeHttpApp(
-      routes = router.routes,
-      httpMetrics = new HttpMetrics(
-        name = appName,
-        metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
-      ),
-      httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
-      appName = appName
-    )
+      new WellcomeHttpApp(
+        routes = router.routes,
+        httpMetrics = new HttpMetrics(
+          name = appName,
+          metrics = CloudWatchBuilder.buildCloudWatchMetrics(config)
+        ),
+        httpServerConfig = HTTPServerBuilder.buildHTTPServerConfig(config),
+        appName = appName
+      )
   }
 }

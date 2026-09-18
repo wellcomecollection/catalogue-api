@@ -8,7 +8,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 /** A service for updating the items on a Work
   *
-  *  @param itemUpdaters a list of ItemUpdater for updating items of particular IdentifierType
+  * @param itemUpdaters
+  *   a list of ItemUpdater for updating items of particular IdentifierType
   */
 class ItemUpdateService(
   itemUpdaters: List[ItemUpdater]
@@ -25,7 +26,8 @@ class ItemUpdateService(
 
   /** Updates a tuple of Item and index preserving the original index
     *
-    *  @return a list of updated items with their index maintained
+    * @return
+    *   a list of updated items with their index maintained
     */
   private def preservedOrderItemsUpdate(
     itemsWithIndex: ItemsWithIndex,
@@ -33,38 +35,41 @@ class ItemUpdateService(
   ): Future[ItemsWithIndex] = {
     val items = itemsWithIndex.map(_._1)
 
-    updateFunction(items).map { updatedItems =>
-      // Construct a lookup from SourceIdentifier -> index
-      val updatedItemsWithIndex = itemsWithIndex
-        .map {
-          case (item, index) =>
-            getSrcId(item) -> index
-        }
-        .flatMap {
-          // Add the correct index for an item by SourceIdentifier
-          case (srcId, index) =>
-            updatedItems.find(getSrcId(_) == srcId).map { updatedItem =>
-              (updatedItem, index)
-            }
-        }
+    updateFunction(items).map {
+      updatedItems =>
+        // Construct a lookup from SourceIdentifier -> index
+        val updatedItemsWithIndex = itemsWithIndex
+          .map {
+            case (item, index) =>
+              getSrcId(item) -> index
+          }
+          .flatMap {
+            // Add the correct index for an item by SourceIdentifier
+            case (srcId, index) =>
+              updatedItems.find(getSrcId(_) == srcId).map {
+                updatedItem =>
+                  (updatedItem, index)
+              }
+          }
 
-      // Ensure that the update function has updated the correct number of results
-      require(
-        updatedItemsWithIndex.size == itemsWithIndex.size,
-        "Inconsistent results updating items: " +
-          s"Received: $itemsWithIndex, updated: $updatedItemsWithIndex"
-      )
+        // Ensure that the update function has updated the correct number of results
+        require(
+          updatedItemsWithIndex.size == itemsWithIndex.size,
+          "Inconsistent results updating items: " +
+            s"Received: $itemsWithIndex, updated: $updatedItemsWithIndex"
+        )
 
-      updatedItemsWithIndex
+        updatedItemsWithIndex
     }
   }
 
   /** Updates the Identified items on a work
     *
-    *  Uses an ItemUpdater to update Identified items
-    *  where the ItemUpdater acts on a specific IdentifierType
+    * Uses an ItemUpdater to update Identified items where the ItemUpdater acts
+    * on a specific IdentifierType
     *
-    *  @return a sequence of updated items
+    * @return
+    *   a sequence of updated items
     */
   def updateItems(
     work: CatalogueWork
@@ -86,7 +91,8 @@ class ItemUpdateService(
                 preservedOrderItemsUpdate(
                   itemsWithIndex = itemsWithIndex,
                   updateFunction = updater.updateItems
-              ))
+                )
+            )
             .getOrElse(Future(itemsWithIndex))
 
         case (None, itemsWithIndex) =>

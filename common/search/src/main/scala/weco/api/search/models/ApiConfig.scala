@@ -8,7 +8,7 @@ case class ApiConfig(
   publicScheme: String,
   publicHost: String,
   publicRootPath: String,
-  defaultPageSize: Int,
+  defaultPageSize: Int
 ) {
   // Used to determine whether we're running in a dev environment
   def environment: ApiEnvironment = publicHost match {
@@ -37,17 +37,17 @@ object ApiConfig {
       ),
       defaultPageSize = config
         .getIntOption("api.pageSize")
-        .getOrElse(10),
+        .getOrElse(10)
     )
 
   def apply(
     publicRootUri: Uri,
-    defaultPageSize: Int,
+    defaultPageSize: Int
   ): ApiConfig =
     ApiConfig(
       publicHost = publicRootUri.authority.host.address,
       publicScheme = publicRootUri.scheme,
       publicRootPath = publicRootUri.path.toString,
-      defaultPageSize = defaultPageSize,
+      defaultPageSize = defaultPageSize
     )
 }

@@ -17,10 +17,12 @@ trait ElasticAggregations extends Logging {
         filteredAggregation <- aggregations.getAgg(name)
         globalAggregation <- aggregations.getAgg(name + "Global")
         parsedAggregation <- filteredAggregation
-          .safeTo[Aggregation] { filteredJson =>
-            globalAggregation.safeTo[Aggregation] { globalJson =>
-              AggregationMapping.aggregationParser(filteredJson, globalJson)
-            }
+          .safeTo[Aggregation] {
+            filteredJson =>
+              globalAggregation.safeTo[Aggregation] {
+                globalJson =>
+                  AggregationMapping.aggregationParser(filteredJson, globalJson)
+              }
           }
           .toOption
       } yield parsedAggregation

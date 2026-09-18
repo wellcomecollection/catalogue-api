@@ -18,9 +18,7 @@ import scala.concurrent.ExecutionContext
 class RequestsApi(
   val requestsService: RequestsService,
   blockedCollectionDates: Set[LocalDate] = Set.empty
-)(implicit
-  val ec: ExecutionContext,
-  val apiConfig: ApiConfig)
+)(implicit val ec: ExecutionContext, val apiConfig: ApiConfig)
     extends CreateRequest
     with LookupPendingRequests
     with IdentifierDirectives {

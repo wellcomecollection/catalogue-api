@@ -18,9 +18,10 @@ trait Paginated { this: QueryParams =>
         .filterNot(_ >= 1)
         .map(_ => "page: must be greater than 1"),
       pageSize
-        .filterNot { size =>
-          size >= PaginationLimits.minSize &&
-          size <= PaginationLimits.maxSize
+        .filterNot {
+          size =>
+            size >= PaginationLimits.minSize &&
+            size <= PaginationLimits.maxSize
         }
         .map(
           _ =>
