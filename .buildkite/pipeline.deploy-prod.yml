@@ -140,6 +140,7 @@ steps:
           shell: false
 
   - label: "Report the prod deployment"
+    key: "report-prod-deployment"
     branches: "main"
     # Runs after a failure too, which is the point: without it a failed deploy
     # leaves the Deployment at in_progress with nothing to resolve it.
