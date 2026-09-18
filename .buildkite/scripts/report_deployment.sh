@@ -32,24 +32,32 @@ then
   exit 1
 fi
 
-# The key the plugin writes the id under. task is left at the plugin's default
-# on the deploy steps, so it is the default here too.
-METADATA_KEY="github_deployment:$ENVIRONMENT:deploy:weco:id"
-
 read_outcome() {
-  local step="$1" outcome
+  local step="$1" outcome error errors
+  # Not a fixed path: agents run jobs concurrently and would share one.
+  errors=$(mktemp)
   # Retried because a single API blip would otherwise announce a deploy that
   # worked as a failure, in a channel people read.
-  for _ in 1 2 3
+  for attempt in 1 2 3
   do
-    if outcome=$(buildkite-agent step get "outcome" --step "$step" 2>/dev/null) &&
+    if outcome=$(buildkite-agent step get "outcome" --step "$step" 2>"$errors") &&
        [[ -n "$outcome" ]]
     then
       echo "$outcome"
+      rm -f "$errors"
       return 0
+    fi
+    if [[ "$attempt" == 3 ]]
+    then
+      # Said out loud: without it the log shows only "unreadable", and a
+      # mistyped step key looks identical to a failed deploy.
+      error=$(cat "$errors" 2>/dev/null)
+      echo "could not read the outcome of '$step': ${error:-no error reported}" >&2
+      break
     fi
     sleep 2
   done
+  rm -f "$errors"
   echo "unreadable"
 }
 
@@ -69,17 +77,6 @@ do
   fi
 done
 
-# No id means the plugin never created a Deployment, which it tolerates so that
-# announcing a deploy cannot stop one. There is nothing to post against, and
-# that is the one case where posting nothing is right. Checked here so that the
-# status step itself can stay fatal, and a GitHub or Secrets Manager failure
-# still turns the build red rather than leaving a live Deployment in_progress.
-if ! buildkite-agent meta-data exists "$METADATA_KEY"
-then
-  echo "No deployment was created for $ENVIRONMENT, so there is nothing to report"
-  exit 0
-fi
-
 # The same dependencies this step has. An uploaded step is inserted after the
 # job that uploads it, which would put it behind the wait the deploy steps sit in
 # front of, and a failure before that wait stops everything after it. Naming the
@@ -92,11 +89,21 @@ echo "Reporting the $ENVIRONMENT deployment as $STATUS"
 
 # environment_url is set here rather than on the deploy step because GitHub
 # takes it from the status, not from the deployment.
+#
+# Retried, then allowed to fail. The plugin tolerates failing to create a
+# Deployment, so there may be nothing to post against, and on the stage pipeline
+# this step sits before the wait that the prod trigger follows. Keeping the
+# record must not stop the deploy being promoted, which is the same rule the
+# plugin applies to its own pre-command hook.
 buildkite-agent pipeline upload <<YAML
 steps:
   - label: "Deployment $STATUS ($ENVIRONMENT)"
     depends_on: $DEPENDS
     allow_dependency_failure: true
+    soft_fail: true
+    retry:
+      automatic:
+        limit: 2
     plugins:
       - wellcomecollection/github-deployments#v0.4.0:
           assume_role: "arn:aws:iam::756629837203:role/catalogue-ci"
