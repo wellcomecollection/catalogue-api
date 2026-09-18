@@ -76,6 +76,18 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
     redocly.yaml, so the lint does not catch a misspelled scheme either.
     """
     spec = openapi.spec
+
+    # Naming the scheme is only half of it. One defined as anything other than a
+    # header API key leaves the gateway with nothing to enforce while every
+    # assertion below still passes.
+    scheme = spec["components"]["securitySchemes"][SCHEME]
+    scheme_is_a_header_api_key = (scheme["type"], scheme["in"], scheme["name"]) == (
+        "apiKey",
+        "header",
+        "x-api-key",
+    )
+    assert scheme_is_a_header_api_key, f"{SCHEME} must define a header API key"
+
     root = [list(requirement.keys()) for requirement in spec["security"]]
     # Bound to a name first: an assert whose message pushes it over the line
     # length is formatted differently by different ruff versions, and this
