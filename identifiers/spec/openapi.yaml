@@ -160,12 +160,8 @@ paths:
         environment. `commit` is baked into the image at build time, since a
         running container has no repository to ask. See the contract at
         https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
-      # No security block, and the spec has no default for it to opt out of.
-      # API Gateway sets a method's key requirement from the operation alone: a
-      # root-level requirement reached every method here and `security: []` did
-      # not exempt this one, so the tracker, which holds no credentials for the
-      # services it checks, could not read it.
-      # tests/test_manifest.py fails if any other operation stops declaring one.
+      # Deliberately no security, and no root default to inherit: API Gateway
+      # takes the requirement from the operation, and the tracker holds no key.
       responses:
         '200':
           description: >-

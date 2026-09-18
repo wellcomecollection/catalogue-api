@@ -68,21 +68,16 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
 ) -> None:
     """The gateway is defined wholly by this spec, so this is the whole surface.
 
-    Asserts the positive, that every operation but the manifest declares a
-    requirement naming ApiKeyAuth. The spec deliberately sets no default: API
-    Gateway reads a method's key requirement from its operation alone, so a
-    root-level requirement reached the manifest too and `security: []` did not
-    exempt it. `security-defined` is off in redocly.yaml, so the lint does not
-    catch a misspelled scheme either.
+    Asserts the positive, that every operation but the manifest names ApiKeyAuth.
+    A root default would reach the manifest too, since API Gateway takes a
+    method's requirement from its own operation. `security-defined` is off in
+    redocly.yaml, so the lint will not catch a misspelled scheme.
     """
     spec = openapi.spec
 
-    # A default would be applied to the manifest as well, which is the thing
-    # this test exists to keep open.
     assert spec.get("security") is None, "the spec must declare no default security"
 
-    # Any key under a path that is not one of these is an operation, so a route
-    # added as x-amazon-apigateway-any-method is checked too.
+    # Anything else under a path is an operation, including any-method routes.
     not_operations = {"parameters", "summary", "description", "servers", "$ref"}
 
     # .items(), because iterating a SchemaPath yields values rather than keys
