@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/wellcomecollection/deploy-tracker/main/schema/deploy-tracker.schema.json
+#
+# The identifiers API is its own deploy unit. It is deployed by
+# .github/workflows/identifiers-deploy.yml rather than by the Buildkite
+# pipelines that deploy the rest of this repository, so it reports separately
+# and on its own schedule. See the root .deploy-tracker.yml for those.
+version: 1
+
+slack:
+  channel: "#wc-platform-deploys"
+
+services:
+  identifiers:
+    manifest: /management/manifest
+
+environments:
+  # Only stage. The workflow deploys identifiers-api-stage alone; prod belongs
+  # here once it has a job to create the deployment.
+  stage:
+    host: https://identifiers.api-stage.wellcomecollection.org
+    # GitHub's own default for a deployment, which is what Actions creates when
+    # a job names an environment. Without this the unit would look for
+    # deploy:identifiers, the name this directory would otherwise imply, and no
+    # deployment would ever match it.
+    task: deploy
+    deploys: [identifiers]
+
+labels: true
+pr_comments: true

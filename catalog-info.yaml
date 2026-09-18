@@ -89,3 +89,18 @@ spec:
   lifecycle: production
   owner: digital-platform
   system: catalogue-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalogue-api-identifiers
+  description: Resolves catalogue identifiers, deployed from GitHub Actions
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/identifiers/
+    wellcomecollection.org/deploy-tracker: identifiers/.deploy-tracker.yml#identifiers
+spec:
+  type: service
+  lifecycle: production
+  owner: digital-platform
+  system: catalogue-api
