@@ -77,15 +77,15 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
     """
     spec = openapi.spec
 
-    # Naming the scheme is only half of it. One defined as anything other than a
-    # header API key leaves the gateway with nothing to enforce while every
-    # assertion below still passes.
+    # Defined as anything but a header API key, the gateway has no key to
+    # enforce while every assertion below still passes. .get so a scheme with no
+    # `in` or `name`, such as type: http, fails here rather than raising.
     scheme = spec["components"]["securitySchemes"][SCHEME]
-    scheme_is_a_header_api_key = (scheme["type"], scheme["in"], scheme["name"]) == (
-        "apiKey",
-        "header",
-        "x-api-key",
-    )
+    scheme_is_a_header_api_key = (
+        scheme.get("type"),
+        scheme.get("in"),
+        scheme.get("name"),
+    ) == ("apiKey", "header", "x-api-key")
     assert scheme_is_a_header_api_key, f"{SCHEME} must define a header API key"
 
     root = [list(requirement.keys()) for requirement in spec["security"]]
