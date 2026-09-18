@@ -10,7 +10,6 @@ import weco.api.requests.services.{
   SierraRequestsService
 }
 import weco.api.search.models.ApiConfig
-import weco.api.stacks.models.BlockedCollectionDates
 import weco.http.WellcomeHttpApp
 import weco.http.client.{HttpGet, PekkoHttpClient}
 import weco.http.monitoring.HttpMetrics
@@ -47,8 +46,7 @@ object Main extends WellcomeTypesafeApp {
 
       val requestsService = new RequestsService(sierraService, itemLookup)
 
-      val router: RequestsApi =
-        new RequestsApi(requestsService, BlockedCollectionDates.dates)
+      val router: RequestsApi = new RequestsApi(requestsService)
 
       val appName = "RequestsApi"
 
