@@ -2,8 +2,8 @@
 #
 # The identifiers API is its own deploy unit. It is deployed by
 # .github/workflows/identifiers-deploy.yml rather than by the Buildkite
-# pipelines that deploy the rest of this repository, so it reports separately
-# and on its own schedule. See the root .deploy-tracker.yml for those.
+# pipelines that deploy the rest of this repository, so it reports separately.
+# See the root .deploy-tracker.yml for those.
 version: 1
 
 slack:
@@ -14,8 +14,6 @@ services:
     manifest: /management/manifest
 
 environments:
-  # Only stage. The workflow deploys identifiers-api-stage alone; prod belongs
-  # here once it has a job to create the deployment.
   stage:
     host: https://identifiers.api-stage.wellcomecollection.org
     # GitHub's own default for a deployment, which is what Actions creates when
@@ -24,6 +22,13 @@ environments:
     # deployment would ever match it.
     task: deploy
     deploys: [identifiers]
+  prod:
+    host: https://identifiers.api-prod.wellcomecollection.org
+    task: deploy
+    deploys: [identifiers]
+    # The workflow runs prod straight after stage in the same build, so this is
+    # the promotion chain rather than a wait anyone sits through.
+    promote_from: stage
 
 labels: true
 pr_comments: true
