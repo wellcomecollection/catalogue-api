@@ -68,32 +68,18 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
 ) -> None:
     """The gateway is defined wholly by this spec, so this is the whole surface.
 
-    Asserts the positive, that every other operation resolves to a requirement
-    naming ApiKeyAuth. Looking for an empty `security` instead would miss the
-    ways an operation can be open without one: a requirement naming no scheme
-    at all, or one naming a scheme that does not exist, both of which leave
-    API Gateway with no key to enforce. `security-defined` is off in
-    redocly.yaml, so the lint does not catch a misspelled scheme either.
+    Asserts the positive, that every operation but the manifest declares a
+    requirement naming ApiKeyAuth. The spec deliberately sets no default: API
+    Gateway reads a method's key requirement from its operation alone, so a
+    root-level requirement reached the manifest too and `security: []` did not
+    exempt it. `security-defined` is off in redocly.yaml, so the lint does not
+    catch a misspelled scheme either.
     """
     spec = openapi.spec
 
-    # Defined as anything but a header API key, the gateway has no key to
-    # enforce while every assertion below still passes. .get so a scheme with no
-    # `in` or `name`, such as type: http, fails here rather than raising.
-    scheme = spec["components"]["securitySchemes"][SCHEME]
-    scheme_is_a_header_api_key = (
-        scheme.get("type"),
-        scheme.get("in"),
-        scheme.get("name"),
-    ) == ("apiKey", "header", "x-api-key")
-    assert scheme_is_a_header_api_key, f"{SCHEME} must define a header API key"
-
-    root = [list(requirement.keys()) for requirement in spec["security"]]
-    # Bound to a name first: an assert whose message pushes it over the line
-    # length is formatted differently by different ruff versions, and this
-    # repository runs two of them.
-    root_requires_key = any(SCHEME in names for names in root)
-    assert root_requires_key, "the spec must require a key by default"
+    # A default would be applied to the manifest as well, which is the thing
+    # this test exists to keep open.
+    assert spec.get("security") is None, "the spec must declare no default security"
 
     # Any key under a path that is not one of these is an operation, so a route
     # added as x-amazon-apigateway-any-method is checked too.
@@ -105,15 +91,11 @@ def test_only_the_manifest_is_reachable_without_an_api_key(
             if name in not_operations:
                 continue
             declared = operation.get("security")
-            effective = (
-                root
-                if declared is None
-                else [list(requirement.keys()) for requirement in declared]
-            )
             route = f"{str(name).upper()} {path}"
 
             if path == MANIFEST:
-                assert effective == [], f"{route} is the one route meant to be open"
+                assert declared is None, f"{route} is the one route meant to be open"
             else:
-                requires_key = any(SCHEME in names for names in effective)
+                names = [list(requirement.keys()) for requirement in declared or []]
+                requires_key = any(SCHEME in n for n in names)
                 assert requires_key, f"{route} is readable without {SCHEME}"

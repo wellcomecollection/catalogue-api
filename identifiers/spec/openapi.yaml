@@ -34,12 +34,11 @@ servers:
 x-amazon-apigateway-api-key-source: HEADER
 
 # Applied to every operation; API Gateway maps this to apiKeyRequired: true.
-security:
-  - ApiKeyAuth: []
-
 paths:
   /identifiers/v1/{canonicalId}:
     get:
+      security:
+        - ApiKeyAuth: []
       operationId: getByCanonicalId
       summary: Resolve a canonical id to its source identifiers
       description: >-
@@ -80,6 +79,8 @@ paths:
 
   /identifiers/v1/by-source/{sourceSystem}/{value}:
     get:
+      security:
+        - ApiKeyAuth: []
       operationId: getBySourceIdentifier
       summary: Resolve a source identifier to its canonical id
       description: >-
@@ -159,10 +160,12 @@ paths:
         environment. `commit` is baked into the image at build time, since a
         running container has no repository to ask. See the contract at
         https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
-      # The only operation without a key. The tracker holds no credentials for
-      # the services it checks, and this exposes a commit that is already public.
-      # tests/test_manifest.py fails if any other operation stops requiring one.
-      security: []
+      # No security block, and the spec has no default for it to opt out of.
+      # API Gateway sets a method's key requirement from the operation alone: a
+      # root-level requirement reached every method here and `security: []` did
+      # not exempt this one, so the tracker, which holds no credentials for the
+      # services it checks, could not read it.
+      # tests/test_manifest.py fails if any other operation stops declaring one.
       responses:
         '200':
           description: >-
