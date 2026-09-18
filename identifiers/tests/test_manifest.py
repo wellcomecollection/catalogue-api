@@ -3,6 +3,7 @@
 import importlib
 import json
 from collections.abc import Iterator
+from types import ModuleType
 
 import pytest
 from conftest import AssertContract, Invoke
@@ -16,7 +17,7 @@ SHA = "7aacfdd974cfd315894c24ff831e3327aa3bb98b"
 
 
 @pytest.fixture
-def with_commit(monkeypatch: pytest.MonkeyPatch) -> Iterator[object]:
+def with_commit(monkeypatch: pytest.MonkeyPatch) -> Iterator[ModuleType]:
     """The handler as CI builds it, with a commit baked in.
 
     BUILD_COMMIT is read once at import, so the value has to be in place before
@@ -36,11 +37,13 @@ def test_manifest_200_matches_the_spec(
     assert_contract(result, "GET", MANIFEST, 200)
 
 
-def test_manifest_reports_the_commit_baked_into_the_image(with_commit: object) -> None:
+def test_manifest_reports_the_commit_baked_into_the_image(
+    with_commit: ModuleType,
+) -> None:
     """End to end from the environment variable CI sets to the response body."""
-    body = json.loads(with_commit.handler({"resource": MANIFEST})["body"])  # type: ignore[attr-defined]
+    body = json.loads(with_commit.handler({"resource": MANIFEST})["body"])
     assert body["commit"] == SHA
-    assert body["startedAt"] == with_commit.STARTED_AT  # type: ignore[attr-defined]
+    assert body["startedAt"] == with_commit.STARTED_AT
 
 
 def test_manifest_is_never_cached(invoke: Invoke) -> None:
