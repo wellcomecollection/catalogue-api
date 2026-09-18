@@ -30,7 +30,10 @@ def test_writes_messages_to_sqs(
     }
 
     with patch.dict(os.environ, patched_os_environ, clear=True):
-        snapshot_scheduler.main(sns_client=mock_sns_client, indices=test_indices)
+        snapshot_scheduler.main(
+            sns_client=mock_sns_client,
+            elastic_config={**test_indices, "pipelineDate": test_pipeline_date},
+        )
 
     messages = list(get_test_topic_messages())
     assert len(messages) == 2
