@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-anyio==4.8.0
+anyio==4.14.2
     # via httpx
 boto3==1.28.16
     # via -r requirements.in
@@ -49,8 +49,6 @@ s3transfer==0.6.0
     # via boto3
 six==1.15.0
     # via python-dateutil
-sniffio==1.1.0
-    # via anyio
 typing-extensions==4.12.2
     # via anyio
 urllib3==1.26.20
