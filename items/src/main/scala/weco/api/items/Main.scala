@@ -14,7 +14,6 @@ import weco.api.items.services.{
 import weco.http.typesafe.HTTPServerBuilder
 import weco.monitoring.typesafe.CloudWatchBuilder
 import weco.api.search.models.{ApiConfig, ApiEnvironment}
-import weco.api.stacks.models.BlockedCollectionDates
 import weco.typesafe.WellcomeTypesafeApp
 import weco.http.WellcomeHttpApp
 import weco.http.client.{HttpGet, PekkoHttpClient}
@@ -66,8 +65,7 @@ object Main extends WellcomeTypesafeApp {
         new SierraItemUpdater(
           sierraSource,
           venueOpeningTimeLookup,
-          venueClock,
-          BlockedCollectionDates.dates
+          venueClock
         )
       )
 
