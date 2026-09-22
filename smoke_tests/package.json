@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "artillery": "2.0.26",
+    "artillery": "2.0.34",
     "artillery-plugin-metrics-by-endpoint": "^1.20.0",
     "@aws-sdk/client-secrets-manager": "^3.918.0",
     "client-oauth2": "^4.3.3"
