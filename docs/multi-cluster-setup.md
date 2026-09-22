@@ -67,8 +67,11 @@ inside the VPC. When running the API outside the VPC (e.g. locally), swap `hostS
 The environment default stays on the old pipeline until we're ready to cut over. To flip the default:
 
 1. Update `defaultPipelineDate`, `defaultWorksIndexDate` and `defaultImagesIndexDate` in
-   `common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala`.
-2. Deploy to stage, verify, then deploy to prod.
+   `common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala`. These are shared by the
+   search API, the items API and the snapshot generator.
+2. Update `pipelineDate` and `conceptsIndex` in `concepts/config.ts`. The concepts API has its own
+   config rather than the shared defaults.
+3. Deploy to stage, verify, then deploy to prod.
 
-To roll back, revert the `ElasticConfig` change and redeploy. To remove the `axiell-collections-testing` cluster entirely,
+To roll back, revert both changes and redeploy. To remove the `axiell-collections-testing` cluster entirely,
 delete its `multiCluster` entry from `application.conf` and redeploy; requests selecting it will then return 404.
