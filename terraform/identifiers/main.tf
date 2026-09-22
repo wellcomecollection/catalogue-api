@@ -1,9 +1,9 @@
 locals {
   id_minter_rds = data.terraform_remote_state.infra_critical.outputs["id_minter_rds"]
 
-  # Which registry each environment reads. Production reads the production
-  # registry; stage reads the 2026-07-03 restored copy of it.
-  prod_registry  = local.id_minter_rds["prod"]
+  # Which registry each environment reads. Both read the 2026-07-03 registry,
+  # which became the production registry at the Axiell switchover.
+  prod_registry  = local.id_minter_rds["2026-07-03"]
   stage_registry = local.id_minter_rds["2026-07-03"]
 }
 
