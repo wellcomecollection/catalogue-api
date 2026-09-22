@@ -17,19 +17,46 @@ Contains:
 
 ## Deployment
 
-### Steps
+The `snapshot_generator` is an ECS service and is deployed alongside the catalogue API by the Buildkite prod pipeline.
 
-The snapshot_generator is deployed alongside the catalogue API using Buildkite.
+The three lambdas (`snapshot_scheduler`, `snapshot_recorder` and `snapshot_reporter`) are not deployed by Buildkite. Each one loads its code from a versioned S3 object, and the lambda module deliberately ignores changes to that object version, so uploading a new zip does nothing on its own and `terraform apply` will not pick it up either. A deploy is a zip upload followed by `aws lambda update-function-code` pointing at the new object version.
 
-To upload a new Lambda deployment package:
+### Building the package
+
+The functions run Python 3.10 on x86_64, so build with wheels for that platform rather than for the machine you are on. Run this from the lambda's directory, for example `snapshots/snapshot_scheduler`:
 
 ```console
-pip3 install --target ./src -r requirements.txt
-cd src/
-zip -r ../snapshot_<lambda_name>.zip .
-cd ..
-AWS_PROFILE=catalogue-dev aws s3 cp snapshot_<lambda_name>.zip s3://wellcomecollection-catalogue-infra-delta/lambdas/snapshots/snapshot_<lambda_name>.zip
+rm -rf build && mkdir -p build/pkg
+cp src/*.py build/pkg/ && rm -f build/pkg/test_*.py
+pip3 install --target build/pkg \
+  --platform manylinux2014_x86_64 --only-binary=:all: \
+  --implementation cp --python-version 3.10 \
+  -r REQUIREMENTS
+(cd build/pkg && zip -qr ../snapshot_LAMBDA_NAME.zip .)
 ```
+
+`REQUIREMENTS` is `requirements.txt` for the recorder and reporter. For the scheduler it is `src/requirements.txt`: the top-level `requirements.txt` there is the test lockfile and adds moto and pytest, which should not be bundled.
+
+### Uploading and updating the function
+
+The bucket is versioned, so the upload returns the version to point the function at. The functions are named `snapshot_LAMBDA_NAME-prod`.
+
+```console
+export AWS_PROFILE=catalogue-developer AWS_REGION=eu-west-1
+VERSION=$(aws s3api put-object \
+  --bucket wellcomecollection-catalogue-infra-delta \
+  --key lambdas/snapshots/snapshot_LAMBDA_NAME.zip \
+  --body build/snapshot_LAMBDA_NAME.zip \
+  --query VersionId --output text)
+aws lambda update-function-code \
+  --function-name snapshot_LAMBDA_NAME-prod \
+  --s3-bucket wellcomecollection-catalogue-infra-delta \
+  --s3-key lambdas/snapshots/snapshot_LAMBDA_NAME.zip \
+  --s3-object-version "$VERSION"
+aws lambda wait function-updated --function-name snapshot_LAMBDA_NAME-prod
+```
+
+Afterwards check the function's CloudWatch logs on its next scheduled run: the scheduler runs daily at 00:23 UTC and the reporter at 06:00 UTC on weekdays.
 
 ## Running locally
 
