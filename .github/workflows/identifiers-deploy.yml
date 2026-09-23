@@ -39,28 +39,13 @@ jobs:
       name: stage
       url: https://identifiers.api-stage.wellcomecollection.org
     steps:
-      - uses: aws-actions/configure-aws-credentials@v6
+      - uses: wellcomecollection/.github/.github/actions/deploy-lambda-image@main
         with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
-
-      - name: Point the Lambda at the image
-        shell: bash
-        run: |
-          aws lambda update-function-code \
-            --function-name "$FUNCTION_NAME" \
-            --image-uri "$REGISTRY/identifiers:$DEPLOY_TAG" \
-            --no-cli-pager \
-            --query 'LastModified' \
-            --output text
-
-          # Updates are asynchronous, so the command above returns before the
-          # new image is live.
-          aws lambda wait function-updated --function-name "$FUNCTION_NAME"
-        env:
-          FUNCTION_NAME: identifiers-api-stage
-          REGISTRY: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
-          DEPLOY_TAG: ${{ inputs.deploy_tag }}
+          lambda_name: identifiers-api-stage
+          registry: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
+          image_name: identifiers
+          deploy_tag: ${{ inputs.deploy_tag }}
+          role_to_assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
 
   deploy-identifiers-lambda-prod:
     runs-on: ubuntu-latest
@@ -71,25 +56,10 @@ jobs:
       name: prod
       url: https://identifiers.api-prod.wellcomecollection.org
     steps:
-      - uses: aws-actions/configure-aws-credentials@v6
+      - uses: wellcomecollection/.github/.github/actions/deploy-lambda-image@main
         with:
-          aws-region: eu-west-1
-          role-to-assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
-
-      - name: Point the Lambda at the image
-        shell: bash
-        run: |
-          aws lambda update-function-code \
-            --function-name "$FUNCTION_NAME" \
-            --image-uri "$REGISTRY/identifiers:$DEPLOY_TAG" \
-            --no-cli-pager \
-            --query 'LastModified' \
-            --output text
-
-          # Updates are asynchronous, so the command above returns before the
-          # new image is live.
-          aws lambda wait function-updated --function-name "$FUNCTION_NAME"
-        env:
-          FUNCTION_NAME: identifiers-api-prod
-          REGISTRY: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
-          DEPLOY_TAG: ${{ inputs.deploy_tag }}
+          lambda_name: identifiers-api-prod
+          registry: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
+          image_name: identifiers
+          deploy_tag: ${{ inputs.deploy_tag }}
+          role_to_assume: ${{ secrets.IDENTIFIERS_CI_ROLE_ARN }}
