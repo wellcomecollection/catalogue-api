@@ -27,7 +27,6 @@ def get_current_api_elasticConfig():
 
 @log_on_error
 def main(event=None, _ctxt=None, sns_client=None, elastic_config=None):
-    print(os.environ)
     sns_client = sns_client or boto3.client("sns")
     elastic_config = elastic_config or get_current_api_elasticConfig()
 
