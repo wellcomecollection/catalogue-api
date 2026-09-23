@@ -9,11 +9,12 @@ services:
     ports:
       - "4566:4566"
   s3:
-    image: "zenko/cloudserver:8.1.8"
+    image: "public.ecr.aws/localstack/localstack:4.0.0"
     environment:
-      - "S3BACKEND=mem"
+      - SERVICES=s3
+      - ALLOW_NONSTANDARD_REGIONS=1
     ports:
-      - "33333:8000"
+      - "33333:4566"
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch:8.11.4"
     ports:
