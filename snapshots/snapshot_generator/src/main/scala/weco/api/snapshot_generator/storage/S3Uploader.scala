@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils
 import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.{
+  ChecksumAlgorithm,
   CompleteMultipartUploadResponse,
   CompletedPart,
   UploadPartRequest
@@ -48,6 +49,7 @@ class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
               .key(location.key)
               .uploadId(uploadId)
               .partNumber(partNumber)
+              .checksumAlgorithm(ChecksumAlgorithm.CRC32)
               .build()
 
           val requestBody = RequestBody.fromBytes(partBytes.toArray)
@@ -58,6 +60,8 @@ class S3Uploader(val partSize: Int = (5 * FileUtils.ONE_MB).toInt)(
           CompletedPart
             .builder()
             .eTag(uploadPartResponse.eTag())
+            // The inherited createMultipartUpload declares CRC32, so S3 wants each part's checksum
+            .checksumCRC32(uploadPartResponse.checksumCRC32())
             .partNumber(partNumber)
             .build()
       }
