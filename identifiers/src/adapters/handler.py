@@ -11,13 +11,20 @@ from folio-api's `{message}` shape — see the README.
 
 import json
 import os
+import time
 from datetime import UTC, datetime
 from typing import Any
 
+import structlog
+
+from adapters.logger import setup_logging
 from adapters.rds_data_repo import RdsDataRepository
 from adapters.sqlite_repo import SqliteRepository, build_seeded_connection
 from core.repository import Repository
 from core.service import BadRequest, IdentifiersService, LookupResult, NotFound
+
+setup_logging()
+logger = structlog.get_logger(__name__)
 
 # Backend selection (prototype default: the seeded SQLite store). Set
 # IDENTIFIERS_BACKEND=rds to read the real Aurora ID Registry over the RDS Data
@@ -52,6 +59,27 @@ STARTED_AT = datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
 
 def handler(event: dict, context: Any = None) -> dict:
+    request_context = event.get("requestContext") or {}
+    identity = request_context.get("identity") or {}
+    structlog.contextvars.clear_contextvars()
+    structlog.contextvars.bind_contextvars(
+        gateway_request_id=request_context.get("requestId"),
+        trace_id=getattr(context, "aws_request_id", None),
+        api_key_id=identity.get("apiKeyId"),
+        resource=event.get("resource"),
+    )
+    start_time = time.perf_counter()
+    response = _route(event)
+    end_time = time.perf_counter()
+    logger.info(
+        "Request completed",
+        status=response.get("statusCode"),
+        duration_ms=round((end_time - start_time) * 1000, 2),
+    )
+    return response
+
+
+def _route(event: dict) -> dict:
     resource = event.get("resource")
     path_params = event.get("pathParameters") or {}
     query = event.get("queryStringParameters") or {}
@@ -79,7 +107,8 @@ def handler(event: dict, context: Any = None) -> dict:
         return _error(400, exc.code, exc.message)
     except NotFound as exc:
         return _error(404, exc.code, exc.message)
-    except Exception:
+    except Exception as exc:
+        logger.exception("Lookup failed", error=str(exc))
         return _error(500, "internalServerError", "the request could not be completed")
 
     return _ok(event, result)

@@ -57,6 +57,39 @@ for the services it checks.
 The development key is for our own testing, and lives in Secrets Manager in the
 catalogue account at `identifiers_api/development/<environment>/api_key`.
 
+## Logging
+
+The handler writes structured JSON logs with structlog, following the setup in
+catalogue_graph (`catalogue-pipeline/catalogue_graph/src/utils/logger.py`).
+Logging is configured once when `handler.py` is imported, and each request
+clears and rebinds its own fields, because a warm Lambda container serves many
+requests in the same process.
+
+Every request, including `/management/manifest`, logs one `Request completed`
+line:
+
+```json
+{"event": "Request completed", "status": 200, "duration_ms": 0.04,
+ "gateway_request_id": "...", "trace_id": "...", "api_key_id": "...",
+ "resource": "/identifiers/v1/{canonicalId}", "level": "info", "timestamp": "..."}
+```
+
+- `gateway_request_id` is API Gateway's request id, the same value as
+  `$context.requestId` in the gateway access logs, so a Lambda line can be
+  joined to its access log line.
+- `trace_id` is Lambda's `aws_request_id`, named as catalogue_graph names it.
+- `api_key_id` is the id of the caller's API key, which attributes load to a
+  consumer. The key value itself is never logged.
+
+A request that fails unexpectedly also logs `Lookup failed` at error level, with
+the exception message in `error` and the traceback. Requests rejected with a 400
+or 404 do not, since those are the caller's problem rather than ours.
+
+`LOG_LEVEL` sets the level (default `INFO`). Logs go to
+`/aws/lambda/identifiers-api-<environment>`, which `terraform-aws-lambda` keeps
+for one day and forwards to the logging cluster, so look in Kibana for anything
+older.
+
 ## Architecture (the seam that matters)
 
 ```
@@ -70,6 +103,7 @@ src/
     sqlite_repo.py    Repository impl over the seeded SQLite DB (default)
     rds_data_repo.py  Repository impl over Aurora via the RDS Data API (read-only)
     handler.py        Lambda proxy handler: HTTP <-> core; picks the backend
+    logger.py         structlog setup, called once when handler.py is imported
     run_local.py      stdlib HTTP invoker for the live demo
     db/
       schema.sql      portable rendering of the RFC 083 two-table model
