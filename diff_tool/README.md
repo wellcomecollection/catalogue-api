@@ -26,9 +26,9 @@ Show all options with:
 ./diff_tool.py --help
 ```
 
-To compare production against production with a different elastic cluster selected (for example the new-pipeline preview), instead of against staging:
+To compare production against production with a different elastic cluster selected (any `multiCluster` entry in `application.conf`), instead of against staging:
 
 ```text
-./diff_tool.py --elastic-cluster axiell-collections-testing
+./diff_tool.py --elastic-cluster <cluster-name>
 ```
 
