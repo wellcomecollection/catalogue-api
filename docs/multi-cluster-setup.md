@@ -48,23 +48,22 @@ multiCluster {
 }
 ```
 
-## The `axiell-collections-testing` cluster
+## Previewing a new pipeline before flipping the default
 
-The `axiell-collections-testing` entry points at the output of the new (Axiell/FOLIO) pipeline, so that its works
-and images indexes can be previewed with `?elasticCluster=axiell-collections-testing` before the default cluster is
-flipped over. Its connection secrets live under the pipeline's `elasticsearch/pipeline_storage_2026-07-03/` prefix,
-as created by the `pipeline_new` stack in the catalogue-pipeline repo.
+A pipeline that is about to replace the default can be exposed as an additional cluster so that its works and
+images indexes can be previewed with `?elasticCluster=<name>` before the flip. That was done for the Axiell
+Collections switchover with an entry named `axiell-collections-testing` pointing at the `2026-07-03` pipeline; the
+entry was removed once that pipeline became the default. To do it again, add a `multiCluster.<name>` block whose
+secret paths use the pipeline's `elasticsearch/pipeline_storage_<date>/` prefix (created by the `pipeline_new`
+stack in the catalogue-pipeline repo) and whose `worksIndex` and `imagesIndex` name that pipeline's indexes.
 
 Like any other additional cluster, if its config fails to parse or its client fails to build at startup (e.g.
 because a secret doesn't exist), the cluster is logged and dropped, and requests selecting it return 404.
 
-Note for local development: the entry uses the cluster's `private_host` secret, which is only reachable from
-inside the VPC. When running the API outside the VPC (e.g. locally), swap `hostSecretPath` to the corresponding
-`public_host` secret (`elasticsearch/pipeline_storage_2026-07-03/public_host`).
+Note for local development: use the cluster's `public_host` secret rather than `private_host`, which is only
+reachable from inside the VPC.
 
-### Eventually flipping the default
-
-The environment default stays on the old pipeline until we're ready to cut over. To flip the default:
+### Flipping the default
 
 1. Update `defaultPipelineDate`, `defaultWorksIndexDate` and `defaultImagesIndexDate` in
    `common/search/src/main/scala/weco/api/search/models/ElasticConfig.scala`. These are shared by the
@@ -73,5 +72,5 @@ The environment default stays on the old pipeline until we're ready to cut over.
    config rather than the shared defaults.
 3. Deploy to stage, verify, then deploy to prod.
 
-To roll back, revert both changes and redeploy. To remove the `axiell-collections-testing` cluster entirely,
-delete its `multiCluster` entry from `application.conf` and redeploy; requests selecting it will then return 404.
+To roll back, revert both changes and redeploy. Remove the preview entry from `application.conf` once the flip
+has settled; requests selecting it will then return 404.
