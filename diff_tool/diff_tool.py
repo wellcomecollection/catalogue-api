@@ -244,7 +244,7 @@ def _display_in_console(
     "--elastic-cluster",
     default=None,
     help="Compare prod against prod with this elasticCluster selected "
-    "(eg axiell-collections-testing), instead of against staging",
+    "(any multiCluster entry in application.conf), instead of against staging",
 )
 def main(routes_file, console, outfile, elastic_cluster):
     with open(routes_file) as f:
