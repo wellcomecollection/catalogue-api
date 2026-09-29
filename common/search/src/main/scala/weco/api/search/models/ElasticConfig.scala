@@ -36,9 +36,9 @@ object ElasticConfig {
   // Default values shared across the API
   // We use this to share config across Scala API applications
   // i.e. The API and the snapshot generator.
-  val defaultPipelineDate = "2025-10-02"
-  val defaultWorksIndexDate = "2026-08-20"
-  val defaultImagesIndexDate = "2026-04-29"
+  val defaultPipelineDate = "2026-07-03"
+  val defaultWorksIndexDate = "2026-07-03"
+  val defaultImagesIndexDate = "2026-07-03"
 }
 
 sealed trait VectorType
