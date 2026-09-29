@@ -159,6 +159,32 @@ GET /identifiers/v1/by-source/axiell-guid/0002acb1-5945-4ffa-9b7f-2e5f226636e9?t
   → 200  {"canonicalId":"r5ky3c4e"}        # reverse round-trips to the same id
 ```
 
+## Monitoring
+
+The gateway writes one JSON access log line per request to
+`/aws/apigateway/identifiers-api-<environment>`, kept for 30 days. Each line has
+the request id, the caller's API key id, the status and, for requests the
+gateway rejected itself, the reason in `errorType` (for example `THROTTLED` or
+`INVALID_API_KEY`). These include requests that never reach the Lambda, such as
+a missing key or a throttled consumer.
+
+The `identifiers-api-<environment>` CloudWatch dashboard shows requests by API
+key and responses by status and error type, from the access logs.
+
+In production only, these alarms post to Slack:
+
+| Alarm | Fires when | Goes to |
+|---|---|---|
+| `identifiers-api-prod-5xx-alarm` | any 5xx in a minute | the catalogue API Gateway alerts topic |
+| `identifiers-api-prod-latency-alarm` | p99 latency over 3s for 3 minutes | Chatbot |
+| `identifiers-api-prod-throttled-requests-alarm` | any 429 in a minute | Chatbot |
+| `lambda-identifiers-api-prod-errors` | the Lambda crashes, times out or fails to start | the catalogue Lambda error alerts topic |
+
+The latency threshold is a placeholder until the load test in
+wellcomecollection/platform#6536. A lookup that fails inside the handler returns
+a 500 rather than raising, so it shows up in the 5xx alarm, not the Lambda
+errors one.
+
 ## Endpoints
 
 | Endpoint | Returns |
