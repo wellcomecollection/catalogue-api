@@ -64,7 +64,6 @@ def handler(event: dict, context: Any = None) -> dict:
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         gateway_request_id=request_context.get("requestId"),
-        trace_id=getattr(context, "aws_request_id", None),
         api_key_id=identity.get("apiKeyId"),
         resource=event.get("resource"),
     )

@@ -1,7 +1,6 @@
 """Request logging emitted by the handler."""
 
 from collections.abc import Iterator
-from types import SimpleNamespace
 from typing import NoReturn
 
 import pytest
@@ -53,15 +52,11 @@ def test_one_request_completed_line_per_request(
     assert completed["duration_ms"] >= 0
 
 
-def test_request_fields_come_from_the_event_and_context(
-    logs: list[EventDict],
-) -> None:
-    context = SimpleNamespace(aws_request_id="lambda-request-1")
-    handler.handler(keyed_event("a2345bcd", "key-id-1", "secret"), context)
+def test_request_fields_come_from_the_event(logs: list[EventDict]) -> None:
+    handler.handler(keyed_event("a2345bcd", "key-id-1", "secret"))
 
     [completed] = events_named(logs, "Request completed")
     assert completed["gateway_request_id"] == "gateway-request-1"
-    assert completed["trace_id"] == "lambda-request-1"
     assert completed["api_key_id"] == "key-id-1"
 
 
