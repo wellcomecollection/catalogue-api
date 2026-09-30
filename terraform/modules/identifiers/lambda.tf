@@ -17,6 +17,10 @@ module "identifiers_lambda" {
   timeout     = 10
   memory_size = 512
 
+  # The handler turns lookup failures into 500s, so this only fires on crashes,
+  # timeouts and failures to start. The CloudFront 5xx alarm covers the rest.
+  error_alarm_topic_arn = var.enable_api_alarms ? var.lambda_error_alerts_topic_arn : null
+
   environment = {
     variables = {
       IDENTIFIERS_BACKEND = "rds"
