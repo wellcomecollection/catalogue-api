@@ -7,18 +7,10 @@ locals {
     description = local.v1_deprecation_string
     type        = "Error",
   }
-
-  not_found_body = {
-    errorType   = "http",
-    httpStatus  = 404,
-    label       = "Not Found",
-    description = "Page not found for URL $context.path"
-    type        = "Error",
-  }
 }
 
 module "gateway_responses" {
-  source = "github.com/wellcomecollection/terraform-aws-api-gateway-responses.git?ref=v1.1.3"
+  source = "github.com/wellcomecollection/terraform-aws-api-gateway-responses.git?ref=v1.2.0"
 
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
 }
@@ -47,23 +39,19 @@ module "v1_gone" {
   body        = jsonencode(local.v1_gone_body)
 }
 
-resource "aws_api_gateway_gateway_response" "not_found_404" {
-  rest_api_id   = aws_api_gateway_rest_api.catalogue.id
-  response_type = "RESOURCE_NOT_FOUND"
-  status_code   = "404"
-
-  response_templates = {
-    "application/json" = jsonencode(local.not_found_body)
+// The shared module owns these types now. Deleting them would reset the module's copy, and
+// forgetting them cycles with the deployment's create_before_destroy, so `terraform state rm`
+// them before applying; these blocks make a plan that skips that step fail rather than delete.
+removed {
+  from = aws_api_gateway_gateway_response.not_found_404
+  lifecycle {
+    destroy = false
   }
 }
 
-resource "aws_api_gateway_gateway_response" "no_resource" {
-  rest_api_id = aws_api_gateway_rest_api.catalogue.id
-  // This is confusingly named, it's used when there isn't a method/resource too
-  response_type = "MISSING_AUTHENTICATION_TOKEN"
-  status_code   = "404"
-
-  response_templates = {
-    "application/json" = jsonencode(local.not_found_body)
+removed {
+  from = aws_api_gateway_gateway_response.no_resource
+  lifecycle {
+    destroy = false
   }
 }

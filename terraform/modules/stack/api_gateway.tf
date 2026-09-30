@@ -22,8 +22,6 @@ resource "aws_api_gateway_deployment" "default" {
         aws_api_gateway_resource.management_search.id,
         aws_api_gateway_resource.management_items.id,
         aws_api_gateway_resource.management_concepts.id,
-        aws_api_gateway_gateway_response.no_resource.id,
-        aws_api_gateway_gateway_response.not_found_404.id,
         module.gateway_responses.fingerprint,
       ],
       module.works_route.all_ids,
