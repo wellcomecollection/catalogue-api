@@ -5,6 +5,8 @@ terraform {
 
       configuration_aliases = [
         aws.dns,
+        aws.identity,
+        aws.digirati,
       ]
     }
   }

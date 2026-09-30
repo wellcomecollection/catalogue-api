@@ -36,7 +36,9 @@ module "identifiers_prod" {
   enable_api_alarms = true
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns      = aws.dns
+    aws.identity = aws.identity
+    aws.digirati = aws.digirati
   }
 }
 
@@ -57,6 +59,8 @@ module "identifiers_stage" {
   api_gateway_cloudwatch_role_arn = aws_api_gateway_account.main.cloudwatch_role_arn
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns      = aws.dns
+    aws.identity = aws.identity
+    aws.digirati = aws.digirati
   }
 }

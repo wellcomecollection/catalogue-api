@@ -54,8 +54,42 @@ Every request needs an `x-api-key` header, and one without it gets
 `GET /management/manifest` is the exception, and is readable without a key: the
 deploy tracker reads it to confirm which commit is live and holds no credentials
 for the services it checks.
-The development key is for our own testing, and lives in Secrets Manager in the
-catalogue account at `identifiers_api/development/<environment>/api_key`.
+
+### API keys
+
+Each consumer has its own key, so that one consumer's key can be rotated without
+affecting the others and so that load can be attributed through `api_key_id` in
+the logs. Internal consumers are on the `internal` usage plan, which imposes no
+limit. External consumers are on the `external` usage plan, whose throttle and
+quota come from the load test
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
+
+| Consumer | Usage plan | Secret | Account | Read by |
+|---|---|---|---|---|
+| development | internal | `identifiers_api/development/<env>/api_key` | catalogue (756629837203) | people, for our own testing |
+| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
+| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
+| digirati | external | `identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
+
+`<env>` is `prod` or `stage`, matching the two deployments of this API.
+
+The keys, usage plans and all four secrets are managed by `terraform/identifiers`,
+which writes each secret into the account of the service that reads it. Don't
+edit the secrets by hand, since the next apply would overwrite them. How each
+consumer reads its secret is configured in that consumer's own repo.
+
+To rotate one consumer's key, replace its key resource and apply, for example:
+
+```bash
+terraform apply -replace='module.identifiers_prod.aws_api_gateway_api_key.items'
+```
+
+This creates a new key value and rewrites that consumer's secret in the same
+apply, without redeploying the API or touching the other keys. Terraform deletes
+the old key before creating the new one, and ECS reads secrets only when a task
+starts, so the consumer gets 403s until its service is redeployed. Redeploy it
+straight after the apply, or for Digirati, tell them to restart the DDS services
+that call this API.
 
 ## Logging
 
