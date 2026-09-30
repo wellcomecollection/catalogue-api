@@ -169,21 +169,28 @@ gateway rejected itself, the reason in `errorType` (for example `THROTTLED` or
 a missing key or a throttled consumer.
 
 The `identifiers-api-<environment>` CloudWatch dashboard shows requests by API
-key and responses by status and error type, from the access logs.
+key and responses by status and error type, from the access logs. The logs and
+the dashboard show a key's id, not its name. To find which consumer an id
+belongs to:
+
+```bash
+aws apigateway get-api-key --api-key <apiKeyId> --query name --output text
+```
 
 In production only, these alarms post to Slack:
 
 | Alarm | Fires when | Goes to |
 |---|---|---|
-| `identifiers-api-prod-5xx-alarm` | any 5xx in a minute | the catalogue API Gateway alerts topic |
 | `identifiers-api-prod-latency-alarm` | p99 latency over 3s for 3 minutes | Chatbot |
 | `identifiers-api-prod-throttled-requests-alarm` | any 429 in a minute | Chatbot |
 | `lambda-identifiers-api-prod-errors` | the Lambda crashes, times out or fails to start | the catalogue Lambda error alerts topic |
 
-The latency threshold is a placeholder until the load test in
-wellcomecollection/platform#6536. A lookup that fails inside the handler returns
-a 500 rather than raising, so it shows up in the 5xx alarm, not the Lambda
-errors one.
+5xxs are alarmed on by the `api.wellcomecollection.org` CloudFront distribution,
+which covers `/identifiers/*`
+(`platform-infrastructure/cloudfront/api.wellcomecollection.org/alerting.tf`).
+A lookup that fails inside the handler returns a 500 rather than raising, so it
+shows up there, not in the Lambda errors alarm. The latency threshold is a
+placeholder until the load test in wellcomecollection/platform#6536.
 
 ## Endpoints
 

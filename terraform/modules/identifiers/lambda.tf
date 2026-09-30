@@ -18,7 +18,7 @@ module "identifiers_lambda" {
   memory_size = 512
 
   # The handler turns lookup failures into 500s, so this only fires on crashes,
-  # timeouts and failures to start. The 5xx alarm in alarms.tf covers the rest.
+  # timeouts and failures to start. The CloudFront 5xx alarm covers the rest.
   error_alarm_topic_arn = var.enable_api_alarms ? var.lambda_error_alerts_topic_arn : null
 
   environment = {

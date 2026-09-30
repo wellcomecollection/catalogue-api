@@ -30,6 +30,9 @@ resource "aws_api_gateway_stage" "default" {
   deployment_id = aws_api_gateway_deployment.default.id
   stage_name    = "default"
 
+  # Access logging fails unless the account's CloudWatch role is already set.
+  depends_on = [var.api_gateway_cloudwatch_role_arn]
+
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.access_logs.arn
     format = jsonencode({
