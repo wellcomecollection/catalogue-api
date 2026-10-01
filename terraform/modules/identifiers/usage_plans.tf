@@ -8,15 +8,20 @@ resource "aws_api_gateway_usage_plan" "internal" {
   }
 }
 
-# For consumers outside our control. The throttle and quota values come from
-# the load test (https://github.com/wellcomecollection/platform/issues/6536);
-# until they land this plan imposes no limit either.
+# For consumers outside our control. These throttle values are a conservative
+# placeholder until the load test sets real ones
+# (https://github.com/wellcomecollection/platform/issues/6536).
 resource "aws_api_gateway_usage_plan" "external" {
   name = "Identifiers API external (${var.environment_name})"
 
   api_stages {
     api_id = aws_api_gateway_rest_api.identifiers.id
     stage  = aws_api_gateway_stage.default.stage_name
+  }
+
+  throttle_settings {
+    rate_limit  = 10
+    burst_limit = 20
   }
 }
 
@@ -97,7 +102,9 @@ module "digirati_key_secret" {
     aws = aws.digirati
   }
 
+  # Prefixed with wellcome/ because Digirati control this account, matching the
+  # secrets the identity repo writes there.
   key_value_map = {
-    "identifiers_api/digirati/${var.environment_name}/api_key" = aws_api_gateway_api_key.digirati.value
+    "wellcome/identifiers_api/digirati/${var.environment_name}/api_key" = aws_api_gateway_api_key.digirati.value
   }
 }

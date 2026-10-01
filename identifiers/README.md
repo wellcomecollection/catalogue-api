@@ -62,23 +62,29 @@ for the services it checks.
 Each consumer has its own key, so that one consumer's key can be rotated without
 affecting the others and so that load can be attributed through `api_key_id` in
 the logs. Internal consumers are on the `internal` usage plan, which imposes no
-limit. External consumers are on the `external` usage plan, whose throttle and
-quota come from the load test
+limit. External consumers are on the `external` usage plan, throttled to 10
+requests per second with a burst of 20 as a placeholder until the load test sets
+real values
 ([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
 
 | Consumer | Usage plan | Secret | Account | Read by |
 |---|---|---|---|---|
 | development | internal | `identifiers_api/development/<env>/api_key` | catalogue (756629837203) | people, for our own testing |
-| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
-| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
-| digirati | external | `identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
+| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | planned: the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
+| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | planned: the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
+| digirati | external | `wellcome/identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | planned: the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
 
-`<env>` is `prod` or `stage`, matching the two deployments of this API.
+`<env>` is `prod` or `stage`, matching the two deployments of this API. The
+"planned" consumers do not read their secrets yet; wiring them up is tracked on
+[platform#6404](https://github.com/wellcomecollection/platform/issues/6404). The
+Digirati secret is prefixed with `wellcome/` because Digirati control that
+account, matching the secrets the identity repo writes there.
 
 The keys, usage plans and all four secrets are managed by `terraform/identifiers`,
 which writes each secret into the account of the service that reads it. Don't
 edit the secrets by hand, since the next apply would overwrite them. How each
-consumer reads its secret is configured in that consumer's own repo.
+consumer reads its secret is configured where that consumer's service is
+defined, as listed in the table.
 
 To rotate one consumer's key, replace its key resource and apply, for example:
 
