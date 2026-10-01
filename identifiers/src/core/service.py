@@ -146,8 +146,8 @@ def _original_row(rows: list[SourceRow]) -> SourceRow:
 def _etag(ordered_rows: list[SourceRow]) -> str:
     """Weak validator from (row_count, max(createdAt)).
 
-    Changes exactly when an alias is added, so revalidation is a cheap 304 until
-    the set actually grows. e.g. W/"2-2026-02-10T12:00:00Z".
+    Changes exactly when a returned alias is added, so revalidation is a cheap
+    304 until the returned set actually grows. e.g. W/"2-2026-02-10T12:00:00Z".
     """
     row_count = len(ordered_rows)
     max_created_at = max(r.created_at for r in ordered_rows)

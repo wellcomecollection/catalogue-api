@@ -368,15 +368,16 @@ A canonical id that the registry has pre-generated but not yet assigned has no
 - `400` — malformed `canonicalId` (regex `^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$`) or
   an unsupported `type`/`include` enum value. `sourceSystem`/`value` are **not**
   pattern-validated (formats are heterogeneous) — unknowns fall to `404`.
-- `404` — no mapping (unknown id, unknown tuple, or unassigned canonical id).
+- `404` — no mapping (unknown id, unknown tuple, unassigned canonical id, or a
+  canonical id whose original identifier is not a `Work`, `Image` or `Item`).
 
 ## Caching / ETag
 
-`ETag` is a weak validator derived from `(row_count, max(createdAt))`, so it
-changes exactly when an alias is added — revalidation is a cheap `304` until the
-set actually grows. The bare reverse lookup is immutable once minted, so it is
-cached hard (long TTL, no ETag); forward and `include=siblings` carry the mutable
-set (bounded TTL + ETag).
+`ETag` is a weak validator derived from `(row_count, max(createdAt))` of the
+returned identifiers, so it changes exactly when a returned alias is added.
+Revalidation is a cheap `304` until the returned set actually grows. The bare
+reverse lookup is immutable once minted, so it is cached hard (long TTL, no
+ETag); forward and `include=siblings` carry the mutable set (bounded TTL + ETag).
 
 ## Prototype defaults (chosen to run; **not** contract decisions)
 

@@ -41,8 +41,9 @@ paths:
       operationId: getByCanonicalId
       summary: Resolve a canonical id to its source identifiers
       description: >-
-        Returns the full set of source identifiers that share this canonical id,
-        ordered by createdAt descending so the most recent is always first. The
+        Returns the source identifiers that share this canonical id, ordered by
+        createdAt descending so the most recent is always first. Identifiers
+        whose ontology type is not Work, Image or Item are omitted. The
         original is the row with `isAlias` false, which is last. The set can grow
         during a source-system migration as aliases are inherited, so responses
         are cached with a bounded TTL and revalidated via ETag.
@@ -50,7 +51,9 @@ paths:
         - $ref: '#/components/parameters/CanonicalId'
       responses:
         '200':
-          description: Canonical id is assigned and has at least one mapping.
+          description: >-
+            Canonical id is assigned and its original identifier is a Work,
+            Image or Item.
           headers:
             Cache-Control:
               $ref: '#/components/headers/CacheControl'
@@ -85,9 +88,10 @@ paths:
       description: >-
         Point lookup on the (OntologyType, SourceSystem, SourceId) primary key.
         By default returns only the canonical id. With include=siblings it also
-        returns every source identifier sharing that canonical id (identical
-        element shape to the forward lookup). The queried tuple is included in
-        that set.
+        returns the source identifiers sharing that canonical id, as the
+        forward lookup does (the same element shape, and the same omission of
+        identifiers whose ontology type is not Work, Image or Item). The
+        queried tuple is included in that set.
 
 
         Freshness differs by variant: the bare lookup is immutable once minted
@@ -263,8 +267,9 @@ components:
       example: "public, max-age=300"
     ETag:
       description: >-
-        Weak validator derived from (row_count, max(createdAt)). Changes exactly
-        when an alias is added, enabling cheap 304 revalidation.
+        Weak validator derived from (row_count, max(createdAt)) of the returned
+        identifiers. Changes exactly when a returned alias is added, enabling
+        cheap 304 revalidation.
       schema:
         type: string
       example: 'W/"2-2026-02-10T12:00:00Z"'

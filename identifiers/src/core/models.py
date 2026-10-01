@@ -45,7 +45,10 @@ class SourceIdentifier:
 
 @dataclass(frozen=True)
 class IdentifierSet:
-    """A canonical id and the full set of source identifiers sharing it.
+    """A canonical id and the source identifiers sharing it.
+
+    Identifiers whose ontology type is outside ``validation.VALID_TYPES`` are
+    omitted.
 
     ``type`` is a convenience copy of the original row's ontology type (the
     single ``isAlias=false`` row), so a caller can read the canonical id's type
