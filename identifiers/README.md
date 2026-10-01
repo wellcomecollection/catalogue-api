@@ -212,10 +212,10 @@ Discovered by read-only inspection of `identifiers-v2-serverless-test`:
   ordering / `isAlias` / `ETag` match the SQLite store.
 - **Ontology types are broader than the contract enum.** The live registry holds
   types beyond `Work`/`Image`/`Item` (e.g. `Concept`). The reverse lookup rejects
-  non-enum `type` with `400`, but a forward lookup on a canonical id whose rows
-  include such a type would emit a `type` value outside the `SourceIdentifier`
-  enum. Tracked as
-  [platform#6537](https://github.com/wellcomecollection/platform/issues/6537).
+  a non-enum `type` with `400`. When building an identifier set, a canonical id
+  whose original row has a non-enum type is a `404`; otherwise non-enum rows are
+  omitted from the set. The original is chosen before omitting rows, so an alias
+  is never reported as the original.
 - **Indexed lookups only.** The table is large — a full `COUNT(*)` times out on
   the serverless cluster. The repo issues only point/`idx_canonical` reads
   (matching the contract's two operations), which return promptly.
@@ -368,15 +368,16 @@ A canonical id that the registry has pre-generated but not yet assigned has no
 - `400` — malformed `canonicalId` (regex `^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$`) or
   an unsupported `type`/`include` enum value. `sourceSystem`/`value` are **not**
   pattern-validated (formats are heterogeneous) — unknowns fall to `404`.
-- `404` — no mapping (unknown id, unknown tuple, or unassigned canonical id).
+- `404` — no mapping (unknown id, unknown tuple, unassigned canonical id, or a
+  canonical id whose original identifier is not a `Work`, `Image` or `Item`).
 
 ## Caching / ETag
 
-`ETag` is a weak validator derived from `(row_count, max(createdAt))`, so it
-changes exactly when an alias is added — revalidation is a cheap `304` until the
-set actually grows. The bare reverse lookup is immutable once minted, so it is
-cached hard (long TTL, no ETag); forward and `include=siblings` carry the mutable
-set (bounded TTL + ETag).
+`ETag` is a weak validator derived from `(row_count, max(createdAt))` of the
+returned identifiers, so it changes exactly when a returned alias is added.
+Revalidation is a cheap `304` until the returned set actually grows. The bare
+reverse lookup is immutable once minted, so it is cached hard (long TTL, no
+ETag); forward and `include=siblings` carry the mutable set (bounded TTL + ETag).
 
 ## Prototype defaults (chosen to run; **not** contract decisions)
 

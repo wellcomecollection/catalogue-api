@@ -5,7 +5,7 @@ include=siblings IdentifierSet.
 """
 
 import pytest
-from conftest import AssertContract, Invoke
+from conftest import AssertContract, Invoke, body
 
 from adapters import handler
 
@@ -87,3 +87,43 @@ def test_reverse_siblings_with_no_rows_is_404(
         {"type": "Work", "include": "siblings"},
     )
     assert result["statusCode"] == 404
+
+
+def test_reverse_siblings_under_concept_original_is_404(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b20000001"},
+        {"type": "Work", "include": "siblings"},
+    )
+    assert_contract(
+        result, "GET", REVERSE, 404, query={"type": "Work", "include": "siblings"}
+    )
+
+
+def test_reverse_bare_under_concept_original_still_resolves(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    # The bare lookup never builds the set, so the original's type is not checked.
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b20000001"},
+        {"type": "Work"},
+    )
+    assert_contract(result, "GET", REVERSE, 200, query={"type": "Work"})
+    assert body(result) == {"canonicalId": "cp234567"}
+
+
+def test_reverse_siblings_omits_concept_alias(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b30000001"},
+        {"type": "Work", "include": "siblings"},
+    )
+    assert_contract(
+        result, "GET", REVERSE, 200, query={"type": "Work", "include": "siblings"}
+    )
+    assert {r["type"] for r in body(result)["sourceIdentifiers"]} == {"Work"}
