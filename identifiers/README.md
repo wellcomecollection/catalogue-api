@@ -7,10 +7,12 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-**Stage is deployed** at `identifiers.api-stage.wellcomecollection.org`
-([platform#6531](https://github.com/wellcomecollection/platform/issues/6531)).
-API keys, caching and production promotion are tracked on
-[platform#6403](https://github.com/wellcomecollection/platform/issues/6403).
+It is deployed to prod and stage, and served at
+`api.wellcomecollection.org/identifiers/v1/` and
+`api-stage.wellcomecollection.org/identifiers/v1/`. Each environment's gateway
+also has its own hostname, `identifiers.api-<env>.wellcomecollection.org`. Whether
+and where to cache it is still open on
+[platform#6536](https://github.com/wellcomecollection/platform/issues/6536).
 To run it locally, see below.
 
 It also stands as the proposed **"service" answer** to the identifier-translation
@@ -408,9 +410,9 @@ uvx schemathesis run spec/openapi.yaml --url http://127.0.0.1:8000 \
 # → 151 generated, all passed (responses conform to the contract)
 ```
 
-The `apiKey` security checks are intentionally skipped: API keys and throttling are
-an API Gateway deployment concern, **out of scope** for this prototype (see
-below), so the running app does not enforce them.
+The `apiKey` security checks are intentionally skipped. API Gateway enforces keys
+and throttling before a request reaches the handler (see [API keys](#api-keys)),
+so the local server does not enforce them.
 
 ## Requesting integration
 
@@ -438,8 +440,9 @@ pipeline ingests FOLIO-sourced items (item-level predecessor inheritance).
 
 ## Out of scope (deliberately)
 
-No AWS deployment; no API keys / throttling / Auth0 / IAM / WAF;
-no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
+No Auth0 or other per-user auth (callers are services identified by API key);
+no WAF; no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
 minting; no bare-value reverse lookup without `sourceSystem` (an RFC 085 wish,
-not the committed contract). `Cache-Control` / `ETag` are demonstrated as
-response headers only.
+not the committed contract). `Cache-Control` / `ETag` are set as response
+headers, but nothing in front of the API caches on them yet
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
