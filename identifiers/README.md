@@ -7,10 +7,12 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-**Stage is deployed** at `identifiers.api-stage.wellcomecollection.org`
-([platform#6531](https://github.com/wellcomecollection/platform/issues/6531)).
-API keys, caching and production promotion are tracked on
-[platform#6403](https://github.com/wellcomecollection/platform/issues/6403).
+It is deployed to prod and stage, and served at
+`api.wellcomecollection.org/identifiers/v1/` and
+`api-stage.wellcomecollection.org/identifiers/v1/`. Each environment's gateway
+also has its own hostname, `identifiers.api-<env>.wellcomecollection.org`. Whether
+and where to cache it is still open on
+[platform#6536](https://github.com/wellcomecollection/platform/issues/6536).
 To run it locally, see below.
 
 It also stands as the proposed **"service" answer** to the identifier-translation
@@ -54,8 +56,48 @@ Every request needs an `x-api-key` header, and one without it gets
 `GET /management/manifest` is the exception, and is readable without a key: the
 deploy tracker reads it to confirm which commit is live and holds no credentials
 for the services it checks.
-The development key is for our own testing, and lives in Secrets Manager in the
-catalogue account at `identifiers_api/development/<environment>/api_key`.
+
+### API keys
+
+Each consumer has its own key, so that one consumer's key can be rotated without
+affecting the others and so that load can be attributed through `api_key_id` in
+the logs. Internal consumers are on the `internal` usage plan, which imposes no
+limit. External consumers are on the `external` usage plan, throttled to 10
+requests per second with a burst of 20 as a placeholder until the load test sets
+real values
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
+
+| Consumer | Usage plan | Secret | Account | Read by |
+|---|---|---|---|---|
+| development | internal | `identifiers_api/development/<env>/api_key` | catalogue (756629837203) | people, for our own testing |
+| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | planned: the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
+| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | planned: the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
+| digirati | external | `wellcome/identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | planned: the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
+
+`<env>` is `prod` or `stage`, matching the two deployments of this API. The
+"planned" consumers do not read their secrets yet; wiring them up is tracked on
+[platform#6404](https://github.com/wellcomecollection/platform/issues/6404). The
+Digirati secret is prefixed with `wellcome/` because Digirati control that
+account, matching the secrets the identity repo writes there.
+
+The keys, usage plans and all four secrets are managed by `terraform/identifiers`,
+which writes each secret into the account of the service that reads it. Don't
+edit the secrets by hand, since the next apply would overwrite them. How each
+consumer reads its secret is configured where that consumer's service is
+defined, as listed in the table.
+
+To rotate one consumer's key, replace its key resource and apply, for example:
+
+```bash
+terraform apply -replace='module.identifiers_prod.aws_api_gateway_api_key.items'
+```
+
+This creates a new key value and rewrites that consumer's secret in the same
+apply, without redeploying the API or touching the other keys. Terraform deletes
+the old key before creating the new one, and ECS reads secrets only when a task
+starts, so the consumer gets 403s until its service is redeployed. Redeploy it
+straight after the apply, or for Digirati, tell them to restart the DDS services
+that call this API.
 
 ## Logging
 
@@ -374,9 +416,9 @@ uvx schemathesis run spec/openapi.yaml --url http://127.0.0.1:8000 \
 # → 151 generated, all passed (responses conform to the contract)
 ```
 
-The `apiKey` security checks are intentionally skipped: API keys and throttling are
-an API Gateway deployment concern, **out of scope** for this prototype (see
-below), so the running app does not enforce them.
+The `apiKey` security checks are intentionally skipped. API Gateway enforces keys
+and throttling before a request reaches the handler (see [API keys](#api-keys)),
+so the local server does not enforce them.
 
 ## Requesting integration
 
@@ -404,8 +446,9 @@ pipeline ingests FOLIO-sourced items (item-level predecessor inheritance).
 
 ## Out of scope (deliberately)
 
-No AWS deployment; no API keys / throttling / Auth0 / IAM / WAF;
-no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
+No Auth0 or other per-user auth (callers are services identified by API key);
+no WAF; no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
 minting; no bare-value reverse lookup without `sourceSystem` (an RFC 085 wish,
-not the committed contract). `Cache-Control` / `ETag` are demonstrated as
-response headers only.
+not the committed contract). `Cache-Control` / `ETag` are set as response
+headers, but nothing in front of the API caches on them yet
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
