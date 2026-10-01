@@ -212,10 +212,10 @@ Discovered by read-only inspection of `identifiers-v2-serverless-test`:
   ordering / `isAlias` / `ETag` match the SQLite store.
 - **Ontology types are broader than the contract enum.** The live registry holds
   types beyond `Work`/`Image`/`Item` (e.g. `Concept`). The reverse lookup rejects
-  non-enum `type` with `400`, but a forward lookup on a canonical id whose rows
-  include such a type would emit a `type` value outside the `SourceIdentifier`
-  enum. Tracked as
-  [platform#6537](https://github.com/wellcomecollection/platform/issues/6537).
+  a non-enum `type` with `400`. When building an identifier set, a canonical id
+  whose original row has a non-enum type is a `404`; otherwise non-enum rows are
+  omitted from the set. The original is chosen before omitting rows, so an alias
+  is never reported as the original.
 - **Indexed lookups only.** The table is large — a full `COUNT(*)` times out on
   the serverless cluster. The repo issues only point/`idx_canonical` reads
   (matching the contract's two operations), which return promptly.

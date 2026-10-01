@@ -285,9 +285,11 @@ components:
             message: canonicalId does not match the required format
     NotFound:
       description: >-
-        No mapping exists. Covers an unknown id, an unknown source tuple, and a
-        canonical id that is pre-generated but not yet assigned — all opaque to
-        the consumer as "no public identifier".
+        No mapping exists. Covers an unknown id, an unknown source tuple, a
+        canonical id that is pre-generated but not yet assigned, and a
+        canonical id whose original identifier has an ontology type other than
+        Work, Image or Item. All are opaque to the consumer as "no public
+        identifier".
       content:
         application/json:
           schema:
@@ -357,7 +359,9 @@ components:
 
     IdentifierSet:
       type: object
-      description: A canonical id and the full set of source identifiers sharing it.
+      description: >-
+        A canonical id and the source identifiers sharing it. Identifiers whose
+        ontology type is not Work, Image or Item are omitted.
       required: [canonicalId, type, sourceIdentifiers]
       properties:
         canonicalId:
@@ -376,7 +380,9 @@ components:
           example: Work
         sourceIdentifiers:
           type: array
-          description: Ordered by createdAt descending; most recent first.
+          description: >-
+            Ordered by createdAt descending; most recent first. Always includes
+            the original identifier.
           minItems: 1
           items:
             $ref: '#/components/schemas/SourceIdentifier'

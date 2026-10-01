@@ -104,6 +104,9 @@ class IdentifiersService:
         # Derived from createdAt, not from position: the response is ordered
         # newest first, so the original is last rather than first.
         original = _original_row(ordered)
+        if not validation.is_valid_type(original.ontology_type):
+            raise NotFound("notFound", "no mapping found")
+        returned = [r for r in ordered if validation.is_valid_type(r.ontology_type)]
         identifiers = [
             SourceIdentifier(
                 type=row.ontology_type,
@@ -112,7 +115,7 @@ class IdentifiersService:
                 is_alias=(row is not original),
                 created_at=row.created_at,
             )
-            for row in ordered
+            for row in returned
         ]
         # The original's type, so this is unambiguous even for a mixed-type set.
         top_level_type = original.ontology_type
@@ -123,7 +126,7 @@ class IdentifiersService:
                 source_identifiers=identifiers,
             ),
             cache_control=f"public, max-age={FORWARD_MAX_AGE}",
-            etag=_etag(ordered),
+            etag=_etag(returned),
         )
 
 
