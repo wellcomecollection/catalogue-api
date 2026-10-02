@@ -27,7 +27,6 @@ Only `hostSecretPath` and `apiKeySecretPath` are required. All other fields are 
 
 - If `portSecretPath` and/or `protocolSecretPath` are omitted, the default cluster’s port/protocol are used.
 - If `worksIndex` and/or `imagesIndex` are omitted, requests routed to those indexes return status 404.
-- `semantic.vectorType` (if provided) must be either `sparse` or `dense`.
 
 The example configuration below adds a cluster labelled `someCluster`:
 
@@ -40,10 +39,6 @@ multiCluster {
     imagesIndex = "images-experimental-v1"
     portSecretPath = "some/secretsmanager/path"
     protocolSecretPath = "some/secretsmanager/path"
-    semantic {
-      modelId = ".elser-2-elasticsearch"
-      vectorType = "sparse"
-    }
   }
 }
 ```

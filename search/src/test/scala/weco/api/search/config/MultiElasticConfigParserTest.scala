@@ -3,7 +3,6 @@ package weco.api.search.config
 import com.typesafe.config.ConfigFactory
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.models.VectorType
 
 class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
@@ -20,82 +19,47 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
     it("parses a single cluster configuration") {
       val config = ConfigFactory.parseString("""
-        |multiCluster.elser {
+        |multiCluster.cluster-a {
         |  hostSecretPath = "custom/host"
         |  apiKeySecretPath = "custom/apikey"
-        |  worksIndex = "works-elser-full"
+        |  worksIndex = "works-cluster-a-full"
         |}
         |""".stripMargin)
 
       val result = MultiElasticConfigParser.parse(config)
 
       result should have size 1
-      result should contain key "elser"
+      result should contain key "cluster-a"
       
-      val elserConfig = result("elser")
-      elserConfig.name shouldBe "elser"
-      elserConfig.hostSecretPath shouldBe Some("custom/host")
-      elserConfig.apiKeySecretPath shouldBe Some("custom/apikey")
-      elserConfig.worksIndex shouldBe Some("works-elser-full")
-      elserConfig.semanticConfig shouldBe None
+      val clusterAConfig = result("cluster-a")
+      clusterAConfig.name shouldBe "cluster-a"
+      clusterAConfig.hostSecretPath shouldBe Some("custom/host")
+      clusterAConfig.apiKeySecretPath shouldBe Some("custom/apikey")
+      clusterAConfig.worksIndex shouldBe Some("works-cluster-a-full")
     }
 
     it("parses multiple cluster configurations") {
       val config = ConfigFactory.parseString("""
-        |multiCluster.elser {
-        |  hostSecretPath = "elser/host"
-        |  apiKeySecretPath = "elser/apikey"
-        |  worksIndex = "works-elser-full"
+        |multiCluster.cluster-a {
+        |  hostSecretPath = "cluster-a/host"
+        |  apiKeySecretPath = "cluster-a/apikey"
+        |  worksIndex = "works-cluster-a-full"
         |}
-        |multiCluster.openai {
-        |  hostSecretPath = "openai/host"
-        |  apiKeySecretPath = "openai/apikey"
-        |  worksIndex = "works-openai-full"
+        |multiCluster.cluster-b {
+        |  hostSecretPath = "cluster-b/host"
+        |  apiKeySecretPath = "cluster-b/apikey"
+        |  worksIndex = "works-cluster-b-full"
         |}
         |""".stripMargin)
 
       val result = MultiElasticConfigParser.parse(config)
 
       result should have size 2
-      result should contain key "elser"
-      result should contain key "openai"
+      result should contain key "cluster-a"
+      result should contain key "cluster-b"
       
-      result("elser").worksIndex shouldBe Some("works-elser-full")
-      result("openai").worksIndex shouldBe Some("works-openai-full")
-    }
-
-    it("excludes config when semantic vectorType is invalid") {
-      val config = ConfigFactory.parseString("""
-        |multiCluster.test {
-        |  hostSecretPath = "test/host"
-        |  apiKeySecretPath = "test/apikey"
-        |  worksIndex = "works-test"
-        |  semantic {
-        |    modelId = "some-model"
-        |    vectorType = "invalid"
-        |  }
-        |}
-        |""".stripMargin)
-
-      val result = MultiElasticConfigParser.parse(config)
-      result shouldBe empty
-    }
-
-    it("excludes config when semantic modelId is missing") {
-      val config = ConfigFactory.parseString("""
-        |multiCluster.test {
-        |  hostSecretPath = "test/host"
-        |  apiKeySecretPath = "test/apikey"
-        |  worksIndex = "works-test"
-        |  semantic {
-        |    vectorType = "dense"
-        |  }
-        |}
-        |""".stripMargin)
-
-      val result = MultiElasticConfigParser.parse(config)
-
-      result shouldBe empty
+      result("cluster-a").worksIndex shouldBe Some("works-cluster-a-full")
+      result("cluster-b").worksIndex shouldBe Some("works-cluster-b-full")
     }
 
     it("parses optional images index") {
@@ -114,36 +78,6 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       result("test").imagesIndex shouldBe Some("images-test")
     }
 
-    it("parses semantic config tuning parameters") {
-      val config = ConfigFactory.parseString("""
-        |multiCluster.test {
-        |  hostSecretPath = "test/host"
-        |  apiKeySecretPath = "test/apikey"
-        |  worksIndex = "works-test"
-        |  semantic {
-        |    modelId = "some-model"
-        |    vectorType = "dense"
-        |    k = 10
-        |    numCandidates = 200
-        |    rankWindowSize = 5000
-        |    rankConstant = 30
-        |  }
-        |}
-        |""".stripMargin)
-
-      val result = MultiElasticConfigParser.parse(config)
-
-      val semanticConfig = result("test").semanticConfig
-      semanticConfig.isDefined shouldBe true
-      val semantic = semanticConfig.get
-      semantic.modelId shouldBe "some-model"
-      semantic.vectorType shouldBe VectorType.Dense
-      semantic.k shouldBe 10
-      semantic.numCandidates shouldBe 200
-      semantic.rankWindowSize shouldBe 5000
-      semantic.rankConstant shouldBe 30
-    }
-
     it("handles missing optional fields") {
       val config = ConfigFactory.parseString("""
         |multiCluster.minimal {
@@ -157,7 +91,6 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       val minimalConfig = result("minimal")
       minimalConfig.worksIndex shouldBe None
       minimalConfig.imagesIndex shouldBe None
-      minimalConfig.semanticConfig shouldBe None
     }
 
     it("excludes config when mandatory fields are missing") {
