@@ -5,11 +5,13 @@ import { HttpError } from "./error";
 
 type Cluster = { elastic: ResilientElasticClient; index: string };
 
-// Mirrors the search API: no param means the default cluster, an unknown name is a 404
+const defaultClusterName = "default";
+
+// Mirrors the search API: no param or "default" means the default cluster, an unknown name is a 404
 export const clusterGetter =
   (clients: Clients, config: Config) =>
   (name: string | undefined): Cluster => {
-    if (name === undefined) {
+    if (name === undefined || name === defaultClusterName) {
       return { elastic: clients.elastic, index: config.conceptsIndex };
     }
     if (

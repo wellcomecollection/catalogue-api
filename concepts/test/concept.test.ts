@@ -47,6 +47,14 @@ describe("GET /concepts/:id", () => {
       ).toBe(404);
     });
 
+    it("reads the default cluster when named default", async () => {
+      const response = await api.get(
+        "/concepts/id-in-default-cluster?elasticCluster=default"
+      );
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toStrictEqual(defaultConcept);
+    });
+
     it("returns a 404 for an unknown cluster", async () => {
       const response = await api.get(
         "/concepts/id-in-default-cluster?elasticCluster=nope"
