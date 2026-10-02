@@ -57,6 +57,8 @@ entry was removed once that pipeline became the default. To do it again, add a `
 secret paths use the pipeline's `elasticsearch/pipeline_storage_<date>/` prefix (created by the `pipeline_new`
 stack in the catalogue-pipeline repo) and whose `worksIndex` and `imagesIndex` name that pipeline's indexes.
 
+The current preview is `pipeline-2026-09-30`, pointing at the `2026-09-30` pipeline (wellcomecollection/platform#6725).
+
 Like any other additional cluster, if its config fails to parse or its client fails to build at startup (e.g.
 because a secret doesn't exist), the cluster is logged and dropped, and requests selecting it return 404.
 
