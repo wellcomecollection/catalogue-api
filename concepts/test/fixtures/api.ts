@@ -7,7 +7,8 @@ export const previewCluster = "test-preview";
 
 export const mockedApi = (
   concepts: Concept[],
-  previewConcepts: Concept[] = []
+  previewConcepts: Concept[] = [],
+  { previewClientDropped = false }: { previewClientDropped?: boolean } = {}
 ) => {
   const index = "test-index";
   const previewIndex = "test-preview-index";
@@ -18,7 +19,12 @@ export const mockedApi = (
   });
 
   const app = createApp(
-    { elastic, additionalElastic: { [previewCluster]: previewElastic } },
+    {
+      elastic,
+      additionalElastic: previewClientDropped
+        ? {}
+        : { [previewCluster]: previewElastic },
+    },
     {
       conceptsIndex: index,
       pipelineDate: "2022-02-22",

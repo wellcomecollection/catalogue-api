@@ -53,5 +53,19 @@ describe("GET /concepts/:id", () => {
         type: "Error",
       });
     });
+
+    // server.ts drops a cluster whose client fails to build but keeps its config
+    it("returns a 404 for a configured cluster whose client was dropped", async () => {
+      const droppedApi = mockedApi([defaultConcept], [previewConcept], {
+        previewClientDropped: true,
+      });
+      const response = await droppedApi.get(
+        `/concepts/preview?elasticCluster=${previewCluster}`
+      );
+      expect(response.statusCode).toBe(404);
+      expect(response.body.description).toBe(
+        `Cluster '${previewCluster}' is not configured`
+      );
+    });
   });
 });
