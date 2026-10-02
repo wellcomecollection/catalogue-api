@@ -10,8 +10,7 @@ case class ElasticConfig(
   hostSecretPath: Option[String] = None,
   apiKeySecretPath: Option[String] = None,
   portSecretPath: Option[String] = None,
-  protocolSecretPath: Option[String] = None,
-  semanticConfig: Option[SemanticConfig] = None
+  protocolSecretPath: Option[String] = None
 ) {
 
   def getPipelineDate: String =
@@ -40,18 +39,3 @@ object ElasticConfig {
   val defaultWorksIndexDate = "2026-07-03"
   val defaultImagesIndexDate = "2026-07-03"
 }
-
-sealed trait VectorType
-object VectorType {
-  case object Dense extends VectorType
-  case object Sparse extends VectorType
-}
-
-case class SemanticConfig(
-  modelId: String,
-  vectorType: VectorType,
-  k: Int = 50,
-  numCandidates: Int = 500,
-  rankWindowSize: Int = 10000,
-  rankConstant: Int = 20
-)
