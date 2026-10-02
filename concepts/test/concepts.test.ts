@@ -31,8 +31,8 @@ describe("GET /concepts", () => {
   });
 
   describe("the elasticCluster parameter", () => {
-    const defaultConcept = concept({ id: "default" });
-    const previewConcept = concept({ id: "preview" });
+    const defaultConcept = concept({ id: "id-in-default-cluster" });
+    const previewConcept = concept({ id: "id-in-additional-cluster" });
     const api = mockedApi([defaultConcept], [previewConcept]);
 
     it("searches the default cluster when absent", async () => {
@@ -51,7 +51,7 @@ describe("GET /concepts", () => {
 
     it("fetches ids from the named cluster when present", async () => {
       const response = await api.get(
-        `/concepts?id=default,preview&elasticCluster=${previewCluster}`
+        `/concepts?id=id-in-default-cluster,id-in-additional-cluster&elasticCluster=${previewCluster}`
       );
       expect(response.statusCode).toBe(200);
       expect(response.body.results).toStrictEqual([previewConcept]);

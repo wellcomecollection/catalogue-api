@@ -19,31 +19,38 @@ describe("GET /concepts/:id", () => {
   });
 
   describe("the elasticCluster parameter", () => {
-    const defaultConcept = concept({ id: "default" });
-    const previewConcept = concept({ id: "preview" });
+    const defaultConcept = concept({ id: "id-in-default-cluster" });
+    const previewConcept = concept({ id: "id-in-additional-cluster" });
     const api = mockedApi([defaultConcept], [previewConcept]);
 
     it("reads the default cluster when absent", async () => {
-      expect((await api.get("/concepts/default")).body).toStrictEqual(
-        defaultConcept
-      );
-      expect((await api.get("/concepts/preview")).statusCode).toBe(404);
+      expect(
+        (await api.get("/concepts/id-in-default-cluster")).body
+      ).toStrictEqual(defaultConcept);
+      expect(
+        (await api.get("/concepts/id-in-additional-cluster")).statusCode
+      ).toBe(404);
     });
 
     it("reads the named cluster when present", async () => {
       const response = await api.get(
-        `/concepts/preview?elasticCluster=${previewCluster}`
+        `/concepts/id-in-additional-cluster?elasticCluster=${previewCluster}`
       );
       expect(response.statusCode).toBe(200);
       expect(response.body).toStrictEqual(previewConcept);
       expect(
-        (await api.get(`/concepts/default?elasticCluster=${previewCluster}`))
-          .statusCode
+        (
+          await api.get(
+            `/concepts/id-in-default-cluster?elasticCluster=${previewCluster}`
+          )
+        ).statusCode
       ).toBe(404);
     });
 
     it("returns a 404 for an unknown cluster", async () => {
-      const response = await api.get("/concepts/default?elasticCluster=nope");
+      const response = await api.get(
+        "/concepts/id-in-default-cluster?elasticCluster=nope"
+      );
       expect(response.statusCode).toBe(404);
       expect(response.body).toStrictEqual({
         httpStatus: 404,
@@ -60,7 +67,7 @@ describe("GET /concepts/:id", () => {
         previewClientDropped: true,
       });
       const response = await droppedApi.get(
-        `/concepts/preview?elasticCluster=${previewCluster}`
+        `/concepts/id-in-additional-cluster?elasticCluster=${previewCluster}`
       );
       expect(response.statusCode).toBe(404);
       expect(response.body.description).toBe(
