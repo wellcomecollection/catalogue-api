@@ -180,6 +180,8 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
       val preview = MultiElasticConfigParser.parse(config)("pipeline-2026-09-30")
 
       preview.hostSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-09-30/private_host")
+      preview.portSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-09-30/port")
+      preview.protocolSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-09-30/protocol")
       preview.apiKeySecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-09-30/catalogue_api/api_key")
       preview.worksIndex shouldBe Some("works-indexed-2026-09-30")
       preview.imagesIndex shouldBe Some("images-indexed-2026-09-30")
