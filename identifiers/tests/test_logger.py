@@ -58,6 +58,39 @@ def test_request_fields_come_from_the_event(logs: list[EventDict]) -> None:
     [completed] = events_named(logs, "Request completed")
     assert completed["gateway_request_id"] == "gateway-request-1"
     assert completed["api_key_id"] == "key-id-1"
+    assert completed["path"] == "/identifiers/v1/a2345bcd"
+    assert completed["path_parameters"] == {"canonicalId": "a2345bcd"}
+
+
+def test_path_parameters_are_logged_decoded(
+    invoke: Invoke, logs: list[EventDict]
+) -> None:
+    invoke(
+        "/identifiers/v1/by-source/{sourceSystem}/{value}",
+        {"sourceSystem": "mets-image", "value": "b33012246%2FFILE_0170_OBJECTS"},
+        {"type": "Image"},
+    )
+
+    [completed] = events_named(logs, "Request completed")
+    assert completed["path_parameters"] == {
+        "sourceSystem": "mets-image",
+        "value": "b33012246/FILE_0170_OBJECTS",
+    }
+
+
+def test_only_named_query_parameters_are_logged(
+    invoke: Invoke, logs: list[EventDict]
+) -> None:
+    invoke(
+        "/identifiers/v1/by-source/{sourceSystem}/{value}",
+        {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
+        {"type": "Work", "include": "siblings", "api_key": "do-not-log-me"},
+    )
+
+    [completed] = events_named(logs, "Request completed")
+    assert completed["query_type"] == "Work"
+    assert completed["query_include"] == "siblings"
+    assert "do-not-log-me" not in str(completed)
 
 
 def test_fields_bound_during_a_request_do_not_carry_over_to_the_next(

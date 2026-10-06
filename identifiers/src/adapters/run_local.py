@@ -12,7 +12,7 @@ import os
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
-from urllib.parse import parse_qs, unquote, urlsplit
+from urllib.parse import parse_qs, urlsplit
 
 from adapters.handler import BACKEND, handler
 
@@ -23,24 +23,24 @@ _FORWARD_PREFIX = "/identifiers/v1/"
 
 
 def _route(path: str) -> tuple[str | None, dict]:
-    """Map a decoded URL path to (resource, pathParameters).
+    """Map a URL path to (resource, pathParameters).
 
-    Path segments arrive percent-encoded on the wire; the gateway hands the
-    Lambda decoded values, so we unquote each segment here.
+    Segments are left percent-encoded, as API Gateway leaves them; the handler
+    decodes them.
     """
     if path.startswith(_REVERSE_PREFIX):
         rest = path[len(_REVERSE_PREFIX) :]
         segments = rest.split("/")
         if len(segments) == 2 and all(segments):
             return _REVERSE, {
-                "sourceSystem": unquote(segments[0]),
-                "value": unquote(segments[1]),
+                "sourceSystem": segments[0],
+                "value": segments[1],
             }
         return None, {}
     if path.startswith(_FORWARD_PREFIX):
         rest = path[len(_FORWARD_PREFIX) :]
         if rest and "/" not in rest:
-            return _FORWARD, {"canonicalId": unquote(rest)}
+            return _FORWARD, {"canonicalId": rest}
     return None, {}
 
 
