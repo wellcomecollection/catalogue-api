@@ -80,3 +80,10 @@ def test_forward_500_matches_error(
     monkeypatch.setattr(handler._repo, "get_by_canonical", unavailable)
     result = invoke(FORWARD, {"canonicalId": "a2345bcd"})
     assert_contract(result, "GET", FORWARD, 500)
+
+
+def test_forward_decodes_a_percent_encoded_canonical_id(invoke: Invoke) -> None:
+    # `%64` is `d`, so this is a2345bcd once decoded.
+    result = invoke(FORWARD, {"canonicalId": "a2345bc%64"})
+    assert result["statusCode"] == 200
+    assert body(result)["canonicalId"] == "a2345bcd"

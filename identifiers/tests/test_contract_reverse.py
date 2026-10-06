@@ -147,3 +147,28 @@ def test_reverse_decodes_percent_encoded_path_parameters(
     )
     assert seen["source_system"] == "calm-ref-no"
     assert seen["value"] == "PP/CRI/A/1%25"
+
+
+def test_reverse_resolves_a_source_id_containing_a_slash(invoke: Invoke) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "mets-image", "value": "b33012246%2FFILE_0170_OBJECTS"},
+        {"type": "Image"},
+    )
+    assert result["statusCode"] == 200
+    assert body(result) == {"canonicalId": "ms234567"}
+
+
+def test_reverse_leaves_a_plus_sign_as_a_plus_sign(
+    invoke: Invoke, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # `+` means a space only in form-encoded query strings, not in a path.
+    seen = {}
+
+    def resolve_source(**kwargs: str | None) -> None:
+        seen.update(kwargs)
+        raise handler.NotFound("notFound", "no mapping found")
+
+    monkeypatch.setattr(handler._service, "resolve_source", resolve_source)
+    invoke(REVERSE, {"sourceSystem": "mets-image", "value": "a+b"}, {"type": "Image"})
+    assert seen["value"] == "a+b"

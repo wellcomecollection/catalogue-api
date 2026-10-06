@@ -62,13 +62,18 @@ STARTED_AT = datetime.now(UTC).isoformat().replace("+00:00", "Z")
 def handler(event: dict, context: Any = None) -> dict:
     request_context = event.get("requestContext") or {}
     identity = request_context.get("identity") or {}
+    query = event.get("queryStringParameters") or {}
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         gateway_request_id=request_context.get("requestId"),
         api_key_id=identity.get("apiKeyId"),
         resource=event.get("resource"),
         path=event.get("path"),
-        query=event.get("queryStringParameters"),
+        path_parameters=_decode_path_params(event.get("pathParameters")),
+        # Named rather than the whole query, so a client's arbitrary parameter
+        # names (or an API key sent there by mistake) never reach the logs.
+        query_type=query.get("type"),
+        query_include=query.get("include"),
     )
     start_time = time.perf_counter()
     response = _route(event)

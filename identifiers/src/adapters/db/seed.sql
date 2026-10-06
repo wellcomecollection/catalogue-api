@@ -8,6 +8,7 @@
 --   cn234567  Concept : Concept rows only (a type outside the contract enum, so 404)
 --   cp234567  mixed : Concept original + Work alias (original out of enum, so 404)
 --   cw234567  mixed : Work original + Work alias + Concept alias (Concept row omitted)
+--   ms234567  Image : a METS source id containing `/`, which arrives as `%2F`
 
 INSERT INTO identifiers (ontology_type, source_system, source_id, canonical_id, created_at) VALUES
   ('Work',  'sierra-system-number',  'b1161044x', 'a2345bcd', '2019-03-04T10:14:22Z'),
@@ -22,4 +23,5 @@ INSERT INTO identifiers (ontology_type, source_system, source_id, canonical_id, 
   ('Work',  'sierra-system-number',  'b20000001', 'cp234567', '2026-02-10T12:00:00Z'),
   ('Work',  'sierra-system-number',  'b30000001', 'cw234567', '2019-01-01T00:00:00Z'),
   ('Work',  'axiell-collections-id', '30001',     'cw234567', '2026-02-10T12:00:00Z'),
-  ('Concept', 'lc-subjects',         'sh00000002', 'cw234567', '2026-03-01T00:00:00Z');
+  ('Concept', 'lc-subjects',         'sh00000002', 'cw234567', '2026-03-01T00:00:00Z'),
+  ('Image', 'mets-image',            'b33012246/FILE_0170_OBJECTS', 'ms234567', '2026-03-01T00:00:00Z');
