@@ -67,6 +67,8 @@ def handler(event: dict, context: Any = None) -> dict:
         gateway_request_id=request_context.get("requestId"),
         api_key_id=identity.get("apiKeyId"),
         resource=event.get("resource"),
+        path=event.get("path"),
+        query=event.get("queryStringParameters"),
     )
     start_time = time.perf_counter()
     response = _route(event)

@@ -58,6 +58,21 @@ def test_request_fields_come_from_the_event(logs: list[EventDict]) -> None:
     [completed] = events_named(logs, "Request completed")
     assert completed["gateway_request_id"] == "gateway-request-1"
     assert completed["api_key_id"] == "key-id-1"
+    assert completed["path"] == "/identifiers/v1/a2345bcd"
+
+
+def test_the_query_string_is_logged(invoke: Invoke, logs: list[EventDict]) -> None:
+    invoke(
+        "/identifiers/v1/by-source/{sourceSystem}/{value}",
+        {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
+        {"type": "Work"},
+    )
+
+    [completed] = events_named(logs, "Request completed")
+    assert (
+        completed["path"] == "/identifiers/v1/by-source/sierra-system-number/b1161044x"
+    )
+    assert completed["query"] == {"type": "Work"}
 
 
 def test_fields_bound_during_a_request_do_not_carry_over_to_the_next(
