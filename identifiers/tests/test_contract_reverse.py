@@ -127,3 +127,23 @@ def test_reverse_siblings_omits_concept_alias(
         result, "GET", REVERSE, 200, query={"type": "Work", "include": "siblings"}
     )
     assert {r["type"] for r in body(result)["sourceIdentifiers"]} == {"Work"}
+
+
+def test_reverse_decodes_percent_encoded_path_parameters(
+    invoke: Invoke, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # API Gateway passes path parameters through still percent-encoded.
+    seen = {}
+
+    def resolve_source(**kwargs: str | None) -> None:
+        seen.update(kwargs)
+        raise handler.NotFound("notFound", "no mapping found")
+
+    monkeypatch.setattr(handler._service, "resolve_source", resolve_source)
+    invoke(
+        REVERSE,
+        {"sourceSystem": "calm-ref-no", "value": "PP%2FCRI%2FA%2F1%2525"},
+        {"type": "Work"},
+    )
+    assert seen["source_system"] == "calm-ref-no"
+    assert seen["value"] == "PP/CRI/A/1%25"
