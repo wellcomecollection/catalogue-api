@@ -137,7 +137,9 @@ older.
 src/
   core/         framework- AND storage-agnostic
     validation.py   canonicalId regex + type/include enums
-    models.py       SourceRow, SourceIdentifier, IdentifierSet, CanonicalIdRef
+    models.py       SourceRow, SourceIdentifier, IdentifierSet, CanonicalIdRef,
+                    SourceSystem, SourceSystemList
+    source_systems.py  the curated list GET /identifiers/v1/source-systems serves
     repository.py   Repository Protocol (get_by_canonical, get_by_source)
     service.py      ordering, isAlias, ETag, cache policy, 404 rules
   adapters/
@@ -274,6 +276,7 @@ placeholder until the load test in wellcomecollection/platform#6536.
 | `GET /identifiers/v1/{canonicalId}` | Full `IdentifierSet` (always, no aliases toggle). |
 | `GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`. |
 | `…?type=Work&include=siblings` | The same full `IdentifierSet`. |
+| `GET /identifiers/v1/source-systems` | `{ "results": [...] }`: the source systems you can name in a by-source lookup, each with its `id`, `label` and the `types` it identifies. |
 
 `type` is `Work` \| `Image` \| `Item`, defaults to `Work`, and is a real key
 component. The set is ordered by `createdAt` descending, most recent first.
@@ -351,6 +354,30 @@ Cache-Control: public, max-age=300
 ETag: W/"2-2026-02-10T12:00:00Z"
 ```
 
+### Source systems
+
+```http
+GET /identifiers/v1/source-systems
+```
+```http
+HTTP/1.0 200 OK
+Cache-Control: public, max-age=86400
+ETag: "5a333ab242f83355"
+Content-Type: application/json
+
+{"results": [
+  {"id": "axiell-guid",          "label": "Axiell GUID",          "types": ["Work"]},
+  ...
+  {"id": "sierra-system-number", "label": "Sierra system number", "types": ["Work", "Item"]},
+  {"id": "tei-manuscript-id",    "label": "Tei manuscript id",    "types": ["Work"]}
+]}
+```
+
+The list is static, curated in `core/source_systems.py` to the systems the
+registry holds for `Work`, `Image` and `Item`. Its `ETag` is a hash of the body,
+so it changes only when the list does. A by-source lookup naming a system not in
+the list still gets a `404`, not a `400`.
+
 ### Not found / bad request
 
 ```http
@@ -363,7 +390,8 @@ A canonical id that the registry has pre-generated but not yet assigned has no
 
 ## Status codes
 
-- `200` — mapping found.
+- `200`: mapping found, or the source-system list. The list endpoint only
+  returns `200`, `304` or `500`.
 - `304` — conditional GET, unchanged since the supplied `ETag`.
 - `400` — malformed `canonicalId` (regex `^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$`) or
   an unsupported `type`/`include` enum value. `sourceSystem`/`value` are **not**

@@ -28,6 +28,10 @@ Always `cd identifiers/` before any `uv run ...` command: this project has its o
   to `rds`, and `BUILD_COMMIT` carrying the commit the image was built from, which CI
   passes as a build argument for the deploy tracker's manifest to report.
 
+When the pipeline starts minting a new source identifier type for a Work, Image or
+Item, add it to `src/core/source_systems.py` so `GET /identifiers/v1/source-systems`
+advertises it.
+
 ## Before finalising a change
 
 Run from inside `identifiers/`:
