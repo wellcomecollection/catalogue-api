@@ -5,11 +5,20 @@ Framework- and storage-agnostic. The service raises domain errors
 never imports an HTTP framework or a database driver.
 """
 
+import hashlib
+import json
 from dataclasses import dataclass
 
 from core import validation
-from core.models import CanonicalIdRef, IdentifierSet, SourceIdentifier, SourceRow
+from core.models import (
+    CanonicalIdRef,
+    IdentifierSet,
+    SourceIdentifier,
+    SourceRow,
+    SourceSystemList,
+)
 from core.repository import Repository
+from core.source_systems import SOURCE_SYSTEMS
 
 # --- Prototype defaults (NOT contract decisions — see README) ---------------
 # Bounded TTL while the alias set can still grow during the migration window.
@@ -18,6 +27,8 @@ FORWARD_MAX_AGE = 300
 # The bare reverse lookup (source -> canonicalId) is immutable once minted, so
 # it is cached hard. Placeholder; the design doc relaxes this post-switchover.
 REVERSE_BARE_MAX_AGE = 86400
+# The source-system list changes only on deploy. Placeholder, like the above.
+SOURCE_SYSTEMS_MAX_AGE = 86400
 # ----------------------------------------------------------------------------
 
 
@@ -42,7 +53,7 @@ class NotFound(IdentifiersError):
 class LookupResult:
     """A response body plus the caching headers the handler should emit."""
 
-    body: IdentifierSet | CanonicalIdRef
+    body: IdentifierSet | CanonicalIdRef | SourceSystemList
     cache_control: str
     etag: str | None = None
 
@@ -95,6 +106,17 @@ class IdentifiersService:
         return LookupResult(
             body=CanonicalIdRef(canonical_id=canonical_id),
             cache_control=f"public, max-age={REVERSE_BARE_MAX_AGE}",
+        )
+
+    # -- Source systems: the static list consumers can look up by -----------
+
+    def list_source_systems(self) -> LookupResult:
+        # Already sorted by id with types in VALID_TYPES order; the tests hold it there.
+        body = SourceSystemList(results=list(SOURCE_SYSTEMS))
+        return LookupResult(
+            body=body,
+            cache_control=f"public, max-age={SOURCE_SYSTEMS_MAX_AGE}",
+            etag=_body_etag(body),
         )
 
     # -- Shared set construction (forward and include=siblings) --------------
@@ -152,3 +174,9 @@ def _etag(ordered_rows: list[SourceRow]) -> str:
     row_count = len(ordered_rows)
     max_created_at = max(r.created_at for r in ordered_rows)
     return f'W/"{row_count}-{max_created_at}"'
+
+
+def _body_etag(body: SourceSystemList) -> str:
+    """Strong validator from the serialised body, so it changes with any edit."""
+    serialised = json.dumps(body.to_dict(), sort_keys=True).encode()
+    return f'"{hashlib.sha256(serialised).hexdigest()[:16]}"'

@@ -47,6 +47,7 @@ _service = IdentifiersService(_repo)
 
 _FORWARD = "/identifiers/v1/{canonicalId}"
 _REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
+_SOURCE_SYSTEMS = "/identifiers/v1/source-systems"
 _MANIFEST = "/management/manifest"
 
 # Baked into the image by CI, since a running container has no repository to ask.
@@ -99,7 +100,9 @@ def _route(event: dict) -> dict:
         return _manifest()
 
     try:
-        if resource == _FORWARD:
+        if resource == _SOURCE_SYSTEMS:
+            result = _service.list_source_systems()
+        elif resource == _FORWARD:
             result = _service.resolve_canonical(path_params.get("canonicalId", ""))
         elif resource == _REVERSE:
             result = _service.resolve_source(
