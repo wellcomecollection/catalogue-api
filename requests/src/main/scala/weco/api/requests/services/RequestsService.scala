@@ -71,8 +71,14 @@ class RequestsService(
       holdsMap <- sierraService.getHolds(patronNumber)
       itemLookupResults <- itemLookup.bySourceIdentifier(holdsMap.keys.toSeq)
 
-      itemsFound = itemLookupResults.zip(holdsMap.keys).collect {
-        case (Right(item), _) => item
+      itemsFound = itemLookupResults.zip(holdsMap.keys).flatMap {
+        case (Right(item), _) => Some(item)
+        // A hold on an item withdrawn from the catalogue shouldn't hide the patron's other requests
+        case (Left(_: ItemNotFoundError), srcId) =>
+          warn(
+            s"Could not find item $srcId in the catalogue, omitting its hold."
+          )
+          None
         case (Left(itemLookupError: ItemLookupError), srcId) =>
           error(s"Error looking up item $srcId.", itemLookupError.err)
           throw itemLookupError.err
