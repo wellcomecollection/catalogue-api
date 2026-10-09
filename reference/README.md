@@ -26,10 +26,14 @@ One file, two services, because both are served under
 | `/works`, `/works/{id}`, `/images`, `/images/{id}` | `search/` (Scala)        |
 | `/concepts`, `/concepts/{id}`                      | `concepts/` (TypeScript) |
 
-Management endpoints are served under `/catalogue/management/<service>/`, outside the
-versioned API, so the spec does not cover them. Some endpoints under `/v2` are also left
-undocumented on purpose because they are internal: `/search-templates.json`,
-`/_elasticConfig`, and the `elasticCluster` query parameter.
+Management endpoints sit outside the versioned API, so the spec does not cover them.
+Each service reports its build at `/catalogue/management/<service>/manifest`, and search
+also serves `healthcheck`, `clusterhealth` and `_workTypes` under
+`/catalogue/management/search/`.
+
+Some endpoints under `/v2` are left undocumented on purpose because they are internal:
+`/management/*` (the older paths for search's management endpoints),
+`/search-templates.json`, `/_elasticConfig`, and the `elasticCluster` query parameter.
 
 ## How the spec stays in sync with the code
 
