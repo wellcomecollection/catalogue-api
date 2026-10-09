@@ -26,9 +26,10 @@ One file, two services, because both are served under
 | `/works`, `/works/{id}`, `/images`, `/images/{id}` | `search/` (Scala)        |
 | `/concepts`, `/concepts/{id}`                      | `concepts/` (TypeScript) |
 
-Some endpoints are left undocumented on purpose: `/management/*`,
-`/search-templates.json`, `/_elasticConfig`, and the `elasticCluster` query parameter.
-They are internal.
+Management endpoints are served under `/catalogue/management/<service>/`, outside the
+versioned API, so the spec does not cover them. Some endpoints under `/v2` are also left
+undocumented on purpose because they are internal: `/search-templates.json`,
+`/_elasticConfig`, and the `elasticCluster` query parameter.
 
 ## How the spec stays in sync with the code
 

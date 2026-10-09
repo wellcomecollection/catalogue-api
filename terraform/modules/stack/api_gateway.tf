@@ -32,6 +32,9 @@ resource "aws_api_gateway_deployment" "default" {
       module.concepts_route.all_ids,
       module.single_concept_route.all_ids,
       module.search_manifest_route.all_ids,
+      module.search_healthcheck_route.all_ids,
+      module.search_clusterhealth_route.all_ids,
+      module.search_work_types_route.all_ids,
       module.items_manifest_route.all_ids,
       module.concepts_manifest_route.all_ids,
       module.default_route.all_ids,
@@ -190,7 +193,8 @@ module "single_concept_route" {
 // not part of the versioned contract, and the path part names the deployable unit
 // rather than an API version, so two services would get two entries here.
 //
-// Search's own /v2/management endpoints keep working through the catch-all below.
+// Search's other management endpoints are also routed here. Their old /v2/management
+// paths keep working through the catch-all below.
 resource "aws_api_gateway_resource" "management" {
   rest_api_id = aws_api_gateway_rest_api.catalogue.id
   parent_id   = aws_api_gateway_rest_api.catalogue.root_resource_id
@@ -213,6 +217,51 @@ module "search_manifest_route" {
   http_method = "GET"
 
   integration_path = "/management/manifest"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+module "search_healthcheck_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.management_search.id
+  path_part   = "healthcheck"
+  http_method = "GET"
+
+  integration_path = "/management/healthcheck"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+module "search_clusterhealth_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.management_search.id
+  path_part   = "clusterhealth"
+  http_method = "GET"
+
+  integration_path = "/management/clusterhealth"
+  lb_port          = local.search_lb_port
+
+  vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
+  external_hostname = var.external_hostname
+}
+
+module "search_work_types_route" {
+  source = "../api_route"
+
+  rest_api_id = aws_api_gateway_rest_api.catalogue.id
+  parent_id   = aws_api_gateway_resource.management_search.id
+  path_part   = "_workTypes"
+  http_method = "GET"
+
+  integration_path = "/management/_workTypes"
   lb_port          = local.search_lb_port
 
   vpc_link_id       = aws_api_gateway_vpc_link.catalogue_lb.id
