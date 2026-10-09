@@ -19,9 +19,11 @@ def get_api_stats(*, api_url, elastic_cluster=None):
         f"https://{api_url}/catalogue/v2/_elasticConfig", params=params
     ).json()["worksIndex"]
 
-    work_types = httpx.get(
-        f"https://{api_url}/catalogue/v2/management/_workTypes", params=params
-    ).json()
+    work_types_resp = httpx.get(
+        f"https://{api_url}/catalogue/management/search/_workTypes", params=params
+    )
+    work_types_resp.raise_for_status()
+    work_types = work_types_resp.json()
 
     work_types["TOTAL"] = sum(work_types.values())
 
