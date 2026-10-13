@@ -8,9 +8,12 @@ resource "aws_api_gateway_usage_plan" "internal" {
   }
 }
 
-# For consumers outside our control. These throttle values are a conservative
-# placeholder until the load test sets real ones
-# (https://github.com/wellcomecollection/platform/issues/6536).
+# For consumers outside our control. These throttle values began as a
+# placeholder and were kept after the load test, which found the API handled 400
+# requests a second with the registry at about 28% of its capacity. So this
+# limit shares capacity between consumers and limits cost rather than protecting
+# the registry
+# (https://github.com/wellcomecollection/platform/issues/6536#issuecomment-6012994918).
 resource "aws_api_gateway_usage_plan" "external" {
   name = "Identifiers API external (${var.environment_name})"
 
