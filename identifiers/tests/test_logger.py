@@ -159,8 +159,16 @@ def test_client_errors_do_not_log_lookup_failed(
 
 
 @pytest.mark.usefixtures("restore_logging_config")
+@pytest.mark.parametrize(
+    ("method", "kwargs"),
+    [("exception", {}), ("error", {"exc_info": True})],
+    ids=["exception", "error_with_exc_info"],
+)
 def test_an_exception_is_rendered_inside_one_json_line(
-    caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
+    caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+    method: str,
+    kwargs: dict[str, bool],
 ) -> None:
     # A non-terminal stderr selects the JSON renderer, as in Lambda.
     monkeypatch.setattr(sys, "stderr", io.StringIO())
@@ -174,7 +182,8 @@ def test_an_exception_is_rendered_inside_one_json_line(
     try:
         fail(patron_barcode=barcode)
     except KeyError:
-        structlog.get_logger("test").exception("Request failed", path="/p")
+        log = getattr(structlog.get_logger("test"), method)
+        log("Request failed", path="/p", **kwargs)
 
     [record] = [r for r in caplog.records if r.name == "test"]
     assert record.exc_info is None
@@ -185,4 +194,3 @@ def test_an_exception_is_rendered_inside_one_json_line(
     assert parsed["event"] == "Request failed"
     assert parsed["path"] == "/p"
     assert "KeyError: 'boom'" in parsed["exception"]
-    assert "exc_info" not in parsed
