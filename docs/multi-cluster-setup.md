@@ -27,7 +27,6 @@ Only `hostSecretPath` and `apiKeySecretPath` are required. All other fields are 
 
 - If `portSecretPath` and/or `protocolSecretPath` are omitted, the default cluster’s port/protocol are used.
 - If `worksIndex` and/or `imagesIndex` are omitted, requests routed to those indexes return status 404.
-- `semantic.vectorType` (if provided) must be either `sparse` or `dense`.
 
 The example configuration below adds a cluster labelled `someCluster`:
 
@@ -40,10 +39,6 @@ multiCluster {
     imagesIndex = "images-experimental-v1"
     portSecretPath = "some/secretsmanager/path"
     protocolSecretPath = "some/secretsmanager/path"
-    semantic {
-      modelId = ".elser-2-elasticsearch"
-      vectorType = "sparse"
-    }
   }
 }
 ```
@@ -51,9 +46,10 @@ multiCluster {
 ## Previewing a new pipeline before flipping the default
 
 A pipeline that is about to replace the default can be exposed as an additional cluster so that its works and
-images indexes can be previewed with `?elasticCluster=<name>` before the flip. That was done for the Axiell
-Collections switchover with an entry named `axiell-collections-testing` pointing at the `2026-07-03` pipeline; the
-entry was removed once that pipeline became the default. To do it again, add a `multiCluster.<name>` block whose
+images indexes can be previewed with `?elasticCluster=<name>` before the flip. That was done with
+`axiell-collections-testing` for the `2026-07-03` pipeline (the Axiell Collections switchover) and with
+`pipeline-2026-09-30` for the `2026-09-30` pipeline (wellcomecollection/platform#6725). Each entry was removed once
+its pipeline became the default. To do it again, add a `multiCluster.<name>` block whose
 secret paths use the pipeline's `elasticsearch/pipeline_storage_<date>/` prefix (created by the `pipeline_new`
 stack in the catalogue-pipeline repo) and whose `worksIndex` and `imagesIndex` name that pipeline's indexes.
 

@@ -1,5 +1,9 @@
 """Request logging emitted by the handler."""
 
+import io
+import json
+import logging
+import sys
 from collections.abc import Iterator
 from typing import NoReturn
 
@@ -9,6 +13,7 @@ from conftest import Invoke, make_event
 from structlog.typing import EventDict
 
 from adapters import handler
+from adapters.logger import setup_logging
 from core.models import SourceRow
 
 FORWARD = "/identifiers/v1/{canonicalId}"
@@ -22,6 +27,15 @@ def logs() -> Iterator[list[EventDict]]:
         processors=[structlog.contextvars.merge_contextvars]
     ) as entries:
         yield entries
+
+
+@pytest.fixture
+def restore_logging_config() -> Iterator[None]:
+    saved = structlog.get_config()
+    root_level = logging.getLogger().level
+    yield
+    structlog.configure(**saved)
+    logging.getLogger().setLevel(root_level)
 
 
 def events_named(logs: list[EventDict], name: str) -> list[EventDict]:
@@ -58,6 +72,39 @@ def test_request_fields_come_from_the_event(logs: list[EventDict]) -> None:
     [completed] = events_named(logs, "Request completed")
     assert completed["gateway_request_id"] == "gateway-request-1"
     assert completed["api_key_id"] == "key-id-1"
+    assert completed["path"] == "/identifiers/v1/a2345bcd"
+    assert completed["path_parameters"] == {"canonicalId": "a2345bcd"}
+
+
+def test_path_parameters_are_logged_decoded(
+    invoke: Invoke, logs: list[EventDict]
+) -> None:
+    invoke(
+        "/identifiers/v1/by-source/{sourceSystem}/{value}",
+        {"sourceSystem": "mets-image", "value": "b33012246%2FFILE_0170_OBJECTS"},
+        {"type": "Image"},
+    )
+
+    [completed] = events_named(logs, "Request completed")
+    assert completed["path_parameters"] == {
+        "sourceSystem": "mets-image",
+        "value": "b33012246/FILE_0170_OBJECTS",
+    }
+
+
+def test_only_named_query_parameters_are_logged(
+    invoke: Invoke, logs: list[EventDict]
+) -> None:
+    invoke(
+        "/identifiers/v1/by-source/{sourceSystem}/{value}",
+        {"sourceSystem": "sierra-system-number", "value": "b1161044x"},
+        {"type": "Work", "include": "siblings", "api_key": "do-not-log-me"},
+    )
+
+    [completed] = events_named(logs, "Request completed")
+    assert completed["query_type"] == "Work"
+    assert completed["query_include"] == "siblings"
+    assert "do-not-log-me" not in str(completed)
 
 
 def test_fields_bound_during_a_request_do_not_carry_over_to_the_next(
@@ -109,3 +156,41 @@ def test_client_errors_do_not_log_lookup_failed(
     invoke(FORWARD, {"canonicalId": canonical_id})
 
     assert events_named(logs, "Lookup failed") == []
+
+
+@pytest.mark.usefixtures("restore_logging_config")
+@pytest.mark.parametrize(
+    ("method", "kwargs"),
+    [("exception", {}), ("error", {"exc_info": True})],
+    ids=["exception", "error_with_exc_info"],
+)
+def test_an_exception_is_rendered_inside_one_json_line(
+    caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+    method: str,
+    kwargs: dict[str, bool],
+) -> None:
+    # A non-terminal stderr selects the JSON renderer, as in Lambda.
+    monkeypatch.setattr(sys, "stderr", io.StringIO())
+    setup_logging()
+
+    def fail(patron_barcode: str) -> NoReturn:
+        raise KeyError("boom")
+
+    # Kept off the lines the traceback quotes, so only rendered locals show it.
+    barcode = "do-not-log-me"
+    try:
+        fail(patron_barcode=barcode)
+    except KeyError:
+        log = getattr(structlog.get_logger("test"), method)
+        log("Request failed", path="/p", **kwargs)
+
+    [record] = [r for r in caplog.records if r.name == "test"]
+    assert record.exc_info is None
+    line = logging.Formatter("%(message)s").format(record)
+    assert "do-not-log-me" not in line
+    assert "\n" not in line
+    parsed = json.loads(line)
+    assert parsed["event"] == "Request failed"
+    assert parsed["path"] == "/p"
+    assert "KeyError: 'boom'" in parsed["exception"]

@@ -7,10 +7,12 @@ can carry several source identifiers (an original plus "predecessor" aliases
 inherited when records migrate between source systems). It never mints and never
 writes.
 
-**Stage is deployed** at `identifiers.api-stage.wellcomecollection.org`
-([platform#6531](https://github.com/wellcomecollection/platform/issues/6531)).
-API keys, caching and production promotion are tracked on
-[platform#6403](https://github.com/wellcomecollection/platform/issues/6403).
+It is deployed to prod and stage, and served at
+`api.wellcomecollection.org/identifiers/v1/` and
+`api-stage.wellcomecollection.org/identifiers/v1/`. Each environment's gateway
+also has its own hostname, `identifiers.api-<env>.wellcomecollection.org`. Whether
+and where to cache it is still open on
+[platform#6536](https://github.com/wellcomecollection/platform/issues/6536).
 To run it locally, see below.
 
 It also stands as the proposed **"service" answer** to the identifier-translation
@@ -54,8 +56,48 @@ Every request needs an `x-api-key` header, and one without it gets
 `GET /management/manifest` is the exception, and is readable without a key: the
 deploy tracker reads it to confirm which commit is live and holds no credentials
 for the services it checks.
-The development key is for our own testing, and lives in Secrets Manager in the
-catalogue account at `identifiers_api/development/<environment>/api_key`.
+
+### API keys
+
+Each consumer has its own key, so that one consumer's key can be rotated without
+affecting the others and so that load can be attributed through `api_key_id` in
+the logs. Internal consumers are on the `internal` usage plan, which imposes no
+limit. External consumers are on the `external` usage plan, throttled to 10
+requests per second with a burst of 20 as a placeholder until the load test sets
+real values
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
+
+| Consumer | Usage plan | Secret | Account | Read by |
+|---|---|---|---|---|
+| development | internal | `identifiers_api/development/<env>/api_key` | catalogue (756629837203) | people, for our own testing |
+| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | planned: the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
+| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | planned: the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
+| digirati | external | `wellcome/identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | planned: the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
+
+`<env>` is `prod` or `stage`, matching the two deployments of this API. The
+"planned" consumers do not read their secrets yet; wiring them up is tracked on
+[platform#6404](https://github.com/wellcomecollection/platform/issues/6404). The
+Digirati secret is prefixed with `wellcome/` because Digirati control that
+account, matching the secrets the identity repo writes there.
+
+The keys, usage plans and all four secrets are managed by `terraform/identifiers`,
+which writes each secret into the account of the service that reads it. Don't
+edit the secrets by hand, since the next apply would overwrite them. How each
+consumer reads its secret is configured where that consumer's service is
+defined, as listed in the table.
+
+To rotate one consumer's key, replace its key resource and apply, for example:
+
+```bash
+terraform apply -replace='module.identifiers_prod.aws_api_gateway_api_key.items'
+```
+
+This creates a new key value and rewrites that consumer's secret in the same
+apply, without redeploying the API or touching the other keys. Terraform deletes
+the old key before creating the new one, and ECS reads secrets only when a task
+starts, so the consumer gets 403s until its service is redeployed. Redeploy it
+straight after the apply, or for Digirati, tell them to restart the DDS services
+that call this API.
 
 ## Logging
 
@@ -95,7 +137,9 @@ older.
 src/
   core/         framework- AND storage-agnostic
     validation.py   canonicalId regex + type/include enums
-    models.py       SourceRow, SourceIdentifier, IdentifierSet, CanonicalIdRef
+    models.py       SourceRow, SourceIdentifier, IdentifierSet, CanonicalIdRef,
+                    SourceSystem, SourceSystemList
+    source_systems.py  the curated list GET /identifiers/v1/source-systems serves
     repository.py   Repository Protocol (get_by_canonical, get_by_source)
     service.py      ordering, isAlias, ETag, cache policy, 404 rules
   adapters/
@@ -170,10 +214,10 @@ Discovered by read-only inspection of `identifiers-v2-serverless-test`:
   ordering / `isAlias` / `ETag` match the SQLite store.
 - **Ontology types are broader than the contract enum.** The live registry holds
   types beyond `Work`/`Image`/`Item` (e.g. `Concept`). The reverse lookup rejects
-  non-enum `type` with `400`, but a forward lookup on a canonical id whose rows
-  include such a type would emit a `type` value outside the `SourceIdentifier`
-  enum. Tracked as
-  [platform#6537](https://github.com/wellcomecollection/platform/issues/6537).
+  a non-enum `type` with `400`. When building an identifier set, a canonical id
+  whose original row has a non-enum type is a `404`; otherwise non-enum rows are
+  omitted from the set. The original is chosen before omitting rows, so an alias
+  is never reported as the original.
 - **Indexed lookups only.** The table is large — a full `COUNT(*)` times out on
   the serverless cluster. The repo issues only point/`idx_canonical` reads
   (matching the contract's two operations), which return promptly.
@@ -232,6 +276,7 @@ placeholder until the load test in wellcomecollection/platform#6536.
 | `GET /identifiers/v1/{canonicalId}` | Full `IdentifierSet` (always, no aliases toggle). |
 | `GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`. |
 | `…?type=Work&include=siblings` | The same full `IdentifierSet`. |
+| `GET /identifiers/v1/source-systems` | `{ "results": [...] }`: the source systems you can name in a by-source lookup, each with its `id`, `label` and the `types` it identifies. |
 
 `type` is `Work` \| `Image` \| `Item`, defaults to `Work`, and is a real key
 component. The set is ordered by `createdAt` descending, most recent first.
@@ -309,6 +354,30 @@ Cache-Control: public, max-age=300
 ETag: W/"2-2026-02-10T12:00:00Z"
 ```
 
+### Source systems
+
+```http
+GET /identifiers/v1/source-systems
+```
+```http
+HTTP/1.0 200 OK
+Cache-Control: public, max-age=86400
+ETag: "5a333ab242f83355"
+Content-Type: application/json
+
+{"results": [
+  {"id": "axiell-guid",          "label": "Axiell GUID",          "types": ["Work"]},
+  ...
+  {"id": "sierra-system-number", "label": "Sierra system number", "types": ["Work", "Item"]},
+  {"id": "tei-manuscript-id",    "label": "Tei manuscript id",    "types": ["Work"]}
+]}
+```
+
+The list is static, curated in `core/source_systems.py` to the systems the
+registry holds for `Work`, `Image` and `Item`. Its `ETag` is a hash of the body,
+so it changes only when the list does. A by-source lookup naming a system not in
+the list still gets a `404`, not a `400`.
+
 ### Not found / bad request
 
 ```http
@@ -321,20 +390,22 @@ A canonical id that the registry has pre-generated but not yet assigned has no
 
 ## Status codes
 
-- `200` — mapping found.
+- `200`: mapping found, or the source-system list. The list endpoint only
+  returns `200`, `304` or `500`.
 - `304` — conditional GET, unchanged since the supplied `ETag`.
 - `400` — malformed `canonicalId` (regex `^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$`) or
   an unsupported `type`/`include` enum value. `sourceSystem`/`value` are **not**
   pattern-validated (formats are heterogeneous) — unknowns fall to `404`.
-- `404` — no mapping (unknown id, unknown tuple, or unassigned canonical id).
+- `404` — no mapping (unknown id, unknown tuple, unassigned canonical id, or a
+  canonical id whose original identifier is not a `Work`, `Image` or `Item`).
 
 ## Caching / ETag
 
-`ETag` is a weak validator derived from `(row_count, max(createdAt))`, so it
-changes exactly when an alias is added — revalidation is a cheap `304` until the
-set actually grows. The bare reverse lookup is immutable once minted, so it is
-cached hard (long TTL, no ETag); forward and `include=siblings` carry the mutable
-set (bounded TTL + ETag).
+`ETag` is a weak validator derived from `(row_count, max(createdAt))` of the
+returned identifiers, so it changes exactly when a returned alias is added.
+Revalidation is a cheap `304` until the returned set actually grows. The bare
+reverse lookup is immutable once minted, so it is cached hard (long TTL, no
+ETag); forward and `include=siblings` carry the mutable set (bounded TTL + ETag).
 
 ## Prototype defaults (chosen to run; **not** contract decisions)
 
@@ -374,9 +445,9 @@ uvx schemathesis run spec/openapi.yaml --url http://127.0.0.1:8000 \
 # → 151 generated, all passed (responses conform to the contract)
 ```
 
-The `apiKey` security checks are intentionally skipped: API keys and throttling are
-an API Gateway deployment concern, **out of scope** for this prototype (see
-below), so the running app does not enforce them.
+The `apiKey` security checks are intentionally skipped. API Gateway enforces keys
+and throttling before a request reaches the handler (see [API keys](#api-keys)),
+so the local server does not enforce them.
 
 ## Requesting integration
 
@@ -404,8 +475,9 @@ pipeline ingests FOLIO-sourced items (item-level predecessor inheritance).
 
 ## Out of scope (deliberately)
 
-No AWS deployment; no API keys / throttling / Auth0 / IAM / WAF;
-no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
+No Auth0 or other per-user auth (callers are services identified by API key);
+no WAF; no `workId` / `workTitle` (catalogue API's job); no `aliases` toggle; no writes /
 minting; no bare-value reverse lookup without `sourceSystem` (an RFC 085 wish,
-not the committed contract). `Cache-Control` / `ETag` are demonstrated as
-response headers only.
+not the committed contract). `Cache-Control` / `ETag` are set as response
+headers, but nothing in front of the API caches on them yet
+([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).

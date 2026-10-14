@@ -7,11 +7,13 @@ import {
   paginationResponseGetter,
 } from "./pagination";
 import { Config } from "../../config";
+import { clusterGetter } from "./cluster";
 
 type QueryParams = {
   query?: string;
   "identifiers.identifierType"?: string;
   id?: string; // comma separated list of concept IDs
+  elasticCluster?: string;
 } & PaginationQueryParameters;
 
 type ConceptHandler = RequestHandler<
@@ -25,11 +27,11 @@ const conceptsController = (
   clients: Clients,
   config: Config
 ): ConceptHandler => {
-  const index = config.conceptsIndex;
-  const elastic = clients.elastic;
+  const getCluster = clusterGetter(clients, config);
   const getPaginationResponse = paginationResponseGetter(config.publicRootUrl);
 
   return asyncHandler(async (req, res) => {
+    const { elastic, index } = getCluster(req.query.elasticCluster);
     // If an explicit list of IDs is provided, short-circuit and fetch them via a single _mget request.
     if (req.query.id) {
       const rawIds = req.query.id

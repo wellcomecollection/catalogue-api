@@ -9,9 +9,18 @@ const environmentSchema = z.object({
 });
 const environment = environmentSchema.parse(process.env);
 
+export type ClusterConfig = {
+  pipelineDate: string;
+  conceptsIndex: string;
+};
+
+// Clusters a request can select with ?elasticCluster=<name>
+const additionalClusters: Record<string, ClusterConfig> = {};
+
 const config = {
-  pipelineDate: "2026-07-03",
-  conceptsIndex: "concepts-indexed-2026-07-03",
+  pipelineDate: "2026-09-30",
+  conceptsIndex: "concepts-indexed-2026-09-30",
+  additionalClusters,
   publicRootUrl: new URL(environment.PUBLIC_ROOT_URL),
 };
 

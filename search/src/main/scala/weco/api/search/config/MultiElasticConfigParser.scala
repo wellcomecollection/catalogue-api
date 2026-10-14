@@ -1,7 +1,7 @@
 package weco.api.search.config
 
-import com.typesafe.config.{Config, ConfigException}
-import weco.api.search.models.{ElasticConfig, SemanticConfig, VectorType}
+import com.typesafe.config.Config
+import weco.api.search.models.ElasticConfig
 import weco.typesafe.config.builders.EnrichConfig.RichConfig
 
 import scala.collection.JavaConverters._
@@ -51,12 +51,7 @@ object MultiElasticConfigParser extends Logging {
   private def parseElasticConfig(
     clusterName: String,
     config: Config
-  ): ElasticConfig = {
-    val semanticConfig =
-      if (config.hasPath("semantic"))
-        Some(parseSemanticConfig(config.getConfig("semantic")))
-      else None
-
+  ): ElasticConfig =
     ElasticConfig(
       name = clusterName,
       worksIndex = config.getStringOption("worksIndex"),
@@ -64,34 +59,6 @@ object MultiElasticConfigParser extends Logging {
       hostSecretPath = Some(config.getString("hostSecretPath")),
       apiKeySecretPath = Some(config.getString("apiKeySecretPath")),
       portSecretPath = config.getStringOption("portSecretPath"),
-      protocolSecretPath = config.getStringOption("protocolSecretPath"),
-      semanticConfig = semanticConfig
+      protocolSecretPath = config.getStringOption("protocolSecretPath")
     )
-  }
-
-  private def parseSemanticConfig(config: Config): SemanticConfig = {
-    val vectorType = config.getString("vectorType") match {
-      case "dense"  => VectorType.Dense
-      case "sparse" => VectorType.Sparse
-      case other =>
-        throw new ConfigException.BadValue(
-          "semantic.vectorType",
-          s"Invalid vectorType '$other'. Expected 'dense' or 'sparse'."
-        )
-    }
-    val default = SemanticConfig(
-      modelId = config.getString("modelId"),
-      vectorType = vectorType
-    )
-    def intOrDefault(key: String, current: Int) =
-      config.getIntOption(key).getOrElse(current)
-
-    // Semantic search parameters are optional. Use defaults if not provided.
-    default.copy(
-      k = intOrDefault("k", default.k),
-      numCandidates = intOrDefault("numCandidates", default.numCandidates),
-      rankWindowSize = intOrDefault("rankWindowSize", default.rankWindowSize),
-      rankConstant = intOrDefault("rankConstant", default.rankConstant)
-    )
-  }
 }

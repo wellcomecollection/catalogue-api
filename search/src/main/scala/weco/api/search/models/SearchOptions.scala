@@ -24,8 +24,7 @@ case class WorkSearchOptions(
   sortBy: List[SortRequest] = Nil,
   sortOrder: SortingOrder = SortingOrder.Ascending,
   pageSize: Int = 10,
-  pageNumber: Int = 1,
-  semanticConfig: Option[SemanticConfig] = None
+  pageNumber: Int = 1
 ) extends SearchOptions[WorkFilter, WorkAggregationRequest]
 
 case class ImageSearchOptions(

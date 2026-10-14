@@ -5,7 +5,7 @@ include=siblings IdentifierSet.
 """
 
 import pytest
-from conftest import AssertContract, Invoke
+from conftest import AssertContract, Invoke, body
 
 from adapters import handler
 
@@ -87,3 +87,88 @@ def test_reverse_siblings_with_no_rows_is_404(
         {"type": "Work", "include": "siblings"},
     )
     assert result["statusCode"] == 404
+
+
+def test_reverse_siblings_under_concept_original_is_404(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b20000001"},
+        {"type": "Work", "include": "siblings"},
+    )
+    assert_contract(
+        result, "GET", REVERSE, 404, query={"type": "Work", "include": "siblings"}
+    )
+
+
+def test_reverse_bare_under_concept_original_still_resolves(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    # The bare lookup never builds the set, so the original's type is not checked.
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b20000001"},
+        {"type": "Work"},
+    )
+    assert_contract(result, "GET", REVERSE, 200, query={"type": "Work"})
+    assert body(result) == {"canonicalId": "cp234567"}
+
+
+def test_reverse_siblings_omits_concept_alias(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "sierra-system-number", "value": "b30000001"},
+        {"type": "Work", "include": "siblings"},
+    )
+    assert_contract(
+        result, "GET", REVERSE, 200, query={"type": "Work", "include": "siblings"}
+    )
+    assert {r["type"] for r in body(result)["sourceIdentifiers"]} == {"Work"}
+
+
+def test_reverse_decodes_percent_encoded_path_parameters(
+    invoke: Invoke, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # API Gateway passes path parameters through still percent-encoded.
+    seen = {}
+
+    def resolve_source(**kwargs: str | None) -> None:
+        seen.update(kwargs)
+        raise handler.NotFound("notFound", "no mapping found")
+
+    monkeypatch.setattr(handler._service, "resolve_source", resolve_source)
+    invoke(
+        REVERSE,
+        {"sourceSystem": "calm-ref-no", "value": "PP%2FCRI%2FA%2F1%2525"},
+        {"type": "Work"},
+    )
+    assert seen["source_system"] == "calm-ref-no"
+    assert seen["value"] == "PP/CRI/A/1%25"
+
+
+def test_reverse_resolves_a_source_id_containing_a_slash(invoke: Invoke) -> None:
+    result = invoke(
+        REVERSE,
+        {"sourceSystem": "mets-image", "value": "b33012246%2FFILE_0170_OBJECTS"},
+        {"type": "Image"},
+    )
+    assert result["statusCode"] == 200
+    assert body(result) == {"canonicalId": "ms234567"}
+
+
+def test_reverse_leaves_a_plus_sign_as_a_plus_sign(
+    invoke: Invoke, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # `+` means a space only in form-encoded query strings, not in a path.
+    seen = {}
+
+    def resolve_source(**kwargs: str | None) -> None:
+        seen.update(kwargs)
+        raise handler.NotFound("notFound", "no mapping found")
+
+    monkeypatch.setattr(handler._service, "resolve_source", resolve_source)
+    invoke(REVERSE, {"sourceSystem": "mets-image", "value": "a+b"}, {"type": "Image"})
+    assert seen["value"] == "a+b"

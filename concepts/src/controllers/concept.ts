@@ -3,20 +3,23 @@ import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import { Clients, Concept, Displayable } from "../types";
 import { HttpError } from "./error";
+import { clusterGetter } from "./cluster";
 import { Config } from "../../config";
 
 type PathParams = { id: string };
 
-type ConceptHandler = RequestHandler<PathParams, Concept>;
+type QueryParams = { elasticCluster?: string };
+
+type ConceptHandler = RequestHandler<PathParams, Concept, never, QueryParams>;
 
 const conceptController = (
   clients: Clients,
   config: Config
 ): ConceptHandler => {
-  const index = config.conceptsIndex;
-  const elastic = clients.elastic;
+  const getCluster = clusterGetter(clients, config);
 
   return asyncHandler(async (req, res) => {
+    const { elastic, index } = getCluster(req.query.elasticCluster);
     const id = req.params.id;
     try {
       const getResponse = await elastic.execute((client) =>

@@ -57,8 +57,7 @@ object WorksRequestBuilder
             must(
               pairables.collect(buildWorkFilterQuery)
             )
-          ),
-          semanticConfig = searchOptions.semanticConfig
+          )
         )
       )
     )

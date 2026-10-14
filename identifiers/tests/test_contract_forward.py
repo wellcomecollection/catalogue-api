@@ -3,7 +3,7 @@
 from typing import NoReturn
 
 import pytest
-from conftest import AssertContract, Invoke
+from conftest import AssertContract, Invoke, body
 
 from adapters import handler
 
@@ -31,6 +31,39 @@ def test_forward_404_matches_error(
     assert_contract(result, "GET", FORWARD, 404)
 
 
+def test_forward_concept_only_is_404(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(FORWARD, {"canonicalId": "cn234567"})
+    assert_contract(result, "GET", FORWARD, 404)
+
+
+def test_forward_concept_original_is_404_despite_work_alias(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(FORWARD, {"canonicalId": "cp234567"})
+    assert_contract(result, "GET", FORWARD, 404)
+
+
+def test_forward_omits_concept_alias(
+    invoke: Invoke, assert_contract: AssertContract
+) -> None:
+    result = invoke(FORWARD, {"canonicalId": "cw234567"})
+    assert_contract(result, "GET", FORWARD, 200)
+    payload = body(result)
+    assert payload["type"] == "Work"
+    assert [
+        (r["type"], r["sourceSystem"], r["isAlias"])
+        for r in payload["sourceIdentifiers"]
+    ] == [
+        ("Work", "axiell-collections-id", True),
+        ("Work", "sierra-system-number", False),
+    ]
+    # Built from the returned rows only: 2 rows, latest 2026-02-10, not the
+    # omitted Concept row's 2026-03-01.
+    assert result["headers"]["ETag"] == 'W/"2-2026-02-10T12:00:00Z"'
+
+
 def test_forward_400_matches_error(
     invoke: Invoke, assert_contract: AssertContract
 ) -> None:
@@ -47,3 +80,10 @@ def test_forward_500_matches_error(
     monkeypatch.setattr(handler._repo, "get_by_canonical", unavailable)
     result = invoke(FORWARD, {"canonicalId": "a2345bcd"})
     assert_contract(result, "GET", FORWARD, 500)
+
+
+def test_forward_decodes_a_percent_encoded_canonical_id(invoke: Invoke) -> None:
+    # `%64` is `d`, so this is a2345bcd once decoded.
+    result = invoke(FORWARD, {"canonicalId": "a2345bc%64"})
+    assert result["statusCode"] == 200
+    assert body(result)["canonicalId"] == "a2345bcd"

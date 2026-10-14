@@ -6,9 +6,6 @@ import weco.api.search.fixtures.TestDocumentFixtures
 import weco.api.search.models.ElasticConfig
 
 
-// NOTE: we don not pass a SemanticConfig for the additionalClusters because running RFF queries requires a license 
-// this test only checks that we're routed to the correct index, so we don't need to test RFF functionality here
-
 class ElasticClusterParamTest
     extends AnyFunSpec
     with Matchers
@@ -20,26 +17,26 @@ class ElasticClusterParamTest
       withMultiClusterApi(
         defaultElastic = ElasticConfig(name = "default"),
         additionalElastics = Map(
-          "elser" -> ElasticConfig(
-            name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+          "cluster-a" -> ElasticConfig(
+            name = "cluster-a",
+            hostSecretPath = Some("cluster-a/host"),
+            apiKeySecretPath = Some("cluster-a/key"),
+            worksIndex = Some("works-cluster-a")
           )
         )
       ) {
         case (indices, routes) =>
           val defaultWorkId = getKey(getVisibleWork(visibleWorks(0)).display, "id").get.asString.get
-          val elserWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
+          val clusterAWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
           
           indexTestDocuments(indices("default"), visibleWorks(0))
-          indexTestDocuments(indices("elser"), visibleWorks(3))
+          indexTestDocuments(indices("cluster-a"), visibleWorks(3))
 
           // Without param, should use default
           assertJsonResponseLike(routes, s"$rootPath/works") { json =>
             val jsonStr = json.toString()
             jsonStr should include(defaultWorkId)
-            jsonStr should not include elserWorkId
+            jsonStr should not include clusterAWorkId
           }
       }
     }
@@ -48,36 +45,36 @@ class ElasticClusterParamTest
       withMultiClusterApi(
         defaultElastic = ElasticConfig(name = "default"),
         additionalElastics = Map(
-          "elser" -> ElasticConfig(
-            name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+          "cluster-a" -> ElasticConfig(
+            name = "cluster-a",
+            hostSecretPath = Some("cluster-a/host"),
+            apiKeySecretPath = Some("cluster-a/key"),
+            worksIndex = Some("works-cluster-a")
           ),
-          "openai" -> ElasticConfig(
-            name = "openai",
-            hostSecretPath = Some("openai/host"),
-            apiKeySecretPath = Some("openai/key"),
-            worksIndex = Some("works-openai")
+          "cluster-b" -> ElasticConfig(
+            name = "cluster-b",
+            hostSecretPath = Some("cluster-b/host"),
+            apiKeySecretPath = Some("cluster-b/key"),
+            worksIndex = Some("works-cluster-b")
           )
         )
       ) {
         case (indices, routes) =>
           val defaultWorkId = getKey(getVisibleWork(visibleWorks(0)).display, "id").get.asString.get
-          val elserWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
-          val openaiWorkId = getKey(getVisibleWork(visibleWorks(4)).display, "id").get.asString.get
+          val clusterAWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
+          val clusterBWorkId = getKey(getVisibleWork(visibleWorks(4)).display, "id").get.asString.get
 
           
           indexTestDocuments(indices("default"), visibleWorks(0))
-          indexTestDocuments(indices("elser"), visibleWorks(3))
-          indexTestDocuments(indices("openai"), visibleWorks(4))
+          indexTestDocuments(indices("cluster-a"), visibleWorks(3))
+          indexTestDocuments(indices("cluster-b"), visibleWorks(4))
 
-          // With param, should use elser controller
-          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=elser") { json =>
+          // With param, should use cluster-a controller
+          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=cluster-a") { json =>
             val jsonStr = json.toString()
-            jsonStr should include(elserWorkId)
+            jsonStr should include(clusterAWorkId)
             jsonStr should not include defaultWorkId
-            jsonStr should not include openaiWorkId
+            jsonStr should not include clusterBWorkId
           }
       }
     }
@@ -102,50 +99,50 @@ class ElasticClusterParamTest
       withMultiClusterApi(
         defaultElastic = ElasticConfig(name = "default"),
         additionalElastics = Map(
-          "elser" -> ElasticConfig(
-            name = "elser",
-            hostSecretPath = Some("elser/host"),
-            apiKeySecretPath = Some("elser/key"),
-            worksIndex = Some("works-elser")
+          "cluster-a" -> ElasticConfig(
+            name = "cluster-a",
+            hostSecretPath = Some("cluster-a/host"),
+            apiKeySecretPath = Some("cluster-a/key"),
+            worksIndex = Some("works-cluster-a")
           ),
-          "openai" -> ElasticConfig(
-            name = "openai",
-            hostSecretPath = Some("openai/host"),
-            apiKeySecretPath = Some("openai/key"),
-            worksIndex = Some("works-openai")
+          "cluster-b" -> ElasticConfig(
+            name = "cluster-b",
+            hostSecretPath = Some("cluster-b/host"),
+            apiKeySecretPath = Some("cluster-b/key"),
+            worksIndex = Some("works-cluster-b")
           )
         )
       ) {
         case (indices, routes) =>
           val defaultWorkId = getKey(getVisibleWork(visibleWorks(0)).display, "id").get.asString.get
-          val elserWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
-          val openaiWorkId = getKey(getVisibleWork(visibleWorks(4)).display, "id").get.asString.get
+          val clusterAWorkId = getKey(getVisibleWork(visibleWorks(3)).display, "id").get.asString.get
+          val clusterBWorkId = getKey(getVisibleWork(visibleWorks(4)).display, "id").get.asString.get
           
           indexTestDocuments(indices("default"), visibleWorks(0))
-          indexTestDocuments(indices("elser"), visibleWorks(3))
-          indexTestDocuments(indices("openai"), visibleWorks(4))
+          indexTestDocuments(indices("cluster-a"), visibleWorks(3))
+          indexTestDocuments(indices("cluster-b"), visibleWorks(4))
           // Default cluster
           assertJsonResponseLike(routes, s"$rootPath/works") { json =>
             val jsonStr = json.toString()
             jsonStr should include(defaultWorkId)
-            jsonStr should not include elserWorkId
-            jsonStr should not include openaiWorkId
+            jsonStr should not include clusterAWorkId
+            jsonStr should not include clusterBWorkId
           }
 
-          // ELSER cluster
-          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=elser") { json =>
+          // cluster-a
+          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=cluster-a") { json =>
             val jsonStr = json.toString()
-            jsonStr should include(elserWorkId)
+            jsonStr should include(clusterAWorkId)
             jsonStr should not include defaultWorkId
-            jsonStr should not include openaiWorkId
+            jsonStr should not include clusterBWorkId
           }
 
-          // OpenAI cluster
-          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=openai") { json =>
+          // cluster-b
+          assertJsonResponseLike(routes, s"$rootPath/works?elasticCluster=cluster-b") { json =>
             val jsonStr = json.toString()
-            jsonStr should include(openaiWorkId)
+            jsonStr should include(clusterBWorkId)
             jsonStr should not include defaultWorkId
-            jsonStr should not include elserWorkId
+            jsonStr should not include clusterAWorkId
           }
       }
     }

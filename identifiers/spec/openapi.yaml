@@ -41,8 +41,9 @@ paths:
       operationId: getByCanonicalId
       summary: Resolve a canonical id to its source identifiers
       description: >-
-        Returns the full set of source identifiers that share this canonical id,
-        ordered by createdAt descending so the most recent is always first. The
+        Returns the source identifiers that share this canonical id, ordered by
+        createdAt descending so the most recent is always first. Identifiers
+        whose ontology type is not Work, Image or Item are omitted. The
         original is the row with `isAlias` false, which is last. The set can grow
         during a source-system migration as aliases are inherited, so responses
         are cached with a bounded TTL and revalidated via ETag.
@@ -50,7 +51,9 @@ paths:
         - $ref: '#/components/parameters/CanonicalId'
       responses:
         '200':
-          description: Canonical id is assigned and has at least one mapping.
+          description: >-
+            Canonical id is assigned and its original identifier is a Work,
+            Image or Item.
           headers:
             Cache-Control:
               $ref: '#/components/headers/CacheControl'
@@ -85,9 +88,10 @@ paths:
       description: >-
         Point lookup on the (OntologyType, SourceSystem, SourceId) primary key.
         By default returns only the canonical id. With include=siblings it also
-        returns every source identifier sharing that canonical id (identical
-        element shape to the forward lookup). The queried tuple is included in
-        that set.
+        returns the source identifiers sharing that canonical id, as the
+        forward lookup does (the same element shape, and the same omission of
+        identifiers whose ontology type is not Work, Image or Item). The
+        queried tuple is included in that set.
 
 
         Freshness differs by variant: the bare lookup is immutable once minted
@@ -141,6 +145,50 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: ${identifiers_lambda_invoke_arn}
+        passthroughBehavior: when_no_match
+        timeoutInMillis: 29000
+
+  /identifiers/v1/source-systems:
+    get:
+      security:
+        - ApiKeyAuth: []
+      operationId: listSourceSystems
+      summary: List the source systems this API advertises
+      description: >-
+        The source systems a consumer can name in a by-source lookup, with the
+        ontology types each one identifies. Sorted by id. The list is curated
+        to the systems the registry holds for Work, Image and Item, so the
+        registry may hold others, and a by-source lookup naming a system not
+        listed here still resolves to 404 rather than 400.
+      responses:
+        '200':
+          description: The advertised source systems.
+          headers:
+            Cache-Control:
+              description: >-
+                Long TTL, since the list changes only when the API is deployed.
+              schema:
+                type: string
+              example: "public, max-age=86400"
+            ETag:
+              description: >-
+                Strong validator derived from a hash of the response body, so
+                it changes whenever the list does.
+              schema:
+                type: string
+              example: '"3b1f0c2a9d8e7f65"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceSystemList'
+        '304':
+          $ref: '#/components/responses/NotModified'
         '500':
           $ref: '#/components/responses/InternalServerError'
       x-amazon-apigateway-integration:
@@ -209,7 +257,9 @@ components:
       name: sourceSystem
       in: path
       required: true
-      description: Source system identifier type.
+      description: >-
+        Source system identifier type. GET /identifiers/v1/source-systems lists
+        the advertised values.
       schema:
         type: string
         # Open set; new systems are added over time. Not enum-constrained here
@@ -263,8 +313,9 @@ components:
       example: "public, max-age=300"
     ETag:
       description: >-
-        Weak validator derived from (row_count, max(createdAt)). Changes exactly
-        when an alias is added, enabling cheap 304 revalidation.
+        Weak validator derived from (row_count, max(createdAt)) of the returned
+        identifiers. Changes exactly when a returned alias is added, enabling
+        cheap 304 revalidation.
       schema:
         type: string
       example: 'W/"2-2026-02-10T12:00:00Z"'
@@ -285,9 +336,11 @@ components:
             message: canonicalId does not match the required format
     NotFound:
       description: >-
-        No mapping exists. Covers an unknown id, an unknown source tuple, and a
-        canonical id that is pre-generated but not yet assigned — all opaque to
-        the consumer as "no public identifier".
+        No mapping exists. Covers an unknown id, an unknown source tuple, a
+        canonical id that is pre-generated but not yet assigned, and a
+        canonical id whose original identifier has an ontology type other than
+        Work, Image or Item. All are opaque to the consumer as "no public
+        identifier".
       content:
         application/json:
           schema:
@@ -357,7 +410,9 @@ components:
 
     IdentifierSet:
       type: object
-      description: A canonical id and the full set of source identifiers sharing it.
+      description: >-
+        A canonical id and the source identifiers sharing it. Identifiers whose
+        ontology type is not Work, Image or Item are omitted.
       required: [canonicalId, type, sourceIdentifiers]
       properties:
         canonicalId:
@@ -376,7 +431,9 @@ components:
           example: Work
         sourceIdentifiers:
           type: array
-          description: Ordered by createdAt descending; most recent first.
+          description: >-
+            Ordered by createdAt descending; most recent first. Always includes
+            the original identifier.
           minItems: 1
           items:
             $ref: '#/components/schemas/SourceIdentifier'
@@ -398,6 +455,40 @@ components:
           type: string
           pattern: '^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$'
           example: a2345bcd
+
+    SourceSystem:
+      type: object
+      description: A source system that can be named in a by-source lookup.
+      additionalProperties: false
+      required: [id, label, types]
+      properties:
+        id:
+          type: string
+          description: The value to use as sourceSystem in a by-source lookup.
+          example: sierra-system-number
+        label:
+          type: string
+          example: Sierra system number
+        types:
+          type: array
+          description: >-
+            The ontology types this system identifies, ordered Work, Image,
+            Item. Use one as the type parameter of a by-source lookup.
+          minItems: 1
+          items:
+            type: string
+            enum: [Work, Image, Item]
+          example: [Work, Item]
+
+    SourceSystemList:
+      type: object
+      description: The advertised source systems, sorted by id.
+      required: [results]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceSystem'
 
     Error:
       type: object

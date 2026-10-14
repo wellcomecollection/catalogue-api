@@ -14,6 +14,7 @@ import os
 import time
 from datetime import UTC, datetime
 from typing import Any
+from urllib.parse import unquote
 
 import structlog
 
@@ -46,6 +47,7 @@ _service = IdentifiersService(_repo)
 
 _FORWARD = "/identifiers/v1/{canonicalId}"
 _REVERSE = "/identifiers/v1/by-source/{sourceSystem}/{value}"
+_SOURCE_SYSTEMS = "/identifiers/v1/source-systems"
 _MANIFEST = "/management/manifest"
 
 # Baked into the image by CI, since a running container has no repository to ask.
@@ -61,11 +63,18 @@ STARTED_AT = datetime.now(UTC).isoformat().replace("+00:00", "Z")
 def handler(event: dict, context: Any = None) -> dict:
     request_context = event.get("requestContext") or {}
     identity = request_context.get("identity") or {}
+    query = event.get("queryStringParameters") or {}
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(
         gateway_request_id=request_context.get("requestId"),
         api_key_id=identity.get("apiKeyId"),
         resource=event.get("resource"),
+        path=event.get("path"),
+        path_parameters=_decode_path_params(event.get("pathParameters")),
+        # Named rather than the whole query, so a client's arbitrary parameter
+        # names (or an API key sent there by mistake) never reach the logs.
+        query_type=query.get("type"),
+        query_include=query.get("include"),
     )
     start_time = time.perf_counter()
     response = _route(event)
@@ -80,7 +89,7 @@ def handler(event: dict, context: Any = None) -> dict:
 
 def _route(event: dict) -> dict:
     resource = event.get("resource")
-    path_params = event.get("pathParameters") or {}
+    path_params = _decode_path_params(event.get("pathParameters"))
     query = event.get("queryStringParameters") or {}
 
     if resource == _MANIFEST:
@@ -91,7 +100,9 @@ def _route(event: dict) -> dict:
         return _manifest()
 
     try:
-        if resource == _FORWARD:
+        if resource == _SOURCE_SYSTEMS:
+            result = _service.list_source_systems()
+        elif resource == _FORWARD:
             result = _service.resolve_canonical(path_params.get("canonicalId", ""))
         elif resource == _REVERSE:
             result = _service.resolve_source(
@@ -111,6 +122,15 @@ def _route(event: dict) -> dict:
         return _error(500, "internalServerError", "the request could not be completed")
 
     return _ok(event, result)
+
+
+def _decode_path_params(raw: dict | None) -> dict[str, str]:
+    """Percent-decode each path parameter.
+
+    A REST API gateway passes path parameters through as they arrived on the
+    wire, so an identifier containing `/` or `%` reaches us as `%2F` or `%25`.
+    """
+    return {key: unquote(value) for key, value in (raw or {}).items()}
 
 
 def _ok(event: dict, result: LookupResult) -> dict:

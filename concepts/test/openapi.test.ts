@@ -30,10 +30,11 @@ const undocumentedInternalPaths = [
 /** The routes express will actually match, e.g. `/concepts/:id`. */
 const servedPaths = (): string[] => {
   const app = createApp(
-    { elastic: {} as never },
+    { elastic: {} as never, additionalElastic: {} },
     {
       conceptsIndex: "test-index",
       pipelineDate: "2022-02-22",
+      additionalClusters: {},
       publicRootUrl: new URL("http://concepts.test"),
     }
   );

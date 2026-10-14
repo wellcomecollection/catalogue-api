@@ -62,8 +62,7 @@ class SearchApi(
       new WorksController(
         new ElasticsearchService(elasticClients(name)),
         apiConfig,
-        worksIndex = config.getWorksIndex,
-        semanticConfig = config.semanticConfig
+        worksIndex = config.getWorksIndex
       )
   }
 

@@ -5,11 +5,20 @@ Framework- and storage-agnostic. The service raises domain errors
 never imports an HTTP framework or a database driver.
 """
 
+import hashlib
+import json
 from dataclasses import dataclass
 
 from core import validation
-from core.models import CanonicalIdRef, IdentifierSet, SourceIdentifier, SourceRow
+from core.models import (
+    CanonicalIdRef,
+    IdentifierSet,
+    SourceIdentifier,
+    SourceRow,
+    SourceSystemList,
+)
 from core.repository import Repository
+from core.source_systems import SOURCE_SYSTEMS
 
 # --- Prototype defaults (NOT contract decisions — see README) ---------------
 # Bounded TTL while the alias set can still grow during the migration window.
@@ -18,6 +27,8 @@ FORWARD_MAX_AGE = 300
 # The bare reverse lookup (source -> canonicalId) is immutable once minted, so
 # it is cached hard. Placeholder; the design doc relaxes this post-switchover.
 REVERSE_BARE_MAX_AGE = 86400
+# The source-system list changes only on deploy. Placeholder, like the above.
+SOURCE_SYSTEMS_MAX_AGE = 86400
 # ----------------------------------------------------------------------------
 
 
@@ -42,7 +53,7 @@ class NotFound(IdentifiersError):
 class LookupResult:
     """A response body plus the caching headers the handler should emit."""
 
-    body: IdentifierSet | CanonicalIdRef
+    body: IdentifierSet | CanonicalIdRef | SourceSystemList
     cache_control: str
     etag: str | None = None
 
@@ -97,6 +108,17 @@ class IdentifiersService:
             cache_control=f"public, max-age={REVERSE_BARE_MAX_AGE}",
         )
 
+    # -- Source systems: the static list consumers can look up by -----------
+
+    def list_source_systems(self) -> LookupResult:
+        # Already sorted by id with types in VALID_TYPES order; the tests hold it there.
+        body = SourceSystemList(results=list(SOURCE_SYSTEMS))
+        return LookupResult(
+            body=body,
+            cache_control=f"public, max-age={SOURCE_SYSTEMS_MAX_AGE}",
+            etag=_body_etag(body),
+        )
+
     # -- Shared set construction (forward and include=siblings) --------------
 
     def _set_result(self, canonical_id: str, rows: list[SourceRow]) -> LookupResult:
@@ -104,6 +126,9 @@ class IdentifiersService:
         # Derived from createdAt, not from position: the response is ordered
         # newest first, so the original is last rather than first.
         original = _original_row(ordered)
+        if not validation.is_valid_type(original.ontology_type):
+            raise NotFound("notFound", "no mapping found")
+        returned = [r for r in ordered if validation.is_valid_type(r.ontology_type)]
         identifiers = [
             SourceIdentifier(
                 type=row.ontology_type,
@@ -112,7 +137,7 @@ class IdentifiersService:
                 is_alias=(row is not original),
                 created_at=row.created_at,
             )
-            for row in ordered
+            for row in returned
         ]
         # The original's type, so this is unambiguous even for a mixed-type set.
         top_level_type = original.ontology_type
@@ -123,7 +148,7 @@ class IdentifiersService:
                 source_identifiers=identifiers,
             ),
             cache_control=f"public, max-age={FORWARD_MAX_AGE}",
-            etag=_etag(ordered),
+            etag=_etag(returned),
         )
 
 
@@ -143,9 +168,15 @@ def _original_row(rows: list[SourceRow]) -> SourceRow:
 def _etag(ordered_rows: list[SourceRow]) -> str:
     """Weak validator from (row_count, max(createdAt)).
 
-    Changes exactly when an alias is added, so revalidation is a cheap 304 until
-    the set actually grows. e.g. W/"2-2026-02-10T12:00:00Z".
+    Changes exactly when a returned alias is added, so revalidation is a cheap
+    304 until the returned set actually grows. e.g. W/"2-2026-02-10T12:00:00Z".
     """
     row_count = len(ordered_rows)
     max_created_at = max(r.created_at for r in ordered_rows)
     return f'W/"{row_count}-{max_created_at}"'
+
+
+def _body_etag(body: SourceSystemList) -> str:
+    """Strong validator from the serialised body, so it changes with any edit."""
+    serialised = json.dumps(body.to_dict(), sort_keys=True).encode()
+    return f'"{hashlib.sha256(serialised).hexdigest()[:16]}"'

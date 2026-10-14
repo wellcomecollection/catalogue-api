@@ -1,8 +1,9 @@
 locals {
   id_minter_rds = data.terraform_remote_state.infra_critical.outputs["id_minter_rds"]
 
-  # Which registry each environment reads. Both read the 2026-07-03 registry,
-  # which became the production registry at the Axiell switchover.
+  # Both environments read the 2026-07-03 registry, the production registry
+  # since the Axiell switchover. The pre-switchover registry is being removed
+  # (wellcomecollection/platform#6726).
   prod_registry  = local.id_minter_rds["2026-07-03"]
   stage_registry = local.id_minter_rds["2026-07-03"]
 
@@ -36,7 +37,9 @@ module "identifiers_prod" {
   enable_api_alarms = true
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns      = aws.dns
+    aws.identity = aws.identity
+    aws.digirati = aws.digirati
   }
 }
 
@@ -57,6 +60,8 @@ module "identifiers_stage" {
   api_gateway_cloudwatch_role_arn = aws_api_gateway_account.main.cloudwatch_role_arn
 
   providers = {
-    aws.dns = aws.dns
+    aws.dns      = aws.dns
+    aws.identity = aws.identity
+    aws.digirati = aws.digirati
   }
 }

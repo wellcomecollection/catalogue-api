@@ -2,7 +2,7 @@ package weco.api.search.config.builders
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import weco.api.search.models.{ElasticConfig, SemanticConfig, VectorType}
+import weco.api.search.models.ElasticConfig
 
 
 class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
@@ -43,11 +43,11 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
   describe("Additional cluster configs (with custom secret paths)") {
     it("uses custom secret paths when all paths are provided") {
       val config = ElasticConfig(
-        name = "elser",
-        hostSecretPath = Some("elasticsearch/elser/host"),
-        portSecretPath = Some("elasticsearch/elser/port"),
-        protocolSecretPath = Some("elasticsearch/elser/protocol"),
-        apiKeySecretPath = Some("elasticsearch/elser/api_key")
+        name = "cluster-a",
+        hostSecretPath = Some("elasticsearch/cluster-a/host"),
+        portSecretPath = Some("elasticsearch/cluster-a/port"),
+        protocolSecretPath = Some("elasticsearch/cluster-a/protocol"),
+        apiKeySecretPath = Some("elasticsearch/cluster-a/api_key")
       )
       
       // When ElasticConfig has Some(path) for all secret paths,
@@ -59,18 +59,18 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
       config.apiKeySecretPath shouldBe defined
       
       // Verify the getOrElse pattern returns custom paths
-      config.hostSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/elser/host"
-      config.portSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/elser/port"
-      config.protocolSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/elser/protocol"
-      config.apiKeySecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/elser/api_key"
+      config.hostSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-a/host"
+      config.portSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-a/port"
+      config.protocolSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-a/protocol"
+      config.apiKeySecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-a/api_key"
     }
 
     it("mixes custom and default secret paths") {
       // Common case: custom host/apikey but default port/protocol
       val config = ElasticConfig(
-        name = "openai",
-        hostSecretPath = Some("elasticsearch/openai/host"),
-        apiKeySecretPath = Some("elasticsearch/openai/api_key"),
+        name = "cluster-b",
+        hostSecretPath = Some("elasticsearch/cluster-b/host"),
+        apiKeySecretPath = Some("elasticsearch/cluster-b/api_key"),
         // portSecretPath = None (uses default)
         // protocolSecretPath = None (uses default)
       )
@@ -79,8 +79,8 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
       val expectedDefaultProtocolPath = s"$pipelinePrefix/protocol"
       
       // Custom paths should be used
-      config.hostSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/openai/host"
-      config.apiKeySecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/openai/api_key"
+      config.hostSecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-b/host"
+      config.apiKeySecretPath.getOrElse("SHOULD_NOT_USE") shouldEqual "elasticsearch/cluster-b/api_key"
       
       // Default paths should be used for unspecified fields
       config.portSecretPath.getOrElse(expectedDefaultPortPath) shouldEqual expectedDefaultPortPath
@@ -109,24 +109,18 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
   }
 
   describe("Multi-cluster scenarios") {
-    it("default cluster uses pipeline secrets, ELSER cluster uses custom secrets") {
+    it("default cluster uses pipeline secrets, additional cluster uses custom secrets") {
       val defaultConfig = ElasticConfig(
         name = "default",
         pipelineDate = Some(pipelineDate)
       )
       
-      val elserConfig = ElasticConfig(
-        name = "elser",
+      val clusterAConfig = ElasticConfig(
+        name = "cluster-a",
         pipelineDate = Some(pipelineDate),
-        hostSecretPath = Some("elasticsearch/elser/host"),
-        apiKeySecretPath = Some("elasticsearch/elser/api_key"),
-        worksIndex = Some("works-indexed-2024-01-01"),
-        semanticConfig = Some(
-          SemanticConfig(
-            modelId = ".elser-2-elasticsearch",
-            vectorType = VectorType.Sparse
-          )
-        )
+        hostSecretPath = Some("elasticsearch/cluster-a/host"),
+        apiKeySecretPath = Some("elasticsearch/cluster-a/api_key"),
+        worksIndex = Some("works-indexed-2024-01-01")
       )
       
       // Default cluster uses pipeline secrets
@@ -134,36 +128,36 @@ class PipelineElasticClientBuilderTest extends AnyFunSpec with Matchers {
       defaultConfig.apiKeySecretPath shouldBe None
       defaultConfig.hostSecretPath.getOrElse(s"$pipelinePrefix/private_host") shouldEqual s"$pipelinePrefix/private_host"
       
-      // ELSER cluster uses custom secrets
-      elserConfig.hostSecretPath shouldBe defined
-      elserConfig.apiKeySecretPath shouldBe defined
-      elserConfig.hostSecretPath.get shouldEqual "elasticsearch/elser/host"
-      elserConfig.apiKeySecretPath.get shouldEqual "elasticsearch/elser/api_key"
+      // Additional cluster uses custom secrets
+      clusterAConfig.hostSecretPath shouldBe defined
+      clusterAConfig.apiKeySecretPath shouldBe defined
+      clusterAConfig.hostSecretPath.get shouldEqual "elasticsearch/cluster-a/host"
+      clusterAConfig.apiKeySecretPath.get shouldEqual "elasticsearch/cluster-a/api_key"
     }
 
     it("multiple additional clusters each use their own custom secrets") {
-      val elserConfig = ElasticConfig(
-        name = "elser",
-        hostSecretPath = Some("elasticsearch/elser/host"),
-        apiKeySecretPath = Some("elasticsearch/elser/api_key")
+      val clusterAConfig = ElasticConfig(
+        name = "cluster-a",
+        hostSecretPath = Some("elasticsearch/cluster-a/host"),
+        apiKeySecretPath = Some("elasticsearch/cluster-a/api_key")
       )
       
-      val openaiConfig = ElasticConfig(
-        name = "openai",
-        hostSecretPath = Some("elasticsearch/openai/host"),
-        apiKeySecretPath = Some("elasticsearch/openai/api_key")
+      val clusterBConfig = ElasticConfig(
+        name = "cluster-b",
+        hostSecretPath = Some("elasticsearch/cluster-b/host"),
+        apiKeySecretPath = Some("elasticsearch/cluster-b/api_key")
       )
       
       // Each cluster has distinct secret paths
-      elserConfig.hostSecretPath.get shouldEqual "elasticsearch/elser/host"
-      openaiConfig.hostSecretPath.get shouldEqual "elasticsearch/openai/host"
+      clusterAConfig.hostSecretPath.get shouldEqual "elasticsearch/cluster-a/host"
+      clusterBConfig.hostSecretPath.get shouldEqual "elasticsearch/cluster-b/host"
       
-      elserConfig.apiKeySecretPath.get shouldEqual "elasticsearch/elser/api_key"
-      openaiConfig.apiKeySecretPath.get shouldEqual "elasticsearch/openai/api_key"
+      clusterAConfig.apiKeySecretPath.get shouldEqual "elasticsearch/cluster-a/api_key"
+      clusterBConfig.apiKeySecretPath.get shouldEqual "elasticsearch/cluster-b/api_key"
       
       // Paths should not be equal
-      elserConfig.hostSecretPath should not equal openaiConfig.hostSecretPath
-      elserConfig.apiKeySecretPath should not equal openaiConfig.apiKeySecretPath
+      clusterAConfig.hostSecretPath should not equal clusterBConfig.hostSecretPath
+      clusterAConfig.apiKeySecretPath should not equal clusterBConfig.apiKeySecretPath
     }
   }
 }

@@ -3,6 +3,7 @@ import { ResilientElasticClient } from "./services/elasticsearch";
 
 export type Clients = {
   elastic: ResilientElasticClient;
+  additionalElastic: Record<string, ResilientElasticClient>;
 };
 
 export type Displayable<T = any> = {
