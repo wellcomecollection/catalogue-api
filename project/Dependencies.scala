@@ -2,15 +2,15 @@ import sbt._
 
 object WellcomeDependencies {
   lazy val versions = new {
-    val typesafe = "32.44.0"
-    val fixtures = "32.44.0"
-    val http = "32.44.0"
-    val json = "32.44.0"
-    val messaging = "32.44.0"
-    val monitoring = "32.44.0"
-    val storage = "32.44.0"
-    val elasticsearch = "32.44.0"
-    val sierra = "32.44.0"
+    val typesafe = "32.44.1"
+    val fixtures = "32.44.1"
+    val http = "32.44.1"
+    val json = "32.44.1"
+    val messaging = "32.44.1"
+    val monitoring = "32.44.1"
+    val storage = "32.44.1"
+    val elasticsearch = "32.44.1"
+    val sierra = "32.44.1"
   }
 
   val jsonLibrary: Seq[ModuleID] = Seq(
@@ -86,7 +86,7 @@ object WellcomeDependencies {
 object ExternalDependencies {
   lazy val versions = new {
     val circeOptics = "0.14.1"
-    val circeYaml = "0.14.2"
+    val circeYaml = "0.15.2"
     val jsonSchemaValidator = "1.0.87"
     val scalatest = "3.2.19"
     val scalatestplus = "3.1.4.0"
@@ -109,12 +109,9 @@ object ExternalDependencies {
   // the pipeline's test documents against the spec's response schemas.
   val openApiTestDependencies = Seq(
     "io.circe" %% "circe-yaml" % versions.circeYaml % "test",
-    // Two transitive deps of json-schema-validator break other libraries here, and
-    // we need neither. Its snakeyaml 2.x has no no-arg SafeConstructor, which
-    // circe-yaml 0.14 calls, and we only ever hand the validator JSON. Its jackson
-    // is newer than the 2.14 that elastic4s's jackson-module-scala pins itself to.
+    // json-schema-validator's jackson is newer than the 2.14 that elastic4s's
+    // jackson-module-scala pins itself to, and we only ever hand the validator JSON.
     ("com.networknt" % "json-schema-validator" % versions.jsonSchemaValidator % "test")
-      .exclude("org.yaml", "snakeyaml")
       .exclude("com.fasterxml.jackson.core", "jackson-databind")
   )
 
