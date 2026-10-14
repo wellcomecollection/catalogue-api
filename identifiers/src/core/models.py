@@ -76,3 +76,29 @@ class CanonicalIdRef:
 
     def to_dict(self) -> dict:
         return {"canonicalId": self.canonical_id}
+
+
+@dataclass(frozen=True)
+class SourceSystem:
+    """A source system consumers can name in a by-source lookup.
+
+    ``types`` are the ontology types it identifies, drawn from
+    ``validation.VALID_TYPES``.
+    """
+
+    id: str
+    label: str
+    types: tuple[str, ...]
+
+    def to_dict(self) -> dict:
+        return {"id": self.id, "label": self.label, "types": list(self.types)}
+
+
+@dataclass(frozen=True)
+class SourceSystemList:
+    """The advertised source systems, wrapped so fields can be added later."""
+
+    results: list[SourceSystem]
+
+    def to_dict(self) -> dict:
+        return {"results": [s.to_dict() for s in self.results]}

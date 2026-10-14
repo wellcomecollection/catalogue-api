@@ -7,6 +7,7 @@ Adapted from catalogue-pipeline/catalogue_graph/src/utils/logger.py
 import logging
 import os
 import sys
+from typing import Any
 
 import structlog
 
@@ -43,13 +44,13 @@ def setup_structlog() -> None:
             k: v for k, v in event_dict.items() if v is not None
         },
         # Choose renderer based on environment
-        _get_renderer(),
+        *_get_renderers(),
     ]
 
     # Configure structlog
     structlog.configure(
         processors=processors,
-        wrapper_class=structlog.stdlib.BoundLogger,
+        wrapper_class=SingleLineExceptionLogger,
         logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=os.environ.get("LOG_CACHE_LOGGERS") != "false",
     )
@@ -62,15 +63,29 @@ def setup_structlog() -> None:
     )
 
 
-def _get_renderer() -> structlog.types.Processor:
-    """Get appropriate renderer based on environment."""
+class SingleLineExceptionLogger(structlog.stdlib.BoundLogger):
+    """
+    Logs exceptions through error(), as stdlib's Logger.exception would print
+    the traceback after the JSON line, where the log forwarder cannot parse it.
+    """
+
+    def exception(self, event: str | None = None, *args: Any, **kw: Any) -> Any:
+        kw.setdefault("exc_info", True)
+        return self.error(event, *args, **kw)
+
+
+def _get_renderers() -> list[structlog.types.Processor]:
+    """Get appropriate renderers based on environment."""
 
     if hasattr(sys.stderr, "isatty") and sys.stderr.isatty():
         # Colored console output for local development
-        return structlog.dev.ConsoleRenderer(colors=True)
+        return [structlog.dev.ConsoleRenderer(colors=True)]
     else:
         # JSON output for production/containers
-        return structlog.processors.JSONRenderer()
+        return [
+            structlog.processors.format_exc_info,
+            structlog.processors.JSONRenderer(),
+        ]
 
 
 def setup_logging() -> None:

@@ -154,6 +154,50 @@ paths:
         passthroughBehavior: when_no_match
         timeoutInMillis: 29000
 
+  /identifiers/v1/source-systems:
+    get:
+      security:
+        - ApiKeyAuth: []
+      operationId: listSourceSystems
+      summary: List the source systems this API advertises
+      description: >-
+        The source systems a consumer can name in a by-source lookup, with the
+        ontology types each one identifies. Sorted by id. The list is curated
+        to the systems the registry holds for Work, Image and Item, so the
+        registry may hold others, and a by-source lookup naming a system not
+        listed here still resolves to 404 rather than 400.
+      responses:
+        '200':
+          description: The advertised source systems.
+          headers:
+            Cache-Control:
+              description: >-
+                Long TTL, since the list changes only when the API is deployed.
+              schema:
+                type: string
+              example: "public, max-age=86400"
+            ETag:
+              description: >-
+                Strong validator derived from a hash of the response body, so
+                it changes whenever the list does.
+              schema:
+                type: string
+              example: '"3b1f0c2a9d8e7f65"'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceSystemList'
+        '304':
+          $ref: '#/components/responses/NotModified'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: ${identifiers_lambda_invoke_arn}
+        passthroughBehavior: when_no_match
+        timeoutInMillis: 29000
+
   /management/manifest:
     get:
       operationId: getManifest
@@ -213,7 +257,9 @@ components:
       name: sourceSystem
       in: path
       required: true
-      description: Source system identifier type.
+      description: >-
+        Source system identifier type. GET /identifiers/v1/source-systems lists
+        the advertised values.
       schema:
         type: string
         # Open set; new systems are added over time. Not enum-constrained here
@@ -409,6 +455,40 @@ components:
           type: string
           pattern: '^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$'
           example: a2345bcd
+
+    SourceSystem:
+      type: object
+      description: A source system that can be named in a by-source lookup.
+      additionalProperties: false
+      required: [id, label, types]
+      properties:
+        id:
+          type: string
+          description: The value to use as sourceSystem in a by-source lookup.
+          example: sierra-system-number
+        label:
+          type: string
+          example: Sierra system number
+        types:
+          type: array
+          description: >-
+            The ontology types this system identifies, ordered Work, Image,
+            Item. Use one as the type parameter of a by-source lookup.
+          minItems: 1
+          items:
+            type: string
+            enum: [Work, Image, Item]
+          example: [Work, Item]
+
+    SourceSystemList:
+      type: object
+      description: The advertised source systems, sorted by id.
+      required: [results]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceSystem'
 
     Error:
       type: object

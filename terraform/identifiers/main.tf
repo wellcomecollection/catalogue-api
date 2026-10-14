@@ -1,13 +1,11 @@
 locals {
   id_minter_rds = data.terraform_remote_state.infra_critical.outputs["id_minter_rds"]
 
-  # Which registry each environment reads. Production reads the 2026-07-03
-  # registry, which became the production registry at the Axiell switchover.
-  # Stage temporarily reads the old registry (keyed "prod" for historical
-  # reasons), so that its load test (wellcomecollection/platform#6536) does not
-  # load the production one.
+  # Both environments read the 2026-07-03 registry, the production registry
+  # since the Axiell switchover. The pre-switchover registry is being removed
+  # (wellcomecollection/platform#6726).
   prod_registry  = local.id_minter_rds["2026-07-03"]
-  stage_registry = local.id_minter_rds["prod"]
+  stage_registry = local.id_minter_rds["2026-07-03"]
 
   lambda_error_alerts_topic_arn = data.terraform_remote_state.monitoring.outputs["catalogue_lambda_error_alerts_topic_arn"]
   chatbot_topic_arn             = data.terraform_remote_state.monitoring.outputs["chatbot_topic_arn"]
