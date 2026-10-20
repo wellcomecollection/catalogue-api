@@ -105,5 +105,19 @@ class MultiElasticConfigParserTest extends AnyFunSpec with Matchers {
 
       result shouldBe empty
     }
+
+    // A bad entry is dropped at startup, so check the preview parses from the real config.
+    it("parses the folio-testing preview from application.conf") {
+      val config = ConfigFactory.parseResources("application.conf").resolve()
+
+      val preview = MultiElasticConfigParser.parse(config)("folio-testing")
+
+      preview.hostSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-10-20/private_host")
+      preview.portSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-10-20/port")
+      preview.protocolSecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-10-20/protocol")
+      preview.apiKeySecretPath shouldBe Some("elasticsearch/pipeline_storage_2026-10-20/catalogue_api/api_key")
+      preview.worksIndex shouldBe Some("works-indexed-2026-10-20")
+      preview.imagesIndex shouldBe Some("images-indexed-2026-10-20")
+    }
   }
 }

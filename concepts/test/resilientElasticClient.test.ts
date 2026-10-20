@@ -1,5 +1,6 @@
 import { Client, errors } from "@elastic/elasticsearch";
 import { ResilientElasticClient } from "../src/services/elasticsearch";
+import { getSecret } from "../src/services/aws";
 
 // Mock Client constructor so neither initial nor refreshed clients are real
 jest.mock("@elastic/elasticsearch", () => {
@@ -23,6 +24,15 @@ const getResilient = () =>
 describe("ResilientElasticClient", () => {
   beforeEach(() => {
     MockedClient.mockClear();
+  });
+
+  it("connects on the port the pipeline's secret names", async () => {
+    (getSecret as jest.Mock).mockImplementation(async (id: string) =>
+      id.endsWith("/port") ? "443" : "mocked-value"
+    );
+    await getResilient();
+    expect(MockedClient.mock.calls[0][0].node).toBe("https://mocked-value:443");
+    (getSecret as jest.Mock).mockResolvedValue("mocked-value");
   });
 
   it("returns the result of a successful operation", async () => {

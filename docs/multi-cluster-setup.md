@@ -52,6 +52,12 @@ images indexes can be previewed with `?elasticCluster=<name>` before the flip. T
 its pipeline became the default. To do it again, add a `multiCluster.<name>` block whose
 secret paths use the pipeline's `elasticsearch/pipeline_storage_<date>/` prefix (created by the `pipeline_new`
 stack in the catalogue-pipeline repo) and whose `worksIndex` and `imagesIndex` name that pipeline's indexes.
+For the concepts API, add the same name to `additionalClusters` in `concepts/config.ts`.
+
+The current preview is `folio-testing`, pointing at the `2026-10-20` FOLIO pipeline (wellcomecollection/platform#6587)
+in both the search and concepts APIs. That pipeline runs on Elastic Cloud Serverless, which listens on port 443
+only, and its private host resolves through a serverless PrivateLink endpoint in the catalogue VPC, defined in
+platform-infrastructure's `critical` stack.
 
 Like any other additional cluster, if its config fails to parse or its client fails to build at startup (e.g.
 because a secret doesn't exist), the cluster is logged and dropped, and requests selecting it return 404.
