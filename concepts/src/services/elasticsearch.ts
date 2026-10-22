@@ -16,17 +16,19 @@ const getElasticClientConfig = async ({
   pipelineDate,
 }: ClientParameters): Promise<ClientOptions> => {
   const secretPrefix = `elasticsearch/pipeline_storage_${pipelineDate}`;
-  const [host, apiKey] = await Promise.all([
+  // Serverless projects listen on 443 only, so take the port from the pipeline
+  const [host, port, apiKey] = await Promise.all([
     getSecret(`${secretPrefix}/${isProduction ? "private" : "public"}_host`),
+    getSecret(`${secretPrefix}/port`),
     getSecret(`${secretPrefix}/concepts_api/api_key`),
   ]);
 
-  if (apiKey == null || host == null) {
+  if (apiKey == null || host == null || port == null) {
     throw Error("Could not retrieve values from Secrets Manager.");
   }
 
   return {
-    node: `https://${host}:9243`,
+    node: `https://${host}:${port}`,
     auth: {
       apiKey: apiKey,
     },

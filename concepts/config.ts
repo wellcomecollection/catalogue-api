@@ -15,7 +15,12 @@ export type ClusterConfig = {
 };
 
 // Clusters a request can select with ?elasticCluster=<name>
-const additionalClusters: Record<string, ClusterConfig> = {};
+const additionalClusters: Record<string, ClusterConfig> = {
+  "folio-testing": {
+    pipelineDate: "2026-10-20",
+    conceptsIndex: "concepts-indexed-2026-10-20",
+  },
+};
 
 const config = {
   pipelineDate: "2026-09-30",
