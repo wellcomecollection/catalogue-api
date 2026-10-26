@@ -61,12 +61,16 @@ jobs:
           # what only API Gateway needs.
           yarn redocly bundle identifiers --remove-unused-components \
             -o developers.wellcomecollection.org/reference/identifiers.yaml
+          # The decorators can break what the source lint passed.
+          yarn redocly lint developers.wellcomecollection.org/reference/identifiers.yaml
 
       - name: Check for changes
         id: changes
         run: |
           cd developers.wellcomecollection.org
-          if git diff --quiet; then
+          # Staged, so a newly created file counts as a change
+          git add reference/catalogue.yaml reference/identifiers.yaml
+          if git diff --cached --quiet; then
             echo "changes=false" >> $GITHUB_OUTPUT
           else
             echo "changes=true" >> $GITHUB_OUTPUT
