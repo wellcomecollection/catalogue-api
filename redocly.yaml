@@ -1,8 +1,20 @@
+plugins:
+  - ./reference/redocly-strip-aws.js
+
 apis:
   catalogue:
     root: reference/catalogue.yaml
   identifiers:
     root: identifiers/spec/openapi.yaml
+    # Applied only when bundling the copy published to the developers site.
+    decorators:
+      info-description-override:
+        filePath: ./reference/identifiers-intro.md
+      # The deploy tracker's endpoint, not part of the consumer contract.
+      filter-out:
+        property: operationId
+        value: getManifest
+      weco/strip-aws-extensions: on
 
 rules:
   # The catalogue API is public and unauthenticated, so there is no security
