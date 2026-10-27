@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - "reference/catalogue.yaml"
+      - "identifiers/spec/openapi.yaml"
+      # What the Identifiers API's published copy is bundled with
+      - "reference/identifiers-intro.md"
+      - "reference/redocly-strip-aws.js"
+      - "redocly.yaml"
   workflow_dispatch:
 
 jobs:
@@ -49,14 +54,23 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           path: developers.wellcomecollection.org
 
-      - name: Copy spec
-        run: cp reference/catalogue.yaml developers.wellcomecollection.org/reference/catalogue.yaml
+      - name: Copy specs
+        run: |
+          cp reference/catalogue.yaml developers.wellcomecollection.org/reference/catalogue.yaml
+          # The decorators in redocly.yaml swap in the keyed-API intro and strip
+          # what only API Gateway needs.
+          yarn redocly bundle identifiers --remove-unused-components \
+            -o developers.wellcomecollection.org/reference/identifiers.yaml
+          # The decorators can break what the source lint passed.
+          yarn redocly lint developers.wellcomecollection.org/reference/identifiers.yaml
 
       - name: Check for changes
         id: changes
         run: |
           cd developers.wellcomecollection.org
-          if git diff --quiet; then
+          # Staged, so a newly created file counts as a change
+          git add reference/catalogue.yaml reference/identifiers.yaml
+          if git diff --cached --quiet; then
             echo "changes=false" >> $GITHUB_OUTPUT
           else
             echo "changes=true" >> $GITHUB_OUTPUT
@@ -79,13 +93,13 @@ jobs:
           git checkout -b $BRANCH_NAME
 
           # Commit and push
-          git add reference/catalogue.yaml
-          git commit -m "Update OpenAPI spec from catalogue-api"
+          git add reference/catalogue.yaml reference/identifiers.yaml
+          git commit -m "Update OpenAPI specs from catalogue-api"
           git push origin $BRANCH_NAME
 
           # gh, unlike curl -s, fails the step on API errors
           cat > "$RUNNER_TEMP/pr-body.md" <<'EOF'
-          This PR updates `reference/catalogue.yaml` from the spec in `wellcomecollection/catalogue-api`, which is its source of truth.
+          This PR updates `reference/catalogue.yaml` and `reference/identifiers.yaml` from the specs in `wellcomecollection/catalogue-api`, which is their source of truth.
 
           **Triggered by commit:** ${{ github.sha }}
 
@@ -96,6 +110,6 @@ jobs:
             --repo wellcomecollection/developers.wellcomecollection.org \
             --head "$BRANCH_NAME" \
             --base main \
-            --title "🤖 Auto-sync: Update OpenAPI spec" \
+            --title "🤖 Auto-sync: Update OpenAPI specs" \
             --body-file "$RUNNER_TEMP/pr-body.md" \
             --reviewer wellcomecollection/digital-platform

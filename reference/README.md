@@ -10,6 +10,15 @@ request against
 to update its copy at `reference/catalogue.yaml`. Don't edit that copy by hand; it will
 be overwritten by the next sync.
 
+The same workflow publishes the Identifiers API reference to
+`reference/identifiers.yaml` on the developers site, reached only by URL at
+`/api/identifiers`. Its source is `identifiers/spec/openapi.yaml`, which is also the API
+Gateway body, so the published copy is a Redocly bundle rather than a straight copy: the
+decorators on `identifiers` in `redocly.yaml` replace its description with
+`identifiers-intro.md`, drop the deploy tracker's manifest endpoint, and strip the
+`x-amazon-apigateway-*` extensions with `redocly-strip-aws.js`. Edit the intro here, not
+the copy on the developers site.
+
 [wellcomecollection.org](https://github.com/wellcomecollection/wellcomecollection.org)
 generates TypeScript types from this spec. When it changes on `main`,
 `.github/workflows/sync-catalogue-types.yml` sends that repo a
