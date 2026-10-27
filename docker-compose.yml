@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.4"
 
 services:
   smoke_test_catalogue_api_stage:
@@ -16,6 +16,13 @@ services:
     build:
       context: .
       dockerfile: ./concepts/Dockerfile
+      target: runtime
       args:
         # Buildkite sets BUILDKITE_COMMIT; empty locally, which the app reads as unknown.
         BUILD_COMMIT: ${BUILDKITE_COMMIT:-}
+  concepts-test:
+    image: uk.ac.wellcome/concepts-test:${CONTAINER_TAG:-test}
+    build:
+      context: .
+      dockerfile: ./concepts/Dockerfile
+      target: test
