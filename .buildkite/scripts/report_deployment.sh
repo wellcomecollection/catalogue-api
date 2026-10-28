@@ -105,7 +105,7 @@ steps:
       automatic:
         limit: 2
     plugins:
-      - wellcomecollection/github-deployments#v0.4.0:
+      - wellcomecollection/github-deployments#v0.4.1:
           assume_role: "arn:aws:iam::756629837203:role/catalogue-ci"
           environment: "$ENVIRONMENT"
           status: "$STATUS"
