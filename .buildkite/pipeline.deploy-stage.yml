@@ -26,7 +26,7 @@ steps:
       # Creates the stage Deployment and posts in_progress before the command
       # above, then failure if it fails. No assume_role: the step is already
       # catalogue-ci, and that role carries the plugin's secret access.
-      - wellcomecollection/github-deployments#v0.4.0:
+      - wellcomecollection/github-deployments#v0.4.1:
           environment: stage
           ref: "${BUILDKITE_COMMIT}"
           wrap: true
