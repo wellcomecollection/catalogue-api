@@ -32,6 +32,8 @@ const getElasticClientConfig = async ({
     auth: {
       apiKey: apiKey,
     },
+    // Client 9 dropped the 30s default; keep it so a hung cluster fails the request.
+    requestTimeout: 30_000,
   };
 };
 
