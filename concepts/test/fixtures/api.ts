@@ -1,18 +1,28 @@
 import supertest from "supertest";
 import { Concept } from "../../src/types";
 import createApp from "../../src/app";
-import { mockedElasticsearchClient } from "./elasticsearch";
+import { mockedElasticsearchClient, SearchRequest } from "./elasticsearch";
 
 export const previewCluster = "test-preview";
 
 export const mockedApi = (
   concepts: Concept[],
   previewConcepts: Concept[] = [],
-  { previewClientDropped = false }: { previewClientDropped?: boolean } = {}
+  {
+    previewClientDropped = false,
+    onSearch,
+  }: {
+    previewClientDropped?: boolean;
+    onSearch?: (request: SearchRequest) => void;
+  } = {}
 ) => {
   const index = "test-index";
   const previewIndex = "test-preview-index";
-  const elastic = mockedElasticsearchClient({ index, docs: concepts });
+  const elastic = mockedElasticsearchClient({
+    index,
+    docs: concepts,
+    onSearch,
+  });
   const previewElastic = mockedElasticsearchClient({
     index: previewIndex,
     docs: previewConcepts,
