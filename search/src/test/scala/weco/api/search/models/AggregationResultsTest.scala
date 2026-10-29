@@ -18,6 +18,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       suggest = Map(),
       _shards = Shards(total = 1, failed = 0, successful = 1),
       scrollId = None,
+      pitId = None,
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
@@ -99,6 +100,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       suggest = Map(),
       _shards = Shards(total = 1, failed = 0, successful = 1),
       scrollId = None,
+      pitId = None,
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
@@ -147,6 +149,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       suggest = Map(),
       _shards = Shards(total = 1, failed = 0, successful = 1),
       scrollId = None,
+      pitId = None,
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
@@ -220,6 +223,7 @@ class AggregationResultsTest extends AnyFunSpec with Matchers {
       suggest = Map(),
       _shards = Shards(total = 1, failed = 0, successful = 1),
       scrollId = None,
+      pitId = None,
       hits = SearchHits(
         total = Total(0, "potatoes"),
         maxScore = 0.0,
