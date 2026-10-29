@@ -6,9 +6,12 @@ type Identifiable = {
   id: string;
 };
 
+export type SearchRequest = { body: unknown; querystring: unknown };
+
 type MockParams<T extends Identifiable> = {
   index: string;
   docs: T[];
+  onSearch?: (request: SearchRequest) => void;
 };
 
 const docResponse =
@@ -26,6 +29,7 @@ const docResponse =
 export const mockedElasticsearchClient = <T extends Identifiable>({
   index,
   docs,
+  onSearch,
 }: MockParams<T>) => {
   const mock = new Mock();
   const docsMap = docs.reduce(
@@ -62,17 +66,20 @@ export const mockedElasticsearchClient = <T extends Identifiable>({
       method: ["GET", "POST"],
       path: `/${index}/_search`,
     },
-    () => ({
-      took: 1234,
-      timed_out: false,
-      hits: {
-        total: {
-          value: docs.length,
-          relation: "eq",
+    ({ body, querystring }) => {
+      onSearch?.({ body, querystring });
+      return {
+        took: 1234,
+        timed_out: false,
+        hits: {
+          total: {
+            value: docs.length,
+            relation: "eq",
+          },
+          hits: docs.map(docResponse(index)),
         },
-        hits: docs.map(docResponse(index)),
-      },
-    })
+      };
+    }
   );
 
   // _mget support for batch id retrieval

@@ -1,5 +1,6 @@
 import { concept } from "./fixtures/concepts";
 import { mockedApi, previewCluster } from "./fixtures/api";
+import { SearchRequest } from "./fixtures/elasticsearch";
 
 describe("GET /concepts", () => {
   it("returns a list of concepts", async () => {
@@ -11,6 +12,37 @@ describe("GET /concepts", () => {
     const response = await api.get("/concepts");
     expect(response.statusCode).toBe(200);
     expect(response.body.results).toStrictEqual(testConcepts);
+  });
+
+  it("sends the query, sort and pagination in the search request body", async () => {
+    const requests: SearchRequest[] = [];
+    const api = mockedApi([concept({ id: "a" })], [], {
+      onSearch: (request) => requests.push(request),
+    });
+
+    const response = await api.get(
+      "/concepts?query=test&identifiers.identifierType=test-type&page=2&pageSize=5"
+    );
+    expect(response.statusCode).toBe(200);
+    expect(requests).toHaveLength(1);
+    expect(requests[0].body).toMatchObject({
+      from: 5,
+      size: 5,
+      _source: ["display"],
+      track_total_hits: true,
+      sort: ["_score"],
+      query: {
+        bool: {
+          filter: [
+            {
+              term: { "query.identifiers.identifierType": "test-type" },
+            },
+          ],
+        },
+      },
+    });
+    expect(requests[0].querystring).not.toHaveProperty("from");
+    expect(requests[0].querystring).not.toHaveProperty("sort");
   });
 
   it("returns only requested ids when id query param supplied, preserving order and duplicates", async () => {

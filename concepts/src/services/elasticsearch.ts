@@ -32,6 +32,8 @@ const getElasticClientConfig = async ({
     auth: {
       apiKey: apiKey,
     },
+    // Client 9 dropped the default; keep 8.x's 30s per attempt (with its default retries).
+    requestTimeout: 30_000,
   };
 };
 

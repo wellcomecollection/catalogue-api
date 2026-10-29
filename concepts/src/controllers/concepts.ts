@@ -54,17 +54,16 @@ const conceptsController = (
       const mgetResponse = await elastic.execute((client) =>
         client.mget<Displayable<Concept>>({
           index,
-          body: { ids: uniqueIds },
+          ids: uniqueIds,
           _source: ["display"],
-        } as any)
-      ); // typing gap in elastic client generics for mget
+        })
+      );
 
       // Map id -> concept for quick lookup
       const docsMap = new Map<string, Concept>();
-      // @ts-ignore - elastic client types for mget docs
-      for (const doc of mgetResponse.body?.docs || mgetResponse.docs || []) {
-        if (doc.found && doc._id && doc._source?.display) {
-          docsMap.set(doc._id, doc._source.display as Concept);
+      for (const doc of mgetResponse.docs) {
+        if ("found" in doc && doc.found && doc._source?.display) {
+          docsMap.set(doc._id, doc._source.display);
         }
       }
 
@@ -88,47 +87,44 @@ const conceptsController = (
     const searchResponse = await elastic.execute((client) =>
       client.search<Displayable<Concept>>({
         index,
-        body: {
-          ...paginationElasticBody(req.query),
-          _source: ["display"],
-          track_total_hits: true,
-          query: {
-            bool: {
-              should: queryString
-                ? [
-                    {
-                      match: {
-                        "query.identifiers.value": {
-                          query: queryString,
-                          analyzer: "whitespace",
-                          operator: "OR",
-                          boost: 1000,
-                        },
-                      },
-                    },
-                    {
-                      multi_match: {
+        ...paginationElasticBody(req.query),
+        _source: ["display"],
+        track_total_hits: true,
+        query: {
+          bool: {
+            should: queryString
+              ? [
+                  {
+                    match: {
+                      "query.identifiers.value": {
                         query: queryString,
-                        fields: ["query.label", "query.alternativeLabels"],
-                        type: "cross_fields",
+                        analyzer: "whitespace",
+                        operator: "OR",
+                        boost: 1000,
                       },
                     },
-                  ]
-                : [],
-              filter: identifierTypeFilter
-                ? [
-                    {
-                      term: {
-                        "query.identifiers.identifierType":
-                          identifierTypeFilter,
-                      },
+                  },
+                  {
+                    multi_match: {
+                      query: queryString,
+                      fields: ["query.label", "query.alternativeLabels"],
+                      type: "cross_fields",
                     },
-                  ]
-                : [],
-            },
+                  },
+                ]
+              : [],
+            filter: identifierTypeFilter
+              ? [
+                  {
+                    term: {
+                      "query.identifiers.identifierType": identifierTypeFilter,
+                    },
+                  },
+                ]
+              : [],
           },
-          sort: queryString ? ["_score"] : ["query.id"],
         },
+        sort: queryString ? ["_score"] : ["query.id"],
       })
     );
 
