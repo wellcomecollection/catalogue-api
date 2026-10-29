@@ -31,12 +31,12 @@ jobs:
           repositories: developers.wellcomecollection.org
 
       - name: Checkout catalogue-api
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
 
@@ -48,7 +48,7 @@ jobs:
         run: yarn lint:openapi
 
       - name: Checkout developers.wellcomecollection.org
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: wellcomecollection/developers.wellcomecollection.org
           token: ${{ steps.app-token.outputs.token }}
