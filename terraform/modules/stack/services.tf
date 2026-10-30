@@ -21,6 +21,8 @@ module "search_api" {
   source       = "../service"
   service_name = "${var.environment_name}-search-api"
 
+  log_router_container_tag = var.log_router_container_tag
+
   container_port              = local.container_ports.search
   container_image             = var.container_images.search
   desired_task_count          = var.desired_task_counts.search
@@ -56,6 +58,8 @@ module "search_api" {
 module "items_api" {
   source       = "../service"
   service_name = "${var.environment_name}-items-api"
+
+  log_router_container_tag = var.log_router_container_tag
 
   container_port              = local.container_ports.items
   container_image             = var.container_images.items
@@ -99,6 +103,8 @@ module "items_api" {
 module "concepts_api" {
   source       = "../service"
   service_name = "${var.environment_name}-concepts-api"
+
+  log_router_container_tag = var.log_router_container_tag
 
   container_port              = local.container_ports.concepts
   container_image             = var.container_images.concepts
