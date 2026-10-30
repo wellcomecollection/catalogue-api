@@ -23,14 +23,14 @@ The three lambdas (`snapshot_scheduler`, `snapshot_recorder` and `snapshot_repor
 
 ### Building the package
 
-The functions run Python 3.10 on x86_64, so build with wheels for that platform rather than for the machine you are on. Run this from the lambda's directory, for example `snapshots/snapshot_scheduler`:
+The functions run Python 3.13 on x86_64, so build with wheels for that platform rather than for the machine you are on. Run this from the lambda's directory, for example `snapshots/snapshot_scheduler`:
 
 ```console
 rm -rf build && mkdir -p build/pkg
 cp src/*.py build/pkg/ && rm -f build/pkg/test_*.py
 pip3 install --target build/pkg \
   --platform manylinux2014_x86_64 --only-binary=:all: \
-  --implementation cp --python-version 3.10 \
+  --implementation cp --python-version 3.13 \
   -r REQUIREMENTS
 (cd build/pkg && zip -qr ../snapshot_LAMBDA_NAME.zip .)
 ```
