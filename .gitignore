@@ -16,6 +16,8 @@ shared_infra/.releases
 *.tfstate
 *.tfstate.backup
 *.tfstate.*.backup
+# Plan files can hold secret values, and this repo is public
+*.tfplan
 .lambda_zips
 .Dockerfile
 .pytest-cache
