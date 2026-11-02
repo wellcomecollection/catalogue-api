@@ -1,6 +1,7 @@
 locals {
   default_tags = {
     TerraformConfigurationURL = "https://github.com/wellcomecollection/catalogue-api/tree/main/terraform/shared"
+    "github.com/project-slug" = "wellcomecollection/catalogue-api"
     Environment               = "Production"
     Department                = "Digital Platform"
     Division                  = "Culture and Society"
