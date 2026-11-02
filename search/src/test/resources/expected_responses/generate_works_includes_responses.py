@@ -55,7 +55,7 @@ def strip_identifiers_from_items(items: list[dict[str, Any]]) -> list[dict[str, 
 
 
 def strip_identifiers_from_concepts(
-    entries: list[dict[str, Any]]
+    entries: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     """Strip identifiers from concepts within subjects/genres."""
     result = []

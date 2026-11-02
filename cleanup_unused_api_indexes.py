@@ -96,7 +96,7 @@ def maybe_cleanup_index(es_client, *, idx, prod_index_name, stage_index_name):
     stage_images_index_name = stage_index_name.replace("works-", "images-")
 
     click.echo(
-        f"\nConsidering %s (%s docs, %s)"
+        "\nConsidering %s (%s docs, %s)"
         % (
             click.style(idx["name"], "blue"),
             humanize.intcomma(idx["doc_count"]),

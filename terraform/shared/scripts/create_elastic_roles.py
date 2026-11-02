@@ -19,7 +19,7 @@ ROLES = {
         "indices": [
             {
                 "names": [WORK_INDEX_PATTERN, IMAGE_INDEX_PATTERN],
-                "privileges": ["read", "view_index_metadata"]
+                "privileges": ["read", "view_index_metadata"],
             }
         ]
     },
@@ -27,11 +27,11 @@ ROLES = {
         "indices": [
             {
                 "names": [WORK_INDEX_PATTERN, IMAGE_INDEX_PATTERN],
-                "privileges": ["manage_follow_index"]
+                "privileges": ["manage_follow_index"],
             }
         ],
-        "cluster": ["manage_ccr"]
-    }
+        "cluster": ["manage_ccr"],
+    },
 }
 
 
@@ -81,9 +81,9 @@ def store_secret(secret_id, secret_value, role_arn):
     click.echo(f"Stored secret {click.style(secret_id, 'yellow')}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     role_arn = "arn:aws:iam::756629837203:role/catalogue-developer"
-    secret_prefix = f"elasticsearch/catalogue_api"
+    secret_prefix = "elasticsearch/catalogue_api"
 
     es_host = read_secret(f"{secret_prefix}/public_host", role_arn)
     es_protocol = read_secret(f"{secret_prefix}/protocol", role_arn)
