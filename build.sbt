@@ -1,6 +1,5 @@
 import java.io.File
 import java.util.UUID
-import com.amazonaws.auth.STSAssumeRoleSessionCredentialsProvider
 
 def setupProject(
   project: Project,
