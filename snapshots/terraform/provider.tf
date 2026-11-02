@@ -7,6 +7,7 @@ provider "aws" {
 
   default_tags {
     tags = {
+      "github.com/project-slug" = "wellcomecollection/catalogue-api"
       TerraformConfigurationURL = "https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/terraform"
       Environment               = "Production"
       Department                = "Digital Platform"
