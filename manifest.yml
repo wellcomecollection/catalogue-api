@@ -1,7 +1,7 @@
-# Backstage-format description of this repository's software, gathered into
+# Backplane (backplane/v1) description of this repository's software, gathered into
 # https://github.com/wellcomecollection/catalog, where every repository's
 # entities share one namespace, so the names carry the repository prefix.
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: System
 metadata:
   name: catalogue-api
@@ -9,9 +9,9 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
 spec:
-  owner: digital-platform
+  owner: team:default/digital-platform
 ---
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-search
@@ -23,10 +23,10 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
 ---
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-items
@@ -38,10 +38,10 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
 ---
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-concepts
@@ -53,12 +53,12 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
 ---
 # Deployed from here but fronted by the identity account's gateway, so its
 # manifest is not reachable and it has no checkpoint.
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-requests
@@ -70,12 +70,12 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
 ---
 # A queue worker with no HTTP surface, so nothing to check. Deployed by the prod
 # build alone.
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-snapshot-generator
@@ -87,10 +87,10 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
 ---
-apiVersion: backstage.io/v1alpha1
+apiVersion: backplane/v1
 kind: Component
 metadata:
   name: catalogue-api-identifiers
@@ -102,5 +102,5 @@ metadata:
 spec:
   type: service
   lifecycle: production
-  owner: digital-platform
-  system: catalogue-api
+  owner: team:default/digital-platform
+  system: system:catalogue-api
