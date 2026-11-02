@@ -57,7 +57,7 @@ spec:
   system: system:catalogue-api
 ---
 # Deployed from here but fronted by the identity account's gateway, so its
-# manifest is not reachable and it has no checkpoint.
+# version endpoint is not reachable and it has no checkpoint.
 apiVersion: backplane/v1
 kind: Component
 metadata:
