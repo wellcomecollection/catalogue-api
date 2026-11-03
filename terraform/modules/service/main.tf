@@ -15,7 +15,7 @@ module "log_router_container_secrets_permissions" {
 module "nginx_container" {
   source = "git::github.com/wellcomecollection/terraform-aws-ecs-service.git//modules/nginx/apigw?ref=v3.15.3"
 
-  container_tag     = "db63674d25832955b2127ecdc0d8ec3c2129fcab"
+  container_tag     = "a7ebe942849d2368af6de85fa1c4ca639a293bf3"
   forward_port      = var.container_port
   log_configuration = module.log_router_container.container_log_configuration
 }
