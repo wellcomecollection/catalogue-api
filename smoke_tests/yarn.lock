@@ -563,9 +563,9 @@
     tslib "^2.8.1"
 
 "@azure/identity@^4.13.1":
-  version "4.13.3"
-  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-4.13.3.tgz#f7781be089dc6231e17ae1454b9a1e91bc797b81"
-  integrity sha512-zGQPtqvXPgSA8yfV2CkIQ1qirqk0p9AIVpC5uEkdXQYcKl07QHvyaGYRnZOk0AsQUmxNb4wfkcwY5di8Z5xa9A==
+  version "4.14.1"
+  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-4.14.1.tgz#12cf11210b5341887ba27883501bda1e5c00c8b0"
+  integrity sha512-HHuuFrmN1uuF9D5A6aAo5eHzNFNX4Q+P4SksZqDKse5YaJFFy/zDLG3wXHEV2FVGgetZ3QM8jGURNBtnQYf1NQ==
   dependencies:
     "@azure/abort-controller" "^2.0.0"
     "@azure/core-auth" "^1.9.0"
@@ -576,8 +576,8 @@
     "@azure/core-util" "^1.11.0"
     "@azure/logger" "^1.0.0"
     "@azure/msal-browser" "^5.5.0"
-    "@azure/msal-node" "^6.0.0"
-    open "^10.1.0"
+    "@azure/msal-node" "^7.1.0"
+    open "^11.0.0"
     tslib "^2.2.0"
 
 "@azure/logger@^1.0.0", "@azure/logger@^1.1.4", "@azure/logger@^1.3.0":
@@ -600,12 +600,17 @@
   resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-16.14.1.tgz#2c987f31da858e544e72b6faa986fecdb3de20f8"
   integrity sha512-Or6xhPNyi4zHW25158yxBoyxuCqNSPa5YBVqfF1J5Ks4MJWBo/USXdp05DQIPu1Zli00YZu6t0+h6KvHJealxQ==
 
-"@azure/msal-node@^6.0.0":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-6.0.1.tgz#48b9d5a472f16b403bd3a32494227ecfc54cafd4"
-  integrity sha512-ixSO1Y/kCVRthRs+hSx/5qkwaunX1/RAePhlMN0wIpIQ4WEZ6AREGGnGd1AP0qspHVsAwzWQKGubpjh50JyJIQ==
+"@azure/msal-common@16.15.0":
+  version "16.15.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-16.15.0.tgz#bb6ac5bfdac9b90cd8aab716718a8139d0f2c658"
+  integrity sha512-lwdLb1B9Q5nEhPLVIKe78XH5wFMN15fCiDkY7ylPDSWZuWcD93G3jpJajrKhO3CQld8SLKz0sHiOi24mxdvtsg==
+
+"@azure/msal-node@^7.1.0":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-7.1.2.tgz#4a3ba74084c0714703dc0256cbb736b951a7193b"
+  integrity sha512-52hKQLGpEQzwNufIXG1SPVU+wQ3RIe7Rp2+g+VdAmZojCAZ6yCdGEffzQEQ6RnBZGBEs40nl14rWBmfJpCoHsg==
   dependencies:
-    "@azure/msal-common" "16.14.1"
+    "@azure/msal-common" "16.15.0"
     jsonwebtoken "^9.0.0"
 
 "@azure/storage-blob@^12.30.0":
@@ -1979,10 +1984,10 @@ default-browser-id@^5.0.0:
   resolved "https://registry.yarnpkg.com/default-browser-id/-/default-browser-id-5.0.0.tgz#a1d98bf960c15082d8a3fa69e83150ccccc3af26"
   integrity sha512-A6p/pu/6fyBcA1TRz/GqWYPViplrftcW2gZC9q79ngNCKAeR/X3gcEdXQHl4KNXV+3wgIJ1CPkJQ3IHM6lcsyA==
 
-default-browser@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/default-browser/-/default-browser-5.2.1.tgz#7b7ba61204ff3e425b556869ae6d3e9d9f1712cf"
-  integrity sha512-WY/3TUME0x3KPYdRRxEJJvXRHV4PyPoUsxtZa78lwItwRQRHhd2U9xOscaT/YTf8uCXIAjeJOFBVEh/7FtD8Xg==
+default-browser@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/default-browser/-/default-browser-5.5.1.tgz#1790affc52680fbb11e17cab2752d69aa2a37d2c"
+  integrity sha512-m1pAzaJgZ/gssEqlOhJkPJp8Xly7QyW6xcrkUa2KKcDeDSEMP7X8xipU3snUcfisTQx0w1AGae+9UtJSfVnXGw==
   dependencies:
     bundle-name "^4.1.0"
     default-browser-id "^5.0.0"
@@ -2571,6 +2576,11 @@ is-glob@^4.0.1, is-glob@~4.0.1:
   dependencies:
     is-extglob "^2.1.1"
 
+is-in-ssh@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/is-in-ssh/-/is-in-ssh-1.0.0.tgz#8eb73c1cabba77748d389588eeea132a63057622"
+  integrity sha512-jYa6Q9rH90kR1vKB6NM7qqd1mge3Fx4Dhw5TVlK1MUBqhEOuCagrEHMevNuCcbECmXZ0ThXkRm+Ymr51HwEPAw==
+
 is-inside-container@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-inside-container/-/is-inside-container-1.0.0.tgz#e81fba699662eb31dbdaf26766a61d4814717ea4"
@@ -2987,15 +2997,17 @@ onetime@^5.1.0:
   dependencies:
     mimic-fn "^2.1.0"
 
-open@^10.1.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/open/-/open-10.2.0.tgz#b9d855be007620e80b6fb05fac98141fe62db73c"
-  integrity sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==
+open@^11.0.0:
+  version "11.0.4"
+  resolved "https://registry.yarnpkg.com/open/-/open-11.0.4.tgz#10d20dfdb558c71e5149b2d789ad6995caf697ca"
+  integrity sha512-++Zlftm0kVLPmzC06t6epuWmcRMDbI4z5P3NNX979WA/k23+NtSOynEGzsVfZwguKw2mi5umVgnBlJQMwRz4Pg==
   dependencies:
-    default-browser "^5.2.1"
+    default-browser "^5.5.1"
     define-lazy-prop "^3.0.0"
+    is-in-ssh "^1.0.0"
     is-inside-container "^1.0.0"
-    wsl-utils "^0.1.0"
+    powershell-utils "^0.2.1"
+    wsl-utils "^1.0.0"
 
 opentracing@^0.14.7:
   version "0.14.7"
@@ -3140,6 +3152,11 @@ powershell-utils@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/powershell-utils/-/powershell-utils-0.1.0.tgz#5a42c9a824fb4f2f251ccb41aaae73314f5d6ac2"
   integrity sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==
+
+powershell-utils@^0.2.0, powershell-utils@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/powershell-utils/-/powershell-utils-0.2.1.tgz#0853016f5b3c12d52b9571c8fe8059677d9ddbe2"
+  integrity sha512-C+y9x90UElAddDZmV4qOx9W53B61PO7cIqWz2dQsWlwswuq4mr8NEwytdGKboYbQlGZ3awrkTeNvcZiZNHnQ8A==
 
 present@^0.0.3:
   version "0.0.3"
@@ -3651,13 +3668,6 @@ ws@~8.21.0:
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.21.3.tgz#660b4faddb6a3e575c86e078126919961f4de4fc"
   integrity sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==
 
-wsl-utils@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/wsl-utils/-/wsl-utils-0.1.0.tgz#8783d4df671d4d50365be2ee4c71917a0557baab"
-  integrity sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==
-  dependencies:
-    is-wsl "^3.1.0"
-
 wsl-utils@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/wsl-utils/-/wsl-utils-0.4.0.tgz#58334dda6892a81d7acc80417cd6f141a8074958"
@@ -3665,6 +3675,14 @@ wsl-utils@^0.4.0:
   dependencies:
     is-wsl "^3.1.0"
     powershell-utils "^0.1.0"
+
+wsl-utils@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/wsl-utils/-/wsl-utils-1.0.1.tgz#7caaa5a713e5ed1b625e7ee95e505c53c2e41c80"
+  integrity sha512-c16PKLIRxBYpR3jSWsdS7SFp0COm5SOQdiFjY818dYFHJbMGuLBszpF07LBWmOS1uzrHa9VGdynsEgoeKy0oOQ==
+  dependencies:
+    is-wsl "^3.1.0"
+    powershell-utils "^0.2.0"
 
 xml-naming@^0.3.0:
   version "0.3.0"
