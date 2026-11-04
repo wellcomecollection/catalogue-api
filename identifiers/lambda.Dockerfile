@@ -12,7 +12,7 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 
 # Install uv
-RUN pip install --no-cache-dir uv==0.12.6
+RUN pip install --no-cache-dir uv==0.13.7
 
 # Install dependencies before the source, so the layer survives source changes.
 # --locked fails the build if uv.lock is out of date with pyproject.toml.
