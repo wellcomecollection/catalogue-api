@@ -1,8 +1,16 @@
+data "aws_ssm_parameter" "fluentbit_tag" {
+  name = "/platform/sidecars/fluentbit/${var.sidecar_tier}"
+}
+
+data "aws_ssm_parameter" "nginx_tag" {
+  name = "/platform/sidecars/nginx/${var.sidecar_tier}"
+}
+
 module "log_router_container" {
   source    = "git::github.com/wellcomecollection/terraform-aws-ecs-service.git//modules/firelens?ref=v3.15.3"
   namespace = var.service_name
 
-  container_tag            = var.log_router_container_tag
+  container_tag            = coalesce(var.fluentbit_tag_override, data.aws_ssm_parameter.fluentbit_tag.insecure_value)
   use_privatelink_endpoint = true
 }
 
@@ -15,7 +23,7 @@ module "log_router_container_secrets_permissions" {
 module "nginx_container" {
   source = "git::github.com/wellcomecollection/terraform-aws-ecs-service.git//modules/nginx/apigw?ref=v3.15.3"
 
-  container_tag     = "a7ebe942849d2368af6de85fa1c4ca639a293bf3"
+  container_tag     = coalesce(var.nginx_tag_override, data.aws_ssm_parameter.nginx_tag.insecure_value)
   forward_port      = var.container_port
   log_configuration = module.log_router_container.container_log_configuration
 }

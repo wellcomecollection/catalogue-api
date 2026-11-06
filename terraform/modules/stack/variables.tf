@@ -67,8 +67,3 @@ variable "enable_api_alarms" {
   default     = false
   description = "Off for stage, whose backend is stopped overnight and 5xxs steadily out of hours"
 }
-
-variable "log_router_container_tag" {
-  type    = string
-  default = "0b9948b83bfb68e4481ed988f15ede80239e4879"
-}
