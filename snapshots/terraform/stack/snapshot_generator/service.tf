@@ -10,6 +10,8 @@ module "snapshot_generator" {
     metric_namespace = "snapshot_generator-${var.deployment_service_env}"
   }
 
+  sidecar_tier = var.deployment_service_env == "prod" ? "prod" : "stage"
+
   cpu    = 4096
   memory = 8192
 

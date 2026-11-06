@@ -79,8 +79,23 @@ variable "healthcheck_path" {
 }
 
 
-# The fluentbit image in platform-infrastructure/images/dockerfiles/fluentbit.
-variable "log_router_container_tag" {
+# Sidecar image tags are set centrally in platform-infrastructure/sidecars/terraform.
+variable "sidecar_tier" {
+  type = string
+
+  validation {
+    condition     = contains(["stage", "prod"], var.sidecar_tier)
+    error_message = "sidecar_tier must be stage or prod."
+  }
+}
+
+# Pins this service to a tag instead of the tier's parameter.
+variable "fluentbit_tag_override" {
   type    = string
-  default = "0b9948b83bfb68e4481ed988f15ede80239e4879"
+  default = null
+}
+
+variable "nginx_tag_override" {
+  type    = string
+  default = null
 }
