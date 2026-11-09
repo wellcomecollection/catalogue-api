@@ -1,6 +1,9 @@
 # Build this with the repo root as the build context (docker build . --file concepts/Dockerfile)
 FROM public.ecr.aws/docker/library/node:24-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS base
 
+# Pick up Alpine security fixes the base image has not been rebuilt with yet.
+RUN apk upgrade --no-cache
+
 WORKDIR /app
 
 COPY ./yarn.lock ./package.json ./
