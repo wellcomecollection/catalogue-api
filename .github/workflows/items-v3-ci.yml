@@ -6,11 +6,19 @@ on:
     paths:
       - "items_v3/**"
       - "reference/catalogue.yaml"
+      - "reference/redocly-strip-aws.js"
+      - "redocly.yaml"
+      - "package.json"
+      - "yarn.lock"
       - ".github/workflows/items-v3-ci.yml"
   pull_request:
     paths:
       - "items_v3/**"
       - "reference/catalogue.yaml"
+      - "reference/redocly-strip-aws.js"
+      - "redocly.yaml"
+      - "package.json"
+      - "yarn.lock"
       - ".github/workflows/items-v3-ci.yml"
   workflow_dispatch:
 

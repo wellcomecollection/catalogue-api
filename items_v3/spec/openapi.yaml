@@ -59,10 +59,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ItemsList"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
         "410":
           $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -126,6 +130,12 @@ components:
           - no-store
 
   responses:
+    Forbidden:
+      description: The request carried no valid API key.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
     NotFound:
       description: No work has this identifier, or the identifier is malformed.
       content:
@@ -136,6 +146,12 @@ components:
       description: >-
         The work has been deleted, suppressed, or merged into another work.
         The catalogue API redirects a merged work to its target.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+    TooManyRequests:
+      description: The caller has gone over its rate limit. Retry after a short wait.
       content:
         application/json:
           schema:

@@ -30,19 +30,28 @@ Three paths run in parallel:
   each is suppressed. The third asks for the open requests against those
   items, which is how the service learns that someone else holds an item.
   How the first call is made is discussed below.
-- **The opening times path** reads the library's opening times from the
-  Content API. This call does not depend on the work, so it can start
-  immediately. v2 makes it after the Sierra response.
+- **The opening times path** reads the opening times of the library and of
+  deep store from the Content API, in one call, as v2 does. The call does
+  not depend on the work, so it can start immediately. v2 makes it after the
+  Sierra response.
 
 When all three have finished, the service combines them. Stale items take
 their access condition from FOLIO. An item is stale if the index says a
 reader could request it, or that it is temporarily unavailable for a reason
-other than conservation or digitisation. The test is v2's, ported as it is
+other than conservation or digitisation, or if it has a location but no
+access condition. The test is v2's, ported as it is
 ([platform#6654](https://github.com/wellcomecollection/platform/issues/6654)).
 Items that are then requestable gain the dates on which they could be
 viewed, worked out from the opening times and from whether the item is on
 site or in deep store. Other items are left as indexed. The list is returned
 in catalogue order.
+
+The check never adds or removes an item. The index holds no suppressed
+items, so one that FOLIO reports as suppressed was suppressed after the last
+indexing run. It stays in the list, and the access condition it gets is
+still an open question, since the rules that map FOLIO item state onto access
+conditions ([platform#6589](https://github.com/wellcomecollection/platform/issues/6589))
+do not cover suppression. Not requestable is the obvious choice.
 
 The response takes as long as the slowest path, not the sum of all the calls.
 
