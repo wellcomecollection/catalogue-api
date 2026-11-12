@@ -1,0 +1,227 @@
+openapi: 3.1.0
+
+# ---------------------------------------------------------------------------
+# Items API v3
+#
+# The items of a work, with their current availability. Items come from the
+# catalogue index, refreshed with up-to-date availability info from FOLIO.
+#
+# This file does not include any API Gateway extensions. The v3 route is declared
+# in Terraform beside the v2 route, so that both versions share one gateway and
+# one hostname (platform#6637).
+#
+# The manifest route is for the deploy tracker. If this spec is ever published,
+# filter the route out, as redocly.yaml does for the identifiers spec.
+#
+# ---------------------------------------------------------------------------
+
+info:
+  title: Wellcome Collection Items API
+  version: "3.0.0"
+  summary: The items of a work, with current availability
+  description: >-
+    Returns the items of a work, with their current availability. Use it to
+    show whether an item can be requested and when it could be viewed. For
+    everything else about a work, use the catalogue API.
+
+servers:
+  - url: https://api.wellcomecollection.org/catalogue/v3
+
+paths:
+  /works/{workId}/items:
+    get:
+      operationId: getWorkItems
+      summary: The items of a work
+      description: >-
+        Lists the items of one work. Items a reader could request, or that
+        are on hold for another reader, are checked against the library
+        management system at the time of the request, so their access
+        conditions are current rather than as last indexed. Other items, such
+        as digital items or items under conservation, are returned as indexed.
+
+        If that check cannot be made, the response still succeeds. It carries
+        the indexed access conditions, which may be out of date, and
+        `Cache-Control: no-store`.
+      security:
+        - ApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/WorkId"
+      responses:
+        "200":
+          description: >-
+            The items of the work, in catalogue order. Checked items carry
+            their current access condition. Those that could be requested also
+            carry the dates on which they could be viewed.
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/CacheControl"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItemsList"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          $ref: "#/components/responses/Gone"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /management/items-v3/manifest:
+    servers:
+      - url: https://api.wellcomecollection.org/catalogue
+    get:
+      operationId: getManifest
+      summary: The commit this service is running
+      description: >-
+        Read by the deploy tracker to confirm that a change has reached an
+        environment. The service serves it at `/management/manifest`; the
+        gateway maps it here, as it does for v2. Follows
+        https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
+      responses:
+        "200":
+          description: The commit the service was built from, and when it started.
+          headers:
+            Cache-Control:
+              description: Always `no-store`. The manifest must never be served from a cache.
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Manifest"
+
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >-
+        A catalogue API key, sent in the `x-api-key` header. Requests without
+        a valid key are refused.
+
+  parameters:
+    WorkId:
+      name: workId
+      in: path
+      required: true
+      description: >-
+        The canonical identifier of the work, as used by the catalogue API:
+        eight lowercase letters and digits, starting with a letter.
+      schema:
+        type: string
+        pattern: "^[a-hjkmnp-z][a-hjkmnp-z2-9]{7}$"
+      example: a2239muq
+
+  headers:
+    CacheControl:
+      description: >-
+        `public, max-age=10` when the availability check succeeded. `no-store`
+        when it did not and the response carries indexed availability only.
+      schema:
+        type: string
+        enum:
+          - public, max-age=10
+          - no-store
+
+  responses:
+    Forbidden:
+      description: The request carried no valid API key.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+    NotFound:
+      description: No work has this identifier, or the identifier is malformed.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+    Gone:
+      description: >-
+        The work has been deleted, suppressed, or merged into another work.
+        The catalogue API redirects a merged work to its target.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+    TooManyRequests:
+      description: The caller has gone over its rate limit. Retry after a short wait.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+    InternalServerError:
+      description: >-
+        The service could not read the work, or failed. A failed availability
+        check is not reported this way; it degrades the response instead.
+        Retry after a short wait.
+      content:
+        application/json:
+          schema:
+            $ref: "../../reference/catalogue.yaml#/components/schemas/Error"
+
+  schemas:
+    ItemsList:
+      type: object
+      required: [type, totalResults, results]
+      properties:
+        type:
+          type: string
+          const: ItemsList
+        totalResults:
+          type: integer
+          description: The number of items in `results`. The list is not paginated.
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemWithAvailability"
+
+    ItemWithAvailability:
+      description: A catalogue API item, plus the dates on which it could be viewed.
+      allOf:
+        - $ref: "../../reference/catalogue.yaml#/components/schemas/Item"
+        - type: object
+          properties:
+            availableDates:
+              type: array
+              description: >-
+                Library opening slots in which the item could be viewed, soonest
+                first. Present only when the availability check found the item
+                requestable and the opening times were successfully retrieved.
+              items:
+                $ref: "#/components/schemas/AvailabilitySlot"
+
+    AvailabilitySlot:
+      type: object
+      description: A period during which the library is open.
+      required: [from, to]
+      properties:
+        from:
+          type: string
+          format: date-time
+          example: "2026-11-12T10:00:00.000Z"
+        to:
+          type: string
+          format: date-time
+          example: "2026-11-12T18:00:00.000Z"
+
+    Manifest:
+      type: object
+      description: Read by the deploy tracker to confirm a deployment.
+      required: [commit, startedAt]
+      properties:
+        commit:
+          type: string
+          description: The commit the image was built from, or `unknown` if it was built without one.
+          example: 7aacfdd974cfd315894c24ff831e3327aa3bb98b
+        startedAt:
+          type: string
+          format: date-time
+          description: When this process started.
+          example: "2026-11-10T08:00:00Z"
