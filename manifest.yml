@@ -39,6 +39,16 @@ spec:
       promotesFrom: stage
       github:
         task: "deploy:weco"
+  slos:
+    # Agreed 2026-11-13; see docs adr/service_levels.md. Measured gateway-wide.
+    - name: availability
+      description: API requests not answered with a 5xx
+      objective: 99.5
+      window: 28d
+      sli:
+        source: cloudwatch
+        good: "Count - 5XXError"
+        total: "Count"
 ---
 apiVersion: backplane/v1
 kind: Component
