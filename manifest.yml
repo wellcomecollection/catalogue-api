@@ -21,6 +21,9 @@ metadata:
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/search/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#search
     backplane/dora-paths: search, common
+  links:
+    - title: Runbook
+      url: https://github.com/wellcomecollection/catalogue-api/blob/main/search/docs/runbook.md
 spec:
   type: service
   lifecycle: production
@@ -47,6 +50,9 @@ metadata:
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/items/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#items
     backplane/dora-paths: items, common
+  links:
+    - title: Runbook
+      url: https://github.com/wellcomecollection/catalogue-api/blob/main/items/docs/runbook.md
 spec:
   type: service
   lifecycle: production
@@ -101,6 +107,9 @@ metadata:
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/requests/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
     backplane/dora-paths: requests, common
+  links:
+    - title: Runbook
+      url: https://github.com/wellcomecollection/catalogue-api/blob/main/items/docs/runbook.md
 spec:
   type: service
   lifecycle: production
