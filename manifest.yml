@@ -20,11 +20,22 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/search/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#search
+    backplane/dora-paths: search, common
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: stage
+      tier: staging
+      github:
+        task: "deploy:weco"
+    - name: prod
+      tier: production
+      promotesFrom: stage
+      github:
+        task: "deploy:weco"
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -35,11 +46,22 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/items/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#items
+    backplane/dora-paths: items, common
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: stage
+      tier: staging
+      github:
+        task: "deploy:weco"
+    - name: prod
+      tier: production
+      promotesFrom: stage
+      github:
+        task: "deploy:weco"
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -50,11 +72,22 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/concepts/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#concepts
+    backplane/dora-paths: concepts, common
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: stage
+      tier: staging
+      github:
+        task: "deploy:weco"
+    - name: prod
+      tier: production
+      promotesFrom: stage
+      github:
+        task: "deploy:weco"
 ---
 # Deployed from here but fronted by the identity account's gateway, so its
 # version endpoint is not reachable and it has no checkpoint.
@@ -67,11 +100,22 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/requests/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
+    backplane/dora-paths: requests, common
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: stage
+      tier: staging
+      github:
+        task: "deploy:weco"
+    - name: prod
+      tier: production
+      promotesFrom: stage
+      github:
+        task: "deploy:weco"
 ---
 # A queue worker with no HTTP surface, so nothing to check. Deployed by the prod
 # build alone.
@@ -84,11 +128,17 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/snapshot_generator/
     wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
+    backplane/dora-paths: snapshots/snapshot_generator, common
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: prod
+      tier: production
+      github:
+        task: "deploy:weco"
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -99,8 +149,19 @@ metadata:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/identifiers/
     wellcomecollection.org/deploy-tracker: identifiers/.deploy-tracker.yml#identifiers
+    backplane/dora-paths: identifiers
 spec:
   type: service
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  environments:
+    - name: stage
+      tier: staging
+      github:
+        task: deploy
+    - name: prod
+      tier: production
+      promotesFrom: stage
+      github:
+        task: deploy
