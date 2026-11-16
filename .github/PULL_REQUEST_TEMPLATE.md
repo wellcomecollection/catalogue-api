@@ -7,13 +7,9 @@
 - [ ] Does this patch need a change to the documentation?
 - [ ] Does this change the API surface? If so, update the OpenAPI spec (`reference/catalogue.yaml`). The contract tests in the `search` project catch request-surface drift, but response-schema changes need a manual spec update.
 
-## How to test
-
-<!-- Provide instructions to help others verify the change. This could take the form of "On PROD, do X and witness Y. On this branch, do X and witness Z. " -->
-
 ## How was this tested?
 
-<!-- What you ran and where, with links. For a routine change, passing CI and a sentence on what you checked locally or in stage is enough. -->
+<!-- What you ran and where, what you saw, and links, so a reviewer can repeat it. For a routine change, passing CI and a sentence on what you checked locally or in stage is enough. Anything that can only be checked in production goes under "How will we check it after deploy?". -->
 
 ## How can we measure success?
 
