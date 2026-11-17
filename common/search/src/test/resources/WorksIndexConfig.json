@@ -969,7 +969,14 @@
               }
             },
             "analyzer": "lowercase",
-            "search_analyzer": "lowercase_token_limited"
+            "search_analyzer": "lowercase_token_limited",
+            "copy_to": ["query.titleSort"]
+          },
+          "titleSort": {
+            "type": "keyword",
+            "normalizer": "title_sort",
+            "ignore_above": 1024,
+            "index": false
           }
         }
       },
@@ -1313,6 +1320,18 @@
           "zero_width_spaces": {
             "type": "mapping",
             "mappings": ["\\u200C=>\\u0020"]
+          },
+          "collapse_whitespace": {
+            "pattern": "\\s+",
+            "type": "pattern_replace",
+            "replacement": " "
+          }
+        },
+        "normalizer": {
+          "title_sort": {
+            "type": "custom",
+            "char_filter": ["remove_punctuation", "collapse_whitespace"],
+            "filter": ["lowercase", "asciifolding", "trim"]
           }
         }
       }

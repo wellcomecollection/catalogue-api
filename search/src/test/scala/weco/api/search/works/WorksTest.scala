@@ -392,6 +392,88 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  // A case-sensitive sort would put every capitalised title before "capybara" and "rats".
+  val titleSortWorks = Seq(
+    "works.archive.GC253.series", // Correspondence
+    "works.examples.filtered-aggregations-tests.0", // rats
+    "works.archive.GC253.root", // Papers relating to the history of vaccination
+    "works.examples.filtered-aggregations-tests.1", // capybara
+    "works.archive.GC253.item" // Letter from Edward Jenner to an unidentified correspondent
+  )
+
+  it("sorts by title, ignoring case") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, titleSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=title"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.examples.filtered-aggregations-tests.1",
+              "works.archive.GC253.series",
+              "works.archive.GC253.item",
+              "works.archive.GC253.root",
+              "works.examples.filtered-aggregations-tests.0"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("sorts by title in descending order") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, titleSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=title&sortOrder=desc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.examples.filtered-aggregations-tests.0",
+              "works.archive.GC253.root",
+              "works.archive.GC253.item",
+              "works.archive.GC253.series",
+              "works.examples.filtered-aggregations-tests.1"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  // Numbers compare as text, so "C10" sorts before "C2" and "010" before "9".
+  it("sorts numbers in titles as text") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(
+          worksIndex,
+          collectionPathSortWorks :+ "works.collection-path-sort.4": _*
+        )
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=title"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.collection-path-sort.4",
+              "works.collection-path-sort.3",
+              "works.collection-path-sort.1",
+              "works.collection-path-sort.2",
+              "works.collection-path-sort.0"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
   it("returns a tally of work types") {
     withWorksApi {
       case (worksIndex, routes) =>

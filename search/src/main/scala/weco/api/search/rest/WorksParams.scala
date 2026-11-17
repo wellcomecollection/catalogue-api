@@ -401,7 +401,8 @@ object MultipleWorksParams extends QueryParamsUtils {
   val sortValues: Seq[(String, SortRequest)] = Seq(
     "production.dates" -> ProductionDateSortRequest,
     "items.locations.createdDate" -> DigitalLocationCreatedDateSortRequest,
-    "collectionPath" -> CollectionPathSortRequest
+    "collectionPath" -> CollectionPathSortRequest,
+    "title" -> TitleSortRequest
   )
 
   val sortOrderValues: Seq[(String, SortingOrder)] = Seq(

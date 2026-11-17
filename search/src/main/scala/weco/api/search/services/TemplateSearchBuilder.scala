@@ -51,7 +51,8 @@ trait TemplateSearchBuilder extends Encoders {
        |  {
        |    "{{sortField}}": {
        |      "order": "{{sortByDate}}",
-       |      "missing": "_last"
+       |      "missing": "_last",
+       |      "unmapped_type": "keyword"
        |    }
        |  },
        |  {{/sortByDate}}
