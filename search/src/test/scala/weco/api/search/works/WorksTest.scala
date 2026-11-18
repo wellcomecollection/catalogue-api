@@ -447,6 +447,58 @@ class WorksTest extends AnyFunSpec with ApiWorksTestBase {
     }
   }
 
+  // An empty title is a value that sorts before any other; a missing one goes last.
+  val untitledSortWorks = Seq(
+    "works.examples.filtered-aggregations-tests.0", // rats
+    "works.title-sort-untitled.0", // no title
+    "works.examples.filtered-aggregations-tests.1", // capybara
+    "works.title-sort-untitled.1" // ""
+  )
+
+  it("sorts an empty title first and a missing title last") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, untitledSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=title"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.title-sort-untitled.1",
+              "works.examples.filtered-aggregations-tests.1",
+              "works.examples.filtered-aggregations-tests.0",
+              "works.title-sort-untitled.0"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
+  it("sorts a missing title last in descending order") {
+    withWorksApi {
+      case (worksIndex, routes) =>
+        indexTestDocuments(worksIndex, untitledSortWorks: _*)
+
+        assertJsonResponse(
+          routes,
+          path = s"$rootPath/works?sort=title&sortOrder=desc"
+        ) {
+          Status.OK -> worksListResponse(
+            ids = Seq(
+              "works.examples.filtered-aggregations-tests.0",
+              "works.examples.filtered-aggregations-tests.1",
+              "works.title-sort-untitled.1",
+              "works.title-sort-untitled.0"
+            ),
+            strictOrdering = true
+          )
+        }
+    }
+  }
+
   // Numbers compare as text, so "C10" sorts before "C2" and "010" before "9".
   it("sorts numbers in titles as text") {
     withWorksApi {
