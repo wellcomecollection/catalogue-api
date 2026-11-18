@@ -44,6 +44,8 @@ trait TemplateSearchBuilder extends Encoders {
        |  }
        |""".stripMargin
 
+  // unmapped_type stops a sort on a field an index lacks (e.g. titleSort on
+  // folio-testing) from failing with a 500.
   lazy protected val sort: String =
     s"""
        |[
@@ -51,7 +53,8 @@ trait TemplateSearchBuilder extends Encoders {
        |  {
        |    "{{sortField}}": {
        |      "order": "{{sortByDate}}",
-       |      "missing": "_last"
+       |      "missing": "_last",
+       |      "unmapped_type": "keyword"
        |    }
        |  },
        |  {{/sortByDate}}
