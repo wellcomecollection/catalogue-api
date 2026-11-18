@@ -33,7 +33,7 @@ module "snapshot_generator" {
 }
 
 module "snapshot_generator_scaling_alarm" {
-  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//autoscaling?ref=v1.3.0"
+  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//autoscaling?ref=v1.6.0"
   queue_name = module.snapshot_generator_input_queue.name
 
   queue_high_actions = [module.snapshot_generator.scale_up_arn]

@@ -6,7 +6,7 @@ locals {
 }
 
 module "identifiers_lambda" {
-  source = "github.com/wellcomecollection/terraform-aws-lambda?ref=v1.2.0"
+  source = "github.com/wellcomecollection/terraform-aws-lambda?ref=v1.3.0"
 
   name         = local.lambda_name
   description  = "Identifiers API (${var.environment_name})"
@@ -20,6 +20,9 @@ module "identifiers_lambda" {
   # The handler turns lookup failures into 500s, so this only fires on crashes,
   # timeouts and failures to start. The CloudFront 5xx alarm covers the rest.
   error_alarm_topic_arn = var.enable_api_alarms ? var.lambda_error_alerts_topic_arn : null
+  alarm_component       = local.alarm_component
+  alarm_repository      = "wellcomecollection/catalogue-api"
+  alarm_severity        = local.alarm_severity
 
   environment = {
     variables = {

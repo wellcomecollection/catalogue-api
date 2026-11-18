@@ -1,7 +1,21 @@
+locals {
+  # Alert routing ADR (wellcomecollection/docs adr/alert_routing.md): the 5xx SLO sits on catalogue-api-search.
+  alarm_component = "catalogue-api-search"
+  alarm_severity  = var.environment_name == "prod" ? "high" : "low"
+  alarm_prefix    = "[component=${local.alarm_component} severity=${local.alarm_severity}] "
+
+  alarm_tags = {
+    "backplane:component"     = local.alarm_component
+    "github.com/project-slug" = "wellcomecollection/catalogue-api"
+    severity                  = local.alarm_severity
+  }
+}
+
 resource "aws_cloudwatch_metric_alarm" "api_gateway_5xx" {
   count = var.enable_api_alarms ? 1 : 0
 
   alarm_name          = "catalogue-api-${var.environment_name}-5xx-alarm"
+  alarm_description   = "${local.alarm_prefix}${aws_api_gateway_rest_api.catalogue.name} is returning over 100 5xx responses a minute"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   metric_name         = "5XXError"
@@ -18,13 +32,15 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_5xx" {
   }
 
   alarm_actions = [var.api_gateway_alerts_topic_arn]
+
+  tags = local.alarm_tags
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_gateway_latency" {
   count = var.enable_api_alarms ? 1 : 0
 
   alarm_name          = "catalogue-api-${var.environment_name}-latency-alarm"
-  alarm_description   = "p95 latency for ${aws_api_gateway_rest_api.catalogue.name} has been over 10s for 3 minutes"
+  alarm_description   = "${local.alarm_prefix}p95 latency for ${aws_api_gateway_rest_api.catalogue.name} has been over 10s for 3 minutes"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 3
   metric_name         = "Latency"
@@ -41,4 +57,6 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_latency" {
   # Chatbot rather than the 5xx Slack lambda, whose message template
   # only describes error counts.
   alarm_actions = [var.chatbot_topic_arn]
+
+  tags = local.alarm_tags
 }

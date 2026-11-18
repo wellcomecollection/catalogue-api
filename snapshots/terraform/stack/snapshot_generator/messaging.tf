@@ -1,12 +1,14 @@
 module "snapshot_generator_input_queue" {
-  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//queue?ref=v1.2.1"
+  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//queue?ref=v1.6.0"
   queue_name = "snapshot_generator-${var.deployment_service_env}_input"
   topic_arns = [var.snapshot_generator_input_topic_arn]
 
   # This should be longer than the time we expect a snapshot to take
   visibility_timeout_seconds = 60 * 60 * 2
 
-  alarm_topic_arn = var.dlq_alarm_arn
+  alarm_topic_arn  = var.dlq_alarm_arn
+  alarm_component  = "catalogue-api-snapshot-generator"
+  alarm_repository = "wellcomecollection/catalogue-api"
 }
 
 module "snapshot_generator_output_topic" {
@@ -16,11 +18,13 @@ module "snapshot_generator_output_topic" {
 }
 
 module "completed_snapshots_queue" {
-  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//queue?ref=v1.2.1"
+  source     = "git::github.com/wellcomecollection/terraform-aws-sqs//queue?ref=v1.6.0"
   queue_name = "completed_snapshots-${var.deployment_service_env}"
   topic_arns = [module.snapshot_generator_output_topic.arn]
 
-  alarm_topic_arn = var.dlq_alarm_arn
+  alarm_topic_arn  = var.dlq_alarm_arn
+  alarm_component  = "catalogue-api-snapshot-generator"
+  alarm_repository = "wellcomecollection/catalogue-api"
 }
 
 resource "aws_iam_role_policy" "allow_generator_to_publish_to_topic" {

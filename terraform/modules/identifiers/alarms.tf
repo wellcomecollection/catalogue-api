@@ -7,13 +7,24 @@ locals {
   # wellcomecollection/platform#6536 gives a real number.
   latency_alarm_threshold_ms = 3000
   latency_alarm_minutes      = 3
+
+  # Alert routing ADR (wellcomecollection/docs adr/alert_routing.md): part of the catalogue API, which has an availability target.
+  alarm_component = "catalogue-api-identifiers"
+  alarm_severity  = var.environment_name == "prod" ? "high" : "low"
+  alarm_prefix    = "[component=${local.alarm_component} severity=${local.alarm_severity}] "
+
+  alarm_tags = {
+    "backplane:component"     = local.alarm_component
+    "github.com/project-slug" = "wellcomecollection/catalogue-api"
+    severity                  = local.alarm_severity
+  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "api_gateway_latency" {
   count = var.enable_api_alarms ? 1 : 0
 
   alarm_name          = "identifiers-api-${var.environment_name}-latency-alarm"
-  alarm_description   = "p99 latency for ${aws_api_gateway_rest_api.identifiers.name} has been over ${local.latency_alarm_threshold_ms}ms for ${local.latency_alarm_minutes} minutes"
+  alarm_description   = "${local.alarm_prefix}p99 latency for ${aws_api_gateway_rest_api.identifiers.name} has been over ${local.latency_alarm_threshold_ms}ms for ${local.latency_alarm_minutes} minutes"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = local.latency_alarm_minutes
   metric_name         = "Latency"
@@ -30,6 +41,8 @@ resource "aws_cloudwatch_metric_alarm" "api_gateway_latency" {
   # Chatbot rather than the API Gateway 5xx Slack lambda, whose message
   # template only describes error counts.
   alarm_actions = [var.chatbot_topic_arn]
+
+  tags = local.alarm_tags
 }
 
 # API Gateway publishes no metric for requests it throttles, so count the 429s
@@ -51,7 +64,7 @@ resource "aws_cloudwatch_metric_alarm" "throttled_requests" {
   count = var.enable_api_alarms ? 1 : 0
 
   alarm_name          = "identifiers-api-${var.environment_name}-throttled-requests-alarm"
-  alarm_description   = "${aws_api_gateway_rest_api.identifiers.name} is rejecting requests with 429 because a consumer is over its usage plan or the account-level limit"
+  alarm_description   = "${local.alarm_prefix}${aws_api_gateway_rest_api.identifiers.name} is rejecting requests with 429 because a consumer is over its usage plan or the account-level limit"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   metric_name         = aws_cloudwatch_log_metric_filter.throttled_requests.metric_transformation[0].name
@@ -62,4 +75,6 @@ resource "aws_cloudwatch_metric_alarm" "throttled_requests" {
   treat_missing_data  = "notBreaching"
 
   alarm_actions = [var.chatbot_topic_arn]
+
+  tags = local.alarm_tags
 }
