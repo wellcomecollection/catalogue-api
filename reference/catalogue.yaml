@@ -503,6 +503,7 @@ components:
             - production.dates
             - items.locations.createdDate
             - collectionPath
+            - title
     WorksAccessStatusFilter:
       name: items.locations.accessConditions.status
       in: query

@@ -9,7 +9,8 @@ import weco.api.search.models.request.{
   CollectionPathSortRequest,
   DigitalLocationCreatedDateSortRequest,
   ProductionDateSortRequest,
-  SortingOrder
+  SortingOrder,
+  TitleSortRequest
 }
 import weco.api.search.rest.PaginationQuery
 import weco.api.search.elasticsearch.templateSearch.TemplateSearchRequest
@@ -79,6 +80,8 @@ object WorksRequestBuilder
         )
       case CollectionPathSortRequest =>
         ("query.collectionPath.sort", searchOptions.sortOrder)
+      case TitleSortRequest =>
+        ("query.titleSort", searchOptions.sortOrder)
     }
 
   val buildWorkFilterQuery: PartialFunction[WorkFilter, Query] = {
