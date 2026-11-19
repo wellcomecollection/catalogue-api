@@ -13,6 +13,10 @@ locals {
   alarm_severity  = var.environment_name == "prod" ? "high" : "low"
   alarm_prefix    = "[component=${local.alarm_component} severity=${local.alarm_severity}] "
 
+  # Throttling is a consumer over its usage plan, not the API failing, so it is medium in prod
+  throttle_severity = var.environment_name == "prod" ? "medium" : "low"
+  throttle_prefix   = "[component=${local.alarm_component} severity=${local.throttle_severity}] "
+
   alarm_tags = {
     "backplane:component"     = local.alarm_component
     "github.com/project-slug" = "wellcomecollection/catalogue-api"
@@ -64,7 +68,7 @@ resource "aws_cloudwatch_metric_alarm" "throttled_requests" {
   count = var.enable_api_alarms ? 1 : 0
 
   alarm_name          = "identifiers-api-${var.environment_name}-throttled-requests-alarm"
-  alarm_description   = "${local.alarm_prefix}${aws_api_gateway_rest_api.identifiers.name} is rejecting requests with 429 because a consumer is over its usage plan or the account-level limit"
+  alarm_description   = "${local.throttle_prefix}${aws_api_gateway_rest_api.identifiers.name} is rejecting requests with 429 because a consumer is over its usage plan or the account-level limit"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   metric_name         = aws_cloudwatch_log_metric_filter.throttled_requests.metric_transformation[0].name
@@ -76,5 +80,5 @@ resource "aws_cloudwatch_metric_alarm" "throttled_requests" {
 
   alarm_actions = [var.chatbot_topic_arn]
 
-  tags = local.alarm_tags
+  tags = merge(local.alarm_tags, { severity = local.throttle_severity })
 }
