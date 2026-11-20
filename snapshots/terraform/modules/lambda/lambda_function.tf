@@ -40,6 +40,13 @@ resource "aws_cloudwatch_metric_alarm" "lambda_alarm" {
     FunctionName = var.name
   }
 
-  alarm_description = "This metric monitors lambda errors for function: ${var.name}"
+  # Stays local: moving it into terraform-aws-lambda crosses a module package, so the alarm would be recreated.
+  alarm_description = "[component=catalogue-api-snapshot-generator severity=medium] This metric monitors lambda errors for function: ${var.name}"
   alarm_actions     = [var.alarm_topic_arn]
+
+  tags = {
+    "backplane:component"     = "catalogue-api-snapshot-generator"
+    "github.com/project-slug" = "wellcomecollection/catalogue-api"
+    severity                  = "medium"
+  }
 }
