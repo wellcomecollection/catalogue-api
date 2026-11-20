@@ -32,11 +32,17 @@ spec:
   environments:
     - name: stage
       tier: staging
+      checkpoints:
+        - url: https://api-stage.wellcomecollection.org/catalogue/management/search/manifest
       github:
         task: "deploy:weco"
     - name: prod
       tier: production
       promotesFrom: stage
+      # Working hours waiting on stage before a nudge, since the prod gate is manual
+      overdue: 2h
+      checkpoints:
+        - url: https://api.wellcomecollection.org/catalogue/management/search/manifest
       github:
         task: "deploy:weco"
   slos:
@@ -71,11 +77,17 @@ spec:
   environments:
     - name: stage
       tier: staging
+      checkpoints:
+        - url: https://api-stage.wellcomecollection.org/catalogue/management/items/manifest
       github:
         task: "deploy:weco"
     - name: prod
       tier: production
       promotesFrom: stage
+      # Working hours waiting on stage before a nudge, since the prod gate is manual
+      overdue: 2h
+      checkpoints:
+        - url: https://api.wellcomecollection.org/catalogue/management/items/manifest
       github:
         task: "deploy:weco"
 ---
@@ -97,11 +109,17 @@ spec:
   environments:
     - name: stage
       tier: staging
+      checkpoints:
+        - url: https://api-stage.wellcomecollection.org/catalogue/management/concepts/manifest
       github:
         task: "deploy:weco"
     - name: prod
       tier: production
       promotesFrom: stage
+      # Working hours waiting on stage before a nudge, since the prod gate is manual
+      overdue: 2h
+      checkpoints:
+        - url: https://api.wellcomecollection.org/catalogue/management/concepts/manifest
       github:
         task: "deploy:weco"
 ---
@@ -133,6 +151,8 @@ spec:
     - name: prod
       tier: production
       promotesFrom: stage
+      # Working hours waiting on stage before a nudge, since the prod gate is manual
+      overdue: 2h
       github:
         task: "deploy:weco"
 ---
@@ -177,10 +197,14 @@ spec:
   environments:
     - name: stage
       tier: staging
+      checkpoints:
+        - url: https://identifiers.api-stage.wellcomecollection.org/management/manifest
       github:
         task: deploy
     - name: prod
       tier: production
       promotesFrom: stage
+      checkpoints:
+        - url: https://identifiers.api-prod.wellcomecollection.org/management/manifest
       github:
         task: deploy
