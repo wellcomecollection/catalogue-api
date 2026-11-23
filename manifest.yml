@@ -55,6 +55,11 @@ spec:
         source: cloudwatch
         good: "Count - 5XXError"
         total: "Count"
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -90,6 +95,11 @@ spec:
         - url: https://api.wellcomecollection.org/catalogue/management/items/manifest
       github:
         task: "deploy:weco"
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -122,6 +132,11 @@ spec:
         - url: https://api.wellcomecollection.org/catalogue/management/concepts/manifest
       github:
         task: "deploy:weco"
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
 ---
 # Deployed from here but fronted by the identity account's gateway, so its
 # version endpoint is not reachable and it has no checkpoint.
@@ -155,6 +170,11 @@ spec:
       overdue: 2h
       github:
         task: "deploy:weco"
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
 ---
 # A queue worker with no HTTP surface, so nothing to check. Deployed by the prod
 # build alone.
@@ -178,6 +198,11 @@ spec:
       tier: production
       github:
         task: "deploy:weco"
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -208,3 +233,8 @@ spec:
         - url: https://identifiers.api-prod.wellcomecollection.org/management/manifest
       github:
         task: deploy
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
