@@ -203,10 +203,10 @@ paths:
       operationId: getManifest
       summary: The commit this service is running
       description: >-
-        Read by the deploy tracker to confirm a change has reached an
-        environment. `commit` is baked into the image at build time, since a
-        running container has no repository to ask. See the contract at
-        https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
+        Read by Backplane to confirm a change has reached an environment.
+        `commit` is baked into the image at build time, since a running
+        container has no repository to ask. See the contract at
+        https://backplane.wellcome.digital/guides/manifest-endpoint
       # Deliberately no security, and the spec declares no default. A default
       # would reach this method too: the importer does not honour `security: []`
       # as an override, which is how the manifest ended up needing a key.
@@ -364,7 +364,7 @@ components:
 
     Manifest:
       type: object
-      description: What the deploy tracker reads to confirm a deployment landed.
+      description: What Backplane reads to confirm a deployment landed.
       required: [commit, startedAt]
       properties:
         commit:
