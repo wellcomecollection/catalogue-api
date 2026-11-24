@@ -10,7 +10,7 @@ openapi: 3.1.0
 # in Terraform beside the v2 route, so that both versions share one gateway and
 # one hostname (platform#6637).
 #
-# The manifest route is for the deploy tracker. If this spec is ever published,
+# The manifest route is for Backplane. If this spec is ever published,
 # filter the route out, as redocly.yaml does for the identifiers spec.
 #
 # ---------------------------------------------------------------------------
@@ -77,10 +77,10 @@ paths:
       operationId: getManifest
       summary: The commit this service is running
       description: >-
-        Read by the deploy tracker to confirm that a change has reached an
+        Read by Backplane to confirm that a change has reached an
         environment. The service serves it at `/management/manifest`; the
         gateway maps it here, as it does for v2. Follows
-        https://github.com/wellcomecollection/deploy-tracker/blob/main/SPEC.md
+        https://backplane.wellcome.digital/guides/manifest-endpoint
       responses:
         "200":
           description: The commit the service was built from, and when it started.
@@ -213,7 +213,7 @@ components:
 
     Manifest:
       type: object
-      description: Read by the deploy tracker to confirm a deployment.
+      description: Read by Backplane to confirm a deployment.
       required: [commit, startedAt]
       properties:
         commit:
