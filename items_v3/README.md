@@ -178,6 +178,57 @@ so the items service would resolve work ids the same way.
 The contract is the same either way. The degradation rules above treat the
 lookup and FOLIO as one chain, so a failure in either gives the same response.
 
+## The FOLIO client
+
+`src/folio_client` is a copy of the prototype client in
+[location-movement-control-docs](https://github.com/wellcomecollection/location-movement-control-docs/tree/main/prototypes/folio-client),
+cut down to the two calls this service makes. `items_and_holdings` reads an
+instance's holdings and items in one call to
+`inventory-hierarchy/items-and-holdings`, the endpoint the catalogue pipeline
+indexes from, so the service sees items in the same shape the index was built
+from. It replaces the prototype's `items_for_instance`, which made two calls
+and returns a different shape, and so has a different name: the identity API's
+copy still uses the old one. `open_request_item_ids` is unchanged from the
+prototype, so that moving the client into a shared module later
+([platform#6652](https://github.com/wellcomecollection/platform/issues/6652))
+needs no change to its callers. The user and hold calls stay with the
+identity API's copy.
+
+`src/runtime.py` builds one client per Lambda container from
+`OKAPI_URL`, `OKAPI_TENANT` and `OKAPI_SECRET_PARAM`, the same settings the
+identity API uses. The parameter is a SecureString holding the service
+account's `username` and `password`, read on the first login. The client keeps
+its token for the life of the container and logs in again once on a `401`.
+
+### Open requests on instances with many items
+
+`open_request_item_ids` sends every item id in one GET query string, at about
+51 characters an item. Vert.x, which OKAPI runs on, limits the request line to
+4,096 bytes by default and answers a longer one with a `414`, so an instance
+with more than about 75 items would fail on every request. Under the rules
+above, the service would always return a degraded response for those works.
+Instance `64125966-52e5-5a7f-9572-0bd80ea6980e`, a serial, has 61 items and a
+query of 3,094 characters. Whether Wellcome's FOLIO gateway keeps the Vert.x
+default has not been checked.
+
+There are two ways round it:
+
+- Query by instance, with `instanceId=="<uuid>" and status==Open*`. This is one
+  call however many items the instance has. FOLIO requests have carried
+  `instanceId` since title-level requests were introduced, but that has not
+  been checked against our tenant. It changes the method's input from item ids
+  to an instance id, so it needs a new name, like `items_and_holdings`.
+- Split the item ids into batches of around 50. This keeps the prototype's
+  method as it is, at the cost of one call per batch on large instances.
+
+I think querying by instance is the better option, since it keeps the
+availability path at two calls.
+
+```sh
+uv sync --all-groups
+uv run pytest
+```
+
 ## Checking the spec
 
 ```sh
