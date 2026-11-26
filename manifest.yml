@@ -29,6 +29,9 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - resource:catalogue-pipeline-elasticsearch
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: stage
       tier: staging
@@ -79,6 +82,16 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - ref: component:catalogue-api-search
+      description: Work lookup
+    - ref: component:content-api
+      criticality: soft
+      description: Venue opening times
+    - ref: resource:sierra
+      criticality: soft
+      description: Live availability; falls back to indexed availability
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: stage
       tier: staging
@@ -116,6 +129,9 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - resource:catalogue-pipeline-elasticsearch
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: stage
       tier: staging
@@ -158,6 +174,12 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - ref: component:catalogue-api-search
+      description: Item lookup
+    - ref: resource:sierra
+      description: Places and lists holds
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: stage
       tier: staging
@@ -193,6 +215,13 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - ref: component:catalogue-api-search
+      description: Reads the index config from /_elasticConfig
+    - resource:catalogue-pipeline-elasticsearch
+    - ref: resource:reporting-elasticsearch
+      criticality: soft
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: prod
       tier: production
@@ -219,6 +248,9 @@ spec:
   lifecycle: production
   owner: team:default/digital-platform
   system: system:catalogue-api
+  dependsOn:
+    - resource:catalogue-pipeline-id-registry
+    - resource:api-wellcomecollection-org-cloudfront
   environments:
     - name: stage
       tier: staging
