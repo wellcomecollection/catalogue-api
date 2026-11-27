@@ -78,8 +78,8 @@ paths:
       summary: The commit this service is running
       description: >-
         Read by Backplane to confirm that a change has reached an
-        environment. The service serves it at `/management/manifest`; the
-        gateway maps it here, as it does for v2. Follows
+        environment. The gateway passes this path to the service unchanged,
+        where v2's manifest route rewrites it to `/management/manifest`. Follows
         https://backplane.wellcome.digital/guides/manifest-endpoint
       responses:
         "200":

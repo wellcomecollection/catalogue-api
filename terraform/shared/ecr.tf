@@ -41,6 +41,14 @@ resource "aws_ecr_repository" "identifiers" {
   }
 }
 
+resource "aws_ecr_repository" "items_v3" {
+  name = "uk.ac.wellcome/items_v3"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_ecr_repository" "nginx_api_gw" {
   name = "uk.ac.wellcome/nginx_api_gw"
 

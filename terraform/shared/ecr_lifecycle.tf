@@ -55,6 +55,7 @@ locals {
     search             = aws_ecr_repository.search.name
     concepts           = aws_ecr_repository.concepts.name
     identifiers        = aws_ecr_repository.identifiers.name
+    items_v3           = aws_ecr_repository.items_v3.name
     nginx_api_gw       = aws_ecr_repository.nginx_api_gw.name
     snapshot_generator = aws_ecr_repository.snapshot_generator.name
   }

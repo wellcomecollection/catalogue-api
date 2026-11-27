@@ -1,4 +1,4 @@
-name: "Items API v3: Check spec"
+name: "Items API v3: Build and Test"
 
 on:
   push:
@@ -26,6 +26,14 @@ permissions:
   contents: read
 
 jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/python_check@main
+        with:
+          folder: items_v3
+
   check-spec:
     runs-on: ubuntu-latest
     steps:
@@ -35,3 +43,36 @@ jobs:
           node-version: 24
       - run: yarn install --frozen-lockfile
       - run: yarn lint:openapi
+
+  build-items-v3-image:
+    runs-on: ubuntu-latest
+    needs: [python-checks]
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/docker-build-and-push@main
+        with:
+          registry: 756629837203.dkr.ecr.eu-west-1.amazonaws.com/uk.ac.wellcome
+          folder: items_v3
+          target: items_v3
+          dockerfile: lambda.Dockerfile
+          tag: ${{ github.sha }}
+          build_args: BUILD_COMMIT=${{ github.sha }}
+          role_to_assume: ${{ secrets.ITEMS_V3_CI_ROLE_ARN }}
+          # Pull requests build without publishing, which also covers dependabot
+          # and fork runs, where no repo secret is available.
+          push: ${{ github.ref == 'refs/heads/main' && secrets.ITEMS_V3_CI_ROLE_ARN != '' }}
+
+      # The action is pinned to @main and ignores inputs it does not know, so a
+      # rename upstream would publish an image whose manifest reports "unknown".
+      - name: Check the commit reached the image
+        run: |
+          baked=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' \
+            "items_v3:$GITHUB_SHA" | sed -n 's/^BUILD_COMMIT=//p')
+          if [ "$baked" != "$GITHUB_SHA" ]; then
+            echo "::error::image has BUILD_COMMIT='$baked', expected '$GITHUB_SHA'"
+            exit 1
+          fi
+          echo "BUILD_COMMIT=$baked"
