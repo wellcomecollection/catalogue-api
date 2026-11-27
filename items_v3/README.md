@@ -6,7 +6,7 @@ reader, are refreshed from FOLIO.
 
 The service is being built
 ([platform#6932](https://github.com/wellcomecollection/platform/issues/6932))
-and is not deployed yet. [What is built so far](#what-is-built-so-far) says
+and runs on stage only. [What is built so far](#what-is-built-so-far) says
 how far it has got. This contract is
 [platform#6607](https://github.com/wellcomecollection/platform/issues/6607),
 and it replaces the v2 items service in [`items/`](../items), which reads
@@ -191,7 +191,10 @@ and any other is a `500`, so that nothing takes the skeleton's answer for a
 work with no items.
 
 CI builds the image from `lambda.Dockerfile` and publishes it on a merge to
-main. Nothing deploys it yet.
+main, and then deploys it to the `items-v3-api-stage` Lambda. The stage
+gateway routes `/catalogue/v3/works/{workId}/items` and
+`/catalogue/management/items-v3/manifest` to it. Production has neither the
+Lambda nor the routes yet.
 
 ```sh
 uv sync --all-groups

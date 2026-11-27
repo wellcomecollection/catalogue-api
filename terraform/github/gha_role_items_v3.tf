@@ -4,10 +4,12 @@ module "gha_items_v3_ci_role" {
   policy_document = data.aws_iam_policy_document.gha_items_v3_ci.json
   role_name       = "items-v3-ci"
 
-  # Main only, so pull request runs cannot assume it. The deploy jobs will add
-  # their environment subjects when the Lambda exists.
+  # Scoped to these rather than the whole repository, so pull request runs
+  # cannot assume it. The deploy job names an environment, and presents
+  # environment:<name> instead of the ref.
   github_repositories = [
     "wellcomecollection/catalogue-api:ref:refs/heads/main",
+    "wellcomecollection/catalogue-api:environment:items-v3-stage",
   ]
 
   github_oidc_provider_arn = data.terraform_remote_state.catalogue_account.outputs.github_openid_connect_provider_arn
@@ -35,5 +37,15 @@ data "aws_iam_policy_document" "gha_items_v3_ci" {
   statement {
     actions   = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "lambda:GetFunctionConfiguration",
+      "lambda:UpdateFunctionCode",
+    ]
+    resources = [
+      "arn:aws:lambda:eu-west-1:756629837203:function:items-v3-api-*",
+    ]
   }
 }

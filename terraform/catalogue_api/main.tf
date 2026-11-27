@@ -63,6 +63,11 @@ module "catalogue_api_stage" {
   api_gateway_alerts_topic_arn = local.api_gateway_alerts_topic_arn
   chatbot_topic_arn            = local.chatbot_topic_arn
 
+  items_v3_lambda = {
+    name       = module.items_v3_stage.lambda_name
+    invoke_arn = module.items_v3_stage.invoke_arn
+  }
+
   providers = {
     aws.dns        = aws.dns
     aws.experience = aws.experience

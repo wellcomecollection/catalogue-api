@@ -77,3 +77,16 @@ jobs:
             exit 1
           fi
           echo "BUILD_COMMIT=$baked"
+
+  deploy:
+    # Only a merge, so dispatching this workflow rebuilds without deploying.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [build-items-v3-image, check-spec]
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/items-v3-deploy.yml
+    with:
+      deploy_tag: ${{ github.sha }}
+    secrets:
+      ITEMS_V3_CI_ROLE_ARN: ${{ secrets.ITEMS_V3_CI_ROLE_ARN }}

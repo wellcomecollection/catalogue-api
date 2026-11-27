@@ -67,3 +67,12 @@ variable "enable_api_alarms" {
   default     = false
   description = "Off for stage, whose backend is stopped overnight and 5xxs steadily out of hours"
 }
+
+variable "items_v3_lambda" {
+  type = object({
+    name       = string
+    invoke_arn = string
+  })
+  default     = null
+  description = "The items v3 Lambda. Null leaves the stack without the /v3 routes."
+}
