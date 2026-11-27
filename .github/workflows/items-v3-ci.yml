@@ -60,7 +60,8 @@ jobs:
           dockerfile: lambda.Dockerfile
           tag: ${{ github.sha }}
           build_args: BUILD_COMMIT=${{ github.sha }}
-          role_to_assume: ${{ secrets.ITEMS_V3_CI_ROLE_ARN }}
+          # The role trusts main only, and the action retries a failed assumption.
+          role_to_assume: ${{ github.ref == 'refs/heads/main' && secrets.ITEMS_V3_CI_ROLE_ARN || '' }}
           # Pull requests build without publishing, which also covers dependabot
           # and fork runs, where no repo secret is available.
           push: ${{ github.ref == 'refs/heads/main' && secrets.ITEMS_V3_CI_ROLE_ARN != '' }}
