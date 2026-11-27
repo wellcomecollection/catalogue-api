@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Completes the GitHub Deployment this build created, so the deploy tracker
+# Completes the GitHub Deployment this build created, so Backplane
 # stops waiting on it.
 #
 # A step's plugin config is fixed when the pipeline is uploaded, so the status

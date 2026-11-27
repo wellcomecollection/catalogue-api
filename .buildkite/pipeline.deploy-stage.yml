@@ -1,4 +1,4 @@
-# The deploy tracker reads GitHub Deployments, and this pipeline creates and
+# Backplane reads GitHub Deployments, and this pipeline creates and
 # completes its own rather than letting Buildkite do it from a deployment
 # trigger. Nothing in this repository listens for Deployment events, so the
 # identifiers API's Actions workflow can deploy alongside these pipelines

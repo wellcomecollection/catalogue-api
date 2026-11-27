@@ -15,7 +15,7 @@ The same workflow publishes the Identifiers API reference to
 `/api/identifiers`. Its source is `identifiers/spec/openapi.yaml`, which is also the API
 Gateway body, so the published copy is a Redocly bundle rather than a straight copy: the
 decorators on `identifiers` in `redocly.yaml` replace its description with
-`identifiers-intro.md`, drop the deploy tracker's manifest endpoint, and strip the
+`identifiers-intro.md`, drop the manifest endpoint Backplane reads, and strip the
 `x-amazon-apigateway-*` extensions with `redocly-strip-aws.js`. Edit the intro here, not
 the copy on the developers site.
 

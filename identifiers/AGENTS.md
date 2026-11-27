@@ -26,7 +26,7 @@ Always `cd identifiers/` before any `uv run ...` command: this project has its o
 - `lambda.Dockerfile` builds the deployed image: the locked runtime dependencies, the
   contents of `src/` copied into the Lambda task root, `IDENTIFIERS_BACKEND` defaulted
   to `rds`, and `BUILD_COMMIT` carrying the commit the image was built from, which CI
-  passes as a build argument for the deploy tracker's manifest to report.
+  passes as a build argument for the manifest Backplane reads to report.
 
 When the pipeline starts minting a new source identifier type for a Work, Image or
 Item, add it to `src/core/source_systems.py` so `GET /identifiers/v1/source-systems`

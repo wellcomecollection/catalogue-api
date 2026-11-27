@@ -10,7 +10,7 @@ apis:
     decorators:
       info-description-override:
         filePath: ./reference/identifiers-intro.md
-      # The deploy tracker's endpoint, not part of the consumer contract.
+      # The manifest endpoint Backplane reads, not part of the consumer contract.
       filter-out:
         property: operationId
         value: getManifest
