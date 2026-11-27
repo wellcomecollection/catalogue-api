@@ -130,7 +130,7 @@ aws ecs list-tasks --cluster catalogue-api-2021-04-26 --service-name prod-search
 
 Follow the general [rollback guide](https://github.com/wellcomecollection/developer-handbook/blob/main/developer-handbook/rollback.md) first. The [change model](https://github.com/wellcomecollection/developer-handbook/blob/main/developer-handbook/change-model.md) says which kinds of change need which route. For this service:
 
-- **How it deploys:** merging to `main` builds and pushes an image tagged `ref.COMMIT`. The [stage pipeline](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage) (internal) points `env.stage` at it, redeploys the stage search, items, concepts and requests services, and runs smoke, end-to-end and rank tests. The [prod pipeline](https://buildkite.com/wellcomecollection/catalogue-api-deploy-prod) (internal) runs the diff tool and waits at "Deploy to prod?". Unblocking it points `env.prod` at the same commit and redeploys the prod search, items and concepts services, plus requests and the snapshot generator. The deploy tracker posts each deploy to #wc-platform-deploys. [developers.md](../../docs/developers.md) describes the flow.
+- **How it deploys:** merging to `main` builds and pushes an image tagged `ref.COMMIT`. The [stage pipeline](https://buildkite.com/wellcomecollection/catalogue-api-deploy-stage) (internal) points `env.stage` at it, redeploys the stage search, items, concepts and requests services, and runs smoke, end-to-end and rank tests. The [prod pipeline](https://buildkite.com/wellcomecollection/catalogue-api-deploy-prod) (internal) runs the diff tool and waits at "Deploy to prod?". Unblocking it points `env.prod` at the same commit and redeploys the prod search, items and concepts services, plus requests and the snapshot generator. Backplane posts each deploy to #wc-platform-deploys. [developers.md](../../docs/developers.md) describes the flow.
 - **To roll back a code change:** revert the PR, merge it, and unblock the prod deploy once stage is green. If that is too slow, point `env.prod` for search alone back at the last good commit (from #wc-platform-deploys or the repository's prod Deployments) and redeploy it, from the repository root:
 
   ```bash
@@ -139,7 +139,7 @@ Follow the general [rollback guide](https://github.com/wellcomecollection/develo
   CLUSTER="catalogue-api-2021-04-26" ./builds/deploy_ecs_services.sh prod-search-api
   ```
 
-  Revert the PR as well, or the next merge to `main` redeploys the bad change. A manual retag creates no GitHub Deployment, so the deploy tracker and Backplane do not see it; note it in the incident issue.
+  Revert the PR as well, or the next merge to `main` redeploys the bad change. A manual retag creates no GitHub Deployment, so Backplane does not see it; note it in the incident issue.
 
 - **Cannot be rolled back this way:**
   - A pipeline flip, which changes `ElasticConfig.scala` and `concepts/config.ts`. Revert both and redeploy, as [multi-cluster-setup.md](../../docs/multi-cluster-setup.md#flipping-the-default) describes. This only works while the previous pipeline's indexes and API key still exist, so check them in Elastic Cloud before relying on it.

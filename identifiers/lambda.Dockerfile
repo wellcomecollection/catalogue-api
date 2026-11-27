@@ -25,7 +25,7 @@ COPY src/ ${LAMBDA_TASK_ROOT}
 
 ENV IDENTIFIERS_BACKEND=rds
 
-# The commit this image was built from, for the deploy tracker's manifest: a
+# The commit this image was built from, for the manifest Backplane reads: a
 # running container has no repository to ask. Declared last because the value
 # changes every build, and anything after it would be rebuilt every time. A
 # plain `docker build` without the argument leaves it empty rather than failing.

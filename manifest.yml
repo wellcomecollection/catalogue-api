@@ -19,7 +19,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/search/
-    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#search
     backplane/dora-paths: search, common
   links:
     - title: Runbook
@@ -58,11 +57,6 @@ spec:
         source: cloudwatch
         good: "Count - 5XXError"
         total: "Count"
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -72,7 +66,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/items/
-    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#items
     backplane/dora-paths: items, common
   links:
     - title: Runbook
@@ -108,11 +101,6 @@ spec:
         - url: https://api.wellcomecollection.org/catalogue/management/items/manifest
       github:
         task: "deploy:weco"
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -122,7 +110,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/concepts/
-    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml#concepts
     backplane/dora-paths: concepts, common
 spec:
   type: service
@@ -148,11 +135,6 @@ spec:
         - url: https://api.wellcomecollection.org/catalogue/management/concepts/manifest
       github:
         task: "deploy:weco"
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false
 ---
 # Deployed from here but fronted by the identity account's gateway, so its
 # version endpoint is not reachable and it has no checkpoint.
@@ -164,7 +146,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/requests/
-    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
     backplane/dora-paths: requests, common
   links:
     - title: Runbook
@@ -192,11 +173,6 @@ spec:
       overdue: 2h
       github:
         task: "deploy:weco"
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false
 ---
 # A queue worker with no HTTP surface, so nothing to check. Deployed by the prod
 # build alone.
@@ -208,7 +184,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/snapshots/snapshot_generator/
-    wellcomecollection.org/deploy-tracker: .deploy-tracker.yml
     backplane/dora-paths: snapshots/snapshot_generator, common
 spec:
   type: service
@@ -227,11 +202,6 @@ spec:
       tier: production
       github:
         task: "deploy:weco"
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false
 ---
 apiVersion: backplane/v1
 kind: Component
@@ -241,7 +211,6 @@ metadata:
   annotations:
     github.com/project-slug: wellcomecollection/catalogue-api
     backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/identifiers/
-    wellcomecollection.org/deploy-tracker: identifiers/.deploy-tracker.yml#identifiers
     backplane/dora-paths: identifiers
 spec:
   type: service
@@ -267,8 +236,3 @@ spec:
         - url: https://identifiers.api-prod.wellcomecollection.org/management/manifest
       github:
         task: deploy
-  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
-  notifications:
-    deployments:
-      labels: false
-      prComments: false

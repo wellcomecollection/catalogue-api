@@ -60,7 +60,7 @@ jobs:
       # An unrecognised action input is a warning rather than an error, and the
       # action is pinned to @main, so a rename upstream would quietly publish an
       # image with no commit in it. The manifest would then report "unknown" and
-      # the deploy tracker would call the service permanently behind, with
+      # Backplane would call the service permanently behind, with
       # nothing failing to say why.
       - name: Check the commit reached the image
         run: |

@@ -1,4 +1,4 @@
-# The deploy tracker reads GitHub Deployments, and this pipeline creates and
+# Backplane reads GitHub Deployments, and this pipeline creates and
 # completes its own prod Deployment, the way the stage pipeline does for stage.
 steps:
   - label: "Diff tool: Compare stage & prod"

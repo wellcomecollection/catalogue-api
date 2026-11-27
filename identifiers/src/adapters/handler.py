@@ -172,7 +172,7 @@ def _header(event: dict, name: str) -> str | None:
 
 
 def _manifest() -> dict:
-    """The commit this image is running, for the deploy tracker.
+    """The commit this image is running, for Backplane.
 
     No-store because a cached response would report the previous deployment.
     """

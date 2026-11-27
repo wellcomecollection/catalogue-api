@@ -53,8 +53,8 @@ faithful to the production shape (Python Lambda behind API Gateway).
 
 Every request needs an `x-api-key` header, and one without it gets
 `403 {"message":"Forbidden"}` from the gateway rather than reaching the Lambda.
-`GET /management/manifest` is the exception, and is readable without a key: the
-deploy tracker reads it to confirm which commit is live and holds no credentials
+`GET /management/manifest` is the exception, and is readable without a key:
+Backplane reads it to confirm which commit is live and holds no credentials
 for the services it checks.
 
 ### API keys

@@ -34,7 +34,7 @@ jobs:
     # need to guard on the role secret existing.
     if: github.ref == 'refs/heads/main'
     # GitHub creates the Deployment and posts every status itself, including on
-    # cancellation, which is what the deploy tracker reads.
+    # cancellation, which is what Backplane reads.
     environment:
       name: stage
       url: https://identifiers.api-stage.wellcomecollection.org
