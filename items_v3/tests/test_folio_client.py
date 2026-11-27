@@ -1,6 +1,7 @@
 """The FOLIO client against a fake OKAPI: token reuse, refresh, login failure and
 the two calls the availability path makes."""
 
+import logging
 from typing import Any
 
 import pytest
@@ -169,3 +170,33 @@ def test_open_request_item_ids_returns_the_held_items(okapi: FakeOkapi) -> None:
 def test_open_request_item_ids_with_no_items_calls_nothing(okapi: FakeOkapi) -> None:
     assert client_for(okapi).open_request_item_ids([]) == set()
     assert okapi.calls == []
+
+
+def test_open_request_item_ids_raises_when_folio_truncates(okapi: FakeOkapi) -> None:
+    # Queued requests on one item can fill the page and hide holds on others.
+    okapi.routes["/circulation/requests"] = ok(
+        {"requests": [{"itemId": ITEMS[0]}], "totalRecords": 1001}
+    )
+
+    with pytest.raises(FolioError, match="truncated"):
+        client_for(okapi).open_request_item_ids(ITEMS)
+
+
+def test_logs_paths_without_query_strings(
+    okapi: FakeOkapi, caplog: pytest.LogCaptureFixture
+) -> None:
+    okapi.routes["/circulation/requests"] = ok({"requests": [], "totalRecords": 0})
+    client = client_for(okapi)
+    client.open_request_item_ids(ITEMS)
+    okapi.valid_tokens.clear()
+
+    with caplog.at_level(logging.INFO, logger="folio_client.client"):
+        client.open_request_item_ids(ITEMS)
+
+    messages = [r.getMessage() for r in caplog.records if "OKAPI GET" in r.getMessage()]
+    assert messages == [
+        "OKAPI GET /circulation/requests",
+        "OKAPI GET /circulation/requests returned 401, re-authenticating",
+        "OKAPI GET /circulation/requests",
+    ]
+    assert not any(ITEMS[0] in r.getMessage() for r in caplog.records)

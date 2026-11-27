@@ -137,10 +137,12 @@ class FolioClient:
         """Authenticated OKAPI request with lazy login and one 401 re-auth."""
         if self._token is None:
             self.login()
-        logger.info("OKAPI %s %s", method, path)
+        # As identity's copy: queries can be long, and carry patron data there.
+        log_path = path.split("?", 1)[0]
+        logger.info("OKAPI %s %s", method, log_path)
         status, data, _ = self._raw(method, path, body=body, accept=accept)
         if status == 401 and not _retried:
-            logger.info("OKAPI %s %s returned 401, re-authenticating", method, path)
+            logger.info("OKAPI %s %s returned 401, re-authenticating", method, log_path)
             self.login()
             return self.request(method, path, body, accept=accept, _retried=True)
         return status, data
@@ -174,7 +176,8 @@ class FolioClient:
 
     def open_request_item_ids(self, item_ids: list[str]) -> set[str]:
         """Subset of ``item_ids`` that already have an open request (hold). We
-        never queue holds, so any item with an open request is not requestable."""
+        never queue holds, so any item with an open request is not requestable.
+        Raises rather than return a truncated set, which would miss held items."""
         if not item_ids:
             return set()
         clause = " or ".join(_cql_string(i) for i in item_ids)
@@ -184,4 +187,10 @@ class FolioClient:
         )
         if status != 200:
             raise FolioError(f"requests lookup failed ({status})", status, data)
-        return {r["itemId"] for r in data.get("requests", []) if r.get("itemId")}
+        requests = data.get("requests", [])
+        total = data.get("totalRecords")
+        if isinstance(total, int) and total > len(requests):
+            raise FolioError(
+                f"requests lookup truncated ({len(requests)} of {total})", status
+            )
+        return {r["itemId"] for r in requests if r.get("itemId")}
