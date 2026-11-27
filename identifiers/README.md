@@ -67,12 +67,12 @@ requests per second with a burst of 20 as a placeholder until the load test sets
 real values
 ([platform#6536](https://github.com/wellcomecollection/platform/issues/6536)).
 
-| Consumer    | Usage plan | Secret                                            | Account                  | Read by                                                                                                                                         |
-| ----------- | ---------- | ------------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| development | internal   | `identifiers_api/development/<env>/api_key`       | catalogue (756629837203) | people, for our own testing                                                                                                                     |
-| items       | internal   | `identifiers_api/items/<env>/api_key`             | catalogue (756629837203) | planned: the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf`                                                  |
-| requests    | internal   | `identifiers_api/requests/<env>/api_key`          | identity (770700576653)  | planned: the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo                 |
-| digirati    | external   | `wellcome/identifiers_api/digirati/<env>/api_key` | digirati (653428163053)  | planned: the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
+| Consumer | Usage plan | Secret | Account | Read by |
+|---|---|---|---|---|
+| development | internal | `identifiers_api/development/<env>/api_key` | catalogue (756629837203) | people, for our own testing |
+| items | internal | `identifiers_api/items/<env>/api_key` | catalogue (756629837203) | planned: the items service, through its ECS `secrets` in `terraform/modules/stack/services.tf` |
+| requests | internal | `identifiers_api/requests/<env>/api_key` | identity (770700576653) | planned: the requests service, through its ECS `secrets` in the [identity](https://github.com/wellcomecollection/identity) repo |
+| digirati | external | `wellcome/identifiers_api/digirati/<env>/api_key` | digirati (653428163053) | planned: the DDS, through `secret_env_vars` in [iiif-builder-infrastructure](https://github.com/wellcomecollection/iiif-builder-infrastructure) |
 
 `<env>` is `prod` or `stage`, matching the two deployments of this API. The
 "planned" consumers do not read their secrets yet; wiring them up is tracked on
@@ -111,16 +111,9 @@ Every request, including `/management/manifest`, logs one `Request completed`
 line:
 
 ```json
-{
-  "event": "Request completed",
-  "status": 200,
-  "duration_ms": 0.04,
-  "gateway_request_id": "...",
-  "api_key_id": "...",
-  "resource": "/identifiers/v1/{canonicalId}",
-  "level": "info",
-  "timestamp": "..."
-}
+{"event": "Request completed", "status": 200, "duration_ms": 0.04,
+ "gateway_request_id": "...", "api_key_id": "...",
+ "resource": "/identifiers/v1/{canonicalId}", "level": "info", "timestamp": "..."}
 ```
 
 - `gateway_request_id` is API Gateway's request id, the same value as
@@ -263,11 +256,11 @@ aws apigateway get-api-key --api-key <apiKeyId> --query name --output text
 
 In production only, these alarms post to Slack:
 
-| Alarm                                           | Fires when                                      | Goes to                                 |
-| ----------------------------------------------- | ----------------------------------------------- | --------------------------------------- |
-| `identifiers-api-prod-latency-alarm`            | p99 latency over 3s for 3 minutes               | Chatbot                                 |
-| `identifiers-api-prod-throttled-requests-alarm` | any 429 in a minute                             | Chatbot                                 |
-| `lambda-identifiers-api-prod-errors`            | the Lambda crashes, times out or fails to start | the catalogue Lambda error alerts topic |
+| Alarm | Fires when | Goes to |
+|---|---|---|
+| `identifiers-api-prod-latency-alarm` | p99 latency over 3s for 3 minutes | Chatbot |
+| `identifiers-api-prod-throttled-requests-alarm` | any 429 in a minute | Chatbot |
+| `lambda-identifiers-api-prod-errors` | the Lambda crashes, times out or fails to start | the catalogue Lambda error alerts topic |
 
 5xxs are alarmed on by the `api.wellcomecollection.org` CloudFront distribution,
 which covers `/identifiers/*`
@@ -278,12 +271,12 @@ placeholder until the load test in wellcomecollection/platform#6536.
 
 ## Endpoints
 
-| Endpoint                                                         | Returns                                                                                                                                   |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /identifiers/v1/{canonicalId}`                              | Full `IdentifierSet` (always, no aliases toggle).                                                                                         |
-| `GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`.                                                                                                          |
-| `…?type=Work&include=siblings`                                   | The same full `IdentifierSet`.                                                                                                            |
-| `GET /identifiers/v1/source-systems`                             | `{ "results": [...] }`: the source systems you can name in a by-source lookup, each with its `id`, `label` and the `types` it identifies. |
+| Endpoint | Returns |
+|----------|---------|
+| `GET /identifiers/v1/{canonicalId}` | Full `IdentifierSet` (always, no aliases toggle). |
+| `GET /identifiers/v1/by-source/{sourceSystem}/{value}?type=Work` | Bare `{ "canonicalId": "..." }`. |
+| `…?type=Work&include=siblings` | The same full `IdentifierSet`. |
+| `GET /identifiers/v1/source-systems` | `{ "results": [...] }`: the source systems you can name in a by-source lookup, each with its `id`, `label` and the `types` it identifies. |
 
 `type` is `Work` \| `Image` \| `Item`, defaults to `Work`, and is a real key
 component. The set is ordered by `createdAt` descending, most recent first.
@@ -303,7 +296,6 @@ Captured against the running prototype (`src/adapters/db/seed.sql`).
 ```http
 GET /identifiers/v1/a2345bcd
 ```
-
 ```http
 HTTP/1.0 200 OK
 Cache-Control: public, max-age=300
@@ -321,7 +313,6 @@ Content-Type: application/json
 ```http
 GET /identifiers/v1/by-source/sierra-system-number/b1161044x?type=Work
 ```
-
 ```http
 HTTP/1.0 200 OK
 Cache-Control: public, max-age=86400
@@ -335,28 +326,11 @@ Content-Type: application/json
 ```http
 GET /identifiers/v1/by-source/sierra-system-number/b1161044x?type=Work&include=siblings
 ```
-
 ```json
-{
-  "canonicalId": "a2345bcd",
-  "type": "Work",
-  "sourceIdentifiers": [
-    {
-      "type": "Work",
-      "sourceSystem": "axiell-collections-id",
-      "value": "12345",
-      "isAlias": true,
-      "createdAt": "2026-02-10T12:00:00Z"
-    },
-    {
-      "type": "Work",
-      "sourceSystem": "sierra-system-number",
-      "value": "b1161044x",
-      "isAlias": false,
-      "createdAt": "2019-03-04T10:14:22Z"
-    }
-  ]
-}
+{"canonicalId": "a2345bcd", "type": "Work", "sourceIdentifiers": [
+  {"type": "Work", "sourceSystem": "axiell-collections-id", "value": "12345",     "isAlias": true,  "createdAt": "2026-02-10T12:00:00Z"},
+  {"type": "Work", "sourceSystem": "sierra-system-number",  "value": "b1161044x", "isAlias": false, "createdAt": "2019-03-04T10:14:22Z"}
+]}
 ```
 
 ### Reverse lookup — the requesting case (FOLIO item UUID → canonical item id)
@@ -364,9 +338,8 @@ GET /identifiers/v1/by-source/sierra-system-number/b1161044x?type=Work&include=s
 ```http
 GET /identifiers/v1/by-source/folio-item/3f2a...uuid?type=Item
 ```
-
 ```json
-{ "canonicalId": "ka345678" }
+{"canonicalId": "ka345678"}
 ```
 
 ### Conditional GET — `If-None-Match` → `304`
@@ -375,7 +348,6 @@ GET /identifiers/v1/by-source/folio-item/3f2a...uuid?type=Item
 GET /identifiers/v1/a2345bcd
 If-None-Match: W/"2-2026-02-10T12:00:00Z"
 ```
-
 ```http
 HTTP/1.0 304 Not Modified
 Cache-Control: public, max-age=300
@@ -387,7 +359,6 @@ ETag: W/"2-2026-02-10T12:00:00Z"
 ```http
 GET /identifiers/v1/source-systems
 ```
-
 ```http
 HTTP/1.0 200 OK
 Cache-Control: public, max-age=86400
@@ -453,11 +424,14 @@ they aren't mistaken for committed contract:
 
 ## Notes & findings (for the RFC)
 
-- **Error body shape.** This API's contract uses `{"error": "...", "message": "..."}` (per its `Error` schema). That differs from `folio-api`'s `{"message": "..."}`; the new OpenAPI is this API's source of truth and the contract tests
+- **Error body shape.** This API's contract uses `{"error": "...", "message":
+  "..."}` (per its `Error` schema). That differs from `folio-api`'s `{"message":
+  "..."}`; the new OpenAPI is this API's source of truth and the contract tests
   validate against it.
-- **Spec clarification.** The reverse `200` is `oneOf: [CanonicalIdRef, IdentifierSet]`. As originally written, `CanonicalIdRef` had no
+- **Spec clarification.** The reverse `200` is `oneOf: [CanonicalIdRef,
+  IdentifierSet]`. As originally written, `CanonicalIdRef` had no
   `additionalProperties: false`, so an `IdentifierSet` body also validated
-  against it — `oneOf` then matches _both_ and machine-validation of the
+  against it — `oneOf` then matches *both* and machine-validation of the
   `include=siblings` response fails. The prototype's spec copy pins
   `CanonicalIdRef` to exactly `{canonicalId}` (commented in `spec/openapi.yaml`).
   **Feedback for the spec authors.**
