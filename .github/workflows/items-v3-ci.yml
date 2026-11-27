@@ -11,6 +11,7 @@ on:
       - "package.json"
       - "yarn.lock"
       - ".github/workflows/items-v3-ci.yml"
+      - ".github/workflows/items-v3-deploy.yml"
   pull_request:
     paths:
       - "items_v3/**"
@@ -20,6 +21,7 @@ on:
       - "package.json"
       - "yarn.lock"
       - ".github/workflows/items-v3-ci.yml"
+      - ".github/workflows/items-v3-deploy.yml"
   workflow_dispatch:
 
 permissions:

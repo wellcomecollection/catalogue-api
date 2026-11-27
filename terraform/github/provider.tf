@@ -12,7 +12,9 @@ provider "aws" {
 # Give it a name, description and a short (7 days) expiration
 # Under Repository permissions, give it access to catalogue-api and set
 # Secrets: read and write. gha_secret.tf creates a repository secret, so the
-# organization Secrets permission is not the one needed.
+# organization Secrets permission is not the one needed. Also set
+# Administration: read and write, which gha_role_items_v3.tf needs to create
+# an environment and its branch policy.
 # export TF_VAR_github_token=<your-token-here> before applying the tf
 provider "github" {
   owner = "wellcomecollection"

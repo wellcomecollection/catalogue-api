@@ -33,8 +33,10 @@ jobs:
     # Deploys only from main. Pull requests never reach here, so there is no
     # need to guard on the role secret existing.
     if: github.ref == 'refs/heads/main'
-    # Its own environment, not "stage", which is the identifiers deploy's. The
-    # CI role trusts this name, so the two change together.
+    # Its own environment, not "stage", which is the identifiers deploy's:
+    # Backplane tells deployments apart by environment and task, and both
+    # would be task "deploy". The CI role trusts this name and Terraform
+    # limits it to main (terraform/github), so the three change together.
     environment:
       name: items-v3-stage
       url: https://api-stage.wellcomecollection.org/catalogue/management/items-v3/manifest
