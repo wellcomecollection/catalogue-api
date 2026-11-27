@@ -229,6 +229,8 @@ spec:
     - name: prod
       tier: production
       promotesFrom: stage
+      # Working hours waiting on stage before a nudge, since the prod gate is manual
+      overdue: 2h
       checkpoints:
         - url: https://identifiers.api-prod.wellcomecollection.org/management/manifest
       github:
