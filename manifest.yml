@@ -240,3 +240,37 @@ spec:
     deployments:
       labels: false
       prComments: false
+---
+# The replacement for catalogue-api-items, reading FOLIO. A skeleton on stage
+# only until the v3 path is agreed for production (platform#6932).
+apiVersion: backplane/v1
+kind: Component
+metadata:
+  name: catalogue-api-items-v3
+  description: Serves the items on a work with availability from FOLIO, deployed from GitHub Actions
+  annotations:
+    github.com/project-slug: wellcomecollection/catalogue-api
+    backstage.io/source-location: url:https://github.com/wellcomecollection/catalogue-api/tree/main/items_v3/
+    backplane/dora-paths: items_v3
+spec:
+  type: service
+  lifecycle: experimental
+  owner: team:default/digital-platform
+  system: system:catalogue-api
+  dependsOn:
+    - resource:api-wellcomecollection-org-cloudfront
+  environments:
+    - name: stage
+      tier: staging
+      checkpoints:
+        - url: https://api-stage.wellcomecollection.org/catalogue/management/items-v3/manifest
+      # Its deploy job has its own GitHub environment, since identifiers
+      # deploys to "stage" with the same task
+      github:
+        environment: items-v3-stage
+        task: deploy
+  # Removed at this repo's cutover from deploy-tracker, which labels and comments on PRs until then
+  notifications:
+    deployments:
+      labels: false
+      prComments: false
