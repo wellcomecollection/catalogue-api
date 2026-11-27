@@ -1,0 +1,45 @@
+[project]
+name = "items-v3"
+version = "0.1.0"
+description = "Items API v3: the items of a work, with availability refreshed from FOLIO"
+# Pinned to match identifiers.
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "boto3>=1.43",
+]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff",
+    "mypy>=1.16",
+    "boto3-stubs[ssm]",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["E501", "B019"]
+
+[tool.mypy]
+strict_optional = true
+strict_equality = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+mypy_path = "src"
+exclude = ["build/.*"]

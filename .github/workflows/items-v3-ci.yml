@@ -26,6 +26,14 @@ permissions:
   contents: read
 
 jobs:
+  python-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: wellcomecollection/.github/.github/actions/python_check@main
+        with:
+          folder: items_v3
+
   check-spec:
     runs-on: ubuntu-latest
     steps:
