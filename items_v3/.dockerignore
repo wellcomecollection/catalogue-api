@@ -1,0 +1,8 @@
+# Keeps a local build's image the same as CI's, which builds from a clean checkout.
+**/__pycache__
+**/*.egg-info
+.venv
+.mypy_cache
+.pytest_cache
+.ruff_cache
+tests

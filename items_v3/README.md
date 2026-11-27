@@ -4,7 +4,10 @@ The items of a work, with their current availability. Items come from the
 index. Those a reader could request, or that are on hold for another
 reader, are refreshed from FOLIO.
 
-The service does not exist yet. This contract is
+The service is being built
+([platform#6932](https://github.com/wellcomecollection/platform/issues/6932))
+and is not deployed yet. [What is built so far](#what-is-built-so-far) says
+how far it has got. This contract is
 [platform#6607](https://github.com/wellcomecollection/platform/issues/6607),
 and it replaces the v2 items service in [`items/`](../items), which reads
 Sierra. The contract is [`spec/openapi.yaml`](spec/openapi.yaml). This file
@@ -147,10 +150,12 @@ cold Identifiers API start is the one thing the deadline has to absorb.
   v2 rule that tells on site from deep store reads Sierra location codes, and
   their FOLIO equivalent is an open question with library operations
   ([platform#6655](https://github.com/wellcomecollection/platform/issues/6655)).
-- **The manifest follows v2.** The service serves `/management/manifest` and
-  the gateway exposes it at `/catalogue/management/items-v3/manifest`, as
-  v2's is at `/catalogue/management/items/manifest`. The route is part of
-  platform#6637.
+- **The manifest follows v2.** The gateway exposes it at
+  `/catalogue/management/items-v3/manifest`, as v2's is at
+  `/catalogue/management/items/manifest`. The gateway passes the path to the
+  Lambda unchanged, so the service answers `/management/items-v3/manifest`,
+  where v2's route rewrites it to `/management/manifest`. The route is part
+  of platform#6932.
 
 ## Where the FOLIO ids come from
 
@@ -177,6 +182,21 @@ so the items service would resolve work ids the same way.
 
 The contract is the same either way. The degradation rules above treat the
 lookup and FOLIO as one chain, so a failure in either gives the same response.
+
+## What is built so far
+
+`src/handler.py` is a skeleton. It answers the manifest, and it routes the
+items path without reading the index or FOLIO: a malformed work id is a `404`
+and any other is a `500`, so that nothing takes the skeleton's answer for a
+work with no items.
+
+CI builds the image from `lambda.Dockerfile` and publishes it on a merge to
+main. Nothing deploys it yet.
+
+```sh
+uv sync --all-groups
+uv run pytest
+```
 
 ## Checking the spec
 
